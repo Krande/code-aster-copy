@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,11 @@
 subroutine irmama(meshNameZ , &
                   nbCell    , cellName    ,&
                   nbGrCell  , grCellName  ,&
-                  nbCellSelect, cellFlag)
+                  nbCellSelect, cellFlag  , lfichUniq)
 !
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/existGrpMa.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -41,6 +40,7 @@ integer, intent(in) :: nbGrCell
 character(len=24), pointer :: grCellName(:)
 integer, intent(out) :: nbCellSelect
 aster_logical, pointer :: cellFlag(:)
+aster_logical, intent(in) :: lfichUniq
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,9 +51,9 @@ aster_logical, pointer :: cellFlag(:)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: meshName
-    integer :: iCell, cellNume, iGrCell, grCellNbCell
+    character(len=11) :: vecGrpName
+    integer :: iCell, cellNume, iGrCell, iret, grCellNbCell
     integer, pointer :: listCell(:) => null()
-    aster_logical :: l_exi_in_grp, l_exi_in_grp_p
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,6 +67,9 @@ aster_logical, pointer :: cellFlag(:)
 ! - Select cells by name
 !
     if (nbCell .ne. 0) then
+        if (lfichUniq) then
+            call utmess('F', 'MED3_4')
+        endif
         do iCell = 1, nbCell
             call jenonu(jexnom(meshName//'.NOMMAI', cellName(iCell)), cellNume)
             if (cellNume .eq. 0) then
@@ -74,8 +77,8 @@ aster_logical, pointer :: cellFlag(:)
                 cellName(iCell) = ' '
             else
                 if (.not.cellFlag(cellNume)) then
-                    nbCellSelect = nbCellSelect + 1
                     cellFlag(cellNume) = ASTER_TRUE
+                    nbCellSelect = nbCellSelect + 1
                 endif
             endif
         end do
@@ -84,27 +87,34 @@ aster_logical, pointer :: cellFlag(:)
 ! - Select cells in groups of cells
 !
     if (nbGrCell .ne. 0) then
+        vecGrpName = '.GROUPEMA'
+        if (lfichUniq) vecGrpName = '.PAR_GRPMAI'
         do iGrCell = 1, nbGrCell
-            call existGrpMa(meshName, grCellName(iGrCell), l_exi_in_grp, l_exi_in_grp_p)
-            if(.not.l_exi_in_grp) then
+            call jeexin(jexnom(meshName//vecGrpName, grCellName(iGrCell)), iret)
+            if(iret .eq. 0) then
                 call utmess('A', 'RESULT3_10', sk=grCellName(iGrCell))
                 grCellName(iGrCell) = ' '
             else
-                call jelira(jexnom(meshName//'.GROUPEMA', grCellName(iGrCell)),&
-                            'LONMAX', grCellNbCell)
-                if (grCellNbCell .eq. 0) then
-                    call utmess('A', 'RESULT3_11', sk = grCellName(iGrCell))
-                    grCellName(iGrCell) = ' '
-                else
-                    call jeveuo(jexnom(meshName//'.GROUPEMA', grCellName(iGrCell)),&
-                                'L', vi = listCell)
-                    do iCell = 1, grCellNbCell
-                        cellNume = listCell(iCell)
-                        if (.not.cellFlag(cellNume)) then
-                            nbCellSelect = nbCellSelect + 1
-                            cellFlag(cellNume) = ASTER_TRUE
-                        endif
-                    end do
+                call jeexin(jexnom(meshName//'.GROUPEMA', grCellName(iGrCell)), iret)
+                if (iret.ne.0) then
+                    call jelira(jexnom(meshName//'.GROUPEMA', grCellName(iGrCell)),&
+                                'LONMAX', grCellNbCell)
+                    if (grCellNbCell .eq. 0) then
+                        call utmess('A', 'RESULT3_11', sk = grCellName(iGrCell))
+                        grCellName(iGrCell) = ' '
+                    else
+                        call jeveuo(jexnom(meshName//'.GROUPEMA', grCellName(iGrCell)),&
+                                    'L', vi = listCell)
+                        do iCell = 1, grCellNbCell
+                            cellNume = listCell(iCell)
+                            if (cellNume.ne.0) then
+                                if (.not.cellFlag(cellNume)) then
+                                    cellFlag(cellNume) = ASTER_TRUE
+                                    nbCellSelect = nbCellSelect + 1
+                                endif
+                            endif
+                        end do
+                    endif
                 endif
             endif
         end do

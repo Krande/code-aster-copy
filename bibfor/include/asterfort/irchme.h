@@ -23,7 +23,7 @@ interface
                       nomsym, typech, numord, nbrcmp, nomcmp,&
                       nbnoec, linoec, nbmaec, limaec, lvarie,&
                       sdcarm, carael, paraListNb, paraListName,&
-                      nbCmpDyna, codret)
+                      nbCmpDyna, lfichUniq, codret)
         integer :: ifichi
         character(len=19) :: chanom
         character(len=*) :: partie
@@ -43,6 +43,7 @@ interface
         integer, intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
         integer, intent(inout) :: nbCmpDyna
+        aster_logical :: lfichUniq
         integer :: codret
     end subroutine irchme
 end interface

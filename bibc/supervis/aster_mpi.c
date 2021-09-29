@@ -871,6 +871,23 @@ void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, ASTERINTEGER4 *buffer,
     return;
 }
 
+void DEFSPPP(ASMPI_BCAST_CHAR80, asmpi_bcast_char80, char *buffer,
+             STRING_SIZE lbuff,
+             ASTERINTEGER4 *count, ASTERINTEGER4 *root,
+             MPI_Fint *comm) {
+    MPI_Comm mpicom;
+#ifdef ASTER_HAVE_MPI
+    mpicom = MPI_Comm_f2c(*comm);
+    DEBUG_MPI("MPI_Bcast: send %d char80 values from proc #%d ...\n", *count, *root);
+    double start = MPI_Wtime();
+    AS_MPICHECK(MPI_Bcast((void *)buffer, (*count)*80, MPI_CHAR,
+                        *root, mpicom));
+    double end = MPI_Wtime();
+    DEBUG_MPI("MPI_Bcast: ... in %f sec %s\n", (end-start), " ");
+#endif
+    return;
+}
+
 /*
  * Wrappers around MPI_Allgather
  * Do not check returncode because all errors raise

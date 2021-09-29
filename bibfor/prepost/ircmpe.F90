@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,17 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato,&
                   nbmaec, limaec, adsd, adsl, nbimpr,&
                   ncaimi, ncaimk, tyefma, typmai, typgeo,&
                   nomtyp, typech, profas, promed, prorec,&
-                  nroimp, chanom, sdcarm, field_type)
+                  nroimp, chanom, sdcarm, field_type, nosdfu)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
+#include "asterc/asmpi_allgather_i.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/cesexi.h"
@@ -47,7 +51,7 @@ integer :: nbvato, ncmpve, numcmp(ncmpve), nbmaec, typmai(*), adsd
 integer :: limaec(*), nbimpr, typgeo(*), profas(nbvato), tyefma(*)
 integer :: nroimp(nbvato), promed(nbvato), prorec(nbvato), adsl
 character(len=*) :: nofimd
-character(len=8) :: nomtyp(*), typech, sdcarm
+character(len=8) :: nomtyp(*), typech, sdcarm, nosdfu
 character(len=19) :: chanom
 character(len=24) :: ncaimi, ncaimk
 aster_logical :: exicmp(nbvato)
@@ -108,15 +112,17 @@ character(len=16), intent(in) :: field_type
     integer :: ifm, niv, ibid, iret, i_fpg, jaux, kaux, ima, jcesd, laux
     integer :: jcesc, jcesl, jcesv, nrefma
     integer :: nrcmp, nrpg, nrsp, nbpg, nbsp, nb_fpg, typmas, nbimp0, nrimpr
-    integer :: nbtcou, nbqcou, nbsec, nbfib
-    integer :: adcaii, adcaik, nbgrf
-    integer :: nbgrf2, nbtcou2, nbqcou2, nbsec2, nbfib2, ima2
-    integer :: igrfi, imafib
+    integer :: nbtcou, nbqcou, nbsec, nbfib, jnbimpr, jnbimpr2, jnbimpr3
+    integer :: adcaii, adcaik, nbgrf, nbmaect, nbimprl(1)
+    integer :: nbgrf2, nbtcou2, nbqcou2, nbsec2, nbfib2, ima2, nbimprt
+    integer :: igrfi, imafib, rang, nbproc, jma, jnbma, ityp, nbmal, iaux
     character(len=16) :: nomfpg
     character(len=64) :: noprof
     aster_logical :: exicar, grfidt, elga_sp, okgrcq, oktuy
     character(len=16), pointer :: fpg_name(:) => null()
     character(len=16), pointer :: nofpgma(:) => null()
+    mpi_int :: mrank, msize, mpicou, taille
+    aster_logical :: lficUniq, lnbmal, lnbmaec
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -163,14 +169,37 @@ character(len=16), intent(in) :: field_type
 !    Y EST DEFINIE ET SI ELLE FAIT PARTIE DU FILTRAGE DEMANDE
 !====
     nb_fpg = 0
+    lficUniq = .false._1
+    if(nosdfu.ne.' ') then
+        call asmpi_info(rank = mrank, size = msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+!
+        call jeveuo(nosdfu//'.MAIL', 'L', jma)
+        lficUniq = .true._1
+    endif
 !
 ! 3.1. ==> SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT
 !          UNE COMPOSANTE VALIDE
-    if (nbmaec .eq. 0) then
+    if(lficUniq) then
+        nbmaect = nbmaec
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=1, sci=nbmaect)
+        lnbmaec = nbmaect .eq. 0
+    else
+        lnbmaec = nbmaec .eq. 0
+    endif
+    if (lnbmaec) then
         do i_fpg = 1 , nbvato
             if (exicmp(i_fpg)) then
-                nb_fpg = nb_fpg + 1
-                profas(nb_fpg) = i_fpg
+                if(lficUniq) then
+                    if(zi(jma+i_fpg-1).gt.0) then
+                        nb_fpg = nb_fpg + 1
+                        profas(nb_fpg) = i_fpg
+                    endif
+                else
+                    nb_fpg = nb_fpg + 1
+                    profas(nb_fpg) = i_fpg
+                endif
             endif
         enddo
 !
@@ -180,8 +209,15 @@ character(len=16), intent(in) :: field_type
         do jaux = 1 , nbmaec
             i_fpg = limaec(jaux)
             if (exicmp(i_fpg)) then
-                nb_fpg = nb_fpg + 1
-                profas(nb_fpg) = i_fpg
+                if(lficUniq) then
+                    if(zi(jma+i_fpg-1).gt.0) then
+                        nb_fpg = nb_fpg + 1
+                        profas(nb_fpg) = i_fpg
+                    endif
+                else
+                    nb_fpg = nb_fpg + 1
+                    profas(nb_fpg) = i_fpg
+                endif
             endif
         enddo
     endif
@@ -206,7 +242,9 @@ character(len=16), intent(in) :: field_type
 !     DE POINTS DE GAUSS
     if (typech(1:4) .eq. 'ELGA') then
         call celfpg(chanom, '&&IRCMPE.NOFPGMA', ibid)
-        AS_ALLOCATE(vk16=fpg_name, size=nb_fpg)
+        if(nb_fpg.ne.0) then
+            AS_ALLOCATE(vk16=fpg_name, size=nb_fpg)
+        endif
         call jeveuo('&&IRCMPE.NOFPGMA', 'L', vk16=nofpgma)
     endif
 !
@@ -379,12 +417,74 @@ character(len=16), intent(in) :: field_type
         jaux = adcaii+10*(nrimpr-1)+6
         zi(jaux) = zi(jaux) + 1
     enddo
-    !
+!
     if (typech(1:4) .eq. 'ELGA') then
         AS_DEALLOCATE(vk16=fpg_name)
         call jedetr('&&IRCMPE.NOFPGMA')
     endif
-    if ( nbimpr.eq.0 ) then
+!
+!   Le but du bloc suivant est d'avoir les memes impressions a realiser
+!   sur tous les procs (quite à ce que certaines soient vides)
+!   Il faut donc communiquer pour savoir les impressions de chaque procs
+    if(lficUniq) then
+        call asmpi_comm('GET', mpicou)
+        nbimprt = nbimpr
+        call asmpi_comm_vect('MPI_SUM', 'I', 1, 0, sci=nbimprt)
+        nbimprl(1) = nbimpr
+        call wkvect('&&IRCMPE.NBIMPR', 'V V I', nbproc+1, jnbimpr)
+        taille = 1
+        call asmpi_allgather_i(nbimprl, taille, zi(jnbimpr+1), taille, mpicou)
+        do iaux = 2, nbproc+1
+            zi(jnbimpr+iaux-1) = zi(jnbimpr+iaux-1)+zi(jnbimpr+iaux-2)
+        enddo
+        zi(jnbimpr) = 0
+        call wkvect('&&IRCMPE.NBIMPR2', 'V V I', 10*nbimprt, jnbimpr2)
+        do iaux = 1, nbimpr
+            do jaux = 0, 9
+                zi(jnbimpr2+10*(zi(jnbimpr+rang)+iaux-1)+jaux) = zi(adcaii+10*(iaux-1)+jaux)
+            enddo
+        enddo
+        call jedetr('&&IRCMPE.NBIMPR')
+        call wkvect('&&IRCMPE.NBIMPR', 'V V I', nbimprt, jnbimpr)
+        call wkvect('&&IRCMPE.NBIMPR3', 'V V I', 10*nbimprt, jnbimpr3)
+        call asmpi_comm_vect('MPI_SUM', 'I', 10*nbimprt, 0, vi=zi(jnbimpr2))
+        nbimprl(1) = 0
+        do iaux = 1, nbimprt
+            if(zi(jnbimpr+iaux-1).eq.-1) cycle
+            nrefma = zi(jnbimpr2+10*(iaux-1))
+            nbsp = zi(jnbimpr2+10*(iaux-1)+2)
+            do jaux = iaux+1, nbimprt
+                if(nrefma.eq.zi(jnbimpr2+10*(jaux-1)) .and.&
+                   nbsp.eq.zi(jnbimpr2+10*(jaux-1)+2)) then
+                    zi(jnbimpr+jaux-1) = -1
+                    cycle
+                endif
+            enddo
+            do jaux = 0, 9
+                zi(jnbimpr3+10*nbimprl(1)+jaux) = zi(jnbimpr2+10*(iaux-1)+jaux)
+            enddo
+            zi(jnbimpr3+10*nbimprl(1)+6) = 0
+            do jaux = 1, nbimpr
+                if(nrefma.eq.zi(adcaii+10*(jaux-1)) .and.&
+                   nbsp.eq.zi(adcaii+10*(jaux-1)+2)) then
+                    zi(jnbimpr3+10*nbimprl(1)+6) = zi(adcaii+10*(jaux-1)+6)
+                endif
+            enddo
+            nbimprl(1) = nbimprl(1)+1
+        enddo
+        call jedetr(ncaimi)
+        nbimpr = nbimprl(1)
+        call wkvect(ncaimi, 'V V I', 10*nbimpr, adcaii)
+        do iaux = 1, 10*nbimprl(1)
+            zi(adcaii+iaux-1) = zi(jnbimpr3+iaux-1)
+        enddo
+        call jedetr('&&IRCMPE.NBIMPR')
+        call jedetr('&&IRCMPE.NBIMPR2')
+        call jedetr('&&IRCMPE.NBIMPR3')
+    else
+        nbimprt = nbimpr
+    endif
+    if ( nbimprt.eq.0 ) then
         goto 999
     endif
 !
@@ -463,18 +563,36 @@ character(len=16), intent(in) :: field_type
 ! 7. STOCKAGE DES EVENTUELS PROFILS DANS LE FICHIER MED
 !====
     kaux = 1
+    if(lficUniq) then
+        call jeveuo(nosdfu//'.MATY', 'L', jnbma)
+    else
+        jnbma = 0
+    endif
 !
     do i_fpg = 1 , nbimpr
 !
         jaux = adcaii+10*(i_fpg-1)
 !
 !       SI LE NOMBRE DE MAILLES A ECRIRE EST >0
-        if (zi(jaux+6) .gt. 0) then
+        if (zi(jaux+6) .gt. 0 .or. lficUniq) then
+            if(lficUniq) then
+                ityp = zi(jaux+7)
+                nbmal = zi(jnbma+3*(ityp-1)+1)
+                iaux = 0
+                if(nbmal .ne. zi(jaux+6)) iaux = 1
+                call asmpi_comm_vect('MPI_MAX', 'I', 1, 0, sci=iaux)
+                lnbmal = .false.
+                if(iaux.eq.1) lnbmal = .true._1
+            else
+                lnbmal = (zi(jaux+6) .ne. zi(jaux+9))
+                ityp = 0
+            endif
 !
 !         SI LE NOMBRE DE MAILLES A ECRIRE EST DIFFERENT
 !         DU NOMBRE TOTAL DE MAILLES DE MEME TYPE:
-            if (zi(jaux+6) .ne. zi(jaux+9)) then
-                call ircmpf(nofimd, zi(jaux+6), promed(kaux), noprof)
+            if (lnbmal) then
+                call ircmpf(nofimd, zi(jaux+6), promed(kaux), noprof, nosdfu,&
+                            1, ityp)
 !
 !                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
                 zk80(adcaik+3*(i_fpg-1)+1) = noprof

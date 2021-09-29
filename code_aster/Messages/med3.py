@@ -30,6 +30,22 @@ Ceci peut engendrer des problèmes lors du post-traitement avec PARAVIS.
 Il est possible de changer manuellement le nom avec NOM_CHAM_MED et NOM_RESU_MED.
 """),
 
+    3 : _("""
+L'impression en parallèle dans un fichier unique au format MED est interdite en
+présence d'un CARA_ELEM.
+Il n'est donc pas possible d'imprimer un fichier MED unique en parallèle avec
+des éléments de structure.
+Conseil : Utilisez FICHIER_UNIQUE='NON'.
+"""),
+
+    4 : _("""
+FICHIER_UNIQUE='OUI' n'est pas autorisé avec les mots-clé NOEUD ou MAILLE.
+"""),
+
+    5 : _("""
+FICHIER_UNIQUE='OUI' ne peut pas être utilisé avec un maillage séquentiel.
+"""),
+
     6 : _("""
 On ne peut pas donner les noms des composantes du champ (NOM_CMP) quand on utilise le nom
 du résultat MED (NOM_RESU_MED).

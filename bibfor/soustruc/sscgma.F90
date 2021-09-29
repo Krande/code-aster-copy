@@ -97,7 +97,7 @@ implicit none
     l_parallel_mesh = isParallelMesh(ma)
     lisma = '&&SSCGMA.LISTE_MAILLES'
     if(l_parallel_mesh) then
-        call jelira(ma//'.PAR_GRPMAI', 'LONMAX', nbgrmn)
+        call jelira(ma//'.PAR_GRPMAI', 'NOMMAX', nbgrmn)
     else
         call jelira(ma//'.GROUPEMA', 'NMAXOC', nbgrmn)
     end if

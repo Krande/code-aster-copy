@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
                       ndim, typgeo, refcoo, gscoo, wg,&
                       raux1, raux2, raux3, nolopg, nomasu,&
-                      codret)
+                      lfichUniq, codret)
         character(len=*) :: nofimd
         character(len=16) :: nomfpg
         integer :: nbnoto
@@ -38,6 +38,7 @@ interface
         real(kind=8) :: raux3(*)
         character(len=*) :: nolopg
         character(len=*) :: nomasu
+        aster_logical :: lfichUniq
         integer :: codret
     end subroutine irmpg1
 end interface

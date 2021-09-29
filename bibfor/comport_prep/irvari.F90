@@ -20,7 +20,7 @@
 subroutine irvari(ifi        , field_med    , vari_elga, field_loca, model    ,&
                   nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
                   nume_store , nbmaec       , limaec   , result    , cara_elem,&
-                  carael     , nbCmpDyna    , codret)
+                  carael     , nbCmpDyna    , lfichUniq, codret)
 !
 implicit none
 !
@@ -62,6 +62,7 @@ integer, intent(in) :: limaec(*)
 character(len=8), intent(in) :: result
 character(len=8), intent(in) :: cara_elem, carael
 integer, intent(inout) :: nbCmpDyna
+aster_logical, intent(in) :: lfichUniq
 integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -280,7 +281,7 @@ integer, intent(out) :: codret
     call irceme(ifi, nomres, vari_elgr, field_loca, model,&
                 nb_cmp_sele, cmp_name_sele, label_med, partie, numpt,&
                 instan, nume_store, nbmaec, limaec, cara_elem,&
-                carael, field_type, nbCmpDyna, codret)
+                carael, field_type, nbCmpDyna, lfichUniq, codret)
 !
 999 continue
 !

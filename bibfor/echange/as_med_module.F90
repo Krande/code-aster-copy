@@ -23,10 +23,12 @@ module as_med_module
 ! default version to be used for output for backward compatibility
     integer, parameter :: bkwd_vers(3) = (/3, 3, 1/)
 !
+#include "asterc/asmpi_comm.h"
 #include "asterc/getexm.h"
 #include "asterc/write33header.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/as_mfiope.h"
+#include "asterfort/as_mpfope.h"
 #include "asterfort/as_mfivop.h"
 #include "asterfort/utmess.h"
 
@@ -44,54 +46,72 @@ contains
 !>  @param[in]      nom     filename
 !>  @param[in]      acces   open mode (see med.h for details)
 !>  @param[out]     cret    exit code
-subroutine as_med_open(fid, nom, acces, cret)
+subroutine as_med_open(fid, nom, acces, cret, parallel)
 !
     med_idt, intent(out) :: fid
     character(len=*), intent(in) :: nom
     aster_int, intent(in) :: acces
     aster_int, intent(out) :: cret
+    aster_logical, optional, intent(in) :: parallel
 !
 #if (ASTER_MED_VERSION_MAJOR == 4 && ASTER_MED_VERSION_MINOR == 0)
     integer, parameter :: med_acc_rdwr = 1
 #endif
     integer, parameter :: med_acc_creat = 3
     character(len=8) :: tvers
-    integer :: mode, nbret, vers(3)
+    integer :: mode, nbret, vers(3), comm_w
+    aster_logical :: mpi
+    mpi_int :: world
 !
     mode = acces
     vers = bkwd_vers
 !
+    mpi = .false.
+    if(present(parallel)) mpi = parallel
+!
 #if (ASTER_MED_VERSION_MAJOR >= 4)
-    if (mode .eq. med_acc_creat) then
-        if (getexm(' ', 'VERSION_MED') .eq. 1) then
-            call getvtx(' ', 'VERSION_MED', nbval=1, scal=tvers, nbret=nbret)
-            if (nbret .eq. 1) then
+    if(mpi) then
+        call asmpi_comm('GET', world)
+        comm_w = world
+        call as_mpfope(fid, nom, acces, comm_w, cret)
+    else
+        if (mode .eq. med_acc_creat) then
+            if (getexm(' ', 'VERSION_MED') .eq. 1) then
+                call getvtx(' ', 'VERSION_MED', nbval=1, scal=tvers, nbret=nbret)
+                if (nbret .eq. 1) then
 !               TODO create a dedicated function if more than one digit
-                read(tvers(1:1), '(i1)') vers(1)
-                read(tvers(3:3), '(i1)') vers(2)
-                read(tvers(5:5), '(i1)') vers(3)
+                    read(tvers(1:1), '(i1)') vers(1)
+                    read(tvers(3:3), '(i1)') vers(2)
+                    read(tvers(5:5), '(i1)') vers(3)
+                endif
             endif
-        endif
 
-        if (vers(1) .eq. 4 .and. (vers(2) .eq. 0 .or. vers(2) .eq. 1)) then
+            if (vers(1) .eq. 4 .and. (vers(2) .eq. 0 .or. vers(2) .eq. 1)) then
 !               pass
-        elseif (vers(1) .eq. 3 .and. vers(2) .eq. 3) then
+            elseif (vers(1) .eq. 3 .and. vers(2) .eq. 3) then
 #if (ASTER_MED_VERSION_MAJOR == 4 && ASTER_MED_VERSION_MINOR == 0)
-            call write33header(nom)
-            mode = med_acc_rdwr
+                call write33header(nom)
+                mode = med_acc_rdwr
 #endif
+            else
+                call utmess('F', 'MED_9', ni=3, vali=vers)
+            endif
+            call utmess('I', 'MED_8', ni=3, vali=vers)
+            call as_mfivop(fid, nom, mode, &
+                           vers(1), vers(2), vers(3), &
+                           cret)
         else
-            call utmess('F', 'MED_9', ni=3, vali=vers)
+            call as_mfiope(fid, nom, acces, cret)
         endif
-        call utmess('I', 'MED_8', ni=3, vali=vers)
-        call as_mfivop(fid, nom, mode, &
-                       vers(1), vers(2), vers(3), &
-                       cret)
+    endif
+#else
+    if(mpi) then
+        call asmpi_comm('GET', world)
+        comm_w = world
+        call as_mpfope(fid, nom, acces, comm_w, cret)
     else
         call as_mfiope(fid, nom, acces, cret)
     endif
-#else
-    call as_mfiope(fid, nom, acces, cret)
 #endif
 !
 end subroutine as_med_open

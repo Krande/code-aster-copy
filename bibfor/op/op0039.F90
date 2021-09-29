@@ -51,6 +51,7 @@ implicit none
     integer :: keywfNb, keywfIocc
     integer :: fileUnit, fileVersion
     character(len=1) :: fileType
+    character(len=3) :: fichierUnique
     character(len=8) :: fileFormat
     character(len=16) :: fileName
     integer :: nbMesh, nbResu, nbField, nbRet, nbNodeCmp
@@ -58,7 +59,7 @@ implicit none
     real(kind=8) :: fileVersionR
     real(kind=8), parameter :: eps = 1.0d-6
     character(len=8) :: model, mesh, resultMesh, proc0, result, ispar
-    aster_logical :: lResu, lMesh
+    aster_logical :: lResu, lMesh, lfichUniq
 !
 ! ------------------------------------------------------------------------------
 !
@@ -74,6 +75,7 @@ implicit none
     if (nbRet .ne. 1) then
         proc0 = 'OUI'
     endif
+    lfichUniq = .false._1
 !
 !XX if (nbrank .eq. 0) then
         call getfac(keywf, keywfNb)
@@ -154,6 +156,14 @@ implicit none
                 call utmess('A','RESULT3_12')
             endif
         endif
+        if (fileFormat .eq.'MED') then
+            call getvtx(' ', 'FICHIER_UNIQUE', scal=fichierUnique, nbret=nbRet)
+            if (fichierUnique.eq.'OUI') lfichUniq = .true._1
+            call ultype(fileUnit, fileType)
+            if (fileType .ne. 'B' .and. fileType .ne. 'L') then
+                call utmess('A','RESULT3_12')
+            endif
+        endif
 ! ----- Check consistency for GMSH
         if (fileFormat .eq. 'GMSH') then
             lMesh = ASTER_FALSE
@@ -192,7 +202,7 @@ implicit none
         endif
 ! ----- Loop on factor keywords
         do keywfIocc = 1, keywfNb
-            call irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, model)
+            call irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, model, lfichUniq)
         end do
         if (fileFormat .ne. 'MED') then
             flush(fileUnit)

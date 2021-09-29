@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt,&
                   adsk, partie, ncmpve, ntlcmp, ntncmp,&
                   ntucmp, ntproa, nbimpr, caimpi, caimpk,&
                   typech, nomamd, nomtyp, modnum, nuanom,&
-                  codret)
+                  lfichUniq, nosdfu, codret)
 !
     use as_med_module, only: as_med_open
     implicit none
@@ -61,6 +61,8 @@ character(len=*) :: nomamd
 character(len=*) :: caimpk(3, nbimpr)
 character(len=64) :: nochmd
 real(kind=8) :: instan
+aster_logical :: lfichUniq
+character(len=8) :: nosdfu
 integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -133,9 +135,10 @@ integer :: codret
     integer :: ideb, ifin
     med_idt :: idfimd
     integer :: iaux
-    aster_logical :: ficexi
+    aster_logical :: ficexi, lnvalec
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
+    real(kind=8) :: rbid(1)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -161,14 +164,26 @@ integer :: codret
     inquire(file=nofimd,exist=ficexi)
     if (ficexi) then
         edleaj = 1
-        call as_med_open(idfimd, nofimd, edleaj, codret)
+        if(lfichUniq) then
+            call as_med_open(idfimd, nofimd, edleaj, codret, .true._1)
+        else
+            call as_med_open(idfimd, nofimd, edleaj, codret, .false._1)
+        endif
         if (codret .ne. 0) then
             edleaj = 3
-            call as_med_open(idfimd, nofimd, edleaj, codret)
+            if(lfichUniq) then
+                call as_med_open(idfimd, nofimd, edleaj, codret, .true._1)
+            else
+                call as_med_open(idfimd, nofimd, edleaj, codret, .false._1)
+            endif
         endif
     else
         edleaj = 3
-        call as_med_open(idfimd, nofimd, edleaj, codret)
+        if(lfichUniq) then
+            call as_med_open(idfimd, nofimd, edleaj, codret, .true._1)
+        else
+            call as_med_open(idfimd, nofimd, edleaj, codret, .false._1)
+        endif
     endif
     if (codret .ne. 0) then
         saux08='mfiope'
@@ -206,7 +221,13 @@ integer :: codret
     do nrimpr = 1 , nbimpr
         if (codret .eq. 0) then
             nvalec = caimpi(7,nrimpr)
-            if (nvalec .gt. 0) then
+            lnvalec = .false._1
+            if(lfichUniq) then
+                lnvalec = .true._1
+            else
+                if(nvalec .gt. 0) lnvalec = .true._1
+            endif
+            if (lnvalec) then
 !
 ! 4.1. ==> ON DOIT ECRIRE DES VALEURS CORRESPONDANTS A NVALEC SUPPORTS
 !          DU TYPE EN COURS.
@@ -257,7 +278,7 @@ integer :: codret
 !
 ! 4.2. ==> CREATION DES TABLEAUX DE VALEURS A ECRIRE
 !
-                if (codret .eq. 0) then
+                if (codret .eq. 0 .and. nvalec.ne.0) then
 !
                     iaux = ncmpve*nbsp*nbpg*nvalec
                     call wkvect(ntvale, 'V V R', iaux, advale)
@@ -284,9 +305,17 @@ integer :: codret
                         endif
                     endif
 !
-                    call ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
-                                instan, numord, zr(advale), ncmpve, nbenty,&
-                                nbrepg, nvalec, typent, tygeom, codret)
+                    if(nvalec.ne.0) then
+                        call ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
+                                    instan, numord, zr(advale), ncmpve, nbenty,&
+                                    nbrepg, nvalec, typent, tygeom, nosdfu,&
+                                    tymast, codret)
+                    else
+                        call ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
+                                    instan, numord, rbid, ncmpve, nbenty,&
+                                    nbrepg, nvalec, typent, tygeom, nosdfu,&
+                                    tymast, codret)
+                    endif
 !
                     call jedetr(ntvale)
 !

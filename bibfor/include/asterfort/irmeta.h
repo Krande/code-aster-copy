@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine irmeta(ifi        , field_med    , meta_elno, field_loca, model    ,&
                       nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
                       nume_store , nbmaec       , limaec   , result    , cara_elem,&
-                      codret)
+                      lfichUniq  , codret)
         integer, intent(in) :: ifi
         character(len=64), intent(in) :: field_med
         character(len=19), intent(in) :: meta_elno
@@ -36,6 +36,7 @@ interface
         integer, intent(in) :: limaec(*)
         character(len=8), intent(in) :: result
         character(len=8), intent(in) :: cara_elem
+        aster_logical, intent(in) :: lfichUniq
         integer, intent(out) :: codret
     end subroutine irmeta
 end interface

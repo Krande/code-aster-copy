@@ -29,6 +29,13 @@ test = code_aster.TestCase()
 rank = MPI.COMM_WORLD.Get_rank()
 pMesh = code_aster.ParallelMesh()
 pMesh.readMedFile("mesh004a/%d.med"%rank, True)
+DEFI_GROUP(reuse=pMesh,
+           MAILLAGE=pMesh,
+           CREA_GROUP_MA=(_F(NOM='BLABLA',
+                             OPTION='SPHERE',
+                             POINT=(0.2, 0.2, 0.2),
+                             RAYON = 0.2),),)
+pMesh.debugPrint(30+rank)
 
 monModel = code_aster.Model(pMesh)
 monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
@@ -68,7 +75,26 @@ mecaStatique.setLinearSolver(monSolver)
 
 resu = mecaStatique.execute()
 
-resu.printMedFile("fort."+str(rank+40)+".med")
+resu=CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=('SIEF_ELGA'))
+
+IMPR_RESU(FICHIER_UNIQUE='OUI',
+          FORMAT='MED',
+          RESU=_F(RESULTAT=resu,),
+          VERSION_MED='4.0.0')
+
+IMPR_RESU(FICHIER_UNIQUE='OUI',
+          FORMAT='MED',
+          RESU=_F(RESULTAT=resu, GROUP_NO="COTE_H"),
+          VERSION_MED='4.0.0',
+          UNITE=81)
+
+IMPR_RESU(FICHIER_UNIQUE='OUI',
+          FORMAT='MED',
+          RESU=_F(RESULTAT=resu, GROUP_MA="BLABLA"),
+          VERSION_MED='4.0.0',
+          UNITE=82)
+
+#resu.printMedFile("fort."+str(rank+40)+".med")
 
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 0)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()

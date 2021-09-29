@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
                   ndim, typgeo, refcoo, gscoo, wg,&
                   raux1, raux2, raux3, nolopg, nomasu,&
-                  codret)
+                  lfichUniq, codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !     ECRITURE AU FORMAT MED - LOCALISATION POINTS DE GAUSS - PHASE 1
@@ -75,6 +75,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     character(len=16) :: nomfpg
     character(len=*) :: nolopg, nomasu
     character(len=*) :: nofimd
+    aster_logical :: lfichUniq
 !
     integer :: codret
 !
@@ -129,7 +130,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     if (.not. ficexi) then
         call utmess('F', 'MED2_3')
     endif
-    call as_med_open(idfimd, nofimd, edleaj, codret)
+    call as_med_open(idfimd, nofimd, edleaj, codret, lfichUniq)
     if (codret .ne. 0) then
         saux08='mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)

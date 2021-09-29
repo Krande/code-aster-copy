@@ -1,0 +1,255 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+! person_in_charge: nicolas.sellenet at edf.fr
+!
+subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
+!
+    implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "mpif.h"
+#include "MeshTypes_type.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_send_i.h"
+#include "asterc/asmpi_recv_i.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/build_comm_graph.h"
+#include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/lrmtyp.h"
+#include "asterfort/wkvect.h"
+!
+character(len=1) :: base
+character(len=8) :: nomast, nomsd
+aster_logical :: par_seqfile
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     ECRITURE DU MAILLAGE - FORMAT MED - FILTRES
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     ENTREE :
+!       NOMAST : NOM DU MAILLAGE
+!       NOMSD : NOM DE LA SD DE SORTIE
+!       BASE : BASE DE CREATION DE LA SD
+!       PAR_SEQFILE : BOOLEEN POUR PRECISER SI ON EST EN PARALLELE AVEC FICHIER MED UNIQUE
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbtyp, nbnoeu, nbmail, iret
+    integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
+    integer :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
+    integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat
+    integer :: rang, nbproc, numnoe, ipoin, ityp, jtyp, jtyp2, iaux
+    integer :: ima, ite04, ite08, itr03, itr04, jgrap, nbjoin, ijoin
+    integer :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
+    integer(kind=4) :: num4, numpr4, n4e, n4r
+    character(len=4) :: chnbjo
+    character(len=8) :: nomtyp(MT_NTYMAX), k8bid
+    character(len=24) :: nojoie, nojoir
+    integer, pointer :: connex(:) => null()
+    integer, pointer :: point(:) => null()
+    integer, pointer :: typma(:) => null()
+    real(kind=8), pointer :: coordo(:) => null()
+    aster_logical, pointer :: par_seq(:) => null()
+    aster_logical :: maiint
+    mpi_int :: mrank, msize, world
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call jemarq()
+!
+    call jeexin(nomsd//'.NBNO', iret)
+    if(iret.eq.0) then
+!
+! 1. ==> Initialisation
+!
+        call asmpi_comm('GET', world)
+        call asmpi_info(rank = mrank, size = msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+!
+        call dismoi('NB_NO_MAILLA', nomast, 'MAILLAGE', repi=nbnoeu)
+        call jelira(nomast//'.NOMMAI', 'NOMUTI', nbmail)
+        call jeveuo(nomast//'.COORDO    .VALE', 'L', vr=coordo)
+        call jeveuo(nomast//'.CONNEX', 'L', vi=connex)
+        call jeveuo(jexatr(nomast//'.CONNEX', 'LONCUM'), 'L', vi=point)
+        call jeveuo(nomast//'.TYPMAIL        ', 'L', vi=typma)
+!
+! 2. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
+!          DANS CATALOGUE
+!        . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
+!        . VERIF COHERENCE AVEC LE CATALOGUE
+!
+        call lrmtyp(nbtyp, nomtyp, nnotyp, typgeo, renumd,&
+                    modnum, nuanom, numnoa)
+!
+! 3. ==> Construction de la liste des noeuds interieurs
+!        et de la liste contenant par proc le nombre de noeuds
+!        int et le numero de depart de la numerotation
+!        des noeuds dans la num globale des noeuds
+!
+        call jeveuo(nomast//'.NOEX', 'L', jnoex)
+        call wkvect(nomsd//'.PAR_SEQ', base//' V L', 1, vl=par_seq)
+        par_seq(1) = par_seqfile
+        call wkvect(nomsd//'.NBNO1', base//' V I', 2*nbproc, jnbno1)
+        call wkvect(nomsd//'.NBNO', base//' V I', 3, jnbno)
+        call wkvect(nomsd//'.NBNOP', base//' V I', 3, iaux)
+        call wkvect(nomsd//'.NOEU', base//' V I', nbnoeu, jno)
+!
+        nbnot = 0
+        do ino = 1, nbnoeu
+            if(zi(jnoex+ino-1).eq.rang) then
+                nbnot = nbnot + 1
+                zi(jno+ino-1) = nbnot
+            else
+                zi(jno+ino-1) = -1
+            endif
+        enddo
+        zi(jnbno1+2*rang) = nbnot
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=2*nbproc, vi=zi(jnbno1))
+        do iproc = 1, nbproc-1
+            zi(jnbno1+2*iproc+1) = zi(jnbno1+2*(iproc-1))+zi(jnbno1+2*(iproc-1)+1)
+        enddo
+        do ino = 1, nbnoeu
+            if(zi(jnoex+ino-1).eq.rang) then
+                zi(jno+ino-1) = zi(jno+ino-1)+zi(jnbno1+2*rang+1)
+            endif
+        enddo
+        zi(jnbno) = zi(jnbno1+rang*2+1)+1
+        zi(jnbno+1) = zi(jnbno1+rang*2)
+        zi(jnbno+2) = zi(jnbno1+nbproc*2-1)+zi(jnbno1+nbproc*2-2)
+!
+! 4. ==> Construction du graph de communication
+!
+        call build_comm_graph(nomast, nomsd//'.GRAPH', base)
+        call jeveuo(nomsd//'.GRAPH', 'L', jgrap)
+!
+! 5. ==> Construction d'une numerotation globale des noeuds :
+!          proc 0 en premier, proc 1 ensuite, etc.
+!
+        nbjoin = zi(jgrap)
+        do ijoin = 1, nbjoin
+            numpro = zi(jgrap+ijoin)
+            if(numpro.ne.-1) then
+                call codent(numpro, 'G', chnbjo)
+                nojoie = nomast//'.E'//chnbjo
+                nojoir = nomast//'.R'//chnbjo
+                call jeveuo(nojoie, 'L', jjoine)
+                call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
+                call jeveuo(nojoir, 'L', jjoinr)
+                call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
+                nbnoee = nbnoee/2
+                nbnoer = nbnoer/2
+                call wkvect('&&IRMHDF.NOEUD_NEC_E1', 'V V I', nbnoee, jenvoi1)
+                call wkvect('&&IRMHDF.NOEUD_NEC_R1', 'V V I', nbnoer, jrecep1)
+!
+                do ino = 0, nbnoee-1
+                    zi(jenvoi1+ino) = zi(jno+zi(jjoine+2*ino)-1)
+                enddo
+                n4r = nbnoer
+                n4e = nbnoee
+                num4 = ijoin
+                numpr4 = numpro
+                if (rang .lt. numpro) then
+                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, num4, world)
+                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, num4, world)
+                else if (rang.gt.numpro) then
+                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, num4, world)
+                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, num4, world)
+                endif
+
+                do ino = 0, nbnoer-1
+                    if(zi(jrecep1+ino).ne.-1) zi(jno+zi(jjoinr+2*ino)-1) = -zi(jrecep1+ino)
+                enddo
+                call jedetr('&&IRMHDF.NOEUD_NEC_E1')
+                call jedetr('&&IRMHDF.NOEUD_NEC_R1')
+            endif
+        enddo
+!
+        call wkvect(nomsd//'.NBMA', 'V V I', 2*nbproc, jnbma)
+        call wkvect(nomsd//'.MAIL', base//' V I', nbmail, jma)
+        call wkvect(nomsd//'.MATY', base//' V I', MT_NTYMAX*3, jtyp)
+        call wkvect(nomsd//'.MATYP', base//' V I', MT_NTYMAX*3, iaux)
+        call wkvect('&&FILTRE', 'V V I', MT_NTYMAX, jtyp2)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA8'), ite08)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), ite04)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA4'), itr04)
+        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), itr03)
+        nbmat = 0
+        do ima = 1, nbmail
+            ityp = typma(ima)
+            if (ityp .eq. ite08) ityp=ite04
+            if (ityp .eq. itr04) ityp=itr03
+            ipoin = point(ima)
+            maiint = .true.
+            do ino = 1, nnotyp(ityp)
+                numnoe = connex(ipoin-1+ino)
+                if(zi(jnoex+numnoe-1).lt.rang) then
+                    maiint = .false.
+                    exit
+                endif
+            enddo
+            if(maiint) then
+                zi(jtyp2+ityp-1) = zi(jtyp2+ityp-1) + 1
+                zi(jma+ima-1) = zi(jtyp2+ityp-1)
+                nbmat = nbmat + 1
+            endif
+        enddo
+
+        do ityp = 1, MT_NTYMAX
+            if(zi(jtyp2+ityp-1).ne.0) then
+                zi(jnbma+rang) = zi(jtyp2+ityp-1)
+                zi(jnbma+nbproc+rang) = zi(jtyp2+ityp-1)
+                call asmpi_comm_vect('MPI_SUM', 'I', nbval=2*nbproc, vi=zi(jnbma))
+                do iproc = 1, nbproc-1
+                    zi(jnbma+nbproc+iproc) = zi(jnbma+nbproc+iproc-1)+zi(jnbma+iproc)
+                enddo
+                zi(jtyp+3*(ityp-1)+1)=zi(jnbma+rang)
+                zi(jtyp+3*(ityp-1)+2)=zi(jnbma+2*nbproc-1)
+                zi(jnbma+nbproc-1)=0
+                zi(jtyp+3*(ityp-1))=zi(jnbma+nbproc+rang-1)+1
+            endif
+        enddo
+        do ima = 1, nbmail
+            if(zi(jma+ima-1).ne.0) then
+                ityp = typma(ima)
+                zi(jma+ima-1) = zi(jma+ima-1) + zi(jtyp+3*(ityp-1)) - 1
+            endif
+        enddo
+        call jedetr('&&FILTRE')
+        call jedetr(nomsd//'.NBMA')
+        call jedetr(nomsd//'.NBNO1')
+    endif
+!
+    call jedema()
+!
+end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ircmpf(nofimd, nvalty, profil, noprof)
+subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
+                  typent, typmai)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
@@ -42,15 +43,22 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 #include "asterfort/as_mpfpfi.h"
 #include "asterfort/as_mpfprr.h"
 #include "asterfort/as_mpfprw.h"
+#include "asterfort/asmpi_barrier.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nvalty, profil(nvalty)
+#include "asterc/asmpi_bcast_char80.h"
+#include "asterc/asmpi_comm.h"
+    integer :: nvalty, profil(nvalty), typent, typmai
 !
     character(len=*) :: nofimd
     character(len=*) :: noprof
+    character(len=8) :: nosdfu
 !
 ! 0.2. ==> COMMUNS
 !
@@ -67,13 +75,16 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
     integer :: ifm, nivinf
 !
     med_idt :: idfimd
-    integer :: nbprof, lgprof, adprof, adnopf, nrprty
-    integer :: iaux, jaux
-    integer :: codret
+    integer :: nbprof, lgprof, adprof, adnopf, nrprty, jprof
+    integer :: iaux, jaux, jent, jproc
+    integer :: codret, decal, nvalty2, jdecal
 !
     character(len=8) :: saux08
     character(len=24) :: ntprof, ntnopf
     character(len=64) :: nopr64
+    character(len=80) :: comprf(1)
+    integer :: rang, nbproc
+    mpi_int :: mrank, msize, world, proc, taille
 !
 !====
 ! 1. PREALABLES
@@ -81,11 +92,49 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 !
     call infniv(ifm, nivinf)
+    if(nosdfu.ne. ' ') then
+        call asmpi_info(rank = mrank, size = msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+        call jedetr('&&IRCMPF.PROCS')
+        call wkvect('&&IRCMPF.PROCS', 'V V I', nbproc+1, jproc)
+        do iaux = rang+1, nbproc
+            zi(jproc+iaux) = nvalty
+        enddo
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc+1, vi=zi(jproc))
+        if(typent.eq.0) then
+            call jeveuo(nosdfu//'.NOEU', 'L', jdecal)
+        else
+            call jeveuo(nosdfu//'.MAIL', 'L', jdecal)
+        endif
+        nvalty2 = zi(jproc+nbproc)
+        call jedetr('&&IRCMPF.PROFIL')
+        call wkvect('&&IRCMPF.PROFIL', 'V V I', nvalty2, jprof)
+        decal = zi(jproc+rang)
+        do iaux = 1, nvalty
+            zi(jprof+iaux+decal-1) = zi(jdecal+profil(iaux)-1)
+        enddo
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=nvalty2, vi=zi(jprof))
+        if(typent.eq.0) then
+            call jeveuo(nosdfu//'.NBNOP', 'E', jent)
+            zi(jent) = decal+1
+            zi(jent+1) = nvalty
+            zi(jent+2) = nvalty2
+        else
+            call jeveuo(nosdfu//'.MATYP', 'E', jent)
+            zi(jent+3*(typmai-1)) = decal+1
+            zi(jent+3*(typmai-1)+1) = nvalty
+            zi(jent+3*(typmai-1)+2) = nvalty2
+        endif
+        if( rang.ne.0 ) goto 500
+    else
+        nvalty2 = nvalty
+    endif
 !
     if (nivinf .gt. 1) then
         write (ifm,1001) 'DEBUT DE '//nompro
     endif
-    1001 format(/,4x,10('='),a,10('='),/)
+1001 format(/,4x,10('='),a,10('='),/)
 !
 ! 1.2. ==> NOMS DES TABLEAUX
 !               12   345678   9012345678901234
@@ -130,75 +179,83 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 ! 4. LECTURE DE CHACUN DES PROFILS ET COMPARAISON AVEC CELUI RETENU
 !====
 !
-    do 41 , iaux = 1 , nbprof
+    do iaux = 1 , nbprof
 !
 ! 4.1. ==> NOM ET NOMBRE DE VALEURS DU IAUX-EME PROFIL
 !
-    call as_mpfpfi(idfimd, iaux, nopr64, lgprof, codret)
-    noprof = nopr64
-    if (codret .ne. 0) then
-        saux08='mpfpfi'
-        call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
-!
-    if (nivinf .gt. 1) then
-        write (ifm,4101) iaux, noprof, lgprof
-    endif
-    4101  format(5x,'LECTURE DU PROFIL NUMERO',i8,&
-     &       /,5x,'...NOM       : ',a,&
-     &       /,5x,'... LONGUEUR : ',i8)
-!
-    zk80(adnopf+iaux-1) = noprof
-!
-! 4.2. ==> SI LA LONGUEUR EST LA MEME ET QU'ON N'A TOUJOURS PAS TROUVE
-!          UN PPOFIL IDENTIQUE, ON LIT LE PROFIL COURANT ET ON COMPARE
-!
-    if (nvalty .eq. lgprof .and. nrprty .eq. 0) then
-!
-! 4.2.1. ==> LECTURE DES VALEURS DU PROFIL
-!
-        call wkvect(ntprof, 'V V I', lgprof, adprof)
-!
-        call as_mpfprr(idfimd, zi(adprof), lgprof, noprof, codret)
+        call as_mpfpfi(idfimd, iaux, nopr64, lgprof, codret)
+        noprof = nopr64
         if (codret .ne. 0) then
-            saux08='mpfprr'
+            saux08='mpfpfi'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
         if (nivinf .gt. 1) then
-            write (ifm,4201) zi(adprof),zi(adprof+lgprof-1)
+            write (ifm,4101) iaux, noprof, lgprof
         endif
-        4201    format(5x,'... 1ERE ET DERNIERE VALEURS : ',2i8)
+4101    format(5x,'LECTURE DU PROFIL NUMERO',i8,&
+         &     /,5x,'...NOM       : ',a,&
+         &     /,5x,'... LONGUEUR : ',i8)
+!
+        zk80(adnopf+iaux-1) = noprof
+!
+! 4.2. ==> SI LA LONGUEUR EST LA MEME ET QU'ON N'A TOUJOURS PAS TROUVE
+!          UN PPOFIL IDENTIQUE, ON LIT LE PROFIL COURANT ET ON COMPARE
+!
+        if (nvalty2 .eq. lgprof .and. nrprty .eq. 0) then
+!
+! 4.2.1. ==> LECTURE DES VALEURS DU PROFIL
+!
+            call wkvect(ntprof, 'V V I', lgprof, adprof)
+!
+            call as_mpfprr(idfimd, zi(adprof), lgprof, noprof, codret)
+            if (codret .ne. 0) then
+                saux08='mpfprr'
+                call utmess('F', 'DVP_97', sk=saux08, si=codret)
+            endif
+!
+            if (nivinf .gt. 1) then
+                write (ifm,4201) zi(adprof),zi(adprof+lgprof-1)
+            endif
+4201        format(5x,'... 1ERE ET DERNIERE VALEURS : ',2i8)
 !
 ! 4.2.2. ==> ON COMPARE TERME A TERME.
 !            DES QU'UNE VALEUR DIFFERE, ON PASSE AU PROFIL SUIVANT.
 !            SI TOUS LES TERMES SONT EGAUX, C'EST LE BON PROFIL !
 !            ON PEUT SORTIR DE LA RECHERCHE DES PROFILS.
 !
-        do 422 , jaux = 1 , lgprof
-        if (profil(jaux) .ne. zi(adprof+jaux-1)) then
-            goto 423
-        endif
-422      continue
+            if(nosdfu.eq. ' ') then
+                do jaux = 1 , lgprof
+                    if (profil(jaux) .ne. zi(adprof+jaux-1)) then
+                        goto 423
+                    endif
+                enddo
+            else
+                do jaux = 1 , lgprof
+                    if (zi(jprof+jaux-1) .ne. zi(adprof+jaux-1)) then
+                        goto 423
+                    endif
+                enddo
+            endif
 !
-        nrprty = iaux
+            nrprty = iaux
 !
-        if (nivinf .gt. 1) then
-            write (ifm,4202)
-        endif
-        4202    format('...... CE PROFIL EST IDENTIQUE A CELUI VOULU')
+            if (nivinf .gt. 1) then
+                write (ifm,4202)
+            endif
+4202        format('...... CE PROFIL EST IDENTIQUE A CELUI VOULU')
 !
-        goto 51
+            goto 51
 !
 ! 4.2.3. ==> MENAGE AVANT D'EXAMINER UN NOUVEAU PROFIL
 !
-423      continue
+423         continue
 !
-        call jedetr(ntprof)
+            call jedetr(ntprof)
 !
-    endif
+        endif
 !
-    41 end do
+    end do
 !
 !====
 ! 5. FERMETURE DU FICHIER
@@ -235,38 +292,37 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
 !          ENREGISTRES. QUELLE RUSE DIABOLIQUE !
 !
         noprof(17:64)='                                                '
-!                      123456789012345678901234567890123456789012345678
 !
-        do 62 , iaux = 1 , nbprof + 1
+        do iaux = 1 , nbprof + 1
 !
-        call codent(iaux, 'D0', saux08)
+            call codent(iaux, 'D0', saux08)
 !                         12345678
-        noprof(1:16) = 'PROFIL__'//saux08
+            noprof(1:16) = 'PROFIL__'//saux08
 !
-!GN        WRITE (IFM,*) 'TEST DU NOM DE PROFIL : ',NOPROF
-        do 621 , jaux = 0 , nbprof-1
-!GN        WRITE (IFM,*) '... COMPARAISON AVEC  : ',ZK80(ADNOPF+JAUX)
-        if (noprof .eq. zk80(adnopf+jaux)(1:64)) then
-            goto 62
-        endif
-621      continue
-        goto 622
-62      continue
+            do jaux = 0 , nbprof-1
+                if (noprof .eq. zk80(adnopf+jaux)(1:64)) then
+                    goto 62
+                endif
+            enddo
+            goto 622
+62      enddo
 !
-622      continue
+622     continue
 !
 ! 6.3. ==> ECRITURE DU PROFIL
 !
-!GN      PRINT 1789,(PROFIL(IAUX),IAUX=1,NVALTY)
-!GN 1789  FORMAT(10I5)
         if (nivinf .gt. 1) then
-            write (ifm,6301) noprof, nvalty, profil(1), profil(nvalty)
-            6301    format(4x,'PROFIL A CREER :',&
+            write (ifm,6301) noprof, nvalty2, profil(1), profil(nvalty2)
+6301        format(4x,'PROFIL A CREER :',&
      &         /,4x,'. NOM                      = ',a,&
      &         /,4x,'. LONGUEUR                 = ',i8,&
      &         /,4x,'. 1ERE ET DERNIERE VALEURS = ',2i8)
         endif
-        call as_mpfprw(idfimd, profil, nvalty, noprof, codret)
+        if(nosdfu.eq. ' ') then
+            call as_mpfprw(idfimd, profil, nvalty2, noprof, codret)
+        else
+            call as_mpfprw(idfimd, zi(jprof), nvalty2, noprof, codret)
+        endif
         if (codret .ne. 0) then
             saux08='mpfprw'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -280,6 +336,17 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof)
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
         endif
 !
+    endif
+
+500 continue
+    if(nosdfu.ne. ' ') then
+        call asmpi_comm('GET', world)
+        comprf(1) = noprof
+        taille = 1
+        proc = 0
+        call asmpi_bcast_char80(comprf, taille, proc, world)
+        noprof = comprf(1)
+        call asmpi_barrier()
     endif
 !
 !====

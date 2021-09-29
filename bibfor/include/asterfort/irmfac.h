@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn)
+    subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn,&
+                      lfichUniq)
         integer, intent(in) :: keywfIocc, fileUnit, fileVersion
         character(len=8), intent(in) :: fileFormat, modelIn
+        aster_logical :: lfichUniq
     end subroutine irmfac
 end interface

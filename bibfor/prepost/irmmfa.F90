@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
                   nbgrno, nomgno, nbgrma, nomgma, prefix,&
-                  typgeo, nomtyp, nmatyp, infmed)
+                  typgeo, nomtyp, nmatyp, infmed, nosdfu)
 !
 implicit none
 !
@@ -43,6 +43,7 @@ character(len=8) :: nomast
 character(len=24) :: nomgno(*), nomgma(*)
 character(len=8) :: nomtyp(*)
 character(len=*) :: nomamd
+character(len=8) :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,14 +79,12 @@ character(len=*) :: nomamd
     character(len=6), parameter :: nompro = 'IRMMFA'
     integer :: tygeno
     integer :: codret
-    integer :: iaux, jaux, kaux
+    integer :: iaux
     integer :: numfam
-    integer :: ino, natt
-    integer :: ima
+    integer :: natt
     integer :: jnofam
     integer :: jmafam
     integer :: ifm, nivinf
-    integer :: tabaux(1)
     character(len=8) :: saux08
     character(len=24) :: nufano, nufama
     character(len=64) :: nomfam
@@ -116,7 +115,7 @@ character(len=*) :: nomamd
     iaux = tygeno
     call irmmf1(fid, nomamd, iaux, nbnoeu, nbgrno,&
                 nomgno, zi(jnofam), nomast, prefix, typgeo,&
-                nomtyp, nmatyp, infmed, ifm)
+                nomtyp, nmatyp, infmed, ifm, nosdfu)
 !
 !GN      WRITE (IFM,*)
 !GN     >'TEMPS CPU POUR CREER/ECRIRE LES FAMILLES DE NOEUDS  :',TPS2(4)
@@ -129,7 +128,7 @@ character(len=*) :: nomamd
     iaux = tygeno + 1
     call irmmf1(fid, nomamd, iaux, nbmail, nbgrma,&
                 nomgma, zi(jmafam), nomast, prefix, typgeo,&
-                nomtyp, nmatyp, infmed, ifm)
+                nomtyp, nmatyp, infmed, ifm, nosdfu)
 !
 !GN      WRITE (IFM,*)
 !GN     >'TEMPS CPU POUR CREER/ECRIRE LES FAMILLES DE MAILLES :',TPS2(4)
@@ -147,29 +146,7 @@ character(len=*) :: nomamd
     natt   = 0
     nomfam = 'FAMILLE_NULLE___________________'//'________________________________'
 !
-!
-! 4.2. ==> INFORMATION EVENTUELLE
-!
-    if (infmed .ge. 2) then
-        jaux = 0
-        kaux = 0
-        do ino = 1,nbnoeu
-            if (zi(jnofam-1+ino) .eq. numfam) then
-                jaux = jaux + 1
-            endif
-        end do
-        do ima = 1,nbmail
-            if (zi(jmafam-1+ima) .eq. numfam) then
-                kaux = kaux + 1
-            endif
-        end do
-        iaux = 0
-        call desgfa(0, numfam, nomfam, iaux, saux80,&
-                    natt, tabaux, jaux, kaux, ifm,&
-                    codret)
-    endif
-!
-! 4.3. ==> ECRITURE
+! 4.2. ==> ECRITURE
 !
     call as_mfacre(fid, nomamd, nomfam, numfam, 0,&
                    saux80, codret)

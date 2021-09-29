@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,8 @@ interface
                       cmpListNb  , cmpListName  ,&
                       cellUserNb , cellUserNume ,&
                       nodeUserNb , nodeUserNume ,&
-                      cplxFormat , lVariName    , caraElem)
+                      cplxFormat , lVariName    , caraElem,&
+                      lfichUniq)
         integer, intent(in) :: fileUnit
         character(len=8), intent(in) :: dsNameZ
         aster_logical, intent(in) :: lResu
@@ -45,5 +46,6 @@ interface
         character(len=*), intent(in) ::  cplxFormat
         aster_logical, intent(in) :: lVariName
         character(len=8), intent(in) :: caraElem
+        aster_logical, intent(in) :: lfichUniq
     end subroutine iremed
 end interface

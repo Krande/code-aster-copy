@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine irmama(meshNameZ , &
                       nbCell    , cellName    ,&
                       nbGrCell  , grCellName  ,&
-                      nbCellSelect, cellFlag)
+                      nbCellSelect, cellFlag  , lfichUniq)
         character(len=*), intent(in) :: meshNameZ
         integer, intent(in) :: nbCell
         character(len=8), pointer :: cellName(:)
@@ -28,5 +28,6 @@ interface
         character(len=24), pointer :: grCellName(:)
         integer, intent(out) :: nbCellSelect
         aster_logical, pointer :: cellFlag(:)
+        aster_logical, intent(in) :: lfichUniq
     end subroutine irmama
 end interface

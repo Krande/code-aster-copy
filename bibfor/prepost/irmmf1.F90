@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,13 @@
 !
 subroutine irmmf1(fid, nomamd, typent, nbrent, nbgrou,&
                   nomgen, nufaen, nomast, prefix, typgeo,&
-                  nomtyp, nmatyp, infmed, ifm)
+                  nomtyp, nmatyp, infmed, ifm, nosdfu)
 !
 implicit none
 !
 #include "jeveux.h"
 #include "asterfort/irmmf2.h"
+#include "asterfort/irmmf3.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
 !
@@ -39,6 +40,7 @@ character(len=8) :: nomast
 character(len=24) :: nomgen(*)
 character(len=8) :: nomtyp(*)
 character(len=*) :: nomamd
+character(len=8) :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -161,10 +163,17 @@ character(len=*) :: nomamd
 ! 3. CREATION ET ECRITURE DES FAMILLES
 !====
 !
-        call irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
-                    nomgen, nbec, nomast, prefix, typgeo,&
-                    nomtyp, nmatyp, nufaen, zi( adnufa), zk80(adnogr),&
-                    zk80(adnofe), zi(adtabx), infmed, ifm)
+        if(nosdfu.eq.' ') then
+            call irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
+                        nomgen, nbec, nomast, prefix, typgeo,&
+                        nomtyp, nmatyp, nufaen, zi( adnufa), zk80(adnogr),&
+                        zk80(adnofe), zi(adtabx), infmed, ifm)
+        else
+            call irmmf3(fid, nomamd, typent, nbrent, nbgrou,&
+                        nomgen, nbec, nomast, prefix, typgeo,&
+                        nomtyp, nmatyp, nufaen, zi( adnufa), zk80(adnogr),&
+                        zk80(adnofe), zi(adtabx), infmed, ifm, nosdfu)
+        endif
 !
         call jedetr(nufacr)
         call jedetr(nogrfa)

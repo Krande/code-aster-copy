@@ -21,7 +21,7 @@ interface
     subroutine irmmma(fid, nomamd, nbCell, connex, point,&
                       typma, nommai, prefix, nbtyp, typgeo,&
                       nomtyp, nnotyp, renumd, nbCellType, infmed,&
-                      modnum, nuanom)
+                      modnum, nuanom, nosdfu)
         med_idt :: fid
         integer :: nbCell, nbtyp
         integer :: connex(*), typma(*), point(*)
@@ -32,5 +32,6 @@ interface
         character(len=8) :: nommai(*)
         character(len=8) :: nomtyp(*)
         character(len=*) :: nomamd
-            end subroutine irmmma
+        character(len=8) :: nosdfu
+    end subroutine irmmma
 end interface

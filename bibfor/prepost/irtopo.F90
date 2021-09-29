@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,12 @@ subroutine irtopo(keywf     , keywfIocc   ,&
                   cellListNb, cellListNume,&
                   nodeListNb, nodeListNume,&
                   fileFormat, fileUnit    ,&
-                  codret)
+                  lfichUniq , codret)
 !
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
@@ -40,7 +41,7 @@ implicit none
 !
 character(len=16), intent(in) :: keywf
 integer, intent(in) :: keywfIocc
-aster_logical, intent(in) :: lField, lResu
+aster_logical, intent(in) :: lField, lResu, lfichUniq
 character(len=8), intent(in) :: dsName
 integer, intent(out) :: cellListNb
 integer, pointer :: cellListNume(:)
@@ -73,7 +74,7 @@ integer, intent(out) :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: meshNbNode, meshNbCell
-    integer :: nbCellSelect, nbNodeSelect
+    integer :: nbCellSelect, nbNodeSelect, nbNodeComm, nbCellComm
     integer :: iGrCell, iGrNode, iCell, iNode
     integer :: nbCell, nbGrCell, nbNode, nbGrNode
     integer :: nbOcc, nodeNume, cellNume
@@ -163,7 +164,7 @@ integer, intent(out) :: codret
         call irnono(meshName    , &
                     nbNode      , nodeName    ,&
                     nbGrNode    , grNodeName  ,&
-                    nbNodeSelect, nodeFlag)
+                    nbNodeSelect, nodeFlag    , lfichUniq)
     endif
 !
 ! - Select cells and nodes from cells
@@ -174,7 +175,7 @@ integer, intent(out) :: codret
         call irmama(meshName    , &
                     nbCell      , cellName    ,&
                     nbGrCell    , grCellName  ,&
-                    nbCellSelect, cellFlag)
+                    nbCellSelect, cellFlag    , lfichUniq)
 !
         do cellNume = 1, meshNbCell
             if (cellFlag(cellNume)) then
@@ -187,9 +188,20 @@ integer, intent(out) :: codret
         call irmano(meshName, cellListNb, cellListNume, nodeFlag)
     endif
     if (nbNode .ne. 0 .or. nbGrNode .ne. 0 .or. nbCell .ne. 0 .or. nbGrCell .ne. 0) then
-        if (nbNodeSelect .eq. 0 .and. nbCellSelect .eq. 0) then
-            codret =1
-            goto 999
+        if (lfichUniq) then
+            nbCellComm = nbCellSelect
+            nbNodeComm = nbNodeSelect
+            call asmpi_comm_vect('MPI_MAX', 'I', 1, 0, sci=nbCellComm)
+            call asmpi_comm_vect('MPI_MAX', 'I', 1, 0, sci=nbNodeComm)
+            if (nbNodeComm .eq. 0 .and. nbCellComm .eq. 0) then
+                codret = 1
+                goto 999
+            endif
+        else
+            if (nbNodeSelect .eq. 0 .and. nbCellSelect .eq. 0) then
+                codret = 1
+                goto 999
+            endif
         endif
 !
 ! --- Order nodes

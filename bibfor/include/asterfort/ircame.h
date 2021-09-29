@@ -21,7 +21,7 @@ interface
                       nbcmp, nomcmp, etiqcp, partie, numpt,&
                       instan, numord, adsk, adsd, adsc,&
                       adsv, adsl, nbenec, lienec, sdcarm,&
-                      carael, field_type, nbCmpDyna, codret)
+                      carael, field_type, nbCmpDyna, lfichUniq, codret)
         integer :: ifi
         character(len=64) :: nochmd
         character(len=19) :: chanom
@@ -42,8 +42,9 @@ interface
         integer :: nbenec
         integer :: lienec(*)
         character(len=8) :: sdcarm, carael
-        integer, intent(inout) :: nbCmpDyna
-        integer :: codret
         character(len=16), intent(in) :: field_type
+        integer, intent(inout) :: nbCmpDyna
+        aster_logical :: lfichUniq
+        integer :: codret
     end subroutine ircame
 end interface

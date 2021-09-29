@@ -21,7 +21,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
                   nbcmp, nomcmp, etiqcp, partie, numpt,&
                   instan, numord, adsk, adsd, adsc,&
                   adsv, adsl, nbenec, lienec, sdcarm,&
-                  carael, field_type, nbCmpDyna, codret)
+                  carael, field_type, nbCmpDyna, lfichUniq, codret)
 !
 implicit none
 !
@@ -30,15 +30,20 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircam1.h"
 #include "asterfort/ircmpr.h"
 #include "asterfort/irelst.h"
+#include "asterfort/iremed_filtre.h"
 #include "asterfort/irmail.h"
 #include "asterfort/irmpga.h"
+#include "asterfort/isParallelMesh.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -62,6 +67,7 @@ integer :: typent, tygeom
 real(kind=8) :: instan
 character(len=16), intent(in) :: field_type
 integer, intent(inout) :: nbCmpDyna
+aster_logical :: lfichUniq
 integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -98,7 +104,7 @@ integer :: codret
     character(len=6), parameter :: nompro = 'IRCAME'
     integer, parameter :: ednoeu=3, edmail=0, ednoma=4, typnoe=0
     character(len=1)   :: saux01
-    character(len=8)   :: saux08, nomaas, nomtyp(MT_NTYMAX)
+    character(len=8)   :: saux08, nomaas, nomtyp(MT_NTYMAX), nom_sd_fu
     character(len=16)  :: formar
     character(len=24)  :: ntlcmp, ntncmp, ntucmp, ntproa, nmcmfi, ncaimi, ncaimk
     character(len=64)  :: nomamd
@@ -161,6 +167,18 @@ integer :: codret
     nomaas = zk8(adsk-1+1)
 !   Generate name of mesh for MED
     call mdnoma(nomamd, lnomam, nomaas, codret)
+!   Creation des vecteurs jeveux pour les filtres med
+    nom_sd_fu = ' '
+    if(lfichUniq) then
+        if (.not.isParallelMesh(nomaas)) then
+            call utmess('F', 'MED3_5')
+        endif
+        nom_sd_fu = '&&IRMHD2'
+        call jeexin(nom_sd_fu//'.NBMA', codret)
+        if(codret.eq.0) then
+            call iremed_filtre(nomaas, nom_sd_fu, 'V', .true._1)
+        endif
+    endif
 !   2.3. ==> CE MAILLAGE EST-IL DEJA PRESENT DANS LE FICHIER ?
     iaux = 0
     ifimed = 0
@@ -170,7 +188,13 @@ integer :: codret
         saux08 = 'MED     '
         lgaux = .false.
         formar=' '
-        call irmail(saux08, ifi, iaux, nomaas, lgaux, modele, nivinf, formar)
+        call jedetc('V', nom_sd_fu, 1)
+        if(lfichUniq) then
+            nom_sd_fu = '&&IRMHD2'
+            call iremed_filtre(nomaas, nom_sd_fu, 'V', .true._1)
+        endif
+        call irmail(saux08, ifi, iaux, nomaas, lgaux, modele, nivinf, formar, lfichUniq,&
+                    nom_sd_fu)
     endif
 !
 ! 3. PREPARATION DU CHAMP A ECRIRE
@@ -224,7 +248,7 @@ integer :: codret
                 ncmprf, ncmpve, ntlcmp, nbvato, nbenec,&
                 lienec, adsd, adsl, nomaas, modele,&
                 typgeo, nomtyp, ntproa, chanom, sdcarm,&
-                field_type)
+                field_type, nom_sd_fu)
 
 ! - Get number of components
     if (field_type .eq. 'VARI_ELGA') then
@@ -243,11 +267,15 @@ integer :: codret
 !       3.4. ==> CARACTERISATION DES SUPPORTS QUAND CE NE SONT PAS DES NOEUDS
         if (typech(1:4) .eq. 'ELGA' .or. typech(1:4) .eq. 'ELEM') then
             if (sdcarm .ne. ' ' .and. typech(1:4) .eq. 'ELGA') then
+!
+                if(nom_sd_fu.ne.' ') call utmess('F', 'MED3_3')
+!
                 call irelst(nofimd, chanom, nochmd,     typech,       nomaas,&
                             nomamd, nbimpr, zi(adcaii), zk80(adcaik), sdcarm, carael)
             endif
             call irmpga(nofimd, chanom,     nochmd,       typech, nomtyp,&
-                        nbimpr, zi(adcaii), zk80(adcaik), modnum, nuanom, sdcarm, codret)
+                        nbimpr, zi(adcaii), zk80(adcaik), modnum, nuanom,&
+                        sdcarm, lfichUniq,  codret)
         endif
 !
 !       Reperage du champ : existe-t-il deja ?
@@ -283,7 +311,7 @@ integer :: codret
                         adsk, partie, ncmpve, ntlcmp, ntncmp,&
                         ntucmp, ntproa, nbimpr, zi(adcaii), zk80(adcaik),&
                         typech, nomamd, nomtyp, modnum, numnoa,&
-                        codret)
+                        lfichUniq, nom_sd_fu, codret)
         else
             call utmess('F', 'MED2_4', sk=nochmd, sr=instan)
         endif

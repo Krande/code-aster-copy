@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 interface
     subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
                       nbvato, nbnoec, linoec, adsl, caimpi,&
-                      caimpk, profas, innoce)
+                      caimpk, profas, innoce, nosdfu)
         integer :: nbvato
         integer :: ncmprf
         character(len=*) :: nofimd
@@ -37,5 +37,6 @@ interface
         character(len=80) :: caimpk(3)
         integer :: profas(nbvato)
         integer :: innoce(nbvato)
+        character(len=8) :: nosdfu
     end subroutine ircmpn
 end interface

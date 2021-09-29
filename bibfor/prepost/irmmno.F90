@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
-                  nomnoe)
+                  nomnoe, nosdfu)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !-----------------------------------------------------------------------
 !     ECRITURE DU MAILLAGE -  FORMAT MED - LES NOEUDS
@@ -37,12 +37,17 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mfrall.h"
+#include "asterfort/as_mfrblc.h"
+#include "asterfort/as_mfrdea.h"
 #include "asterfort/as_mmhcow.h"
-#include "asterfort/as_mmheaw.h"
+#include "asterfort/as_mmhcaw.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     med_idt :: idfimd
@@ -52,6 +57,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     character(len=*) :: nomnoe(*)
     character(len=*) :: nomamd
+    character(len=8) :: nosdfu
 !
 ! 0.2. ==> COMMUNS
 !
@@ -63,16 +69,14 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     integer :: edfuin
     parameter (edfuin=0)
-    integer :: ednoeu
-    parameter (ednoeu=3)
-    integer :: tygeno
-    parameter (tygeno=0)
 !
     integer :: codret
-    integer :: iaux, ino
+    integer :: iaux
     integer :: jcoord
-    integer :: ifm, nivinf
-    integer :: adnomn
+    integer :: ifm, nivinf, rang, nbproc, start, filter(1), jaux
+    integer :: jnbno, nbnot, jno, nbnol, cmpt
+    mpi_int :: mrank, msize
+    aster_logical :: lfu
 !
     character(len=8) :: saux08
 !
@@ -84,14 +88,38 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !
     call infniv(ifm, nivinf)
 !
+    call asmpi_info(rank = mrank, size = msize)
+    rang = to_aster_int(mrank)
+    nbproc = to_aster_int(msize)
+!
+    lfu = .false._1
+    if(nosdfu.ne.' ') then
+        lfu = .true._1
+        call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
+        call jeveuo(nosdfu//'.NOEU', 'L', jno)
+        start = zi(jnbno)
+        nbnol = zi(jnbno+1)
+        nbnot = zi(jnbno+2)
+        call as_mfrall(1, filter, codret)
+!
+        call as_mfrblc(idfimd, nbnot, 1, ndim, 0,&
+                    edfuin, 2, "", start, nbnol,&
+                    1, nbnol, 0, filter(1), codret)
+        if (codret .ne. 0) then
+            saux08='mfrblc'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
+    else
+        jnbno = 0
+        jno = 0
+        nbnol = nbnoeu
+    endif
+!
 !====
 ! 2. ECRITURE DES COORDONNEES DES NOEUDS
 !    LA DIMENSION DU PROBLEME PHYSIQUE EST VARIABLE (1,2,3), MAIS
 !    ASTER STOCKE TOUJOURS 3 COORDONNEES PAR NOEUDS.
 !====
-!
-! 2.1. ==> ECRITURE
-! 2.1.1. ==> EN DIMENSION 3, ON PASSE LE TABLEAU DES COORDONNEES
 !
 !    LE TABLEAU COORDO EST UTILISE AINSI : COORDO(NDIM,NBNOEU)
 !    EN FORTRAN, CELA CORRESPOND AU STOCKAGE MEMOIRE SUIVANT :
@@ -100,35 +128,27 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
 !    COORDO(3,NBNOEU)
 !    C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 !
-    if (ndim .eq. 3) then
+    call wkvect('&&'//nompro//'.COORDO', 'V V R', nbnol*ndim, jcoord)
 !
-        call as_mmhcow(idfimd, nomamd, coordo, edfuin, nbnoeu,&
-                       codret)
-!
+    if(lfu) then
+        cmpt = 0
+        do iaux = 0, nbnoeu-1
+            if(zi(jno+iaux).gt.0) then
+                do jaux = 0, ndim-1
+                    zr(jcoord+ndim*cmpt+jaux) = coordo(3*iaux+jaux+1)
+                enddo
+                cmpt = cmpt + 1
+            endif
+        enddo
+        call as_mmhcaw(idfimd, nomamd, filter(1), zr(jcoord), codret)
     else
-!
-! 2.1.2. ==> AUTRES DIMENSIONS : ON CREE UN TABLEAU COMPACT DANS LEQUEL
-!            ON STOCKE LES COORDONNEES, NOEUD APRES NOEUD.
-!            C'EST CE QUE MED APPELLE LE MODE ENTRELACE.
-!
-        call wkvect('&&'//nompro//'.COORDO', 'V V R', nbnoeu*ndim, jcoord)
-!
-        if (ndim .eq. 2) then
-            do 221 , iaux = 0 , nbnoeu-1
-            zr(jcoord+2*iaux) = coordo(3*iaux+1)
-            zr(jcoord+2*iaux+1) = coordo(3*iaux+2)
-221          continue
-        else
-            do 222 , iaux = 0 , nbnoeu-1
-            zr(jcoord+iaux) = coordo(3*iaux+1)
-222          continue
-        endif
-!
+        do iaux = 0, nbnoeu-1
+            do jaux = 0, ndim-1
+                zr(jcoord+ndim*iaux+jaux) = coordo(3*iaux+jaux+1)
+            enddo
+        enddo
         call as_mmhcow(idfimd, nomamd, zr(jcoord), edfuin, nbnoeu,&
                        codret)
-!
-        call jedetr('&&'//nompro//'.COORDO')
-!
     endif
 !
     if (codret .ne. 0) then
@@ -136,35 +156,20 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
+    call jedetr('&&'//nompro//'.COORDO')
+!
+!
 !====
-! 3. LES NOMS DES NOEUDS
+! 3. LA FIN
 !====
 !
-    call wkvect('&&'//nompro//'NOMNOE', 'V V K16', nbnoeu, adnomn)
-!
-    do 3 ino = 1, nbnoeu
-        zk16(adnomn+ino-1) = nomnoe(ino)//'        '
-!                                          12345678
- 3  end do
-!
-    call as_mmheaw(idfimd, nomamd, zk16(adnomn), nbnoeu, ednoeu,&
-                   tygeno, codret)
-!
-    if (codret .ne. 0) then
-        saux08='mmheaw'
-        call utmess('F', 'DVP_97', sk=saux08, si=codret)
+    if(lfu) then
+        call as_mfrdea(1, filter, codret)
+        if (codret .ne. 0) then
+            saux08='mfrdea'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
     endif
-!
-!====
-! 4. LES RENUMEROTATIONS
-!====
-!
-!    ON N'ECRIT PAS DE RENUMEROTATION CAR LES NOEUDS SONT NUMEROTES
-!    DE 1 A NBNOEU, SANS TROU. DONC, INUTILE D'ENCOMBRER LE FICHIER.
-!
-!====
-! 5. LA FIN
-!====
 !
     call jedetr('&&'//nompro//'NOMNOE')
 !

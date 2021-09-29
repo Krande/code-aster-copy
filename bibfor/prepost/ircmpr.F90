@@ -21,7 +21,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
                   ncmprf, ncmpve, ntlcmp, nbvato, nbenec,&
                   lienec, adsd, adsl, nomaas, modele,&
                   typgeo, nomtyp, ntproa, chanom, sdcarm,&
-                  field_type)
+                  field_type, nosdfu)
 !_______________________________________________________________________
 !     ECRITURE D'UN CHAMP -  FORMAT MED - CREATION DU PROFIL
 !        -  -       -               -                 --
@@ -95,7 +95,7 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk,&
     character(len=*) :: nofimd
     character(len=*) :: ntlcmp, ntproa
     character(len=8) :: nomaas, modele, typech, sdcarm
-    character(len=8) :: nomtyp(*)
+    character(len=8) :: nomtyp(*), nosdfu
     character(len=19) :: chanom
     character(len=24) :: ncaimi, ncaimk
 character(len=16), intent(in) :: field_type
@@ -242,7 +242,7 @@ character(len=16), intent(in) :: field_type
 !
         call ircmpn(nofimd, ncmprf, ncmpve, zi(adnucm), zl(adexic),&
                     nbvato, nbenec, lienec, adsl, zi(adcaii),&
-                    caimpk, zi(adproa),noeu_centr)
+                    caimpk, zi(adproa), noeu_centr, nosdfu)
         zk80(adcaik:adcaik+2)=caimpk(1:3)
 !
     else
@@ -259,7 +259,7 @@ character(len=16), intent(in) :: field_type
                     nbenec, lienec, adsd, adsl, nbimpr,&
                     ncaimi, ncaimk, zi(iaux), zi(adtyp2), typgeo,&
                     nomtyp, typech, zi(adproa), zi(adprom), zi(adpror),&
-                    zi(adauxi), chanom, sdcarm, field_type)
+                    zi(adauxi), chanom, sdcarm, field_type, nosdfu)
 !
     endif
 !

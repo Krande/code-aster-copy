@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,15 +27,18 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 #include "asterfort/assert.h"
 #include "asterfort/existGrpNo.h"
 #include "asterfort/isParallelMesh.h"
+#include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/juveca.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -59,8 +62,8 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !     l_added_grpno : the group_no has been added to the mesh ?
 !
 !---------------------------------------------------------------------------------------------------
-    character(len=24) :: grnoma, grnomap
-    integer :: nbGrp, iret
+    character(len=24) :: grnoma, grnomap, nomgrp
+    integer :: nbGrp, iaux
     aster_logical :: l_parallel_mesh, l_exi_in_grp, l_exi_in_grp_p, l_added
     integer, pointer :: v_nodes(:) => null()
     character(len=24), pointer :: v_grpp(:) => null()
@@ -99,18 +102,20 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
 !
         if(l_parallel_mesh) then
             if(.not.l_exi_in_grp_p) then
-                call jeexin(grnomap, iret)
-                if(iret == 0) then
-                    call wkvect(grnomap, 'G V K24', 1, vk24=v_grpp)
-                    nbGrp = 0
-                else
-                    call jeveuo(grnomap, 'L', vk24=v_grpp)
-                    nbGrp = size(v_grpp)
-                    call juveca(grnomap, nbGrp+1)
-                    call jeveuo(grnomap, 'L', vk24=v_grpp)
-                end if
-!
+                call jelira(grnomap, 'NONMAX', nbGrp)
+                call wkvect('&&TMP', 'V V K24', nbGrp+1, vk24=v_grpp)
+                do iaux = 1, nbGrp
+                    call jenuno(jexnum(grnomap, iaux), nomgrp)
+                    v_grpp(iaux) = nomgrp
+                enddo
                 v_grpp(nbGrp+1) = group_no
+                call jedetr(grnomap)
+                call jecreo(grnomap, 'G N K24')
+                call jeecra(grnomap, 'NOMMAX', nbGrp+1)
+                do iaux = 1, nbGrp+1
+                    call jecroc(jexnom(grnomap, v_grpp(iaux)))
+                enddo
+                call jedetr('&&TMP')
 !
 ! --- Becarefull, there are not yet shared by all meshes
 !

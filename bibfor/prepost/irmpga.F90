@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
                   nbimpr, caimpi, caimpk, modnum, nuanom,&
-                  sdcarm, codret)
+                  sdcarm, lfichUniq, codret)
 !
 implicit none
 !
@@ -45,6 +45,7 @@ character(len=19) :: chanom
 character(len=80) :: caimpk(3, nbimpr)
 character(len=*) :: nofimd
 character(len=64) :: nochmd
+aster_logical :: lfichUniq
 integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -274,7 +275,7 @@ integer :: codret
                 call irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
                             ndim, tygeom, refcoo, gscoo, wg,&
                             raux1, raux2, raux3, nolopg, nomasu,&
-                            codret)
+                            lfichUniq, codret)
 !
                 caimpk(1,nrimpr) = nolopg
                 caimpk(3,nrimpr) = nomasu

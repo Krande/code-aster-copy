@@ -33,6 +33,7 @@
 
 #include "Meshes/BaseMesh.h"
 #include "Supervis/ResultNaming.h"
+#include "MemoryManager/NamesMap.h"
 
 /**
  * @class ParallelMesh
@@ -46,11 +47,11 @@ class ParallelMesh : public BaseMesh {
     typedef SetOfString::const_iterator SetOfStringCIter;
 
     /** @brief All groups of nodes (parallel mesh) */
-    JeveuxVectorChar24 _globalGroupOfNodes;
+    NamesMapChar24 _globalGroupOfNodes;
     /** @brief Set of all groups of nodes (parallel mesh) */
     SetOfString _setOfAllGON;
     /** @brief All groups of cells (parallel mesh) */
-    JeveuxVectorChar24 _globalGroupOfCells;
+    NamesMapChar24 _globalGroupOfCells;
     /** @brief Set of all groups of cells (parallel mesh) */
     SetOfString _setOfAllGOE;
     /** @brief Identify outer nodes */

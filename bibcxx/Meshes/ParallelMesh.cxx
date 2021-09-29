@@ -53,13 +53,13 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     for ( auto &nameOfGrp : allgONNames )
         _setOfAllGON.insert( trim( nameOfGrp.toString() ) );
 
-    if(_globalGroupOfNodes->isAllocated())
+    if(_globalGroupOfNodes->exists())
         _globalGroupOfNodes->deallocate();
 
     _globalGroupOfNodes->allocate( _setOfAllGON.size() );
     int num = 0;
     for ( auto &nameOfGrp : _setOfAllGON ) {
-        ( *_globalGroupOfNodes )[num] = nameOfGrp;
+        _globalGroupOfNodes->add(num, nameOfGrp);
         ++num;
     }
 
@@ -76,13 +76,13 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
     for ( auto &nameOfGrp : allgOENames )
         _setOfAllGOE.insert( trim( nameOfGrp.toString() ) );
 
-    if(_globalGroupOfCells->isAllocated())
+    if(_globalGroupOfCells->exists())
         _globalGroupOfCells->deallocate();
 
     _globalGroupOfCells->allocate( _setOfAllGOE.size() );
     int num = 0;
     for ( auto &nameOfGrp : _setOfAllGOE ) {
-        ( *_globalGroupOfCells )[num] = nameOfGrp;
+        _globalGroupOfCells->add(num, nameOfGrp);
         ++num;
     }
 

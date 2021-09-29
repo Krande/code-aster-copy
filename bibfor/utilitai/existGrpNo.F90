@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,10 +57,9 @@ subroutine existGrpNo(mesh, group_no, l_exi_in_grp, l_exi_in_grp_p)
 ! they are equal for a non-parallel mesh
 !
 !---------------------------------------------------------------------------------------------------
-    integer :: iret, iGr, nb_grpp
+    integer :: iret
     character(len=24) :: grnoma, grnomap
     aster_logical :: l_parallel_mesh
-    character(len=24), pointer :: v_grpp(:) => null()
 !-----------------------------------------------------------------------
 !
     l_exi_in_grp   = ASTER_FALSE
@@ -83,14 +82,11 @@ subroutine existGrpNo(mesh, group_no, l_exi_in_grp, l_exi_in_grp_p)
         end if
         call jeexin(grnomap, iret)
         if(iret .ne. 0) then
-            call jeveuo(grnomap, 'L' , vk24=v_grpp)
-            nb_grpp = size(v_grpp)
-            do iGr = 1, nb_grpp
-                if(v_grpp(iGr) == group_no) then
-                    l_exi_in_grp_p = ASTER_TRUE
-                    exit
-                end if
-            end do
+            call jenonu(jexnom(grnomap, group_no), iret)
+!
+            if(iret .ne. 0) then
+                l_exi_in_grp_p   = ASTER_TRUE
+            end if
         end if
     else
         call jeexin(grnoma, iret)

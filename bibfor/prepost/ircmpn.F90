@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
                   nbvato, nbnoec, linoec, adsl, caimpi,&
-                  caimpk, profas, innoce)
+                  caimpk, profas, innoce, nosdfu)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
@@ -69,8 +69,11 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ircmpf.h"
+#include "asterfort/jeveuo.h"
     integer :: nbvato, ncmprf, ncmpve
     integer :: numcmp(ncmprf), innoce(nbvato)
     integer :: nbnoec
@@ -83,6 +86,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     character(len=80) :: caimpk(3)
 !
     aster_logical :: exicmp(nbvato)
+    character(len=8) :: nosdfu
 !
 ! 0.2. ==> COMMUNS
 !
@@ -109,7 +113,9 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
     integer :: iaux, jaux
     integer :: nrcmp
-    integer :: nval
+    integer :: nval, rang, nbproc, jnbno, jno, nbnov, nbnoect(1)
+    mpi_int :: mrank, msize
+    aster_logical :: lficUniq, lnbnol, lnoec
 !
 !====
 ! 1. PREALABLES
@@ -156,16 +162,43 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !====
 !
     nval = 0
+    lficUniq = .false._1
+    if(nosdfu.ne.' ') then
+        call asmpi_info(rank = mrank, size = msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+!
+        call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
+        nbnov = zi(jnbno+1)
+        call jeveuo(nosdfu//'.NOEU', 'L', jno)
+        lficUniq = .true._1
+    else
+        nbnov = nbvato
+    endif
 !
 ! 3.1. ==> SANS FILTRAGE : C'EST LA LISTE DES NOEUDS AVEC UNE COMPOSANTE
 !          VALIDE
 !
-    if (nbnoec .eq. 0) then
+    if(lficUniq) then
+        nbnoect(1) = nbnoec
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=1, vi=nbnoect)
+        lnoec = nbnoect(1) .eq. 0
+    else
+        lnoec = nbnoec .eq. 0
+    endif
+    if (lnoec) then
 !
         do iaux = 1 , nbvato
             if (exicmp(iaux)) then
-                nval = nval + 1
-                profas(nval) = iaux
+                if(lficUniq) then
+                    if(zi(jno+iaux-1).gt.0) then
+                        nval = nval + 1
+                        profas(nval) = iaux
+                    endif
+                else
+                    nval = nval + 1
+                    profas(nval) = iaux
+                endif
             endif
         enddo
 !
@@ -176,8 +209,15 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
         do jaux = 1 , nbnoec
             iaux = linoec(jaux)
             if (exicmp(iaux)) then
-                nval = nval + 1
-                profas(nval) = iaux
+                if(lficUniq) then
+                    if(zi(jno+iaux-1).gt.0) then
+                        nval = nval + 1
+                        profas(nval) = iaux
+                    endif
+                else
+                    nval = nval + 1
+                    profas(nval) = iaux
+                endif
             endif
         enddo
 !
@@ -234,10 +274,21 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !               NUMEROTATIONS ASTER ET MED DES NOEUDS (CF IRMMNO)
 !====
 !
-    if ( nval.ne.nbvato .and. nval.ne.0 ) then
+    iaux = 0
+    lnbnol = .false._1
+    if(lficUniq) then
+        if ( nval.ne.nbnov .and. nval.ne.0 ) then
+            iaux = 1
+        endif
+        call asmpi_comm_vect('MPI_MAX', 'I', 1, 0, sci=iaux)
+        if (iaux.eq.1) lnbnol = .true._1
+    else
+        if ( nval.ne.nbnov .and. nval.ne.0 ) lnbnol = .true._1
+    endif
+    if ( lnbnol ) then
 !
-        iaux = 0
-        call ircmpf(nofimd, nval, profas, noprof)
+        call ircmpf(nofimd, nval, profas, noprof, nosdfu,&
+                    0, 0)
 !
         caimpk(2) = noprof
 !

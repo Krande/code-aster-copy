@@ -20,7 +20,7 @@ interface
     subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                       nbcmp, nomcmp, etiqcp, partie, numpt,&
                       instan, numord, nbmaec, limaec, sdcarm,&
-                      carael, field_type, nbCmpDyna, codret)
+                      carael, field_type, nbCmpDyna, lfichUniq, codret)
         integer :: ifi
         character(len=64) :: nochmd
         character(len=19) :: chanom
@@ -38,6 +38,7 @@ interface
         character(len=8) :: sdcarm, carael
         character(len=16), intent(in) :: field_type
         integer, intent(inout) :: nbCmpDyna
+        aster_logical :: lfichUniq
         integer :: codret
     end subroutine irceme
 end interface

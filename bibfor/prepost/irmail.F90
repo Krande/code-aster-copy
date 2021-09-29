@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
+subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar,&
+                  lfichUniq, nosdfu)
 !
     implicit none
 !
@@ -33,6 +34,7 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
 !     ------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/iradhs.h"
 #include "asterfort/irmare.h"
@@ -56,6 +58,8 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
     character(len=8)    :: noma, nomo, modele
     character(len=16)   :: formar
     character(len=*)    :: form
+    aster_logical, optional :: lfichUniq
+    character(len=8), optional :: nosdfu
 !---------------- VARIABLES LOCALES ------------------------------------
 !
     integer :: ifi, igm, ign
@@ -69,6 +73,9 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
 !
     aster_logical :: lmasu, lgmsh
 !
+    character(len=6) :: nopaje
+    character(len=8) :: nosdf2
+    character(len=11) :: nojgrp
     character(len=80)       :: titmai
     real(kind=8), pointer   :: vale(:) => null()
     integer, pointer        :: connex(:) => null()
@@ -77,9 +84,18 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
     integer, pointer        :: codephy(:) => null()
     integer, pointer        :: permuta(:) => null()
     integer, pointer        :: typmail(:) => null()
+    aster_logical :: lfu
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    if(.not.present(lfichUniq)) then
+        lfu = .false._1
+        nosdf2 = ' '
+    else
+        lfu = lfichUniq
+        ASSERT(present(nosdfu))
+        nosdf2 = nosdfu
+    endif
 !
 !   RECUPERATION DE LA DIMENSION DU PROBLEME
     modele = ' '
@@ -153,14 +169,21 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
         call jenuno(jexnum(noma//'.NOMNOE', ino), zk8(jnonoe-1+ino))
     end do
 !       - TEST EXISTENCE DE GROUPES DE NOEUDS
-    call jeexin(noma//'.GROUPENO', iret)
+    if(lfu) then
+        nopaje = 'NOMMAX'
+        nojgrp = '.PAR_GRPNOE'
+    else
+        nopaje = 'NUTIOC'
+        nojgrp = '.GROUPENO'
+    endif
+    call jeexin(noma//nojgrp, iret)
     if (iret .ne. 0) then
 !         - RECUPERATION DU NOMBRE ET DES NOMS DES GROUPES DE NOEUDS
-        call jelira(noma//'.GROUPENO', 'NUTIOC', nbgrn)
+        call jelira(noma//nojgrp, nopaje, nbgrn)
         if (nbgrn .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRNO', 'V V K24', nbgrn, jnogn)
             do ign = 1, nbgrn
-                call jenuno(jexnum(noma//'.GROUPENO', ign), zk24(jnogn- 1+ign))
+                call jenuno(jexnum(noma//nojgrp, ign), zk24(jnogn- 1+ign))
             end do
         else
 !           - SI PAS DE GROUPE DE NOEUDS - NOMBRE DE GROUPES = 0
@@ -171,14 +194,19 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
         nbgrn=0
     endif
 !       - TEST EXISTENCE DE GROUPES DE MAILLE
-    call jeexin(noma//'.GROUPEMA', iret)
+    if(lfu) then
+        nojgrp = '.PAR_GRPMAI'
+    else
+        nojgrp = '.GROUPEMA'
+    endif
+    call jeexin(noma//nojgrp, iret)
     if (iret .ne. 0) then
 !         - RECUPERATION DU NOMBRE ET DES NOMS DES GROUPES DE MAILLES
-        call jelira(noma//'.GROUPEMA', 'NUTIOC', nbgrm)
+        call jelira(noma//nojgrp, nopaje, nbgrm)
         if (nbgrm .ne. 0) then
             call wkvect('&&IRMAIL.NOMGRMA', 'V V K24', nbgrm, jnogm)
             do igm = 1, nbgrm
-                call jenuno(jexnum(noma//'.GROUPEMA', igm), zk24(jnogm- 1+igm))
+                call jenuno(jexnum(noma//nojgrp, igm), zk24(jnogm- 1+igm))
             end do
         else
             nbgrm=0
@@ -211,10 +239,17 @@ subroutine irmail(form, ifi, versio, noma, lmod, nomo, infmai, formar)
 !
     else if (form.eq.'MED') then
 !       - TRAITEMENT DU FORMAT ECHANGE DE DONNEES 'MED'
-        call irmhdf(ifi, ndim, nbnoe, vale, nbmai,&
-                    connex, zi(jpoin), noma, typmail, zk80(jtitr),&
-                    nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
-                    zk8(jnomai), zk8(jnonoe), infmai)
+        if(lfu) then
+            call irmhdf(ifi, ndim, nbnoe, vale, nbmai,&
+                        connex, zi(jpoin), noma, typmail, zk80(jtitr),&
+                        nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
+                        zk8(jnomai), zk8(jnonoe), infmai, lfu, nosdf2)
+        else
+            call irmhdf(ifi, ndim, nbnoe, vale, nbmai,&
+                        connex, zi(jpoin), noma, typmail, zk80(jtitr),&
+                        nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
+                        zk8(jnomai), zk8(jnonoe), infmai)
+        endif
 !
     else if (form.eq.'GMSH') then
 !       - TRAITEMENT DU FORMAT 'GMSH'

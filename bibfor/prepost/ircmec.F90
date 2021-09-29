@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,8 @@
 
 subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
                   instan, numord, val, ncmpve, nbenty,&
-                  nbrepg, nvalec, typent, typgeo, codret)
+                  nbrepg, nvalec, typent, typgeo, nosdfu,&
+                  tymast,   codret)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !_______________________________________________________________________
 !     ECRITURE D'UN CHAMP -  FORMAT MED - ECRITURE
@@ -49,15 +50,21 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 ! 0.1. ==> ARGUMENTS
 !
 #include "jeveux.h"
+#include "asterfort/as_mfrall.h"
+#include "asterfort/as_mfrblc.h"
+#include "asterfort/as_mfrdea.h"
+#include "asterfort/as_mfdraw.h"
 #include "asterfort/as_mfdrpw.h"
 #include "asterfort/infniv.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nochmd, nomprf, nolopg
+    character(len=8) :: nosdfu
 !
     med_idt :: idfimd
     integer :: numpt, numord
     integer :: ncmpve, nbenty, nbrepg, nvalec
-    integer :: typent, typgeo
+    integer :: typent, typgeo, tymast
 !
     real(kind=8) :: instan
     real(kind=8) :: val(*)
@@ -90,7 +97,8 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
     parameter ( ednoga='                                ' )
 !
     integer :: ifm, nivinf
-    integer :: iaux
+    integer :: iaux, jnbno, nbentl, nbentt, start, filter(1)
+    integer :: jnbma, nbbloc
 !
     character(len=8) :: saux08
     character(len=14) :: saux14
@@ -187,13 +195,64 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 !
 ! 2.3. ==> ECRITURE VRAIE
 !
-    call as_mfdrpw(idfimd, nochmd, val, edfuin, iaux,&
-                   nolopg, edall, nomprf, edcomp, typent,&
-                   typgeo, numpt, instan, numord, codret)
+    if(nosdfu.ne.' ') then
 !
-    if (codret .ne. 0) then
-        saux08='mfdrpw'
-        call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        if(typent.eq.0) then
+            if(nomprf.eq.' ') then
+                call jeveuo(nosdfu//'.MATY', 'L', jnbma)
+            else
+                call jeveuo(nosdfu//'.MATYP', 'L', jnbma)
+            endif
+            start = zi(jnbma+3*(tymast-1))
+            nbentl = zi(jnbma+3*(tymast-1)+1)
+            nbentt = zi(jnbma+3*(tymast-1)+2)
+        else
+            if(nomprf.eq.' ') then
+                call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
+            else
+                call jeveuo(nosdfu//'.NBNOP', 'L', jnbno)
+            endif
+            start = zi(jnbno)
+            nbentl = zi(jnbno+1)
+            nbentt = zi(jnbno+2)
+        endif
+        nbbloc = 1
+        if(nbentl.eq.0) nbbloc = 0
+        call as_mfrall(1, filter, codret)
+        call as_mfrblc(idfimd, nbentt, nbrepg, ncmpve, 0,&
+                       edfuin, 2, nomprf, start, nbentl,&
+                       nbbloc, nbentl, 0, filter(1), codret)
+!
+        if (codret .ne. 0) then
+            saux08='mfrblc'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
+!
+        call as_mfdraw(idfimd, nochmd, filter(1), val, nolopg,&
+                       typent, typgeo, numpt, instan, numord,&
+                       codret)
+!
+        if (codret .ne. 0) then
+            saux08='mfdraw'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
+!
+        call as_mfrdea(1, filter, codret)
+        if (codret .ne. 0) then
+            saux08='mfrdea'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
+    else
+!
+        call as_mfdrpw(idfimd, nochmd, val, edfuin, iaux,&
+                       nolopg, edall, nomprf, edcomp, typent,&
+                       typgeo, numpt, instan, numord, codret)
+!
+        if (codret .ne. 0) then
+            saux08='mfdrpw'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
+!
     endif
 !
     if (nivinf .gt. 1) then

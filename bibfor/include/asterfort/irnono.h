@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine irnono(meshNameZ , &
                       nbNode    , nodeName    ,&
                       nbGrNode  , grNodeName  ,&
-                      nbNodeSelect, nodeFlag)
+                      nbNodeSelect, nodeFlag  , lfichUniq)
         character(len=*), intent(in) :: meshNameZ
         integer, intent(in) :: nbNode
         character(len=8), pointer :: nodeName(:)
@@ -28,5 +28,6 @@ interface
         character(len=24), pointer :: grNodeName(:)
         integer, intent(out) :: nbNodeSelect
         aster_logical, pointer :: nodeFlag(:)
+        aster_logical, intent(in) :: lfichUniq
     end subroutine irnono
 end interface

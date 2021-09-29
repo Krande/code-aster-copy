@@ -19,7 +19,7 @@
 subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                   nbcmp, nomcmp, etiqcp, partie, numpt,&
                   instan, numord, nbmaec, limaec, sdcarm,&
-                  carael, field_type, nbCmpDyna, codret)
+                  carael, field_type, nbCmpDyna, lfichUniq, codret)
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
 !        IMPRESSION DU CHAMP CHANOM ELEMENT ENTIER/REEL
@@ -73,6 +73,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
     real(kind=8) :: instan
 !
     integer, intent(inout) :: nbCmpDyna
+    aster_logical :: lfichUniq
     integer :: codret
 !
 ! 0.2. ==> COMMUNS
@@ -120,7 +121,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                 nbcmp, nomcmp, etiqcp, partie, numpt,&
                 instan, numord, jcesk, jcesd, jcesc,&
                 jcesv, jcesl, nbmaec, limaec, sdcarm,&
-                carael, field_type, nbCmpDyna, codret)
+                carael, field_type, nbCmpDyna, lfichUniq, codret)
 !
 !====
 ! 3. ON NETTOIE

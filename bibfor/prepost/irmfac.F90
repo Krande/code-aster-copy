@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn)
+subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn,&
+                  lfichUniq)
 !
 implicit none
 !
@@ -31,6 +32,7 @@ implicit none
 #include "asterfort/irchor.h"
 #include "asterfort/irecri.h"
 #include "asterfort/iremed.h"
+#include "asterfort/iremed_filtre.h"
 #include "asterfort/irmail.h"
 #include "asterfort/irtitr.h"
 #include "asterfort/irtopo.h"
@@ -42,9 +44,11 @@ implicit none
 #include "asterfort/resuPrintIdeas.h"
 #include "asterfort/irgmsh.h"
 #include "asterfort/irdebg.h"
+#include "asterfort/isParallelMesh.h"
 !
 integer, intent(in) :: keywfIocc, fileUnit, fileVersion
 character(len=8), intent(in) :: fileFormat, modelIn
+aster_logical :: lfichUniq
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -263,9 +267,15 @@ character(len=8), intent(in) :: fileFormat, modelIn
 ! - Print mesh
 !
     if (lMesh) then
+        if (lfichUniq) then
+            if (.not.isParallelMesh(meshName)) then
+                call utmess('F', 'MED3_5')
+            endif
+            call iremed_filtre(meshName, '&&IRMHD2', 'V', lfichUniq)
+        endif
         call irmail(fileFormat , fileUnit  , fileVersion,&
                     meshName   , lModel    , model      ,&
-                    meshMEDInfo, realFormat)
+                    meshMEDInfo, realFormat, lfichUniq, '&&IRMHD2')
     endif
 !
 ! - What to print ? Components, parameters and storing index
@@ -286,7 +296,7 @@ character(len=8), intent(in) :: fileFormat, modelIn
                 cellListNb, cellListNume,&
                 nodeListNb, nodeListNume,&
                 fileFormat, fileUnit    ,&
-                iret)
+                lfichUniq , iret)
     if (iret .ne. 0) goto 99
 !
 ! - What to print ? Extremas values
@@ -340,7 +350,7 @@ character(len=8), intent(in) :: fileFormat, modelIn
                         cellListNb , cellListNume ,&
                         nodeListNb , nodeListNume ,&
                         cplxFormat , lVariName    ,&
-                        caraElem)
+                        caraElem   , lfichUniq)
         elseif (fileFormat .eq. 'GMSH') then
             lFirstOcc = keywfIocc .eq. 1 .and. .not. lMesh
             call irgmsh(dsName, cplxFormat, fileUnit, fieldListNb, fieldListType,&

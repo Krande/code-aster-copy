@@ -20,7 +20,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
                   nomsym, typech, numord, nbrcmp, nomcmp,&
                   nbnoec, linoec, nbmaec, limaec, lvarie,&
                   sdcarm, carael, paraListNb, paraListName,&
-                  nbCmpDyna, codret)
+                  nbCmpDyna, lfichUniq, codret)
 !_______________________________________________________________________
 !        IMPRESSION DU CHAMP CHANOM NOEUD/ELEMENT ENTIER/REEL
 !        AU FORMAT MED
@@ -95,7 +95,7 @@ character(len=16), pointer :: paraListName(:)
     integer :: nbnoec, nbmaec, icelk
     integer :: linoec(*), limaec(*)
 !
-    aster_logical :: lvarie
+    aster_logical :: lvarie, lfichUniq
 !
     integer, intent(inout) :: nbCmpDyna
     integer :: codret
@@ -253,24 +253,24 @@ character(len=16), pointer :: paraListName(:)
             call ircnme(ifichi, nochmd, chanom, typech, modele,&
                         nbrcmp, nomcmp, partie, numpt, instan,&
                         numord, nbnoec, linoec, sdcarm, carael,&
-                        nomsym, codret)
+                        nomsym, lfichUniq, codret)
         else if (typech(1:2).eq.'EL') then
             if ((nomsym.eq.'VARI_ELGA') .and. lvarie) then
                 call irvari(ifichi, nochmd, chanom, typech, modele,&
                             nbrcmp, nomcmp, partie, numpt, instan,&
                             numord, nbmaec, limaec, noresu, sdcarm,&
-                            carael, nbCmpDyna, codret_vari)
+                            carael, nbCmpDyna, lfichUniq, codret_vari)
             endif
             if ((nomsym.eq.'META_ELNO') .and. lvarie) then
                 call irmeta(ifichi, nochmd, chanom, typech, modele,&
                             nbrcmp, nomcmp, partie, numpt, instan,&
                             numord, nbmaec, limaec, noresu, sdcarm,&
-                            codret_vari)
+                            lfichUniq, codret_vari)
             endif
             call irceme(ifichi, nochmd, chanom, typech, modele,&
                         nbrcmp, nomcmp, ' ', partie, numpt,&
                         instan, numord, nbmaec, limaec, sdcarm,&
-                        carael, nomsym, nbCmpDyna, codret)
+                        carael, nomsym, nbCmpDyna, lfichUniq, codret)
             if (codret_vari .ne. 0 .and. codret .eq. 0) then
                 codret = codret_vari
             endif
@@ -278,7 +278,7 @@ character(len=16), pointer :: paraListName(:)
             call irceme(ifichi, nochmd, chanom, typech, modele,&
                         nbrcmp, nomcmp, ' ', partie, numpt,&
                         instan, numord, nbmaec, limaec, sdcarm,&
-                        carael, nomsym, nbCmpDyna, codret)
+                        carael, nomsym, nbCmpDyna, lfichUniq, codret)
         else
             codret = 1
             call utmess('A', 'MED_92', sk=typech(1:4))

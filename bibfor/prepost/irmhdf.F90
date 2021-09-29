@@ -20,7 +20,7 @@
 subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
                   connex, point, nomast, typma, titre,&
                   nbtitr, nbgrno, nomgno, nbgrma, nomgma,&
-                  nommai, nomnoe, infmed)
+                  nommai, nomnoe, infmed, lfichUniq, nosdfu)
 !
     use as_med_module, only: as_med_open
     implicit none
@@ -29,6 +29,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 #include "MeshTypes_type.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mmhcre.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/infniv.h"
 #include "asterfort/irmdes.h"
@@ -53,6 +54,8 @@ character(len=80) :: titre(*)
 character(len=8) :: nommai(*), nomnoe(*), nomast
 character(len=24) :: nomgno(*), nomgma(*)
 real(kind=8) :: coordo(*)
+aster_logical, optional :: lfichUniq
+character(len=8), optional :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,14 +97,14 @@ real(kind=8) :: coordo(*)
     character(len=1) :: saux01
     character(len=6) :: saux06
     character(len=8) :: nomtyp(MT_NTYMAX)
-    character(len=8) :: saux08
+    character(len=8) :: saux08, nom_sd_par
     character(len=16) :: saux16(0:3)
     character(len=64) :: nomamd
     character(len=80) :: descdt
     character(len=200) :: nofimd, desc
     character(len=255) :: kfic
     character(len=64) :: valk(2)
-    aster_logical :: existm, ficexi
+    aster_logical :: existm, ficexi, lfu
     character(len=16), parameter :: nocoor(3) = (/'X               ',&
                                                   'Y               ',&
                                                   'Z               '/)
@@ -114,6 +117,18 @@ real(kind=8) :: coordo(*)
     call jemarq()
 !
     call infniv(ifm, niv)
+!
+    if(present(lfichUniq)) then
+        nom_sd_par = ' '
+        if(lfichUniq) then
+            ASSERT(present(nosdfu))
+            nom_sd_par = nosdfu
+        endif
+        lfu = lfichUniq
+    else
+        nom_sd_par = ' '
+        lfu = .false._1
+    endif
 !
 ! 1.2. ==> NOM DU FICHIER MED
 !
@@ -164,7 +179,11 @@ real(kind=8) :: coordo(*)
         inquire(file=nofimd,exist=ficexi)
         if (ficexi) then
             edmode = edlect
-            call as_med_open(fid, nofimd, edmode, codret)
+            if(lfu) then
+                call as_med_open(fid, nofimd, edmode, codret, .true._1)
+            else
+                call as_med_open(fid, nofimd, edmode, codret)
+            endif
             if (codret .ne. 0) then
                 edmode = edcrea
             else
@@ -178,7 +197,11 @@ real(kind=8) :: coordo(*)
         else
             edmode = edcrea
         endif
-        call as_med_open(fid, nofimd, edmode, codret)
+        if(lfu) then
+            call as_med_open(fid, nofimd, edmode, codret, .true._1)
+        else
+            call as_med_open(fid, nofimd, edmode, codret)
+        endif
         if (codret .ne. 0) then
             saux08='mfiope'
             call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -232,7 +255,7 @@ real(kind=8) :: coordo(*)
 !====
 !
         call irmmno(fid, nomamd, ndim, nbnoeu, coordo,&
-                    nomnoe)
+                    nomnoe, nom_sd_par)
 !
 !====
 ! 5. LES MAILLES
@@ -243,7 +266,7 @@ real(kind=8) :: coordo(*)
         call irmmma(fid, nomamd, nbmail, connex, point,&
                     typma, nommai, saux06, nbtyp, typgeo,&
                     nomtyp, nnotyp, renumd, nmatyp, infmed,&
-                    modnum, nuanom)
+                    modnum, nuanom, nom_sd_par)
 !
 !====
 ! 6. LES FAMILLES
@@ -253,7 +276,7 @@ real(kind=8) :: coordo(*)
 !
         call irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
                     nbgrno, nomgno, nbgrma, nomgma, saux06,&
-                    typgeo, nomtyp, nmatyp, infmed)
+                    typgeo, nomtyp, nmatyp, infmed, nom_sd_par)
 !
 !====
 ! 7. LES EQUIVALENCES
@@ -262,15 +285,15 @@ real(kind=8) :: coordo(*)
 !     CALL IRMMEQ ()  ! NE FAIT RIEN ...
 !
 !====
-! 9. IMPRESSION NUMEROTATION GLOBALE ET JOINTS EN HPC
+! 8. IMPRESSION NUMEROTATION GLOBALE ET JOINTS EN HPC
 !====
 !
-        if(isParallelMesh(nomast)) then
+        if(isParallelMesh(nomast) .and. (.not.lfichUniq)) then
             call irmhpc(fid, nomamd, nomast, nbnoeu)
         endif
 !
 !====
-! 10. FERMETURE DU FICHIER MED
+! 9. FERMETURE DU FICHIER MED
 !====
 !
         call as_mficlo(fid, codret)
@@ -280,7 +303,7 @@ real(kind=8) :: coordo(*)
         endif
 !
 !====
-! 11. LA FIN
+! 10. LA FIN
 !====
 !
         call jedetc('V', '&&'//nompro, 1)

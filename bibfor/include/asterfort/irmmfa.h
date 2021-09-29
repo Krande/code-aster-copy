@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast,&
                       nbgrno, nomgno, nbgrma, nomgma, prefix,&
-                      typgeo, nomtyp, nmatyp, infmed)
+                      typgeo, nomtyp, nmatyp, infmed, nosdfu)
         med_idt :: fid
         character(len=*) :: nomamd
         integer :: nbnoeu
@@ -36,5 +36,6 @@ interface
         character(len=8) :: nomtyp(*)
         integer :: nmatyp(*)
         integer :: infmed
+        character(len=8) :: nosdfu
     end subroutine irmmfa
 end interface

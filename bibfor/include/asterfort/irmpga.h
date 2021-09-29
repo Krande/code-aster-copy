@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 interface
     subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
                       nbimpr, caimpi, caimpk, modnum, nuanom,&
-                      sdcarm, codret)
+                      sdcarm, lfichUniq, codret)
         integer :: nbimpr
         character(len=*) :: nofimd
         character(len=19) :: chanom
@@ -32,6 +32,7 @@ interface
         integer :: nuanom(MT_NTYMAX, *)
         character(len=8) :: sdcarm
         character(len=64) :: nochmd
+        aster_logical :: lfichUniq
         integer :: codret
     end subroutine irmpga
 end interface

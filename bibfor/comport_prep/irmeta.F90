@@ -20,7 +20,7 @@
 subroutine irmeta(ifi        , field_med    , meta_elno, field_loca, model    ,&
                   nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
                   nume_store , nbmaec       , limaec   , result    , cara_elem,&
-                  codret)
+                  lfichUniq  , codret)
 !
 implicit none
 !
@@ -61,6 +61,7 @@ integer, intent(in) :: nbmaec
 integer, intent(in) :: limaec(*)
 character(len=8), intent(in) :: result
 character(len=8), intent(in) :: cara_elem
+aster_logical, intent(in) :: lfichUniq
 integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -266,7 +267,7 @@ integer, intent(out) :: codret
     call irceme(ifi, nomres, meta_elnr, field_loca, model,&
                 nb_cmp_sele, cmp_name_sele, label_med, partie, numpt,&
                 instan, nume_store, nbmaec, limaec, cara_elem,&
-                cara_elem, field_type, nbCmpDyna, codret)
+                cara_elem, field_type, nbCmpDyna, lfichUniq, codret)
 !
  99 continue
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,14 @@
 !
 !
 interface
-    subroutine ircmpf(nofimd, nvalty, profil, noprof)
+    subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
+                      typent, typmai)
         integer :: nvalty
         character(len=*) :: nofimd
         integer :: profil(nvalty)
         character(len=*) :: noprof
+        character(len=8) :: nosdfu
+        integer :: typent
+        integer :: typmai
     end subroutine ircmpf
 end interface

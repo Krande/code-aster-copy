@@ -209,7 +209,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
         call irceme(ifi, nommed, cel2, typech, modele,&
                     0, ' ', ' ', ' ', 0,&
                     0.d0, 0, 0, [0], sdcarm, sdcarm,&
-                    field_type, nbCmpDyna, iret)
+                    field_type, nbCmpDyna, .false._1, iret)
         ASSERT(iret.eq.0)
 
 

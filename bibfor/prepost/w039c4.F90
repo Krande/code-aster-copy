@@ -115,7 +115,7 @@ subroutine w039c4(carte, ifi, form)
                 0, k8bid, k8bid, k8bid, 0,&
                 0.0d0, 0, jcesk, jcesd, jcesc,&
                 jcesv, jcesl, 0, [0], k8bid, k8bid,&
-                field_type, nbCmpDyna, iret)
+                field_type, nbCmpDyna, .false._1, iret)
 !
     ASSERT(iret.eq.0)
 !

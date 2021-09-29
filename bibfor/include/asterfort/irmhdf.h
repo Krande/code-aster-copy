@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
                       connex, point, nomast, typma, titre,&
                       nbtitr, nbgrno, nomgno, nbgrma, nomgma,&
-                      nommai, nomnoe, infmed)
+                      nommai, nomnoe, infmed, lfichUniq, nosdfu)
         integer :: ifi
         integer :: ndim
         integer :: nbnoeu
@@ -39,5 +39,7 @@ interface
         character(len=8) :: nommai(*)
         character(len=8) :: nomnoe(*)
         integer :: infmed
+        aster_logical, optional :: lfichUniq
+        character(len=8), optional :: nosdfu
     end subroutine irmhdf
 end interface

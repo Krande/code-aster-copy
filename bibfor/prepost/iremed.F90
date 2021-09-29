@@ -23,7 +23,8 @@ subroutine iremed(fileUnit   , dsNameZ      , lResu           ,&
                   cmpListNb  , cmpListName  ,&
                   cellUserNb , cellUserNume ,&
                   nodeUserNb , nodeUserNume ,&
-                  cplxFormat , lVariName    , caraElem)
+                  cplxFormat , lVariName    , caraElem,&
+                  lfichUniq)
 !
 implicit none
 !
@@ -69,6 +70,7 @@ integer, pointer :: nodeUserNume(:)
 character(len=*), intent(in) ::  cplxFormat
 aster_logical, intent(in) :: lVariName
 character(len=8), intent(in) :: caraElem
+aster_logical, intent(in) :: lfichUniq
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -265,8 +267,7 @@ character(len=8), intent(in) :: caraElem
                         nodeUserNb, nodeUserNume,&
                         cellUserNb, cellUserNume, lVariName,&
                         sdcarm, caraElem, paraListNb, paraListName,&
-                        nbCmpDyna, codret)
- 
+                        nbCmpDyna, lfichUniq, codret)
 !
 999         continue
 !
