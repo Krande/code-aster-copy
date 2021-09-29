@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@
 #define _V_ROT_F 80
 
 ! For fast dispatching of the integration scheme (method)
-#define _DTM_NB_SCHEMAS     8
+#define _DTM_NB_SCHEMAS     9
 
 #define _SCH_EULER          1
 #define _SCH_DEVOGE         2
@@ -113,3 +113,4 @@
 #define _SCH_ADAPT_ORDRE1   6
 #define _SCH_ADAPT_ORDRE2   7
 #define _SCH_ITMI           8
+#define _SCH_TRBDF2         9

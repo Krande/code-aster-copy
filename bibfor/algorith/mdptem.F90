@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -247,7 +247,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
     if (method .eq. 'DEVOGE') then
         dtp = dts / 10.d0
         dt = min( dtp , dtu )
-    else if (method .eq. 'NEWMARK') then
+    else if (method .eq. 'NEWMARK'.or.method.eq.'TRBDF2') then
         dtp = dts / 10.d0
         dt = min( dtp , dtu )
     else if (method(1:5).eq.'RUNGE') then
@@ -261,7 +261,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
     nbpas = nint( ( tfin - tinit ) / dt )
 !
     if (dtu .gt. dt) then
-        if (method .eq. 'NEWMARK') then
+        if (method .eq. 'NEWMARK'.or.method.eq.'TRBDF2') then
             valr (1) = dtu
             valr (2) = dt
             call utmess('A', 'ALGORITH16_14', nr=2, valr=valr)

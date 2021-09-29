@@ -16,28 +16,31 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
+subroutine inttrbdf2(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
-! person_in_charge: hassan.berro at edf.fr
+! person_in_charge: nicolas.tardieu at edf.fr
 !
-! intnewm : Integrate from t_i to t_i+1 the differential equations of motion
-!           using the NEWMARK integration method.
+! inttrbdf2 : Integrate from t_i to t_i+1 the differential equations of motion
+!             using the TR-BDF2 integration method.
 !
 #include "jeveux.h"
-#include "blas/dcopy.h"
 #include "asterc/r8prem.h"
+#include "asterfort/dtmacce.h"
 #include "asterfort/dtmforc.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/intbuff.h"
 #include "asterfort/intget.h"
-#include "asterfort/intnewm_oper.h"
+#include "asterfort/inttrbdf2_oper.h"
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
 #include "asterfort/pmavec.h"
+#include "asterfort/pscvec.h"
 #include "asterfort/rrlds.h"
 #include "asterfort/trlds.h"
 #include "asterfort/wkvect.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
 !
 !   -0.1- Input/output arguments
     character(len=*) , intent(in) :: sd_dtm_
@@ -48,8 +51,8 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.2- Local variables
     integer           :: i, nbequ, ind1, iret
     integer           :: upmat
-    real(kind=8)      :: t1, dt, bet, gam, coeff, epsi
-    real(kind=8)      :: dtold
+    real(kind=8)      :: t1, dt, dt2, gamma, coeff, epsi
+    real(kind=8)      :: dtold, g1, g2, g3
     character(len=8)  :: sd_dtm, sd_int
 
     real(kind=8)    , pointer :: depl1(:)    => null()
@@ -60,21 +63,21 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8)    , pointer :: vite2(:)    => null()
     real(kind=8)    , pointer :: acce2(:)    => null()
     real(kind=8)    , pointer :: fext2(:)    => null()
+    real(kind=8)    , pointer :: ddepl(:)    => null()
+    real(kind=8)    , pointer :: dtmp1(:)    => null()
+    real(kind=8)    , pointer :: dtmp2(:)    => null()
 
     real(kind=8)    , pointer :: mgen(:)    => null()
     real(kind=8)    , pointer :: kgen(:)    => null()
-    real(kind=8)    , pointer :: agen(:)    => null()
+    real(kind=8)    , pointer :: cgen(:)    => null()
 
-    real(kind=8)    , pointer :: par(:)       => null()
+    real(kind=8)    , pointer :: par(:)     => null()
     real(kind=8)    , pointer :: ktilda(:)  => null()
     real(kind=8)    , pointer :: ftild1(:)  => null()
     real(kind=8)    , pointer :: ftild2(:)  => null()
-    real(kind=8)    , pointer :: ftild3(:)  => null()
 
 #define a(k) par(k)
 #define norm_coef par(9)
-#define beta par(10)
-#define gamma par(11)
 #define mdiag_r par(12)
 #define kdiag_r par(13)
 #define cdiag_r par(14)
@@ -85,12 +88,11 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
 
 #define m(row,col) mgen((col-1)*nbequ+row)
 #define k(row,col) kgen((col-1)*nbequ+row)
-#define c(row,col) agen((col-1)*nbequ+row)
+#define c(row,col) cgen((col-1)*nbequ+row)
 
 #define kt(row,col) ktilda((col-1)*nbequ+row)
 #define ft1(row,col) ftild1((col-1)*nbequ+row)
 #define ft2(row,col) ftild2((col-1)*nbequ+row)
-#define ft3(row,col) ftild3((col-1)*nbequ+row)
 
 !
 !   0 - Initializations
@@ -109,7 +111,7 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     call intget(sd_int, ACCE    , iocc=1, vr=acce1, buffer=buffint)
     call intget(sd_int, FORCE_EX, iocc=1, vr=fext1, buffer=buffint)
 
-!   2 - Detection of the initial call to the Newmark algorithm
+!   2 - Detection of the initial call to the TRBDF2 algorithm
 !       DEPL/2 does not exist in the buffer
     call intget(sd_int, DEPL, iocc=2, lonvec=iret, buffer=buffint)
     if (iret.eq.0) then
@@ -117,25 +119,18 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
 !       2.1 - Algorithm initialization :
 !                   - Retrieval and saving the scheme's parameters : beta and gamma
 !                   - Calculating all necessary coefficients and operators
-
-        call getvr8('SCHEMA_TEMPS', 'BETA' , iocc=1, scal=bet)
-        call getvr8('SCHEMA_TEMPS', 'GAMMA', iocc=1, scal=gam)
+        gamma = 2.d0 - sqrt(2.d0)
 
 !       --- Algorithm parameters :
 !       [1-8]
         call intinivec(sd_int, PARAMS, 14, vr=par)
 !
-        beta  = bet
-        gamma = gam
+        g3 = (1.d0 - gamma) / (2.d0 - gamma)
+        dt2 = gamma * dt
 !
-        a(1) =  1.d0 /(beta*dt*dt)
-        a(2) =  gamma/(beta*dt)
-        a(3) =  1.d0 /(beta*dt)
-        a(4) = (1.d0 /(2*beta))-1
-        a(5) = (gamma/beta)-1
-        a(6) = (dt/2)*((gamma/beta)-2)
-        a(7) = dt*(1-gamma)
-        a(8) = gamma*dt
+        a(1) =  4.d0 /(dt2*dt2)
+        a(2) =  2.d0 / dt2
+
 
 !       --- Normalizing coefficient for ktilda, ftilda*, for reducing numerical errors
 !           encountered with tiny time steps
@@ -163,9 +158,9 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
         cdiag_r = 0.d0
         call intget(sd_int, AMOR_FUL, iocc=1, lonvec=iret, buffer=buffint)
         if (iret.gt.0) then
-            call intget(sd_int, AMOR_FUL, iocc=1, vr=agen,buffer=buffint)
+            call intget(sd_int, AMOR_FUL, iocc=1, vr=cgen,buffer=buffint)
         else
-            call intget(sd_int, AMOR_DIA, iocc=1, vr=agen,buffer=buffint)
+            call intget(sd_int, AMOR_DIA, iocc=1, vr=cgen,buffer=buffint)
             cdiag_r = 1.d0
         end if
 
@@ -182,23 +177,24 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
 !           --- Operators ftild[1,2,3] are diagonal
             call intinivec(sd_int, WORK2, nbequ, vr=ftild1)
             call intinivec(sd_int, WORK3, nbequ, vr=ftild2)
-            call intinivec(sd_int, WORK4, nbequ, vr=ftild3)
         else
 !           --- Operators ftild[1,2,3] are then full
             call intinivec(sd_int, WORK2, nbequ*nbequ, vr=ftild1)
             call intinivec(sd_int, WORK3, nbequ*nbequ, vr=ftild2)
-            call intinivec(sd_int, WORK4, nbequ*nbequ, vr=ftild3)
         endif
+!       --- Allocate work vectors
+        call intinivec(sd_int, WORK4, nbequ, vr=ddepl)
+        call intinivec(sd_int, WORK5, nbequ, vr=dtmp1)
+        call intinivec(sd_int, WORK6, nbequ, vr=dtmp2)
 
-!       --- Calculation of ktilda, ftild1, ftild2, and ftild3 according to :
+!       --- Calculation of ktilda, ftild1, ftild2 according to :
 !           kt (i,j) = a1*m(i,j) + k(i,j) + a2*c(i,j)
-!           ft1(i,j) = a3*m(i,j) + a5*c(i,j)
+!           ft1(i,j) = a2*m(i,j)
 !           ft2(i,j) = a1*m(i,j) + a2*c(i,j)
-!           ft3(i,j) = a4*m(i,j) + a6*c(i,j)
-        call intnewm_oper(nbequ, par, mgen, kgen, agen, &
-                          ktilda, ftild1, ftild2, ftild3)
+        call inttrbdf2_oper(nbequ, par, mgen, kgen, cgen, &
+                          ktilda, ftild1, ftild2)
 
-!       --- Allocate DEPL/VITE/ACCE/2 (t_i+1)
+!       --- Allocate DEPL/VITE/ACCE/2 (t_i+1) & DDEPL
         call intinivec(sd_int, DEPL    , nbequ, iocc=2, vr=depl2)
         call intinivec(sd_int, VITE    , nbequ, iocc=2, vr=vite2)
         call intinivec(sd_int, ACCE    , nbequ, iocc=2, vr=acce2)
@@ -214,11 +210,13 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, WORK1, vr=ktilda, buffer=buffint)
         call intget(sd_int, WORK2, vr=ftild1, buffer=buffint)
         call intget(sd_int, WORK3, vr=ftild2, buffer=buffint)
-        call intget(sd_int, WORK4, vr=ftild3, buffer=buffint)
+        call intget(sd_int, WORK4, vr=ddepl, buffer=buffint)
+        call intget(sd_int, WORK5, vr=dtmp1, buffer=buffint)
+        call intget(sd_int, WORK6, vr=dtmp2, buffer=buffint)
 
         call intget(sd_int, PARAMS, vr=par, buffer=buffint)
 
-!       --- Retrieval of already allocated DEPL/VITE/ACCE/2 (t_i+1)
+!       --- Retrieval of already allocated DEPL/VITE/ACCE/2 (t_i+1) & DDEPL
         call intget(sd_int, DEPL    , iocc=2, vr=depl2, buffer=buffint)
         call intget(sd_int, VITE    , iocc=2, vr=vite2, buffer=buffint)
         call intget(sd_int, ACCE    , iocc=2, vr=acce2, buffer=buffint)
@@ -228,6 +226,11 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     endif
 
     coeff = dt/dtold
+    gamma = 2.d0 - sqrt(2.d0)
+    g1 = 1.d0 / gamma / (2.d0 - gamma)
+    g2 = -(1.d0 - gamma)**2 / gamma / (2.d0 - gamma)
+    g3 = (1.d0 - gamma) / (2.d0 - gamma)
+    dt2 = gamma * dt
 
     call intget(sd_int, MAT_UPDT, iscal=upmat, buffer=buffint)
 
@@ -256,79 +259,125 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
             cdiag_r = 0.d0
             call intget(sd_int, AMOR_FUL, iocc=1, lonvec=iret, buffer=buffint)
             if (iret.gt.0) then
-                call intget(sd_int, AMOR_FUL, iocc=1, vr=agen,buffer=buffint)
+                call intget(sd_int, AMOR_FUL, iocc=1, vr=cgen,buffer=buffint)
             else
-                call intget(sd_int, AMOR_DIA, iocc=1, vr=agen,buffer=buffint)
+                call intget(sd_int, AMOR_DIA, iocc=1, vr=cgen,buffer=buffint)
                 cdiag_r = 1.d0
             end if
 
             call intsav(sd_int, MAT_UPDT, 1, iscal=0, buffer=buffint)
         end if
 
-!       Updating the Newmark parameters and integration operators
-        a(1) =  1.d0 /(beta*dt*dt)
-        a(2) =  gamma/(beta*dt)
-        a(3) =  1.d0 /(beta*dt)
-        a(4) = (1.d0 /(2*beta))-1
-        a(5) = (gamma/beta)-1
-        a(6) = (dt/2)*((gamma/beta)-2)
-        a(7) = dt*(1-gamma)
-        a(8) = gamma*dt
+!       Updating the TR-BDF2 parameters and integration operators
+!
+        a(1) =  4.d0 /(dt2*dt2)
+        a(2) =  2.d0 / dt2
 
-        call intnewm_oper(nbequ, par, mgen, kgen, agen, &
-                          ktilda, ftild1, ftild2, ftild3)
+        call inttrbdf2_oper(nbequ, par, mgen, kgen, cgen, &
+                          ktilda, ftild1, ftild2)
     end if
 
+!   First step : Trapezoidal Rule (TR)
+!   -----------------------------------
 !   4 - Calculating DEPL/2 (t_i+1)according to the equation
-!      ktilda(i,j) * depl2(i) =  fext1(i)              +  ftild1(i,j)*vite1(i)  + &
-!                                ftild2(i,j)*depl1(i)  +  ftild3(i,j)*acce1(i)
+!      ktilda(i,j) * ddepl(i) =  dt2 * (ftild2(i)*vite1(i) + 0.5d0*ftild1(i)*(acce1(i)+acce2(i)))
 
 !   --- Right hand side vector calculation
+!   Compute the acceleration at time t1+dt2
+    call intsav(sd_int, TIME , 1, iocc=2, rscal=t1+dt2, buffer=buffint)
+    call intsav(sd_int, STEP , 1, iocc=2, rscal=dt2, buffer=buffint)
+    call dtmacce(sd_dtm, sd_int, 2, buffdtm, buffint)
+
     if (size(ftild1).eq.nbequ) then
         do i = 1, nbequ
-            fext1(i) = fext1(i)/norm_coef + ftild1(i)*vite1(i) + &
-                       ftild2(i)*depl1(i) + ftild3(i)*acce1(i)
+            ddepl(i) = dt2 * (ftild2(i)*vite1(i) + 0.5d0*ftild1(i)*(acce1(i)+acce2(i)))
         end do
     else
-        do i = 1, nbequ
-            fext1(i) = fext1(i)/norm_coef
-        end do
-        call pmavec('CUMUL', nbequ, ftild1, vite1, fext1)
-        call pmavec('CUMUL', nbequ, ftild2, depl1, fext1)
-        call pmavec('CUMUL', nbequ, ftild3, acce1, fext1)
+        call pmavec('ZERO', nbequ, ftild2, vite1, ddepl)
+        call pmavec('ZERO', nbequ, ftild1, acce2, dtmp1)
+        call pmavec('ZERO', nbequ, ftild1, acce1, dtmp2)
+        call daxpy(nbequ, 0.5d0, dtmp1, 1, ddepl, 1)
+        call daxpy(nbequ, 0.5d0, dtmp2, 1, ddepl, 1)
+        call pscvec(nbequ, dt2, ddepl, ddepl)
     endif
-    call dcopy(nbequ, fext1, 1, depl2, 1)
 
 !   --- Linear equation AX=B resolution
     if (size(ktilda).eq.nbequ) then
         do i = 1, nbequ
-            depl2(i) = depl2(i)/ktilda(i)
+            ddepl(i) = ddepl(i)/ktilda(i)
         enddo
     else
-        call rrlds(ktilda, nbequ, nbequ, depl2, 1)
+        call rrlds(ktilda, nbequ, nbequ, ddepl, 1)
     endif
 
 !   5 - Calculating VITE/ACCE/2 (t_i+1) according to the equation
-!       acce2(i) = -a4*acce1(i) + a1*(depl2(i) - depl1(i) - dt*vite1(i))
-!       vite2(i) =     vite1(i) + a7*acce1(i) + a8*acce2(i)
+!       depl2(i) = depl1(i) + ddepl(i)
+!       vite2(i) = vite1(i) + 2.d0 * (ddepl(i) / dt2 - vite1(i))
 !
-    do i = 1, nbequ
-        acce2(i) = -a(4)*acce1(i) + a(1)*(depl2(i) - depl1(i) - dt*vite1(i))
-        vite2(i) =       vite1(i) + a(7)*acce1(i) + a(8)*acce2(i)
-    enddo
-
-!   6 - Calculating FORCE/2 (t_i+1) necessary for the subsequent steps
+!   Compute acce2 at time t1+dt *before* updating depl2 and vite2
     call intsav(sd_int, TIME , 1, iocc=2, rscal=t1+dt, buffer=buffint)
     call intsav(sd_int, STEP , 1, iocc=2, rscal=dt, buffer=buffint)
     call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
+    call dtmacce(sd_dtm, sd_int, 2, buffdtm, buffint)
+!   Compute depl2 and vite2
+    do i = 1, nbequ
+        depl2(i) = depl1(i) + ddepl(i)
+        vite2(i) = vite1(i) + 2.d0 * (ddepl(i) / dt2 - vite1(i))
+    enddo
 
-    call dtmforc(sd_dtm, sd_int, 2, buffdtm, buffint)
+
+!   Second step : Backward Differentiation Formula Order 2 (BDF2)
+!   -------------------------------------------------------------
+!   4 - Calculating DEPL/2 (t_i+1)according to the equation
+!      ktilda(i,j) * ddepl(i) =  dt2 * (ftild2(i)*vite1(i) + ftild1(i)*acce1(i))
+
+!   --- Right hand side vector calculation
+    if (size(ftild1).eq.nbequ) then
+        do i = 1, nbequ
+            dtmp1(i) = depl1(i) - g1*depl2(i) - g2*depl1(i) - g3*dt*vite1(i)
+            dtmp2(i) = vite1(i) - g1*vite2(i) - g2*vite1(i) - g3*dt*acce2(i)
+            ddepl(i) = -ftild1(i)*dtmp2(i) - ftild2(i)*dtmp1(i)
+        end do
+    else
+        call dcopy(nbequ, vite1, 1, dtmp2, 1)
+        call daxpy(nbequ, -g1, vite2, 1, dtmp2, 1)
+        call daxpy(nbequ, -g2, vite1, 1, dtmp2, 1)
+        call daxpy(nbequ, -g3*dt, acce2, 1, dtmp2, 1)
+        call pmavec('ZERO', nbequ, ftild1, dtmp2, ddepl)
+!
+        call dcopy(nbequ, depl1, 1, dtmp1, 1)
+        call daxpy(nbequ, -g1, depl2, 1, dtmp1, 1)
+        call daxpy(nbequ, -g2, depl1, 1, dtmp1, 1)
+        call daxpy(nbequ, -g3*dt, vite1, 1, dtmp1, 1)
+        call pmavec('CUMUL', nbequ, ftild2, dtmp1, ddepl)
+!
+        call pscvec(nbequ, -1.d0, ddepl, ddepl)
+    endif
+
+!   --- Linear equation AX=B resolution
+    if (size(ktilda).eq.nbequ) then
+        do i = 1, nbequ
+            ddepl(i) = ddepl(i)/ktilda(i)
+        enddo
+    else
+        call rrlds(ktilda, nbequ, nbequ, ddepl, 1)
+    endif
+
+!   5 - Calculating VITE/ACCE/2 (t_i+1) according to the equation
+!       depl2(i) = depl1(i) + ddepl(i)
+!       vite2(i) = vite1(i) + (ddepl(i) + dtmp1(i)) / g3 / dt
+!
+    do i = 1, nbequ
+        depl2(i) = depl1(i) + ddepl(i)
+        vite2(i) = vite1(i) + (ddepl(i) + dtmp1(i)) / g3 / dt
+    enddo
+    call dtmacce(sd_dtm, sd_int, 2, buffdtm, buffint)
+
 
 !   7 - Preparing the algorithm for the next step, copy index 2 in 1
     call dcopy(nbequ, depl2, 1, depl1, 1)
     call dcopy(nbequ, vite2, 1, vite1, 1)
     call dcopy(nbequ, acce2, 1, acce1, 1)
-    call dcopy(nbequ, fext2, 1, fext1, 1)
     call intsav(sd_int, STEP , 1, iocc=1, rscal=dt, buffer=buffint)
     call intsav(sd_int, TIME , 1, iocc=1, rscal=t1+dt, buffer=buffint)
     call intsav(sd_int, INDEX, 1, iocc=1, iscal=ind1+1, buffer=buffint)

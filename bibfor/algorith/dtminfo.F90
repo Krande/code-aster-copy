@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ subroutine dtminfo(sd_dtm_)
     call dtmget(sd_dtm, _INST_FIN, rscal=tfin)
 
     schtyp = 'explicite'
-    if (schema(1:7).eq.'NEWMARK') then
+    if (schema(1:7).eq.'NEWMARK'.or.schema(1:6).eq.'TRBDF2') then
         schtyp = 'implicite'
     endif
     if (adapt.eq.1) then

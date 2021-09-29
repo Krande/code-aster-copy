@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 ! dtmintg : Integrate from t_i to t_i+1 the differential equations of motion
 !           using the integration method specified in the sd_int.
-! 
+!
 #include "jeveux.h"
 #include "blas/dcopy.h"
 #include "asterfort/assert.h"
@@ -36,6 +36,7 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intnewm.h"
 #include "asterfort/intruku32.h"
 #include "asterfort/intruku54.h"
+#include "asterfort/inttrbdf2.h"
 #include "asterfort/nlget.h"
 !
 !   -0.1- Input/output arguments
@@ -90,6 +91,9 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 !
         case(_SCH_ITMI)
             call intitmi(sd_dtm, sd_int, buffdtm, buffint)
+!
+        case(_SCH_TRBDF2)
+            call inttrbdf2(sd_dtm, sd_int, buffdtm, buffint)
 !
         case default
             ASSERT(.false.)

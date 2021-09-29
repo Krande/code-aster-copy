@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -113,7 +113,7 @@ subroutine dtmprep(sd_dtm_)
 
     data  methods /'DIFF_CENTRE     ', 'DEVOGE          ', 'NEWMARK         ', &
                    'RUNGE_KUTTA_32  ', 'RUNGE_KUTTA_54  ', 'ADAPT_ORDRE1    ', &
-                   'ADAPT_ORDRE2    ', 'ITMI            '/
+                   'ADAPT_ORDRE2    ', 'ITMI            ', 'TRBDF2          '/
 
 !
 !   0 - Initializations
@@ -319,7 +319,7 @@ subroutine dtmprep(sd_dtm_)
                 omeg2 = abs(zr(jrig1+i-1)/zr(jmas1+i-1))
                 puls (i) = sqrt(omeg2)
                 puls2(i) = omeg2
-            else 
+            else
                 puls (i) = 1.d-6
                 puls2(i) = 1.d-12
             end if
@@ -404,10 +404,10 @@ subroutine dtmprep(sd_dtm_)
             do i=1, nbmode
                 if (abs(zr(jmas1+i-1)).gt.epsi) then
                     zr(jamo1+i-1) = zr(jamo1+i-1)/zr(jmas1+i-1)
-                else 
+                else
 !                   --- Static modes : critical damping to avoid artifical dynamics
 !                       Note : dynamics of static modes are set as follows
-!                   M = k/omega^2    K = k   C = 2*k/omega = Cc   M-1*C = 2*omega 
+!                   M = k/omega^2    K = k   C = 2*k/omega = Cc   M-1*C = 2*omega
                     zr(jamo1+i-1) = 2.d0*puls(i)
                 end if
             enddo
@@ -420,12 +420,12 @@ subroutine dtmprep(sd_dtm_)
     endif
 
 !   --- Set the modal mass to k/omega^2 for the previously detected static modes,
-!       Note : these have been artificially damped beyond criticity 
+!       Note : these have been artificially damped beyond criticity
     do i = 1, nbmode
         if (abs(zr(jmas1+i-1)).le.epsi) then
             if (abs(zr(jrig1+i-1)).gt.epsi) then
                 zr(jmas1+i-1) = zr(jrig1+i-1)/(puls(i)*puls(i))
-            else 
+            else
                 zr(jrig1+i-1) = puls(i)*puls(i)
                 zr(jmas1+i-1) = 1.d0
             end if
@@ -436,9 +436,9 @@ subroutine dtmprep(sd_dtm_)
 !   -------------------------------------------------------------------------------------
 !
 !   --- 4.4 - Case of substructuring, saving matrices description pointers
-!   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT 
-!          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN 
-!          THE SUBSEQUENT CALCULATION ROUTINES 
+!   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT
+!          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN
+!          THE SUBSEQUENT CALCULATION ROUTINES
     if (substruc.eq.1) then
         call mtdscr(riggen//'           ')
         call jeveut(riggen//'           .&INT', 'E', descr)
@@ -538,7 +538,7 @@ subroutine dtmprep(sd_dtm_)
 !
 !   --------------------------------------------------------------------------------------
 !   7 - Nonlinearities : (1) Gyroscopy           / MATR_GYRO, MATR_RIGY, VITESSE_VAR...
-!          (general)    
+!          (general)
 !   --------------------------------------------------------------------------------------
 !
 !   --- 7.1 - Gyroscopy
@@ -643,7 +643,7 @@ subroutine dtmprep(sd_dtm_)
 !
     call dtmallo(sd_dtm)
 
-    
+
 !
     call jedema()
 end subroutine
