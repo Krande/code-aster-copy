@@ -280,6 +280,32 @@ TEST_TABLE(
                      VALE_I=2,),
            )
 
+# vérification des coordonnées, cas XFEM
+
+TEST_TABLE(
+           VALE_CALC=0.0,
+           NOM_PARA='COOR_X',
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.0,
+           NOM_PARA='COOR_Y',
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.5,
+           NOM_PARA='COOR_Z',
+           TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
+           )
+
 #---
 # 2. avec la variable de commande TEMP
 #---
@@ -316,6 +342,15 @@ TEST_TABLE(
                      VALE_I=2,),
            )
 
+# vérification de la température
+
+TEST_TABLE(VALE_CALC=100,
+           NOM_PARA='TEMP',
+           TABLE=TABKTEMP,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
+           )
+
 #---
 # 3. avec la variable de commande NEUT1
 #---
@@ -350,6 +385,15 @@ TEST_TABLE(
            TABLE=TABKNEUT,
            FILTRE=_F(NOM_PARA='NUM_PT',
                      VALE_I=2,),
+           )
+
+# vérification de la variable de commande neutre
+
+TEST_TABLE(VALE_CALC=100,
+           NOM_PARA='NEUT1',
+           TABLE=TABKNEUT,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
            )
 
 FIN();

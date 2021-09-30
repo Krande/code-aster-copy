@@ -300,6 +300,20 @@ TEST_TABLE(VALE_CALC=3576791.89009,
            NOM_PARA='K1',
            TABLE=KAX,)
 
+# vérification des coordonnées, option TYPE_MAILLAGE="REGLE"
+
+TEST_TABLE(VALE_CALC=0.1,
+           NOM_PARA='COOR_X',
+           TABLE=KDP,)
+
+TEST_TABLE(VALE_CALC=0.0,
+           NOM_PARA='COOR_Y',
+           TABLE=KDP,)
+
+TEST_TABLE(VALE_CALC=0.0,
+           NOM_PARA='COOR_Z',
+           TABLE=KDP,)
+
 #---
 # 2. avec la variable de commande TEMP
 #---
@@ -317,6 +331,12 @@ TEST_TABLE(VALE_CALC=3576791.89009,
            NOM_PARA='K1',
            TABLE=KAXTEMP,)
 
+# vérification de la température
+
+TEST_TABLE(VALE_CALC=100,
+           NOM_PARA='TEMP',
+           TABLE=KDPTEMP,)
+
 #---
 # 3. avec la variable de commande NEUT1
 #---
@@ -333,5 +353,11 @@ TEST_TABLE(VALE_CALC=6668828.86281,
 TEST_TABLE(VALE_CALC=3576791.89009,
            NOM_PARA='K1',
            TABLE=KAXNEUT,)
+
+# vérification de la variable de commande neutre
+
+TEST_TABLE(VALE_CALC=100,
+           NOM_PARA='NEUT1',
+           TABLE=KDPNEUT,)
 
 FIN()
