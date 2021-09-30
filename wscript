@@ -335,6 +335,11 @@ def set_installdirs(self):
     if not self.env.LOCALEDIR:
         self.env.LOCALEDIR = osp.join(self.env.PREFIX, 'share', 'locale')
     self.env['ASTERLOCALEDIR'] = norm(self.env.LOCALEDIR)
+    # set relative paths for profile.sh
+    for var in ('LIBDIR', 'DATADIR', 'LOCALEDIR'):
+        self.env['RELATIVE_' + var] = osp.relpath(self.env['ASTER' + var],
+                                                  self.env['PREFIX'])
+
 
 @Configure.conf
 def check_platform(self):

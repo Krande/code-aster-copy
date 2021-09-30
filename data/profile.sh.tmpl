@@ -5,6 +5,9 @@ if [ ! -z "${ASTER_PROFILE_LOADED}" ]; then
     return
 fi
 
+# RUNASTER_ROOT is usually set by run_aster
+: ${RUNASTER_ROOT:=@PREFIX@}
+
 @BUILD_ENV@
 @OPT_ENV@
 
@@ -30,35 +33,24 @@ remove_path()
     echo ${values}
 }
 
-LD_LIBRARY_PATH=@ASTERLIBDIR@:${LD_LIBRARY_PATH}:.
-export LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@:${LD_LIBRARY_PATH}:.
 
 # Exclude paths to 'python2.7'.
 PYTHONPATH=$(remove_path "${PYTHONPATH}" python2.7)
 
-PYTHONPATH=@ASTERLIBDIR@:${PYTHONPATH}:.
-export PYTHONPATH
+export PYTHONPATH=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@:${PYTHONPATH}:.
 
-# sometimes one should not change PYTHONHOME under SALOME environment...
-PYTHONHOME=@PYTHONHOME@
-export PYTHONHOME
+# Better to set PATH rather PYTHONHOME - more stable
+# PYTHONHOME will be deduced from python executable location
+export PATH=@PYTHON_DIRNAME@:${PATH}
 
-# as PYTHONHOME is changed, path to 'python' must preceed all others if a
-# subprocess calls it
-PATH=@PYTHON_DIRNAME@:${PATH}
-export PATH
+export ASTER_LIBDIR=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@
 
-ASTER_LIBDIR=@ASTERLIBDIR@
-export ASTER_LIBDIR
+export ASTER_DATADIR=${RUNASTER_ROOT}/@RELATIVE_DATADIR@
 
-ASTER_DATADIR=@ASTERDATADIR@
-export ASTER_DATADIR
+export ASTER_LOCALEDIR=${RUNASTER_ROOT}/@RELATIVE_LOCALEDIR@
 
-ASTER_LOCALEDIR=@ASTERLOCALEDIR@
-export ASTER_LOCALEDIR
-
-ASTER_ELEMENTSDIR=@ASTERLIBDIR@
-export ASTER_ELEMENTSDIR
+export ASTER_ELEMENTSDIR=${RUNASTER_ROOT}/@RELATIVE_LIBDIR@
 
 @OPT_ENV_FOOTER@
 
