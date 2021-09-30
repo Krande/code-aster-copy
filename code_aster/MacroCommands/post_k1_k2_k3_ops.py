@@ -206,19 +206,20 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
             liste_noeu_a_extr.remove(points_expand[i] - 1)
 
     liste = []
-    for para, typ in zip(('FISSURE', 'FOND_FISS', 'NUME_FOND', 'INST', 'FREQ', 'NUME_ORDRE', 'NOEUD_FOND', 'NUM_PT', 'ABSC_CURV', \
-                    'TEMP', 'NEUT1', 'COOR_X', 'COOR_Y', 'COOR_Z'), \
-                         ('K', 'K', 'I', 'R', 'R', 'I', 'K', 'I', 'R', 'R', 'R', 'R', 'R', 'R')):
+    for para, typ in zip(('FISSURE', 'FOND_FISS', 'NUME_FOND', 'NUME_ORDRE', 'INST', 'FREQ', 'NOEUD', 'NUM_PT', \
+                    'COOR_X', 'COOR_Y', 'COOR_Z', 'ABSC_CURV', "TEMP", "NEUT1"), \
+                         ('K', 'K', 'I', 'I', 'R', 'R', 'K', 'I', 'R', 'R', 'R', 'R', 'R', 'R')):
         if para in extrtabout.para:
             liste.append({"LISTE_%s"%typ: extrtabout.values()[para], "PARA": para})
 
+    liste.append({"LISTE_R": G, "PARA": "G"})
     liste.append({"LISTE_R": K1, "PARA": "K1"})
     liste.append({"LISTE_R": ERR_K1, "PARA": "ERR_K1"})
     liste.append({"LISTE_R": K2, "PARA": "K2"})
     liste.append({"LISTE_R": ERR_K2, "PARA": "ERR_K2"})
     liste.append({"LISTE_R": K3, "PARA": "K3"})
     liste.append({"LISTE_R": ERR_K3, "PARA": "ERR_K3"})
-    liste.append({"LISTE_R": G, "PARA": "G"})
+
 
     tabout = CREA_TABLE(TITRE=titre, LISTE=liste)
 
@@ -1558,16 +1559,15 @@ def get_erreur(self, ndim, __tabi, type_para):
     # remove kj_min + sort data
     params = []
     tabi_para = __tabi.EXTR_TABLE().para
-    for para in ('FISSURE', 'FOND_FISS', 'NUME_FOND', type_para, 'NUME_ORDRE', 'NOEUD_FOND', 'NUM_PT', 'ABSC_CURV', \
-                    'TEMP', 'NEUT1', 'COOR_X', 'COOR_Y', 'COOR_Z'):
+    for para in ('FISSURE', 'FOND_FISS', 'NUME_FOND', 'NUME_ORDRE', "INST", "FREQ", 'NOEUD', 'NUM_PT', \
+                    'COOR_X', 'COOR_Y', 'COOR_Z', 'ABSC_CURV', 'TEMP', 'NEUT1'):
         if para in tabi_para:
             params.append(para)
-
+    params.append('G')
     params.extend(['K1', 'ERR_K1', 'K2', 'ERR_K2'])
     if ndim == 3:
-        params.extend(['K3', 'ERR_K3', 'G'])
-    else:
-        params.append('G')
+        params.extend(['K3', 'ERR_K3'])
+        
 
     __tabi = CALC_TABLE(TABLE=__tabi,
                         reuse=__tabi, ACTION=(
@@ -1595,7 +1595,7 @@ def get_tabout(
     if FOND_FISS and MODELISATION == '3D':
         mcfact.append(_F(PARA='FOND_FISS', LISTE_K=[FOND_FISS.getName(), ] * 3))
         mcfact.append(_F(PARA='NUME_FOND', LISTE_I=[1, ] * 3))
-        mcfact.append(_F(PARA='NOEUD_FOND', LISTE_K=[Lnofon[ino], ] * 3))
+        mcfact.append(_F(PARA='NOEUD', LISTE_K=[Lnofon[ino], ] * 3))
         mcfact.append(_F(PARA='NUM_PT', LISTE_I=[ino + 1, ] * 3))
         mcfact.append(_F(PARA='ABSC_CURV', LISTE_R=[dicoF[Lnofon[ino]]] * 3))
 
@@ -1648,7 +1648,7 @@ def get_tabout(
         if inst is not None:
             npara.append(type_para)
         if not FISSURE and MODELISATION == '3D':
-            npara.append('NOEUD_FOND')
+            npara.append('NOEUD')
         elif FISSURE and MODELISATION == '3D':
             npara.append('NUM_PT')
         if para:
