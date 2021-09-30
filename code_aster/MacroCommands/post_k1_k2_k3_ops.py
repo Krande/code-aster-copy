@@ -1639,7 +1639,10 @@ def get_tabout(
         mcfact.append(_F(PARA=para_fonc, LISTE_R=[para,] * 3))
 
     if d_coor:
-        coor = d_coor[Lnofon[ino]]
+        if Lnofon:
+            coor = d_coor[Lnofon[ino]]
+        else:
+            coor = d_coor[ino]
         mcfact.append(_F(PARA="COOR_X", LISTE_R=[coor[0],] * 3))
         mcfact.append(_F(PARA="COOR_Y", LISTE_R=[coor[1],] * 3))
         mcfact.append(_F(PARA="COOR_Z", LISTE_R=[coor[2],] * 3))
@@ -2052,7 +2055,9 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 # Recuperation des coordonnees des points du fond de fissure
 # (x,y,z,absc_curv)
         (Coorfo, Vpropa, Nnoff) = get_coor_xfem(args, FISSURE, ndim)
-
+        
+        d_coor = {i:[Coorfo[4*i], Coorfo[4*i+1], Coorfo[4*i+2]] for i in range(Nnoff)}
+        
 #     Calcul de la direction de propagation en chaque point du fond
         (VDIR, VNOR, absfon) = get_direction_xfem(Nnoff, Vpropa, Coorfo, ndim)
 
@@ -2098,7 +2103,7 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
     if 'absfon' not in locals():
         absfon = []
     if 'd_coor' not in locals():
-        d_coor = []
+        assert(False)
     if '__tabl_depl' not in locals():
         __tabl_depl = []
     if 'syme_char' not in locals():
