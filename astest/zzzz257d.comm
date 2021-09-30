@@ -238,7 +238,7 @@ TEST_TABLE(CRITERE='RELATIF',
            
            NOM_PARA='K1',
            TABLE=POST_K,
-           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+           FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N10',),
            )
 

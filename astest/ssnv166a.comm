@@ -252,7 +252,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=5.350000E6,
            NOM_PARA='K1',
            TABLE=K1_1,
-           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+           FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N5676',),
            )
 
@@ -262,7 +262,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=-1.1220000E7,
            NOM_PARA='K3',
            TABLE=K1_1,
-           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+           FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N5676',),
            )
 
@@ -272,7 +272,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=1.1710000E7,
            NOM_PARA='K1',
            TABLE=K1_2,
-           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+           FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N5618',),
            )
 
@@ -282,7 +282,7 @@ TEST_TABLE(REFERENCE='NON_DEFINI',
            VALE_REFE=1.0168397032500001E7,
            NOM_PARA='K1',
            TABLE=K1_3,
-           FILTRE=_F(NOM_PARA='NOEUD_FOND',
+           FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N5618',),
            )
 
