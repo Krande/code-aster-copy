@@ -173,6 +173,11 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
     K3 = extrtabout.values()['K3']
     ERR_K3 = extrtabout.values()['ERR_K3']
     G = extrtabout.values()['G']
+    # Recuperation de TEMP,NEUT1
+    if "TEMP" in extrtabout.para:
+        TEMP = extrtabout.values()['TEMP']
+    if "NEUT1" in extrtabout.para:
+        NEUT1 = extrtabout.values()['NEUT1']
 
     for i in range(size):
         if points_expand[i] - 1 in liste_noeu_a_extr:
@@ -203,15 +208,23 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
             K3[i] = K3[k_retenu[0]]
             ERR_K3[i] = ERR_K3[k_retenu[0]]
             G[i] = G[k_retenu[0]]
+            if "TEMP" in extrtabout.para:
+                TEMP[i] = TEMP[k_retenu[0]]
+            if "NEUT1" in extrtabout.para:
+                NEUT1[i] =NEUT1[k_retenu[0]]
             liste_noeu_a_extr.remove(points_expand[i] - 1)
 
     liste = []
     for para, typ in zip(('FISSURE', 'FOND_FISS', 'NUME_FOND', 'NUME_ORDRE', 'INST', 'FREQ', 'NOEUD', 'NUM_PT', \
-                    'COOR_X', 'COOR_Y', 'COOR_Z', 'ABSC_CURV', "TEMP", "NEUT1"), \
-                         ('K', 'K', 'I', 'I', 'R', 'R', 'K', 'I', 'R', 'R', 'R', 'R', 'R', 'R')):
+                    'COOR_X', 'COOR_Y', 'COOR_Z', 'ABSC_CURV'), \
+                         ('K', 'K', 'I', 'I', 'R', 'R', 'K', 'I', 'R', 'R', 'R', 'R')):
         if para in extrtabout.para:
             liste.append({"LISTE_%s"%typ: extrtabout.values()[para], "PARA": para})
 
+    if "TEMP" in extrtabout.para:
+        liste.append({"LISTE_R": TEMP, "PARA": "TEMP"})
+    if "NEUT1" in extrtabout.para:
+        liste.append({"LISTE_R": NEUT1, "PARA": "NEUT1"})
     liste.append({"LISTE_R": G, "PARA": "G"})
     liste.append({"LISTE_R": K1, "PARA": "K1"})
     liste.append({"LISTE_R": ERR_K1, "PARA": "ERR_K1"})
