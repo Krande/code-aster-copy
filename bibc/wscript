@@ -57,11 +57,11 @@ def configure(self):
     self.env.append_value('INCLUDES_BIBC', incpath)
 
     if 'ifort' in self.env.FC_NAME.lower():
-        self.env.append_value('LINKFLAGS_fcprogram', ['-nofor_main'])
+        self.env.append_value('LINKFLAGS_fcprogram', ['-nofor-main'])
         if opts.embed_all or opts.embed_aster:
             self.env.append_value('LINKFLAGS_fcprogram', ['-static-intel'])
             if self.get_define('ASTER_HAVE_MPI'):
-                self.env.append_value('LINKFLAGS_fcprogram', ['-static_mpi'])
+                self.env.append_value('LINKFLAGS_fcprogram', ['-static-mpi'])
     self.check_cflags()
 
 @Configure.conf

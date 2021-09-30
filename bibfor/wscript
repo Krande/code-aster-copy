@@ -82,7 +82,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options(['-fpe0', '-traceback'])
         if self.env.DEST_CPU == 'x86_64':
             self.check_fortran_compiler_options(['-i8', '-r8'])
-        self.check_fortran_compiler_options(['-nogen-interfaces', '-xAVX'])
+        self.check_fortran_compiler_options(['-nogen-interfaces', '-xCORE-AVX2'])
         # all Intel specific features must use:
         #   ASTER_HAVE_INTEL_IFORT && ASTER_HAVE_xxx
         # this marker must be specified on command line (using -D)

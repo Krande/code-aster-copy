@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,6 +53,7 @@ character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16) :: comporKit(COMPOR_SIZE)
     character(len=8) :: typmod(2), lielrf(10)
     integer :: nno1, nno2, npg, imatuu, lgpg, lgpg1, lgpg2
     integer :: iw, ivf1, idf1, igeom, imate
@@ -184,9 +185,12 @@ character(len=16), intent(in) :: option, nomte
 !
 ! - FORCES INTERIEURES ET MATRICE TANGENTE
 !
+    do i = 1, COMPOR_SIZE
+        comporKit(i) = zk16(icompo-1+i)
+    end do
     call cgfint(ndim, nno1, nno2, npg, zr(iw),&
                 zr(ivf1), zr(ivf2), zr(idf1), geom, tang,&
-                typmod, option, zi(imate), zk16(icompo), lgpg,&
+                typmod, option, zi(imate), comporKit, lgpg,&
                 zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
                 iu, iuc, im, a, zr(icontm),&
                 zr(ivarim), zr(icontp), zr(ivarip), zr( imatuu), zr(ivectu),&

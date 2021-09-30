@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -42,12 +42,11 @@ def check_python(self):
     self.check_python_version((3, 5, 0))
     self.check_python_headers()
     if 'icc' in self.env.CC_NAME.lower():
-        pyflags=['-Wno-unused-result', '-Wsign-compare', '-march', '-mtune', '-ftree-vectorize',
-                 '-fstack-protector-strong', '-fno-plt', '-ffunction-sections', '-pipe', '-fuse-linker-plugin',
-                 '-ffat-lto-objects', '-flto-partition', '-flto', '-fdebug-prefix-map', '-fPIC', '-O']
         self.env['LIB_PYEXT'] = list(set(self.env['LIB_PYEXT']))
+        # Best is to clear PYEMBED and PYEXT {c/cxx}flags
         for lang in ('CFLAGS', 'CXXFLAGS'):
-            self.remove_flags(lang + '_PYEXT', pyflags)
+            for feat in ('PYEMBED', 'PYEXT'):
+                self.env[lang + '_' + feat] = []
 
 @Configure.conf
 def check_numpy(self):
