@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ from subprocess import PIPE, run
 from .config import CFG
 from .ctest2junit import XUnitReport
 from .run import get_nbcores
-from .utils import ROOT
+from .utils import RUNASTER_ROOT
 
 USAGE = """
     run_ctest [options] [ctest-options] [other arguments...]
@@ -246,8 +246,8 @@ def create_ctest_file(testlist, filename):
             containing a list of testcases.
         filename (str): Destination for the 'ctest' file.
     """
-    datadir = osp.normpath(osp.join(ROOT, "share", "aster"))
-    bindir = osp.normpath(osp.join(ROOT, "bin"))
+    datadir = osp.normpath(osp.join(RUNASTER_ROOT, "share", "aster"))
+    bindir = osp.normpath(osp.join(RUNASTER_ROOT, "bin"))
     testdir = osp.join(datadir, "tests")
     assert osp.isdir(testdir), f"no such directory {testdir}"
     if osp.isfile(testlist):

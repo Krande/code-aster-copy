@@ -37,7 +37,7 @@ from .export import Export
 from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
 from .timer import Timer
-from .utils import (ROOT, cmd_abspath, compress, copy, make_writable,
+from .utils import (RUNASTER_ROOT, cmd_abspath, compress, copy, make_writable,
                     run_command, uncompress)
 
 EXITCODE_FILE = "_exit_code_"
@@ -370,7 +370,7 @@ class RunOnlyEnv(RunAster):
         """
         if self.export.get("step") == 0:
             logger.info("TITLE Copy/paste these command lines:")
-            profile = osp.join(ROOT, "share", "aster", "profile.sh")
+            profile = osp.join(RUNASTER_ROOT, "share", "aster", "profile.sh")
             timeout = self.export.get("time_limit", 0) * 1.25
             if not self._parallel:
                 logger.info(f"    cd {os.getcwd()}")

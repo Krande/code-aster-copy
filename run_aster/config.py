@@ -161,7 +161,7 @@ from fnmatch import fnmatchcase
 
 from .logger import logger
 from .settings import AbstractParameter, Store
-from .utils import ROOT
+from .utils import RUNASTER_ROOT
 
 USERCFG = osp.join(os.getenv("HOME", ""), ".config", "aster", "config.json")
 
@@ -247,7 +247,7 @@ class Config:
         """
         if with_sections:
             params = self.filter(content, "server", "name", platform.node())
-            params.update(self.filter(content, "version", "path", ROOT))
+            params.update(self.filter(content, "version", "path", RUNASTER_ROOT))
         else:
             params = content
         for key, value in params.items():
@@ -295,4 +295,4 @@ class Config:
         return self.storage.get(key, default)
 
 
-CFG = Config(osp.join(ROOT, "share", "aster", "config.json"))
+CFG = Config(osp.join(RUNASTER_ROOT, "share", "aster", "config.json"))

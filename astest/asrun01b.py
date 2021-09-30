@@ -51,7 +51,7 @@ from run_aster.settings import (
 from run_aster.status import StateOptions as SO
 from run_aster.status import Status, get_status
 from run_aster.timer import Timer
-from run_aster.utils import ROOT, copy
+from run_aster.utils import RUNASTER_ROOT, copy
 
 # run silently
 logger.setLevel(ERROR + 1)
@@ -107,7 +107,7 @@ class TestConfig(unittest.TestCase):
                 "version": [
                     {
                         "name": "VERS1",
-                        "path": ROOT,
+                        "path": RUNASTER_ROOT,
                         "config": {"mpiexec": "mpiexec_for_VERS1"},
                     },
                     {
@@ -382,7 +382,7 @@ class TestExport(unittest.TestCase):
         self.assertTrue(file1.is_tests_data)
         self.assertEqual(file0.path, "filename.py")
         self.assertEqual(
-            file1.path, osp.join(ROOT, "share", "aster", "tests_data", "filename.py")
+            file1.path, osp.join(RUNASTER_ROOT, "share", "aster", "tests_data", "filename.py")
         )
         self.assertEqual(
             repr(export),

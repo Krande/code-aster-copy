@@ -77,7 +77,7 @@ from .export import Export, File, split_export
 from .logger import DEBUG, WARNING, logger
 from .run import RunAster, create_temporary_dir, get_procid
 from .status import StateOptions, Status
-from .utils import ROOT
+from .utils import RUNASTER_ROOT
 
 try:
     import debugpy
@@ -323,7 +323,7 @@ def main(argv=None):
     wrkdir = args.wrkdir or create_temporary_dir(dir=CFG.get("tmpdir"))
     try:
         if need_split or need_mpiexec:
-            run_aster = osp.join(ROOT, "bin", "run_aster")
+            run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
             expdir = create_temporary_dir(
                 dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster"
             )

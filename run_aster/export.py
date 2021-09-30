@@ -83,7 +83,7 @@ from .logger import logger
 from .settings import (DEPRECATED, AbstractParameter, ParameterBool,
                        ParameterFloat, ParameterInt, ParameterListStr,
                        ParameterStr, Store)
-from .utils import ROOT
+from .utils import RUNASTER_ROOT
 
 PARAMS_TYPE = {
     "actions": "list[str]",
@@ -444,7 +444,7 @@ class Export(Store):
                     (fileobj.filetype == "nom" and
                      not osp.exists(osp.join(base, fileobj.path))
                      and self._test)):
-                base = osp.join(ROOT, "share", "aster", "tests_data")
+                base = osp.join(RUNASTER_ROOT, "share", "aster", "tests_data")
             fileobj.path = osp.join(base, fileobj.path)
 
     def check(self):

@@ -44,7 +44,7 @@ except ImportError:
 from .logger import logger
 
 # installation root is defined by launcher script or relatively to this file
-ROOT = os.environ.get("RUNASTER_ROOT",
+RUNASTER_ROOT = os.environ.get("RUNASTER_ROOT",
     osp.dirname(osp.dirname(osp.dirname(osp.dirname(osp.abspath(__file__))))))
 
 

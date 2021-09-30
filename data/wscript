@@ -140,12 +140,12 @@ def configure_data(self):
 def build(self):
     # src/srcbin distinction exists for exec mode (644 vs 755)
     src = ['CTestTestfile.cmake.tmpl', 'external_programs.js.tmpl',
-           'config.json.tmpl']
+           'config.json.tmpl', 'profile.sh.tmpl']
     tgt = ['CTestTestfile.cmake', 'external_programs.js',
-            'config.json']
+            'config.json', 'profile.sh']
     if self.env.legacy:
-        src.extend(['config.txt.tmpl', 'profile.sh.tmpl'])
-        tgt.extend(['config.txt', 'profile.sh'])
+        src.append('config.txt.tmpl')
+        tgt.append('config.txt')
     srcbin = ['execute_codeaster.tmpl', 'create_install_script',
               'reca_main.py']
     tgtbin = ['execute_codeaster', 'create_install_script',
