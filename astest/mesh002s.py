@@ -134,8 +134,8 @@ for mesh_file in meshes:
     MPI.COMM_WORLD.Barrier()
 
 
-list_nb_mesh = [518, 494, 494]
-list_nb_mesh_conv = [518, 494, 494]
+list_nb_mesh = [525, 494, 494]
+list_nb_mesh_conv = [525, 494, 494]
 
 print("Number of mesh: %s" % (nb_mesh), flush=True)
 print("Number of mesh converted: %s" % (nb_mesh_converted), flush=True)

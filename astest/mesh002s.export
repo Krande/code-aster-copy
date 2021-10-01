@@ -1,3 +1,5 @@
+# if you change this file, don't forget to pass the test!
+#
 # aslint: disable=C2002
 P time_limit 120
 P memory_limit 1024
@@ -225,6 +227,7 @@ F nom sdls08a.mmed D 0
 F nom sdls100a.mmed D 0
 F nom sdls102a.mmed D 0
 F nom sdls102b.mmed D 0
+F nom sdls102c.mmed D 0
 F nom sdls103a.mmed D 0
 F nom sdls104a.mmed D 0
 F nom sdls106h.mmed D 0
@@ -234,6 +237,7 @@ F nom sdls109b.mmed D 0
 F nom sdls109c.mmed D 0
 F nom sdls109d.mmed D 0
 F nom sdls109e.mmed D 0
+F nom sdls109h.mmed D 0
 F nom sdls111a.mmed D 0
 F nom sdls113a.mmed D 0
 F nom sdls114a.mmed D 0
@@ -253,7 +257,9 @@ F nom sdls130a.mmed D 0
 F nom sdls139a.mmed D 0
 F nom sdls140a.mmed D 0
 F nom sdls300a.mmed D 0
+F nom sdls300b.mmed D 0
 F nom sdls501a.mmed D 0
+F nom sdls501c.mmed D 0
 F nom sdls502a.mmed D 0
 F nom sdls502b.mmed D 0
 F nom sdls502e.mmed D 0
@@ -265,6 +271,7 @@ F nom sdls504a.mmed D 0
 F nom sdls504b.mmed D 0
 F nom sdls505a.mmed D 0
 F nom sdls505b.mmed D 0
+F nom sdls506a.mmed D 0
 F nom sdlv100a.mmed D 0
 F nom sdlv100b.mmed D 0
 F nom sdlv111a.mmed D 0
@@ -455,6 +462,7 @@ F nom ssls104a.mmed D 0
 F nom ssls104c.mmed D 0
 F nom ssls105a.mmed D 0
 F nom ssls105b.mmed D 0
+F nom ssls106a.mmed D 0
 F nom ssls107a.mmed D 0
 F nom ssls107b.mmed D 0
 F nom ssls108a.mmed D 0
@@ -514,6 +522,9 @@ F nom ssls119c.mmed D 0
 F nom ssls119d.mmed D 0
 F nom ssls119e.mmed D 0
 F nom ssls119f.mmed D 0
+F nom ssls147a.mmed D 0
+F nom ssls148a.mmed D 0
+F nom ssls20d.mmed D 0
 F nom ssnv152a.mmed D 0
 F nom ssnv167b.mmed D 0
 F nom ssnv167c.mmed D 0
