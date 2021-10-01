@@ -37,8 +37,8 @@ bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
 
     CALLO_LRMJOI_WRAP( getName(), fileName );
 
-    updateGlobalGroupOfNodes();
-    updateGlobalGroupOfCells();
+    AS_ASSERT(updateGlobalGroupOfNodes());
+    AS_ASSERT(updateGlobalGroupOfCells());
 
     return ret;
 };

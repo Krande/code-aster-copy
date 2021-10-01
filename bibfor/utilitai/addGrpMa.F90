@@ -23,7 +23,6 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/existGrpMa.h"
 #include "asterfort/isParallelMesh.h"
@@ -32,6 +31,7 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -41,6 +41,7 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
     character(len=8), intent(in)  :: mesh
     character(len=24), intent(in) :: group_ma
@@ -63,7 +64,7 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
 !---------------------------------------------------------------------------------------------------
     character(len=24) :: grmama, grmamap, nomgrp
-    integer :: nbGrp, iaux
+    integer :: nbGrp, iaux, iret
     aster_logical :: l_parallel_mesh, l_exi_in_grp, l_exi_in_grp_p, l_added
     integer, pointer :: v_cells(:) => null()
     character(len=24), pointer :: v_grpp(:) => null()
@@ -102,13 +103,20 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
 !
         if(l_parallel_mesh) then
             if(.not.l_exi_in_grp_p) then
-                call jelira(grmamap, 'NONMAX', nbGrp)
-                nbGrp = abs(nbGrp)
+                call jeexin(grmamap, iret)
+                if( iret .ne. 0) then
+                    call jelira(grmamap, 'NONMAX', nbGrp)
+                    nbGrp = abs(nbGrp)
+                else
+                    nbGrp = 0
+                end if
                 call wkvect('&&TMP', 'V V K24', nbGrp+1, vk24=v_grpp)
-                do iaux = 1, nbGrp
-                    call jenuno(jexnum(grmamap, iaux), nomgrp)
-                    v_grpp(iaux) = nomgrp
-                enddo
+                if( iret .ne. 0) then
+                    do iaux = 1, nbGrp
+                        call jenuno(jexnum(grmamap, iaux), nomgrp)
+                        v_grpp(iaux) = nomgrp
+                    enddo
+                endif
                 v_grpp(nbGrp+1) = group_ma
                 call jedetr(grmamap)
                 call jecreo(grmamap, 'G N K24')

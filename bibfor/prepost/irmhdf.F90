@@ -288,7 +288,7 @@ character(len=8), optional :: nosdfu
 ! 8. IMPRESSION NUMEROTATION GLOBALE ET JOINTS EN HPC
 !====
 !
-        if(isParallelMesh(nomast) .and. (.not.lfichUniq)) then
+        if(isParallelMesh(nomast) .and. (.not.lfu)) then
             call irmhpc(fid, nomamd, nomast, nbnoeu)
         endif
 !
