@@ -94,8 +94,11 @@ use petsc_data_module
         ASSERT(ierr.eq.0)
     else if (algo.eq.'GMRES') then
         call KSPSetType(ksp, KSPGMRES, ierr)
+        call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
+        ASSERT(ierr.eq.0)
     else if (algo.eq.'GMRES_LMP') then
         call KSPSetType(ksp, KSPGMRES, ierr)
+        call KSPGMRESSetBreakdownTolerance(ksp, 1.d3, ierr)
         ASSERT(ierr.eq.0)
 ! On indique qu'on veut récupérer les Ritz à la fin de la résolution
 ! afin de construire le préconditionneur de second niveau LMP
