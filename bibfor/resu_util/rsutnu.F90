@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getexm.h"
 #include "asterc/getres.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -75,7 +74,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
     character(len=16) :: concep, nomcmd, nomacc
     character(len=19) :: knacc, kvacc, knmod, listr, resuin, knum2
     complex(kind=8) :: c16b
-    integer :: ltout, linst, lfreq, lordr, tord(1)
+    integer :: tord(1)
     aster_logical :: verifi
 !     ------------------------------------------------------------------
     call jemarq()
@@ -112,10 +111,8 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
         call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
                     c16b, r8b, k8b, tord, 1,&
                     ibid)
-        iord=tord(1)            
+        iord=tord(1)
         do 40 iacc = 1, nbacc
-            if (getexm(motcle,zk16(jpara-1+iacc)) .eq. 0) goto 40
-!
             ctyp = '    '
             call rsadpa(resu, 'L', 1, zk16(jpara-1+iacc), iord,&
                         1, sjv=iad, styp=ctyp, istop=0)
@@ -132,7 +129,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
                 call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
                             c16b, r8b, k8b, tord, 1,&
                             ibid)
-                nbordt=tord(1)            
+                nbordt=tord(1)
                 call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
                 call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
                 nbval = -n2
@@ -301,129 +298,117 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
  40     continue
     endif
 !
-    linst = getexm(motcle,'LIST_INST')
-    if (linst .eq. 1) then
-        call getvid(motcle, 'LIST_INST', iocc=iocc, scal=listr, nbret=n1)
-        if (n1 .ne. 0) then
-            call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                        c16b, r8b, k8b, tord, 1,&
-                        ibid)
-            nbordt=tord(1)            
-            nomacc = 'INST'
-            call jeveuo(listr//'.VALE', 'L', laccr)
-            call jelira(listr//'.VALE', 'LONMAX', nbinst)
-            call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
-            call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
-            nbordr = 1
-            do 50 iord = 0, nbinst - 1
-                call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
-                            c16b, prec, crit, zi(jord2), nbordt,&
-                            nbtrou)
-                if (nbtrou .eq. 0) then
-                    ier = ier + 1
-                    valk (1)= nomacc
+    call getvid(motcle, 'LIST_INST', iocc=iocc, scal=listr, nbret=n1)
+    if (n1 .ne. 0) then
+        call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                    c16b, r8b, k8b, tord, 1,&
+                    ibid)
+        nbordt=tord(1)
+        nomacc = 'INST'
+        call jeveuo(listr//'.VALE', 'L', laccr)
+        call jelira(listr//'.VALE', 'LONMAX', nbinst)
+        call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
+        call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
+        nbordr = 1
+        do 50 iord = 0, nbinst - 1
+            call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
+                        c16b, prec, crit, zi(jord2), nbordt,&
+                        nbtrou)
+            if (nbtrou .eq. 0) then
+                ier = ier + 1
+                valk (1)= nomacc
+                valr = zr(laccr+iord)
+                call utmess('A', 'UTILITAI8_56', sk=valk(1), sr=valr)
+            else if (nbtrou.lt.0) then
+                call utmess('F', 'DVP_1')
+            else
+                if (nbtrou .gt. 1) then
+                    valk (1) = resu
                     valr = zr(laccr+iord)
-                    call utmess('A', 'UTILITAI8_56', sk=valk(1), sr=valr)
-                else if (nbtrou.lt.0) then
-                    call utmess('F', 'DVP_1')
-                else
-                    if (nbtrou .gt. 1) then
-                        valk (1) = resu
-                        valr = zr(laccr+iord)
-                        vali (1) = nbtrou
-                        call utmess('A', 'UTILITAI8_57', sk=valk(1), si=vali(1), sr=valr)
-                    endif
-                    call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
+                    vali (1) = nbtrou
+                    call utmess('A', 'UTILITAI8_57', sk=valk(1), si=vali(1), sr=valr)
                 endif
- 50         continue
-            nbordr = nbordr - 1
-            if (nbordr .ne. 0) then
-                call wkvect(knum, 'V V I', nbordr, jordr)
-                do 60 iord = 0, nbordr - 1
-                    zi(jordr+iord) = zi(jord1+iord)
- 60             continue
+                call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
             endif
-            call jedetr('&&RSUTNU.N1')
-            call jedetr('&&RSUTNU.N2')
-            goto 100
-        endif
-    endif
-!
-    lfreq = getexm(motcle,'LIST_FREQ')
-    if (lfreq .eq. 1) then
-        call getvid(motcle, 'LIST_FREQ', iocc=iocc, scal=listr, nbret=n1)
-        if (n1 .ne. 0) then
-            call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                        c16b, r8b, k8b, tord, 1,&
-                        ibid)
-            nbordt=tord(1)            
-            nomacc = 'FREQ'
-            call jeveuo(listr//'.VALE', 'L', laccr)
-            call jelira(listr//'.VALE', 'LONMAX', nbfreq)
-            call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
-            call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
-            nbordr = 1
-            do 70 iord = 0, nbfreq - 1
-                call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
-                            c16b, prec, crit, zi(jord2), nbordt,&
-                            nbtrou)
-                if (nbtrou .eq. 0) then
-                    ier = ier + 1
-                    valk (1) = nomacc
-                    valr = zr(laccr+iord)
-                    call utmess('A', 'UTILITAI8_58', sk=valk(1), sr=valr)
-                else if (nbtrou.lt.0) then
-                    call utmess('F', 'DVP_1')
-                else
-                    if (nbtrou .gt. 1) then
-                        valk (1) = resu
-                        valr = zr(laccr+iord)
-                        vali (1) = nbtrou
-                        call utmess('A', 'UTILITAI8_59', sk=valk(1), si=vali(1), sr=valr)
-                    endif
-                    call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
-                endif
- 70         continue
-            nbordr = nbordr - 1
-            if (nbordr .ne. 0) then
-                call wkvect(knum, 'V V I', nbordr, jordr)
-                do 80 iord = 0, nbordr - 1
-                    zi(jordr+iord) = zi(jord1+iord)
- 80             continue
-            endif
-            call jedetr('&&RSUTNU.N1')
-            call jedetr('&&RSUTNU.N2')
-            goto 100
-        endif
-    endif
-!
-    lordr = getexm(motcle,'LIST_ORDRE')
-    if (lordr .eq. 1) then
-        call getvid(motcle, 'LIST_ORDRE', iocc=iocc, scal=listr, nbret=n1)
-        if (n1 .ne. 0) then
-            call jeveuo(listr//'.VALE', 'L', laccr)
-            call jelira(listr//'.VALE', 'LONMAX', nbordr)
+50         continue
+        nbordr = nbordr - 1
+        if (nbordr .ne. 0) then
             call wkvect(knum, 'V V I', nbordr, jordr)
-            do 90 iord = 0, nbordr - 1
-                zi(jordr+iord) = zi(laccr+iord)
- 90         continue
-            goto 100
+            do 60 iord = 0, nbordr - 1
+                zi(jordr+iord) = zi(jord1+iord)
+60             continue
         endif
+        call jedetr('&&RSUTNU.N1')
+        call jedetr('&&RSUTNU.N2')
+        goto 100
+    endif
+!
+    call getvid(motcle, 'LIST_FREQ', iocc=iocc, scal=listr, nbret=n1)
+    if (n1 .ne. 0) then
+        call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                    c16b, r8b, k8b, tord, 1,&
+                    ibid)
+        nbordt=tord(1)
+        nomacc = 'FREQ'
+        call jeveuo(listr//'.VALE', 'L', laccr)
+        call jelira(listr//'.VALE', 'LONMAX', nbfreq)
+        call wkvect('&&RSUTNU.N1', 'V V I', nbordt, jord1)
+        call wkvect('&&RSUTNU.N2', 'V V I', nbordt, jord2)
+        nbordr = 1
+        do 70 iord = 0, nbfreq - 1
+            call rsorac(resu, nomacc, ibid, zr(laccr+iord), k8b,&
+                        c16b, prec, crit, zi(jord2), nbordt,&
+                        nbtrou)
+            if (nbtrou .eq. 0) then
+                ier = ier + 1
+                valk (1) = nomacc
+                valr = zr(laccr+iord)
+                call utmess('A', 'UTILITAI8_58', sk=valk(1), sr=valr)
+            else if (nbtrou.lt.0) then
+                call utmess('F', 'DVP_1')
+            else
+                if (nbtrou .gt. 1) then
+                    valk (1) = resu
+                    valr = zr(laccr+iord)
+                    vali (1) = nbtrou
+                    call utmess('A', 'UTILITAI8_59', sk=valk(1), si=vali(1), sr=valr)
+                endif
+                call i2trgi(zi(jord1), zi(jord2), nbtrou, nbordr)
+            endif
+70         continue
+        nbordr = nbordr - 1
+        if (nbordr .ne. 0) then
+            call wkvect(knum, 'V V I', nbordr, jordr)
+            do 80 iord = 0, nbordr - 1
+                zi(jordr+iord) = zi(jord1+iord)
+80             continue
+        endif
+        call jedetr('&&RSUTNU.N1')
+        call jedetr('&&RSUTNU.N2')
+        goto 100
+    endif
+!
+    call getvid(motcle, 'LIST_ORDRE', iocc=iocc, scal=listr, nbret=n1)
+    if (n1 .ne. 0) then
+        call jeveuo(listr//'.VALE', 'L', laccr)
+        call jelira(listr//'.VALE', 'LONMAX', nbordr)
+        call wkvect(knum, 'V V I', nbordr, jordr)
+        do 90 iord = 0, nbordr - 1
+            zi(jordr+iord) = zi(laccr+iord)
+90         continue
+        goto 100
     endif
 !
 !     --- LE DERNIER: 'TOUT_ORDRE' VALEUR PAR DEFAUT ---
 !
-    ltout = getexm(motcle,'TOUT_ORDRE')
-    if (ltout .eq. 1) then
-        call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
-                    c16b, r8b, k8b, tord, 1,&
-                    ibid)
-        nbordr=tord(1)            
-        call wkvect(knum, 'V V I', nbordr, jordr)
-        call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
-                    c16b, r8b, k8b, zi(jordr), nbordr,&
-                    ibid)
-    endif
+    call rsorac(resu, 'LONUTI', 0, r8b, k8b,&
+                c16b, r8b, k8b, tord, 1,&
+                ibid)
+    nbordr=tord(1)
+    call wkvect(knum, 'V V I', nbordr, jordr)
+    call rsorac(resu, 'TOUT_ORDRE', 0, r8b, k8b,&
+                c16b, r8b, k8b, zi(jordr), nbordr,&
+                ibid)
 !
 100 continue
 !
@@ -478,7 +463,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
 !
 !
-800 continue    
+800 continue
     call jedetr('&&RSUTNU.NOM_ACCES')
     call jedetr('&&RSUTNU.VALE_ACCES')
     call jedetr('&&RSUTNU.NOEUD_CMP')

@@ -517,6 +517,7 @@ class CommandSyntax(object):
             int: 1 if the keyword exists, else 0.
         """
         catadef = self._getCataDefinition(factName)
+        logger.debug(f"getexm: {factName} / {simpName}")
         if not catadef:
             return 0
         if not simpName.strip():
