@@ -19,8 +19,8 @@
 # --------------------------------------------------------------------
 
 """
-``bin/run_aster`` --- Script to execute code_aster from a ``.export`` file
---------------------------------------------------------------------------
+``bin/run_aster`` --- Script to execute code_aster
+--------------------------------------------------
 
 ``bin/run_aster`` executes a code_aster study from the command line.
 The parameters and files used by the study are defined in a ``.export`` file
@@ -42,6 +42,19 @@ or:
 Using the first syntax, ``bin/run_aster`` re-runs with ``mpiexec`` itself using
 the second syntax (``mpiexec`` syntax is provided by the configuration, see
 :py:mod:`~run_aster.config`).
+
+``bin/run_aster`` can also directly execute a Python file (``.py`` or ``.comm``
+extension is expected) with code_aster commands.
+In this case, no data or result files are managed by ``run_aster`` and
+default values are used for memory and time limit (use options to change
+these values).
+
+.. code-block:: sh
+
+    bin/run_aster path/to/file.py
+
+Data files may be referenced in the Python file with relative paths from the
+parent directory of ``file.py`` using, for example, ``os.path.dirname(__file__)``.
 
 ``bin/run_aster`` only runs its own version, those installed at the level of
 the ``bin`` directory; unlike ``as_run`` where the same instance of ``as_run``
@@ -76,7 +89,7 @@ from .config import CFG
 from .export import Export, File, split_export
 from .logger import DEBUG, WARNING, logger
 from .run import RunAster, create_temporary_dir, get_procid
-from .status import StateOptions, Status
+from .status import Status
 from .utils import RUNASTER_ROOT
 
 try:
@@ -87,7 +100,7 @@ except ImportError:
     HAS_DEBUGPY = False
 
 USAGE = """
-    run_aster [options] [EXPORT]
+    run_aster [options] FILE[.export|.py]
 
 """
 
@@ -217,10 +230,10 @@ def parse_args(argv):
         "--status-file", action="store", dest="statusfile", help=argparse.SUPPRESS
     )
     parser.add_argument(
-        "export",
-        metavar="EXPORT",
+        "file",
+        metavar="FILE",
         nargs="?",
-        help="Export file defining the calculation. "
+        help="Export file (.export) defining the calculation or Python file (.py). "
         "Without file, it starts an interactive Python "
         "session.",
     )
@@ -256,7 +269,13 @@ def main(argv=None):
     if CFG.get("parallel", 0):
         procid = get_procid()
 
-    export = Export(args.export, " ", test=args.test or args.ctest, check=False)
+    direct = osp.splitext(args.file)[-1] in (".py", ".comm")
+    export = Export(
+        args.file if not direct else None,
+        " ",
+        test=args.test or args.ctest,
+        check=False,
+    )
     make_env = args.env or "make_env" in export.get("actions", [])
     need_split = len(export.commfiles) > 1
     if need_split and (CFG.get("parallel", 0) and procid >= 0):
@@ -283,7 +302,9 @@ def main(argv=None):
     if args.no_comm:
         for comm in export.commfiles:
             export.remove_file(comm)
-    if not args.export or args.no_comm:
+    if direct:
+        export.add_file(File(osp.abspath(args.file), filetype="comm", unit=1))
+    elif not args.file or args.no_comm:
         args.interactive = True
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as fobj:
             fobj.write(AUTO_IMPORT.format(starter=SAVE_ARGV))
@@ -291,13 +312,17 @@ def main(argv=None):
             tmpf = fobj.name
     if args.ctest:
         args.test = True
-        basename = osp.splitext(osp.basename(args.export))[0]
-        add = {6: "mess", 15:"code"}
+        basename = osp.splitext(osp.basename(args.file))[0]
+        add = {6: "mess", 15: "code"}
         for unit, typ in add.items():
-            export.add_file(File(osp.abspath(basename + "." + typ),
-                                 filetype=typ,
-                                 unit=unit,
-                                 resu=True))
+            export.add_file(
+                File(
+                    osp.abspath(basename + "." + typ),
+                    filetype=typ,
+                    unit=unit,
+                    resu=True,
+                )
+            )
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
@@ -331,7 +356,7 @@ def main(argv=None):
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
                 exp_i.write_to(fexp)
-                argv_i = [i for i in argv if i != args.export]
+                argv_i = [i for i in argv if i != args.file]
                 if not args.wrkdir:
                     argv_i.append("--wrkdir")
                     argv_i.append(wrkdir)

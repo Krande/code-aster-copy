@@ -1,3 +1,4 @@
+#!/usr/bin/env run_aster
 # coding=utf-8
 # --------------------------------------------------------------------
 # Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
@@ -17,9 +18,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+# In this testcase, the mesh file path is relative to this script file.
+# This allows to directly run:
+#     mpirun -n 2 path/to/run_aster this-file.py
+
+import os.path as osp
+
 import code_aster
 from code_aster import MPI
+from code_aster.Commands import *
 
+root = osp.dirname(__file__)
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
@@ -28,7 +37,7 @@ test = code_aster.TestCase()
 rank = MPI.COMM_WORLD.Get_rank()
 
 POUTRE0 = code_aster.ParallelMesh()
-POUTRE0.readMedFile("zzzz504v/%d.med" % rank, True)
+POUTRE0.readMedFile(osp.join(root, f"zzzz504v/{rank}.med"), True)
 
 DEFI_GROUP(reuse=POUTRE0, MAILLAGE=POUTRE0, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
 
