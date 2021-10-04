@@ -83,7 +83,7 @@ character(len=16), intent(in) :: relaComp, relaCompPY
     integer :: nbCellMesh, nbCell
     integer, pointer :: cellAffectedByModel(:) => null()
     integer, pointer :: listCellAffe(:) => null()
-    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lPipe, lSolidShell
+    aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lPipe, lSolidShell, lBeam, lDisc
     aster_logical :: lGrotGdep, lPetitReac
 !
 ! --------------------------------------------------------------------------------------------------
@@ -142,6 +142,8 @@ character(len=16), intent(in) :: relaComp, relaCompPY
             l_dktg  = lteatt('MODELI','DTG', typel = elemTypeName)
             lShell  = lteatt('COQUE' ,'OUI', typel = elemTypeName)
             lPipe   = lteatt('TUYAU' ,'OUI', typel = elemTypeName)
+            lBeam   = lteatt('POUTRE' ,'OUI', typel = elemTypeName)
+            lDisc   = lteatt('DISCRET' ,'OUI', typel = elemTypeName)
             lSolidShell = lteatt('MODELI','SSH', typel = elemTypeName)
 
 ! --------- Specific checks: alarm (outside loop on cells)
@@ -169,8 +171,10 @@ character(len=16), intent(in) :: relaComp, relaCompPY
                 endif
             endif
 
-            if (l_dkt .and. defoComp .eq. 'GDEF_LOG') then
-                call utmess('F', 'COMPOR1_99')
+            if (defoComp .eq. 'GDEF_LOG') then
+                if (lPipe .or. lBeam .or. lShell .or. lDisc) then
+                    call utmess('F', 'COMPOR1_99')
+                endif
             endif
 
             if (lSolidShell .and. defoComp .ne. 'GDEF_LOG' .and. defoComp .ne. 'PETIT') then

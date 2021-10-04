@@ -436,5 +436,5 @@ La condition de stabilité locale kappa * m0 > 2 n'est pas respectée. Il faut m
 matériau en augmentant KAPPA ou bien en diminuant P pour augmenter m0 (actuellement m0 = %(r1)f).
 """),
 
-   99: _("""La modélisation DKT n'est pas compatible  avec DEFORMATION='GDEF_LOG'."""),
+   99: _("""Les éléments de structure ne peuvent pas être utilisés avec DEFORMATION='GDEF_LOG'."""),
 }
