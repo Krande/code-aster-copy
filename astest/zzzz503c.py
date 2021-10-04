@@ -38,9 +38,14 @@ DEFI_GROUP(reuse=pMesh,
                              POINT=(0.2, 0.2, 0.2),
                              RAYON = 0.2),),)
 
+pMesh.debugPrint(30+rank)
+
 list_cells = pMesh.getCells( 'BLABLA' )
 nb_cells = [ 72 , 4 , 0, 4]
+exi_grp = [True, True, False, True]
 test.assertEqual(len(list_cells), nb_cells[rank])
+test.assertEqual(pMesh.hasGroupOfCells('BLABLA', True), exi_grp[rank])
+test.assertEqual(pMesh.hasGroupOfCells('BLABLA', False), True)
 
 monModel = code_aster.Model(pMesh)
 monModel.addModelingOnMesh(code_aster.Physics.Mechanics,
