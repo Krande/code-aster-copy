@@ -46,6 +46,23 @@ else:
        #os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_seq.txt  " >> ~/.petscrc')
        #os.system('echo "-ksp_view_solution ascii:/tmp/sol_seq.txt  " >> ~/.petscrc')
 
+# print a unique file
+DEFI_FICHIER( UNITE=80, FICHIER='/tmp/zzzz504a_new_0.med', TYPE='BINARY',)
+
+IMPR_RESU(FICHIER_UNIQUE='OUI',
+          FORMAT='MED',
+          UNITE=80,
+          RESU=_F(MAILLAGE=pMesh2,),
+          VERSION_MED='4.0.0')
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+
+pMesh2.printMedFile("/tmp/zzzz504a_new_1.med", False)
+
+# print sepated file
+pMesh2.printMedFile("/tmp/zzzz504a_%d.med"%rank, True)
+pMesh2.printMedFile("/tmp/zzzz504a_%d_0.med"%rank)
+
 model = AFFE_MODELE(MAILLAGE = pMesh2,
                     AFFE = _F(MODELISATION = "D_PLAN",
                               PHENOMENE = "MECANIQUE",
@@ -85,6 +102,12 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
                      NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
                      SOLVEUR=_F(METHODE='PETSC',RESI_RELA=1.e-7,PRE_COND='LDLT_SP'),)
 
+# print single file
+resu.printMedFile("/tmp/resu_new.med", False)
+
+# print multiple files
+resu.printMedFile("/tmp/resu_new_%d.med"%rank, True)
+
 #if (parallel):
    #rank = MPI.COMM_WORLD.Get_rank()
    #myFile='par.txt'
@@ -123,5 +146,8 @@ if parallel:
     test.assertAlmostEqual(sfon.getValue(1, 2), 0.5175556367605225)
 else:
     test.assertAlmostEqual(sfon.getValue(6, 0), 0.0)
+
+MyFieldOnNodes.printMedFile("/tmp/fieldOnNodes.med", False)
+
 
 FIN()

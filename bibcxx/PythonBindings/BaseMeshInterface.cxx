@@ -31,10 +31,12 @@
 
 namespace py = boost::python;
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( print_overloads, printMedFile, 1, 2 )
+
 void exportBaseMeshToPython() {
 
-    py::class_< BaseMesh, BaseMesh::BaseMeshPtr, py::bases< DataStructure > >(
-        "BaseMesh", py::no_init )
+    py::class_< BaseMesh, BaseMesh::BaseMeshPtr, py::bases< DataStructure > >( "BaseMesh",
+                                                                               py::no_init )
         // fake initFactoryPtr: created by subclass
         // fake initFactoryPtr: created by subclass
         .def( "build", &BaseMesh::build, R"(
@@ -86,7 +88,7 @@ Returns:
     list[list[int]]: List of, for each cell, a list of the nodes indexes.
         )",
               ( py::arg( "self" ) ) )
-        .def( "getNodeName", &BaseMesh::getNodeName,   R"(
+        .def( "getNodeName", &BaseMesh::getNodeName, R"(
 Return the name of the given node
 
 Arguments:
@@ -95,8 +97,8 @@ Arguments:
 Returns:
     str : name of the node (stripped)
         )",
-              ( py::arg( "self" ), py::arg( "index" )  ) )
-        .def( "getCellName", &BaseMesh::getCellName,   R"(
+              ( py::arg( "self" ), py::arg( "index" ) ) )
+        .def( "getCellName", &BaseMesh::getCellName, R"(
 Return the name of the given cell
 
 Arguments:
@@ -105,7 +107,7 @@ Arguments:
 Returns:
     str : name of the cell (stripped)
         )",
-              ( py::arg( "self" ), py::arg( "index" )  ) )
+              ( py::arg( "self" ), py::arg( "index" ) ) )
         .def( "getMedConnectivity", &BaseMesh::getMedConnectivity, R"(
 Return the connectivity of the mesh as Python lists following the Med numbering.
 
@@ -138,15 +140,17 @@ Returns:
     Table: Table stored with the given identifier.
         )",
               ( py::arg( "self" ), py::arg( "identifier" ) ) )
-        .def( "printMedFile", &BaseMesh::printMedFile, R"(
+        .def( "printMedFile", &BaseMesh::printMedFile,
+              print_overloads( R"(
 Print the mesh in the MED format
 
 Arguments:
     filename (str): Name of the file
+    local (bool=True) : print local values only (relevent for ParallelMesh only)
 
 Returns:
     Bool: True if of
-        )",
-              ( py::arg( "self" ), py::arg( "fileName" ) ) )
-        ;
+            )",
+        ( py::arg( "self" ), py::arg( "fileName" ), py::arg( "local" ) ) ) );
 };
+

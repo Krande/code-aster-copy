@@ -175,10 +175,10 @@ aster_logical :: par_seqfile
                 do ino = 0, nbnoee-1
                     zi(jenvoi1+ino) = zi(jno+zi(jjoine+2*ino)-1)
                 enddo
-                n4r = nbnoer
-                n4e = nbnoee
-                num4 = ijoin
-                numpr4 = numpro
+                n4r = to_mpi_int(nbnoer)
+                n4e = to_mpi_int(nbnoee)
+                num4 = to_mpi_int(ijoin)
+                numpr4 = to_mpi_int(numpro)
                 if (rang .lt. numpro) then
                     call asmpi_send_i(zi(jenvoi1), n4e, numpr4, num4, world)
                     call asmpi_recv_i(zi(jrecep1), n4r, numpr4, num4, world)
@@ -227,15 +227,19 @@ aster_logical :: par_seqfile
 
         do ityp = 1, MT_NTYMAX
             if(zi(jtyp2+ityp-1).ne.0) then
+                zi(jnbma:jnbma-1+2*nbproc) = 0
                 zi(jnbma+rang) = zi(jtyp2+ityp-1)
-                zi(jnbma+nbproc+rang) = zi(jtyp2+ityp-1)
+                zi(jnbma+ nbproc + rang) = zi(jtyp2+ityp-1)
                 call asmpi_comm_vect('MPI_SUM', 'I', nbval=2*nbproc, vi=zi(jnbma))
                 do iproc = 1, nbproc-1
                     zi(jnbma+nbproc+iproc) = zi(jnbma+nbproc+iproc-1)+zi(jnbma+iproc)
                 enddo
+                !! nombre de mailles proprio du type donne
                 zi(jtyp+3*(ityp-1)+1)=zi(jnbma+rang)
+                !! nombre de mailles totales du type donne
                 zi(jtyp+3*(ityp-1)+2)=zi(jnbma+2*nbproc-1)
                 zi(jnbma+nbproc-1)=0
+                !! numero 1ere maille du type donne
                 zi(jtyp+3*(ityp-1))=zi(jnbma+nbproc+rang-1)+1
             endif
         enddo

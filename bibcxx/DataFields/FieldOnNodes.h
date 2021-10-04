@@ -343,7 +343,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     BaseMeshPtr getMesh() const { return _mesh; };
 
-    bool printMedFile( const std::string fileName ) const;
+    bool printMedFile( const std::string fileName, bool local = true ) const;
 
     /**
      * @brief Set DOFNumering
@@ -550,7 +550,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 };
 
 template < class ValueType >
-bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName ) const {
+bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName, bool local ) const {
     LogicalUnitFile a( fileName, Binary, New );
     int retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
@@ -558,6 +558,13 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName ) const
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = (ASTERINTEGER)retour;
+
+    if ( getMesh()->isParallel() ) {
+        dict.container["PROC0"] = "NON";
+        if ( !local )
+            dict.container["FICHIER_UNIQUE"] = "OUI";
+    } else
+        dict.container["PROC0"] = "OUI";
 
     ListSyntaxMapContainer listeResu;
     SyntaxMapContainer dict2;

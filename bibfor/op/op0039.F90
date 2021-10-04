@@ -158,7 +158,10 @@ implicit none
         endif
         if (fileFormat .eq.'MED') then
             call getvtx(' ', 'FICHIER_UNIQUE', scal=fichierUnique, nbret=nbRet)
-            if (fichierUnique.eq.'OUI') lfichUniq = .true._1
+            if (fichierUnique.eq.'OUI') then
+                lfichUniq = .true._1
+                ASSERT(proc0 .eq. 'NON')
+            end if
             call ultype(fileUnit, fileType)
             if (fileType .ne. 'B' .and. fileType .ne. 'L') then
                 call utmess('A','RESULT3_12')

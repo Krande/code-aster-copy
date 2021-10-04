@@ -44,10 +44,12 @@ void exportResultToPython() {
     ElementaryCharacteristicsPtr ( Result::*c6 )( ASTERINTEGER ) const =
         &Result::getElementaryCharacteristics;
 
-    bool ( Result::*c7 )( const std::string ) const =
+    bool ( Result::*c7 )( const std::string, bool ) const =
         &Result::printMedFile;
-    bool ( Result::*c8 )( const std::string, std::string ) const =
+    bool ( Result::*c8 )( const std::string, std::string, bool ) const =
         &Result::printMedFile;
+    bool ( Result::*c71 )( const std::string ) const = &Result::printMedFile;
+    bool ( Result::*c81 )( const std::string, std::string ) const = &Result::printMedFile;
 
     bool ( Result::*c9 )( const FieldOnNodesRealPtr,
                           const std::string&, const ASTERINTEGER ) = &Result::setField;
@@ -278,6 +280,8 @@ Returns:
         .def( "getConstantFieldOnCellsChar16", &Result::getConstantFieldOnCellsChar16 )
         .def( "printMedFile", c7 )
         .def( "printMedFile", c8 )
+        .def( "printMedFile", c71 )
+        .def( "printMedFile", c81 )
         .def( "setMesh", &Result::setMesh )
         .def( "build", &Result::build )
         .def( "printInfo", &Result::printInfo )

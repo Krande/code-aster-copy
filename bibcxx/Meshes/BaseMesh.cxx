@@ -152,7 +152,7 @@ const JeveuxVectorLong BaseMesh::getMedCellsTypes() const {
     return result;
 }
 
-bool BaseMesh::printMedFile( const std::string fileName ) const
+bool BaseMesh::printMedFile( const std::string fileName, bool local ) const
 {
     LogicalUnitFile a( fileName, Binary, New );
     ASTERINTEGER retour = a.getLogicalUnit();
@@ -173,6 +173,9 @@ bool BaseMesh::printMedFile( const std::string fileName ) const
     dict2.container["MAILLAGE"] = getName();
     listeResu.push_back( dict2 );
     dict.container["RESU"] = listeResu;
+
+    if ( !local && isParallel() )
+        dict.container["FICHIER_UNIQUE"] = "OUI";
 
     cmdSt.define( dict );
 

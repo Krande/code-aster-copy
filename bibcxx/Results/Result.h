@@ -437,11 +437,18 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir la gestion des mot-clés par défaut (ex : TOUT_ORDRE)
      * @todo revoir la gestion des unités logiques (notamment si fort.20 existe déjà)
      */
-    bool printMedFile( const std::string fileName, std::string medName ) const ;
+    bool printMedFile( const std::string fileName, std::string medName, bool local) const ;
 
-    bool printMedFile( const std::string fileName ) const
-    { return printMedFile(fileName, std::string());} ;
+    bool printMedFile( const std::string fileName, std::string medName ) const {
+        return printMedFile( fileName, std::string(), true );
+    };
 
+    bool printMedFile( const std::string fileName, bool local ) const
+    { return printMedFile(fileName, std::string(), local);} ;
+
+    bool printMedFile( const std::string fileName ) const {
+        return printMedFile( fileName, std::string(), true );
+    };
 
     /**
     * @brief Get the number of steps stored in the Result

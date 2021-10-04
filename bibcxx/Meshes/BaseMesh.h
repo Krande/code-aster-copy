@@ -277,7 +277,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @param fileName Nom du fichier MED à imprimer
      * @return true
      */
-    bool printMedFile( const std::string fileName ) const ;
+    bool printMedFile( const std::string fileName, bool local = true ) const ;
 
     bool build()
     {

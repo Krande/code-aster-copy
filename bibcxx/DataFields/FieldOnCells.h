@@ -604,14 +604,14 @@ template < class ValueType > class FieldOnCells : public DataField {
         return ret;
     }
 
-    bool printMedFile( const std::string fileName ) const;
+    bool printMedFile( const std::string fileName, bool local = true ) const;
 
     friend class FieldBuilder;
 
 };
 
 template < class ValueType >
-bool FieldOnCells< ValueType >::printMedFile( const std::string fileName ) const {
+bool FieldOnCells< ValueType >::printMedFile( const std::string fileName, bool local ) const {
     LogicalUnitFile a( fileName, Binary, New );
     int retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
@@ -619,6 +619,13 @@ bool FieldOnCells< ValueType >::printMedFile( const std::string fileName ) const
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = (ASTERINTEGER)retour;
+
+    if ( getMesh()->isParallel() ) {
+        dict.container["PROC0"] = "NON";
+        if ( !local )
+            dict.container["FICHIER_UNIQUE"] = "OUI";
+    } else
+        dict.container["PROC0"] = "OUI";
 
     ListSyntaxMapContainer listeResu;
     SyntaxMapContainer dict2;

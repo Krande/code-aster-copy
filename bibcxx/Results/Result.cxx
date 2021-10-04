@@ -602,7 +602,7 @@ void Result::printInfo() const {
     CALLO_RSINFO( getName(), &umess );
 }
 
-bool Result::printMedFile( const std::string fileName, std::string medName ) const {
+bool Result::printMedFile( const std::string fileName, std::string medName, bool local ) const {
     LogicalUnitFile a( fileName, Binary, New );
     ASTERINTEGER retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
@@ -610,6 +610,15 @@ bool Result::printMedFile( const std::string fileName, std::string medName ) con
     SyntaxMapContainer dict;
     dict.container["FORMAT"] = "MED";
     dict.container["UNITE"] = retour;
+
+    if ( getMesh()->isParallel() )
+    {
+        dict.container["PROC0"] = "NON";
+        if ( !local )
+            dict.container["FICHIER_UNIQUE"] = "OUI";
+    }
+    else
+        dict.container["PROC0"] = "OUI";
 
     ListSyntaxMapContainer listeResu;
     SyntaxMapContainer dict2;
