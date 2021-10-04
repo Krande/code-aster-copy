@@ -89,10 +89,17 @@ resu = mecaStatique.execute()
 
 resu=CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=('SIEF_ELGA'))
 
+DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.med', TYPE='BINARY',)
+
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
+          UNITE=80,
           RESU=_F(RESULTAT=resu,),
           VERSION_MED='4.0.0')
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+
+DEFI_FICHIER( UNITE=81, FICHIER='/tmp/resu_no.med', TYPE='BINARY',)
 
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
@@ -100,11 +107,17 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           VERSION_MED='4.0.0',
           UNITE=81)
 
+DEFI_FICHIER(ACTION='LIBERER',UNITE=81)
+
+DEFI_FICHIER( UNITE=82, FICHIER='/tmp/resu_ma.med', TYPE='BINARY',)
+
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
           RESU=_F(RESULTAT=resu, GROUP_MA="BLABLA"),
           VERSION_MED='4.0.0',
           UNITE=82)
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=82)
 
 #resu.printMedFile("fort."+str(rank+40)+".med")
 
