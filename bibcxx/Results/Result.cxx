@@ -237,6 +237,19 @@ ElementaryCharacteristicsPtr Result::getElementaryCharacteristics( ASTERINTEGER 
     return ( *curIter ).second;
 };
 
+bool Result::hasElementaryCharacteristics( ASTERINTEGER rank ) const {
+    auto curIter = _mapElemCara.find( rank );
+    if ( curIter == _mapElemCara.end() )
+        return false;
+    return true;
+};
+
+bool Result::hasElementaryCharacteristics( ) const {
+    if ( _mapElemCara.empty() )
+        return false;
+    return true;
+};
+
 ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER rank ) const {
     auto curIter = _mapLoads.find( rank );
     if ( curIter == _mapLoads.end() )

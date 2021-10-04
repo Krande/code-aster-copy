@@ -60,10 +60,8 @@ class ResultStateBuilder(InternalStateBuilder):
                 self._st["mater"].append(result.getMaterialField(i))
             except AsterError:
                 pass
-            try:
+            if result.hasElementaryCharacteristics(i):
                 self._st["cara_elem"].append(result.getElementaryCharacteristics(i))
-            except AsterError:
-                pass
 
         if len(self._st["rank"]) != len(self._st["model"]):
             logger.debug(

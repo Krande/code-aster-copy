@@ -66,6 +66,10 @@ resu = MECA_STATIQUE(CHAM_MATER=AFFMAT,
                                 RESI_RELA=1.E-10,),)
 resu.debugPrint(10+rank)
 
+test.assertTrue(resu.hasElementaryCharacteristics())
+test.assertTrue(resu.hasElementaryCharacteristics(1))
+test.assertFalse(resu.hasElementaryCharacteristics(4))
+
 resu.printMedFile("test"+str(rank)+".med")
 #from shutil import copyfile
 #copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")

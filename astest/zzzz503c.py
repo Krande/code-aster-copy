@@ -83,6 +83,9 @@ mecaStatique.setLinearSolver(monSolver)
 
 resu = mecaStatique.execute()
 
+test.assertFalse(resu.hasElementaryCharacteristics())
+test.assertFalse(resu.hasElementaryCharacteristics(1))
+
 resu=CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=('SIEF_ELGA'))
 
 DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.med', TYPE='BINARY',)

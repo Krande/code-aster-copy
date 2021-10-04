@@ -69,13 +69,14 @@ void exportResultToPython() {
     void ( Result::*c16 )( const MaterialFieldPtr &,  ASTERINTEGER ) =
         &Result::setMaterialField;
 
-    py::class_< Result, Result::ResultPtr,
-            py::bases< DataStructure > >( "Result", py::no_init )
+    bool ( Result::*c17 )() const = &Result::hasElementaryCharacteristics;
+    bool ( Result::*c18 )( ASTERINTEGER ) const =
+        &Result::hasElementaryCharacteristics;
+
+    py::class_< Result, Result::ResultPtr, py::bases< DataStructure > >( "Result", py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< Result, std::string > ) )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< Result, std::string >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< Result, std::string, std::string >))
+              py::make_constructor( &initFactoryPtr< Result, std::string, std::string > ) )
         .def( "allocate", &Result::allocate, R"(
 Allocate result
 
@@ -84,14 +85,16 @@ Arguments:
 
 Returns:
     bool: True if allocation is ok
-        )", ( py::arg("self" ), py::arg("nb_rank" )))
+        )",
+              ( py::arg( "self" ), py::arg( "nb_rank" ) ) )
         .def( "setTimeValue", &Result::setTimeValue, R"(
 Add time at the specified rank
 
 Arguments:
     time [float] : time value to save
     rank [int] :  rank where to save time value
-        )", ( py::arg("self" ), py::arg("time" ), py::arg("rank" )))
+        )",
+              ( py::arg( "self" ), py::arg( "time" ), py::arg( "rank" ) ) )
         .def( "getTimeValue", &Result::getTimeValue, R"(
 Get time at the specified rank
 
@@ -100,68 +103,78 @@ Arguments:
 
 Returns
     [float] : time value
-        )", ( py::arg("self" ), py::arg("rank" )))
+        )",
+              ( py::arg( "self" ), py::arg( "rank" ) ) )
         .def( "addFieldOnNodesDescription", &Result::addFieldOnNodesDescription )
         .def( "setMaterialField", c15, R"(
 Set material field on all ranks
 
 Argument:
     mater [MaterialFieldPtr]: material field to set.
-        )", ( py::arg("self" ), py::arg("mater")) )
+        )",
+              ( py::arg( "self" ), py::arg( "mater" ) ) )
         .def( "setMaterialField", c16, R"(
 Set material field on the specified rank
 
 Argument:
     mater [MaterialFieldPtr]: material field to set.
     rank [rank]: rank to set
-        )", ( py::arg("self" ), py::arg("mater"), py::arg("rank")) )
+        )",
+              ( py::arg( "self" ), py::arg( "mater" ), py::arg( "rank" ) ) )
         .def( "setListOfLoads", &Result::setListOfLoads, R"(
 Set list of loads on the specified rank
 
 Argument:
     load [ListOfLoadsPtr]: list of loads to set.
     rank [rank]: rank to set
-        )", ( py::arg("self" ), py::arg("load"), py::arg("rank")) )
+        )",
+              ( py::arg( "self" ), py::arg( "load" ), py::arg( "rank" ) ) )
         .def( "setModel", c11, R"(
 Set model on all ranks
 
 Argument:
     model [ModelPtr]: model to set.
-        )", ( py::arg("self" ), py::arg("model"))  )
+        )",
+              ( py::arg( "self" ), py::arg( "model" ) ) )
         .def( "setModel", c12, R"(
 Set model on the specified rank
 
 Argument:
     model [ModelPtr]: model to set
     rank [rank]: rank to set
-        )", ( py::arg("self" ), py::arg("model"), py::arg("rank"))  )
-        .def( "setElementaryCharacteristics", c13,  R"(
+        )",
+              ( py::arg( "self" ), py::arg( "model" ), py::arg( "rank" ) ) )
+        .def( "setElementaryCharacteristics", c13, R"(
 Set elementary characterictics on all ranks
 
 Argument:
     cara_elem [ElementaryCharacteristicsPtr]: elementary characterictics to set.
-        )", ( py::arg("self" ), py::arg("mater")) )
-        .def( "setElementaryCharacteristics", c14,  R"(
+        )",
+              ( py::arg( "self" ), py::arg( "mater" ) ) )
+        .def( "setElementaryCharacteristics", c14, R"(
 Set elementary characterictics on the specified rank
 
 Argument:
     cara_elem [ElementaryCharacteristicsPtr]: elementary characterictics to set.
     rank [rank]: rank to set
-        )", ( py::arg("self" ), py::arg("cara_elem"), py::arg("rank")) )
+        )",
+              ( py::arg( "self" ), py::arg( "cara_elem" ), py::arg( "rank" ) ) )
         .def( "printListOfFields", &Result::printListOfFields )
         .def( "getAllElementaryCharacteristics", &Result::getAllElementaryCharacteristics, R"(
 Return the list of all elementary characteristics used in the result
 
 Returns:
     list[ElementaryCharacteristicsPtr]: list of ElementaryCharacteristics.
-        )", ( py::arg("self" )) )
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getElementaryCharacteristics", c5, R"(
 Get elementary characterictics if only one is used else an execption is throw
 
 Return:
     cara_elem [ElementaryCharacteristicsPtr]: a pointer to elementary characterictics.
-        )", ( py::arg("self" )) )
-        .def( "getElementaryCharacteristics", c6 , R"(
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "getElementaryCharacteristics", c6, R"(
 Get elementary characterictics at the specfied rank
 
 Argument:
@@ -169,13 +182,32 @@ Argument:
 
 Return:
     cara_elem [ElementaryCharacteristicsPtr]: a pointer to elementary characterictics.
-        )", ( py::arg("self" ), py::arg("rank")))
+        )",
+              ( py::arg( "self" ), py::arg( "rank" ) ) )
+        .def( "hasElementaryCharacteristics", c17, R"(
+Test if at least one elementary characterictics used
+
+Return:
+    [bool]: True if at least one elementary characterictics used else False.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "hasElementaryCharacteristics", c18, R"(
+Test if a elementary characterictics is used at the specfied rank
+
+Argument:
+    rank [int]: rank
+
+Return:
+    [bool]: True if at a elementary characterictics used else False.
+        )",
+              ( py::arg( "self" ), py::arg( "rank" ) ) )
         .def( "getMaterialFields", &Result::getMaterialFields, R"(
 Return the list of all material fields used in the result
 
 Returns:
     list[MaterialFieldPtr]: list of material field.
-        )", ( py::arg("self" )) )
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getMaterialField", c1 )
         .def( "getMaterialField", c2 )
         .def( "getListOfLoads", &Result::getListOfLoads, R"(
@@ -187,19 +219,22 @@ Argument:
 Return:
     ListOfLoadsPtr: a pointer to list of loads.
 
-        )", ( py::arg("self" ),  py::arg("rank")) )
+        )",
+              ( py::arg( "self" ), py::arg( "rank" ) ) )
         .def( "getMesh", &Result::getMesh, R"(
 Return a pointer to mesh
 
 Returns:
     mesh [BaseMeshPtr]: a pointer to the mesh.
-        )", ( py::arg("self" )) )
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getModels", &Result::getModels, R"(
 Return the list of all models used in the result
 
 Returns:
     list[ModelPtr]: list of models.
-        )", ( py::arg("self" )) )
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getModel", c3 )
         .def( "getModel", c4 )
         .def( "getNumberOfRanks", &Result::getNumberOfRanks )
@@ -208,31 +243,36 @@ Return the access parameters of the result as Python dict.
 
 Returns:
     dict{str : list[int,float,str]}: Dict of values for each access variable.
-        )", ( py::arg("self" )))
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getFieldsOnNodesNames", &Result::getFieldsOnNodesNames, R"(
 Return the names of the fields on nodes as Python list.
 
 Returns:
     list[str]: List of names of the fields on nodes.
-        )", ( py::arg("self" )))
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getFieldsOnCellsNames", &Result::getFieldsOnCellsNames, R"(
 Return the names of the fields on cells as Python list.
 
 Returns:
     list[str]: List of names of the fields on cells.
-        )", ( py::arg("self" )))
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getConstantFieldsOnCellsNames", &Result::getConstantFieldsOnCellsNames, R"(
 Return the names of the contant fields on cells as Python list.
 
 Returns:
     list[str]: List of names of the contant fields on cells.
-        )", ( py::arg("self" )))
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getRanks", &Result::getRanks, R"(
 Return the list of ranks used to store fields
 
 Returns:
     list[int]: List of ranks used to store fields.
-        )", ( py::arg("self" )) )
+        )",
+              ( py::arg( "self" ) ) )
         .def( "getFieldOnNodesReal", &Result::getFieldOnNodesReal )
         .def( "getFieldOnCellsReal", &Result::getFieldOnCellsReal )
         .def( "getConstantFieldOnCellsChar16", &Result::getConstantFieldOnCellsChar16 )
@@ -261,7 +301,8 @@ Arguments:
 
 Returns:
     bool: True if ok else False.
-        )", ( py::arg("self"), py::arg("field"), py::arg("name"), py::arg("rank")) )
+        )",
+              ( py::arg( "self" ), py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) ) )
         .def( "setField", c10, R"(
 Set a FieldOnCells to result
 
@@ -272,7 +313,8 @@ Arguments:
 
 Returns:
     bool: True if ok else False.
-        )", ( py::arg("self"), py::arg("field"), py::arg("name"), py::arg("rank")) )
+        )",
+              ( py::arg( "self" ), py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) ) )
         .def( "setField", c21, R"(
 Set a ConstantFieldOnCellsChar16 to result
 
@@ -283,7 +325,8 @@ Arguments:
 
 Returns:
     bool: True if ok else False.
-        )", ( py::arg("self"), py::arg("field"), py::arg("name"), py::arg("rank")) )
+        )",
+              ( py::arg( "self" ), py::arg( "field" ), py::arg( "name" ), py::arg( "rank" ) ) )
         .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
 

@@ -294,12 +294,20 @@ class Result : public DataStructure, public ListOfTables {
     std::vector< ElementaryCharacteristicsPtr >
     getAllElementaryCharacteristics() const;
 
+    bool hasElementaryCharacteristics() const;
+
     /**
      * @brief Get elementary characteristics
      * @param rank
      */
     ElementaryCharacteristicsPtr
     getElementaryCharacteristics( ASTERINTEGER rank ) const;
+
+    /**
+     * @brief Get elementary characteristics
+     * @param rank
+     */
+    bool hasElementaryCharacteristics( ASTERINTEGER rank ) const;
 
     /**
      * @brief Get material
@@ -467,7 +475,7 @@ class Result : public DataStructure, public ListOfTables {
     bool build() ;
 
     /**
-    * @brief Update the  Result's size 
+    * @brief Update the  Result's size
     */
     ASTERBOOL resize(ASTERINTEGER nbRanks);
 
