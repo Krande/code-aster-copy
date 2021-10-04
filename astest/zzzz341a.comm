@@ -27,7 +27,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 
 MAIL = DEFI_GROUP(reuse=MAIL,
                    MAILLAGE=MAIL,
-                   CREA_GROUP_NO=_F(GROUP_MA=('FACE','HAUT'),),
+                   CREA_GROUP_NO=_F(GROUP_MA=('HAUT'),),
                    INFO=1,)
 
 MA=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
