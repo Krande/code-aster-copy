@@ -108,7 +108,7 @@ subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
             if(.not.l_exi_in_grp_p) then
                 call jeexin(grmamap, iret)
                 if( iret .ne. 0) then
-                    call jelira(grmamap, 'NONMAX', nbGrp)
+                    call jelira(grmamap, 'NOMMAX', nbGrp)
                     nbGrp = abs(nbGrp)
                 else
                     nbGrp = 0

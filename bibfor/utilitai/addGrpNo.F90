@@ -108,7 +108,7 @@ subroutine addGrpNo(mesh, group_no, listNodes, nbNodes, l_added_grpno)
             if(.not.l_exi_in_grp_p) then
                 call jeexin(grnomap, iret)
                 if( iret .ne. 0) then
-                    call jelira(grnomap, 'NONMAX', nbGrp)
+                    call jelira(grnomap, 'NOMMAX', nbGrp)
                     nbGrp = abs(nbGrp)
                 else
                     nbGrp = 0
