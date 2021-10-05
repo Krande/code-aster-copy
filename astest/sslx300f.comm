@@ -104,10 +104,14 @@ BETON=DEFI_MATERIAU(ELAS=_F(E=3.E10,
                            RHO=2400,
                            ALPHA=1.096e-05,),);
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
-                            NU=0.0,
-                            RHO=7800.0,
-                            ALPHA=1.096e-05,),);
+ACIERmem=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = 2.E11, # E*section_l=2e11*1
+                                     M_LLTT = 0.,
+                                     M_LLLT = 0.,
+                                     M_TTTT = 0.,
+                                     M_TTLT = 0.,
+                                     M_LTLT = 0.,
+                                     RHO=7800.0,
+                                     ALPHA  = 1.096e-05,),)
 
 CABLE=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,  NU=0.3,  RHO = 7800., ALPHA=1.096e-05),
                        CABLE=_F(EC_SUR_E = 1.E0),
@@ -123,7 +127,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA4,
                     AFFE=(_F(GROUP_MA=('GRMA1', 'HE1', 'FACE1', 'FACE2', 'GRMA4', 'GRMA3'),
                              MATER=(BETON,),),
                           _F(GROUP_MA=('ACPLUS','ACMOINS', ),
-                             MATER=(ACIER,),),
+                             MATER=(ACIERmem,),),
                           _F(GROUP_MA=('GRMA2', ),
                              MATER=(CABLE,),),),);
 
@@ -496,8 +500,8 @@ COMBINAISON_CHARGE (
                                 ),
                     COMPORTEMENT =(
                                    _F(GROUP_MA= 'GRMA2', RELATION= 'CABLE',),
-                                   _F(GROUP_MA= ('ACPLUS', 'ACMOINS'), RELATION= 'ELAS_MEMBRANE_SV',),
-                                   _F(GROUP_MA= ('GRMA1', 'HE1', 'FACE1', 'FACE2', 'GRMA4', 'GRMA3'), RELATION= 'ELAS',),
+                                   #_F(GROUP_MA= ('ACPLUS', 'ACMOINS'), RELATION= 'ELAS',),
+                                   #_F(GROUP_MA= ('GRMA1', 'HE1', 'FACE1', 'FACE2', 'GRMA4', 'GRMA3'), RELATION= 'ELAS',),
                                    ),
                     CHAM_RESU=(
                                _F(NOM_CHAM= 'EFGE_NOEU', NOM_CMP = ('N', 'VY', 'VZ', ), ),
@@ -528,7 +532,7 @@ TEST_TABLE(CRITERE='RELATIF',
 
 #----------------------------------
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= 40979.141056,
+           VALE_CALC= 40956.368120,
            NOM_PARA='VALE',
            TABLE=tab2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -539,7 +543,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='MAXI_ABS',),
                   ),)
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= 61602.3418301,
+           VALE_CALC= 61568.182426,
            NOM_PARA='VALE',
            TABLE=tab2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -550,7 +554,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='MAX',),
                   ),)
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= 21972653.510,
+           VALE_CALC= 22116953.60,
            NOM_PARA='VALE',
            TABLE=tab2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -561,7 +565,7 @@ TEST_TABLE(CRITERE='RELATIF',
                      VALE_K='MAX',),
                   ),)
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= -23843786.05539,
+           VALE_CALC= -24000088.65427,
            NOM_PARA='VALE',
            TABLE=tab2,
            FILTRE=(_F(NOM_PARA='INTITULE',

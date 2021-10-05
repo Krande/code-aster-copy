@@ -26,12 +26,18 @@ from ..Messages import UTMESS
 from ..Objects.table_py import Table
 
 
-def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, **args):
+def combinaison_charge_ops(self, **args):
     """
         combinaison des calculs avec des chargements mécaniques et thermiques
     """
 
     args = _F(args)
+
+
+    MODELE_MECA     = args.get("MODELE_MECA")
+    BLOC            = args.get("BLOC")
+    CARA_ELEM_MECA  = args.get("CARA_ELEM_MECA")
+    EXCIT_MECA      = args.get("EXCIT_MECA")
 
     CHAM_MATER_MECA = args.get("CHAM_MATER_MECA")
     COMPORTEMENT    = args.get("COMPORTEMENT")
@@ -58,7 +64,8 @@ def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, 
 
     if 'MULTIFIBRE' in comport or 'CABLE' in comport :
         l_nonl = True
-    if 'ELAS_MEMBRANE_SV' in comport :
+
+    if (MODELE_THER is not None) and (BLOC_THER is not None) and (CARA_ELEM_THER is not None) :
         l_membrane = True
 
     #------------------------------------------------
@@ -263,6 +270,7 @@ def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, 
     #                          CALCULs individuels
     #-----------------------------------------------------------------------
     calc=[None]*nb_char
+    UTMESS('I', 'COMBCH_4', valk=('CALCULS INDIVIDUELS - MECANIQUE',))
 
     ##### Chargement mécaniques linéaires ou non-linéaires
     for charge in range(nb_char_meca):
@@ -270,7 +278,7 @@ def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, 
             comport ={}
             comport['COMPORTEMENT']=[]
             for ii in range(len(COMPORTEMENT)):
-                if COMPORTEMENT[ii]['RELATION'] in ['CABLE', 'ELAS_MEMBRANE_SV']:
+                if COMPORTEMENT[ii]['RELATION'] in ['CABLE']:
                     if COMPORTEMENT[ii]['GROUP_MA'] is not None :
                         comport['COMPORTEMENT'].append(_F(GROUP_MA = COMPORTEMENT[ii]['GROUP_MA'], RELATION = COMPORTEMENT[ii]['RELATION'], DEFORMATION = 'GROT_GDEP'))
                     else :
@@ -300,42 +308,37 @@ def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, 
     nb = charge
     ##### Chargement thermiques
 
-    if l_membrane :
-        if (MODELE_THER is None) or (CARA_ELEM_THER is None) or (BLOC_THER is None) :
-            UTMESS('F', 'COMBCH_3', valk=('MODELE_THER', 'CARA_ELEM_THER', 'BLOC_THER'))
-        modele = MODELE_THER
-        carael = CARA_ELEM_THER
-        blocfin = BLOC_THER
-    else:
-        modele = MODELE_MECA
-        carael = CARA_ELEM_MECA
-        blocfin = BLOC
+    if l_ther :
+        UTMESS('I', 'COMBCH_4', valk=('CALCULS INDIVIDUELS - THERMIQUE',))
+        UTMESS('A', 'COMBCH_3', valk=('MODELE_THER', 'CARA_ELEM_THER', 'BLOC_THER'))
+
 
     if l_membrane :
-        dict_comport = COMPORTEMENT
-        for cc in range( len(dict_comport) ) :
-            if dict_comport[cc]['RELATION'] in ['ELAS_MEMBRANE_SV','ELAS_MEMBRANE_NH'] :
-                dict_comport[cc]['RELATION'] = 'ELAS'
+        model = MODELE_THER
+        carael = CARA_ELEM_THER
+        blocfin = BLOC_THER
     else :
-        dict_comport = COMPORTEMENT
+        model = MODELE_MECA 
+        carael = CARA_ELEM_MECA
+        blocfin = BLOC
 
     for charge in range(nb_char_ther):
         if l_nonl:
             comport ={}
             comport['COMPORTEMENT']=[]
-            for ii in range(len(dict_comport)):
-                if dict_comport[ii]['RELATION'] == 'CABLE':
-                    if dict_comport[ii]['GROUP_MA'] is not None :
-                        comport['COMPORTEMENT'].append(_F(GROUP_MA = dict_comport[ii]['GROUP_MA'], RELATION = 'CABLE', DEFORMATION = 'GROT_GDEP'))
+            for ii in range(len(COMPORTEMENT)):
+                if COMPORTEMENT[ii]['RELATION'] == 'CABLE':
+                    if COMPORTEMENT[ii]['GROUP_MA'] is not None :
+                        comport['COMPORTEMENT'].append(_F(GROUP_MA = COMPORTEMENT[ii]['GROUP_MA'], RELATION = 'CABLE', DEFORMATION = 'GROT_GDEP'))
                     else :
                         comport['COMPORTEMENT'].append(_F(TOUT = 'OUI', RELATION = 'CABLE', DEFORMATION = 'GROT_GDEP'))
                 else :
-                    if dict_comport[ii]['GROUP_MA'] is not None :
-                        comport['COMPORTEMENT'].append(_F(GROUP_MA = dict_comport[ii]['GROUP_MA'], RELATION = dict_comport[ii]['RELATION'], ))
+                    if COMPORTEMENT[ii]['GROUP_MA'] is not None :
+                        comport['COMPORTEMENT'].append(_F(GROUP_MA = COMPORTEMENT[ii]['GROUP_MA'], RELATION = COMPORTEMENT[ii]['RELATION'], ))
                     else :
-                        comport['COMPORTEMENT'].append(_F(TOUT = 'OUI', RELATION = dict_comport[ii]['RELATION'],))
+                        comport['COMPORTEMENT'].append(_F(TOUT = 'OUI', RELATION = COMPORTEMENT[ii]['RELATION'],))
 
-            calc[nb + charge + 1]= STAT_NON_LINE(MODELE=modele,
+            calc[nb + charge + 1]= STAT_NON_LINE(MODELE=model,
                                     CHAM_MATER=EXCIT_THER[charge]['CHAM_MATER_THER'],
                                     CARA_ELEM=carael,
                                     EXCIT=(_F(CHARGE=blocfin,),),
@@ -343,12 +346,13 @@ def combinaison_charge_ops(self, MODELE_MECA, BLOC, EXCIT_MECA, CARA_ELEM_MECA, 
                                     CONVERGENCE= _F(RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),
                                     **comport,);
         else:
-            calc[nb + charge + 1]= MECA_STATIQUE(MODELE=modele,
+            calc[nb + charge + 1]= MECA_STATIQUE(MODELE=model,
                                    CHAM_MATER=EXCIT_THER[charge]['CHAM_MATER_THER'],
                                    CARA_ELEM=carael,
                                    LIST_INST=LIST_INST_THER,
                                    EXCIT=(_F(CHARGE=blocfin,),),);
 
+    UTMESS('I', 'COMBCH_4', valk=('  FIN DE CALCULS INDIVIDUELS   ',))
 
     #--------------------------------------------------------------------------------------
     #                         Calculs des efforts et des contraintes pour chaque cas

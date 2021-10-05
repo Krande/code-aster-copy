@@ -31,9 +31,18 @@ cata_msg = {
 """),
 
     3: _("""
- Les chargements thermiques ne sont pas possible pour les éléments MEMBRANE.
- Il faut créer un nouveau modèle pour les calculs thermiques en remplaçant MEMBRANE par DKT.
- %(k1)s, %(k2)s, %(k3)s correspondant à ce modèle doivent être renseignés. 
+ S'il existe des chargements thermiques pour des éléments de structure MEMBRANE, 
+ %(k1)s, %(k2)s, %(k3)s doivent être renseignés. 
+
+ Car les chargements thermiques ne sont pas possible pour les éléments MEMBRANE.
+ Il faut créer un modèle mécanique pour les calculs thermiques en remplaçant MEMBRANE par DKT.
 """),
+
+    4: _("""
+  -----------------------------------------------------
+ >>>>>>>>>> %(k1)s <<<<<<<<<<
+ -----------------------------------------------------
+"""),
+
 
 }
