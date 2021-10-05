@@ -101,7 +101,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                FONC_MULT=FONC,),),
                      CONTACT=CONT,
                      COMPORTEMENT=_F(RELATION='ELAS',
-                                  DEFORMATION='GROT_GDEP',),
+                                  DEFORMATION='GDEF_LOG',),
                      INCREMENT=_F(LIST_INST=L_INST,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                      SOLVEUR=_F(),
@@ -160,9 +160,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU, NOM_CHAM='PRES_NOEU',
                       GROUP_NO='N5',INST=1.0,
                       REFERENCE='AUTRE_ASTER',
                       NOM_CMP='PRES',
-                      VALE_CALC=-3806.70939176,
+                      VALE_CALC=-3811.914542845849,
                       VALE_REFE=-3800.49495483,
-                       PRECISION=1.E-2,
+                       PRECISION=0.004,
                        ),))
 
 RESU=CALC_PRESSION(MAILLAGE=MESH,reuse=RESU,
@@ -267,8 +267,9 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                    RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-1.3070380718,
+                   VALE_CALC=-1.2730287759762522,
                    VALE_REFE=-1.3069040401076999,
+                   PRECISION=0.026,
                    ),
                 _F(GROUP_NO='B',
                    INST=1.0,
@@ -276,8 +277,9 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
                    RESULTAT=RESU,
                    NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-3801.536088,
+                   VALE_CALC=-3806.0752837533055,
                    VALE_REFE=-3800.4949548282998,
+                   PRECISION=0.0015,
                    ),
                 ),
           )
@@ -286,14 +288,10 @@ TEST_RESU(RESU=(_F(GROUP_NO='B',
 TEST_RESU(RESU=(_F(RESULTAT=RESU, NOM_CHAM='PRES_NOEU',
                       GROUP_NO='N5',INST=1.0,
                       NOM_CMP='PRES',
-                      VALE_CALC=-3801.536088,),))
+                   REFERENCE='SOURCE_EXTERNE',
+                   VALE_CALC=-3806.0752837533055,
+                   VALE_REFE=-3800.4949548282998,
+                   PRECISION=0.0015,),))
 
 
-
-
-
-
-
-#IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=p_appr_2,),)
-#IMPR_RESU(FORMAT="RESULTAT", RESU=_F(CHAM_GD=p_appr_F,),)
 FIN();

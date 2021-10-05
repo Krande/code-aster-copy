@@ -59,7 +59,7 @@ MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU=(
 #+----------------------------------------+
 
 elmts   = 40
-pas_tmp = 100
+pas_tmp = 10
 tour    = 2*pi/elmts
 
 #+----------------------------------------+
@@ -198,7 +198,7 @@ RESU1=STAT_NON_LINE(MODELE      = MO,
                                    _F(CHARGE = CH2,),),
                     CONTACT     = CONT_N,
                     COMPORTEMENT   = (_F(RELATION  = 'VMIS_ISOT_LINE',
-                                      DEFORMATION  = 'GROT_GDEP',),),
+                                      DEFORMATION  = 'GDEF_LOG',),),
                     NEWTON      = _F(REAC_INCR=1,REAC_ITER=1),
                     INCREMENT   = _F(LIST_INST=INSTS,),
                     CONVERGENCE = _F(ITER_GLOB_MAXI = 20,),
@@ -213,7 +213,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                                    _F(CHARGE = CH2,),),
                     CONTACT     = CONT_G,
                     COMPORTEMENT   = (_F(RELATION    = 'VMIS_ISOT_LINE',
-                                     DEFORMATION = 'GROT_GDEP',),),
+                                     DEFORMATION = 'GDEF_LOG',),),
                     NEWTON      = _F(REAC_INCR=1,REAC_ITER=1),
                     INCREMENT   = _F(LIST_INST=INSTS,),
                     CONVERGENCE = _F(ITER_GLOB_MAXI = 20,),
@@ -225,28 +225,28 @@ RESU2=STAT_NON_LINE(MODELE=MO,
 #+----------------------------------------+
 #|          tests de validation           |
 #+----------------------------------------+
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   VALE_ABS='OUI',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU1,
                   NOM_CHAM='DEPL',
                   GROUP_NO='N10',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC= 2.3226295413012E+06,
+                  VALE_CALC=2457910.1009857887,
                   VALE_REFE=2.4177949709864603E6,
-                  PRECISION=0.040000000000000001,),
+                  PRECISION=0.017,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=100,
+TEST_RESU(RESU=_F(NUME_ORDRE=10,
                   VALE_ABS='OUI',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
                   GROUP_NO='N10',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC= 2.32740964E+06,
+                  VALE_CALC=2462969.0126585956,
                   VALE_REFE=2.4177949709864603E6,
-                  PRECISION=0.040000000000000001,),
+                  PRECISION=0.019,),
           )
 
 FIN();
