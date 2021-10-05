@@ -92,6 +92,17 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
 ! 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
 !
     call infniv(ifm, nivinf)
+!
+    if (nivinf .gt. 1) then
+        write (ifm,1001) 'DEBUT DE '//nompro
+    endif
+1001 format(/,4x,10('='),a,10('='),/)
+!
+! 1.2. ==> NOMS DES TABLEAUX
+!               12   345678   9012345678901234
+    ntprof = '&&'//nompro//'.PROFIL_MED_LU  '
+    ntnopf = '&&'//nompro//'.NOM_PROFIL_MED '
+!
     if(nosdfu.ne. ' ') then
         call asmpi_info(rank = mrank, size = msize)
         rang = to_aster_int(mrank)
@@ -131,16 +142,6 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
         nvalty2 = nvalty
     endif
 !
-    if (nivinf .gt. 1) then
-        write (ifm,1001) 'DEBUT DE '//nompro
-    endif
-1001 format(/,4x,10('='),a,10('='),/)
-!
-! 1.2. ==> NOMS DES TABLEAUX
-!               12   345678   9012345678901234
-    ntprof = '&&'//nompro//'.PROFIL_MED_LU  '
-    ntnopf = '&&'//nompro//'.NOM_PROFIL_MED '
-!
 ! 1.3. ==> A PRIORI, PAS DE PROFIL DANS LE FICHIER
 !
     nrprty = 0
@@ -165,7 +166,6 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
         saux08='mpfnpf'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
-!
 !
     if (nivinf .gt. 1) then
         write (ifm,*) '   NOMBRE DE PROFILS DANS LE FICHIER : ',nbprof
