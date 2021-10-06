@@ -83,7 +83,13 @@ CHARG4=AFFE_CHAR_MECA(MODELE=MO,
 MEST4=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
                     CARA_ELEM=CAREL,
-                    EXCIT=_F(CHARGE=CHARG4,),);
+                    EXCIT=_F(CHARGE=CHARG4,),
+                    OPTION='SANS', 
+                    );
+
+STRX=CALC_CHAMP(
+                RESULTAT=MEST4, # INFO=2,
+                CONTRAINTE=('EFGE_ELNO'),)
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
