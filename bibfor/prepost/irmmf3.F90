@@ -39,6 +39,7 @@ implicit none
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/desgfa.h"
+#include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
@@ -108,6 +109,7 @@ character(len=8) :: nosdfu
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=6), parameter :: nompro = 'IRMMF3'
     integer, parameter :: edmail = 0, ednoeu = 3, tygeno = 0
     integer :: edfuin
     parameter (edfuin=0)
@@ -117,17 +119,22 @@ character(len=8) :: nosdfu
     integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
     integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
     integer :: jgren, compt, jtest3, jtest4, jtest5, jtest6
-    integer :: nbgr, nbgrp
+    integer :: nbgr, nbgrp, nfam_max
     integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest2
     character(len=8) :: saux08
     character(len=9) :: saux09
-    character(len=64) :: nomfam
+    character(len=80) :: nomfam
+    real(kind=8) :: start_time, end_time
     aster_logical :: lfamtr
     mpi_int :: mrank, msize, world, proc, taille
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !
+    if (infmed .gt. 1) then
+        call cpu_time(start_time)
+        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES FAMILLES MED EN PARALLELE : '
+    endif
 !
 !     NATT = NOMBRE D'ATTRIBUTS DANS UNE FAMILLE : JAMAIS. ELLES NE SONT
 !            DEFINIES QUE PAR LES GROUPES
@@ -247,132 +254,134 @@ character(len=8) :: nosdfu
 !          CARACTERISENT. POUR CELA, ON SE BASE SUR LE PREMIER ENTITE
 !          QUI EN FAIT PARTIE.
 !
-        if(nfam.ne.0) then
-        call wkvect('&&IRMMF2.NOGRFA', 'V V K80', nbgrou*nbgrou, jgrou)
-        call wkvect('&&IRMMF2.NOMFAM', 'V V K80', nfam, jnofa)
-        call wkvect('&&IRMMF2.NBGRFA', 'V V I', nfam, jnbgr)
-        call wkvect('&&IRMMF2.NUMFAM', 'V V I', nfam, jnufa)
-        numgrp = 0
-        do iaux = 1 , nfam
+        nfam_max = nfam
+        call asmpi_comm_vect('MPI_MAX', 'I', sci=nfam_max)
+        if(nfam_max.ne.0) then
+            call wkvect('&&IRMMF2.NOGRFA', 'V V K80', nbgrou*nbgrou, jgrou)
+            call wkvect('&&IRMMF2.NOMFAM', 'V V K80', nfam_max, jnofa)
+            call wkvect('&&IRMMF2.NBGRFA', 'V V I', nfam_max, jnbgr)
+            call wkvect('&&IRMMF2.NUMFAM', 'V V I', nfam_max, jnufa)
+            numgrp = 0
+            do iaux = 1 , nfam
 !
 ! 2.3.1. ==> DETERMINATION DE LA FAMILLE : NOM, NOMS ET NUMEROS DES
 !              GROUPES ASSOCIES
-            numfam = iaux
-            if (typent .ne. tygeno) then
-                numfam = -numfam
-            endif
+                numfam = iaux
+                if (typent .ne. tygeno) then
+                    numfam = -numfam
+                endif
 !
 !         NUMERO DE LA 1ERE ENTITE FAISANT REFERENCE A CETTE FAMILLE
-            ient = nufacr(iaux)
+                ient = nufacr(iaux)
 !
 !         NB ET NOMS+NUMS DES GROUPES ASSOCIES A LA FAMILLE
-            codret = tabaux(1+(ient-1)*nbec)
-            call nomgfa(nomgen, nbgrou, tabaux(1+(ient-1)*nbec), nogrfa, nbgnof)
-            zi(jnufa+iaux-1) = tabaux(1+(ient-1)*nbec)
+                codret = tabaux(1+(ient-1)*nbec)
+                call nomgfa(nomgen, nbgrou, tabaux(1+(ient-1)*nbec), nogrfa, nbgnof)
+                zi(jnufa+iaux-1) = tabaux(1+(ient-1)*nbec)
 !
 !         NOM DE LA FAMILLE : ON LE CONSTRUIT A PARTIR DES NOMS
 !         DE GROUPES
 !
-            jaux = iaux - 1
-            call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
-            zi(jnbgr+iaux-1) = nbgnof
-            zk80(jnofa+iaux-1) = nomfam
-            do jaux = 1, nbgnof
-                zk80(jgrou+numgrp) = nogrfa(jaux)
-                numgrp = numgrp + 1
-            enddo
-        end do
-        compt = 0
-        call wkvect('&&IRMMF2.TEST', 'V V I', nbproc, jtest)
-        zi(jtest+rang) = nfam
-        call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=zi(jtest))
-        do jaux = 0, nbproc-1
-            compt = compt + zi(jtest+jaux)
-        enddo
-        call wkvect('&&IRMMF2.TEST3', 'V V K80', compt, jtest3)
-        call wkvect('&&IRMMF2.TEST4', 'V V I', compt, jtest4)
-        compt = 0
-        do jaux = 0, nbproc-1
-            call wkvect('&&IRMMF2.TEST2', 'V V K80', zi(jtest+jaux), jtest2)
-            call wkvect('&&IRMMF2.TEST5', 'V V I', zi(jtest+jaux), jtest5)
-            if(jaux.eq.rang) then
-                do iaux = 1, zi(jtest+jaux)
-                    zk80(jtest2+iaux-1) = zk80(jnofa+iaux-1)
-                    zi(jtest5+iaux-1) = zi(jnbgr+iaux-1)
+                jaux = iaux - 1
+                call mdnofa(numfam, nogrfa, nbgnof, jaux, nofaex, nomfam)
+                zi(jnbgr+iaux-1) = nbgnof
+                zk80(jnofa+iaux-1) = nomfam
+                do jaux = 1, nbgnof
+                    zk80(jgrou+numgrp) = nogrfa(jaux)
+                    numgrp = numgrp + 1
                 enddo
-            endif
-            proc = jaux
-            taille = zi(jtest+jaux)
-            call asmpi_bcast_char80(zk80(jtest2), taille, proc, world)
-            call asmpi_bcast_i(zi(jtest5), taille, proc, world)
+            end do
+            compt = 0
+            call wkvect('&&IRMMF2.TEST', 'V V I', nbproc, jtest)
+            zi(jtest+rang) = nfam
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=zi(jtest))
+            do jaux = 0, nbproc-1
+                compt = compt + zi(jtest+jaux)
+            enddo
+            call wkvect('&&IRMMF2.TEST3', 'V V K80', compt, jtest3)
+            call wkvect('&&IRMMF2.TEST4', 'V V I', compt, jtest4)
+            compt = 0
+            do jaux = 0, nbproc-1
+                call wkvect('&&IRMMF2.TEST2', 'V V K80', max(1,zi(jtest+jaux)), jtest2)
+                call wkvect('&&IRMMF2.TEST5', 'V V I', max(1,zi(jtest+jaux)), jtest5)
+                if(jaux.eq.rang) then
+                    do iaux = 1, zi(jtest+jaux)
+                        zk80(jtest2+iaux-1) = zk80(jnofa+iaux-1)
+                        zi(jtest5+iaux-1) = zi(jnbgr+iaux-1)
+                    enddo
+                endif
+                proc = to_mpi_int(jaux)
+                taille = to_mpi_int(zi(jtest+jaux))
+                call asmpi_bcast_char80(zk80(jtest2), taille, proc, world)
+                call asmpi_bcast_i(zi(jtest5), taille, proc, world)
 
-            nbgr = 0
-            do iaux = 1, taille
-                nbgr = nbgr + zi(jtest5+iaux-1)
-            enddo
-            call wkvect('&&IRMMF2.TEST6', 'V V K80', nbgr, jtest6)
-            if(jaux.eq.rang) then
-                nbgrp = 0
-                do iaux = 1, nfam
-                    do kaux = 1, zi(jnbgr+iaux-1)
-                        zk80(jtest6+nbgrp) = zk80(jgrou+nbgrp)
-                        nbgrp = nbgrp + 1
-                    enddo
+                nbgr = 0
+                do iaux = 1, taille
+                    nbgr = nbgr + zi(jtest5+iaux-1)
                 enddo
-                ASSERT(nbgrp.eq.nbgr)
-            endif
-            taille = nbgr
-            call asmpi_bcast_char80(zk80(jtest6), taille, proc, world)
+                call wkvect('&&IRMMF2.TEST6', 'V V K80', max(1,nbgr), jtest6)
+                if(jaux.eq.rang) then
+                    nbgrp = 0
+                    do iaux = 1, nfam
+                        do kaux = 1, zi(jnbgr+iaux-1)
+                            zk80(jtest6+nbgrp) = zk80(jgrou+nbgrp)
+                            nbgrp = nbgrp + 1
+                        enddo
+                    enddo
+                    ASSERT(nbgrp.eq.nbgr)
+                endif
+                taille = to_mpi_int(nbgr)
+                call asmpi_bcast_char80(zk80(jtest6), taille, proc, world)
 !
-            nbgr = 0
-            do iaux = 1, zi(jtest+jaux)
-                lfamtr = .false._1
-                do kaux = 1, compt
-                    if(zk80(jtest3+kaux-1).eq.zk80(jtest2+iaux-1)) then
-                        lfamtr = .true._1
-                        exit
-                    endif
-                enddo
-                if(.not.lfamtr) then
-                    zk80(jtest3+compt) = zk80(jtest2+iaux-1)
-                    compt = compt + 1
-                    nomfam = zk80(jtest2+iaux-1)
-                    nbgnof = zi(jtest5+iaux-1)
-                    do kaux = 1, nbgnof
-                        nogrfa(kaux) = zk80(jtest6+nbgr+kaux-1)
+                nbgr = 0
+                do iaux = 1, zi(jtest+jaux)
+                    lfamtr = .false._1
+                    do kaux = 1, compt
+                        if(zk80(jtest3+kaux-1).eq.zk80(jtest2+iaux-1)) then
+                            lfamtr = .true._1
+                            exit
+                        endif
                     enddo
+                    if(.not.lfamtr) then
+                        zk80(jtest3+compt) = zk80(jtest2+iaux-1)
+                        compt = compt + 1
+                        nomfam = zk80(jtest2+iaux-1)
+                        nbgnof = zi(jtest5+iaux-1)
+                        do kaux = 1, nbgnof
+                            nogrfa(kaux) = zk80(jtest6+nbgr+kaux-1)
+                        enddo
 !
 ! 2.3.2. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
 !
-                    if (typent .ne. tygeno) then
-                        call as_mfacre(fid, nomamd, nomfam, -compt, nbgnof, nogrfa, codret)
+                        if (typent .ne. tygeno) then
+                            call as_mfacre(fid, nomamd, nomfam, -compt, nbgnof, nogrfa, codret)
+                        else
+                            call as_mfacre(fid, nomamd, nomfam, compt, nbgnof, nogrfa, codret)
+                        endif
+                        if (codret .ne. 0) then
+                            saux08='mfacre'
+                            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+                        endif
+                        if(jaux.eq.rang) then
+                            zi(jtest4+iaux-1) = compt
+                        endif
                     else
-                        call as_mfacre(fid, nomamd, nomfam, compt, nbgnof, nogrfa, codret)
+                        if(jaux.eq.rang) then
+                            zi(jtest4+iaux-1) = kaux
+                        endif
                     endif
-                    if (codret .ne. 0) then
-                        saux08='mfacre'
-                        call utmess('F', 'DVP_97', sk=saux08, si=codret)
-                    endif
-                    if(jaux.eq.rang) then
-                        zi(jtest4+iaux-1) = compt
-                    endif
-                else
-                    if(jaux.eq.rang) then
-                        zi(jtest4+iaux-1) = kaux
-                    endif
-                endif
-                nbgr = nbgr + zi(jtest5+iaux-1)
+                    nbgr = nbgr + zi(jtest5+iaux-1)
+                enddo
+                call jedetr('&&IRMMF2.TEST2')
+                call jedetr('&&IRMMF2.TEST5')
+                call jedetr('&&IRMMF2.TEST6')
             enddo
-            call jedetr('&&IRMMF2.TEST2')
-            call jedetr('&&IRMMF2.TEST5')
-            call jedetr('&&IRMMF2.TEST6')
-        enddo
-        call jedetr('&&IRMMF2.NOGRFA')
-        call jedetr('&&IRMMF2.NOMFAM')
-        call jedetr('&&IRMMF2.NBGRFA')
-        call jedetr('&&IRMMF2.NUMFAM')
-        call jedetr('&&IRMMF2.TEST')
-        call jedetr('&&IRMMF2.TEST3')
+            call jedetr('&&IRMMF2.NOGRFA')
+            call jedetr('&&IRMMF2.NOMFAM')
+            call jedetr('&&IRMMF2.NBGRFA')
+            call jedetr('&&IRMMF2.NUMFAM')
+            call jedetr('&&IRMMF2.TEST')
+            call jedetr('&&IRMMF2.TEST3')
         endif
         if (typent .ne. tygeno) then
             do ient = 1, nbrent
@@ -442,7 +451,7 @@ character(len=8) :: nosdfu
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         call jeveuo(nosdfu//'.MATY', 'L', jtyp)
         do ityp = 1 , MT_NTYMAX
-            if (nmatyp(ityp) .ne. 0) then
+            if (zi(jtyp+3*(ityp-1)+2).ne.0) then
                 start = zi(jtyp+3*(ityp-1))
                 nbmal = nmatyp(ityp)
                 nbmat = zi(jtyp+3*(ityp-1)+2)
@@ -481,6 +490,12 @@ character(len=8) :: nosdfu
                 endif
             endif
         enddo
+    endif
+!
+    if (infmed .gt. 1) then
+        call cpu_time(end_time)
+        write (ifm,*) '<',nompro,'> FIN ECRITURE DES FAMILLES MED EN PARALLELE EN ', &
+            end_time-start_time, "sec."
     endif
 !
 end subroutine

@@ -94,6 +94,7 @@ character(len=8), optional :: nosdfu
     integer :: iaux, jaux, nuanom(MT_NTYMAX, MT_NNOMAX)
     integer :: lnomam
     integer :: ifm, niv
+    real(kind=8) :: start_time, end_time
     character(len=1) :: saux01
     character(len=6) :: saux06
     character(len=8) :: nomtyp(MT_NTYMAX)
@@ -117,6 +118,10 @@ character(len=8), optional :: nosdfu
     call jemarq()
 !
     call infniv(ifm, niv)
+    if (niv .gt. 1) then
+        call cpu_time(start_time)
+        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DU MAILLAGE MED : '
+    endif
 !
     if(present(lfichUniq)) then
         nom_sd_par = ' '
@@ -308,6 +313,12 @@ character(len=8), optional :: nosdfu
 !
         call jedetc('V', '&&'//nompro, 1)
 !
+    endif
+!
+    if (niv .gt. 1) then
+        call cpu_time(end_time)
+        write (ifm,*) '<',nompro,'> FIN ECRITURE DU MAILLAGE MED EN ', &
+            end_time-start_time, "sec."
     endif
 !
     call jedema()

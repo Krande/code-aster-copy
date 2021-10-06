@@ -236,7 +236,14 @@ TEST_RESU(RESU=_F(INST=1.0,
                   CRITERE='RELATIF',),
           )
 
-#IMPR_RESU(FORMAT='MED', RESU=_F( RESULTAT=resnonl), UNITE=80)
+DEFI_FICHIER( UNITE=87, FICHIER='/tmp/resu.med', TYPE='BINARY',)
 
+IMPR_RESU(FICHIER_UNIQUE='OUI',
+          FORMAT='MED',
+          UNITE=87, INFO=2,
+          RESU=_F(RESULTAT=resnonl,),
+          VERSION_MED='4.1.0')
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=87)
 
 FIN()

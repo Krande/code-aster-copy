@@ -60,6 +60,7 @@ implicit none
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
+    character(len=6), parameter :: nompro = 'IRMHPC'
     integer :: codret, iret
     integer :: jnumno, nbjoin, i_join, nbnoj, jjoinr
     integer :: ifm, nivinf, domdis, rang, nbproc
@@ -82,6 +83,9 @@ implicit none
     call jemarq()
 !
     call infniv(ifm, nivinf)
+    if (nivinf .gt. 1) then
+        write (ifm,*) '<',nompro,'> DEBUT IMPRESSION DES JOINTS :'
+    endif
 !
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
@@ -150,6 +154,10 @@ implicit none
             ASSERT(codret == 0)
         end do
         call jedetr("&&IRMHPC.DOMJOINTS")
+    endif
+!
+    if (nivinf .gt. 1) then
+        write (ifm,*) '<',nompro,'> FIN IMPRESSION DES JOINTS.'
     endif
 !
     call jedema()

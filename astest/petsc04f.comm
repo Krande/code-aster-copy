@@ -160,6 +160,16 @@ MESTAT = STAT_NON_LINE(
                         INFO=1,
 )
 
+DEFI_FICHIER( UNITE=87, FICHIER='/tmp/resu.med', TYPE='BINARY',)
+
+IMPR_RESU(FICHIER_UNIQUE='OUI',
+          FORMAT='MED',
+          UNITE=87,
+          RESU=_F(RESULTAT=MESTAT,),
+          VERSION_MED='4.1.0')
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=87)
+
 
 TEST_RESU(
    RESU=(_F(

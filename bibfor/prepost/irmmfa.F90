@@ -84,17 +84,22 @@ character(len=8) :: nosdfu
     integer :: natt
     integer :: jnofam
     integer :: jmafam
-    integer :: ifm, nivinf
+    integer :: ifm, niv
     character(len=8) :: saux08
     character(len=24) :: nufano, nufama
     character(len=64) :: nomfam
     character(len=80) :: saux80
+    real(kind=8) :: start_time, end_time
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    call infniv(ifm, nivinf)
+    call infniv(ifm, niv)
+    if (niv .gt. 1) then
+        call cpu_time(start_time)
+        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES FAMILLES MED : '
+    endif
 !
 !     VECTEUR NUMEROS DES FAMILLES DES ENTITES = NB ENTITES
 !     PAR DEFAUT, JEVEUX MET TOUT A 0. CELA SIGNIFIE QUE, PAR DEFAUT,
@@ -163,6 +168,11 @@ character(len=8) :: nosdfu
     call jedetr(nufama)
 !
 !GN      WRITE (IFM,*) '==> DUREE TOTALE DE ',NOMPRO,' :',TPS1(4)
+    if (niv .gt. 1) then
+        call cpu_time(end_time)
+        write (ifm,*) '<',nompro,'> FIN ECRITURE DES FAMILLES MED EN ', &
+            end_time-start_time, "sec."
+    endif
 !
     call jedema()
 !

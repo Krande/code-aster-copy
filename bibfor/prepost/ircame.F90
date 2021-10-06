@@ -121,6 +121,7 @@ integer :: codret
     integer :: iCmp
     character(len=8), pointer :: cmpUserName(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
+    real(kind=8) :: start_time, end_time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -156,6 +157,8 @@ integer :: codret
     endif
 !
     if (nivinf .gt. 1) then
+        call cpu_time(start_time)
+        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DU CHAMP MED ', typech(1:4), ' :'
         write (ifm,*) '<',nompro,'> NOM DU FICHIER MED : ',nofimd
     endif
 !   1.4. ==> LES NOMBRES CARACTERISTIQUES
@@ -174,7 +177,7 @@ integer :: codret
             call utmess('F', 'MED3_5')
         endif
         nom_sd_fu = '&&IRMHD2'
-        call jeexin(nom_sd_fu//'.NBMA', codret)
+        call jeexin(nom_sd_fu//'.MAIL', codret)
         if(codret.eq.0) then
             call iremed_filtre(nomaas, nom_sd_fu, 'V', .true._1)
         endif
@@ -321,6 +324,9 @@ integer :: codret
 !
 999 continue
     if (nivinf .gt. 1) then
+        call cpu_time(end_time)
+        write (ifm,*) '<',nompro,'> FIN ECRITURE DU CHAMP MED EN ', &
+            end_time-start_time, "sec."
         write (ifm,*) ' '
     endif
 !

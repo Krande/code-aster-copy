@@ -116,6 +116,7 @@ character(len=16), intent(in) :: field_type
     integer :: adproa, adprom, adexic, adpror
     integer :: adnucm
     integer :: adauxi
+    real(kind=8) :: start_time, end_time
 !
     character(len=24) :: ntprom, exicmp, ntpror
     character(len=24) :: ntauxi
@@ -134,6 +135,7 @@ character(len=16), intent(in) :: field_type
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
+        call cpu_time(start_time)
         write (ifm,101) 'DEBUT DE '//nompro
         call utflsh(codret)
     endif
@@ -276,7 +278,9 @@ character(len=16), intent(in) :: field_type
     call jedetr('&&IRCMPR.TYPMA')
 !
     if (nivinf .gt. 1) then
-        write (ifm,101) 'FIN DE '//nompro
+        call cpu_time(end_time)
+        write (ifm,*) '    ==========FIN DE '//nompro, " EN ", &
+            end_time - start_time, " sec=========="
     endif
 !
 end subroutine

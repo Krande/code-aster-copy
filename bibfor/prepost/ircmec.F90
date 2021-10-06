@@ -99,6 +99,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
     integer :: ifm, nivinf
     integer :: iaux, jnbno, nbentl, nbentt, start, filter(1)
     integer :: jnbma, nbbloc
+    real(kind=8) :: start_time, end_time
 !
     character(len=8) :: saux08
     character(len=14) :: saux14
@@ -115,6 +116,7 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
 ! 1.2. ==> INFORMATION
 !
     if (nivinf .gt. 1) then
+        call cpu_time(start_time)
         write (ifm,1001) 'DEBUT DE '//nompro
         1001 format(/,4x,10('='),a,10('='),/)
         call utmess('I', 'MED_49')
@@ -256,7 +258,9 @@ subroutine ircmec(idfimd, nochmd, nomprf, nolopg, numpt,&
     endif
 !
     if (nivinf .gt. 1) then
-        write (ifm,1001) 'FIN DE '//nompro
+        call cpu_time(end_time)
+        write (ifm,*) '    ==========FIN DE '//nompro//' EN ', &
+            end_time-start_time, " sec=========="
     endif
 !
 end subroutine

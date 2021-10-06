@@ -64,10 +64,11 @@ test.assertSequenceEqual(sorted(pmesh.getGroupsOfNodes()), sorted(global_grp))
 test.assertTrue( pmesh.hasGroupOfNodes("TOUT"))
 
 pmesh.printMedFile("mesh_%d.med"%rank)
+pmesh.printMedFile("/tmp/mesh.med", False)
 
 pmesh2 = code_aster.ParallelMesh()
 pmesh2.readMedFile("mesh_%d.med"%rank, True)
-
+pmesh2.printMedFile("/tmp/mesh2.med", False)
 
 #test global numbering of nodes
 nodes_gnum = pmesh.getNodes(localNumbering=False)
