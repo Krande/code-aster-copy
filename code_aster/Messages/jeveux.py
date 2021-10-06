@@ -48,8 +48,7 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
-    7 : _("""Destruction de '%(k1)s'
-"""),
+    7 : _("""Destruction de '%(k1)s'"""),
 
     8 : _("""
  La base  %(k1)s  a été constituée avec la version  %(k2)s

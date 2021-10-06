@@ -89,7 +89,7 @@ subroutine op0175()
     chfer1='&&OP0175.CHFER1'
     call w175af(model, chfer1)
     if (niv .gt. 1) then
-        call imprsd('CHAMP', chfer1, 6, 'CHFER1=')
+        call imprsd('CARTE', chfer1, 6, 'CHFER1=')
     endif
 !
 !     -- 2. ON APPELLE L'OPTION FERRAILLAGE :

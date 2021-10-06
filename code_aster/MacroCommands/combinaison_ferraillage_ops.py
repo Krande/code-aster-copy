@@ -20,9 +20,6 @@
 # --------------------------------------------------------------------
 # aslint: disable=W4004
 
-import string
-
-import aster
 from ..Cata.Syntax import _F
 from ..Commands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU, FORMULE
 from ..Messages import UTMESS
@@ -31,7 +28,7 @@ from ..Messages import UTMESS
 def combinaison_ferraillage_ops(self, **args):
     """Command to combine results to estimate reinforcement of the structure."""
 
-    resu         = args.get('reuse')
+    resu         = args.get('RESULTAT')
     combinaison  = args.get('COMBINAISON')
     affe         = args.get('AFFE')
     codification = args.get('CODIFICATION')

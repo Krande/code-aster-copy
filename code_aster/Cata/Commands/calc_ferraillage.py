@@ -170,6 +170,7 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE", op=175, sd_prod=calc_ferraillage_p
                                         fr=tr("Longueur critique des epingle d'aciers d'effort tranchant")),
                 ),
              ),),
+         INFO=SIMP(statut='f', typ="I", defaut=1, into=(1, 2)),
       )
 
 
