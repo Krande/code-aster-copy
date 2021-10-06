@@ -21,6 +21,8 @@
 # In this testcase, the mesh file path is relative to this script file.
 # This allows to directly run:
 #     mpirun -n 2 path/to/run_aster this-file.py
+# or (if the mpi environment is consistent):
+#     path/to/run_aster -n 2 this-file.py
 
 import os.path as osp
 

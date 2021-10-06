@@ -56,6 +56,18 @@ these values).
 Data files may be referenced in the Python file with relative paths from the
 parent directory of ``file.py`` using, for example, ``os.path.dirname(__file__)``.
 
+For the parallel version:
+
+.. code-block:: sh
+
+    mpirun -n 2 bin/run_aster --only-proc0 path/to/file.py
+
+or:
+
+.. code-block:: sh
+
+    bin/run_aster -n 2 --only-proc0 path/to/file.py
+
 ``bin/run_aster`` only runs its own version, those installed at the level of
 the ``bin`` directory; unlike ``as_run`` where the same instance of ``as_run``
 executes several versions of code_aster.
@@ -192,6 +204,13 @@ def parse_args(argv):
         "on stdout.",
     )
     parser.add_argument(
+        "-n",
+        dest="mpi_nbcpu",
+        type=int,
+        action="store",
+        help="override the number of MPI processes",
+    )
+    parser.add_argument(
         "--time_limit",
         dest="time_limit",
         type=float,
@@ -233,9 +252,9 @@ def parse_args(argv):
         "file",
         metavar="FILE",
         nargs="?",
-        help="Export file (.export) defining the calculation or Python file (.py). "
-        "Without file, it starts an interactive Python "
-        "session.",
+        help="Export file (.export) defining the calculation or "
+        "Python file (.py|.comm). "
+        "Without file, it starts an interactive Python session.",
     )
 
     args = parser.parse_args(argv)
@@ -323,6 +342,8 @@ def main(argv=None):
                     resu=True,
                 )
             )
+    if args.mpi_nbcpu:
+        export.set("mpi_nbcpu", args.mpi_nbcpu)
     if args.time_limit:
         export.set_time_limit(args.time_limit)
     # use FACMTPS from environment
