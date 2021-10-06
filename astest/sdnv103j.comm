@@ -27,14 +27,7 @@ MA=CREA_MAILLAGE(MAILLAGE=MA1,
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
-                             _F(GROUP_MA='SZZ',
-                                NOM='MILIEU',
-                                CRIT_NOEUD='MILIEU',),
-                             _F(DIFFE=('SXX','MILIEU',),
-                                NOM='SXX1',),
-                             _F(DIFFE=('SYY','MILIEU',),
-                                NOM='SYY1',),),);
+              CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),),)
 
 MODE=AFFE_MODELE(MAILLAGE=MA,
                  AFFE=(_F(TOUT='OUI',
@@ -80,9 +73,9 @@ CH=AFFE_CHAR_MECA(MODELE=MODE,
                                DX=0.,
                                DY=0.,
                                DZ=0.,),
-                            _F(GROUP_NO='SYY1',
+                            _F(GROUP_NO='SYY',
                                DY=0.,),
-                            _F(GROUP_NO='SXX1',
+                            _F(GROUP_NO='SXX',
                                DX=0.,),),
                   INFO=1,);
 
