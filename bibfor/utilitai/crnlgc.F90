@@ -117,7 +117,6 @@ subroutine crnlgc(numddl)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(mnbproc)
     DEBUG_MPI('crnlgc', rang, nbproc)
-    ASSERT(nbproc .lt. 9999)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)

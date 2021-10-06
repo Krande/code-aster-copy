@@ -42,8 +42,6 @@ subroutine crnulg(numddl)
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    ASSERT(nbproc.lt.9999)
-
 !   Création de la numérotation
     call crnlgn(numddl)
 
