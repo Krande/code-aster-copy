@@ -88,15 +88,16 @@ test.assertFalse(resu.hasElementaryCharacteristics(1))
 
 resu=CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=('SIEF_ELGA'))
 
-DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.med', TYPE='BINARY',)
+DEPL = resu.getFieldOnNodesReal("DEPL", 0)
+sfon = DEPL.exportToSimpleFieldOnNodes()
+sfon.updateValuePointers()
 
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          UNITE=80,
-          RESU=_F(RESULTAT=resu,),
-          VERSION_MED='4.0.0')
+SIEF = resu.getFieldOnCellsReal("SIEF_ELGA", 0)
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+
+val = [0.134228076192 , 0.134176297047, 0.154099687654, 0.154189676715]
+test.assertAlmostEqual(sfon.getValue(4, 1), val[rank])
+
 
 DEFI_FICHIER( UNITE=81, FICHIER='/tmp/resu_no.med', TYPE='BINARY',)
 
@@ -118,14 +119,60 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=82)
 
-#resu.printMedFile("fort."+str(rank+40)+".med")
+# load result in sequential
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 0)
-sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
-sfon.updateValuePointers()
+DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.med', TYPE='BINARY',)
 
-val = [0.134228076192 , 0.134176297047, 0.154099687654, 0.154189676715]
-test.assertAlmostEqual(sfon.getValue(4, 1), val[rank])
+IMPR_RESU(FICHIER_UNIQUE='OUI',
+          FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=resu,),
+          VERSION_MED='4.0.0')
+
+mesh_std = LIRE_MAILLAGE(UNITE=80, FORMAT='MED',)
+
+model_std = AFFE_MODELE(
+    AFFE=_F(MODELISATION=('3D', ),
+            PHENOMENE='MECANIQUE', TOUT='OUI'),
+    MAILLAGE=mesh_std
+)
+
+affectMat_std = code_aster.MaterialField(mesh_std)
+affectMat_std.addMaterialsOnMesh( acier )
+affectMat_std.buildWithoutExternalStateVariables()
+
+charCine_std = code_aster.MechanicalDirichletBC(model_std)
+charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
+charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
+charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
+charCine_std.build()
+
+charCine2_std = code_aster.MechanicalDirichletBC(model_std)
+charCine2_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
+charCine2_std.build()
+
+resu_std = LIRE_RESU(MODELE=model_std,
+                 FORMAT='MED',
+                 UNITE=80,
+                 TYPE_RESU='EVOL_ELAS',
+                 CHAM_MATER=affectMat_std,
+                 EXCIT=(
+                        _F(CHARGE=charCine_std, ),
+                        _F(CHARGE=charCine2_std, ),
+                    ),
+                 FORMAT_MED=(_F(NOM_RESU="resu", NOM_CHAM='DEPL'),
+                             _F(NOM_RESU="resu", NOM_CHAM='SIEF_ELGA'),),
+                 TOUT_ORDRE="OUI")
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+
+
+SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 0)
+DEPL_std = resu_std.getFieldOnNodesReal("DEPL", 0)
+
+test.assertAlmostEqual(DEPL.norm("NORM_2"), DEPL_std.norm("NORM_2"), delta=1e-12)
+#test.assertAlmostEqual(SIEF.norm("NORM_2"), SIEF_std.norm("NORM_2"), delta=1e-12)
+
 
 test.printSummary()
 

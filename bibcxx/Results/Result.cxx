@@ -689,6 +689,7 @@ bool Result::build() {
                     if ( test2 == 0 ) {
                         FieldOnNodesRealPtr result =
                             _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
+                        result->setMesh(curMesh);
                         _dictOfVectorOfFieldOnNodesReal[nomSymb][rank] = result;
                     }
                 } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
