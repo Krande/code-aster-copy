@@ -278,7 +278,15 @@ template < class ValueType > class FieldOnCells : public DataField {
         if ( _dofDescription == nullptr && updateValuePointers() ) {
             if ( _model == nullptr )
                 raiseAsterError( "Model is empty" );
-            _dofDescription = _model->getFiniteElementDescriptor();
+
+            const std::string ligrel = trim( ( *_reference )[0].toString() );
+
+            if ( ligrel.substr( 0, 8 ) == getName().substr( 0, 8 ) ) {
+                _dofDescription =
+                    boost::make_shared< FiniteElementDescriptor >( ligrel, getMesh() );
+            } else {
+                _dofDescription = _model->getFiniteElementDescriptor();
+            }
         }
         return true;
     };

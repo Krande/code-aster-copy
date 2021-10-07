@@ -78,23 +78,24 @@ class FieldBuilder {
         typedef FiniteElementDescriptor FEDDesc;
         typedef FiniteElementDescriptorPtr FEDDescP;
 
-        boost::shared_ptr< FieldOnCells< ValueType > > result =
+        boost::shared_ptr< FieldOnCells< ValueType > > field =
             boost::make_shared< FieldOnCells< ValueType > >( name );
-        AS_ASSERT(result->updateValuePointers());
+        AS_ASSERT(field->updateValuePointers());
 
-        const std::string name2 = trim( ( *( *result )._reference )[0].toString() );
+        const std::string ligrel = trim( ( *( *field )._reference )[0].toString() );
 
-        auto curIter = _mapLigrel.find( name2 );
+        auto curIter = _mapLigrel.find( ligrel );
         FEDDescP curDesc;
-        if ( curIter != _mapLigrel.end() )
+        if ( curIter != _mapLigrel.end() ) {
             curDesc = curIter->second;
-        else {
-            curDesc = boost::make_shared< FEDDesc >( name2, mesh) ;
-            _mapLigrel[name2] = curDesc;
         }
-        result->setDescription( curDesc );
+        else {
+            curDesc = boost::make_shared< FEDDesc >( ligrel, mesh) ;
+            _mapLigrel[ligrel] = curDesc;
+        }
+        field->setDescription( curDesc );
 
-        return result;
+        return field;
     };
 
     /**
@@ -104,11 +105,11 @@ class FieldBuilder {
     boost::shared_ptr< ConstantFieldOnCells< ValueType > >
     buildConstantFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
 
-        boost::shared_ptr< ConstantFieldOnCells< ValueType > > result =
+        boost::shared_ptr< ConstantFieldOnCells< ValueType > > field =
             boost::make_shared<  ConstantFieldOnCells< ValueType > >( name, mesh ) ;
-        AS_ASSERT(result->updateValuePointers());
+        AS_ASSERT(field->updateValuePointers());
 
-        return result;
+        return field;
     };
 
     /**
@@ -119,23 +120,23 @@ class FieldBuilder {
         typedef FieldOnNodesDescription FONDesc;
         typedef FieldOnNodesDescriptionPtr FONDescP;
 
-        boost::shared_ptr< FieldOnNodes< ValueType > > result =
+        boost::shared_ptr< FieldOnNodes< ValueType > > field =
             boost::make_shared<  FieldOnNodes< ValueType > >( name );
-        AS_ASSERT(result->updateValuePointers());
+        AS_ASSERT(field->updateValuePointers());
 
-        const std::string name2 = trim( ( *( *result )._reference )[1].toString() );
+        const std::string profchno = trim( ( *( *field )._reference )[1].toString() );
 
-        auto curIter = _mapProfChno.find( name2 );
+        auto curIter = _mapProfChno.find( profchno );
         FONDescP curDesc;
         if ( curIter != _mapProfChno.end() )
             curDesc = curIter->second;
         else {
-            curDesc = boost::make_shared< FONDesc >( name2 );
-            _mapProfChno[name2] = curDesc;
+            curDesc = boost::make_shared< FONDesc >( profchno );
+            _mapProfChno[profchno] = curDesc;
         }
-        result->setDescription( curDesc );
+        field->setDescription( curDesc );
 
-        return result;
+        return field;
     };
 };
 

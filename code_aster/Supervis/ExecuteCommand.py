@@ -535,7 +535,7 @@ class ExecuteCommand(object):
         """
         if not self.show_syntax():
             return
-        self.check_ds_result(self.result)
+        self.check_ds_result(self._result)
 
     @staticmethod
     def check_ds_result(result):

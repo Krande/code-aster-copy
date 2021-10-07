@@ -143,5 +143,5 @@ def check_ds_object(objsd):
     # print error messages (level=0):
     for level, obj, msg in chk.msg:
         if level == 0:
-            aster.affiche('MESSAGE', repr(obj) + msg)
+            aster.affiche('MESSAGE', repr(obj) + " " + msg)
     return iret

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=4) :: docu
     character(len=8) :: nomu
     character(len=16) :: concep, cmd
-    character(len=19) :: prno, prno2, prno3, ch1, ch2
+    character(len=19) :: prno, prno2, prno3, ch1, ch2, ligr, ligr2
     character(len=24) :: noojb
     integer :: iret1, iret2
     integer :: nuprf
@@ -136,7 +136,20 @@ subroutine copich(base, ch1z, ch2z)
         call jedup1(ch1//'.CELD', base, ch2//'.CELD')
         call jedup1(ch1//'.CELK', base, ch2//'.CELK')
         call jedup1(ch1//'.CELV', base, ch2//'.CELV')
-!
+!       dupliquer le LIGREL
+        if (base .eq. 'G') then
+            call getres(nomu, concep, cmd)
+            call dismoi('NOM_LIGREL', ch2, 'CHAM_ELEM', repk=ligr)
+            if (ligr(1:8) .ne. nomu) then
+                noojb = '12345678.LIGR000000'
+                call gnomsd(' ', noojb, 14, 19)
+                ligr2 = noojb(1:19)
+                print *, "DEBUG: copich: ", ligr, ">", ligr2
+                call copisd('LIGREL', base, ligr, ligr2)
+                call jeveuo(ch2//'.CELK', 'E', vk24=refe)
+                refe(1) = ligr2
+            endif
+        endif
 !
 !     -- CAS DES RESUELEM :
 !     ----------------------
