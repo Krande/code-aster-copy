@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,7 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
 implicit none
 !
 #include "jeveux.h"
+#include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
@@ -55,7 +56,7 @@ integer, intent(in) :: nbStore, listStore(nbStore)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, ico, n1, nbCell
+    integer :: ifm, niv, ico, n1, nbCell, n2, n3
     integer :: iret, iStore, numeStore, ibid, nocc, iocc, nchout, jcmp, nbVari
     character(len=8) :: model, caraElem, mesh
     character(len=8) :: modelPrev, cmpName, tymaxi
@@ -94,8 +95,19 @@ integer, intent(in) :: nbStore, listStore(nbStore)
 
 ! --------- Get list of cells
             call dismoi('NOM_MAILLA', resultIn, 'RESULTAT', repk = mesh)
-            call getelem(mesh  , keywFact, iocc, 'F', listCell,&
-                         nbCell)
+
+            call getvtx(' ', 'TOUT', iocc=iocc, scal=cmpName, nbret=n1)
+            call getvtx(' ', 'GROUP_MA', iocc=iocc, scal=cmpName, nbret=n2)
+            call getvtx(' ', 'MAILLE', iocc=iocc, scal=cmpName, nbret=n3)
+            if ( (n1 .eq. 0) .and. (n2 .eq. 0) .and. (n3 .eq. 0) ) then 
+                ! si pas d'option, on force comme TOUT='OUI'
+                call getelem(mesh, ' ', iocc, 'F', listCell,&
+                            nbCell, l_allz=ASTER_TRUE )
+            else
+                call getelem(mesh, ' ', iocc, 'F', listCell,&
+                            nbCell )
+            endif
+
             call jeveuo(listCell, 'L', vi = cellNume)
             call wkvect(listVariNume, 'V V K8', nbCell*nbVari, jcmp)
 

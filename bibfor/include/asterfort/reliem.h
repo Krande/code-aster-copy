@@ -20,7 +20,7 @@
 !
 interface
     subroutine reliem(mo, ma, typem, motfaz, iocc,&
-                      nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz)
+                      nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz, l_allz)
         integer :: nbmocl
         character(len=*) :: mo
         character(len=8) :: ma
@@ -32,5 +32,6 @@ interface
         character(len=*) :: litroz
         integer :: nbtrou
         aster_logical, optional, intent(in) :: l_keep_propz
+    aster_logical, optional, intent(in) :: l_allz
     end subroutine reliem
 end interface

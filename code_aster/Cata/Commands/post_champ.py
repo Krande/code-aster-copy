@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,8 @@ POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',
 
          regles=(UN_PARMI('EXTR_COQUE','EXTR_TUYAU','EXTR_PMF','MIN_MAX_SP','COQU_EXCENT'),
                  EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP',
-                        'LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS',),
+                        'LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS',),      
+                 EXCLUS('TOUT','GROUP_MA','MAILLE'),       
                  ),
 
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,

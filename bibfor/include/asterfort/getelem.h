@@ -20,9 +20,9 @@
 !
 interface
     subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
-                       nb_elem, suffix     , model, l_keep_propz)
+                       nb_elem, suffix     , model, l_keep_propz, l_allz)
         character(len=8), intent(in) :: mesh
-        character(len=16), intent(in) :: keywordfact
+        character(len=*), intent(in) :: keywordfact
         integer, intent(in) :: iocc
         character(len=1), intent(in) :: stop_void
         integer, intent(out) :: nb_elem
@@ -30,5 +30,6 @@ interface
         character(len=8), optional, intent(in) :: model
         character(len=*), optional, intent(in) :: suffix
         aster_logical, optional, intent(in) :: l_keep_propz
+        aster_logical, optional, intent(in) :: l_allz
     end subroutine getelem
 end interface

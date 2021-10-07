@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine reliem(mo, ma, typem, motfaz, iocc,&
-                  nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz)
+                  nbmocl, limocl, tymocl, litroz, nbtrou, l_keep_propz, l_allz)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/addPhantomNodesFromCells.h"
@@ -48,6 +48,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=*) :: limocl(nbmocl), tymocl(nbmocl), mo
     character(len=*) :: litroz, typem, motfaz
     aster_logical, optional, intent(in) :: l_keep_propz
+    aster_logical, optional, intent(in) :: l_allz
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -84,6 +85,8 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !    POUR UN PARALLEL_MESH, SI TRUE ON NE GARDE QUE LES MAILLES/NOEUDS DONT LE SOUS-DOMAINE
 !    EST PROPRIETAIRE SI FALSE ON GARDE TOUT
 !    SI L'ARGUMENT N'EST PAS PRESENT ON GARDE TOUT (=FALSE).
+! IN, OPTIONAL     : L_ALL : TRUE  : forcer comme TOUT='OUI'
+!                            FALSE : par défaut, cas normal
 ! ----------------------------------------------------------------------
     character(len=24) :: litrou
     integer :: jno, jma, kno, kma, iacnex, iem, nem, numno, nno, nma, nbenc
@@ -96,7 +99,7 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=24) :: karg
     integer :: iarg
     mpi_int :: mrank
-    aster_logical :: l_parallel_mesh, l_group_ma, l_keep_prop
+    aster_logical :: l_parallel_mesh, l_group_ma, l_keep_prop, l_all
     integer, pointer :: maille(:) => null()
     integer, pointer :: prnm(:) => null()
     integer, pointer :: v_maex(:) => null()
@@ -113,6 +116,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
         l_keep_prop = l_keep_propz
     else
         l_keep_prop = ASTER_FALSE
+    end if
+    if(present(l_allz)) then
+        l_all = l_allz
+    else
+        l_all = ASTER_FALSE
     end if
     call infniv(ifm, niv)
 !
@@ -176,7 +184,11 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !        -- CAS TOUT:'OUI'
 !        -----------------
         if (typmcl .eq. 'TOUT') then
-            call getvtx(motfac, motcle, iocc=iocc, scal=oui, nbret=ntou)
+            if (l_all) then
+                ntou = 1
+            else
+                call getvtx(motfac, motcle, iocc=iocc, scal=oui, nbret=ntou)
+            endif
             if (ntou .gt. 0) then
                 if (type2 .eq. 'MAILLE') then
                     do k = 1, nbma

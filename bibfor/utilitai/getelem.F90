@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
-                   nb_elem, suffix     , model, l_keep_propz)
+                   nb_elem, suffix     , model, l_keep_propz, l_allz)
 !
     implicit none
 !
@@ -35,7 +35,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 !
 !
     character(len=8), intent(in) :: mesh
-    character(len=16), intent(in) :: keywordfact
+    character(len=*), intent(in) :: keywordfact
     integer, intent(in) :: iocc
     character(len=1), intent(in) :: stop_void
     integer, intent(out) :: nb_elem
@@ -43,6 +43,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     character(len=8), intent(in), optional :: model
     character(len=*), intent(in), optional :: suffix
     aster_logical, optional, intent(in) :: l_keep_propz
+    aster_logical, optional, intent(in) :: l_allz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,6 +78,8 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 !    POUR UN PARALLEL_MESH, SI TRUE ON NE GARDE QUE LES MAILLES/NOEUDS DONT LE SOUS-DOMAINE
 !    EST PROPRIETAIRE SI FALSE ON GARDE TOUT
 !    SI L'ARGUMENT N'EST PAS PRESENT ON GARDE TOUT (=FALSE).
+! IN, OPTIONAL     : L_ALL : TRUE  : forcer comme TOUT='OUI'
+!                            FALSE : par défaut, cas normal
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,7 +92,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     integer, pointer :: p_list_elem(:) => null()
     character(len=24) :: keyword
     character(len=8) :: model_name, suffix_name
-    aster_logical :: l_keep_prop
+    aster_logical :: l_keep_prop, l_all
     integer :: nb_mocl, nb_elem_gl
     integer :: nb_lect, nb_excl, nb_elim
     integer :: nume_lect, nume_excl
@@ -119,6 +122,11 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     else
         l_keep_prop = ASTER_FALSE
     end if
+    if(present(l_allz)) then
+        l_all = l_allz
+    else
+        l_all = ASTER_FALSE
+    end if
 !
 ! - Read elements
 !
@@ -142,7 +150,7 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
     endif
     if (nb_mocl .ne. 0) then
         call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc,&
-                    nb_mocl, moclm, typmcl, list_lect, nb_lect, l_keep_prop)
+                    nb_mocl, moclm, typmcl, list_lect, nb_lect, l_keep_prop, l_all)
     endif
 !
 ! - Read elements excludes
