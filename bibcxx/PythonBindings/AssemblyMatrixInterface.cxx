@@ -54,6 +54,9 @@ void exportAssemblyMatrixToPython() {
         .def( "appendElementaryMatrix",
               &AssemblyMatrixDisplacementReal::appendElementaryMatrix )
 // ------------------------------------------------------------------------------------------------------
+        .def( "clearElementaryMatrix",
+              &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
+// ------------------------------------------------------------------------------------------------------
         .def( "build", &AssemblyMatrixDisplacementReal::build )
 // ------------------------------------------------------------------------------------------------------
         .def( "getDOFNumbering", &AssemblyMatrixDisplacementReal::getDOFNumbering )
@@ -164,6 +167,9 @@ Arguments:
 // ------------------------------------------------------------------------------------------------------
         .def( "appendElementaryMatrix",
               &AssemblyMatrixDisplacementComplex::appendElementaryMatrix )
+// -------------------------------------------------------------------------------------------------
+        .def( "clearElementaryMatrix",
+              &AssemblyMatrixDisplacementComplex::clearElementaryMatrix )
 // ------------------------------------------------------------------------------------------------------
         .def( "build", &AssemblyMatrixDisplacementComplex::build )
 // ------------------------------------------------------------------------------------------------------
