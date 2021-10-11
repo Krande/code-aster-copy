@@ -140,11 +140,10 @@ subroutine copich(base, ch1z, ch2z)
         if (base .eq. 'G') then
             call getres(nomu, concep, cmd)
             call dismoi('NOM_LIGREL', ch2, 'CHAM_ELEM', repk=ligr)
-            if (ligr(1:8) .ne. nomu) then
+            if (ligr(1:8) .ne. nomu .and. ligr(9:15) .ne. '.MODELE') then
                 noojb = '12345678.LIGR000000'
                 call gnomsd(' ', noojb, 14, 19)
                 ligr2 = noojb(1:19)
-                print *, "DEBUG: copich: ", ligr, ">", ligr2
                 call copisd('LIGREL', base, ligr, ligr2)
                 call jeveuo(ch2//'.CELK', 'E', vk24=refe)
                 refe(1) = ligr2
