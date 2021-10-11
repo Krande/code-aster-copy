@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jacques.pellet at edf.fr
-
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 #----------------------------------------------------------------------------------------------------------------
@@ -179,13 +177,12 @@ TEST_RESU(RESU=(_F(INST=1.0,
 
 # visualisation du resultat :
 #----------------------------
-if 0 :
-    UN2=POST_RELEVE_T( ACTION=_F( RESULTAT = U, INTITULE = 'DEPLACEMENT_N2',
-                       GROUP_NO = 'N2', NOM_CHAM = 'DEPL', NOM_CMP = ('DY',),
-                       OPERATION = 'EXTRACTION') )
+UN2=POST_RELEVE_T( ACTION=_F( RESULTAT = U, INTITULE = 'DEPLACEMENT_N2',
+                  GROUP_NO = 'N2', NOM_CHAM = 'DEPL', NOM_CMP = ('DY',),
+                  OPERATION = 'EXTRACTION') )
 
-    IMPR_TABLE( TABLE=UN2, UNITE=38,  NOM_PARA=('INST', 'DY',), FORMAT='XMGRACE',
-                TRI=_F( NOM_PARA = ('INST',), ORDRE = 'CROISSANT',) )
+IMPR_TABLE( TABLE=UN2, UNITE=38,  NOM_PARA=('INST', 'DY',), FORMAT='XMGRACE',
+            TRI=_F( NOM_PARA = ('INST',), ORDRE = 'CROISSANT',) )
 
 
 # validation de la commande EXTR_RESU / ARCHIVAGE (+reuse) :
@@ -202,26 +199,4 @@ U2=CALC_CHAMP  (reuse=U2,  RESULTAT=U2, CONTRAINTE='SIGM_NOEU', NUME_ORDRE=(5,7,
 U3=EXTR_RESU(          RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE = (5,9), CHAM_EXCLU = ('SIGM_NOEU') ))
 U2=EXTR_RESU(reuse=U2, RESULTAT=U2, ARCHIVAGE=_F(NUME_ORDRE = (5,9), CHAM_EXCLU = ('SIGM_NOEU') ))
 
-IMPR_CO(UNITE=17,NIVEAU=0, CONCEPT=_F(NOM=U3),)
-import os
-os.system("ls -ltr fort.17")
-os.system("cat fort.17")
-
-TEST_FICHIER(FICHIER="./fort.17",
-             NB_VALE_I=65,
-             VALE_CALC_I=266,
-             NB_VALE=62,
-             VALE_CALC=309.239999999999,
-             VALE_CALC_K="e64c338bafd21f93934098e9d9957b64",
-)
-
-IMPR_CO(UNITE=18,NIVEAU=0, CONCEPT=_F(NOM=U2),)
-
-TEST_FICHIER(FICHIER="./fort.18",
-             NB_VALE_I=51,
-             VALE_CALC_I=140,
-             NB_VALE=29,
-             VALE_CALC=240.00001199999997,
-             VALE_CALC_K="e6c54f20e5373ff783bb15697dfd98a5"
-)
 FIN()
