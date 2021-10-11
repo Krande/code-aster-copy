@@ -116,6 +116,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     integer :: nval, rang, nbproc, jnbno, jno, nbnov, nbnoect(1)
     mpi_int :: mrank, msize
     aster_logical :: lficUniq, lnbnol, lnoec
+    real(kind=8) :: start_time, end_time
 !
 !====
 ! 1. PREALABLES
@@ -124,6 +125,7 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
+        call cpu_time(start_time)
         write (ifm,1001) 'DEBUT DE '//nompro
     endif
     1001 format(/,4x,10('='),a,10('='),/)
@@ -300,6 +302,8 @@ subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
 !
     if (nivinf .gt. 1) then
         write (ifm,1001) 'FIN DE '//nompro
+        call cpu_time(end_time)
+        write(ifm,*) "=========== EN ", end_time - start_time, "sec"
     endif
 !
 end subroutine

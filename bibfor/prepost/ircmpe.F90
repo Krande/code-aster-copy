@@ -123,6 +123,7 @@ character(len=16), intent(in) :: field_type
     character(len=16), pointer :: nofpgma(:) => null()
     mpi_int :: mrank, msize, mpicou, taille
     aster_logical :: lficUniq, lnbmal, lnbmaec
+    real(kind=8) :: start_time, end_time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,6 +132,7 @@ character(len=16), intent(in) :: field_type
     nmaty0(:) = 0
 !
     if (niv .ge. 2) then
+        call cpu_time(start_time)
         write (ifm,805) 'DEBUT DE IRCMPE'
     endif
 !
@@ -620,6 +622,8 @@ character(len=16), intent(in) :: field_type
         enddo
         write (ifm,803)
         write (ifm,805) 'FIN DE IRCMPE'
+        call cpu_time(end_time)
+        write(ifm,*) "=========== EN ", end_time - start_time, "sec"
     endif
 801 format(4x,65('*'),/,4x,'*  TYPE DE *',22x,'NOMBRE DE',21x,'*',&
      &/,4x,'*  MAILLE  *  VALEURS   * POINT(S) DE GAUSS *',&

@@ -114,6 +114,7 @@ character(len=16), pointer :: paraListName(:)
 !
     character(len=8) :: saux08, modele, ma
     character(len=64) :: nochmd
+    real(kind=8) :: start_time, end_time
 !
     real(kind=8) :: instan
 !
@@ -128,6 +129,7 @@ character(len=16), pointer :: paraListName(:)
 100 format(/,81('='),/,81('='),/)
 101 format(81('-'),/)
     if (nivinf .gt. 1) then
+        call cpu_time(start_time)
         call utflsh(codret)
         write (ifm,100)
         call utmess('I', 'MED_90', sk=chanom)
@@ -296,7 +298,8 @@ character(len=16), pointer :: paraListName(:)
     endif
 !
     if (nivinf .gt. 1) then
-        call utmess('I', 'MED_93', sk=chanom)
+        call cpu_time(end_time)
+        call utmess('I', 'MED_93', sk=chanom, sr=end_time-start_time)
         write (ifm,100)
         call utflsh(codret)
         write (ifm,101)

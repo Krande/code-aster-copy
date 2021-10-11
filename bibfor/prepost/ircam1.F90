@@ -139,10 +139,15 @@ integer :: codret
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
     real(kind=8) :: rbid(1)
+    real(kind=8) :: start_time, end_time
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
+    if(niv > 1) then
+        call cpu_time(start_time)
+        write(ifm,*) "DEBUT DE IRCAM1"
+    end if
 !
 ! 1.2. ==> NOMS DES TABLEAUX DE TRAVAIL
 !
@@ -353,5 +358,9 @@ integer :: codret
 !
     AS_DEALLOCATE(vk16=cname)
     AS_DEALLOCATE(vk16=cunit)
+    if(niv > 1) then
+        call cpu_time(end_time)
+        write(ifm,*) "FIN DE IRCAM1 EN ", end_time - start_time, "sec"
+    end if
 !
 end subroutine

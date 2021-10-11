@@ -85,6 +85,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
     character(len=80) :: comprf(1)
     integer :: rang, nbproc
     mpi_int :: mrank, msize, world, proc, taille
+    real(kind=8) :: start_time, end_time
 !
 !====
 ! 1. PREALABLES
@@ -94,6 +95,7 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
     call infniv(ifm, nivinf)
 !
     if (nivinf .gt. 1) then
+        call cpu_time(start_time)
         write (ifm,1001) 'DEBUT DE '//nompro
     endif
 1001 format(/,4x,10('='),a,10('='),/)
@@ -358,6 +360,8 @@ subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
 !
     if (nivinf .gt. 1) then
         write (ifm,1001) 'FIN DE '//nompro
+        call cpu_time(end_time)
+        print*, "=========== EN ", end_time - start_time, "sec"
     endif
 !
 end subroutine

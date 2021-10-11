@@ -67,8 +67,8 @@ aster_logical :: par_seqfile
     integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
     integer :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
     integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
-    integer :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat
-    integer :: rang, nbproc, numnoe, ipoin, ityp, jtyp, jtyp2, iaux
+    integer :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat, jmaex
+    integer :: rang, nbproc, ityp, jtyp, jtyp2, iaux
     integer :: ima, ite04, ite08, itr03, itr04, jgrap, nbjoin, ijoin
     integer :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
     integer(kind=4) :: num4, numpr4, n4e, n4r
@@ -80,7 +80,6 @@ aster_logical :: par_seqfile
     integer, pointer :: typma(:) => null()
     real(kind=8), pointer :: coordo(:) => null()
     aster_logical, pointer :: par_seq(:) => null()
-    aster_logical :: maiint
     mpi_int :: mrank, msize, world
 !
 ! --------------------------------------------------------------------------------------------------
@@ -195,6 +194,7 @@ aster_logical :: par_seqfile
             endif
         enddo
 !
+        call jeveuo(nomast//'.MAEX', 'L', jmaex)
         call wkvect(nomsd//'.NBMA', 'V V I', 2*nbproc, jnbma)
         call wkvect(nomsd//'.MAIL', base//' V I', nbmail, jma)
         call wkvect(nomsd//'.MATY', base//' V I', MT_NTYMAX*3, jtyp)
@@ -206,19 +206,10 @@ aster_logical :: par_seqfile
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), itr03)
         nbmat = 0
         do ima = 1, nbmail
-            ityp = typma(ima)
-            if (ityp .eq. ite08) ityp=ite04
-            if (ityp .eq. itr04) ityp=itr03
-            ipoin = point(ima)
-            maiint = .true.
-            do ino = 1, nnotyp(ityp)
-                numnoe = connex(ipoin-1+ino)
-                if(zi(jnoex+numnoe-1).lt.rang) then
-                    maiint = .false.
-                    exit
-                endif
-            enddo
-            if(maiint) then
+            if(zi(jmaex+ ima-1) == rang) then
+                ityp = typma(ima)
+                if (ityp .eq. ite08) ityp=ite04
+                if (ityp .eq. itr04) ityp=itr03
                 zi(jtyp2+ityp-1) = zi(jtyp2+ityp-1) + 1
                 zi(jma+ima-1) = zi(jtyp2+ityp-1)
                 nbmat = nbmat + 1
