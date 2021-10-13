@@ -41,7 +41,7 @@ void exportDiscreteProblemToPython() {
     py::class_< DiscreteProblem, DiscreteProblem::DiscreteProblemPtr >( "DiscreteProblem",
                                                                                   py::no_init )
         .def( "__init__",
-              py::make_constructor( &initFactoryPtr< DiscreteProblem, StudyDescriptionPtr > ) )
+              py::make_constructor( &initFactoryPtr< DiscreteProblem, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( "computeElementaryMechanicalLoadsVector",
               &DiscreteProblem::computeElementaryMechanicalLoadsVector )
@@ -76,7 +76,7 @@ void exportDiscreteProblemToPython() {
         .def( "computeMechanicalStiffnessMatrix",
               &DiscreteProblem::computeMechanicalStiffnessMatrix )
         .def( "computeMechanicalMassMatrix", &DiscreteProblem::computeMechanicalMassMatrix )
-        .def( "getStudyDescription", &DiscreteProblem::getStudyDescription )
+        .def( "getPhysicalProblem", &DiscreteProblem::getPhysicalProblem )
         .def( "getListOfLoads", &DiscreteProblem::getListOfLoads )
         .def( "createBehaviour",
               static_cast< BehaviourPropertyPtr ( DiscreteProblem::* )( PyObject *,

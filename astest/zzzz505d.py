@@ -62,7 +62,7 @@ refe2=CREA_CHAMP(OPERATION='AFFE',
                  )
 
 # Using Python binding for behaviour
-study = code_aster.StudyDescription(model, mater)
+study = code_aster.PhysicalProblem(model, mater)
 dProblem = code_aster.DiscreteProblem(study)
 
 # With default values: no initial state, no implex and info=1
@@ -118,7 +118,7 @@ refe1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     'SIXY','SIYZ','SIXZ',),
            VALE=(value,value,value,value,value,value,),),)
 
-study = code_aster.StudyDescription(MODELE, CHMAT)
+study = code_aster.PhysicalProblem(MODELE, CHMAT)
 dProblem = code_aster.DiscreteProblem(study)
 
 behav = dProblem.createBehaviour(

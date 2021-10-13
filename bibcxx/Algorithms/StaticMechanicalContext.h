@@ -74,15 +74,15 @@ class StaticMechanicalContext {
     StaticMechanicalContext( const DiscreteProblemPtr &curPb, const BaseLinearSolverPtr linSolv,
                              const ResultPtr container )
         : _discreteProblem( curPb ), _linearSolver( linSolv ),
-          _listOfLoads( _discreteProblem->getStudyDescription()->getListOfLoads() ),
+          _listOfLoads( _discreteProblem->getPhysicalProblem()->getListOfLoads() ),
           _results( container ), _time( 0. ), _rank( 1 ),
           _aMatrix( new AssemblyMatrixDisplacementReal() ),
-          _isConst( _discreteProblem->getStudyDescription()->getCodedMaterial()->constant() ),
+          _isConst( _discreteProblem->getPhysicalProblem()->getCodedMaterial()->constant() ),
           _varCom( new ExternalStateVariablesBuilder(
-              _discreteProblem->getStudyDescription()->getModel(),
-              _discreteProblem->getStudyDescription()->getMaterialField(),
-              _discreteProblem->getStudyDescription()->getElementaryCharacteristics(),
-              _discreteProblem->getStudyDescription()->getCodedMaterial() ) ),
+              _discreteProblem->getPhysicalProblem()->getModel(),
+              _discreteProblem->getPhysicalProblem()->getMaterialField(),
+              _discreteProblem->getPhysicalProblem()->getElementaryCharacteristics(),
+              _discreteProblem->getPhysicalProblem()->getCodedMaterial() ) ),
          _timer( { {"Matrix", 0.0}, {"Rhs", 0.0}, {"Facto", 0.0}, {"Solve", 0.0}, {"Post", 0.0} })
          {};
 

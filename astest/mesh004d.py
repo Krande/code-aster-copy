@@ -53,7 +53,7 @@ CHT1 = AFFE_CHAR_THER(MODELE=MODT,
                       FLUX_REP=_F(GROUP_MA='Press', FLUN=10.,),
                       INFO=1,)
 
-# study = code_aster.StudyDescription(MODT, affectMat)
+# study = code_aster.PhysicalProblem(MODT, affectMat)
 # study.addDirichletBC(charCine)
 # study.addLoad(CHT1)
 # dProblem = code_aster.DiscreteProblem(study)

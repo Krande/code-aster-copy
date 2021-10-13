@@ -270,10 +270,10 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.StudyDescription` object
+:py:class:`~code_aster.Objects.PhysicalProblem` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.StudyDescription
+.. autoclass:: code_aster.Objects.PhysicalProblem
    :show-inheritance:
    :members:
 

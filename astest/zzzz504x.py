@@ -60,7 +60,7 @@ charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dx, 0., "Bas3")
 charCine.addBCOnCells(code_aster.PhysicalQuantityComponent.Dy, -1., "Bas3")
 charCine.build()
 
-study = code_aster.StudyDescription(MODT, affectMat)
+study = code_aster.PhysicalProblem(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 dProblem = code_aster.DiscreteProblem(study)

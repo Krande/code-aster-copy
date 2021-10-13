@@ -61,7 +61,7 @@ CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
                       INFO=1,
                       VERI_NORM='NON',)
 
-study = code_aster.StudyDescription(MODT, affectMat)
+study = code_aster.PhysicalProblem(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 dProblem = code_aster.DiscreteProblem(study)

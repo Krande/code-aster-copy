@@ -38,7 +38,7 @@
 #include "Modeling/Model.h"
 #include "Results/ElasticResult.h"
 #include "Solvers/LinearSolver.h"
-#include "Studies/StudyDescription.h"
+#include "Studies/PhysicalProblem.h"
 #include "Supervis/Exceptions.h"
 
 class LinearStaticAnalysis : public GenericAnalysis {
@@ -52,7 +52,7 @@ class LinearStaticAnalysis : public GenericAnalysis {
     /** @brief Liste de pas de temps */
     TimeStepperPtr _timeStep;
     /** @brief Study */
-    StudyDescriptionPtr _study;
+    PhysicalProblemPtr _study;
     /** @brief Compute SIEF_ELGA */
     bool _sief_elga;
 

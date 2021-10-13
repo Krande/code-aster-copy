@@ -89,7 +89,7 @@ CharMeca2.setValue(imposedPres1, "Haut")
 CharMeca2.build()
 test.assertEqual(CharMeca2.getType(), "CHAR_MECA")
 
-study = code_aster.StudyDescription(monModel, affectMat)
+study = code_aster.PhysicalProblem(monModel, affectMat)
 study.addLoad(CharMeca1)
 study.addLoad(CharMeca2)
 listLoads = study.getListOfLoads()

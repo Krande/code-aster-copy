@@ -40,14 +40,14 @@ LinearStaticAnalysis::LinearStaticAnalysis(
     const ElementaryCharacteristicsPtr &cara )
     : _model( model ), _materialField( mater ), _linearSolver( BaseLinearSolverPtr() ),
       _timeStep( boost::make_shared< TimeStepper >()  ), _sief_elga(true),
-      _study( boost::make_shared< StudyDescription >( _model, _materialField, cara ) ) {
+      _study( boost::make_shared< PhysicalProblem >( _model, _materialField, cara ) ) {
     _timeStep->setValues( VectorReal( 1, 0. ) );
 };
 
 void LinearStaticAnalysis::_computeStress( StaticMechanicalContext &ctx ) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    const auto &study = ctx.getDiscreteProblem()->getStudyDescription();
+    const auto &study = ctx.getDiscreteProblem()->getPhysicalProblem();
     const auto &model = study->getModel();
     const auto &mater = study->getMaterialField();
     const auto &load = study->getListOfLoads();

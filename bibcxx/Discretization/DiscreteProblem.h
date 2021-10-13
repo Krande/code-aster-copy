@@ -32,7 +32,7 @@
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/ElementaryVector.h"
 #include "Numbering/DOFNumbering.h"
-#include "Studies/StudyDescription.h"
+#include "Studies/PhysicalProblem.h"
 #include <vector>
 
 /**
@@ -43,7 +43,7 @@
 class DiscreteProblem {
   private:
     /** @brief Etude definie par l'utilisateur */
-    StudyDescriptionPtr _study;
+    PhysicalProblemPtr _study;
 
     /**
      * @brief Production d'un CommandSyntax pour CALC_MATR_ELEM
@@ -66,9 +66,9 @@ class DiscreteProblem {
 
     /**
      * @brief Constructeur
-     * @param StudyDescriptionPtr Etude utilisateur
+     * @param PhysicalProblemPtr Etude utilisateur
      */
-    DiscreteProblem( const StudyDescriptionPtr &currentStudy ) : _study( currentStudy ){};
+    DiscreteProblem( const PhysicalProblemPtr &currentStudy ) : _study( currentStudy ){};
 
     /**
      * @brief Desctructeur
@@ -185,7 +185,7 @@ class DiscreteProblem {
      * @brief Récupération de l'étude
      * @return Numérotation du problème discret
      */
-    StudyDescriptionPtr getStudyDescription() const { return _study; };
+    PhysicalProblemPtr getPhysicalProblem() const { return _study; };
 
     ListOfLoadsPtr getListOfLoads() const { return _study->getListOfLoads(); };
 

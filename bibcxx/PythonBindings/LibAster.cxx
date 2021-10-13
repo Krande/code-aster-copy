@@ -128,7 +128,6 @@
 #include "PythonBindings/SkeletonInterface.h"
 #include "PythonBindings/StaticMacroElementInterface.h"
 #include "PythonBindings/StructureInterfaceInterface.h"
-#include "PythonBindings/StudyDescriptionInterface.h"
 #include "PythonBindings/TableContainerInterface.h"
 #include "PythonBindings/TableInterface.h"
 #include "PythonBindings/ThermalFourierResultInterface.h"
@@ -270,7 +269,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportMultipleElasticResultToPython();
     exportNonLinearResultToPython();
     exportLinearStaticAnalysisToPython();
-    exportStudyDescriptionToPython();
     exportPhysicalProblemToPython();
     exportCppToFortranGlossaryToPython();
     exportCyclicSymmetryModeToPython();

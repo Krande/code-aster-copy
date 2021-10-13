@@ -35,4 +35,4 @@ class ExtendedDiscreteProblem:
         """Returns the argument required to reinitialize a MaterialField
         object during unpickling.
         """
-        return (self.getStudyDescription(), )
+        return (self.getPhysicalProblem(), )

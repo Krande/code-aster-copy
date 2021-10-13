@@ -91,7 +91,7 @@ FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx 
 }
 
 void StaticMechanicalAlgorithm::_storeFields( CurrentContext &ctx ) {
-    const auto &study = ctx._discreteProblem->getStudyDescription();
+    const auto &study = ctx._discreteProblem->getPhysicalProblem();
     const auto &model = study->getModel();
     const auto &mater = study->getMaterialField();
     const auto &load = study->getListOfLoads();

@@ -70,7 +70,7 @@ charCine = code_aster.MechanicalDirichletBC(model)
 charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
 charCine.build()
 
-study = code_aster.StudyDescription(model, affectMat)
+study = code_aster.PhysicalProblem(model, affectMat)
 study.addDirichletBC(charCine)
 dProblem = code_aster.DiscreteProblem(study)
 matr_elem = dProblem.computeMechanicalStiffnessMatrix()
