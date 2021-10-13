@@ -27,6 +27,7 @@ implicit none
 #include "asterfort/alcart.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_read_mesh.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
@@ -88,6 +89,7 @@ character(len=1), intent(in) :: base
 !
 ! - Allocate <CARTE>
 !
+    call detrsd("CARTE", mult_comp)
     call alcart(base, mult_comp, mesh, name_gd)
 !
 ! - Acces to <CARTE>

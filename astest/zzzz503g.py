@@ -72,7 +72,11 @@ test.assertTrue(study.computeListOfLoads())
 test.assertTrue(study.computeDOFNumbering())
 listLoads = study.getListOfLoads()
 dofNume = study.getDOFNumbering()
+study.computeBehaviourProperty(COMPORTEMENT=(
+        _F(RELATION="VMIS_ISOT_LINE",
+           TOUT="OUI"),))
 dofNume = study.getBehaviourProperty()
+
 
 test.assertEqual(monMaillage.getName(), study.getMesh().getName())
 test.assertEqual(monModel.getName(), study.getModel().getName())

@@ -113,38 +113,32 @@ Returns:
     Bool: True if success
         )",
             ( py::arg( "self" ) ) );
-    // c1.def( "computeBehaviourProperty",
-    //       static_cast< BehaviourPropertyPtr ( PhysicalProblem::* )( PyObject *, const std::string
-    //       &, const std::string &, const long int ) >(
-    //           &PhysicalProblem::computeBehaviourProperty ),
-    //       R"(
-    // Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
+    c1.def( "computeBehaviourProperty",
+          static_cast< void ( PhysicalProblem::* )( PyObject *, const std::string
+          &, const std::string &, const ASTERINTEGER ) >(
+              &PhysicalProblem::computeBehaviourProperty ),
+          R"(
+    Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
-    // Arguments:
-    //     COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
-    //     SIGM_INIT (str): "OUI" if there is an initial stress field
-    //     IMPLEX (str): "OUI" if Implex algorithm is used
-    //     INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
+    Arguments:
+        COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
+        SIGM_INIT (str): "OUI" if there is an initial stress field
+        IMPLEX (str): "OUI" if Implex algorithm is used
+        INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
+            )",
+          ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ), py::arg(
+          "IMPLEX" ),
+            py::arg( "INFO" ) ) );
+    c1.def( "computeBehaviourProperty",
+              static_cast< void ( PhysicalProblem::* )( PyObject * ) >(
+                  &PhysicalProblem::computeBehaviourProperty ),
+              R"(
+    Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
-    // Return:
-    //     BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
-    //         )",
-    //       ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ), py::arg(
-    //       "IMPLEX" ),
-    //         py::arg( "INFO" ) ) );
-    // c1.def( "computeBehaviourProperty",
-    //           static_cast< BehaviourPropertyPtr ( PhysicalProblem::* )( PyObject * ) >(
-    //               &PhysicalProblem::computeBehaviourProperty ),
-    //           R"(
-    // Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
-
-    // Arguments:
-    //     COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
-
-    // Return:
-    //     BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
-    //         )",
-    //           ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
+    Arguments:
+        COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
+        )",
+              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
     c1.def( "getListOfLoads", &PhysicalProblem::getListOfLoads, R"(
 Return list of loads.
 

@@ -118,7 +118,7 @@ refe1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     'SIXY','SIYZ','SIXZ',),
            VALE=(value,value,value,value,value,value,),),)
 
-study = code_aster.PhysicalProblem(MODELE, CHMAT, CARAEL)
+study = code_aster.PhysicalProblem(MODELE, CHMAT, CAREL)
 
 study.computeBehaviourProperty(
     COMPORTEMENT=(

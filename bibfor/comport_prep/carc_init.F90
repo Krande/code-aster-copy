@@ -22,6 +22,7 @@ implicit none
 
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
@@ -71,6 +72,7 @@ integer, intent(out) :: nb_cmp
 !
 ! - Allocate <CARTE>
 !
+    call detrsd("CARTE", carcri)
     call alcart(base, carcri, mesh, name_gd)
 !
 ! - Acces to <CARTE>
