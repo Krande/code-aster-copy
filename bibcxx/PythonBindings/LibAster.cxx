@@ -51,13 +51,13 @@
 #include "PythonBindings/CrackTipInterface.h"
 #include "PythonBindings/CreateEnthalpyInterface.h"
 #include "PythonBindings/CyclicSymmetryModeInterface.h"
+#include "PythonBindings/DOFNumberingInterface.h"
 #include "PythonBindings/DataFieldInterface.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/DebugInterface.h"
 #include "PythonBindings/DeleteTemporaryObjectsInterface.h"
 #include "PythonBindings/DirichletBCInterface.h"
 #include "PythonBindings/DiscreteProblemInterface.h"
-#include "PythonBindings/DOFNumberingInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
 #include "PythonBindings/ElasticFourierResultInterface.h"
 #include "PythonBindings/ElasticResultInterface.h"
@@ -84,8 +84,8 @@
 #include "PythonBindings/GeneralizedAssemblyMatrixInterface.h"
 #include "PythonBindings/GeneralizedAssemblyVectorInterface.h"
 #include "PythonBindings/GeneralizedDOFNumberingInterface.h"
-#include "PythonBindings/GeneralizedModelInterface.h"
 #include "PythonBindings/GeneralizedModeResultInterface.h"
+#include "PythonBindings/GeneralizedModelInterface.h"
 #include "PythonBindings/GeneralizedResultInterface.h"
 #include "PythonBindings/GenericFunctionInterface.h"
 #include "PythonBindings/GridInterface.h"
@@ -106,17 +106,18 @@
 #include "PythonBindings/MedCouplingConversionInterface.h"
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
 #include "PythonBindings/MeshEntitiesInterface.h"
-#include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/MeshInterface.h"
+#include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
-#include "PythonBindings/ModelInterface.h"
 #include "PythonBindings/ModeResultInterface.h"
+#include "PythonBindings/ModelInterface.h"
 #include "PythonBindings/MultipleElasticResultInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
 #include "PythonBindings/ParallelMeshInterface.h"
+#include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/PhysicalQuantityInterface.h"
 #include "PythonBindings/PhysicsAndModelingsInterface.h"
 #include "PythonBindings/PrestressingCableInterface.h"
@@ -270,6 +271,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportNonLinearResultToPython();
     exportLinearStaticAnalysisToPython();
     exportStudyDescriptionToPython();
+    exportPhysicalProblemToPython();
     exportCppToFortranGlossaryToPython();
     exportCyclicSymmetryModeToPython();
     exportFullResultToPython();
