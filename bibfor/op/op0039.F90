@@ -158,7 +158,7 @@ implicit none
         endif
         if (fileFormat .eq.'MED') then
             call getvtx(' ', 'FICHIER_UNIQUE', scal=fichierUnique, nbret=nbRet)
-            if (fichierUnique.eq.'OUI') then
+            if (fichierUnique.eq.'OUI' .and. ispar == "OUI") then
                 lfichUniq = .true._1
                 ASSERT(proc0 .eq. 'NON')
             end if
