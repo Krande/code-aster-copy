@@ -63,13 +63,13 @@ refe2=CREA_CHAMP(OPERATION='AFFE',
 
 # Using Python binding for behaviour
 study = code_aster.PhysicalProblem(model, mater)
-dProblem = code_aster.DiscreteProblem(study)
 
 # With default values: no initial state, no implex and info=1
-behav = dProblem.createBehaviour(
+study.computeBehaviourProperty(
     COMPORTEMENT=(
         _F(RELATION="VMIS_ISOT_LINE",
            TOUT="OUI"),))
+behav = study.getBehaviourProperty()
 # Build testfield with model and compor
 testfield1=code_aster.FieldOnCellsReal(model, behav, "ELGA_SIEF_R")
 testfield1.setValues(value)
@@ -88,7 +88,7 @@ test.assertAlmostEqual(refe2.getValues(), testfield2.getValues())
 # Test constructeur avec le caraelem
 
 
-MAIL=LIRE_MAILLAGE(UNITE=18, FORMAT='MED',);
+MAIL=LIRE_MAILLAGE(UNITE=18, FORMAT='MED',)
 
 MODELE=AFFE_MODELE(
     MAILLAGE=MAIL,
@@ -118,14 +118,13 @@ refe1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                     'SIXY','SIYZ','SIXZ',),
            VALE=(value,value,value,value,value,value,),),)
 
-study = code_aster.PhysicalProblem(MODELE, CHMAT)
-dProblem = code_aster.DiscreteProblem(study)
+study = code_aster.PhysicalProblem(MODELE, CHMAT, CARAEL)
 
-behav = dProblem.createBehaviour(
+study.computeBehaviourProperty(
     COMPORTEMENT=(
         _F(RELATION="VMIS_ISOT_LINE",
            TOUT="OUI"),))
-
+behav = study.getBehaviourProperty()
 testfield1 = code_aster.FieldOnCellsReal(MODELE, behav, "ELGA_SIEF_R", CAREL)
 
 # TEST LENGTH EQUALITY

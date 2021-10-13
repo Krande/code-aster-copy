@@ -158,13 +158,6 @@ class DiscreteProblem {
                                           const ASTERDOUBLE &time ) const;
 
     /**
-     * @brief Détermination de la numérotation de ddl
-     * @return Numérotation du problème discret
-     */
-    BaseDOFNumberingPtr
-    computeDOFNumbering( BaseDOFNumberingPtr dofNum = BaseDOFNumberingPtr( nullptr ) );
-
-    /**
      * @brief Calcul des matrices elementaires pour l'option AMOR_MECA
      */
     ElementaryMatrixDisplacementRealPtr
@@ -186,18 +179,6 @@ class DiscreteProblem {
      * @return Numérotation du problème discret
      */
     PhysicalProblemPtr getPhysicalProblem() const { return _study; };
-
-    ListOfLoadsPtr getListOfLoads() const { return _study->getListOfLoads(); };
-
-    /**
-     * @brief Create ConstantFieldOnCell for behaviours
-     */
-    BehaviourPropertyPtr createBehaviour( PyObject *keywords,
-                          const std::string &initialState = "NON",
-                          const std::string &implex = "NON", const int verbosity = 0 );
-    // added for Python interface
-    BehaviourPropertyPtr createBehaviour( PyObject *keywords )
-    { return createBehaviour( keywords, "NON", "NON", 1 ); };
 };
 
 /**

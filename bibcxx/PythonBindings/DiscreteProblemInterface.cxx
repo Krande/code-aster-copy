@@ -30,7 +30,6 @@ namespace py = boost::python;
 #include <PythonBindings/factory.h>
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDirichletBC_overloads, computeDirichletBC, 2, 2 )
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDOFNumbering_overloads, computeDOFNumbering, 0, 1 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeElementaryDualizedDirichletVector_overloads,
     computeElementaryDualizedDirichletVector, 1, 2 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDualizedDirichlet_overloads,
@@ -69,45 +68,10 @@ void exportDiscreteProblemToPython() {
               &DiscreteProblem::computeElementaryJacobianMatrix )
         .def( "computeDirichletBC", &DiscreteProblem::computeDirichletBC,
               computeDirichletBC_overloads() )
-        .def( "computeDOFNumbering", &DiscreteProblem::computeDOFNumbering,
-              computeDOFNumbering_overloads() )
         .def( "computeMechanicalDampingMatrix",
               &DiscreteProblem::computeMechanicalDampingMatrix )
         .def( "computeMechanicalStiffnessMatrix",
               &DiscreteProblem::computeMechanicalStiffnessMatrix )
         .def( "computeMechanicalMassMatrix", &DiscreteProblem::computeMechanicalMassMatrix )
-        .def( "getPhysicalProblem", &DiscreteProblem::getPhysicalProblem )
-        .def( "getListOfLoads", &DiscreteProblem::getListOfLoads )
-        .def( "createBehaviour",
-              static_cast< BehaviourPropertyPtr ( DiscreteProblem::* )( PyObject *,
-                                                            const std::string &,
-                                                            const std::string &, const int ) >(
-                  &DiscreteProblem::createBehaviour ),
-              R"(
-Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
-
-Arguments:
-    COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
-    SIGM_INIT (str): "OUI" if there is an initial stress field
-    IMPLEX (str): "OUI" if Implex algorithm is used
-    INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
-
-Return:
-    BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
-        )",
-              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ),
-                py::arg( "IMPLEX" ), py::arg( "INFO" ) ) )
-        .def( "createBehaviour",
-              static_cast< BehaviourPropertyPtr ( DiscreteProblem::* )( PyObject * ) >(
-                  &DiscreteProblem::createBehaviour ),
-              R"(
-Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
-
-Arguments:
-    COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
-
-Return:
-    BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
-        )",
-              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
+        .def( "getPhysicalProblem", &DiscreteProblem::getPhysicalProblem );
 };

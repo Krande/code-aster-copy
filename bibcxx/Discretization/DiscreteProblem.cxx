@@ -332,23 +332,6 @@ FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingP
     return retour;
 };
 
-BaseDOFNumberingPtr DiscreteProblem::computeDOFNumbering( BaseDOFNumberingPtr dofNum ) {
-    if ( !dofNum ) {
-#ifdef ASTER_HAVE_MPI
-        if ( _study->getModel()->getMesh()->isParallel() )
-            dofNum = ParallelDOFNumberingPtr( new ParallelDOFNumbering() );
-        else
-#endif /* ASTER_HAVE_MPI */
-            dofNum = DOFNumberingPtr( new DOFNumbering() );
-    }
-
-    dofNum->setModel( _study->getModel() );
-    dofNum->setListOfLoads( _study->getListOfLoads() );
-    dofNum->computeNumbering();
-
-    return dofNum;
-};
-
 ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanicalLoadsVector() {
     ElementaryVectorDisplacementRealPtr retour( new ElementaryVectorDisplacementReal() );
 
@@ -518,32 +501,4 @@ ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalMassMatrix
 
 ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalStiffnessMatrix() {
     return computeMechanicalMatrix( "RIGI_MECA" );
-};
-
-BehaviourPropertyPtr DiscreteProblem::createBehaviour( PyObject *keywords,
-                                            const std::string &initialState,
-                                            const std::string &implex, const int info ) {
-
-    // Create object for behaviour
-    auto behaviourProp = boost::make_shared<BehaviourProperty>( _study->getModel(),
-                                                            _study->getMaterialField() );
-    behaviourProp->setInitialState( initialState == "OUI" );
-    behaviourProp->setImplex( implex == "OUI" );
-    behaviourProp->setVerbosity( info > 1 );
-
-    // Check input PyObject
-    if ( !PyDict_Check( keywords ) && !PyList_Check( keywords ) && !PyTuple_Check( keywords ) )
-        throw std::runtime_error( "Unexpected value for 'COMPORTEMENT'." );
-
-    // Create syntax
-    CommandSyntax cmdSt( "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL" );
-    PyObject *kwfact = PyDict_New();
-    PyDict_SetItemString( kwfact, "COMPORTEMENT", keywords );
-    cmdSt.define( kwfact );
-
-    // Build objects
-    AS_ASSERT(behaviourProp->build());
-    Py_DECREF( kwfact );
-
-    return behaviourProp;
 };

@@ -104,7 +104,10 @@ ElasticResultPtr LinearStaticAnalysis::execute( ElasticResultPtr resultC ) {
     else
 #endif /* ASTER_HAVE_MPI */
         dofNum1 = resultC->getEmptyDOFNumbering();
-    dofNum1 = dProblem->computeDOFNumbering( dofNum1 );
+    dofNum1->setModel(_study->getModel());
+    dofNum1->setListOfLoads(_study->getListOfLoads());
+    _study->setDOFNumbering(dofNum1);
+    _study->computeDOFNumbering( );
 
     StaticMechanicalContext currentContext( dProblem, _linearSolver, resultC );
     typedef Algorithm< TimeStepper, StaticMechanicalContext, StaticMechanicalAlgorithm >

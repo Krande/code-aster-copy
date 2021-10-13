@@ -123,6 +123,11 @@ class PhysicalProblem {
     BaseDOFNumberingPtr getDOFNumbering() const { return _dofNume; };
 
     /**
+     * @brief Renvoit la carte COMPOR
+     */
+    void setDOFNumbering( const BaseDOFNumberingPtr dofNume );
+
+    /**
      * @brief Obtenir la liste des chargements cinematiques
      */
     ListDiriBC getListOfDirichletBCs() const { return _listOfLoads->getListOfDirichletBCs(); };
@@ -178,11 +183,9 @@ class PhysicalProblem {
     /**
      * @brief Create ConstantFieldOnCell for behaviours
      */
-    void computeBehaviourProperty( PyObject *keywords, const std::string &initialState = "NON",
-                                   const std::string &implex = "NON",
-                                   const ASTERINTEGER verbosity = 1 );
+    void computeBehaviourProperty( PyObject *keywords, const std::string &initialState,
+                                   const std::string &implex, const ASTERINTEGER verbosity );
 
-    // added for Python interface
     void computeBehaviourProperty( PyObject *keywords ) {
         computeBehaviourProperty( keywords, "NON", "NON", 1 );
     };

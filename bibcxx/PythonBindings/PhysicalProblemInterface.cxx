@@ -28,6 +28,7 @@ namespace py = boost::python;
 #include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/LoadUtilities.h"
 
+
 void exportPhysicalProblemToPython() {
 
     py::class_< PhysicalProblem, PhysicalProblemPtr > c1( "PhysicalProblem",
@@ -83,6 +84,13 @@ Returns:
     BaseDOFNumberingPtr: a pointer to the DOF numbering
         )",
             ( py::arg( "self" ) ) );
+    c1.def( "setDOFNumbering", &PhysicalProblem::setDOFNumbering, R"(
+Set the DOF numbering
+
+Arguments:
+    BaseDOFNumberingPtr: a pointer to the DOF numbering
+        )",
+            ( py::arg( "self" ), py::arg( "dofNume" ) ) );
     c1.def( "getBehaviourProperty", &PhysicalProblem::getBehaviourProperty, R"(
 Return the behaviour properties
 
@@ -105,14 +113,45 @@ Returns:
     Bool: True if success
         )",
             ( py::arg( "self" ) ) );
-    c1.def( "getListOfLoads",
-        &PhysicalProblem::getListOfLoads, R"(
+    // c1.def( "computeBehaviourProperty",
+    //       static_cast< BehaviourPropertyPtr ( PhysicalProblem::* )( PyObject *, const std::string
+    //       &, const std::string &, const long int ) >(
+    //           &PhysicalProblem::computeBehaviourProperty ),
+    //       R"(
+    // Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
+
+    // Arguments:
+    //     COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
+    //     SIGM_INIT (str): "OUI" if there is an initial stress field
+    //     IMPLEX (str): "OUI" if Implex algorithm is used
+    //     INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
+
+    // Return:
+    //     BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
+    //         )",
+    //       ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ), py::arg(
+    //       "IMPLEX" ),
+    //         py::arg( "INFO" ) ) );
+    // c1.def( "computeBehaviourProperty",
+    //           static_cast< BehaviourPropertyPtr ( PhysicalProblem::* )( PyObject * ) >(
+    //               &PhysicalProblem::computeBehaviourProperty ),
+    //           R"(
+    // Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
+
+    // Arguments:
+    //     COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
+
+    // Return:
+    //     BehaviourPropertyPtr: constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
+    //         )",
+    //           ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
+    c1.def( "getListOfLoads", &PhysicalProblem::getListOfLoads, R"(
 Return list of loads.
 
 Returns:
     ListOfLoadsPtr: a pointer to list of loads
         )",
-              ( py::arg( "self" ) )   );
+            ( py::arg( "self" ) ) );
     c1.def( "getListOfDirichletBCs",
         &PhysicalProblem::getListOfDirichletBCs, R"(
 Return list of DirichletBCs
@@ -162,3 +201,4 @@ Returns:
 #endif /* ASTER_HAVE_MPI */
     addThermalLoadToInterface( c1 );
 };
+

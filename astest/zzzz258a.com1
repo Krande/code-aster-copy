@@ -25,17 +25,16 @@ test = code_aster.TestCase()
 
 # Using Python binding for behaviour
 study = code_aster.PhysicalProblem(MOMEC2, CHMAT)
-dProblem = code_aster.DiscreteProblem(study)
 
 # With default values: no initial state, no implex and info=1
-behav = dProblem.createBehaviour(
+behav = study.computeBehaviourProperty(
     COMPORTEMENT=(
         _F(RELATION="ELAS", GROUP_MA="M5"),
         _F(RELATION="VMIS_CINE_LINE",
            GROUP_MA=("M1", "M3", "M7", "M8", "M9")),))
-
+behav = study.getBehaviourProperty()
 # the same all arguments
-behav = dProblem.createBehaviour(
+study.computeBehaviourProperty(
     COMPORTEMENT=(
         _F(RELATION="ELAS", GROUP_MA="M5"),
         _F(RELATION="VMIS_CINE_LINE",
@@ -43,11 +42,11 @@ behav = dProblem.createBehaviour(
     SIGM_INIT="NON",
     IMPLEX="NON",
     INFO=1)
-
+behav = study.getBehaviourProperty()
 behavField=behav.getBehaviourField()
 
 with test.assertRaisesRegex(RuntimeError, "Unexpected value.*COMPORTEMENT"):
-    dProblem.createBehaviour(COMPORTEMENT="ELAS")
+    study.computeBehaviourProperty(COMPORTEMENT="ELAS")
 
 dico_par = U2_2.getAccessParameters()
 test.assertEqual(sorted(dico_par.keys()), ['INST', 'NUME_ORDRE'])

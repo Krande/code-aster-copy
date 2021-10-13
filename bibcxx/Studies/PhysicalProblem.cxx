@@ -55,6 +55,21 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
     _dofNume->setListOfLoads( _listOfLoads );
 };
 
+void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
+    if ( dofNume->getMesh()->getName() != _mesh->getName() )
+        raiseAsterError( "Incompatible meshes" );
+
+    auto model = dofNume->getModel();
+    if ( model && model->getName() != _model->getName() )
+        raiseAsterError( "Incompatible models" );
+
+    auto listOfLoads = dofNume->getListOfLoads();
+    if ( listOfLoads && listOfLoads->getName() != _listOfLoads->getName() )
+        raiseAsterError( "Incompatible list of loads" );
+
+    _dofNume = dofNume;
+};
+
 bool PhysicalProblem::computeDOFNumbering() { return _dofNume->computeNumbering(); };
 
 void PhysicalProblem::computeBehaviourProperty( PyObject *keywords, const std::string &initialState,

@@ -38,7 +38,7 @@ void StaticMechanicalAlgorithm::_computeMatrix( CurrentContext &ctx ) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    BaseDOFNumberingPtr dofNum1 = ctx._results->getLastDOFNumbering();
+    BaseDOFNumberingPtr dofNum1 = ctx._discreteProblem->getPhysicalProblem()->getDOFNumbering();
 
     auto matrElem = ctx._discreteProblem->computeElementaryStiffnessMatrix( ctx._time );
 
@@ -56,7 +56,7 @@ void StaticMechanicalAlgorithm::_computeMatrix( CurrentContext &ctx ) {
 FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx ) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    BaseDOFNumberingPtr dofNum1 = ctx._results->getLastDOFNumbering();
+    BaseDOFNumberingPtr dofNum1 = ctx._discreteProblem->getPhysicalProblem()->getDOFNumbering();
 
     // Build Dirichlet loads
     FieldOnNodesRealPtr chNoDir =
@@ -113,7 +113,7 @@ void StaticMechanicalAlgorithm::_storeFields( CurrentContext &ctx ) {
 void StaticMechanicalAlgorithm::_solve( CurrentContext &ctx, const FieldOnNodesRealPtr rhs ) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    BaseDOFNumberingPtr dofNum1 = ctx._results->getLastDOFNumbering();
+    BaseDOFNumberingPtr dofNum1 = ctx._discreteProblem->getPhysicalProblem()->getDOFNumbering();
 
     CommandSyntax cmdSt( "MECA_STATIQUE" );
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
