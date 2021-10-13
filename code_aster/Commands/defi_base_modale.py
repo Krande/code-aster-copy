@@ -44,6 +44,8 @@ class ModalBasisDef(ExecuteCommand):
         """
         classique = keywords.get("CLASSIQUE")
         ritz = keywords.get("RITZ")
+        diag = keywords.get("DIAG_MASS")
+        ortho = keywords.get("ORTHO_BASE")
         if classique is not None:
             self._result.setStructureInterface(classique[0]["INTERF_DYNA"])
             self._result.setDOFNumbering(classique[0]["MODE_MECA"][0].getDOFNumbering())
@@ -51,7 +53,27 @@ class ModalBasisDef(ExecuteCommand):
             if "INTERF_DYNA" in ritz[0]:
                 self._result.setStructureInterface(ritz[0]["INTERF_DYNA"])
             if "MODE_MECA" in ritz[0]:
-                self._result.setDOFNumbering(ritz[0]["MODE_MECA"][0].getDOFNumbering())
+                self._result.setMesh(ritz[0]["MODE_MECA"][0].getMesh())
+                nume_ddl = ritz[0]["MODE_MECA"][0].getDOFNumbering()
+                if nume_ddl is not None:
+                    self._result.setDOFNumbering(nume_ddl)
+        elif diag is not None:
+            if "MODE_MECA" in diag[0]:
+                self._result.setMesh(diag[0]["MODE_MECA"][0].getMesh())
+                nume_ddl = diag[0]["MODE_MECA"][0].getDOFNumbering()
+                if nume_ddl is not None:
+                    self._result.setDOFNumbering(nume_ddl)
+        elif ortho is not None:
+            if "BASE" in ortho[0]:
+                self._result.setMesh(ortho[0]["BASE"].getMesh())
+
+        if self._result.getDOFNumbering() is not None:
+            self._result.setMesh(self._result.getDOFNumbering().getMesh())
+        else:
+            if keywords.get("NUME_REF") is not None:
+                self._result.setDOFNumbering(keywords.get("NUME_REF"))
+                self._result.setMesh(keywords.get("NUME_REF").getMesh())
+
         self._result.build()
 
 

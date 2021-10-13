@@ -104,6 +104,8 @@ monSolver = code_aster.MumpsSolver(code_aster.Renumbering.Metis)
 numeDDL = code_aster.DOFNumbering()
 numeDDL.setElementaryMatrix(matr_elem)
 numeDDL.computeNumbering()
+print(numeDDL.getListOfLoads(), flush=True)
+study.setDOFNumbering(numeDDL)
 # numeDDL.debugPrint(6)
 test.assertEqual(numeDDL.getType(), "NUME_DDL_SDASTER")
 test.assertFalse(numeDDL.hasDirichletBC())
@@ -156,7 +158,7 @@ else:
 monSolver.factorize(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-vcine = dProblem.computeDirichletBC(numeDDL, 0.)
+vcine = dProblem.computeDirichletBC(0.)
 resu = monSolver.solveWithDirichletBC(matrAsse, vcine, retour)
 
 

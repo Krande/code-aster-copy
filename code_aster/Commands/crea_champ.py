@@ -46,6 +46,8 @@ class FieldCreator(ExecuteCommand):
         charge = keywords.get("CHARGE")
         resultat = keywords.get("RESULTAT")
         numeDdl = keywords.get("NUME_DDL")
+        chamgd = keywords.get("CHAM_GD")
+        fiss = keywords.get("FISSURE")
         if mesh is None:
             if model is not None:
                 mesh = model.getMesh()
@@ -55,6 +57,10 @@ class FieldCreator(ExecuteCommand):
                 mesh = charge.getModel().getMesh()
             elif resultat is not None:
                 mesh = resultat.getMesh()
+            elif chamgd is not None:
+                mesh = chamgd.getMesh()
+            elif fiss is not None:
+                mesh = fiss.getMesh()
 
         if location == "CART_":
             if mesh is None:

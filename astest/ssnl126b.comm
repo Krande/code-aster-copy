@@ -202,6 +202,8 @@ M_FLAMB1=EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
                          _F(NOM_PARA='INST',PRECISION=1.E-6,
                            VALE=0.4),),)
 
+M_FLAMB1.setMesh(resu.getMesh())
+
 TEST_RESU(CHAM_NO=(_F(
                       CHAM_GD=M_FLAMB1,
                       REFERENCE='ANALYTIQUE',
@@ -224,6 +226,9 @@ M_FLAMB2=EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
                       VALE_I=1,),
                          _F(NOM_PARA='INST',PRECISION=1.E-6,
                            VALE=1.0),),)
+
+M_FLAMB2.setMesh(resu.getMesh())
+
 
 TEST_RESU(CHAM_NO=(_F(
                       CHAM_GD=M_FLAMB2,

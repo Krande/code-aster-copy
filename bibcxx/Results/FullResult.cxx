@@ -25,7 +25,7 @@
 bool FullResult::_setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
     if ( dofNum != nullptr ) {
         _dofNum = dofNum;
-        _mesh = _dofNum->getMesh();
+        setMesh( _dofNum->getMesh());
         _fieldBuidler.addFieldOnNodesDescription( _dofNum->getDescription() );
         return true;
     }

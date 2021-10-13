@@ -26,7 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-
 #include "aster_fort_superv.h"
 #include "astercxx.h"
 
@@ -42,7 +41,6 @@
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
-
 
 /**
  * @struct AllowedFieldType
@@ -113,14 +111,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Constructor
 
      */
-    FieldOnNodes( )
-        : FieldOnNodes(DataStructureNaming::getNewName()) {};
+    FieldOnNodes() : FieldOnNodes( DataStructureNaming::getNewName() ){};
 
     /**
      * @brief Copy constructor
      */
-    FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy )
-        : FieldOnNodes(name) {
+    FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy ) : FieldOnNodes( name ) {
         // JeveuxVector to be duplicated
         *( _descriptor ) = *( toCopy._descriptor );
         *( _reference ) = *( toCopy._reference );
@@ -136,14 +132,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Copy constructor
      */
     FieldOnNodes( const FieldOnNodes &toCopy )
-        : FieldOnNodes(DataStructureNaming::getNewName(), toCopy) {};
+        : FieldOnNodes( DataStructureNaming::getNewName(), toCopy ){};
 
     /**
      * @brief Constructor with DOFNumbering
      */
-    FieldOnNodes( const BaseDOFNumberingPtr &dofNum )
-        : FieldOnNodes()
-    {
+    FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
         _dofNum = dofNum;
         _dofDescription = dofNum->getDescription();
         _mesh = dofNum->getMesh();
@@ -152,8 +146,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "DOFNumering is empty" );
 
         const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
-        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent],
-                           JeveuxTypesNames[intType], _dofNum->getName() );
+        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
+                           _dofNum->getName() );
     };
 
     /**
@@ -245,10 +239,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes< ValueType > operator-() {
         bool retour = _valuesList->updateValuePointer();
 
-        if(!retour)
-            raiseAsterError("Unable to update the FielsOnNodes object");
+        if ( !retour )
+            raiseAsterError( "Unable to update the FielsOnNodes object" );
 
-        FieldOnNodes< ValueType > tmp(*this);
+        FieldOnNodes< ValueType > tmp( *this );
         auto taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             tmp[pos] = -( *this )[pos];
@@ -280,7 +274,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return New field
      */
     friend FieldOnNodes< ValueType > operator*( const ASTERDOUBLE &scal,
-                                                FieldOnNodes< ValueType > rhs ) {
+                                                FieldOnNodes< ValueType > &rhs ) {
         return rhs * scal;
     };
 
@@ -329,8 +323,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return SimpleFieldOnNodesValueTypePtr issu du FieldOnNodes
      */
     SimpleFieldOnNodesValueTypePtr exportToSimpleFieldOnNodes() {
-        SimpleFieldOnNodesValueTypePtr toReturn(
-            new SimpleFieldOnNodesValueType(  ) );
+        SimpleFieldOnNodesValueTypePtr toReturn( new SimpleFieldOnNodesValueType() );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
         CALLO_CNOCNS( inName, JeveuxMemoryTypesNames[Permanent], resultName );
@@ -349,8 +342,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Set DOFNumering
      */
     void setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
-        if ( _dofNum )
-            raiseAsterError( "DOFNumbering already set" );
+        if ( !dofNum )
+            raiseAsterError( "Empty DOFNumbering" );
+        if ( _dofNum && dofNum->getName() != _dofNum->getName() )
+            raiseAsterError( "DOFNumbering inconsistents" );
         _dofNum = dofNum;
         _dofDescription = dofNum->getDescription();
         if ( _mesh != nullptr ) {
@@ -387,8 +382,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param desc object FieldOnNodesDescriptionPtr
      */
     void setDescription( const FieldOnNodesDescriptionPtr &desc ) {
-        if ( _dofDescription )
-            raiseAsterError( "FieldOnNodesDescription already set" );
+        if ( !desc )
+            raiseAsterError( "Empty FieldOnNodesDescription" );
+        if ( _dofDescription && _dofDescription->getName() != desc->getName() )
+            raiseAsterError( "FieldOnNodesDescription inconsistents" );
         _dofDescription = desc;
     };
 
@@ -397,8 +394,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param mesh object BaseMeshPtr
      */
     void setMesh( const BaseMeshPtr &mesh ) {
-        if ( _mesh )
-            raiseAsterError( "Mesh already set" );
+        if ( !mesh )
+            raiseAsterError( "Empty Mesh" );
+
+        if ( _mesh && mesh->getName() != _mesh->getName() )
+            raiseAsterError( "Meshes inconsistents" );
         _mesh = mesh;
         if ( _dofNum != nullptr ) {
             const auto name1 = _mesh->getName();

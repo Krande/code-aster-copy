@@ -44,6 +44,8 @@ class CombFourier(ExecuteCommand):
         model = keywords["RESULTAT"].getModel()
         if model is not None:
             self._result.setModel(model)
+        else:
+            self._result.setMesh(keywords["RESULTAT"].getMesh())
         self._result.build()
 
 

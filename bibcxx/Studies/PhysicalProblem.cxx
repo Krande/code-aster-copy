@@ -62,7 +62,7 @@ void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
         raiseAsterError( "Incompatible models" );
 
     auto listOfLoads = dofNume->getListOfLoads();
-    if ( listOfLoads && listOfLoads->getName() != _listOfLoads->getName() )
+    if ( listOfLoads && !listOfLoads->isEmpty() && listOfLoads->getName()!= _listOfLoads->getName())
         raiseAsterError( "Incompatible list of loads" );
 
     _dofNume = dofNume;

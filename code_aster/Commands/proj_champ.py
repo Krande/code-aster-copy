@@ -63,8 +63,10 @@ class FieldProjector(ExecuteCommand):
         if "RESULTAT" in keywords:
             if "MODELE_2" in keywords:
                 self._result.setModel(keywords["MODELE_2"])
-            if "MAILLAGE_2" in keywords:
+            elif "MAILLAGE_2" in keywords:
                 self._result.setMesh(keywords["MAILLAGE_2"])
+            else:
+                self._result.setMesh(keywords["RESULTAT"].getMesh())
             self._result.build()
         elif "CHAM_GD" in keywords:
             pass

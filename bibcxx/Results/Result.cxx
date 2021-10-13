@@ -46,6 +46,23 @@ std::pair< ASTERINTEGER, std::string > Result::_getNewFieldName( const std::stri
     return std::make_pair( retour, returnName );
 };
 
+void Result::_checkMesh( const BaseMeshPtr mesh ) const
+{
+    if ( !mesh )
+        raiseAsterError( "ValueError: Mesh is empty" );
+
+    if ( _mesh ){
+        if( _mesh->getName() != mesh->getName() )
+            raiseAsterError( "Incompatible meshes" );
+    }
+}
+
+void Result::setMesh( const BaseMeshPtr &mesh )
+{
+    _checkMesh(mesh);
+    _mesh = mesh;
+};
+
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
                                            ASTERINTEGER rank ) {
 
@@ -56,6 +73,7 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
     ASTERINTEGER rang = rank;
     std::string type( "CARAELEM" );
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, cara->getName(), type );
+    setMesh(cara->getMesh());
 };
 
 void Result::setListOfLoads( const ListOfLoadsPtr &load, ASTERINTEGER rank ) {
@@ -74,6 +92,7 @@ void Result::setMaterialField( const MaterialFieldPtr &mater, ASTERINTEGER rank 
     ASTERINTEGER rang = rank;
     std::string type( "CHAMPMAT" );
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, mater->getName(), type );
+    setMesh( mater->getMesh() );
 };
 
 void Result::setModel( const ModelPtr &model, ASTERINTEGER rank ) {
@@ -87,6 +106,7 @@ void Result::setModel( const ModelPtr &model, ASTERINTEGER rank ) {
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, model->getName(), type );
     const auto fed = model->getFiniteElementDescriptor();
     _fieldBuidler.addFiniteElementDescriptor( fed );
+    setMesh(model->getMesh());
 };
 
 void Result::setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ) {
@@ -657,6 +677,7 @@ bool Result::build() {
     } else if ( _mesh != nullptr ) {
         curMesh = _mesh;
     }
+
     ASTERINTEGER cmpt = 1;
     for ( const auto curIter : _namesOfFields->getVectorOfObjects() ) {
         auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
@@ -687,6 +708,7 @@ bool Result::build() {
 
                     ASTERINTEGER test2 = _dictOfVectorOfFieldOnNodesReal[nomSymb][rank].use_count();
                     if ( test2 == 0 ) {
+                        AS_ASSERT( curMesh != nullptr );
                         FieldOnNodesRealPtr result =
                             _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
                         result->setMesh(curMesh);

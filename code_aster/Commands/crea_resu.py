@@ -92,12 +92,28 @@ class ResultCreator(ExecuteCommand):
                         if mesh is not None:
                             self._result.setMesh(mesh)
                             break
+
+        if keywords.get("ECLA_PG") is not None:
+            self._result.setMesh(keywords.get("ECLA_PG").get("MODELE_INIT").getMesh())
+
+        if keywords.get("CONV_CHAR") is not None:
+            self._result.setMesh(keywords.get("CONV_CHAR").get("MATR_RIGI").getMesh())
+
+        if keywords.get("CONV_RESU") is not None:
+            self._result.setMesh(keywords.get("CONV_RESU").get("MATR_RIGI").getMesh())
+
+        if keywords.get("PROL_RTZ") is not None:
+            self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
+
+
         if fkw is None:
             fkw = keywords.get("ASSE")
         if fkw is None:
             fkw = keywords.get("PREP_VRC2")
         if fkw is None:
             fkw = keywords.get("PREP_VRC1")
+
+
         if fkw is not None:
             chamMater = fkw[0].get("CHAM_MATER")
             if chamMater is not None:
