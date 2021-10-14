@@ -27,7 +27,7 @@
 PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPtr curMat,
                                   const ElementaryCharacteristicsPtr cara )
     : _model( curModel ), _mesh( curModel->getMesh() ), _materialField( curMat ),
-      _listOfLoads( boost::make_shared< ListOfLoads >() ), _elemChara( cara ),
+      _listOfLoads( boost::make_shared< ListOfLoads >(_model) ), _elemChara( cara ),
       _codedMater( boost::make_shared< CodedMaterial >( _materialField, _model ) ),
       _varCom( boost::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
                                                                     _elemChara, _codedMater ) ),
@@ -40,8 +40,6 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
 
     if ( _mesh->getName() != _materialField->getMesh()->getName() )
         raiseAsterError( "Inconsistent mesh" );
-
-    _listOfLoads->setModel( _model );
 
 // create dofNume
 #ifdef ASTER_HAVE_MPI

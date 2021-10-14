@@ -66,10 +66,10 @@ DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
 };
 
 FieldOnNodesRealPtr
-DiscreteProblem::computeDirichlet( BaseDOFNumberingPtr dofNume, ASTERDOUBLE time ) {
+DiscreteProblem::computeDirichlet( ASTERDOUBLE time ) {
     auto vect_elem = computeElementaryDirichletVector(time);
 
-    return vect_elem->assembleWithLoadFunctions(dofNume, time);
+    return vect_elem->assembleWithLoadFunctions( _study->getDOFNumbering(), time);
 };
 
 ElementaryVectorDisplacementRealPtr
@@ -104,12 +104,11 @@ DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr la
 };
 
 FieldOnNodesRealPtr
-DiscreteProblem::computeDirichletReaction( BaseDOFNumberingPtr dofNume,
-                                          FieldOnNodesRealPtr lagr_curr )
+DiscreteProblem::computeDirichletReaction( FieldOnNodesRealPtr lagr_curr )
 {
     auto vect_elem = computeElementaryDirichletReactionVector(lagr_curr);
 
-    return vect_elem->assemble(dofNume);
+    return vect_elem->assemble( _study->getDOFNumbering() );
 };
 
 
@@ -139,13 +138,12 @@ DiscreteProblem::computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr d
 };
 
 FieldOnNodesRealPtr
-DiscreteProblem::computeDualizedDirichlet( BaseDOFNumberingPtr dofNume,
-                                FieldOnNodesRealPtr disp_curr,
+DiscreteProblem::computeDualizedDirichlet( FieldOnNodesRealPtr disp_curr,
                                ASTERDOUBLE scaling )
 {
     auto vect_elem = computeElementaryDualizedDirichletVector(disp_curr, scaling);
 
-    auto bume = vect_elem->assemble(dofNume);
+    auto bume = vect_elem->assemble( _study->getDOFNumbering() );
 
     if( _study->getMesh()->isParallel() )
         CALLO_AP_ASSEMBLY_VECTOR(bume->getName());
@@ -232,13 +230,12 @@ DiscreteProblem::computeElementaryNeumannVector( const VectorReal time,
 };
 
 FieldOnNodesRealPtr
-DiscreteProblem::computeNeumann( BaseDOFNumberingPtr dofNume,
-                                const VectorReal time,
+DiscreteProblem::computeNeumann( const VectorReal time,
                                 ExternalStateVariablesBuilderPtr varCom)
 {
     auto vect_elem = computeElementaryNeumannVector(time, varCom);
 
-    return vect_elem->assembleWithLoadFunctions(dofNume, time[0] + time[1]);
+    return vect_elem->assembleWithLoadFunctions( _study->getDOFNumbering(), time[0] + time[1] );
 };
 
 ElementaryMatrixDisplacementRealPtr
@@ -302,8 +299,7 @@ DiscreteProblem::computeElementaryJacobianMatrix( ASTERDOUBLE time ) {
     return this->computeElementaryStiffnessMatrix( time );
 };
 
-FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
-                                                            const ASTERDOUBLE &time ) const {
+FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const ASTERDOUBLE &time ) const {
     const auto &_listOfLoad = _study->getListOfLoads();
     const auto &list = _listOfLoad->getListVector();
     const auto &loadInformations = _listOfLoad->getInformationVector();
@@ -314,7 +310,7 @@ FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingP
 
     FieldOnNodesRealPtr retour = boost::make_shared< FieldOnNodesReal >();
     std::string resuName = retour->getName();
-    std::string dofNumName = curDOFNum->getName();
+    std::string dofNumName = _study->getDOFNumbering()->getName();
 
     std::string lLoadName = list->getName();
     lLoadName.resize( 24, ' ' );
@@ -326,7 +322,7 @@ FieldOnNodesRealPtr DiscreteProblem::computeDirichletBC( const BaseDOFNumberingP
 
     CALLO_ASCAVC_WRAP( lLoadName, infLoadName, funcLoadName, dofNumName, &time, resuName, base );
 
-    retour->setDOFNumbering( curDOFNum );
+    retour->setDOFNumbering( _study->getDOFNumbering() );
     retour->build();
 
     return retour;

@@ -124,6 +124,11 @@ class ListOfLoads : public DataStructure {
     ListOfLoads( );
 
     /**
+     * @brief Constructeur
+     */
+    ListOfLoads(const ModelPtr model);
+
+    /**
      * @brief Function d'ajout d'une charge cinematique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function

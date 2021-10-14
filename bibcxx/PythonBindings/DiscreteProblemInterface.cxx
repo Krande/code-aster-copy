@@ -29,11 +29,10 @@ namespace py = boost::python;
 #include "PythonBindings/DiscreteProblemInterface.h"
 #include <PythonBindings/factory.h>
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDirichletBC_overloads, computeDirichletBC, 2, 2 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeElementaryDualizedDirichletVector_overloads,
     computeElementaryDualizedDirichletVector, 1, 2 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDualizedDirichlet_overloads,
-    computeDualizedDirichlet, 2, 3 )
+    computeDualizedDirichlet, 1, 2 )
 
 void exportDiscreteProblemToPython() {
 
@@ -66,8 +65,7 @@ void exportDiscreteProblemToPython() {
         .def( "computeElementaryTangentMatrix", &DiscreteProblem::computeElementaryTangentMatrix )
         .def( "computeElementaryJacobianMatrix",
               &DiscreteProblem::computeElementaryJacobianMatrix )
-        .def( "computeDirichletBC", &DiscreteProblem::computeDirichletBC,
-              computeDirichletBC_overloads() )
+        .def( "computeDirichletBC", &DiscreteProblem::computeDirichletBC )
         .def( "computeMechanicalDampingMatrix",
               &DiscreteProblem::computeMechanicalDampingMatrix )
         .def( "computeMechanicalStiffnessMatrix",

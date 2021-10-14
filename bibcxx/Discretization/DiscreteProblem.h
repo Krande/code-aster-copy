@@ -89,7 +89,7 @@ class DiscreteProblem {
     ElementaryVectorDisplacementRealPtr computeElementaryDirichletVector( ASTERDOUBLE time = 0. );
 
     FieldOnNodesRealPtr
-    computeDirichlet( BaseDOFNumberingPtr dofNume,  ASTERDOUBLE time = 0.);
+    computeDirichlet( ASTERDOUBLE time = 0.);
 
     /**
      * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
@@ -101,7 +101,7 @@ class DiscreteProblem {
     computeElementaryDirichletReactionVector( FieldOnNodesRealPtr lagr_curr );
 
     FieldOnNodesRealPtr
-    computeDirichletReaction( BaseDOFNumberingPtr dofNume,  FieldOnNodesRealPtr lagr_curr);
+    computeDirichletReaction( FieldOnNodesRealPtr lagr_curr);
 
 
 
@@ -110,7 +110,7 @@ class DiscreteProblem {
                                               ASTERDOUBLE scaling = 1.0 );
 
     FieldOnNodesRealPtr
-    computeDualizedDirichlet( BaseDOFNumberingPtr dofNume,  FieldOnNodesRealPtr disp_curr,
+    computeDualizedDirichlet( FieldOnNodesRealPtr disp_curr,
                               ASTERDOUBLE scaling = 1.0);
 
     /**
@@ -131,7 +131,7 @@ class DiscreteProblem {
                                                       ExternalStateVariablesBuilderPtr );
 
     FieldOnNodesRealPtr
-    computeNeumann( BaseDOFNumberingPtr dofNume,  const VectorReal time,
+    computeNeumann( const VectorReal time,
                                                   ExternalStateVariablesBuilderPtr);
 
     /**
@@ -154,8 +154,7 @@ class DiscreteProblem {
      * @brief Construction d'un vecteur de chargement cinématique
      * @return Booleen indiquant que tout s'est bien passe
      */
-    FieldOnNodesRealPtr computeDirichletBC( const BaseDOFNumberingPtr &curDOFNum,
-                                          const ASTERDOUBLE &time ) const;
+    FieldOnNodesRealPtr computeDirichletBC( const ASTERDOUBLE &time ) const;
 
     /**
      * @brief Calcul des matrices elementaires pour l'option AMOR_MECA

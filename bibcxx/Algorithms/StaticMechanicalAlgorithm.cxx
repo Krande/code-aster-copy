@@ -60,7 +60,7 @@ FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx 
 
     // Build Dirichlet loads
     FieldOnNodesRealPtr chNoDir =
-        ctx._discreteProblem->computeDirichlet( dofNum1, ctx._time );
+        ctx._discreteProblem->computeDirichlet( ctx._time );
 
     // Build Laplace forces
     ElementaryVectorPtr vectElem2 = ctx._discreteProblem->computeElementaryLaplaceVector();
@@ -74,7 +74,7 @@ FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx 
     times.push_back( 0. );
 
     FieldOnNodesRealPtr chNoNeu =
-        ctx._discreteProblem->computeNeumann( dofNum1, times, ctx._varCom );
+        ctx._discreteProblem->computeNeumann( times, ctx._varCom );
 
     *chNoDir += *chNoLap;
     *chNoDir += *chNoNeu;
@@ -113,13 +113,11 @@ void StaticMechanicalAlgorithm::_storeFields( CurrentContext &ctx ) {
 void StaticMechanicalAlgorithm::_solve( CurrentContext &ctx, const FieldOnNodesRealPtr rhs ) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    BaseDOFNumberingPtr dofNum1 = ctx._discreteProblem->getPhysicalProblem()->getDOFNumbering();
-
     CommandSyntax cmdSt( "MECA_STATIQUE" );
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
 
     FieldOnNodesRealPtr diriBCsFON =
-        ctx._discreteProblem->computeDirichletBC( dofNum1, ctx._time );
+        ctx._discreteProblem->computeDirichletBC( ctx._time );
 
     FieldOnNodesRealPtr resultField =
         ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );
