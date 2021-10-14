@@ -82,7 +82,8 @@ class MechanicalLoadDefinition(ExecuteCommand):
         else :
             if l_neum:
                 if l_diri:
-                    raise TypeError("Not allowed to mix up Dirichlet and Neumann loadings in the same parallel AFFE_CHAR_MECA")
+                    raise TypeError("Not allowed to mix up Dirichlet and Neumann \
+                        loadings in the same parallel AFFE_CHAR_MECA")
                 else:
                     self._result = MechanicalLoadReal(model)
             if self._hasOnlyDDL_IMPO(keywords):
@@ -106,6 +107,15 @@ class MechanicalLoadDefinition(ExecuteCommand):
             partialMechanicalLoad = AFFE_CHAR_MECA(**keywords)
             keywords["MODELE"] = model
             self._result = ParallelMechanicalLoadReal(partialMechanicalLoad, model)
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MODELE")
 
 AFFE_CHAR_MECA = MechanicalLoadDefinition.run
 

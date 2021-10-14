@@ -36,5 +36,14 @@ class MechanicalLoadComplexDefinition(ExecuteCommand):
         """
         self._result = MechanicalLoadComplex(keywords["MODELE"])
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MODELE")
+
 
 AFFE_CHAR_MECA_C = MechanicalLoadComplexDefinition.run

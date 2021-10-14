@@ -36,4 +36,13 @@ class AffeCharAcou(ExecuteCommand):
         """
         self._result = AcousticLoadComplex(keywords["MODELE"])
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MODELE")
+
 AFFE_CHAR_ACOU = AffeCharAcou.run
