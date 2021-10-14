@@ -57,10 +57,10 @@ class sd_solveur(AsBase):
             assert slvk[10] in ("SANS", "AUTO", "FORCE", "XXXX", "MINI")
             assert slvk[11] in (
                 "XXXX",
+                "5.4.1consortium",
+                "5.4.1",
                 "5.2.1consortium",
                 "5.2.1",
-                "5.1.2consortium",
-                "5.1.2",
             )
         elif method == "MULT_FRONT":
             assert slvk[1] in ("XXXX")

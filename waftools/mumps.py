@@ -114,16 +114,19 @@ int main(void){
     return 0;
 }'''
     self.start_msg('Checking mumps version')
+    vers = ""
     try:
         ret = self.check_cc(fragment=fragment, use='MUMPS',
                             mandatory=True, execute=True, define_ret=True)
         self.env['MUMPS_VERSION'] = ret
         vers = ret.replace("consortium", "")
-        if vers not in ("5.2.1", "5.1.2"):
+        if vers not in ("5.4.1", "5.2.1"):
             raise Errors.ConfigurationError("expected versions: {0}"
-                                            .format('5.2.1/5.1.2(consortium)'))
+                                            .format('5.4.1/5.2.1(consortium)'))
     except:
-        self.end_msg('no', 'YELLOW')
+        if vers:
+            vers = " (%s)" % self.env['MUMPS_VERSION']
+        self.end_msg('no' + vers, 'YELLOW')
         raise
     else:
         self.define('ASTER_MUMPS_VERSION', ret)

@@ -1,3 +1,3 @@
 # This file set the environment for code_aster.
 # Configuration for cronos std
-. /software/restricted/simumeca/aster/prerequisites/20210811/gcc8-mkl-seq/cronos_std.sh
+. /software/restricted/simumeca/aster/prerequisites/20211014/gcc8-mkl-seq/cronos_std.sh
