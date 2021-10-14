@@ -69,5 +69,14 @@ class MechanicalLoadFunctionDefinition(ExecuteCommand):
             keywords["MODELE"] = model
             self._result = ParallelMechanicalLoadFunction(partialMechanicalLoad, model)
 
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MODELE")
+
 
 AFFE_CHAR_MECA_F = MechanicalLoadFunctionDefinition.run

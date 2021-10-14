@@ -42,7 +42,7 @@ class DirichletBCDefinition(ExecuteCommand):
         elif keywords.get( "ACOU_IMPO" ) is not None:
             self._result = AcousticDirichletBC(model)
         elif keywords.get( "EVOL_IMPO" ) is not None:
-            if (keywords.get( "EVOL_IMPO" ).getType() in ('EVOL_ELAS', 'EVOL_NOLI') ):
+            if (keywords.get( "EVOL_IMPO" ).getType() in ('EVOL_ELAS', 'EVOL_NOLI')):
                 self._result = MechanicalDirichletBC(model)
             elif keywords.get( "EVOL_IMPO" ).getType() == 'EVOL_THER':
                 self._result = ThermalDirichletBC(model)
@@ -52,6 +52,15 @@ class DirichletBCDefinition(ExecuteCommand):
                 raise NotImplementedError("Must be implemented")
         else:
             raise NotImplementedError("Must be implemented")
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MODELE")
 
 
 AFFE_CHAR_CINE = DirichletBCDefinition.run
