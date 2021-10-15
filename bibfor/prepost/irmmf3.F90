@@ -119,21 +119,29 @@ character(len=8) :: nosdfu
     integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
     integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
     integer :: jgren, compt, jtest3, jtest4, jtest5, jtest6
-    integer :: nbgr, nbgrp, nfam_max
+    integer :: nbgr, nbgrp, nfam_max, nbbloc
     integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest2
     character(len=8) :: saux08
     character(len=9) :: saux09
     character(len=80) :: nomfam
-    real(kind=8) :: start_time, end_time
+    real(kind=8) :: start_time, end_time, start1, end1
     aster_logical :: lfamtr
     mpi_int :: mrank, msize, world, proc, taille
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !
+    if (typent .eq. tygeno) then
+        saux09 = '.GROUPENO'
+        saux08 = "NOEUDS"
+    else
+        saux09 = '.GROUPEMA'
+        saux08 = "MAILLES"
+    endif
+
     if (infmed .gt. 1) then
         call cpu_time(start_time)
-        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES FAMILLES MED EN PARALLELE : '
+        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE : '
     endif
 !
 !     NATT = NOMBRE D'ATTRIBUTS DANS UNE FAMILLE : JAMAIS. ELLES NE SONT
@@ -154,15 +162,11 @@ character(len=8) :: nosdfu
     nbproc = to_aster_int(msize)
     if (nbgrou .ne. 0) then
 !
-        if (typent .eq. tygeno) then
-            saux09 = '.GROUPENO'
-        else
-            saux09 = '.GROUPEMA'
-        endif
 !
 ! 2.1. ==> BUT DE L'ETAPE 2.1 : CONNAITRE POUR CHAQUE ENTITE SES GROUPES
 !          D'APPARTENANCE
 !
+        call cpu_time(start1)
         do ige = 1 , nbgrou
             call jeexin(jexnom(nomast//saux09, nomgen(ige)), codret)
             if(codret.ne.0) then
@@ -245,6 +249,10 @@ character(len=8) :: nosdfu
             endif
 22          continue
         end do
+        call cpu_time(end1)
+        if (infmed .gt. 1) then
+            write (ifm,*)'<',nompro,'> ** Preparation des familles en ', end1-start1, "sec."
+        endif
 !
 ! 2.3. ==> BUT DE L'ETAPE 2.3 : CREATION DES FAMILLES D'ENTITES ET LES
 !          ECRIRE DANS LE FICHIER
@@ -254,6 +262,7 @@ character(len=8) :: nosdfu
 !          CARACTERISENT. POUR CELA, ON SE BASE SUR LE PREMIER ENTITE
 !          QUI EN FAIT PARTIE.
 !
+        call cpu_time(start1)
         nfam_max = nfam
         call asmpi_comm_vect('MPI_MAX', 'I', sci=nfam_max)
         if(nfam_max.ne.0) then
@@ -407,6 +416,10 @@ character(len=8) :: nosdfu
         endif
         call jedetr('&&IRMMF2.TEST4')
     endif
+    call cpu_time(end1)
+    if (infmed .gt. 1) then
+        write (ifm,*)'<',nompro,'> ** Partage des familles en ', end1-start1, "sec."
+    endif
 !
 !====
 ! 3. ECRITURE DE LA TABLE DES NUMEROS DE FAMILLES DES ENTITES
@@ -416,6 +429,7 @@ character(len=8) :: nosdfu
 !
 ! 3.1. ==> ECRITURE DANS LE CAS DES NOEUDS
 !
+    call cpu_time(start1)
     if (typent .eq. tygeno) then
         call jeveuo(nosdfu//'.NBNO', 'L', jnbno)
         start = zi(jnbno)
@@ -451,29 +465,34 @@ character(len=8) :: nosdfu
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         call jeveuo(nosdfu//'.MATY', 'L', jtyp)
         do ityp = 1 , MT_NTYMAX
-            if (zi(jtyp+3*(ityp-1)+2).ne.0) then
+            nbmat = zi(jtyp+3*(ityp-1)+2)
+            if (nbmat.ne.0) then
                 start = zi(jtyp+3*(ityp-1))
                 nbmal = nmatyp(ityp)
-                nbmat = zi(jtyp+3*(ityp-1)+2)
+                ASSERT(zi(jtyp+3*(ityp-1)+1) == nbmal)
+                nbbloc = 1
+                if(nbmal == 0) nbbloc = 0
                 call as_mfrall(1, filter, codret)
                 call as_mfrblc(fid, nbmat, 1, 1, 0,&
                                edfuin, 2, "", start, nbmal,&
-                               1, nbmal, 0, filter(1), codret)
+                               nbbloc, nbmal, 0, filter(1), codret)
                 if (codret .ne. 0) then
                     saux08='mfrblc'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
                 endif
 !
-!               RECUPERATION DU TABLEAU DES RENUMEROTATIONS
-                call jeveuo('&&'//prefix//'.NUM.'//nomtyp(ityp), 'L', kaux)
-!               CREATION VECTEUR NUMEROS DE FAMILLE POUR LES MAILLES / TYPE
                 cmpt = 0
-                do iaux = 1 , nmatyp(ityp)
-                    if(zi(jma+ient-1).gt.0) then
-                        cmpt = cmpt + 1
-                        tabaux(cmpt) = nufaen(zi(kaux-1+iaux))
-                    endif
-                end do
+                if(nbmal > 0) then
+!               RECUPERATION DU TABLEAU DES RENUMEROTATIONS
+                    call jeveuo('&&'//prefix//'.NUM.'//nomtyp(ityp), 'L', kaux)
+!               CREATION VECTEUR NUMEROS DE FAMILLE POUR LES MAILLES / TYPE
+                    do iaux = 1 , nmatyp(ityp)
+                        if(zi(jma+ient-1).gt.0) then
+                            cmpt = cmpt + 1
+                            tabaux(cmpt) = nufaen(zi(kaux-1+iaux))
+                        endif
+                    end do
+                end if
                 ASSERT(cmpt.eq.nbmal)
 !
                 call as_mmhaaw(fid, nomamd, tabaux, nbmal, filter(1),&
@@ -491,10 +510,14 @@ character(len=8) :: nosdfu
             endif
         enddo
     endif
+    call cpu_time(end1)
+    if (infmed .gt. 1) then
+        write (ifm,*)'<',nompro,'> ** Ecriture des familles en ', end1-start1, "sec."
+    endif
 !
     if (infmed .gt. 1) then
         call cpu_time(end_time)
-        write (ifm,*) '<',nompro,'> FIN ECRITURE DES FAMILLES MED EN PARALLELE EN ', &
+        write (ifm,*)'<',nompro,'> FIN ECRITURE DES FAMILLES DE '//saux08//' MED EN PARALLELE EN ',&
             end_time-start_time, "sec."
     endif
 !

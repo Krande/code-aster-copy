@@ -21,18 +21,17 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "mpif.h"
-#include "MeshTypes_type.h"
 #include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_send_i.h"
 #include "asterc/asmpi_recv_i.h"
+#include "asterc/asmpi_send_i.h"
+#include "asterf_types.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/build_comm_graph.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -44,6 +43,11 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 #include "asterfort/jexnom.h"
 #include "asterfort/lrmtyp.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "MeshTypes_type.h"
+#ifdef ASTER_HAVE_MPI
+#include "mpif.h"
+#endif
 !
 character(len=1) :: base
 character(len=8) :: nomast, nomsd
@@ -68,7 +72,7 @@ aster_logical :: par_seqfile
     integer :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
     integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
     integer :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat, jmaex
-    integer :: rang, nbproc, ityp, jtyp, jtyp2, iaux
+    integer :: rang, nbproc, ityp, jtyp, jtyp2, iaux, ifm, niv, jtypg
     integer :: ima, ite04, ite08, itr03, itr04, jgrap, nbjoin, ijoin
     integer :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
     integer(kind=4) :: num4, numpr4, n4e, n4r
@@ -81,10 +85,16 @@ aster_logical :: par_seqfile
     real(kind=8), pointer :: coordo(:) => null()
     aster_logical, pointer :: par_seq(:) => null()
     mpi_int :: mrank, msize, world
+    real(kind=8) :: start, end
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+    call infniv(ifm, niv)
+    if(niv > 1) then
+        call cpu_time(start)
+        write(ifm,*) "<IREMED_FILTRE> DEBUT CREATION FILTRE"
+    end if
 !
     call jeexin(nomsd//'.NBNO', iret)
     if(iret.eq.0) then
@@ -96,6 +106,8 @@ aster_logical :: par_seqfile
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
 !
+        call wkvect(nomsd//'.NOMA', base//' V K8', 1, jma)
+        zk8(jma) = nomast
         call dismoi('NB_NO_MAILLA', nomast, 'MAILLAGE', repi=nbnoeu)
         call jelira(nomast//'.NOMMAI', 'NOMUTI', nbmail)
         call jeveuo(nomast//'.COORDO    .VALE', 'L', vr=coordo)
@@ -199,7 +211,7 @@ aster_logical :: par_seqfile
         call wkvect(nomsd//'.MAIL', base//' V I', nbmail, jma)
         call wkvect(nomsd//'.MATY', base//' V I', MT_NTYMAX*3, jtyp)
         call wkvect(nomsd//'.MATYP', base//' V I', MT_NTYMAX*3, iaux)
-        call wkvect('&&FILTRE', 'V V I', MT_NTYMAX, jtyp2)
+        call wkvect('&&FILTRE.TYPMAILL', 'V V I', MT_NTYMAX, jtyp2)
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA8'), ite08)
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TETRA4'), ite04)
         call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA4'), itr04)
@@ -216,8 +228,11 @@ aster_logical :: par_seqfile
             endif
         enddo
 
+        call wkvect('&&FILTRE.TYPMAILG', 'V V I', MT_NTYMAX, jtypg)
+        zi(jtypg-1+1:jtypg-1+MT_NTYMAX) = zi(jtyp2-1+1:jtyp2-1+MT_NTYMAX)
+        call asmpi_comm_vect('MPI_SUM', 'I', nbval=MT_NTYMAX, vi=zi(jtypg))
         do ityp = 1, MT_NTYMAX
-            if(zi(jtyp2+ityp-1).ne.0) then
+            if(zi(jtypg+ityp-1).ne.0) then
                 zi(jnbma:jnbma-1+2*nbproc) = 0
                 zi(jnbma+rang) = zi(jtyp2+ityp-1)
                 zi(jnbma+ nbproc + rang) = zi(jtyp2+ityp-1)
@@ -228,6 +243,7 @@ aster_logical :: par_seqfile
                 !! nombre de mailles proprio du type donne
                 zi(jtyp+3*(ityp-1)+1)=zi(jnbma+rang)
                 !! nombre de mailles totales du type donne
+                ASSERT(zi(jnbma+2*nbproc-1) == zi(jtypg+ityp-1))
                 zi(jtyp+3*(ityp-1)+2)=zi(jnbma+2*nbproc-1)
                 zi(jnbma+nbproc-1)=0
                 !! numero 1ere maille du type donne
@@ -237,13 +253,21 @@ aster_logical :: par_seqfile
         do ima = 1, nbmail
             if(zi(jma+ima-1).ne.0) then
                 ityp = typma(ima)
+                if (ityp .eq. ite08) ityp=ite04
+                if (ityp .eq. itr04) ityp=itr03
                 zi(jma+ima-1) = zi(jma+ima-1) + zi(jtyp+3*(ityp-1)) - 1
             endif
         enddo
-        call jedetr('&&FILTRE')
+        call jedetr('&&FILTRE.TYPMAILL')
+        call jedetr('&&FILTRE.TYPMAILG')
         call jedetr(nomsd//'.NBMA')
         call jedetr(nomsd//'.NBNO1')
     endif
+!
+    if(niv > 1) then
+        call cpu_time(end)
+        write(ifm,*) "<IREMED_FILTRE> FIN CREATION FILTRE EN ", end-start, "sec"
+    end if
 !
     call jedema()
 !

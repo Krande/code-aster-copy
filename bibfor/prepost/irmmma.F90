@@ -94,18 +94,23 @@ character(len=8) :: nosdfu
     integer :: edfuin, edmail, ednoda
     integer :: codret
     integer :: ipoin, iCellType, letype
-    integer :: ino, iCell
+    integer :: ino, iCell, nbCellTypeTotal, nbbloc
     integer :: jnomma(MT_NTYMAX), jnumma(MT_NTYMAX), jcnxma(MT_NTYMAX)
     integer :: ifm, niv, jma, rang, nbproc, jtyp, nbmat, nbmal, start, jno
     integer :: filter(1), numno
     mpi_int :: mrank, msize
     character(len=8) :: saux08
     aster_logical :: lnocen, lfu
+    real(kind=8) :: start1, end1
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
+    if (niv .gt. 1) then
+        call cpu_time(start1)
+        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES MAILLES : '
+    endif
 !
 !====
 ! 2. PREPARATION DES TABLEAUX PAR TYPE DE MAILLE
@@ -282,7 +287,13 @@ character(len=8) :: nosdfu
         endif
     300 format('TYPE ',a8,' : ',i10,' MAILLES')
 !
-        if (nbCellType(iCellType) .ne. 0) then
+        if(lfu) then
+            nbCellTypeTotal = zi(jtyp+3*(iCellType-1)+2)
+        else
+            nbCellTypeTotal = nbCellType(iCellType)
+        end if
+!
+        if (nbCellTypeTotal .ne. 0) then
 !
 ! 3.1. ==> LES CONNECTIVITES
 !          LA CONNECTIVITE EST FOURNIE EN STOCKANT TOUS LES NOEUDS A
@@ -294,10 +305,12 @@ character(len=8) :: nosdfu
                 ASSERT(nbmal.eq.zi(jtyp+3*(iCellType-1)+1))
                 nbmat = zi(jtyp+3*(iCellType-1)+2)
                 start = zi(jtyp+3*(iCellType-1))
+                nbbloc = 1
+                if(nbmal.eq.0) nbbloc = 0
                 call as_mfrall(1, filter, codret)
                 call as_mfrblc(fid, nbmat, 1, nnotyp(iCellType), 0,&
                             0, 2, "", start, nbmal,&
-                            1, nbmal, 0, filter(1), codret)
+                            nbbloc, nbmal, 0, filter(1), codret)
                 if (codret .ne. 0) then
                     saux08='mfrblc'
                     call utmess('F', 'DVP_97', sk=saux08, si=codret)
@@ -353,5 +366,10 @@ character(len=8) :: nosdfu
     end do
 !
     call jedema()
+!
+    if (niv .gt. 1) then
+        call cpu_time(end1)
+        write (ifm,*) '<',nompro,'> FIN ECRITURE DES MAILLES EN ', end1-start1, 'SEC'
+    endif
 !
 end subroutine

@@ -102,6 +102,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     character(len=16) :: saux16
     character(len=64) :: saux64, nomas2
     aster_logical :: ficexi
+    real(kind=8) :: start, end
 !
 !====
 ! 1. PREALABLES
@@ -114,6 +115,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 ! 1.2. ==> INFORMATION
 !
     if (nivinf .gt. 1) then
+        call cpu_time(start)
         write (ifm,201) 'DEBUT DE '//nompro
         write (ifm,202) nomfpg
         202 format(/,'ECRITURE D''UNE LOCALISATION DES POINTS DE GAUSS',&
@@ -490,7 +492,8 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     endif
 !
     if (nivinf .gt. 1) then
-        write (ifm,201) 'FIN DE '//nompro
+        call cpu_time(end)
+        write (ifm,*) '    ========== FIN DE '//nompro//' EN', end-start, 'sec ==========='
     endif
 !
 end subroutine

@@ -121,6 +121,7 @@ integer :: codret
     integer :: iCmp
     character(len=8), pointer :: cmpUserName(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
+    character(len=8), pointer :: v_ma(:) => null()
     real(kind=8) :: start_time, end_time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -172,16 +173,6 @@ integer :: codret
     call mdnoma(nomamd, lnomam, nomaas, codret)
 !   Creation des vecteurs jeveux pour les filtres med
     nom_sd_fu = ' '
-    if(lfichUniq) then
-        if (.not.isParallelMesh(nomaas)) then
-            call utmess('F', 'MED3_5')
-        endif
-        nom_sd_fu = '&&IRMHD2'
-        call jeexin(nom_sd_fu//'.MAIL', codret)
-        if(codret.eq.0) then
-            call iremed_filtre(nomaas, nom_sd_fu, 'V', .true._1)
-        endif
-    endif
 !   2.3. ==> CE MAILLAGE EST-IL DEJA PRESENT DANS LE FICHIER ?
     iaux = 0
     ifimed = 0
@@ -191,13 +182,29 @@ integer :: codret
         saux08 = 'MED     '
         lgaux = .false.
         formar=' '
-        call jedetc('V', nom_sd_fu, 1)
         if(lfichUniq) then
+            if (.not.isParallelMesh(nomaas)) then
+                call utmess('F', 'MED3_5')
+            endif
             nom_sd_fu = '&&IRMHD2'
-            call iremed_filtre(nomaas, nom_sd_fu, 'V', .true._1)
+            call jedetc('V', nom_sd_fu, 1)
+            call iremed_filtre(nomaas, nom_sd_fu, 'V', ASTER_TRUE)
         endif
         call irmail(saux08, ifi, iaux, nomaas, lgaux, modele, nivinf, formar, lfichUniq,&
                     nom_sd_fu)
+    else
+        if(lfichUniq) then
+            if (.not.isParallelMesh(nomaas)) then
+                call utmess('F', 'MED3_5')
+            endif
+            nom_sd_fu = '&&IRMHD2'
+            call jeveuo(nom_sd_fu//'.NOMA', "L", vk8=v_ma)
+            ASSERT(v_ma(1) == nomaas)
+            ! call jeexin(nom_sd_fu//'.NOMA', codret)
+            if(codret.eq.0) then
+                !call iremed_filtre(nomaas, nom_sd_fu, 'V', ASTER_TRUE)
+            endif
+        endif
     endif
 !
 ! 3. PREPARATION DU CHAMP A ECRIRE

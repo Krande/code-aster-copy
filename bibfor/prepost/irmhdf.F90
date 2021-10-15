@@ -46,6 +46,7 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail,&
 #include "asterfort/utmess.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/irmhpc.h"
+#include "asterfort/asmpi_barrier.h"
 !
 integer :: connex(*), typma(*), point(*)
 integer :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma

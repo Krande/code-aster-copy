@@ -77,6 +77,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
     integer :: jnbno, nbnot, jno, nbnol, cmpt
     mpi_int :: mrank, msize
     aster_logical :: lfu
+    real(kind=8) :: start1, end1
 !
     character(len=8) :: saux08
 !
@@ -87,6 +88,10 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
     call jemarq()
 !
     call infniv(ifm, nivinf)
+    if (nivinf .gt. 1) then
+        call cpu_time(start1)
+        write (ifm,*) '<',nompro,'> DEBUT ECRITURE DES NOEUDS : '
+    endif
 !
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
@@ -174,5 +179,10 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo,&
     call jedetr('&&'//nompro//'NOMNOE')
 !
     call jedema()
+!
+    if (nivinf .gt. 1) then
+        call cpu_time(end1)
+        write (ifm,*) '<',nompro,'> FIN ECRITURE DES NOEUDS EN ', end1-start1, 'SEC'
+    endif
 !
 end subroutine

@@ -44,12 +44,12 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
     if (cret.eq.0) then
 #ifdef ASTER_HAVE_MPI
 #if !ASTER_MED_SAME_INT_IDT
-        acces4 = acces
-        comm4 = comm
+        acces4 = to_med_int(acces)
+        comm4 = to_med_int(comm)
         info4 = 0
         call mpfope(fidm, nom, acces4, comm4, info4, cret4)
-        fid = fidm
-        cret = cret4
+        fid = to_med_idt(fidm)
+        cret = to_aster_int(cret4)
 #else
         call mpfope(fid, nom, acces, comm, 0, cret)
 #endif

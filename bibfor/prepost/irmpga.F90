@@ -102,6 +102,7 @@ integer :: codret
     character(len=10) :: nonuma
     character(len=16) :: nomtef, nomfpg, typsec
     character(len=64) :: nolopg, nomasu
+    real(kind=8) :: start, end
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,6 +111,7 @@ integer :: codret
     call infniv(ifm, niv)
 !
     if (niv .gt. 1) then
+        call cpu_time(start)
         write (ifm,100) 'DEBUT DE '//nompro
         call utmess('I', 'MED_74')
         call utflsh(codret)
@@ -286,7 +288,8 @@ integer :: codret
 !
 ! 3. LA FIN
     if (niv .gt. 1) then
-        write (ifm,100) 'FIN DE '//nompro
+        call cpu_time(end)
+        write (ifm,*) '    ========== FIN DE '//nompro//' EN', end-start, 'sec ==========='
     endif
 !
 end subroutine

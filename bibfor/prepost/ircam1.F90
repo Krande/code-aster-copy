@@ -139,14 +139,14 @@ integer :: codret
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()
     real(kind=8) :: rbid(1)
-    real(kind=8) :: start_time, end_time
+    real(kind=8) :: start_time, end_time, start2, end2
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if(niv > 1) then
         call cpu_time(start_time)
-        write(ifm,*) "DEBUT DE IRCAM1"
+        write(ifm,*) "    ========== DEBUT DE IRCAM1 =========="
     end if
 !
 ! 1.2. ==> NOMS DES TABLEAUX DE TRAVAIL
@@ -166,6 +166,7 @@ integer :: codret
 !     SOIT ON EST PASSE PAR IRMAIL/IRMHDF)
 !====
 !
+    call cpu_time(start2)
     inquire(file=nofimd,exist=ficexi)
     if (ficexi) then
         edleaj = 1
@@ -194,6 +195,12 @@ integer :: codret
         saux08='mfiope'
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
+    call cpu_time(end2)
+    if(niv > 1) then
+        call cpu_time(end_time)
+        write(ifm,*) "    ========== IRCAM1 : OUVERTURE DU FICHIER EN ", &
+            end2 - start2, "sec ============"
+    end if
 !
 !====
 ! 3. CREATION DU CHAMP
@@ -360,7 +367,7 @@ integer :: codret
     AS_DEALLOCATE(vk16=cunit)
     if(niv > 1) then
         call cpu_time(end_time)
-        write(ifm,*) "FIN DE IRCAM1 EN ", end_time - start_time, "sec"
+        write(ifm,*) "    ========== FIN DE IRCAM1 EN ", end_time - start_time, "sec ============"
     end if
 !
 end subroutine

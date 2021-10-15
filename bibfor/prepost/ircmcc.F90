@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,6 +69,7 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
     integer :: adncmp, aducmp
     integer :: ifm, nivinf
     integer :: iaux
+    real(kind=8) :: start, end
 !
     character(len=8) :: saux08
 !
@@ -77,6 +78,10 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
 !====
 !
     call infniv(ifm, nivinf)
+    if(nivinf > 1) then
+        call cpu_time(start)
+        write(ifm,*) "    ========== DEBUT DE IRCMCC =========="
+    end if
 !
     if (existc .eq. 1) then
         call utmess('F', 'MED_31', sk=nochmd)
@@ -124,5 +129,9 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve,&
         2303  format(5(a8:,', '),:)
 !
     endif
+    if(nivinf > 1) then
+        call cpu_time(end)
+        write(ifm,*) "    ========== FIN DE IRCMCC EN ", end - start, "sec ============"
+    end if
 !
 end subroutine

@@ -171,7 +171,7 @@ U=CALC_CHAMP(reuse=U,RESULTAT=U,CRITERES=('DERA_ELGA'))
 DEFI_FICHIER( UNITE=90, FICHIER='/tmp/resu.med', TYPE='BINARY',)
 
 IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
+          FORMAT='MED', INFO=1,
           UNITE=90,
           RESU=_F(RESULTAT=U,),
           VERSION_MED='4.1.0')

@@ -170,8 +170,10 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
 SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 0)
 DEPL_std = resu_std.getFieldOnNodesReal("DEPL", 0)
 
-test.assertAlmostEqual(DEPL.norm("NORM_2"), DEPL_std.norm("NORM_2"), delta=1e-12)
-#test.assertAlmostEqual(SIEF.norm("NORM_2"), SIEF_std.norm("NORM_2"), delta=1e-12)
+rela = abs(DEPL.norm("NORM_2")- DEPL_std.norm("NORM_2"))/DEPL_std.norm("NORM_2")
+test.assertAlmostEqual(rela, 0.0, delta=1e-12)
+rela = abs(SIEF.norm("NORM_2")- SIEF_std.norm("NORM_2"))/SIEF_std.norm("NORM_2")
+test.assertAlmostEqual(rela, 0.0, delta=1e-12)
 
 
 test.printSummary()
