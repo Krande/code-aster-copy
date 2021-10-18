@@ -50,7 +50,6 @@ class DataStructure {
 
   private:
     /** @brief Nom de la sd */
-    /** @todo remettre le const */
     std::string _name;
     /** @brief User variable name */
     std::string _user_name;
@@ -74,10 +73,25 @@ class DataStructure {
     /**
      * @brief Constructeur
      * @param type code_aster type of the datastructure
-
      * @param nameLength Length of the jeveux basename
      */
     DataStructure( const int nameLength, const std::string type );
+
+    /**
+     * @brief Copy Constructor
+     * @param other DataStructure to be copied
+     */
+    DataStructure( const DataStructure & );
+
+    /**
+     * @brief Move constructor
+     */
+    DataStructure( DataStructure && );
+
+    /**
+     * @brief Move assignment
+     */
+    DataStructure& operator=( DataStructure && );
 
     /**
      * @brief Destructeur

@@ -51,14 +51,24 @@ class DataField : public DataStructure {
 
     /**
      * @brief Constructor
-
      */
     DataField( const std::string type )
         : DataStructure( 19, type ){};
 
     /**
-     * @brief Constructor
+     * @brief Copy Constructor
+     * @param other DataField to copy
+     */
+    DataField( const DataField &other )
+        : DataStructure( other.getName().size(), other.getType() ){};
 
+    /**
+     * @brief Move Constructor
+     */
+    DataField( DataField && other) : DataStructure{std::move(other)} {};
+
+    /**
+     * @brief Constructor
      */
     DataField( )
         : DataStructure( 19, "CHAM_GD" ){};

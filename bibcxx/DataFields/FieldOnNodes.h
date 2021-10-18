@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+
 #include "aster_fort_superv.h"
 #include "astercxx.h"
 
@@ -41,6 +42,7 @@
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
+
 
 /**
  * @struct AllowedFieldType
@@ -111,7 +113,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Constructor
 
      */
-    FieldOnNodes() : FieldOnNodes( DataStructureNaming::getNewName() ){};
+    FieldOnNodes( )
+        : FieldOnNodes(DataStructureNaming::getNewName()) {};
 
     /**
      * @brief Copy constructor
@@ -129,29 +132,45 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     }
 
     /**
+     * @brief Move constructor
+     * @param other field to move
+     */
+    FieldOnNodes( FieldOnNodes &&other ) : DataField{std::move(other)} {
+        // Pointers to be moved
+        _descriptor  = other._descriptor;
+        _reference = other._reference;
+        _valuesList = other._valuesList;
+        _title = other._title;
+        _dofNum = other._dofNum;
+        _dofDescription = other._dofDescription;
+        _mesh = other._mesh;
+    }
+
+    /**
      * @brief Copy constructor
      */
     FieldOnNodes( const FieldOnNodes &toCopy )
-        : FieldOnNodes( DataStructureNaming::getNewName(), toCopy ){};
+        : FieldOnNodes(DataStructureNaming::getNewName(), toCopy) {};
 
     /**
      * @brief Constructor with DOFNumbering
      */
-    FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
-        _dofNum = dofNum;
-        _dofDescription = dofNum->getDescription();
-        _mesh = dofNum->getMesh();
+    FieldOnNodes(const BaseDOFNumberingPtr &dofNum) : FieldOnNodes() {
+      _dofNum = dofNum;
+      _dofDescription = dofNum->getDescription();
+      _mesh = dofNum->getMesh();
 
-        if ( !_dofNum )
-            raiseAsterError( "DOFNumering is empty" );
+      if (!_dofNum)
+        raiseAsterError("DOFNumering is empty");
 
-        const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
-        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
-                           _dofNum->getName() );
+      const int intType = AllowedFieldType<ValueType>::numTypeJeveux;
+      CALLO_VTCREB_WRAP(getName(), JeveuxMemoryTypesNames[Permanent],
+                        JeveuxTypesNames[intType], _dofNum->getName());
     };
 
     /**
      * @brief Wrap of copy constructor
+     * @return new field, copy of the calling field
      */
     FieldOnNodes duplicate() { return *this; }
 
