@@ -67,6 +67,7 @@ from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
+from .physicalproblem_ext import PhysicalProblem
 from .result_ext import Result
 from .table_ext import Table
 from .thermalload_ext import ThermalLoadReal, ThermalLoadFunction

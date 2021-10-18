@@ -24,9 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#include "astercxx.h"
-#include "boost/variant.hpp"
 #include "Functions/Formula.h"
 #include "Functions/Function.h"
 #include "Functions/Function2D.h"
@@ -37,6 +34,8 @@
 #include "Loads/ThermalLoad.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
+#include "astercxx.h"
+#include "boost/variant.hpp"
 
 class GenericLoadFunction {
   private:
@@ -101,7 +100,7 @@ class ListOfLoads : public DataStructure {
     ListParaMecaLoadReal _listOfParallelMechanicalLoadsReal;
     /** @brief List of functions for ParallelMechanicalLoads */
     ListOfLoadFunctions _listOfParaMechaFuncReal;
-        /** @brief Chargements Mecaniques paralleles */
+    /** @brief Chargements Mecaniques paralleles */
     ListParaMecaLoadFunction _listOfParallelMechanicalLoadsFunction;
     /** @brief List of functions for ParallelMechanicalLoads */
     ListOfLoadFunctions _listOfParaMechaFuncFunction;
@@ -121,20 +120,19 @@ class ListOfLoads : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ListOfLoads( );
+    ListOfLoads();
 
     /**
      * @brief Constructeur
      */
-    ListOfLoads(const ModelPtr model);
+    ListOfLoads( const ModelPtr model );
 
     /**
      * @brief Function d'ajout d'une charge cinematique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
      */
-    void addLoad( const DirichletBCPtr &currentLoad,
-                  const FunctionPtr &func = emptyRealFunction ) {
+    void addLoad( const DirichletBCPtr &currentLoad, const FunctionPtr &func = emptyRealFunction ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfDirichletBCs.push_back( currentLoad );
@@ -183,7 +181,7 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const  MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const MechanicalLoadRealPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
@@ -195,14 +193,14 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const  MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const MechanicalLoadRealPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsReal.push_back( currentLoad );
         _listOfMechaFuncReal.push_back( func );
     };
 
-      /**
+    /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
@@ -220,7 +218,7 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier formula
      */
-    void addLoad( const  MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const FormulaPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
@@ -232,7 +230,7 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const  MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
+    void addLoad( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfMechanicalLoadsFunction.push_back( currentLoad );
@@ -307,15 +305,14 @@ class ListOfLoads : public DataStructure {
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function2d
      */
-    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func )
-    {
+    void addLoad( const ParallelMechanicalLoadFunctionPtr &currentLoad,
+                  const Function2DPtr &func ) {
         _isEmpty = true;
         this->setModel( currentLoad->getModel() );
         _listOfParallelMechanicalLoadsFunction.push_back( currentLoad );
         _listOfParaMechaFuncFunction.push_back( func );
     };
 #endif /* ASTER_HAVE_MPI */
-
 
     /**
      * @brief Function d'ajout d'une charge mécanique
@@ -354,7 +351,7 @@ class ListOfLoads : public DataStructure {
         _listOfTherFuncReal.push_back( func );
     };
 
-        /**
+    /**
      * @brief Function d'ajout d'une charge mécanique
      * @param currentLoad charge a ajouter a la sd
      * @param func multiplier function
@@ -390,7 +387,6 @@ class ListOfLoads : public DataStructure {
         _listOfThermalLoadsFunction.push_back( currentLoad );
         _listOfTherFuncFunction.push_back( func );
     };
-
 
     /**
      * @brief Function d'ajout d'une charge mécanique
@@ -433,7 +429,7 @@ class ListOfLoads : public DataStructure {
      * @brief Construction de la liste de charge
      * @return Booleen indiquant que tout s'est bien passe
      */
-    bool build( ModelPtr model = nullptr) ;
+    bool build( ModelPtr model = nullptr );
 
     /**
      * @brief Function de récupération des informations des charges
@@ -451,28 +447,28 @@ class ListOfLoads : public DataStructure {
      * @brief Function de récupération de la liste des charges cinématiques
      * @return _listOfDirichletBCs
      */
-    const ListDiriBC &getListOfDirichletBCs() const { return _listOfDirichletBCs; };
+    const ListDiriBC &getDirichletBCs() const { return _listOfDirichletBCs; };
 
     /**
      * @brief Function de récupération de la liste des charges mécaniques
      * @return _listOfMechanicalLoads
      */
-    const ListMecaLoadReal &getListOfMechanicalLoadsReal() const
-    { return _listOfMechanicalLoadsReal; };
+    const ListMecaLoadReal &getMechanicalLoadsReal() const { return _listOfMechanicalLoadsReal; };
 
     /**
      * @brief Function de récupération de la liste des charges mécaniques
      * @return _listOfMechanicalLoads
      */
-    const ListMecaLoadFunction &getListOfMechanicalLoadsFunction() const
-    { return _listOfMechanicalLoadsFunction; };
+    const ListMecaLoadFunction &getMechanicalLoadsFunction() const {
+        return _listOfMechanicalLoadsFunction;
+    };
 
 #ifdef ASTER_HAVE_MPI
     /**
      * @brief Function de récupération de la liste des charges mécaniques
      * @return _listOfMechanicalLoads
      */
-    const ListParaMecaLoadReal &getListOfParallelMechanicalLoadsReal() const {
+    const ListParaMecaLoadReal &getParallelMechanicalLoadsReal() const {
         return _listOfParallelMechanicalLoadsReal;
     };
 
@@ -480,7 +476,7 @@ class ListOfLoads : public DataStructure {
      * @brief Function de récupération de la liste des charges mécaniques
      * @return _listOfMechanicalLoads
      */
-    const ListParaMecaLoadFunction &getListOfParallelMechanicalLoadsFunction() const {
+    const ListParaMecaLoadFunction &getParallelMechanicalLoadsFunction() const {
         return _listOfParallelMechanicalLoadsFunction;
     };
 #endif /* ASTER_HAVE_MPI */
@@ -489,15 +485,15 @@ class ListOfLoads : public DataStructure {
      * @brief Function de récupération de la liste des charges thermiques
      * @return _listOfThermalLoadsReal
      */
-    const ListTherLoadReal& getListOfThermalLoadsReal() const
-    { return _listOfThermalLoadsReal; };
+    const ListTherLoadReal &getThermalLoadsReal() const { return _listOfThermalLoadsReal; };
 
-        /**
+    /**
      * @brief Function de récupération de la liste des charges thermiques
      * @return _listOfThermalLoadsFunction
      */
-    const ListTherLoadFunction&getListOfThermalLoadsFunction() const
-    { return _listOfThermalLoadsFunction; };
+    const ListTherLoadFunction &getThermalLoadsFunction() const {
+        return _listOfThermalLoadsFunction;
+    };
 
     /**
      * @brief Function de récupération de la liste des charges
@@ -524,35 +520,36 @@ class ListOfLoads : public DataStructure {
      * @return taille de _listOfMechanicalLoads + taille de _listOfDirichletBCs
      */
     int getNumberOfLoads() const {
-        return _listOfMechanicalLoadsReal.size() +
-               _listOfMechanicalLoadsFunction.size() +
+        return _listOfMechanicalLoadsReal.size() + _listOfMechanicalLoadsFunction.size() +
 #ifdef ASTER_HAVE_MPI
                _listOfParallelMechanicalLoadsReal.size() +
                _listOfParallelMechanicalLoadsFunction.size() +
 #endif /* ASTER_HAVE_MPI */
-               _listOfThermalLoadsReal.size() +
-               _listOfThermalLoadsFunction.size() +
-               _listOfAcousticLoadsComplex.size() +
-               _listOfDirichletBCs.size();
-        };
+               _listOfThermalLoadsReal.size() + _listOfThermalLoadsFunction.size() +
+               _listOfAcousticLoadsComplex.size() + _listOfDirichletBCs.size();
+    };
 
-    bool hasDirichletBC() const
-    {
-        return _listOfDirichletBCs.size() > 0;
-    }
+    bool hasDirichletBC() const { return _listOfDirichletBCs.size() > 0; }
+
+    bool hasExternalLoad() const {
+        return ( _listOfMechanicalLoadsReal.size() + _listOfMechanicalLoadsFunction.size() +
+#ifdef ASTER_HAVE_MPI
+                 _listOfParallelMechanicalLoadsReal.size() +
+                 _listOfParallelMechanicalLoadsFunction.size() +
+#endif /* ASTER_HAVE_MPI */
+                 _listOfThermalLoadsReal.size() + _listOfThermalLoadsFunction.size() +
+                 _listOfAcousticLoadsComplex.size() ) > 0;
+    };
 
     /**
      * @brief Check that all loads have the same model
      * @return True if all loads have the same model
      */
-    bool checkModelConsistency( const ModelPtr& model ) const;
+    bool checkModelConsistency( const ModelPtr &model ) const;
 
-    bool setModel( const ModelPtr& model );
+    bool setModel( const ModelPtr &model );
 
-    const ModelPtr& getModel( void ) const
-    {
-        return _model;
-    };
+    ModelPtr getModel( void ) const { return _model; };
 };
 
 /**

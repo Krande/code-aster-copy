@@ -43,6 +43,17 @@ template < typename T > struct VectorToPythonList {
     }
 };
 
+template < typename T > struct ListToPythonList {
+    static PyObject *convert( std::list< T > const &vect ) {
+        py::list pylist;
+        typename std::list< T >::const_iterator ptr;
+        for ( ptr = vect.begin(); ptr != vect.end(); ++ptr ) {
+            pylist.append( py::object( *ptr ) );
+        }
+        return py::incref( pylist.ptr() );
+    }
+};
+
 template < typename T > struct JeveuxVectorToPythonList {
     static PyObject *convert( JeveuxVector< T > const &vect ) {
         py::list pylist;
@@ -132,6 +143,12 @@ template < class T > void exportVectorConverter() {
 
     // register the from-python converter
     VectorFromPythonList< T >();
+};
+
+template < class T > void exportListConverter() {
+
+    // register the to-python converter
+    py::to_python_converter< std::list< T >, ListToPythonList< T > >();
 };
 
 template < class T > void exportJeveuxVectorConverter() {

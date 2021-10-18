@@ -12,6 +12,8 @@ syntax: regexp
 ^\.hgignore
 ^\.yamm/
 ^waf_.*
+^.git/*
+^.vscode/*
 .*~$
 .*%$
 ^.*/fort\.*

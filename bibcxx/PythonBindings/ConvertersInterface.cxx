@@ -51,6 +51,21 @@ void exportConverters() {
     exportVectorConverter< PartOfMaterialFieldPtr >();
     exportVectorConverter< PhysicalQuantityComponent >();
     exportVectorConverter< std::string >();
+    exportVectorConverter< DirichletBCPtr >();
+    exportVectorConverter< MechanicalLoadRealPtr >();
+    exportVectorConverter< MechanicalLoadFunctionPtr >();
+#ifdef ASTER_HAVE_MPI
+    exportVectorConverter< ParallelMechanicalLoadRealPtr >();
+    exportVectorConverter< ParallelMechanicalLoadFunctionPtr >();
+#endif
+
+    exportListConverter< DirichletBCPtr >();
+    exportListConverter< MechanicalLoadRealPtr >();
+    exportListConverter< MechanicalLoadFunctionPtr >();
+#ifdef ASTER_HAVE_MPI
+    exportListConverter< ParallelMechanicalLoadRealPtr >();
+    exportListConverter< ParallelMechanicalLoadFunctionPtr >();
+#endif
 
     exportJeveuxVectorConverter< ASTERINTEGER4 >();
     exportJeveuxVectorConverter< ASTERINTEGER >();

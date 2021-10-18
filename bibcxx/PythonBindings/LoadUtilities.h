@@ -29,11 +29,14 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
+#include "Functions/Formula.h"
+#include "Functions/Function.h"
+#include "Functions/Function2D.h"
+#include "Loads/AcousticLoad.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
-#include "Loads/AcousticLoad.h"
-#include "Loads/ThermalLoad.h"
 #include "Loads/ParallelMechanicalLoad.h"
+#include "Loads/ThermalLoad.h"
 
 template < class first, typename... Args >
 void addDirichletBCToInterface( py::class_< first, Args... > myInstance ) {

@@ -127,57 +127,6 @@ class PhysicalProblem {
      */
     void setDOFNumbering( const BaseDOFNumberingPtr dofNume );
 
-    /**
-     * @brief Obtenir la liste des chargements cinematiques
-     */
-    ListDiriBC getListOfDirichletBCs() const { return _listOfLoads->getListOfDirichletBCs(); };
-
-    /**
-     * @brief Obtenir la liste des chargements mecaniques
-     */
-    ListMecaLoadReal getListOfMechanicalLoadsReal() const {
-        return _listOfLoads->getListOfMechanicalLoadsReal();
-    };
-
-    /**
-     * @brief Obtenir la liste des chargements mecaniques
-     */
-    ListMecaLoadFunction getListOfMechanicalLoadsFunction() const {
-        return _listOfLoads->getListOfMechanicalLoadsFunction();
-    };
-
-#ifdef ASTER_HAVE_MPI
-    /**
-     * @brief Obtenir la liste des chargements mecaniques
-     */
-    ListParaMecaLoadReal getListOfParallelMechanicalLoadsReal() const {
-        return _listOfLoads->getListOfParallelMechanicalLoadsReal();
-    };
-
-    /**
-     * @brief Obtenir la liste des chargements mecaniques
-     */
-    ListParaMecaLoadFunction getListOfParallelMechanicalLoadsFunction() const {
-        return _listOfLoads->getListOfParallelMechanicalLoadsFunction();
-    };
-#endif /* ASTER_HAVE_MPI */
-
-    /**
-     * @brief Function de récupération de la liste des charges thermiques
-     * @return _listOfThermalLoads
-     */
-    ListTherLoadReal getListOfThermalLoadsReal() const {
-        return _listOfLoads->getListOfThermalLoadsReal();
-    };
-
-    /**
-     * @brief Function de récupération de la liste des charges thermiques
-     * @return _listOfThermalLoads
-     */
-    ListTherLoadFunction getListOfThermalLoadsFunction() const {
-        return _listOfLoads->getListOfThermalLoadsFunction();
-    };
-
     bool computeDOFNumbering();
 
     /**

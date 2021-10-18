@@ -27,29 +27,29 @@
 #include "Discretization/DiscreteProblem.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
-#include "Materials/MaterialField.h"
 #include "Materials/ExternalStateVariablesBuilder.h"
+#include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
 #include "Numbering/ParallelDOFNumbering.h"
+#include "Utilities/Tools.h"
 #include "aster_fort_calcul.h"
 #include "aster_fort_superv.h"
-#include "Utilities/Tools.h"
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >() ;
+        boost::make_shared< ElementaryVectorDisplacementReal >();
 
-    std::string modelName = ljust(_study->getModel()->getName(), 24);
+    std::string modelName = ljust( _study->getModel()->getName(), 24 );
 
     JeveuxVectorChar24 jvListOfLoads = _study->getListOfLoads()->getListVector();
-    std::string nameLcha = ljust(jvListOfLoads->getName(), 24);
+    std::string nameLcha = ljust( jvListOfLoads->getName(), 24 );
 
     JeveuxVectorLong jvInfo = _study->getListOfLoads()->getInformationVector();
-    std::string nameInfc = ljust(jvInfo->getName(), 24);
+    std::string nameInfc = ljust( jvInfo->getName(), 24 );
 
     std::string typres( "R" );
     std::string resultName( retour->getName() );
@@ -65,36 +65,35 @@ DiscreteProblem::computeElementaryDirichletVector( ASTERDOUBLE time ) {
     return retour;
 };
 
-FieldOnNodesRealPtr
-DiscreteProblem::computeDirichlet( ASTERDOUBLE time ) {
-    auto vect_elem = computeElementaryDirichletVector(time);
+FieldOnNodesRealPtr DiscreteProblem::computeDirichlet( ASTERDOUBLE time ) {
+    auto vect_elem = computeElementaryDirichletVector( time );
 
-    return vect_elem->assembleWithLoadFunctions( _study->getDOFNumbering(), time);
+    return vect_elem->assembleWithLoadFunctions( _study->getDOFNumbering(), time );
 };
 
 ElementaryVectorDisplacementRealPtr
-DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr lagr_curr ) {
+DiscreteProblem::computeElementaryDirichletReactionVector( FieldOnNodesRealPtr lagr_curr ) {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >() ;
+        boost::make_shared< ElementaryVectorDisplacementReal >();
 
-    std::string modelName = ljust(_study->getModel()->getName(), 24);
-    std::string materName = ljust(_study->getMaterialField()->getName(), 24);
+    std::string modelName = ljust( _study->getModel()->getName(), 24 );
+    std::string materName = ljust( _study->getMaterialField()->getName(), 24 );
 
     auto curCaraElem = _study->getElementaryCharacteristics();
-    std::string caraName( " ");
-    if( curCaraElem )
+    std::string caraName( " " );
+    if ( curCaraElem )
         caraName = curCaraElem->getName();
     caraName.resize( 24, ' ' );
 
     auto listOfLoads = _study->getListOfLoads();
-    std::string listLoadsName = ljust(listOfLoads->getName(), 19);
+    std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
 
     std::string resultName( retour->getName() );
     const std::string base( "G" );
 
     std::string lagrName = lagr_curr->getName();
 
-    CALLO_VEBTLA(base, modelName, materName, caraName, lagrName, listLoadsName, resultName);
+    CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, resultName );
 
     retour->isEmpty( false );
     retour->setListOfLoads( listOfLoads );
@@ -103,33 +102,29 @@ DiscreteProblem::computeElementaryDirichletReactionVector(FieldOnNodesRealPtr la
     return retour;
 };
 
-FieldOnNodesRealPtr
-DiscreteProblem::computeDirichletReaction( FieldOnNodesRealPtr lagr_curr )
-{
-    auto vect_elem = computeElementaryDirichletReactionVector(lagr_curr);
+FieldOnNodesRealPtr DiscreteProblem::computeDirichletReaction( FieldOnNodesRealPtr lagr_curr ) {
+    auto vect_elem = computeElementaryDirichletReactionVector( lagr_curr );
 
     return vect_elem->assemble( _study->getDOFNumbering() );
 };
 
-
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr disp_curr,
-                                                            ASTERDOUBLE scaling )
-{
+                                                           ASTERDOUBLE scaling ) {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >() ;
+        boost::make_shared< ElementaryVectorDisplacementReal >();
 
     std::string modelName = _study->getModel()->getName();
     std::string dispName = disp_curr->getName();
 
     auto listOfLoads = _study->getListOfLoads();
-    std::string listLoadsName = ljust(listOfLoads->getName(), 19);
+    std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
 
     std::string resultName( retour->getName() );
     const std::string base( "G" );
     const ASTERDOUBLE const_scaling = scaling;
 
-    CALLO_VEBUME(modelName, dispName, listLoadsName, resultName, &const_scaling, base);
+    CALLO_VEBUME( modelName, dispName, listLoadsName, resultName, &const_scaling, base );
 
     retour->isEmpty( false );
 
@@ -137,24 +132,21 @@ DiscreteProblem::computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr d
     return retour;
 };
 
-FieldOnNodesRealPtr
-DiscreteProblem::computeDualizedDirichlet( FieldOnNodesRealPtr disp_curr,
-                               ASTERDOUBLE scaling )
-{
-    auto vect_elem = computeElementaryDualizedDirichletVector(disp_curr, scaling);
+FieldOnNodesRealPtr DiscreteProblem::computeDualizedDirichlet( FieldOnNodesRealPtr disp_curr,
+                                                               ASTERDOUBLE scaling ) {
+    auto vect_elem = computeElementaryDualizedDirichletVector( disp_curr, scaling );
 
     auto bume = vect_elem->assemble( _study->getDOFNumbering() );
 
-    if( _study->getMesh()->isParallel() )
-        CALLO_AP_ASSEMBLY_VECTOR(bume->getName());
+    if ( _study->getMesh()->isParallel() )
+        CALLO_AP_ASSEMBLY_VECTOR( bume->getName() );
 
     return bume;
 };
 
-ElementaryVectorDisplacementRealPtr
-DiscreteProblem::computeElementaryLaplaceVector() {
+ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryLaplaceVector() {
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >() ;
+        boost::make_shared< ElementaryVectorDisplacementReal >();
 
     ModelPtr curModel = _study->getModel();
     std::string modelName = curModel->getName();
@@ -184,12 +176,12 @@ DiscreteProblem::computeElementaryLaplaceVector() {
 
 ElementaryVectorDisplacementRealPtr
 DiscreteProblem::computeElementaryNeumannVector( const VectorReal time,
-                                                    ExternalStateVariablesBuilderPtr varCom ) {
+                                                 ExternalStateVariablesBuilderPtr varCom ) {
     if ( time.size() != 3 )
         throw std::runtime_error( "Invalid number of parameter" );
 
     ElementaryVectorDisplacementRealPtr retour =
-        boost::make_shared< ElementaryVectorDisplacementReal >() ;
+        boost::make_shared< ElementaryVectorDisplacementReal >();
     const auto &curCodedMater = _study->getCodedMaterial()->getCodedMaterialField();
     const auto &curMater = _study->getCodedMaterial()->getMaterialField();
 
@@ -229,11 +221,9 @@ DiscreteProblem::computeElementaryNeumannVector( const VectorReal time,
     return retour;
 };
 
-FieldOnNodesRealPtr
-DiscreteProblem::computeNeumann( const VectorReal time,
-                                ExternalStateVariablesBuilderPtr varCom)
-{
-    auto vect_elem = computeElementaryNeumannVector(time, varCom);
+FieldOnNodesRealPtr DiscreteProblem::computeNeumann( const VectorReal time,
+                                                     ExternalStateVariablesBuilderPtr varCom ) {
+    auto vect_elem = computeElementaryNeumannVector( time, varCom );
 
     return vect_elem->assembleWithLoadFunctions( _study->getDOFNumbering(), time[0] + time[1] );
 };
@@ -241,7 +231,7 @@ DiscreteProblem::computeNeumann( const VectorReal time,
 ElementaryMatrixDisplacementRealPtr
 DiscreteProblem::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
     ElementaryMatrixDisplacementRealPtr retour =
-        boost::make_shared< ElementaryMatrixDisplacementReal >() ;
+        boost::make_shared< ElementaryMatrixDisplacementReal >();
     ModelPtr curModel = _study->getModel();
     retour->setModel( curModel );
     MaterialFieldPtr curMater = _study->getMaterialField();
@@ -341,7 +331,9 @@ ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanical
     if ( _study->getMaterialField() )
         dict.container["CHAM_MATER"] = _study->getMaterialField()->getName();
 
-    const auto listOfMechanicalLoadReal = _study->getListOfMechanicalLoadsReal();
+    auto listOfLoads = _study->getListOfLoads();
+
+    const auto listOfMechanicalLoadReal = listOfLoads->getMechanicalLoadsReal();
     if ( listOfMechanicalLoadReal.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listOfMechanicalLoadReal )
@@ -349,7 +341,7 @@ ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanical
         dict.container["CHARGE"] = tmp;
     }
 
-    const auto listOfMechanicalLoadFunction = _study->getListOfMechanicalLoadsFunction();
+    const auto listOfMechanicalLoadFunction = listOfLoads->getMechanicalLoadsFunction();
     if ( listOfMechanicalLoadFunction.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listOfMechanicalLoadFunction )
@@ -357,7 +349,7 @@ ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanical
         dict.container["CHARGE"] = tmp;
     }
 #ifdef ASTER_HAVE_MPI
-    auto listParaMecaLoadReal = _study->getListOfParallelMechanicalLoadsReal();
+    auto listParaMecaLoadReal = listOfLoads->getParallelMechanicalLoadsReal();
     if ( listParaMecaLoadReal.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listParaMecaLoadReal )
@@ -365,7 +357,7 @@ ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanical
         dict.container["CHARGE"] = tmp;
     }
 
-    auto listParaMecaLoadFunction = _study->getListOfParallelMechanicalLoadsFunction();
+    auto listParaMecaLoadFunction = listOfLoads->getParallelMechanicalLoadsFunction();
     if ( listParaMecaLoadFunction.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listParaMecaLoadFunction )
@@ -374,7 +366,7 @@ ElementaryVectorDisplacementRealPtr DiscreteProblem::computeElementaryMechanical
     }
 #endif /* ASTER_HAVE_MPI */
     cmdSt.define( dict );
-    retour->setListOfLoads( _study->getListOfLoads() );
+    retour->setListOfLoads( listOfLoads );
 
     try {
         ASTERINTEGER op = 8;
@@ -400,7 +392,9 @@ SyntaxMapContainer DiscreteProblem::computeMatrixSyntax( const std::string &opti
         throw std::runtime_error( "Material is empty" );
     dict.container["CHAM_MATER"] = _study->getMaterialField()->getName();
 
-    const auto listOfMechanicalLoadReal = _study->getListOfMechanicalLoadsReal();
+    auto listOfLoads = _study->getListOfLoads();
+
+    const auto listOfMechanicalLoadReal = listOfLoads->getMechanicalLoadsReal();
     if ( listOfMechanicalLoadReal.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listOfMechanicalLoadReal )
@@ -408,7 +402,7 @@ SyntaxMapContainer DiscreteProblem::computeMatrixSyntax( const std::string &opti
         dict.container["CHARGE"] = tmp;
     }
 
-    const auto listOfMechanicalLoadFunction = _study->getListOfMechanicalLoadsFunction();
+    const auto listOfMechanicalLoadFunction = listOfLoads->getMechanicalLoadsFunction();
     if ( listOfMechanicalLoadFunction.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listOfMechanicalLoadFunction )
@@ -416,7 +410,7 @@ SyntaxMapContainer DiscreteProblem::computeMatrixSyntax( const std::string &opti
         dict.container["CHARGE"] = tmp;
     }
 #ifdef ASTER_HAVE_MPI
-    auto listParaMecaLoadReal = _study->getListOfParallelMechanicalLoadsReal();
+    auto listParaMecaLoadReal = listOfLoads->getParallelMechanicalLoadsReal();
     if ( listParaMecaLoadReal.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listParaMecaLoadReal )
@@ -424,7 +418,7 @@ SyntaxMapContainer DiscreteProblem::computeMatrixSyntax( const std::string &opti
         dict.container["CHARGE"] = tmp;
     }
 
-    auto listParaMecaLoadFunction = _study->getListOfParallelMechanicalLoadsFunction();
+    auto listParaMecaLoadFunction = listOfLoads->getParallelMechanicalLoadsFunction();
     if ( listParaMecaLoadFunction.size() != 0 ) {
         VectorString tmp;
         for ( const auto curIter : listParaMecaLoadFunction )
@@ -441,8 +435,7 @@ SyntaxMapContainer DiscreteProblem::computeMatrixSyntax( const std::string &opti
 
 ElementaryMatrixDisplacementRealPtr
 DiscreteProblem::computeMechanicalMatrix( const std::string &optionName ) {
-    ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementReal() );
+    ElementaryMatrixDisplacementRealPtr retour( new ElementaryMatrixDisplacementReal() );
     retour->setModel( _study->getModel() );
 
     // Definition du bout de fichier de commande correspondant a CALC_MATR_ELEM
@@ -467,8 +460,7 @@ DiscreteProblem::computeMechanicalMatrix( const std::string &optionName ) {
 ElementaryMatrixDisplacementRealPtr DiscreteProblem::computeMechanicalDampingMatrix(
     const ElementaryMatrixDisplacementRealPtr &rigidity,
     const ElementaryMatrixDisplacementRealPtr &mass ) {
-    ElementaryMatrixDisplacementRealPtr retour(
-        new ElementaryMatrixDisplacementReal() );
+    ElementaryMatrixDisplacementRealPtr retour( new ElementaryMatrixDisplacementReal() );
     retour->setModel( rigidity->getModel() );
 
     // Definition du bout de fichier de commande correspondant a CALC_MATR_ELEM

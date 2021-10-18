@@ -24,59 +24,54 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
-#include "PythonBindings/factory.h"
-#include "PythonBindings/PhysicalProblemInterface.h"
 #include "PythonBindings/LoadUtilities.h"
-
+#include "PythonBindings/PhysicalProblemInterface.h"
+#include "PythonBindings/factory.h"
 
 void exportPhysicalProblemToPython() {
 
-    py::class_< PhysicalProblem, PhysicalProblemPtr > c1( "PhysicalProblem",
-                                                                    py::no_init );
+    py::class_< PhysicalProblem, PhysicalProblemPtr > c1( "PhysicalProblem", py::no_init );
     // fake initFactoryPtr: not a DataStructure
+    c1.def( "__init__", py::make_constructor(
+                            &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr > ) );
     c1.def( "__init__",
-            py::make_constructor(
-                &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr >));
-    c1.def( "__init__",
-            py::make_constructor(
-                &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr,
-                                ElementaryCharacteristicsPtr >));
+            py::make_constructor( &initFactoryPtr< PhysicalProblem, ModelPtr, MaterialFieldPtr,
+                                                   ElementaryCharacteristicsPtr > ) );
     c1.def( "getModel", &PhysicalProblem::getModel, R"(
 Return the model
 
 Returns:
     ModelPtr: a pointer to the model
         )",
-              ( py::arg( "self" ) )   );
+            ( py::arg( "self" ) ) );
     c1.def( "getMesh", &PhysicalProblem::getMesh, R"(
 Return the mesh
 
 Returns:
     MeshPtr: a pointer to the mesh
         )",
-              ( py::arg( "self" ) )   );
+            ( py::arg( "self" ) ) );
     c1.def( "getMaterialField", &PhysicalProblem::getMaterialField, R"(
 Return the material field
 
 Returns:
     MaterialFieldPtr: a pointer to the material field
         )",
-              ( py::arg( "self" ) )   );
+            ( py::arg( "self" ) ) );
     c1.def( "getCodedMaterial", &PhysicalProblem::getCodedMaterial, R"(
 Return the coded material
 
 Returns:
     CodedMaterialPtr: a pointer to the coded material
         )",
-              ( py::arg( "self" ) )   );
-    c1.def( "getElementaryCharacteristics",
-        &PhysicalProblem::getElementaryCharacteristics, R"(
+            ( py::arg( "self" ) ) );
+    c1.def( "getElementaryCharacteristics", &PhysicalProblem::getElementaryCharacteristics, R"(
 Return the elementary charateristics
 
 Returns:
     ElementaryCharacteristicsPtr: a pointer to the elementary charateristics
         )",
-              ( py::arg( "self" ) )   );
+            ( py::arg( "self" ) ) );
     c1.def( "getDOFNumbering", &PhysicalProblem::getDOFNumbering, R"(
 Return the DOF numbering
 
@@ -98,14 +93,13 @@ Returns:
     BehaviourPropertyPtr: a pointer to the behaviour properties
         )",
             ( py::arg( "self" ) ) );
-    c1.def( "computeListOfLoads",
-        &PhysicalProblem::computeListOfLoads, R"(
+    c1.def( "computeListOfLoads", &PhysicalProblem::computeListOfLoads, R"(
 Build the list of loads from the added loads
 
 Returns:
     Bool: True if success
         )",
-              ( py::arg( "self" ) )   );
+            ( py::arg( "self" ) ) );
     c1.def( "computeDOFNumbering", &PhysicalProblem::computeDOFNumbering, R"(
 Build DOF numbering from the model and loads
 
@@ -114,10 +108,10 @@ Returns:
         )",
             ( py::arg( "self" ) ) );
     c1.def( "computeBehaviourProperty",
-          static_cast< void ( PhysicalProblem::* )( PyObject *, const std::string
-          &, const std::string &, const ASTERINTEGER ) >(
-              &PhysicalProblem::computeBehaviourProperty ),
-          R"(
+            static_cast< void ( PhysicalProblem::* )( PyObject *, const std::string &,
+                                                      const std::string &, const ASTERINTEGER ) >(
+                &PhysicalProblem::computeBehaviourProperty ),
+            R"(
     Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
     Arguments:
@@ -126,19 +120,18 @@ Returns:
         IMPLEX (str): "OUI" if Implex algorithm is used
         INFO (int): level of verbosity, 1 to have description of behaviour or 0 to be quiet
             )",
-          ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ), py::arg(
-          "IMPLEX" ),
-            py::arg( "INFO" ) ) );
+            ( py::arg( "self" ), py::arg( "COMPORTEMENT" ), py::arg( "SIGM_INIT" ),
+              py::arg( "IMPLEX" ), py::arg( "INFO" ) ) );
     c1.def( "computeBehaviourProperty",
-              static_cast< void ( PhysicalProblem::* )( PyObject * ) >(
-                  &PhysicalProblem::computeBehaviourProperty ),
-              R"(
+            static_cast< void ( PhysicalProblem::* )( PyObject * ) >(
+                &PhysicalProblem::computeBehaviourProperty ),
+            R"(
     Create constant fields on cells for behaviour (COMPOR, CARCRI and MULCOM)
 
     Arguments:
         COMPORTEMENT (list[dict]): keywords as provided to STAT_NON_LINE/COMPORTEMENT
         )",
-              ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
+            ( py::arg( "self" ), py::arg( "COMPORTEMENT" ) ) );
     c1.def( "getListOfLoads", &PhysicalProblem::getListOfLoads, R"(
 Return list of loads.
 
@@ -146,48 +139,6 @@ Returns:
     ListOfLoadsPtr: a pointer to list of loads
         )",
             ( py::arg( "self" ) ) );
-    c1.def( "getListOfDirichletBCs",
-        &PhysicalProblem::getListOfDirichletBCs, R"(
-Return list of DirichletBCs
-
-Returns:
-    ListDiriBC: a list of DirichletBC
-        )",
-              ( py::arg( "self" ) )   );
-    c1.def( "getListOfMechanicalLoadsReal",
-        &PhysicalProblem::getListOfMechanicalLoadsReal, R"(
-Return list of real mechanical loads
-
-Returns:
-    ListMecaLoadReal: a list of real mechanical loads
-        )",
-              ( py::arg( "self" ) )   );
-    c1.def( "getListOfMechanicalLoadsFunction",
-        &PhysicalProblem::getListOfMechanicalLoadsFunction, R"(
-Return list of Function mechanical loads
-
-Returns:
-    ListMecaLoadFunction: a list of Function mechanical loads
-        )",
-              ( py::arg( "self" ) )   );
-#ifdef ASTER_HAVE_MPI
-    c1.def( "getListOfParallelMechanicalLoadsReal",
-        &PhysicalProblem::getListOfParallelMechanicalLoadsReal, R"(
-Return list of real parallel mechanical loads
-
-Returns:
-    ListParaMecaLoadReal: a list of real parallel mechanical loads
-        )",
-              ( py::arg( "self" ) )   );
-    c1.def( "getListOfParallelMechanicalLoadsFunction",
-        &PhysicalProblem::getListOfParallelMechanicalLoadsFunction, R"(
-Return list of function parallel mechanical loads
-
-Returns:
-    ListParaMecaLoadFunction: a list of function parallel mechanical loads
-        )",
-              ( py::arg( "self" ) )   );
-#endif /* ASTER_HAVE_MPI */
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
@@ -195,4 +146,3 @@ Returns:
 #endif /* ASTER_HAVE_MPI */
     addThermalLoadToInterface( c1 );
 };
-
