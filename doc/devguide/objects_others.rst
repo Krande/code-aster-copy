@@ -243,6 +243,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.PhysicalProblem` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PhysicalProblem
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.PressureReal` object
 ********************************************************************************
 
@@ -265,15 +274,6 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.StructuralForceReal
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
-:py:class:`~code_aster.Objects.PhysicalProblem` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.PhysicalProblem
    :show-inheritance:
    :members:
 
