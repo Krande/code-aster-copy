@@ -1,0 +1,122 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+# 
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'))
+
+mesh = LIRE_MAILLAGE(FORMAT='ASTER',
+                     UNITE=20)
+
+model = AFFE_MODELE(AFFE=_F(MODELISATION='C_PLAN',
+                            PHENOMENE='MECANIQUE',
+                            TOUT='OUI'),
+                    MAILLAGE=mesh)
+
+CREA_LIB_MFRONT(UNITE_LIBRAIRIE=39,
+                UNITE_MFRONT=38)
+
+# To test dependancy of MFRONT parameters on geometry
+young = DEFI_FONCTION(NOM_PARA='X',
+                      PROL_DROITE='CONSTANT',
+                      VALE=(-10000, 1.0, 10000, 1.0))
+
+nu = DEFI_FONCTION(NOM_PARA='X',
+                   PROL_DROITE='CONSTANT',
+                   VALE=(-10000, 0.3, 10000, 0.3))
+
+sy = DEFI_FONCTION(NOM_PARA='Y',
+                   PROL_DROITE='CONSTANT',
+                   VALE=(-10000, 10000, 10000, 10000))
+
+h = DEFI_FONCTION(NOM_PARA='Y',
+                  PROL_DROITE='CONSTANT',
+                  VALE=(-10000, 0.0, 10000, 0.0))
+
+MAT2 = DEFI_MATERIAU(ELAS=_F(E=1.0,
+                             NU=0.3),
+                     MFRONT_FO=_F(LISTE_COEF=(sy, h, young, nu)))
+
+CHMAT2 = AFFE_MATERIAU(AFFE=_F(MATER=MAT2,
+                               TOUT='OUI'),
+                       MAILLAGE=mesh)
+
+L_INST = DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=1.0,
+                                      NOMBRE=10))
+
+RAMPE = DEFI_FONCTION(NOM_PARA='INST',
+                      PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      VALE=(0.0, 0.0, 1.0, 1.0))
+
+CHARMM = AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0.0,
+                                     GROUP_NO='GRNM14'),
+                                  _F(DY=0.0,
+                                     GROUP_NO='O')),
+                        MODELE=model,
+                        PRE_EPSI=_F(EPXX=-1.0,
+                                    TOUT='OUI'))
+
+nonLine = STAT_NON_LINE(CHAM_MATER=CHMAT2,
+                        COMPORTEMENT=_F(ITER_INTE_MAXI=30,
+                                        NOM_ROUTINE='asterplasticity',
+                                        RELATION='MFRONT',
+                                        RESI_INTE_MAXI=1e-08,
+                                        UNITE_LIBRAIRIE=39),
+                        EXCIT=_F(CHARGE=CHARMM,
+                                 FONC_MULT=RAMPE),
+                        INCREMENT=_F(LIST_INST=L_INST),
+                        MODELE=model,)
+
+ENER_ELA = POST_ELEM(ENER_ELAS=_F(TOUT='OUI'),
+                     NUME_ORDRE=10,
+                     RESULTAT=nonLine)
+
+ENER_TOT = POST_ELEM(ENER_TOTALE=_F(TOUT='OUI'),
+                     NUME_ORDRE=10,
+                     RESULTAT=nonLine)
+
+TEST_RESU(RESU=_F(GROUP_MA='M1',
+                  INST=1.0,
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP='V1',
+                  POINT=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=nonLine,
+                  VALE_CALC=-1.0,
+                  VALE_REFE=-1.0))
+
+TEST_TABLE(NOM_PARA='TOTALE',
+           PRECISION=1e-06,
+           REFERENCE='ANALYTIQUE',
+           TABLE=ENER_ELA,
+           TYPE_TEST='SOMM_ABS',
+           VALE_CALC=0.549450549,
+           VALE_REFE=0.5494505)
+
+TEST_TABLE(NOM_PARA='TOTALE',
+           PRECISION=1e-06,
+           REFERENCE='ANALYTIQUE',
+           TABLE=ENER_TOT,
+           TYPE_TEST='SOMM_ABS',
+           VALE_CALC=0.549450549,
+           VALE_REFE=0.5494505)
+
+FIN()
+
