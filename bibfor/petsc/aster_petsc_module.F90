@@ -78,6 +78,13 @@ interface
     end subroutine VecGetArray
 end interface
 interface
+    subroutine VecDestroy( v, ierr)
+          use petscvecdef
+          Vec, intent(in)  :: v
+          PetscErrorCode, intent(out) :: ierr
+    end subroutine VecDestroy
+end interface
+interface
     subroutine VecRestoreArray(x,x_array,i_x,ierr)
          use petscvecdef
          Vec :: x
@@ -85,6 +92,45 @@ interface
          PetscOffset :: i_x
          PetscErrorCode, intent(out) :: ierr
     end subroutine VecRestoreArray
+end interface
+!
+! VecScatter routines
+!
+interface
+    subroutine VecScatterCreate( x, ix, y, iy, newsf, ierr)
+          use petscvecdef
+          Vec, intent(in) :: x, y
+          IS, intent(in) :: ix, iy
+          VecScatter, intent(out)  :: newsf
+          PetscErrorCode, intent(out) :: ierr
+    end subroutine VecScatterCreate
+end interface
+interface
+    subroutine VecScatterDestroy( v, ierr)
+          use petscvecdef
+          VecScatter, intent(in)  :: v
+          PetscErrorCode, intent(out) :: ierr
+    end subroutine VecScatterDestroy
+end interface
+interface
+    subroutine VecScatterBegin( sf, x, y, addv, mode, ierr)
+          use petscvecdef
+          Vec, intent(in) :: x, y
+          InsertMode, intent(in) :: addv
+          ScatterMode, intent(in) :: mode
+          VecScatter, intent(in)  :: sf
+          PetscErrorCode, intent(out) :: ierr
+    end subroutine VecScatterBegin
+end interface
+interface
+    subroutine VecScatterEnd( sf, x, y, addv, mode, ierr)
+          use petscvecdef
+          Vec, intent(in) :: x, y
+          InsertMode, intent(in) :: addv
+          ScatterMode, intent(in) :: mode
+          VecScatter, intent(in)  :: sf
+          PetscErrorCode, intent(out) :: ierr
+    end subroutine VecScatterEnd
 end interface
 !
 ! Mat routines
@@ -98,6 +144,13 @@ interface
         Mat :: matnew
         PetscErrorCode, intent(out) :: ierr
     end subroutine MatConvert
+end interface
+interface
+    subroutine MatDestroy( a,  ierr )
+        use petscmatdef
+        Mat, intent(in) :: a
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine MatDestroy
 end interface
 interface
     subroutine MatCreateShell(comm, m, n, mg, ng, ctxt, a_mat, ierr)
@@ -179,6 +232,13 @@ end interface
 !     end subroutine PCBJacobiGetSubKSP
 ! end interface
 interface
+     subroutine PCDestroy( pc, ierr)
+         use petsckspdef
+         PC :: pc
+         PetscErrorCode, intent(out) :: ierr
+     end subroutine PCDestroy
+end interface
+interface
      subroutine PCFactorSetMatOrderingType( pc, ordering, ierr)
          use petsckspdef
          PC :: pc
@@ -259,6 +319,23 @@ interface
         external :: mykspmonitor, mydestroy
         PetscErrorCode, intent(out) :: ierr
     end subroutine KSPMonitorSet
+end interface
+interface
+    subroutine KSPDestroy(ksp, ierr)
+        use petsckspdef
+        KSP :: ksp
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine KSPDestroy
+end interface
+!
+! IS routines
+!
+interface
+    subroutine ISDestroy(is, ierr)
+        use petsckspdef
+        IS :: is
+        PetscErrorCode, intent(out) :: ierr
+    end subroutine ISDestroy
 end interface
 #endif
 end module aster_petsc_module
