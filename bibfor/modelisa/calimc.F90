@@ -85,7 +85,7 @@ subroutine calimc(chargz)
     integer :: imod, imod2, inoe, iocc, j, j2
     integer :: j3, jj,   k,  n2
     integer :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
-    integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq
+    integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq, nueq2
     integer :: nmc, nbmdy2
     real(kind=8) :: beta, rbid, vale, zero
     complex(kind=8), pointer :: coec(:) => null()
@@ -285,6 +285,7 @@ subroutine calimc(chargz)
 !
 !       CAS SOUPLE
 !
+!        nec2 = 3
         do i = 1, nbndef
             do j = 1, nec
                 k = 0
@@ -293,6 +294,7 @@ subroutine calimc(chargz)
                     nomnoe = ncmpin(1+2*nec*(i2-1))
                     call jenonu(jexnom(mailla//'.NOMNOE', nomnoe), inoe)
                     iddl = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
+                    nueq = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                     do j2 = 1, nec
                         k = k + 1
                         nomcmp = ncmpin(1+2*nec*(i2-1)+2*j2-1)
@@ -302,10 +304,12 @@ subroutine calimc(chargz)
                         if (nomcmp .eq. 'DRX') icmp = 4
                         if (nomcmp .eq. 'DRY') icmp = 5
                         if (nomcmp .eq. 'DRZ') icmp = 6
+                        if (icmp .gt. nueq) goto 27
                         lisno(k) = nomnoe
                         lisddl(k) = nomcmp
                         coer(k) = -zr(idbase+(imod-1)*neq+iddl- 1+icmp-1 )
                     end do
+ 27                 continue
                 end do
                 do ii = 1, nbndef
                     nomnoe = ncmpsd(1+2*nec*(ii-1))
@@ -318,6 +322,7 @@ subroutine calimc(chargz)
                             nmnoe2 = ncmpin(1+2*nec*(i3-1))
                             call jenonu(jexnom(mailla//'.NOMNOE', nmnoe2), inoe)
                             iddl2 = zi(iaprno-1+(nbec+2)*(inoe-1)+1)
+                            nueq2 = zi(iaprno-1+(nbec+2)*(inoe-1)+2)
                             do j3 = 1, nec
                                 nmcmp2 = ncmpin(1+2*nec*(i3-1)+2*j3- 1)
                                 if (nmcmp2 .eq. 'DX') icmp2 = 1
@@ -326,11 +331,13 @@ subroutine calimc(chargz)
                                 if (nmcmp2 .eq. 'DRX') icmp2 = 4
                                 if (nmcmp2 .eq. 'DRY') icmp2 = 5
                                 if (nmcmp2 .eq. 'DRZ') icmp2 = 6
+                                if (icmp2 .gt. nueq2) goto 28
                                 vale = vale + zr(&
                                        idbase+(imod-1)*neq+ iddl2-1+icmp2-1)* zr(idbase+(imod2-1)&
                                        &* neq+iddl2-1+icmp2-1&
                                        )
                             end do
+ 28                         continue
                         end do
                         lisno(k) = nomnoe
                         lisddl(k) = nomcmp
