@@ -1,0 +1,583 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+# Pour des raisons de performances, on force SDVERI='NON'.
+DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'), )
+
+from math import pi, sqrt, log, tanh
+
+MAIL0=LIRE_MAILLAGE(FORMAT='MED',)
+MAIL1 = CREA_MAILLAGE(MAILLAGE=MAIL0,
+                  CREA_POI1 =_F(NOM_GROUP_MA = 'PSI0',GROUP_NO = ('PSI0'),),)
+#IMPR_RESU(RESU=_F(MAILLAGE=MAIL1,),FORMAT='ASTER',UNITE=8)
+#FIN( );
+
+#
+# créer un noeud fictif
+coor_x= 0.0
+coor_y= 0.0
+coor_z= 1.E4
+
+with open("noeud.mail", "w") as ftest:
+    ftest.write(
+"""
+COOR_3D
+       % NOEUD     X          Y         Z
+          NO1  """ +  str(coor_x) + str('  ')+ str(coor_y) + str('  ')+ str(coor_z)+str(' \n')+
+"""
+          NO2  """ +  str(coor_x) + str('  ')+ str(coor_y) + str('  ')+ str(coor_z)+str(' \n')+
+"""
+          NO3  """ +  str(coor_x) + str('  ')+ str(coor_y) + str('  ')+ str(coor_z)+str(' \n')+
+"""
+          NO4  """ +  str(coor_x) + str('  ')+ str(coor_y) + str('  ')+ str(coor_z)+str(' \n')+
+"""
+          NO5  """ +  str(coor_x) + str('  ')+ str(coor_y) + str('  ')+ str(coor_z)+str(' \n')+
+"""
+
+FINSF
+
+POI1
+      NO1      NO1
+      NO2      NO2
+      NO3      NO3
+      NO4      NO4
+      NO5      NO5
+FINSF
+
+GROUP_NO
+      FICTIF NO1 NO2 NO3 NO4 NO5
+FINSF
+
+GROUP_MA
+      MFICTIF NO1 NO2 NO3 NO4 NO5
+FINSF
+
+  
+FIN
+""")
+
+mesh = code_aster.Mesh()
+mesh.readAsterFile("noeud.mail")
+
+# nouveau maillage en integrant le point créé - POI ----------------
+MAIL = ASSE_MAILLAGE ( MAILLAGE_1 = MAIL1,
+                          MAILLAGE_2 = mesh,
+                          OPERATION =  'SOUS_STR',)
+
+#-----------------------------------------------------------------------
+# AFFECTATION DES ELEMENTS FINIS AU MODELE
+#-----------------------------------------------------------------------
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA=('SRADIER','ST_B_PRE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),
+                         _F(GROUP_MA='MFICTIF',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR'),
+                         _F(GROUP_MA='LIGRAD',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),
+                    DISTRIBUTION=_F(METHODE='GROUP_ELEM'),
+                            )
+#
+
+FO1=DEFI_FONCTION(NOM_PARA='INST',
+                  VALE=(-1.0,0.0,100.0,0.0,),)
+#
+# -------------------------------------------------------------------
+# DEFINITION DES MATERIAUX
+# -------------------------------------------------------------------
+#
+
+# frequences pour le calcul des coefficients de Rayleigh
+#f1 = 0.5
+f1 = 1.
+f2 = 20.
+# definition des parametres alpha = aamult*AH et beta = abmult*AH
+aamult = 1 / (2. * pi * (f1 + f2))
+abmult = 2. * pi * f1 * f2 / (f1 + f2)
+# definition d un facteur de correction sur les parametres de Rayleigh pour obtenir
+# l amortissement hysteretique en moyenne sur la plage de frequence
+ca = 1 / (0.5 + f1 * f2 / (f1 + f2) * log(f2 / f1) / (f2 - f1))
+
+#
+#----- BETON ARME -----
+
+BETARM=DEFI_MATERIAU(ELAS=_F(E=4.0E10,
+                             NU=0.31,
+                             RHO=3000.0,
+                             AMOR_HYST=0.1,
+                             AMOR_ALPHA=0.,
+                             #AMOR_ALPHA=0.1*ca*aamult,
+                             #AMOR_BETA=0.1*ca*abmult,
+                             ),
+                    );
+#
+#----- BETON PRECONTRAINT -----
+
+BETPRE=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
+                             NU=0.31,
+                             RHO=2500.0,
+                             AMOR_HYST=0.1,
+                             #AMOR_ALPHA=0.1*ca*aamult,
+                             #AMOR_BETA=0.1*ca*abmult,
+                             ),
+                     );
+
+#
+#----- MATERIAU CHOC -----
+
+MAT_C=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E+15,
+                                   DIST_1 = 1.E-6,
+                                   DIST_2 = 1.E-6),)
+#
+#-----------------------------------------------------------------------
+#              AFFECTATION DES MATERIAUX AUX ELEMENTS
+#-----------------------------------------------------------------------
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=(_F(GROUP_MA='ST_B_PRE',
+                               MATER=BETPRE,),
+                            _F(GROUP_MA='SRADIER',
+                               MATER=BETARM,),
+                            _F(GROUP_MA='LIGRAD',
+                               MATER=MAT_C,),),)
+#
+# -------------------------------------------------------------------
+# DEFINITION DES CARACTERISTIQUES DES ELEMENTS
+# -------------------------------------------------------------------
+#
+#
+#-----------------------------------------------------------------------
+#             AFFECTATION DES ELEMENTS-FINIS SUR LE MODELE
+#-----------------------------------------------------------------------
+
+ELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                    COQUE=(_F(GROUP_MA=('SRADIER',),
+                              EPAIS=6.1,),
+                           _F(GROUP_MA=('ST_B_PRE',),
+                              EPAIS=1.4,),),
+                    DISCRET=(
+                             _F(GROUP_MA='LIGRAD',
+                                CARA='K_T_D_L',
+                                VALE=(1e+15,1e+15,1e+15,),),
+                             _F(GROUP_MA='LIGRAD',
+                                REPERE='GLOBAL',
+                                CARA='M_T_L',
+                                VALE=
+                                (0.01,0.0,0.01,0.0,0.0,0.01,0.00,0.0,0.0,0.01,
+                                 0.0,0.00,0.0,0.0,0.01,0.0,0.0,0.0,0.0,0.0,0.01,
+                                 ),
+                               ),
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='M_TR_D_N',
+                                VALE=(1.E-10,1.E-10,1.E-10,1.E-10,0.,0.,
+                                      0.,0.,0.,0.,),
+                                ),
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='K_TR_D_N',
+                                VALE=(1.E-3,1.E-3,1.E-3,
+                                      1.E-3,1.E-3,1.E-3,),
+                                ),
+                            ),
+                        )
+
+
+#
+# LA STRUCTURE EST ENCASTREE A L INTERFACE
+#-----------------------------------------
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(GROUP_NO='BRADIER',
+                                     DX=0.0,DY=0.0,DZ=0.0,),
+                                     ),)
+
+
+# ----------------------------------------------------------------------
+#---------------------------------------------
+#
+#  CALCUL DYNAMIQUE
+#
+#---------------------------------------------
+#
+#----------------------------------------
+# CONSTITUTION ET ASSEMBLAGE DES MATRICES
+# DE MASSE ET DE RAIDEUR
+#----------------------------------------
+#
+#
+MELR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                    MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=ELEM,
+                    CHARGE=(COND_LIM),
+                    )
+
+MELM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                    MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=ELEM,
+                    CHARGE=(COND_LIM),
+                    )
+
+
+NUM=NUME_DDL(MATR_RIGI=MELR,
+             )
+
+
+MATR=ASSE_MATRICE(MATR_ELEM=MELR,
+                  NUME_DDL=NUM,)
+
+
+MATM=ASSE_MATRICE(MATR_ELEM=MELM,
+                  NUME_DDL=NUM,)
+
+#
+#-----------------------------------------
+#      CALCUL DES MASSES
+#-----------------------------------------
+#
+
+MASSES=POST_ELEM(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=ELEM,
+                 INFO=1,
+                 MASS_INER=_F(TOUT='OUI',),)
+
+
+#
+# CALCUL DU MACRO-ELEMENT DYNAMIQUE :
+#---------------------------------------------
+
+INTERDYN=DEFI_INTERF_DYNA(  NUME_DDL=NUM,
+            INTERFACE=_F( NOM = 'DROITE',
+                       TYPE = 'CRAIGB',
+                       GROUP_NO = ('BRADIER',))
+           )
+
+
+MODST0=MODE_STATIQUE(MATR_RIGI=MATR,
+                     MATR_MASS=MATM,
+                     MODE_STAT=_F(GROUP_NO='BRADIER',
+                                  TOUT_CMP='OUI',
+                                  ),
+                     )
+
+NDDLGENE = NUME_DDL_GENE( BASE= MODST0, STOCKAGE= 'PLEIN',)
+
+
+RIGIGEN=PROJ_MATR_BASE(BASE=MODST0,
+                       NUME_DDL_GENE=NDDLGENE,
+                       MATR_ASSE=MATR,);
+
+MASSGEN=PROJ_MATR_BASE(BASE=MODST0,
+                       NUME_DDL_GENE=NDDLGENE,
+                       MATR_ASSE=MATM,);
+
+modgen=CALC_MODES( #OPTION='BANDE',
+                   MATR_RIGI=RIGIGEN,
+                   MATR_MASS=MASSGEN,
+                   CALC_FREQ=_F( NMAX_FREQ=30 ),
+                   #CALC_FREQ=_F( FREQ=(-0.1,215.) ),
+                   VERI_MODE=_F( STOP_ERREUR='NON' ),
+                  );
+
+MODSTA=REST_GENE_PHYS(RESU_GENE=modgen,NOM_CHAM='DEPL',);
+
+
+BAMO2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODSTA,
+                                NMAX_MODE=0,),
+                             _F(MODE_INTF=MODSTA, #NMAX_MODE=6,
+                                 ),
+                             ),
+                       INTERF_DYNA=INTERDYN,
+                       NUME_REF=NUM,)
+
+MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2, )
+
+#
+# TRAITEMENT DE MISS3D
+#
+TABSOL =  DEFI_SOL_MISS(
+    TITRE="SOL HOMOGENE",
+    MATERIAU=(
+        _F(E=28.E+08,  NU=0.4, RHO=2.1e3, AMOR_HYST=0.10),
+        _F(E=28.E+08,  NU=0.4, RHO=2.1e3, AMOR_HYST=0.10),
+    ),
+    COUCHE=(
+        _F(EPAIS=25., NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+        _F(SUBSTRATUM="OUI", NUME_MATE=2,),
+    ),
+    INFO=2,
+)
+
+CALC_MISS(
+    TYPE_RESU='FICHIER',
+    TABLE_SOL=TABSOL,
+    MACR_ELEM_DYNA=MAEL,
+    AMOR_REDUIT=(0.07,),
+    GROUP_MA_INTERF='SRADIE2',
+
+    UNITE_IMPR_ASTER=26,
+    UNITE_RESU_IMPE=25,
+    VERSION='V6.6',
+    PARAMETRE=_F(
+        FREQ_MIN=3.0, #2.5
+        FREQ_MAX=3.0, #3.5,
+        FREQ_PAS=0.5,
+        Z0= -11.60,
+        DREF=30.,
+        SURF='OUI',
+        ALGO = 'DEPL',
+        OFFSET_MAX=60,
+        OFFSET_NB=300,
+    ),
+)
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=25,)
+
+NDDLGE2 = NUME_DDL_GENE( BASE= BAMO2, STOCKAGE= 'PLEIN',)
+
+MATI = LIRE_IMPE_MISS(UNITE_RESU_IMPE=25, FREQ_EXTR=3.0,
+                      BASE=BAMO2, NUME_DDL_GENE=NDDLGE2)
+
+MAEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
+                       MATR_IMPE = MATI,
+                       FREQ_EXTR=3.0,
+                       #AMOR_SOL=0.05,
+                       GROUP_NO='FICTIF',
+                       )
+
+IMPR_CO(CONCEPT=_F(NOM=MAEL2))
+
+
+MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
+                          _F(MACR_ELEM=MAEL2,
+                             SUPER_MAILLE='STAT2',),
+                                         ),
+                      RECO_GLOBAL=_F(TOUT='OUI',),
+                      DEFI_NOEUD=_F(TOUT='OUI',
+                                     INDEX=(1,0,1,8,),),)
+
+MAILB=ASSE_MAILLAGE(MAILLAGE_1=MAIL,
+                    MAILLAGE_2=MAYADYN,
+                    OPERATION='SOUS_STR',)
+
+
+CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
+                     AFFE=(_F(GROUP_MA='LIGRAD',
+                              MATER=MAT_C,),
+                           _F(GROUP_MA='ST_B_PRE',
+                               MATER=BETPRE,),
+                           _F(GROUP_MA='SRADIER',
+                               MATER=BETARM,),
+                           ),
+                     )
+
+MODELB=AFFE_MODELE(MAILLAGE=MAILB,
+                   AFFE_SOUS_STRUC=_F(SUPER_MAILLE=('STAT2',),
+                                      PHENOMENE='MECANIQUE',),
+                   AFFE=(_F(GROUP_MA='LIGRAD',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DIS_T',),
+                         _F(GROUP_MA=('SRADIER','ST_B_PRE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),
+                         _F(GROUP_MA = 'MFICTIF',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DIS_TR'),
+                        ),
+                    DISTRIBUTION=_F(METHODE='GROUP_ELEM'),
+                  )
+#
+# ----------------------------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES RIGI_MISS_3D
+ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
+                    COQUE=(_F(GROUP_MA=('SRADIER',),
+                              EPAIS=6.1,),
+                           _F(GROUP_MA=('ST_B_PRE',),
+                              EPAIS=1.4,),),
+                    DISCRET=(
+                             _F(GROUP_MA='LIGRAD',
+                                CARA='K_T_D_L',
+                                VALE=(1e+15,1e+15,1e+15,),),
+                             _F(GROUP_MA='LIGRAD',
+                                CARA='A_T_D_L',
+                                VALE=(0.,0.,0.,),),
+                             _F(GROUP_MA='LIGRAD',
+                                REPERE='GLOBAL',
+                                CARA='M_T_L',
+                                VALE=
+                                (0.01,0.0,0.01,0.0,0.0,0.01,0.00,0.0,0.0,0.01,
+                                 0.0,0.00,0.0,0.0,0.01,0.0,0.0,0.0,0.0,0.0,0.01,
+                                 ),
+                               ),                             
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='M_TR_D_N',
+                                VALE=(1.E-10,1.E-10,1.E-10,1.E-10,0.,0.,
+                                      0.,0.,0.,0.,),
+                                ),
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='K_TR_D_N',
+                                VALE=(1.E-3,1.E-3,1.E-3,
+                                      1.E-3,1.E-3,1.E-3,),
+                                ),
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='A_TR_D_N',
+                                VALE=(0.,0.,0.,
+                                      0.,0.,0.,),
+                                ),                                
+                            ),
+                        )
+
+COND_LIB=AFFE_CHAR_MECA(MODELE=MODELB, # INFO=2,
+                        #LIAISON_INTERF=(_F(MACR_ELEM_DYNA=MAEL2,),),
+                        LIAISON_INTERF=(_F(MACR_ELEM_DYNA=MAEL2, TYPE_LIAISON='SOUPLE'),),
+                        )
+
+ASSEMBLAGE(MODELE=MODELB,
+                CHAM_MATER=CHMATB,
+                CARA_ELEM=ELEMB,
+                CHARGE=COND_LIB,
+                NUME_DDL=CO('NUMEROTB'),
+                MATR_ASSE=(_F(MATRICE=CO('MATRRIGB'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATRMASB'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('MATRAMOB'),
+                              OPTION='AMOR_MECA',),
+                           _F(MATRICE=CO('MATRRG0H'),
+                              OPTION='RIGI_MECA_HYST',),
+                           ),
+           )
+
+rigielB = CALC_MATR_ELEM( MODELE = MODELB,
+                OPTION= 'RIGI_MECA',
+                CALC_ELEM_MODELE = 'NON',
+                CHAM_MATER=CHMATB,
+                CARA_ELEM=ELEMB,
+                CHARGE=COND_LIB,
+                )
+
+MATKB = ASSE_MATRICE( MATR_ELEM = rigielB, NUME_DDL = NUMEROTB )
+
+MATRRIGH=COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=MATRRG0H,
+                                COEF_C=(1+0.j),),
+                                _F(MATR_ASSE=MATKB,
+                                COEF_C=(1+0.0j),),
+                        ),
+                     #SANS_CMP='LAGR',
+                      );
+
+#
+# CALCUL DES MODES SUR TAPIS DE RESSORTS:
+#---------------------------------------------
+
+MASSTOT=POST_ELEM(MODELE=MODELB,
+                  CHAM_MATER=CHMATB,
+                  CARA_ELEM=ELEMB,
+                  TITRE='MASSES',
+                  MASS_INER=(_F(TOUT='OUI',),
+                             _F(GROUP_MA=('LIGRAD'),),
+                            ),
+                  )
+
+IMPR_TABLE(TABLE=MASSTOT,)
+
+
+MODEB=CALC_MODES(MATR_RIGI=MATRRIGB,
+                 #OPTION='BANDE',
+                 #CALC_FREQ=_F(FREQ=(0.1,20.,30.,),
+                 CALC_FREQ=_F(NMAX_FREQ=30,),
+                 MATR_MASS=MATRMASB,
+                 VERI_MODE=_F( STOP_ERREUR='NON' ),
+                 )
+
+TEST_RESU(RESU=(
+                #_F(NUME_ORDRE=1,
+                #   PARA='FREQ',
+                #   RESULTAT=MODEB,
+                #   VALE_CALC=3.084217,
+                #   ),
+                #_F(NUME_ORDRE=2,
+                #   PARA='FREQ',
+                #   RESULTAT=MODEB,
+                #   VALE_CALC=3.085391,
+                #   ),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MODEB,
+                   VALE_CALC=6.595393,
+                   ),
+                ),
+          )
+
+
+MODEBH=CALC_MODES(INFO=1,
+                 MATR_RIGI=MATRRIGH,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=30,
+                              FREQ=5.,
+                              ),
+                 MATR_MASS=MATRMASB,
+                 VERI_MODE=_F(STOP_ERREUR='NON',
+                              ),
+                 SOLVEUR_MODAL=_F(APPROCHE='REEL',
+                                  METHODE='SORENSEN',
+                                  ),
+                  );
+TEST_RESU(RESU=(
+                #_F(NUME_ORDRE=1,
+                #   PARA='FREQ',
+                #   RESULTAT=MODEBH,
+                #   VALE_CALC=3.101622,
+                #   ),
+                #_F(NUME_ORDRE=2,
+                #   PARA='FREQ',
+                #   RESULTAT=MODEBH,
+                #   VALE_CALC=3.102807,
+                #   ),
+                _F(NUME_ORDRE=5,
+                   PARA='FREQ',
+                   RESULTAT=MODEBH,
+                   VALE_CALC=6.629256,
+                   ),
+                ),
+          )
+
+TEST_RESU(RESU=(
+                #_F(NUME_ORDRE=1,
+                #   PARA='AMOR_REDUIT',
+                #   RESULTAT=MODEBH,
+                #   VALE_CALC=0.02299922,
+                #   ),
+                #_F(NUME_ORDRE=2,
+                #   PARA='AMOR_REDUIT',
+                #   RESULTAT=MODEBH,
+                #   VALE_CALC=0.02301942,
+                #   ),
+                _F(NUME_ORDRE=5,
+                   PARA='AMOR_REDUIT',
+                   RESULTAT=MODEBH,
+                   VALE_CALC=0.02029808,
+                   ),
+                ),
+          )
+
+FIN()
