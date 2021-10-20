@@ -153,6 +153,16 @@ class Mesh : public BaseMesh {
         return JeveuxVectorLong(getName() + ".NOEX", VectorLong(getNumberOfNodes(), getMPIRank()));
     };
 
+    /**
+     * @brief Get inner cells
+     * @return list of cells ids
+     */
+    const JeveuxVectorLong getCellsRank() const
+    {
+        return JeveuxVectorLong(getName() + ".MAEX", VectorLong(getNumberOfCells(), getMPIRank()));
+    };
+
+
     bool isQuadratic() const;
 
     /**

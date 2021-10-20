@@ -241,6 +241,14 @@ class BaseMesh : public DataStructure, public ListOfTables {
     }
 
     /**
+     * @brief Get the JeveuxVector for outer subdomain cells
+     * @return VectorLong
+     */
+    virtual const JeveuxVectorLong getCellsRank() const { 
+        throw std::runtime_error( "Not allowed" );
+    }
+
+    /**
      * @brief Fonction permettant de savoir si un maillage est vide (non relu par exemple)
      * @return retourne true si le maillage est vide
      */

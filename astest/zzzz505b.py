@@ -266,4 +266,14 @@ test.assertEqual(SOLUN.getMaterialField(nbRank-1), SOLUN.getMaterialField(nbRank
 test.assertEqual(SOLUN.getFieldOnNodesReal("DEPL", nbRank-1).getValues(),
                  SOLUN.getFieldOnNodesReal("DEPL", nbRank).getValues())
 
+
+#=========================================================
+#            TEST NORM METHODS
+#=========================================================
+
+sig = SOLUN.getFieldOnCellsReal("SIEF_ELGA", nbRank - 1)
+test.assertAlmostEqual(sig.norm("NORM_2"), 24162.483694014656, 8)
+test.assertAlmostEqual(sig.norm("NORM_1"), 640625.2493377978, 8)
+test.assertAlmostEqual(sig.norm("NORM_INFINITY"), 1317.268981963458, 8)
+
 FIN()

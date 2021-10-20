@@ -540,6 +540,7 @@ template < class ValueType > class FieldOnCells : public DataField {
 
     // norm and dot methods
 
+
     /**
      * @brief Comput norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
@@ -548,40 +549,93 @@ template < class ValueType > class FieldOnCells : public DataField {
     typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
     norm(const std::string normType) const{
         ASTERDOUBLE norme = 0.0;
+        ASTERINTEGER beg = 0, end = 0, nbgrp = 0;
+
+        const int rank = getMPIRank();
+
         AS_ASSERT( _valuesList->updateValuePointer() );
+        AS_ASSERT( _descriptor->updateValuePointer() );
 
+        /*if ( getMesh()->isParallel() ) {
+            AS_ASSERT(false);
+        }*/
+        
+        JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
+        bool retour = CellsRank->updateValuePointer();
+
+        if(!_model || _model->isEmpty()){
+            raiseAsterError("Model not assigned to the FieldOnCells or empty");
+        }
+        
+        JeveuxCollectionLong collec = _model->getFiniteElementDescriptor()->getListOfGroupOfCells();
+        JeveuxVectorLong descr = _descriptor;
+        nbgrp =  (*descr)[1];
+
+        for(auto i = 0; i < nbgrp; i++){
+
+            ASTERINTEGER adress =   (*descr)[4+i];
+            if((*descr)[adress + 2] == 0) continue;
+
+            ASTERINTEGER nel = (*descr)[adress];
+            auto liel = collec->getObject(i+1);
+
+            if( normType == "NORM_1"){
+                for(auto p = 0; p < nel; p++){ 
+
+                    if((*CellsRank)[liel[p]-1] != rank) continue;
+                    beg = (*descr)[adress + 3 + 4 * p + 4] - 1;
+                    end = beg + (*descr)[adress + 3 + 4 * p + 3];
+
+                    for( int pos = beg; pos < end; ++pos ){
+                        norme += std::abs(( *this )[pos]);
+                    }
+                }
+            }
+            else if( normType == "NORM_2"){
+                for(auto p = 0; p < nel; p++){ 
+
+                    if((*CellsRank)[liel[p]-1] != rank) continue;
+                    beg = (*descr)[adress + 3 + 4 * p + 4] - 1;
+                    end = beg + (*descr)[adress + 3 + 4 * p + 3];
+
+                    for( int pos = beg; pos < end; ++pos ){
+                        norme += ( *this )[pos] * ( *this )[pos];
+                    }
+                }
+            }
+            else if( normType == "NORM_INFINITY") {
+                for(auto p = 0; p < nel; p++){ 
+                    
+                    if((*CellsRank)[liel[p]-1] != rank) continue;
+                    beg = (*descr)[adress + 3 + 4 * p + 4] - 1;
+                    end = beg + (*descr)[adress + 3 + 4 * p + 3];
+
+                    for( int pos = beg; pos < end; ++pos ){
+                        norme = std::max(norme, std::abs(( *this )[pos]));
+                    }
+                }
+            }
+            else
+            {
+                AS_ASSERT(false);
+            }
+
+        }
+ 
+#ifdef ASTER_HAVE_MPI
         if ( getMesh()->isParallel() ) {
-            AS_ASSERT(false);
+            ASTERDOUBLE norm2 = norme;
+            if ( normType == "NORM_1" || normType == "NORM_2" )
+                AsterMPI::all_reduce( norm2, norme, MPI_SUM );
+            else
+                AsterMPI::all_reduce( norm2, norme, MPI_MAX );
         }
+#endif
 
-        int taille = _valuesList->size();
-        if( normType == "NORM_1"){
-            for( int pos = 0; pos < taille; ++pos ){
-                norme += std::abs(( *this )[pos]);
-            }
-        }
-        else if( normType == "NORM_2"){
-            for( int pos = 0; pos < taille; ++pos ){
-                norme += ( *this )[pos] * ( *this )[pos];
-            }
-        }
-        else if( normType == "NORM_INFINITY") {
-            for( int pos = 0; pos < taille; ++pos ){
-                norme = std::max(norme, std::abs(( *this )[pos]));
-            }
-        }
-        else
-        {
-            AS_ASSERT(false);
-        }
-
-
-        // square root for l2 norm
-        if ( normType == "NORM_2" )  norme = std::sqrt( norme );
+        if ( normType == "NORM_2" ) norme = std::sqrt( norme );
 
         return norme;
     }
-
 
     /**
      * @brief Dot product
