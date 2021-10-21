@@ -231,6 +231,56 @@ test.assertEqual(coord[3], 10.0)
 values = coord.getValues()
 test.assertEqual(len(values), 125 * 3)
 
+# from mesh builder - Cube
+builder = code_aster.Mesh.buildCube()
+test.assertFalse(builder.isParallel())
+test.assertEqual(builder.getDimension(), 3)
+test.assertEqual(builder.getNumberOfNodes(), 729)
+test.assertEqual(builder.getNumberOfCells(), 992)
+test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
+                         ['N1', 'N2', 'N3', 'N4', 'N5', 'N6', 'N7', 'N8'])
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
+                         ['BACK','BOTTOM','FRONT','LEFT','RIGHT','S13','S21',\
+                             'S24','S26','S34','S37','S51','S56','S68','S75',\
+                                 'S78','S84','TOP','VOLUME'])
+test.assertEqual(code_aster.Mesh.buildCube(nrefine=2).getNumberOfNodes(), 125)
+
+# from mesh builder - Cylinder
+builder = code_aster.Mesh.buildCylinder()
+test.assertFalse(builder.isParallel())
+test.assertEqual(builder.getDimension(), 3)
+test.assertEqual(builder.getNumberOfNodes(), 13617)
+test.assertEqual(builder.getNumberOfCells(), 16384)
+test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
+                         [])
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
+                         ['BOTTOM', 'SURFEXT', 'TOP', 'VOLUME'])
+test.assertEqual(code_aster.Mesh.buildCylinder(nrefine=2).getNumberOfNodes(), 1881)
+
+# from mesh builder -Square
+builder = code_aster.Mesh.buildSquare()
+test.assertFalse(builder.isParallel())
+test.assertEqual(builder.getDimension(), 2)
+test.assertEqual(builder.getNumberOfNodes(), 81)
+test.assertEqual(builder.getNumberOfCells(), 96)
+test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
+                         ['N1', 'N2', 'N3', 'N4'])
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
+                         ['BOTTOM', 'LEFT', 'RIGHT', 'SURFACE', 'TOP'])
+test.assertEqual(code_aster.Mesh.buildSquare(nrefine=2).getNumberOfNodes(), 25)
+
+# from mesh builder -  Disk
+builder = code_aster.Mesh.buildDisk()
+test.assertFalse(builder.isParallel())
+test.assertEqual(builder.getDimension(), 2)
+test.assertEqual(builder.getNumberOfNodes(), 801)
+test.assertEqual(builder.getNumberOfCells(), 832)
+test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
+                         [])
+test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
+                         ['CIRCLE', 'SURFACE'])
+test.assertEqual(code_aster.Mesh.buildDisk(nrefine=2).getNumberOfNodes(), 209)
+
 test.printSummary()
 
 code_aster.close()

@@ -31,11 +31,16 @@ from ..Objects import Mesh
 from ..Supervis import CO
 from ..Utilities import injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
-
+from . import mesh_builder
 
 @injector(Mesh)
 class ExtendedMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
+
+    buildSquare = classmethod(mesh_builder.buildSquare)
+    buildDisk = classmethod(mesh_builder.buildDisk)
+    buildCube = classmethod(mesh_builder.buildCube)
+    buildCylinder = classmethod(mesh_builder.buildCylinder)
 
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
