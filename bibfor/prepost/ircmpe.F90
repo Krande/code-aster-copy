@@ -263,10 +263,19 @@ character(len=16), intent(in) :: field_type
     do i_fpg = 1 , nb_fpg
         ima = profas(i_fpg)
         nrefma = tyefma(ima)
-        !
+!
         laux = adsd + 4*ima + 1
         nbpg = zi(laux)
         nbsp = zi(laux+1)
+        if (typech(1:4) .eq. 'ELNO') then
+! --------- For HEXA9 (COQUE_SOLIDE element)
+            if (nbpg .eq. 9) then
+                if (typmai(ima) .eq. MT_HEXA8) then
+                    nbpg = 8
+                endif
+            endif
+        endif
+
         nomfpg = 'a fac'
         elga_sp = .false.
         if (typech(1:4) .eq. 'ELGA') then
