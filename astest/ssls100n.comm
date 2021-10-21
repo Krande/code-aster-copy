@@ -193,6 +193,9 @@ resuLinear=CALC_CHAMP(reuse       = resuLinear,
                       FORCE       = ('FORC_NODA'),
                       CRITERES    = ('SIEQ_ELGA'),)
 
+# To validate ELNO field (issue31254)
+IMPR_RESU(RESU=_F(RESULTAT=resuLinear,NOM_CHAM='EPSI_ELNO'),FORMAT='MED',UNITE=80)
+
 # Test
 deplDZRefe    = -1.0
 deplDZTole    = 0.01 * 9.6E-1
