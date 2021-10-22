@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -183,6 +183,7 @@ subroutine op0014()
             else
                kacmum='LR+'
             endif
+            zi(jslvi-1+1) = -9999
             zi(jslvi-1+5) = 0
             zi(jslvi-1+6) = reacpr
             zi(jslvi-1+7) = pcpiv
@@ -217,6 +218,7 @@ subroutine op0014()
         zi(jslvi-1+2) =pcpiv
         zi(jslvi-1+3) =istop
         zi(jslvi-1+6) =1
+        zi(jslvi-1+7) =-9999
         zk24(jslvk-1+2)=ktyps
         zk24(jslvk-1+3)=ktypr
         zk24(jslvk-1+6)=klag2
@@ -275,6 +277,7 @@ subroutine op0014()
             else
                kacmum='LR+'
             endif
+            zi(jslvi-1+1) = -9999
             zi(jslvi-1+5) = 0
             zi(jslvi-1+6) = reacpr
             zi(jslvi-1+7) = pcpiv

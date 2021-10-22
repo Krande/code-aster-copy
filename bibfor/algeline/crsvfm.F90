@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
+subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz, redmpi)
 !
     implicit none
 #include "jeveux.h"
@@ -30,7 +30,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
 #include "asterfort/wkvect.h"
     character(len=*) :: solvbz, matasz
     character        :: prec, rank
-    integer          :: pcpiv
+    integer          :: pcpiv, redmpi
     character(len=*) :: usersmz, renumz
     real(kind=8)     :: blreps
 !-----------------------------------------------------------------------
@@ -45,6 +45,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
 ! IN  I   PCPIV     : VALEUR DE PCENT_PIVOT
 ! IN  K*  USERSM    : STRATEGIE MEMOIRE (AUTO/IN_CORE/OUT_OF_CORE)
 ! IN  R   BLREPS    : VALEUR DU SEUIL POUR UNE FACTO LOW_RANK
+! IN  I   REDMPI    : COEFFICIENT REDUCTION_MPI
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
@@ -137,7 +138,7 @@ subroutine crsvfm(solvbz, matasz, prec, rank, pcpiv, usersmz, blreps, renumz)
     zi(jslvi-1+4) = -9999
     zi(jslvi-1+5) = -9999
     zi(jslvi-1+6) = 1
-    zi(jslvi-1+7) = -9999
+    zi(jslvi-1+7) = redmpi
     zi(jslvi-1+8) = 0
 !
     call jedema()

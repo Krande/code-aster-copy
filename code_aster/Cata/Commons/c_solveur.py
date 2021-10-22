@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -271,7 +271,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 # --------------------------------------------------------------------
 
     _BlocMU['ACCELERATION'] = SIMP(
-        statut='f', typ='TXM', defaut='AUTO', into=('AUTO', 'FR', 'FR+', 'LR', 'LR+'))
+        statut='f', typ='TXM', defaut='AUTO', into=('AUTO', 'FR', 'FR+', 'FR++', 'LR', 'LR+', 'LR++'))
     _BlocMU['LOW_RANK_SEUIL'] = SIMP(statut='f', typ='R', defaut=0.0, )
 
 # --------------------------------------------------------------------
@@ -290,7 +290,11 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 
     _BlocMU['PCENT_PIVOT'] = SIMP(
         statut='f', typ='I', defaut=20, val_min=1, )
+        
+# --------------------------------------------------------------------
 
+    if (_type != 'SD'):
+        _BlocMU['REDUCTION_MPI'] = SIMP(statut='f', typ='I', defaut=0, val_min=0, )
 # --------------------------------------------------------------------
 
     if _resol:

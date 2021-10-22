@@ -42,7 +42,7 @@ subroutine crsvpe(motfac, solveu,  kellag )
 ! ----------------------------------------------------------
 !
     integer :: ibid, niremp, nmaxit, reacpr, pcpiv
-    integer :: lch, i, lslvo
+    integer :: lch, i, lslvo, redmpi
     real(kind=8) :: fillin, epsmax, resipc, blreps
     character(len=8) :: kacmum
     character(len=24) :: kalgo, kprec, renum
@@ -73,7 +73,11 @@ subroutine crsvpe(motfac, solveu,  kellag )
     ASSERT(ibid.eq.1)
     call getvtx('SOLVEUR', 'OPTION_PETSC', iocc=1, nbval=1, scal=myopt, nbret=ibid)
     ASSERT(ibid.eq.1)
-    !
+    call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
+! --- AU CAS OU MEME SI SOLVEUR PAS CONSEILLE DANS CE CAS DE FIGURE
+! --- CAR ABSENT DU CATALOGUE POUR LE CALCUL MODAL: SCHEMA PARALLELE EMBOITE DEJA PRESENT
+! --- POUR CES OPERATEURS
+!    ASSERT(ibid.eq.1)
 !
 !     INITIALISATION DES PARAMETRES OPTIONNELS
     niremp = 0
@@ -183,7 +187,7 @@ subroutine crsvpe(motfac, solveu,  kellag )
     slvr(4) = blreps
     slvr(5) = resipc
 !
-    slvi(1) = -9999
+    slvi(1) = redmpi
     slvi(2) = nmaxit
     slvi(3) = -9999
     slvi(4) = niremp

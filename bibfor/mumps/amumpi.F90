@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
+subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !
 !
     implicit none
@@ -28,11 +28,13 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
 ! IN  LDIST :  LOG   : LOGICAL MUMPS DISTRIBUE OR NOT
 ! IN  KXMPS :   IN   : INDICE DE L'INSTANCE MUMPS DANS DMPS
 ! IN  TYPE  :   K1   : TYPE DU POINTEUR R OU C
+! IN  LBLOC :  LOG   : LOGIQUE PRECISANT SI ON EFFECTUE L ANALYSE PAR BLOCS
 !---------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
 #include "asterf.h"
 #include "asterf_types.h"
+#include "threading_interfaces.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/r4maem.h"
@@ -44,23 +46,24 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     integer :: kxmps, option
-    aster_logical :: lquali, ldist, lmhpc
+    aster_logical :: lquali, ldist, lmhpc, lbloc
     character(len=1) :: type
 !
 #ifdef ASTER_HAVE_MUMPS
 #include "asterf_mumps.h"
     mpi_int :: mpicou, mpimum
     integer :: nicntl, ncntl
-    parameter (nicntl=40,ncntl=15)
+    parameter (nicntl=60,ncntl=15)
     type(smumps_struc), pointer :: smpsk => null()
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: ifm, niv, i, isymm, isymv, isym, nbproc
-    integer :: nprec, ibid
+    integer :: ifm, niv, i, isymm, isymv, isym, nbproc, i1, i2
+    integer :: nprec, ibid, nbomp
+    integer :: k370, k371, k401, k268, iaux, redmpi
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max, blreps
-    aster_logical :: lbid
+    aster_logical :: lbid, lverbose
     character(len=4) :: typm, etam
     character(len=8) :: kacmum
     character(len=12) :: k12bid
@@ -75,6 +78,9 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
 ! --- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET', mpicou)
     call infniv(ifm, niv)
+! pour forcer le mode VERBOSE de MUMPS
+    lverbose=.true.
+    lverbose=.false.
 !
 !       ------------------------------------------------
 !        INITS
@@ -105,7 +111,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
 
     kacmum=trim(adjustl(slvk(5)))
     blreps=slvr(4)
-
+    redmpi=slvi(7)
 !
 !       -----------------------------------------------------
 !        INITIALISATION SYM, PAR ET JOB POUR MUMPS (CREATION)
@@ -203,6 +209,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
         else
             ASSERT(.false.)
         endif
+! SI 1 SEUL MPI PAS D'OPTION REDUCTION_MPI
+        if (nbproc<2) then
+          redmpi=0
+        endif
 !
 ! ---     INIT
         do i = 1, nicntl
@@ -211,6 +221,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
         do i = 1, ncntl
             cntl(i)=0.d0
         enddo
+
 !
 ! ---     TEST DE COMPATIBILITE DE LA VERSION DE MUMPS
         call amumpu(3, type, kxmps, k12bid, ibid, lbid, kvers, ibid)
@@ -218,12 +229,21 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
 
 ! ---     OPTIONS AVANCEES (ACCELERATIONS)
 ! ------     TEST DE COMPATIBILITE ACCELERATION/VERSIONS
+      
+        if (redmpi>1) then
+! version non compatible avec option REDUCTION_MPI
+          if (kvers(1:15).ne.'5.4.1consortium') then
+             call utmess('A', 'FACTOR_49')
+             redmpi=-9999
+          endif
+        endif
+ 
         if (kvers(6:15).eq.'consortium') then
             select case(kacmum)
-            case('FR','FR+','LR','LR+')
+            case('FR','FR+','FR++','LR','LR+','LR++')
                 !ok
             case('AUTO')
-                kacmum='FR'
+                kacmum='FR+'
             case default
                 ASSERT(.false.)
             end select
@@ -231,10 +251,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
             select case(kacmum)
             case('FR','LR')
                 !ok
-            case('FR+')
+            case('FR+','FR++')
                 kacmum='FR'
                 call utmess('A', 'FACTOR_48', sk=kacmum)
-            case('LR+')
+            case('LR+','LR++')
                 kacmum='LR'
                 call utmess('A', 'FACTOR_48', sk=kacmum)
             case('AUTO')
@@ -243,65 +263,115 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
                 ASSERT(.false.)
             end select
         endif
+
 ! ------     API MUMPS ACCELERATION
+
+
+        if (lbloc) then
+          icntl(15) = 1
+        else
+          icntl(15) = 0
+        endif     
+!
+! ---    REDISTRIBUTION DE PARALLELISME: MPI_TO_OPENMP FEATURE
+! ---    IMPACT SUR //ISME OPENMP L0 POTENTIEL
+        icntl(17)=0
+        if (redmpi>1) then
+          i1=nbproc/redmpi
+          i2=nbproc-(redmpi*i1)
+          if (i2.ne.0) then
+             call utmess('A', 'FACTOR_47')
+          else
+            icntl(17)=redmpi
+          endif
+        endif
+!
+        nbomp=omp_get_max_threads()
+! POUR PRENDRE POTENTIEL IMPACT REDUCTION_MPI
+        if (icntl(17)>1) then
+          nbomp=nbomp*icntl(17)
+        endif
         select case(kacmum)
         case('FR')
 ! FR std
-            icntl(35)=0
-        case('FR+')
-! FR +  aggressive optimizations
-            icntl(35)=0
-            if (type .eq. 'S') then
-                smpsk%keep(370)=1
-                smpsk%keep(371)=1
-            else if (type.eq.'C') then
-                cmpsk%keep(370)=1
-                cmpsk%keep(371)=1
-            else if (type.eq.'D') then
-                dmpsk%keep(370)=1
-                dmpsk%keep(371)=1
-            else if (type.eq.'Z') then
-                zmpsk%keep(370)=1
-                zmpsk%keep(371)=1
-            endif
+          icntl(35)=0
+          icntl(36)=0
+          icntl(37)=0
+          cntl(7)=-999.d0
+          k268=0
+          k370=0
+          k371=0
+          k401=0
+        case('FR+','FR++')
+! FR +  aggressive optimizations + MUMPS feature in advance if ++ (consortium version)
+          icntl(35)=0
+          icntl(36)=0
+          icntl(37)=0
+          cntl(7)=-999.d0
+          k268=-2
+          k370=1
+          k371=1
+          if (nbomp>1) then
+            k401=1
+          else
+            k401=0
+          endif
         case('LR')
 ! BLR std
-! pour la version la plus recente, ICNTL(36/39) non encore exploitee
-            icntl(35)=1
-            cntl(7)=blreps
-
-        case('LR+')
-! BLR+ + aggressive optimizations
-            icntl(35)=1
-            cntl(7)=blreps
-            if (type .eq. 'S') then
-                smpsk%keep(467)=1
-                smpsk%keep(370)=1
-                smpsk%keep(371)=1
-             else if (type.eq.'C') then
-                cmpsk%keep(467)=1
-                cmpsk%keep(370)=1
-                cmpsk%keep(371)=1
-            else if (type.eq.'D') then
-                dmpsk%keep(467)=1
-                dmpsk%keep(370)=1
-                dmpsk%keep(371)=1
-            else if (type.eq.'Z') then
-                zmpsk%keep(467)=1
-                zmpsk%keep(370)=1
-                zmpsk%keep(371)=1
-            endif
+          icntl(35)=1
+          icntl(36)=0
+          icntl(37)=0
+          cntl(7)=blreps
+          k268=0
+          k370=0
+          k371=0
+          k401=0
+        case('LR+','LR++')
+! BLR+ + aggressive optimizations+ MUMPS feature in advance if ++ (consortium version)
+          icntl(35)=2
+          icntl(36)=1
+          icntl(37)=0
+          cntl(7)=blreps
+          k268=-2
+          k370=1
+          k371=1
+          if (nbomp>1) then
+            k401=1
+          else
+            k401=0
+          endif
         case default
-            ASSERT(.false.)
+           ASSERT(.false.)
         end select
 
+        if (type .eq. 'S') then
+          smpsk%keep(370)=k370
+          smpsk%keep(371)=k371
+          smpsk%keep(401)=k401
+          smpsk%keep(268)=k268
+        else if (type.eq.'C') then
+          cmpsk%keep(370)=k370
+          cmpsk%keep(371)=k371
+          cmpsk%keep(401)=k401
+          cmpsk%keep(268)=k268
+        else if (type.eq.'D') then
+          dmpsk%keep(370)=k370
+          dmpsk%keep(371)=k371
+          dmpsk%keep(401)=k401
+          dmpsk%keep(268)=k268
+        else if (type.eq.'Z') then
+          zmpsk%keep(370)=k370
+          zmpsk%keep(371)=k371
+          zmpsk%keep(401)=k401
+          zmpsk%keep(268)=k268
+        endif
 !
 ! ---     MESSAGES/ALERTES MUMPS
         icntl(1) = -1
         icntl(2) = -1
         icntl(3) = -1
         icntl(4) = 0
-        if (niv .ge. 2) then
+        if ((niv .ge. 2).or.(lverbose)) then
           icntl(1) = to_mumps_int(ifm)
           icntl(2) = to_mumps_int(ifm)
           icntl(3) = to_mumps_int(ifm)
@@ -310,17 +380,18 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
 ! ---     FORMAT MATRICE
         icntl(5) = 0
 ! ---     PRETRAITEMENTS (SCALING/PERMUTATION)
-        if (slvk(2) .eq. 'SANS') then
+        select case(slvk(2)(1:4))
+        case('SANS')
             icntl(6) = 0
             icntl(8) = 0
             icntl(12) = 1
-        else if (slvk(2).eq.'AUTO') then
+        case('AUTO')
             icntl(6) = 7
             icntl(8) = 77
             icntl(12) = 0
-        else
+        case default
             ASSERT(.false.)
-        endif
+        end select
 !
 ! ---     Ordering phase
 ! automatic choice of sequential or parallel analysis
@@ -392,18 +463,25 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
 ! ---     MEMOIRE SUPPL. POUR PIVOTAGE (DEFAUT:20)
         icntl(14) = to_mumps_int(slvi(2))
 !
-! ---     PAS UTILISES
-        icntl(15)=0
+! ---     PAS UTILISE
         icntl(16)=0
-        icntl(17)=0
 !
 ! --      DETECTION DE SINGULARITE/NOYAU
         icntl(25)=0
+        icntl(56)=0
         if (nprec .ge. 0) then
             icntl(13)=1
             icntl(24)=1
-            cntl(3)=-10.d0**(-nprec)
-            cntl(5)=1.d+6
+            icntl(56)=0
+            cntl(3)=-10.d0**(-(nprec))
+            cntl(5)=1.d+20
+            iaux=nprec-100
+! -- AU CAS OU, POUR TESTER LE NOUVEAU PARAMETRAGE AVEC NPREC=108
+! -- AU LIEU DE 8 PAR EXEMPLE
+            if ((iaux.gt.0).and.(iaux.lt.100)) then
+              icntl(56)=1
+              cntl(3)=10.d0**(-(iaux))
+            endif
         else
             icntl(24)=0
             cntl(3)=0.d0
@@ -529,7 +607,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
         icntl(2) = 0
         icntl(3) = 0
         icntl(4) = 1
-        if (niv .ge. 2) then
+        if ((niv .ge. 2).or.(lverbose)) then
 ! ---     ICNTL(4) = 1/ERROR MESSAGES ONLY 2/ERRORS, WARNINGS, 3 PUIS 4
             icntl(3) = to_mumps_int(ifm)
             icntl(4) = 2

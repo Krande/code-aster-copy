@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,8 +97,8 @@ subroutine cresol(solveu, basz, xfem)
     eximc=getexm(nomsol,'NPREC')
     if (eximc .eq. 1) then
         call getvis(nomsol, 'NPREC', iocc=1, scal=nprec, nbret=ibid)
-        if ((nprec.lt.0).or.(nprec.gt.11)) then
-          call utmess('A', 'FACTOR_9',si=nprec)
+        if ((nprec.lt.0).or.(nprec.gt.13)) then
+          call utmess('I', 'FACTOR_9',si=nprec)
         endif
         if (kstop .eq. 'OUI') then
             istop = 0

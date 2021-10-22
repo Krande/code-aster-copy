@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc)
+    subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         integer :: option
         aster_logical :: lquali
         aster_logical :: ldist
         integer :: kxmps
         character(len=1) :: type
         aster_logical :: lmhpc
+        aster_logical :: lbloc
     end subroutine amumpi
 end interface

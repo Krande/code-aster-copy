@@ -97,7 +97,8 @@ use petsc_data_module
 
 !   -- Creation d'un solveur bidon
     solvbd='&&MAT2PET'
-    call crsvfm(solvbd, matas,'D', rank='L',pcpiv=50, usersmz='IN_CORE', blreps=rbid, renumz=' ')
+    call crsvfm(solvbd, matas,'D', rank='L',pcpiv=50, usersmz='IN_CORE', blreps=rbid, renumz=' ',&
+                redmpi=1)
     call jeveuo(solvbd//'.SLVK', 'L', vk24=slvk)
     slvk(2)='SANS'
 

@@ -144,8 +144,9 @@ extern const char *MumpsPostTreatmentNames[nbMumpsPostTreatments];
  * @enum MumpsAcceleration
  * @author Nicolas Sellenet
  */
-enum MumpsAcceleration { AutomaticAcceleration, FullRank, FullRankPlus, LowRank, LowRankPlus };
-const int nbMumpsAcceleration = 5;
+enum MumpsAcceleration { AutomaticAcceleration, FullRank, FullRankPlus, FullRankPlusPlus, 
+                         LowRank, LowRankPlus, LowRankPlusPlus };
+const int nbMumpsAcceleration = 7;
 extern const char *MumpsAccelerationNames[nbMumpsAcceleration];
 
 #endif /* ALLOWEDLINEARSOLVER_H_ */

@@ -18,7 +18,7 @@
 
 subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                   klag2, type, lmd, epsmat, ktypr,&
-                  lpreco, lmhpc)
+                  lpreco, lmhpc, lbloc)
 !
 !
     implicit none
@@ -38,6 +38,7 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! IN  KTYPR  :   K8   : TYPE DE RESOLUTION MUMPS (SYMDEF...)
 ! IN  LPRECO :  LOG   : MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
 ! IN  LMHPC  :  LOG   : LOGIQUE PRECISANT SI ON EST EN MODE DISTRIBUE ASTERXX
+! IN  LBLOC  :  LOG   : LOGIQUE PRECISANT SI ON EFFECTUE L ANALYSE PAR BLOCS
 !---------------------------------------------------------------
 ! aslint: disable=W1501
 ! person_in_charge: olivier.boiteau at edf.fr
@@ -64,9 +65,10 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
     integer :: kxmps, ifmump
-    aster_logical :: ldist, lmd, lpreco, lmhpc
+    aster_logical :: ldist, lmd, lpreco, lmhpc, lbloc
     real(kind=8) :: epsmat
     character(len=1) :: type
     character(len=5) :: klag2
@@ -85,8 +87,8 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     integer :: nsmdi, jsmhc, nsmhc, jdelg, n, n1, nz, nvale, jvale
     integer :: nlong, jvale2, nzloc, kterm, iterm, ifm, niv, k, ieq1, ieq2
     integer :: sym, iret, jcoll, iligl, jnulogl, ltot, iok, iok2, coltmp
-    integer :: kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2
-    integer :: nfilt3, isizemu, nsizemu, rang, esizemu, jpddl, jdeeq
+    integer :: kzero, ibid, ifiltr, vali(2), nbproc, nfilt1, nfilt2, nblk
+    integer :: nfilt3, isizemu, nsizemu, rang, esizemu, jpddl, jdeeq, iblock
     integer :: nuno1, nuno2, procol, prolig, jnugll,jrefn,nucmp1,nucmp2,jmlogl
     mumps_int :: nbeq, nz2, iligg, jcolg
     character(len=4) :: etam
@@ -96,17 +98,20 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
     character(len=14) :: nonu
     character(len=16) :: k16bid, nomcmd
     character(len=19) :: nomat, nosolv
-    character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu
+    character(len=24) :: kfiltr, kpiv, kpiv2, ksizemu, kblock
     real(kind=8) :: raux, rfiltr, epsmac, rmax, rmin, rtest
     complex(kind=8) :: caux
     aster_logical :: lmnsy, ltypr, lnn, lfiltr, lspd, eli2lg, lsimpl, lcmde
-    aster_logical :: lgive,ldebug
+    aster_logical :: lgive,ldebug, lvbloc
     integer, pointer :: smdi(:) => null()
     integer, pointer :: nequ(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
     call infdbg('SOLVEUR',ifm, niv)
+! pour forcer le mode VERBOSE de l'option bloc de MUMPS
+    lvbloc=.true.
+    lvbloc=.false.
 !
 !       ------------------------------------------------
 !        INITS
@@ -233,6 +238,74 @@ subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
 ! --- CALCUL DE N
         n=nsmdi
 !
+! --- GESTION DES BLOCS POUR ANALYSE (A PARTIR DE 5.4Consortium)
+      if ((lbloc).and.(rang.eq.0)) then
+        call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
+        if (lvbloc) then
+! pour monitoring bloc
+          do k=1,n
+            write(ifm,*)'k=',k,' deeq=',zi(jdeeq+2*(k-1)),zi(jdeeq+2*(k-1)+1)
+          enddo
+        endif
+        kblock='&&AMUMPM.BLOCKS'
+        call wkvect(kblock, 'V V I', n, iblock)
+        call vecint(n, -1, zi(iblock))
+        nblk=1
+        ! premier bloc
+        zi(iblock+nblk-1)=1
+        do k=2,n
+          if (zi(jdeeq+2*(k-1)).gt.0) then
+            if (zi(jdeeq+2*(k-1)).eq.zi(jdeeq+2*(k-2))) then
+              ! on ne fait rien, element du meme bloc, ddl physique ou Lagrange
+            else
+              ! nouveau bloc
+              nblk=nblk+1
+              zi(iblock+nblk-1)=k
+            endif
+          else
+              ! nouveau bloc: lagrange pour CL egalite
+            nblk=nblk+1
+            zi(iblock+nblk-1)=k
+          endif
+        enddo
+! pour marquer la fin des blocs
+        zi(iblock+nblk)=n+1
+
+        if (lvbloc) then
+! pour monitoring bloc
+          write(ifm,*)'n/nblock=',n,nblk
+          do k=1,nblk+1
+            write(ifm,*)'block=',k,' valeur=',zi(iblock+k-1)
+          enddo
+        endif
+        if (type .eq. 'S') then
+          allocate(smpsk%blkptr(nblk+1))
+          smpsk%nblk=nblk
+          do k=1,nblk+1
+            smpsk%blkptr(k)=zi(iblock+k-1)
+          enddo
+        else if (type.eq.'C') then
+          allocate(cmpsk%blkptr(nblk+1))
+          cmpsk%nblk=nblk
+          do k=1,nblk+1
+            cmpsk%blkptr(k)=zi(iblock+k-1)
+          enddo
+        else if (type.eq.'D') then
+          allocate(dmpsk%blkptr(nblk+1))
+          dmpsk%nblk=nblk
+          do k=1,nblk+1
+            dmpsk%blkptr(k)=zi(iblock+k-1)
+          enddo
+        else if (type.eq.'Z') then
+          allocate(zmpsk%blkptr(nblk+1))
+          zmpsk%nblk=nblk
+          do k=1,nblk+1
+            zmpsk%blkptr(k)=zi(iblock+k-1)
+          enddo
+        endif
+        call jedetr(kblock)
+      endif
+
 ! --- GESTION ELIM_LAGR='LAGR2'
 ! --- on a essaye une basule automatique ELIM_LAGR='LAGR2'/'NON'
 ! --- en fonction de la proportion de lagranges. en fait, 'LAGR2'

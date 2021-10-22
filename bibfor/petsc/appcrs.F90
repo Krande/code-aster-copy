@@ -54,7 +54,7 @@ use petsc_data_module
 !     VARIABLES LOCALES
     integer :: rang, nbproc
     integer :: jslvk, jslvr, jslvi, jnequ, jnequl, jprddl, jcoll, nloc
-    integer :: niremp, nsmdi, pcpiv
+    integer :: niremp, nsmdi, pcpiv, redmpi
     mpi_int :: mpicou
 !
     character(len=24) :: precon, usersm, renum
@@ -153,6 +153,7 @@ use petsc_data_module
         usersm = zk24(jslvk-1+9)
         blreps = zr(jslvr-1+4)
         renum = zk24(jslvk-1+4)
+        redmpi = zi(jslvi-1+1)
         if ( precon == 'LDLT_SP' ) then
            prec='S'
         else if ( precon == 'LDLT_DP' ) then
@@ -163,7 +164,7 @@ use petsc_data_module
         else
            rank='L'
         endif
-        call crsvfm(spsomu, nomat, prec, rank, pcpiv, usersm, blreps, renum )
+        call crsvfm(spsomu, nomat, prec, rank, pcpiv, usersm, blreps, renum, redmpi )
 !        CREATION DES VECTEURS TEMPORAIRES UTILISES DANS LDLT_SP
         if (lmd.or.lmhpc) then
             if (lmd) then

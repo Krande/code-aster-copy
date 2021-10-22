@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     character(len=19) :: k19b
     character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximc, eximod
-    integer :: iexi
+    integer :: iexi, redmpi
     aster_logical :: ldgrel
     character(len=8), pointer :: vpartit(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
@@ -217,6 +217,10 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     ASSERT(ibid.eq.1)
     call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
     ASSERT(ibid.eq.1)
+    call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
+! --- CAR ABSENT DU CATALOGUE POUR LE CALCUL MODAL: SCHEMA PARALLELE EMBOITE DEJA PRESENT
+! --- POUR CES OPERATEURS
+!    ASSERT(ibid.eq.1)
 !
     ktypp='SANS'
     eximc=getexm(motfac,'POSTTRAITEMENTS')
@@ -272,7 +276,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     slvi(4) = -9999
     slvi(5) = -9999
     slvi(6) = 1
-    slvi(7) = -9999
+    slvi(7) = redmpi
     slvi(8) = 0
 !
     call jedema()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -178,9 +178,9 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
 # ------------------------------------
 MODI_MODELE(reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE='MAIL_DISPERSE'))
 RESU2=STAT_NON_LINE(MODELE=MO,
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,ACCELERATION='FR++',
                    GESTION_MEMOIRE='AUTO'),
-                   CHAM_MATER=CH_MATER, INFO=1,
+                   CHAM_MATER=CH_MATER, INFO=2,INFO_DBG='SOLVEUR',
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),
@@ -211,9 +211,9 @@ TEST_RESU(RESU=(_F(GROUP_NO='C',
 #  3 : MUMPS (distribue par sous-domaines)
 # ------------------------------------------
 RESU3=STAT_NON_LINE(MODELE=MO,
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN', RESI_RELA=1.E-8,ACCELERATION='LR++',
                    GESTION_MEMOIRE='AUTO'),
-                   CHAM_MATER=CH_MATER, INFO=1,
+                   CHAM_MATER=CH_MATER, INFO=2,INFO_DBG='SOLVEUR',
                    EXCIT=(  _F(CHARGE=SYMETRI2)),
                    COMPORTEMENT=_F(RELATION='ELAS'),
                    INCREMENT=_F(LIST_INST=INSTANTS),

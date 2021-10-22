@@ -93,7 +93,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
     character(len=24) :: kmonit(12), k24aux, kvers, k24bid, posttrait
     real(kind=8) :: epsmax, valr(2), rctdeb, rbid(1), temps(6), epsmat
     aster_logical :: lquali, ldist, lresol, lmd, lbid, lpreco, lbis, lpb13, ldet
-    aster_logical :: lopfac, lmhpc
+    aster_logical :: lopfac, lmhpc, lbloc
     real(kind=8), pointer :: slvr(:) => null()
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -127,6 +127,9 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
     call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
     call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
+!
+! --- ANALYSE PAR BLOCS
+    lbloc=((slvk(5)(1:4).eq.'FR++').or.(slvk(5)(1:4).eq.'LR++'))
 !
 ! --- L'UTILISATEUR VEUT-IL UNE ESTIMATION DE LA QUALITE DE LA SOL ?
 ! --- => LQUALI
@@ -198,7 +201,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !       ------------------------------------------------
 !        INITIALISATION DE L'OCCURENCE MUMPS KXMPS:
 !       ------------------------------------------------
-        call amumpi(0, lquali, ldist, kxmps, type, lmhpc)
+        call amumpi(0, lquali, ldist, kxmps, type, lmhpc, lbid)
         call cmumps(cmpsk)
         rang=cmpsk%myid
         nbproc=cmpsk%nprocs
@@ -206,7 +209,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
 !       --------------------------------------------------------------
-        call amumpi(2, lquali, ldist, kxmps, type, lmhpc)
+        call amumpi(2, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !
 !       ----------------------------------------------------------
 !        ON RECUPERE ET STOCKE DS SD_SOLVEUR LE NUMERO DE VERSION
@@ -238,7 +241,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
                     rctdeb, ldist)
         call amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                     klag2, type, lmd, epsmat, ktypr,&
-                    lpreco, lmhpc)
+                    lpreco, lmhpc, lbloc)
 !
 !       -----------------------------------------------------
 !       CONSERVE-T-ON LES FACTEURS OU NON ?
@@ -485,7 +488,7 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (SOLVE):
 !       --------------------------------------------------------------
-        call amumpi(3, lquali, ldist, kxmps, type, lmhpc)
+        call amumpi(3, lquali, ldist, kxmps, type, lmhpc, lbid)
 !
 !       ------------------------------------------------
 !        RESOLUTION MUMPS :
@@ -566,6 +569,9 @@ subroutine amumpc(action, kxmps, csolu, vcine, nbsol,&
                     deallocate(cmpsk%irn,stat=ibid)
                     deallocate(cmpsk%jcn,stat=ibid)
                 endif
+            endif
+            if ((rang.eq.0).and.(lbloc)) then
+              deallocate(cmpsk%blkptr,stat=ibid)
             endif
             etams(kxmps)=' '
             nonus(kxmps)=' '

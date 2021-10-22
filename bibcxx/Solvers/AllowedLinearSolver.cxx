@@ -37,8 +37,8 @@ const char *IterativeSolverAlgorithmNames[nbIterativeSolverAlgorithms] = {"CG", 
 const char *LagrangeTreatmentNames[nbLagrangeTreatments] = {"OUI", "NON", "LAGR2"};
 const char *MemoryManagementNames[nbMemoryManagements] = {"IN_CORE", "OUT_OF_CORE", "AUTO", "EVAL"};
 const char *MumpsPostTreatmentNames[nbMumpsPostTreatments] = {"SANS", "AUTO", "FORCE", "MINI"};
-const char *MumpsAccelerationNames[nbMumpsAcceleration] = {"AUTO", "FR", "FR+", "LR", "LR+"};
-
+const char *MumpsAccelerationNames[nbMumpsAcceleration] = {"AUTO", "FR", "FR+", "FR++", "LR", 
+                                                           "LR+","LR++"};
 const Renumbering MultFrontRenumbering[nbRenumberingMultFront] = {MD, MDA, Metis};
 
 const Renumbering LdltRenumbering[nbRenumberingLdlt] = {RCMK, Sans};

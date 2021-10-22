@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 interface
     subroutine amumpm(ldist, kxmps, kmonit, impr, ifmump,&
                       klag2, type, lmd, epsmat, ktypr,&
-                      lpreco, lmhpc)
+                      lpreco, lmhpc, lbloc)
         aster_logical :: ldist
         integer :: kxmps
         character(len=24) :: kmonit(12)
@@ -35,5 +35,6 @@ interface
         character(len=8) :: ktypr
         aster_logical :: lpreco
         aster_logical :: lmhpc
+        aster_logical :: lbloc
     end subroutine amumpm
 end interface

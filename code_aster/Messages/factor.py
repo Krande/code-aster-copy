@@ -143,6 +143,12 @@ Conseils :
 le découpage du pas de temps.
 """),
 
+    47: _("""
+Solveur MUMPS :
+  Valeur de REDUCTION_MPI invalide car elle n'est pas un diviseur du nombre de processus MPI. Cette option a donc été désactivée.
+  Votre calcul risque juste d'être ralenti.
+"""),
+
     48: _("""
 Solveur MUMPS :
   Une option d'accélération non disponible avec cette version de MUMPS a été activée.
@@ -150,6 +156,11 @@ Solveur MUMPS :
   Votre calcul risque juste d'être ralenti.
 """),
 
+    49: _("""
+Solveur MUMPS :
+  Option REDUCTION_MPI non disponible avec cette version de MUMPS. Elle a donc été désactivée.
+  Votre calcul risque juste d'être ralenti.
+"""),
 
     50: _("""
 Solveur MUMPS :

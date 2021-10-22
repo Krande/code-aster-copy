@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer ::   iterpr, reacpr, pcpiv,  iret
+    integer ::   iterpr, reacpr, pcpiv,  iret, redmpi
     aster_logical :: new_facto_loc
     complex(kind=8) :: cbid
     character(len=19) :: solveu, matass
@@ -68,6 +68,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
     call jeveuo(solveu//'.SLVR', 'L', vr=slvr)
+    redmpi=slvi(1)
     precon = slvk(2)
     renum = slvk(4)
     usersm = slvk(9)
@@ -85,7 +86,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 ! --  CAR DEJA FAIT DANS APETSC
     if (slvk(1) .ne. 'PETSC') then
         call jeveuo(matass//'.REFA', 'L', vk24=refa)
- !       ASSERT(refa(3).ne.'ELIMF')
+!       ASSERT(refa(3).ne.'ELIMF')
         if (refa(3) .eq. 'ELIML') call mtmchc(matass, 'ELIMF')
         ASSERT(refa(3).ne.'ELIML')
     endif
@@ -104,7 +105,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
         rank='L'
     endif 
     solvbd = slvk(3)
-    call crsvfm(solvbd, matass, prec, rank, pcpiv, usersm, blreps, renum )
+    call crsvfm(solvbd, matass, prec, rank, pcpiv, usersm, blreps, renum, redmpi )
 !
 ! --  APPEL AU PRECONDITIONNEUR
     iret = 0

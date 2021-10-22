@@ -148,8 +148,8 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !            = 'OUI_NOSOLVE' IDEM CI-DESSUS SANS RESOUDRE AFIN
 !               DE GAGNER DU TEMPS. LE CALCUL S'ARRETE EN UTMESS_F EN
 !              FIN D'ECRITURE DU RHS. ON N'ECRIT PAS DE SOLUTION
-    impr='OUI_SOLVE'
-    impr='OUI_NOSOLVE'
+!    impr='OUI_SOLVE'
+!    impr='OUI_NOSOLVE'
     impr='NON'
     ifmump=17
 ! --- FIN BLOC PARAMETRE DEVELOPPEUR

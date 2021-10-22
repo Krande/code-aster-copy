@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,7 +91,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
 ! -----------------------------------------------------------------
     real(kind=8) :: zero, bnorm, anorm, epsix, anormx, rrri, gama, rrrim1
     real(kind=8) :: paraaf, anorxx, rau, valr(2), blreps
-    integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali, pcpiv
+    integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali, pcpiv, redmpi
     character(len=24) :: precon, solvbd, usersm, renum
     character :: prec, rank
     character(len=3) :: mathpc
@@ -133,6 +133,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
     call jeveuo(solveu//'.SLVR', 'L', vr=slvr)
+    redmpi=slvi(1)
     precon=slvk(2)
     usersm=slvk(9)
     pcpiv=slvi(7)
@@ -150,7 +151,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
        rank='L'
     endif
     if (( precon == 'LDLT_SP' ).or.( precon == 'LDLT_DP' )) then
-        call crsvfm(solvbd, matas,prec, rank, pcpiv, usersm, blreps, renum )
+        call crsvfm(solvbd, matas,prec, rank, pcpiv, usersm, blreps, renum, redmpi )
     endif
 !-----Pour tenir compte de la renumerotation de la matrice de preconditionnement (LDLT):
     if (precon .eq. 'LDLT_INC') then

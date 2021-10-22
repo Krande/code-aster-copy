@@ -97,7 +97,7 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
     character(len=24) :: vcival, nonulg
-    aster_logical :: ltypr
+    aster_logical :: ltypr, lverif
     aster_logical, parameter :: l_debug = ASTER_FALSE
     real(kind=8) :: rr4max, raux, rmin, rmax, rtest, valr(2)
     complex(kind=8) :: cbid, caux
@@ -114,6 +114,9 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
 !-----------------------------------------------------------------------
     call jemarq()
     call infdbg('SOLVEUR',ifm, niv)
+! pour verifier la norme de la solution produite
+    lverif=.true.
+    lverif=.false.
 !
 !     ------------------------------------------------
 !     INITS
@@ -582,6 +585,19 @@ subroutine amumpp(option, nbsol, kxmps, ldist, type,&
         endif
 !
 !       -- IMPRESSION DU/DES SOLUTIONS (SI DEMANDE) :
+        if ((lverif).and.(rang .eq. 0)) then
+          raux=0.d0
+          if (ltypr) then
+            do k = 1, nnbsol
+              raux=raux+abs(rsolu2(k))
+            enddo
+          else
+            do k = 1, nnbsol
+              raux=raux+abs(csolu2(k))
+            enddo
+          endif
+          write(ifm,*) 'NORME L1 MUMPS SOLUTION=',raux
+        endif
         if (impr(1:9) .eq. 'OUI_SOLVE') then
             if (rang .eq. 0) then
                 if (ltypr) then

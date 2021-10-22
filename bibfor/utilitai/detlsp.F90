@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine detlsp(matasz, solvez)
 !
     character(len=19) :: solveu, matass
     character(len=24) :: metres, precon, solvbd, usersmbd, renumbd
-    integer ::  iret, pcpivbd
+    integer ::  iret, pcpivbd, ibid
     real(kind=8) :: r8bid, blrepsbd
     complex(kind=8) :: c16bid
     character(len=24), pointer :: slvk(:) => null()
@@ -71,7 +71,7 @@ subroutine detlsp(matasz, solvez)
             precbd = 'S'
             rankbd='F'
             renumbd='XXXXX' 
-            call crsvfm(solvbd, matass, precbd, rankbd,pcpivbd, usersmbd, blrepsbd, renumbd )
+            call crsvfm(solvbd, matass, precbd, rankbd,pcpivbd, usersmbd, blrepsbd, renumbd, ibid)
             call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid],&
                         ' ', 0, iret, .true._1)
             call detrsd('SOLVEUR', solvbd)

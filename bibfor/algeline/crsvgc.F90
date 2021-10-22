@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine crsvgc(motfac, solveu, kellag )
 !
 !
 !
-    integer :: ibid,    nmaxit, niremp, reacpr, pcpiv
+    integer :: ibid,    nmaxit, niremp, reacpr, pcpiv, redmpi
     real(kind=8) :: resire, blreps
     character(len=8) :: precon
     character(len=19) :: solvbd
@@ -86,6 +86,11 @@ subroutine crsvgc(motfac, solveu, kellag )
         ASSERT(ibid.eq.1)
         call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
         ASSERT(ibid.eq.1)
+        call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
+! --- AU CAS OU MEME SI SOLVEUR PAS CONSEILLE DANS CE CAS DE FIGURE
+! --- CAR ABSENT DU CATALOGUE POUR LE CALCUL MODAL: SCHEMA PARALLELE EMBOITE DEJA PRESENT
+! --- POUR CES OPERATEURS
+!    ASSERT(ibid.eq.1)
 !
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
@@ -125,7 +130,7 @@ subroutine crsvgc(motfac, solveu, kellag )
     slvr(4) = blreps
     slvr(5) = 0.d0
 !
-    slvi(1) = -9999
+    slvi(1) = redmpi
     slvi(2) = nmaxit
     slvi(3) = -9999
     slvi(4) = niremp
