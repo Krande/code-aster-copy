@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,8 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
 !
     real(kind=8) :: swm, slw, slwm, sl2wm, sl2bwm, snt, maxr, maxm
     real(kind=8) :: valr
-    integer :: i, itp, ir
+    integer :: i, itp, ir, vali
+    character(len=4) :: valk
 !
 !     ----------------------------------------------------------------
 !
@@ -74,6 +75,11 @@ subroutine fcweib(nrupt, cals, sk, sigw, nur,&
 !
     do 10 i = 1, nrupt
 !
+        if (sigw(i) .eq. 0.d0) then
+            vali = i
+            valk = 'SIGW'
+            call utmess('F', 'UTILITAI8_25', si=vali, sk=valk)
+        endif    
         if (cals) then
             slw = slw + (log ( sigw(i)/sk(1) ) ) * ( 1.d0-(sigw(i)/ sk(1))**m)
             sl2bwm = sl2bwm + (&
