@@ -30,13 +30,13 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 CREA_GROUP_NO=_F(GROUP_MA=('L14','L43','L32','L21'),),)
 
 MOD_MECA=AFFE_MODELE(AFFE=(
-_F(TOUT='OUI',
+                          _F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
                              MODELISATION=('D_PLAN',),),
-_F(TOUT='OUI',
+                          _F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
                              MODELISATION=('D_PLAN_SI'),),
-),
+                             ),
                      MAILLAGE=MAIL,)
 
 
@@ -50,26 +50,18 @@ ECR=DEFI_FONCTION(PROL_GAUCHE='LINEAIRE',
                   1.0,2025.5,1.5,2370.5856,2.0,2650.525),
                   PROL_DROITE='LINEAIRE',)
 
-ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
-                            E=2.E5,),
-                    ROUSSELIER=_F(PORO_INIT=1.E-4,
-                                  D_SIGM_EPSI_NORM=1.0,
-                                  PORO_CRIT=1.0,
-                                  D=2.0,
-                                  SIGM_1=600.0,
-                                  PORO_ACCE=1.0,),
-                    TRACTION=_F(SIGM=ECR,),)
+# modèle de Maxwell repose sur deux paramètres
 
-ACIER_N=DEFI_MATERIAU(ELAS=_F(NU=0.3,
-                            E=2.E5,),
-                    ROUSSELIER=_F(PORO_INIT=1.E-4,
-                                  D_SIGM_EPSI_NORM=1.0,
-                                  PORO_CRIT=1.0,
-                                  D=2.0,
-                                  SIGM_1=600.0,
-                                   AN =0.6,
-                                  PORO_ACCE=1.0,),
-                    TRACTION=_F(SIGM=ECR,),)
+# rigidité k (Pa) : rigidité apparente (k+écrouissage négatif) soit toujours positive
+# si k pas assez grand, on peut se trouver dans la situation où il n'y aurait pas de solution
+k = 2.E5
+# temps caractéristique tau (s) : il faut estimer la vitesse de déformation. tau doit être 
+# petit (1 à 10 %) devant le temps pour traverser le domaine élastique à cette vitesse. 
+# sigma_elas = 27 MPa, E=2.e5 MPa => epsi_elas = 27/2.e5 = 1.35e-4 
+# l_init = 10mm => l_elas = 1.35e-4 * 10 =1.35e-3 mm
+# dep_imposé = 10 mm pendant 10s => 10% de l_elas => 1.35e-4 s
+tau = 1.e-4
+
 
 ACIER_V=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                             E=2.E5,),
@@ -82,15 +74,9 @@ ACIER_V=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                     VISC_SINH=_F(SIGM_0=27.0,
                                   EPSI_0=1.E-2,
                                   M=2.,),
+                    VISC_ELAS= _F( K = k, TAU = tau,),
                     TRACTION=_F(SIGM=ECR,),)
 
-CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
-                               TOUT='OUI',),
-                       MAILLAGE=MAIL,)
-
-CHMAT_N=AFFE_MATERIAU(AFFE=_F(MATER=ACIER_N,
-                               TOUT='OUI',),
-                       MAILLAGE=MAIL,)
 
 CHMAT_V=AFFE_MATERIAU(AFFE=_F(MATER=ACIER_V,
                                TOUT='OUI',),
@@ -101,6 +87,7 @@ DY_T=DEFI_FONCTION(PROL_GAUCHE='CONSTANT',
                    VALE=(0.0,0.0,10.0,10.0),
                    PROL_DROITE='CONSTANT',)
 
+
 LINST=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1.0,
                                     NOMBRE=4,),
                                  _F(JUSQU_A=5.0,
@@ -109,6 +96,34 @@ LINST=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1.0,
                                     NOMBRE=40,),),
                      DEBUT=0.0,)
 
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LINST ),
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_PAS     = 4,
+                                 SUBD_PAS_MINI=1.E-06,
+                                ),)
+
+
+
+LINSTVV=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=0.0001,
+                                    NOMBRE=2,),
+                                 _F(JUSQU_A=1.0,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=5.0,
+                                    NOMBRE=80,),
+                                 _F(JUSQU_A=10.0,
+                                    NOMBRE=80,),),
+                     DEBUT=0.0,)
+
+
+
+DEFLISTVV =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LINSTVV ),
+                        ECHEC=_F(ACTION='DECOUPE',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_PAS     = 4,
+                                 SUBD_PAS_MINI=1.E-06,
+                                ),)
 
 COND_LIM=AFFE_CHAR_MECA(MODELE=MOD_MECA,
                         DDL_IMPO=(_F(DX=0.0,
@@ -120,52 +135,9 @@ CHAR=AFFE_CHAR_MECA_F(MODELE=MOD_MECA,
                       DDL_IMPO=_F(DY=DY_T,
                                   GROUP_NO='L32',),)
 
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LINST ),
-                        ECHEC=_F(ACTION='DECOUPE',
-                                 SUBD_METHODE='MANUEL',
-                                 SUBD_PAS     = 4,
-                                 SUBD_PAS_MINI=1.E-06,
-                                ),)
 
-
-RESU=STAT_NON_LINE(CHAM_MATER=CHMAT,
-                       MODELE=MOD_MECA,SOLVEUR=_F(METHODE='MULT_FRONT'),
-                       CONVERGENCE=_F(ITER_GLOB_MAXI=400,
-                                      RESI_GLOB_RELA=1.E-06),
-                       COMPORTEMENT=_F(TOUT='OUI',
-                                    ITER_INTE_MAXI=500,
-                                    ITER_INTE_PAS=-90,
-                                    RELATION='ROUSS_PR',
-                                    DEFORMATION='PETIT_REAC',),
-                       INCREMENT=_F(
-                                    LIST_INST=DEFLIST,),
-                      RECH_LINEAIRE=_F(
-                                    ITER_LINE_MAXI=4,),
-                       NEWTON=_F(REAC_ITER=1,
-                                MATRICE='ELASTIQUE',
-                                 REAC_INCR=1,),
-                       EXCIT=(_F(CHARGE=COND_LIM,),
-                              _F(CHARGE=CHAR,),),)
-
-RESU_N=STAT_NON_LINE(INFO=1,
-                       CHAM_MATER=CHMAT_N,
-                       MODELE=MOD_MECA, SOLVEUR=_F(METHODE='MULT_FRONT'),
-                       CONVERGENCE=_F(ITER_GLOB_MAXI=300,
-                                      RESI_GLOB_MAXI=1.E-06),
-                       COMPORTEMENT=_F(TOUT='OUI',
-                                    ITER_INTE_MAXI=400,
-                                    ITER_INTE_PAS=-90,
-                                    RELATION='ROUSS_PR',
-                                    DEFORMATION='PETIT_REAC',),
-                       INCREMENT=_F(LIST_INST=DEFLIST,
-                                                ),
-                       NEWTON=_F(REAC_ITER=1,
-                                 MATRICE='ELASTIQUE',
-                                 REAC_INCR=1,),
-                       EXCIT=(_F(CHARGE=COND_LIM,),
-                              _F(CHARGE=CHAR,),),)
-
-RESU_V=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
+# avec REGU_VISC
+RESU_VV=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
                        MODELE=MOD_MECA,SOLVEUR=_F(METHODE='MULT_FRONT'),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=30,
                                       RESI_GLOB_MAXI=1.E-06),
@@ -173,9 +145,10 @@ RESU_V=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
                                     ITER_INTE_MAXI=400,
                                     ITER_INTE_PAS=-90,
                                     RELATION='ROUSS_VISC',
+                                    REGU_VISC      = 'OUI',
                                     DEFORMATION='PETIT_REAC',),
                        INCREMENT=_F(
-                                    LIST_INST=DEFLIST,),
+                                    LIST_INST=DEFLISTVV,),
                         RECH_LINEAIRE=_F(
                                     ITER_LINE_MAXI=3,),
                        NEWTON=_F(REAC_ITER=1,
@@ -184,33 +157,16 @@ RESU_V=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
                        EXCIT=(_F(CHARGE=COND_LIM,),
                               _F(CHARGE=CHAR,),),)
 
-TEST_RESU(RESU=_F(INST=10.0,
-                  POINT=1,
-                  RESULTAT=RESU,
-                  NOM_CHAM='VARI_ELGA',
-                  NOM_CMP='V2',
-                  VALE_CALC=0.0325757279754,
-                  TOLE_MACHINE=2.e-3,
-                  GROUP_MA='M1',),
-          )
 
-TEST_RESU(RESU=_F(INST=10.0,
-                  POINT=1,
-                  RESULTAT=RESU_N,
-                  NOM_CHAM='VARI_ELGA',
-                  NOM_CMP='V2',
-                  VALE_CALC=0.390580425916,
-                  GROUP_MA='M1',),
-          )
 
+# avec REGU_VISC
 TEST_RESU(RESU=_F(INST=10.0,
                   POINT=1,
-                  RESULTAT=RESU_V,
+                  RESULTAT=RESU_VV,
                   NOM_CHAM='VARI_ELGA',
                   NOM_CMP='V2',
                   VALE_CALC=0.0333521964551,
-                  TOLE_MACHINE=2.e-3,
-                  GROUP_MA='M1',),
-          )
+                  TOLE_MACHINE=(4.e-3, 1.e-4),  # pour VALE_CALC, puis INST
+                  GROUP_MA='M1',),)
 
 FIN()
