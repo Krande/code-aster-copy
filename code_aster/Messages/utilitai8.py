@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -138,6 +138,12 @@ Contactez le support technique.
  Le champ demandé est incompatible avec le type de résultat
   type de résultat : %(k1)s
       nom du champ : %(k2)s
+"""),
+
+    25 : _("""
+ La contrainte WEIBULL %(k1)s(%(i1)d) est nulle. Plus de détail avec INFO=2.
+ Conseil : Vérifiez vos résultats d'entrée pour RECA_WEIBULL.
+ Plus de détail sur le modèle WEIBULL dans R7.02.09.
 """),
 
     27 : _("""
