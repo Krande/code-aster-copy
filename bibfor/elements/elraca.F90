@@ -209,37 +209,35 @@ character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
 
         case('PY5')
             nbfpg = 7
-            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 27, 10]
-            fapg(1) = 'NOEU'
-            fapg(2) = 'NOEU_S'
-            fapg(3) = 'FPG1'
-            fapg(4) = 'FPG5'
-            fapg(5) = 'FPG6'
-            fapg(6) = 'FPG27'
-            fapg(7) = 'FPG5NOS'
-
-        case('P13')
-            nbfpg = 8
-            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 27, 10]
+            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 10]
             fapg(1) = 'NOEU'
             fapg(2) = 'NOEU_S'
             fapg(3) = 'FPG1'
             fapg(4) = 'FPG5'
             fapg(5) = 'FPG6'
             fapg(6) = 'FPG10'
-            fapg(7) = 'FPG27'
-            fapg(8) = 'FPG5NOS'
+            fapg(7) = 'FPG5NOS'
 
-        case('P19')
+        case('P13')
             nbfpg = 7
-            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 27, 10]
+            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10, 10]
             fapg(1) = 'NOEU'
             fapg(2) = 'NOEU_S'
             fapg(3) = 'FPG1'
             fapg(4) = 'FPG5'
             fapg(5) = 'FPG6'
-            fapg(6) = 'FPG27'
+            fapg(6) = 'FPG10'
             fapg(7) = 'FPG5NOS'
+
+        case('P19')
+            nbfpg = 6
+            nbpg(1:nbfpg) = [nno, nnos, 1, 5, 6, 10]
+            fapg(1) = 'NOEU'
+            fapg(2) = 'NOEU_S'
+            fapg(3) = 'FPG1'
+            fapg(4) = 'FPG5'
+            fapg(5) = 'FPG6'
+            fapg(6) = 'FPG5NOS'
 
         case('TR3')
             nbfpg = 13

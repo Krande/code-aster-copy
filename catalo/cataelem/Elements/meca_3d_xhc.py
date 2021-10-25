@@ -797,7 +797,7 @@ class MECA_XHC_PYRAM13(TemplateElement):
             SetOfNodes('EN2', (6,7,8,9,10,11,12,13,)),
         )
     elrefe =(
-            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG27','NOEU=NOEU','XFEM=XFEM180','FPG1=FPG1',), mater=('RIGI','XFEM',),),
+            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG10','NOEU=NOEU','XFEM=XFEM180','FPG1=FPG1',), mater=('RIGI','XFEM',),),
             ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','NOEU=NOEU',),),
             ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),

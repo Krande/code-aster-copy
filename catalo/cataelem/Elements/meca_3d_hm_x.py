@@ -493,9 +493,9 @@ class HM_PYRAM13_XH(HM_HEXA20_XH):
     elrefe = (
         ElrefeLoc(
             MT.P13, gauss=(
-                'RIGI=FPG27', 'MASS=FPG27', 'XFEM=XFEM180', 'FPG1=FPG1',), mater=('XFEM',),),
+                'RIGI=FPG10', 'MASS=FPG10', 'XFEM=XFEM180', 'FPG1=FPG1',), mater=('XFEM',),),
         ElrefeLoc(MT.T10, gauss = ('XINT=FPG15', 'NOEU=NOEU',),),
-        ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG27', 'MASS=FPG27',),),
+        ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG10', 'MASS=FPG10',),),
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(
             MT.TR6, gauss = (

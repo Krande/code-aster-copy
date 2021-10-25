@@ -502,9 +502,9 @@ class HM_PYRAM13(HM_HEXA20):
         SetOfNodes('EN1', (1, 2, 3, 4, 5,)),
     )
     elrefe = (
-        ElrefeLoc(MT.P13, gauss=('RIGI=FPG27', 'MASS=FPG27',
+        ElrefeLoc(MT.P13, gauss=('RIGI=FPG10', 'MASS=FPG10',
                                  'FPG1=FPG1', 'NOEU=NOEU',), mater=('RIGI', 'FPG1',),),
-        ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG27',),),
+        ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG10',),),
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
         ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
     )
@@ -573,7 +573,7 @@ class HM_PYRAM13M(HM_HEXA20):
         SetOfNodes('EN1', (1, 2, 3, 4, 5,)),
     )
     elrefe = (
-        ElrefeLoc(MT.P13, gauss=('RIGI=FPG27', 'MASS=FPG27',
+        ElrefeLoc(MT.P13, gauss=('RIGI=FPG10', 'MASS=FPG10',
                                  'FPG1=FPG1', 'NOEU=NOEU',), mater=('RIGI', 'FPG1',),),
         ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG5',),),
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
@@ -644,7 +644,7 @@ class HM_PYRAM13D(HM_HEXA20):
         SetOfNodes('EN1', (1, 2, 3, 4, 5,)),
     )
     elrefe = (
-        ElrefeLoc(MT.P13, gauss=('RIGI=FPG27', 'MASS=FPG27',
+        ElrefeLoc(MT.P13, gauss=('RIGI=FPG10', 'MASS=FPG10',
                                  'FPG1=FPG1', 'NOEU=NOEU',), mater=('RIGI', 'FPG1',),),
         ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG5',),),
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
@@ -722,7 +722,7 @@ class HM_PYRAM13S(HM_HEXA20):
         SetOfNodes('EN1', (1, 2, 3, 4, 5,)),
     )
     elrefe = (
-        ElrefeLoc(MT.P13, gauss=('RIGI=FPG27', 'MASS=FPG27',
+        ElrefeLoc(MT.P13, gauss=('RIGI=FPG10', 'MASS=FPG10',
                                  'FPG1=FPG1', 'NOEU=NOEU',), mater=('RIGI', 'FPG1',),),
         ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG5',),),
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),

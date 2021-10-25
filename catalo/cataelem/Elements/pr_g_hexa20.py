@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,7 @@ class PR_G_PYRAM13(PR_G_HEXA20):
     """Please document this element"""
     meshType = MT.PYRAM13
     elrefe =(
-            ElrefeLoc(MT.P13, gauss = ('NOEU=NOEU','RIGI=FPG27',),),
+            ElrefeLoc(MT.P13, gauss = ('NOEU=NOEU','RIGI=FPG10',),),
         )
 
 

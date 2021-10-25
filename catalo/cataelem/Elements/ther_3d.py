@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -415,7 +415,7 @@ class THER_PYRAM13(THER_HEXA20):
     """Please document this element"""
     meshType = MT.PYRAM13
     elrefe =(
-            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG27','FPG1=FPG1','MASS=FPG27',), mater=('FPG1',),),
+            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG10','FPG1=FPG1','MASS=FPG10',), mater=('FPG1',),),
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','MASS=FPG9',),),
             ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','MASS=FPG6',),),
         )

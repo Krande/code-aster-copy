@@ -1254,7 +1254,7 @@ class MECA_PYRAM13(MECA_HEXA20):
             SetOfNodes('EN1', (1,2,3,4,5,6,7,8,9,10,11,12,13,)),
         )
     elrefe =(
-            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG10','FPG1=FPG1','MASS=FPG27','NOEU=NOEU','MTGA=FPG27',), mater=('RIGI','MASS','NOEU','FPG1','MTGA',),),
+            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG10','FPG1=FPG1','MASS=FPG10','NOEU=NOEU','MTGA=FPG10',), mater=('RIGI','MASS','NOEU','FPG1','MTGA',),),
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','MASS=FPG9','NOEU=NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','MASS=FPG6','NOEU=NOEU',),),
         )

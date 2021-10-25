@@ -175,7 +175,7 @@ class MEFL_PYRAM13PSI(MEFL_HEXA20PSI):
     """Element for fluid (U,PSI) - 3D - On P13"""
     meshType = MT.PYRAM13
     elrefe =(
-            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG27','FPG1=FPG1',), mater=('FPG1',),),
+            ElrefeLoc(MT.P13, gauss = ('RIGI=FPG10','FPG1=FPG1',), mater=('FPG1',),),
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
             ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6',),),
     )
