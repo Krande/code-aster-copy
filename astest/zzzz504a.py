@@ -58,10 +58,14 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
 DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
 
 pMesh2.printMedFile("/tmp/zzzz504a_new_1.med", False)
+os.system('rm /tmp/zzzz504a_new_1.med')
 
 # print sepated file
 pMesh2.printMedFile("/tmp/zzzz504a_%d.med"%rank, True)
+os.system('rm /tmp/zzzz504a_%d.med'%rank)
+
 pMesh2.printMedFile("/tmp/zzzz504a_%d_0.med"%rank)
+os.system('rm /tmp/zzzz504a_%d_0.med'%rank)
 
 model = AFFE_MODELE(MAILLAGE = pMesh2,
                     AFFE = _F(MODELISATION = "D_PLAN",
@@ -104,9 +108,11 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
 
 # print single file
 resu.printMedFile("/tmp/resu_new.med", False)
+os.system('rm /tmp/resu_new.med')
 
 # print multiple files
 resu.printMedFile("/tmp/resu_new_%d.med"%rank, True)
+os.system('rm /tmp/resu_new_%d.med'%rank)
 
 #if (parallel):
    #rank = MPI.COMM_WORLD.Get_rank()
@@ -147,7 +153,6 @@ if parallel:
 else:
     test.assertAlmostEqual(sfon.getValue(6, 0), 0.0)
 
-MyFieldOnNodes.printMedFile("/tmp/fieldOnNodes.med", False)
 
 
 FIN()

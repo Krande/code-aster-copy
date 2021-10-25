@@ -20,6 +20,8 @@
 import code_aster
 from code_aster.Commands import *
 from code_aster import MPI
+import os
+
 
 
 code_aster.init("--test")
@@ -108,6 +110,7 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           UNITE=81)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=81)
+os.system('rm /tmp/resu_no.med')
 
 DEFI_FICHIER( UNITE=82, FICHIER='/tmp/resu_ma.med', TYPE='BINARY',)
 
@@ -118,6 +121,7 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           UNITE=82)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=82)
+os.system('rm /tmp/resu_ma.med')
 
 # load result in sequential
 
@@ -165,6 +169,7 @@ resu_std = LIRE_RESU(MODELE=model_std,
                  TOUT_ORDRE="OUI")
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+os.system('rm /tmp/resu.med')
 
 
 SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 0)

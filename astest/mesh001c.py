@@ -18,6 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
+import os
 
 from code_aster.Commands import LIRE_MAILLAGE, DEFI_GROUP, RECU_TABLE
 
@@ -65,10 +66,12 @@ test.assertTrue( pmesh.hasGroupOfNodes("TOUT"))
 
 pmesh.printMedFile("mesh_%d.med"%rank)
 pmesh.printMedFile("/tmp/mesh.med", False)
+os.system('rm /tmp/mesh.med')
 
 pmesh2 = code_aster.ParallelMesh()
 pmesh2.readMedFile("mesh_%d.med"%rank, True)
 pmesh2.printMedFile("/tmp/mesh2.med", False)
+os.system('rm /tmp/mesh2.med')
 
 #test global numbering of nodes
 nodes_gnum = pmesh.getNodes(localNumbering=False)

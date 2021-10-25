@@ -17,6 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os 
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
@@ -169,6 +171,7 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           VERSION_MED='4.1.0')
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=87)
+os.system('rm /tmp/resu.med')
 
 
 TEST_RESU(
