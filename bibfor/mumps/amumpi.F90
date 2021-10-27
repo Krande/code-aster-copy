@@ -211,7 +211,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type, lmhpc, lbloc)
         endif
 ! SI 1 SEUL MPI PAS D'OPTION REDUCTION_MPI
         if (nbproc<2) then
-          redmpi=0
+          redmpi=-9999
         endif
 !
 ! ---     INIT

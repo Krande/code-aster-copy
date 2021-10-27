@@ -86,11 +86,9 @@ subroutine crsvgc(motfac, solveu, kellag )
         ASSERT(ibid.eq.1)
         call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
         ASSERT(ibid.eq.1)
-        call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
-! --- AU CAS OU MEME SI SOLVEUR PAS CONSEILLE DANS CE CAS DE FIGURE
-! --- CAR ABSENT DU CATALOGUE POUR LE CALCUL MODAL: SCHEMA PARALLELE EMBOITE DEJA PRESENT
-! --- POUR CES OPERATEURS
-!    ASSERT(ibid.eq.1)
+        redmpi=-9999
+! a finir de tester avant restitution
+!        call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
 !
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
