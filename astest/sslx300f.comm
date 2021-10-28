@@ -612,17 +612,17 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=tab3,
            FILTRE=(
                    _F(NOM_PARA='CMP',
-                     VALE_K='DY',),
+                     VALE_K='DX',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAXI_ABS',),
                   ),)
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= 75000.00,
+           VALE_CALC= 2.40001E+07,
            NOM_PARA='VALE',
            TABLE=tab3,
            FILTRE=(
                    _F(NOM_PARA='CMP',
-                     VALE_K='DY',),
+                     VALE_K='DX',),
                    _F(NOM_PARA='EXTREMA',
                      VALE_K='MAXI_ABS',),
                   ),)
