@@ -31,7 +31,7 @@ import tempfile
 from glob import glob
 from subprocess import PIPE, run
 
-from .command_files import add_import_commands, stop_at_end
+from .command_files import add_import_commands, stop_at_end, file_changed
 from .config import CFG
 from .export import Export
 from .logger import WARNING, logger
@@ -458,9 +458,12 @@ def change_comm_file(comm, interact=False, wrkdir=None, show=False):
     text = add_import_commands(text_init)
     if interact:
         text = stop_at_end(text)
+    changed = text.strip() != text_init.strip()
+    if changed:
+        text = file_changed(text, comm)
     if show:
         logger.info(f"\nContent of the file to execute:\n{text}\n")
-    if text.strip() == text_init.strip():
+    if not changed:
         return comm
 
     filename = osp.join(wrkdir or ".", osp.basename(comm) + ".changed.py")

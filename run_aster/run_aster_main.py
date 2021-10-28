@@ -288,7 +288,7 @@ def main(argv=None):
     if CFG.get("parallel", 0):
         procid = get_procid()
 
-    direct = osp.splitext(args.file)[-1] in (".py", ".comm")
+    direct = args.file and osp.splitext(args.file)[-1] in (".py", ".comm")
     export = Export(
         args.file if not direct else None,
         " ",

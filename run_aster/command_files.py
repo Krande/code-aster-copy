@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -92,3 +92,20 @@ code.interact(local=locals(),
 \g<cmd>"""
     text = refin.sub(subst, text)
     return text
+
+
+def file_changed(text, original):
+    """Additional modifications when the command file was changed.
+
+    Arguments:
+        text (str): Text of a command file.
+        original (str): Path of original file.
+
+    Returns:
+        str: Changed content.
+    """
+    add = f"""# original filename
+__file__ = "{original}"
+
+"""
+    return add + text
