@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -224,16 +224,16 @@ subroutine xtopoc(modele, decou)
     lpaout(7) = 'PHEAVFA'
     lchout(7) = champ(7)
 !
-    if (debug) then
-        call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-                    nbout, lpaout, lchout)
-    endif
-!
     call calcul('C', option, ligrel, nbin, lchin,&
                 lpain, nbout, lchout, lpaout, 'G',&
                 'OUI')
 !
-    call detrsd('CHAM_ELEM_S', chdec)
+    if (debug) then
+       call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
+            nbout, lpaout, lchout)
+    endif
+!
+    call detrsd('CHAM_ELEM', chdec)
 !
     call jedema()
 end subroutine

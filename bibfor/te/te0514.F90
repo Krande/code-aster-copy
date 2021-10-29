@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine te0514(option, nomte)
     integer, dimension(:), allocatable :: ndoubl, ndoub2, ndoub3
 
     parameter(cridist=1.d-9)
-    aster_logical :: deja, ajn, cut, lconnec_ok, pre1, jonc
+    aster_logical :: deja, ajn, cut, lconnec_ok, pre1, jonc, condition_joncno
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/
 !......................................................................
@@ -155,8 +155,9 @@ subroutine te0514(option, nomte)
 !   Le modèle est-il HM-XFEM
     call teattr('C', 'HYDR1', enr2, iret)
     pre1 = (enr2.eq.'1' .or. enr2.eq.'2' )
+    condition_joncno = (pre1.and.(enr(1:4).eq.'XH2C'.or.enr(1:4).eq.'XH3C'))
     joncno = 1
-    if (pre1 .and.(enr(1:4).eq.'XH2C'.or.enr(1:4).eq.'XH3C')) then
+    if (condition_joncno) then
        call jevech('PJONCNO', 'E', joncno)
        do i = 1, 20
           zi(joncno-1+i) = 0
@@ -256,7 +257,7 @@ subroutine te0514(option, nomte)
                             igeom, pinter, ninter, npts, ainter,&
                             pmilie, nmilie, nmfis, nmil, txlsn,&
                             zr(jpintt), zr(jpmilt), ifiss, nfiss,&
-                            fisc, nfisc, cut, coupe, iexit, joncno)
+                            fisc, nfisc, cut, coupe, iexit, joncno, condition_joncno)
                 if (iexit(1).eq.1) goto 73
 !
                 call xdecqv(nnose, it, zi(jcnset), zi(jheavt), zr(jlsn), igeom,&
@@ -467,7 +468,7 @@ subroutine te0514(option, nomte)
     do i = 1, 8
        jonact(i)=0
     end do
-    if (pre1 .and. (enr(1:4).eq.'XH2C'.or.enr(1:4).eq.'XH3C')) then
+    if (condition_joncno) then
        do i = 1, nnos
           if (zi(joncno-1+i).eq.1) jonc=.true.
        end do

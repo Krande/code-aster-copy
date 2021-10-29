@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                   igeom, pinter, ninter, npts, ainter,&
                   pmilie, nmilie, mfis, tx, txlsn,&
                   pintt, pmitt, ifiss, nfiss, fisco, &
-                  nfisc, cut, coupe, exit, joncno)
+                  nfisc, cut, coupe, exit, joncno, condition_joncno)
     implicit none
 !
 #include "asterf_types.h"
@@ -93,7 +93,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     integer :: ntm, inm, nptm, nnop, nnops, inter
     integer :: zxain, mxstac
     character(len=8) :: typma, elrese(3), elrefp
-    aster_logical :: papillon, ajout, jonc, najonc, nbjonc
+    aster_logical :: papillon, ajout, jonc, najonc, nbjonc, condition_joncno
 !
     parameter       (ptmax=6)
     parameter       (mxstac=1000)
@@ -293,7 +293,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                     enddo
                 endif
 !
-                if (nfiss.ge.2 .and. nfisc.ge.1) then
+                if (condition_joncno .and. nfiss.ge.2 .and. nfisc.ge.1) then
                    call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
                                txlsn, n=na, c=a)
                 endif
@@ -322,7 +322,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                     enddo
                 endif
 !
-                if (nfiss.ge.2 .and. nfisc.ge.1) then
+                if (condition_joncno .and. nfiss.ge.2 .and. nfisc.ge.1) then
                    call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
                                txlsn, n=nb, c=b)
                 endif
@@ -374,7 +374,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                     endif
                 endif
 !
-                if (nfiss.ge.2 .and. nfisc.ge.1) then
+                if (condition_joncno .and. nfiss.ge.2 .and. nfisc.ge.1) then
                    call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
                                txlsn, n=nm, c=m)
                 endif
@@ -408,7 +408,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                       else
                          if (zr(jlsn-1+(nb-1)*nfiss+fisco(2*i-1)).eq.0.d0) nbjonc=.true.
                       endif
-                      if (najonc.and.nbjonc) then
+                      if (condition_joncno.and.najonc.and.nbjonc) then
                          call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
                                      txlsn, c=cref)
 !           IL S'AGIT D'UN POINT DE JONCTION DE FISSURE, ON LE MARQUE AVEC UN ALPHA EGAL A -1
