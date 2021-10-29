@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       igeom, pinter, ninter, npts, ainter,&
                       pmilie, nmilie, mfis, tx, txlsn,&
                       pintt, pmitt, ifiss, nfiss, fisco,&
-                      nfisc, cut, coupe, exit, joncno)
+                      nfisc, cut, coupe, exit, joncno, condition_joncno)
         integer :: ndim
         integer :: nnose
         integer :: it
@@ -49,5 +49,6 @@ interface
         integer :: coupe(nfiss)
         integer :: exit(2)
         integer :: joncno
+        aster_logical :: condition_joncno
     end subroutine xdecqu
 end interface
