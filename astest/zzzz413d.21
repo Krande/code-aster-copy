@@ -1,0 +1,26 @@
+TITRE
+%  Manual Mesh :)
+FINSF
+%
+COOR_3D
+N11        1.00  1.00  1.00
+N12        1.10  1.00  1.10
+N13        1.20  1.00  1.20
+N14        1.00  1.10  1.00
+N15        1.10  1.10  1.10
+N16        1.20  1.10  1.20
+FINSF
+%
+TRIA3
+MT1       N11  N15  N14
+MT2       N11  N12  N15
+MT3       N12  N13  N15
+MT4       N13  N16  N15
+FINSF
+%
+GROUP_MA
+TRIAN
+MT1  MT2  MT3  MT4
+FINSF
+%
+FIN

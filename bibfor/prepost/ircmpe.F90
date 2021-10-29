@@ -32,7 +32,6 @@ implicit none
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
-#include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/infniv.h"
@@ -63,44 +62,45 @@ character(len=16), intent(in) :: field_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     ENTREES :
-!       NOFIMD : NOM DU FICHIER MED
-!       NCMPVE : NOMBRE DE COMPOSANTES VALIDES EN ECRITURE
-!       NUMCMP : NUMEROS DES COMPOSANTES VALIDES
-!       EXICMP : EXISTENCE DES COMPOSANTES PAR MAILLES
-!       NBVATO : NOMBRE DE VALEURS TOTALES
-!       NBMAEC : NOMBRE D'ENTITES A ECRIRE (O, SI TOUTES)
-!       LIMAEC : LISTE DES ENTITES A ECRIRE SI EXTRAIT
-!       ADSK, D, ... : ADRESSES DES TABLEAUX DES CHAMPS SIMPLIFIES
-!       TYPMAI : TYPE ASTER POUR CHAQUE MAILLE
-!       TYEFMA : NRO D'ELEMENT FINI OU DE MAILLE ASSOCIE A CHAQUE MAILLE
-!       TYPGEO : TYPE GEOMETRIQUE DE MAILLE ASSOCIEE AU TYPE ASTER
-!       NOMTYP : NOM DES TYPES DE MAILLES ASTER
-!       PROREC : PROFIL RECIPROQUE. AUXILIAIRE.
-! In  field_type       : type of field (symbolic name in result datastructure)
-!     SORTIES :
+!   ENTREES :
+!       NOFIMD      : NOM DU FICHIER MED
+!       NCMPVE      : NOMBRE DE COMPOSANTES VALIDES EN ECRITURE
+!       NUMCMP      : NUMEROS DES COMPOSANTES VALIDES
+!       EXICMP      : EXISTENCE DES COMPOSANTES PAR MAILLES
+!       NBVATO      : NOMBRE DE VALEURS TOTALES
+!       NBMAEC      : NOMBRE D'ENTITES A ECRIRE (O, SI TOUTES)
+!       LIMAEC      : LISTE DES ENTITES A ECRIRE SI EXTRAIT
+!       ADSD,ADSL   : ADRESSES DES TABLEAUX DES CHAMPS SIMPLIFIES
+!       TYPMAI      : TYPE ASTER POUR CHAQUE MAILLE
+!       TYEFMA      : NRO D'ELEMENT FINI OU DE MAILLE ASSOCIE A CHAQUE MAILLE
+!       TYPGEO      : TYPE GEOMETRIQUE DE MAILLE ASSOCIEE AU TYPE ASTER
+!       NOMTYP      : NOM DES TYPES DE MAILLES ASTER
+!       PROREC      : PROFIL RECIPROQUE. AUXILIAIRE.
+!       field_type  : type of field (symbolic name in result datastructure)
+!
+!   SORTIES :
 !       NBIMPR : NOMBRE D'IMPRESSIONS
 !       NCAIMI : STRUCTURE ASSOCIEE AU TABLEAU CAIMPI
-!         CAIMPI : ENTIERS POUR CHAQUE IMPRESSION
-!                  CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
-!                  CAIMPI(2,I) = NOMBRE DE POINTS (GAUSS OU NOEUDS)
-!                  CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
-!                  CAIMPI(4,I) = NOMBRE DE COUCHES
-!                  CAIMPI(5,I) = NOMBRE DE SECTEURS
-!                  CAIMPI(6,I) = NOMBRE DE FIBTRES
-!                  CAIMPI(7,I) = NOMBRE DE MAILLES A ECRIRE
-!                  CAIMPI(8,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
-!                  CAIMPI(9,I) = TYPE GEOMETRIQUE AU SENS MED
-!                  CAIMPI(10,I) = NOMBRE TOTAL DE MAILLES IDENTIQUES
+!               CAIMPI : ENTIERS POUR CHAQUE IMPRESSION
+!                   CAIMPI(1,I) = TYPE D'EF / MAILLE ASTER (0, SI NOEUD)
+!                   CAIMPI(2,I) = NOMBRE DE POINTS (GAUSS OU NOEUDS)
+!                   CAIMPI(3,I) = NOMBRE DE SOUS-POINTS
+!                   CAIMPI(4,I) = NOMBRE DE COUCHES
+!                   CAIMPI(5,I) = NOMBRE DE SECTEURS
+!                   CAIMPI(6,I) = NOMBRE DE FIBTRES
+!                   CAIMPI(7,I) = NOMBRE DE MAILLES A ECRIRE
+!                   CAIMPI(8,I) = TYPE DE MAILLES ASTER (0, SI NOEUD)
+!                   CAIMPI(9,I) = TYPE GEOMETRIQUE AU SENS MED
+!                   CAIMPI(10,I) = NOMBRE TOTAL DE MAILLES IDENTIQUES
 !       NCAIMK : STRUCTURE ASSOCIEE AU TABLEAU CAIMPK
-!         CAIMPK : CARACTERES POUR CHAQUE IMPRESSION
-!                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
-!                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
-!                  CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
-!       PROFAS : PROFIL ASTER. C'EST LA LISTE DES NUMEROS ASTER DES
-!                ELEMENTS POUR LESQUELS LE CHAMP EST DEFINI
-!       PROMED : PROFIL MED. C'EST LA LISTE DES NUMEROS MED DES
-!                ELEMENTS POUR LESQUELS LE CHAMP EST DEFINI
+!               CAIMPK : CARACTERES POUR CHAQUE IMPRESSION
+!                   CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
+!                   CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
+!                   CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
+!       PROFAS : PROFIL ASTER.
+!                C'EST LA LISTE DES NUMEROS ASTER DES ELEMENTS POUR LESQUELS LE CHAMP EST DEFINI
+!       PROMED : PROFIL MED.
+!                C'EST LA LISTE DES NUMEROS MED DES ELEMENTS POUR LESQUELS LE CHAMP EST DEFINI
 !       NROIMP : NUMERO DE L'IMPRESSION ASSOCIEE A CHAQUE MAILLE
 !
 ! --------------------------------------------------------------------------------------------------
@@ -128,24 +128,21 @@ character(len=16), intent(in) :: field_type
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
-!
+    !
     nmaty0(:) = 0
-!
+    !
     if (niv .ge. 2) then
         call cpu_time(start_time)
         write (ifm,805) 'DEBUT DE IRCMPE'
     endif
-!
-!====
-! 2. ON REMPLIT UN PREMIER TABLEAU PAR MAILLE :
-!    . VRAI DES QU'UNE DES COMPOSANTES DU CHAMP EST PRESENTE SUR
-!      LA MAILLE
-!    . FAUX SINON
-!    REMARQUE : ON EXAMINE LES NCMPVE COMPOSANTES QUI SONT DEMANDEES,
-!    MAIS IL FAUT BIEN TENIR COMPTE DE LA NUMEROTATION DE REFERENCE
-!====
+    !
+    ! ON REMPLIT UN PREMIER TABLEAU PAR MAILLE :
+    !   * VRAI DES QU'UNE DES COMPOSANTES DU CHAMP EST PRESENTE SUR LA MAILLE
+    !   * FAUX SINON
+    ! REMARQUE : ON EXAMINE LES NCMPVE COMPOSANTES QUI SONT DEMANDEES,
+    !    MAIS IL FAUT BIEN TENIR COMPTE DE LA NUMEROTATION DE REFERENCE
     laux = adsd + 1
-    do i_fpg = 1 , nbvato
+    cifpg: do i_fpg = 1 , nbvato
         laux = laux + 4
         nbpg = zi(laux)
         nbsp = zi(laux+1)
@@ -157,32 +154,28 @@ character(len=16), intent(in) :: field_type
                                 nrsp, kaux, jaux)
                     if (jaux .gt. 0) then
                         exicmp(i_fpg) = .true.
-                        goto 21
+                        cycle cifpg
                     endif
                 enddo
             enddo
         enddo
-21      continue
-    end do
-!
-!====
-! 3. PROFAS : LISTE DES MAILLES POUR LESQUELS ON AURA IMPRESSION
-!    UNE MAILLE EST PRESENTE SI ET SEULEMENT SI AU MOINS UNE COMPOSANTE
-!    Y EST DEFINIE ET SI ELLE FAIT PARTIE DU FILTRAGE DEMANDE
-!====
+    enddo cifpg
+    !
+    ! PROFAS : LISTE DES MAILLES POUR LESQUELS ON AURA IMPRESSION
+    !    UNE MAILLE EST PRESENTE SI ET SEULEMENT SI AU MOINS UNE COMPOSANTE
+    !    Y EST DEFINIE ET SI ELLE FAIT PARTIE DU FILTRAGE DEMANDE
+    !
     nb_fpg = 0
     lficUniq = .false._1
     if(nosdfu.ne.' ') then
         call asmpi_info(rank = mrank, size = msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
-!
         call jeveuo(nosdfu//'.MAIL', 'L', jma)
         lficUniq = .true._1
     endif
-!
-! 3.1. ==> SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT
-!          UNE COMPOSANTE VALIDE
+    !
+    ! SANS FILTRAGE : C'EST LA LISTE DES MAILLES QUI POSSEDENT UNE COMPOSANTE VALIDE
     if(lficUniq) then
         nbmaect = nbmaec
         call asmpi_comm_vect('MPI_SUM', 'I', nbval=1, sci=nbmaect)
@@ -204,9 +197,8 @@ character(len=16), intent(in) :: field_type
                 endif
             endif
         enddo
-!
-! 3.2. ==> AVEC FILTRAGE : C'EST LA LISTE DES MAILLES REQUISES ET AVEC
-!          UNE COMPOSANTE VALIDE
+    !
+    ! AVEC FILTRAGE : C'EST LA LISTE DES MAILLES REQUISES ET AVEC UNE COMPOSANTE VALIDE
     else
         do jaux = 1 , nbmaec
             i_fpg = limaec(jaux)
@@ -223,25 +215,22 @@ character(len=16), intent(in) :: field_type
             endif
         enddo
     endif
-!
-!====
-! 4. CARACTERISATIONS DES IMPRESSIONS
-!    ON TRIE SELON DEUX CRITERES :
-!    1. LE NOMBRE DE SOUS-POINTS
-!    2. LE TYPE D'ELEMENT FINI POUR UN CHAMP ELGA, OU LE TYPE DE LA
-!       MAILLE, POUR UN AUTRE TYPE DE CHAMP. LE TABLEAU TYEFMA VAUT DONC
-!       EFMAI OU TYPMAI A L'APPEL , SELON LE TYPE DE CHAMP.
-!====
-! 4.1. ==> TABLEAU DES CARACTERISATIONS ENTIERES DES IMPRESSIONS
-!          ALLOCATION INITIALE
+    !
+    ! CARACTERISATIONS DES IMPRESSIONS
+    !   ON TRIE SELON DEUX CRITERES :
+    !       1.  LE NOMBRE DE SOUS-POINTS
+    !       2.  LE TYPE D'ELEMENT FINI POUR UN CHAMP ELGA, OU LE TYPE DE LA
+    !           MAILLE, POUR UN AUTRE TYPE DE CHAMP. LE TABLEAU TYEFMA VAUT DONC
+    !           EFMAI OU TYPMAI A L'APPEL , SELON LE TYPE DE CHAMP.
+    !
+    ! TABLEAU DES CARACTERISATIONS ENTIERES DES IMPRESSIONS ALLOCATION INITIALE
     nbimp0 = 20
     i_fpg = 10*nbimp0
     call wkvect(ncaimi, 'V V I', i_fpg, adcaii)
-!
-! 4.2. ==> PARCOURS DES MAILLES QUI PASSENT LE FILTRE
+    !
+    ! PARCOURS DES MAILLES QUI PASSENT LE FILTRE
     nbimpr = 0
-!     SI ON EST SUR UN CHAMP ELGA, LE TRI DOIT SE FAIRE SUR LES FAMILLES
-!     DE POINTS DE GAUSS
+    ! SI ON EST SUR UN CHAMP ELGA, LE TRI DOIT SE FAIRE SUR LES FAMILLES DE POINTS DE GAUSS
     if (typech(1:4) .eq. 'ELGA') then
         call celfpg(chanom, '&&IRCMPE.NOFPGMA', ibid)
         if(nb_fpg.ne.0) then
@@ -249,7 +238,7 @@ character(len=16), intent(in) :: field_type
         endif
         call jeveuo('&&IRCMPE.NOFPGMA', 'L', vk16=nofpgma)
     endif
-!
+    !
     call jeexin(sdcarm//'.CANBSP    .CESV', iret)
     exicar=.false.
     if (iret .ne. 0 .and. typech(1:4) .eq. 'ELGA') then
@@ -259,16 +248,16 @@ character(len=16), intent(in) :: field_type
         call jeveuo(sdcarm//'.CANBSP    .CESV', 'L', jcesv)
         exicar=.true.
     endif
-!
+    !
     do i_fpg = 1 , nb_fpg
         ima = profas(i_fpg)
         nrefma = tyefma(ima)
-!
+        !
         laux = adsd + 4*ima + 1
         nbpg = zi(laux)
         nbsp = zi(laux+1)
         if (typech(1:4) .eq. 'ELNO') then
-! --------- For HEXA9 (COQUE_SOLIDE element)
+            ! For HEXA9 (COQUE_SOLIDE element)
             if (nbpg .eq. 9) then
                 if (typmai(ima) .eq. MT_HEXA8) then
                     nbpg = 8
@@ -291,9 +280,8 @@ character(len=16), intent(in) :: field_type
                         nbqcou, nbtcou, nbsec, nbfib, nbgrf, nugrfi)
             if (nbfib .ne. 0) imafib = ima
         endif
-
         !
-        ! 4.2.1. ==> RECHERCHE D'UNE IMPRESSION SEMBLABLE
+        ! RECHERCHE D'UNE IMPRESSION SEMBLABLE
         do jaux = 1 , nbimpr
             if (typech(1:4) .eq. 'ELGA') then
                 ! Pour les ELGA, tri sur les familles de points de gauss
@@ -336,15 +324,15 @@ character(len=16), intent(in) :: field_type
                                 nrimpr = jaux
                                 goto 423
                             else if (okgrcq.and.(zi(kaux+3).eq.nbqcou).and. &
-                                                (zi(kaux+2).eq.nbsp)) then
-                                ! Coques ou Grilles : même nb de couche et de sous-point
+                                                (zi(kaux+2).eq.nbsp)  .and. &
+                                                (zi(kaux+1).eq.nbpg) ) then
+                                ! Coques ou Grilles : même nb de couche, de sous-point, de pt gauss
                                 !   Coques  nbsp = 3*nbqcou
                                 !   Grilles nbqcou=nbsp=1
                                 nrimpr = jaux
                                 goto 423
                             endif
                         endif
-
                     endif
                 endif
             else
@@ -356,7 +344,7 @@ character(len=16), intent(in) :: field_type
             endif
         enddo
         !
-        ! 4.2.2. ==> ON CREE UNE NOUVELLE IMPRESSION SI ON DEPASSE LA LONGUEUR RESERVEE, ON DOUBLE
+        ! ON CREE UNE NOUVELLE IMPRESSION SI ON DEPASSE LA LONGUEUR RESERVEE, ON DOUBLE
         if (nbimpr .eq. nbimp0) then
             nbimp0 = 2*nbimp0
             call juveca(ncaimi, 10*nbimp0)
@@ -420,23 +408,22 @@ character(len=16), intent(in) :: field_type
         endif
         nrimpr = nbimpr
         !
-        ! 4.2.3. ==> MEMORISATION DE L'IMPRESSION DE CETTE MAILLE
-        !            CUMUL DU NOMBRE DE MAILLES POUR CETTE IMPRESSION
+        ! MEMORISATION DE L'IMPRESSION DE LA MAILLE, CUMUL DU NOMBRE DE MAILLES POUR L'IMPRESSION
 423     continue
         !
         nroimp(ima) = nrimpr
         jaux = adcaii+10*(nrimpr-1)+6
         zi(jaux) = zi(jaux) + 1
     enddo
-!
+    !
     if (typech(1:4) .eq. 'ELGA') then
         AS_DEALLOCATE(vk16=fpg_name)
         call jedetr('&&IRCMPE.NOFPGMA')
     endif
-!
-!   Le but du bloc suivant est d'avoir les memes impressions a realiser
-!   sur tous les procs (quite à ce que certaines soient vides)
-!   Il faut donc communiquer pour savoir les impressions de chaque procs
+    !
+    ! Le but du bloc suivant est d'avoir les memes impressions a realiser
+    ! sur tous les procs (quite à ce que certaines soient vides)
+    ! Il faut donc communiquer pour savoir les impressions de chaque procs
     if(lficUniq) then
         call asmpi_comm('GET', mpicou)
         nbimprt = nbimpr
@@ -498,41 +485,35 @@ character(len=16), intent(in) :: field_type
     if ( nbimprt.eq.0 ) then
         goto 999
     endif
-!
-!====
-! 5. CONVERSION DU PROFIL EN NUMEROTATION MED
-!    PROMED : ON STOCKE LES VALEURS DES NUMEROS DES MAILLES AU SENS MED PAR TYPE DE MAILLES.
-!    IL FAUT REORDONNER LE TABLEAU PROFAS PAR IMPRESSION SUCCESSIVE :
-!    LE TABLEAU EST ORGANISE EN SOUS-TABLEAU CORRESPONDANT A CHAQUE
-!    IMPRESSION. ON REPERE CHAQUE DEBUT DE SOUS-TABLEAU AVEC ADRAUX.
-!====
-! 5.1. ==> PROREC : C'EST LA LISTE RECIPROQUE. POUR LA MAILLE NUMERO
-!                   IAUX EN NUMEROTATION ASTER, ON A SA POSITION DANS LE
-!                   TABLEAU DES VALEURS S'IL FAIT PARTIE DE LA LISTE
-!                   ET 0 SINON.
+    !
+    ! CONVERSION DU PROFIL EN NUMEROTATION MED
+    !   PROMED : ON STOCKE LES VALEURS DES NUMEROS DES MAILLES AU SENS MED PAR TYPE DE MAILLES.
+    !            IL FAUT REORDONNER LE TABLEAU PROFAS PAR IMPRESSION SUCCESSIVE :
+    !               LE TABLEAU EST ORGANISE EN SOUS-TABLEAU CORRESPONDANT A CHAQUE IMPRESSION.
+    !               ON REPERE CHAQUE DEBUT DE SOUS-TABLEAU AVEC ADRAUX.
+    !
+    !   PROREC : C'EST LA LISTE RECIPROQUE.
+    !            POUR LA MAILLE NUMERO IAUX EN NUMEROTATION ASTER, ON A SA POSITION DANS LE
+    !            TABLEAU DES VALEURS S'IL FAIT PARTIE DE LA LISTE SINON C'EST 0.
     do i_fpg = 1 , nb_fpg
         ima = profas(i_fpg)
         prorec(ima) = i_fpg
     enddo
-!
-! 5.2. ==> ADRESSES DANS LE TABLEAU PROFAS
-!          ADRAUX(IAUX) = ADRESSE DE LA FIN DE LA ZONE DE L'IMPRESSION
-!                         PRECEDENTE, IAUX-1
+    !
+    ! ADRESSES DANS LE TABLEAU PROFAS
+    !   ADRAUX(IAUX) = ADRESSE DE LA FIN DE LA ZONE DE L'IMPRESSION PRECEDENTE, IAUX-1
     adraux(1) = 0
     do i_fpg = 2 , nbimpr
         adraux(i_fpg) = adraux(i_fpg-1) + zi(adcaii+10*(i_fpg-2)+6)
     enddo
-!
-! 5.3. ==> DECOMPTE DU NOMBRE DE MAILLES PAR TYPE DE MAILLES ASTER
-!          NMATY0(IAUX) = NUMERO MED DE LA MAILLE COURANTE, DANS LA
-!                         CATEGORIE ASTER IAUX. A LA FIN, NMATY0(IAUX)
-!                         VAUT LE NOMBRE DE MAILLES PAR TYPE DE MAILLES
-!                         ASTER, POUR TOUTES LES MAILLES DU MAILLAGE
-!          ADRAUX(JAUX) = ADRESSE DANS LES TABLEAUX PROMED ET PROFAS
-!                         DE LA MAILLE COURANTE ASSOCIEE A L'IMPRESSION
-!                         NUMERO JAUX
+    !
+    ! DECOMPTE DU NOMBRE DE MAILLES PAR TYPE DE MAILLES ASTER
+    !   NMATY0(IAUX) =  NUMERO MED DE LA MAILLE COURANTE, DANS LA CATEGORIE ASTER IAUX.
+    !                   A LA FIN, NMATY0(IAUX) VAUT LE NOMBRE DE MAILLES PAR TYPE DE MAILLES ASTER,
+    !                   POUR TOUTES LES MAILLES DU MAILLAGE
+    !   ADRAUX(JAUX) =  ADRESSE DANS LES TABLEAUX PROMED ET PROFAS DE LA MAILLE COURANTE ASSOCIEE
+    !                   A L'IMPRESSION NUMERO JAUX
     do ima = 1 , nbvato
-!
         typmas = typmai(ima)
         nmaty0(typmas) = nmaty0(typmas) + 1
         if (prorec(ima) .ne. 0) then
@@ -541,50 +522,42 @@ character(len=16), intent(in) :: field_type
             promed(adraux(jaux)) = nmaty0(typmas)
             profas(adraux(jaux)) = ima
         endif
-!
     enddo
-!
-!====
-! 6. MEMORISATION DANS LES CARACTERISTIQUES DE L'IMPRESSION
-!====
-! 6.1. ==> NOMBRE DE MAILLES DU MEME TYPE
+    !
+    ! MEMORISATION DANS LES CARACTERISTIQUES DE L'IMPRESSION
+    !
+    ! NOMBRE DE MAILLES DU MEME TYPE
     do i_fpg = 1 , nbimpr
-!
         jaux = adcaii+10*(i_fpg-1)
         typmas = zi(jaux+7)
-!                  CAIMPI(10,I) = NOMBRE DE MAILLES IDENTIQUES
+        ! CAIMPI(10,I) = NOMBRE DE MAILLES IDENTIQUES
         zi(jaux+9) = nmaty0(typmas)
-!
     enddo
-!
-! 6.2. ==> CARACTERISTIQUES CARACTERES
+    !
+    !CARACTERISTIQUES CARACTERES
     i_fpg = 3*nbimpr
     call wkvect(ncaimk, 'V V K80', i_fpg, adcaik)
     do i_fpg = 1 , nbimpr
         jaux = adcaik+2*(i_fpg-1)
-!                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
+        ! CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
         zk80(jaux) = ednoga
-!                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
+        ! CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
         zk80(jaux+1) = ednopf
-!                  CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
+        ! CAIMPK(3,I) = NOM DE L'ELEMENT DE STRUCTURE
         zk80(jaux+2) = ednopf
     enddo
-!
-!====
-! 7. STOCKAGE DES EVENTUELS PROFILS DANS LE FICHIER MED
-!====
+    !
+    ! STOCKAGE DES EVENTUELS PROFILS DANS LE FICHIER MED
     kaux = 1
     if(lficUniq) then
         call jeveuo(nosdfu//'.MATY', 'L', jnbma)
     else
         jnbma = 0
     endif
-!
+    !
     do i_fpg = 1 , nbimpr
-!
         jaux = adcaii+10*(i_fpg-1)
-!
-!       SI LE NOMBRE DE MAILLES A ECRIRE EST >0
+        ! SI LE NOMBRE DE MAILLES A ECRIRE EST >0
         if (zi(jaux+6) .gt. 0 .or. lficUniq) then
             if(lficUniq) then
                 ityp = zi(jaux+7)
@@ -598,26 +571,18 @@ character(len=16), intent(in) :: field_type
                 lnbmal = (zi(jaux+6) .ne. zi(jaux+9))
                 ityp = 0
             endif
-!
-!         SI LE NOMBRE DE MAILLES A ECRIRE EST DIFFERENT
-!         DU NOMBRE TOTAL DE MAILLES DE MEME TYPE:
+            ! SI LE NOMBRE DE MAILLES A ECRIRE EST DIFFERENT
+            ! DU NOMBRE TOTAL DE MAILLES DE MEME TYPE:
             if (lnbmal) then
-                call ircmpf(nofimd, zi(jaux+6), promed(kaux), noprof, nosdfu,&
-                            1, ityp)
-!
-!                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
+                call ircmpf(nofimd, zi(jaux+6), promed(kaux), noprof, nosdfu, 1, ityp)
+                ! CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
                 zk80(adcaik+3*(i_fpg-1)+1) = noprof
             endif
-!
-!         KAUX := POINTEUR PERMETTANT DE SE PLACER DANS PROMED
-!         POUR LA PROCHAINE IMPRESSION
+            ! KAUX := POINTEUR PERMETTANT DE SE PLACER DANS PROMED POUR LA PROCHAINE IMPRESSION
             kaux = kaux + zi(jaux+6)
         endif
     enddo
-!
-!====
-! 8. LA FIN
-!====
+    !
     if (niv .ge. 2) then
         if (typech(1:4) .eq. 'ELGA') then
             write (ifm,801)
@@ -626,8 +591,9 @@ character(len=16), intent(in) :: field_type
         endif
         do i_fpg = 1 , nbimpr
             jaux = adcaii+10*(i_fpg-1)
-            if (zi(jaux+6) .gt. 0) write (ifm, 802) nomtyp(zi(jaux+7)), zi(jaux+6),&
-                                zi(jaux+1), zi(jaux+2)
+            if (zi(jaux+6) .gt. 0) then
+                write (ifm, 802) nomtyp(zi(jaux+7)), zi(jaux+6), zi(jaux+1), zi(jaux+2)
+            endif
         enddo
         write (ifm,803)
         write (ifm,805) 'FIN DE IRCMPE'
@@ -643,6 +609,7 @@ character(len=16), intent(in) :: field_type
      &/,4x,'*  MAILLE  *  VALEURS   *      POINTS       *',&
      &     '   SOUS_POINT(S)   *',/,4x,65('*'))
 805 format(/,4x,10('='),a,10('='),/)
+!
 999 continue
 !
 end subroutine

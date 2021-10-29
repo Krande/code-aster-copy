@@ -1,0 +1,140 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+MailQ=LIRE_MAILLAGE(FORMAT='ASTER',UNITE=20)
+MailT=LIRE_MAILLAGE(FORMAT='ASTER',UNITE=21)
+MailM=LIRE_MAILLAGE(FORMAT='ASTER',UNITE=22)
+
+
+# -----------------------------------------------------
+# DÉFINITION DES MODÈLES
+# -----------------------------------------------------
+ModelQ=AFFE_MODELE(MAILLAGE=MailQ,
+    AFFE = _F(GROUP_MA=('CARRE',), PHENOMENE='MECANIQUE', MODELISATION='DKT',),
+)
+
+ModelT=AFFE_MODELE(MAILLAGE=MailT,
+    AFFE = _F(GROUP_MA=('TRIAN',), PHENOMENE='MECANIQUE', MODELISATION='DKT',),
+)
+
+ModelM=AFFE_MODELE(MAILLAGE=MailM,
+    AFFE = _F(GROUP_MA=('MELAN',), PHENOMENE='MECANIQUE', MODELISATION='DKT',),
+)
+
+# -----------------------------------------------------
+# DÉFINITION DES CARACTÉRISTIQUES DES ÉLÉMENTS
+# -----------------------------------------------------
+CaelQ=AFFE_CARA_ELEM(MODELE=ModelQ,
+    COQUE = _F(GROUP_MA=('CARRE',), EPAIS= 0.1, COQUE_NCOU=3, INER_ROTA='OUI',),
+)
+
+CaelT=AFFE_CARA_ELEM(MODELE=ModelT,
+    COQUE = _F(GROUP_MA=('TRIAN',), EPAIS= 0.1, COQUE_NCOU=3, INER_ROTA='OUI',),
+)
+
+CaelM=AFFE_CARA_ELEM(MODELE=ModelM,
+    COQUE = _F(GROUP_MA=('MELAN',), EPAIS= 0.1, COQUE_NCOU=3, INER_ROTA='OUI',),
+)
+
+
+# -----------------------------------------------------
+# AFFECTATION DES CHAMPS
+# -----------------------------------------------------
+CsiefQ=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='AFFE', MODELE=ModelQ,
+    AFFE_SP=_F(CARA_ELEM=CaelQ,), PROL_ZERO='OUI',
+    AFFE=_F(GROUP_MA=('CARRE',), NOM_CMP=('SIXX','SIYY',), VALE=( 8.0, 6.0,),),
+)
+ResuQ=CREA_RESU(TYPE_RESU='EVOL_NOLI', OPERATION='AFFE', NOM_CHAM='SIEF_ELGA',
+    AFFE=_F(CHAM_GD=CsiefQ, MODELE=ModelQ, CARA_ELEM=CaelQ, INST=0.0,),
+)
+
+CsiefT=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='AFFE', MODELE=ModelT,
+    AFFE_SP=_F(CARA_ELEM=CaelT,), PROL_ZERO='OUI',
+    AFFE=_F(GROUP_MA=('TRIAN',), NOM_CMP=('SIXX','SIYY',), VALE=( 8.0, 6.0,),),
+)
+ResuT=CREA_RESU(TYPE_RESU='EVOL_NOLI', OPERATION='AFFE', NOM_CHAM='SIEF_ELGA',
+    AFFE=_F(CHAM_GD=CsiefT, MODELE=ModelT, CARA_ELEM=CaelT, INST=0.0,),
+)
+
+CsiefM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R', OPERATION='AFFE', MODELE=ModelM,
+    AFFE_SP=_F(CARA_ELEM=CaelM,), PROL_ZERO='OUI',
+    AFFE=_F(GROUP_MA=('MELAN',), NOM_CMP=('SIXX','SIYY',), VALE=( 8.0, 6.0,),),
+)
+ResuM=CREA_RESU(TYPE_RESU='EVOL_NOLI', OPERATION='AFFE', NOM_CHAM='SIEF_ELGA',
+    AFFE=_F(CHAM_GD=CsiefM, MODELE=ModelM, CARA_ELEM=CaelM, INST=0.0,),
+)
+
+
+import shutil
+from code_aster.Utilities import ExecutionParameter
+mdump = ExecutionParameter().get_option("prog:mdump3")
+
+# --------------------------------------------------------------------------------------------------
+lefic = './REPE_OUT/carre'
+unite=DEFI_FICHIER(FICHIER=lefic+'.med', ACTION='ASSOCIER', TYPE='LIBRE', ACCES='NEW')
+IMPR_RESU(FORMAT='MED', UNITE=unite, INFO=2, VERSION_MED='4.1.0',
+    RESU=_F(RESULTAT=ResuQ, CARA_ELEM=CaelQ, NOM_CHAM='SIEF_ELGA', NOM_CMP=('SIXX','SIYY',),),)
+DEFI_FICHIER(UNITE=unite, ACTION='LIBERER',)
+shutil.copy(lefic+'.med', lefic+'_save'+'.med')
+
+EXEC_LOGICIEL(
+    LOGICIEL=mdump + " {fic}_save.med NODALE FULL_INTERLACE 1 | sed '1,20d' > {fic}_dump.txt".format(fic=lefic),
+    SHELL='OUI')
+
+# --------------------------------------------------------------------------------------------------
+lefic = './REPE_OUT/trian'
+unite=DEFI_FICHIER(FICHIER=lefic+'.med', ACTION='ASSOCIER', TYPE='LIBRE', ACCES='NEW')
+IMPR_RESU(FORMAT='MED', UNITE=unite, INFO=2, VERSION_MED='4.1.0',
+    RESU=_F(RESULTAT=ResuT, CARA_ELEM=CaelT, NOM_CHAM='SIEF_ELGA', NOM_CMP=('SIXX','SIYY',),),)
+DEFI_FICHIER(UNITE=unite, ACTION='LIBERER',)
+shutil.copy(lefic+'.med', lefic+'_save'+'.med')
+
+EXEC_LOGICIEL(
+    LOGICIEL=mdump + " {fic}_save.med NODALE FULL_INTERLACE 1 | sed '1,20d' > {fic}_dump.txt".format(fic=lefic),
+    SHELL='OUI')
+
+# --------------------------------------------------------------------------------------------------
+lefic = './REPE_OUT/melan'
+unite=DEFI_FICHIER(FICHIER=lefic+'.med', ACTION='ASSOCIER', TYPE='LIBRE', ACCES='NEW')
+IMPR_RESU(FORMAT='MED', UNITE=unite, INFO=2, VERSION_MED='4.1.0',
+    RESU=_F(RESULTAT=ResuM, CARA_ELEM=CaelM, NOM_CHAM='SIEF_ELGA', NOM_CMP=('SIXX','SIYY',),),)
+DEFI_FICHIER(UNITE=unite, ACTION='LIBERER',)
+shutil.copy(lefic+'.med', lefic+'_save'+'.med')
+
+EXEC_LOGICIEL(
+    LOGICIEL=mdump + " {fic}_save.med NODALE FULL_INTERLACE 1 | sed '1,20d' > {fic}_dump.txt".format(fic=lefic),
+    SHELL='OUI')
+
+
+# Les tests fichiers : Après validation graphique des .med dans ParaVis
+lefic = './REPE_OUT/carre_dump.txt'
+nb_vale= 206; vale_calc=1042.7
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc, )
+
+lefic = './REPE_OUT/trian_dump.txt'
+nb_vale= 275; vale_calc=1549.4
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc, )
+
+lefic = './REPE_OUT/melan_dump.txt'
+nb_vale= 268; vale_calc=1312.3
+TEST_FICHIER(FICHIER=lefic, NB_VALE=nb_vale, VALE_CALC=vale_calc, )
+
+FIN()

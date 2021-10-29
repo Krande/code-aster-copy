@@ -1,0 +1,24 @@
+TITRE
+%  Manual Mesh :)
+FINSF
+%
+COOR_3D
+N01        1.00  1.00  1.00
+N02        1.10  1.00  1.10
+N03        1.20  1.00  1.20
+N04        1.00  1.10  1.00
+N05        1.10  1.10  1.10
+N06        1.20  1.10  1.20
+FINSF
+%
+QUAD4
+MQ1       N01  N02  N05  N04
+MQ2       N02  N03  N06  N05
+FINSF
+%
+GROUP_MA
+CARRE
+MQ1  MQ2
+FINSF
+%
+FIN

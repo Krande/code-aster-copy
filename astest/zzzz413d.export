@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm zzzz413d.comm        D 1
+F mmed zzzz413d.20          D 20
+F mmed zzzz413d.21          D 21
+F mmed zzzz413d.22          D 22
