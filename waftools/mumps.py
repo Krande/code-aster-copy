@@ -17,16 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os.path as osp
-import re
 from functools import partial
 from waflib import Options, Configure, Logs, Utils, Errors
 
 def options(self):
     group = self.add_option_group('Mumps library options')
-    group.add_option('--disable-mumps', action='store_false', default=None,
+    group.add_option('--disable-mumps', action='store_false',
                     dest='enable_mumps', help='Disable MUMPS support')
-    group.add_option('--enable-mumps', action='store_true', default=None,
+    group.add_option('--enable-mumps', action='store_true', default=True,
                     dest='enable_mumps', help='Force MUMPS support')
     group.add_option('--mumps-libs', type='string', dest='mumps_libs',
                     default=None,
@@ -39,12 +37,13 @@ def configure(self):
     try:
         self.env.stash()
         self.check_mumps()
-    except Errors.ConfigurationError:
+    except Errors.ConfigurationError as exc:
         self.reset_msg()
         self.env.revert()
         self.undefine('ASTER_HAVE_MUMPS')
         if self.options.enable_mumps == True:
-            raise
+            raise Errors.ConfigurationError(str(exc) + '\n' +
+                'check your environment or use --disable-mumps')
     else:
         self.define('ASTER_HAVE_MUMPS', 1)
 
@@ -120,9 +119,9 @@ int main(void){
                             mandatory=True, execute=True, define_ret=True)
         self.env['MUMPS_VERSION'] = ret
         vers = ret.replace("consortium", "")
-        if vers not in ("5.4.1", "5.2.1"):
+        if vers not in ("5.4.1", ):
             raise Errors.ConfigurationError("expected versions: {0}"
-                                            .format('5.4.1/5.2.1(consortium)'))
+                                            .format('5.4.1(consortium)'))
     except:
         if vers:
             vers = " (%s)" % self.env['MUMPS_VERSION']
