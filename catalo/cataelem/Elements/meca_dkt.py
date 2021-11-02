@@ -29,238 +29,161 @@ from cataelem.Options.options import OP
 # Modes locaux :
 #----------------
 
+CCACOQU  = LocatedComponents(phys=PHY.CACOQU, type='ELEM',
+    components=('EP', 'ALPHA', 'BETA', 'CTOR', 'EXCENT', 'INERTIE',))
 
-CCACOQU = LocatedComponents(phys=PHY.CACOQU, type='ELEM',
-                            components=(
-                                'EP', 'ALPHA', 'BETA', 'CTOR', 'EXCENT',
-                            'INERTIE',))
+CCAORIE  = LocatedComponents(phys=PHY.CAORIE, type='ELEM',
+    components=( 'ALPHA', 'BETA', 'REP', 'AXE_X', 'AXE_Y', 'AXE_Z', 'O_X', 'O_Y', 'O_Z',))
 
+ECHGREP  = LocatedComponents(phys=PHY.CHGREPER, type='ELEM',
+    components=('NATCHG', 'CMAT[9]',))
 
-CCAORIE = LocatedComponents(phys=PHY.CAORIE, type='ELEM',
-                            components=(
-                                'ALPHA', 'BETA', 'REP', 'AXE_X', 'AXE_Y',
-                            'AXE_Z', 'O_X', 'O_Y', 'O_Z',))
+NDEPLAC  = LocatedComponents(phys=PHY.DEPL_C, type='ELNO',
+    components=('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ',))
 
-
-ECHGREP = LocatedComponents(phys=PHY.CHGREPER, type='ELEM',
-                            components=('NATCHG', 'CMAT[9]',))
-
-
-NDEPLAC = LocatedComponents(phys=PHY.DEPL_C, type='ELNO',
-                            components=('DX', 'DY', 'DZ', 'DRX', 'DRY',
-                                        'DRZ',))
-
-
-NACCELR = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-                            components=('DX', 'DY', 'DZ',))
-
+NACCELR  = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
+    components=('DX', 'DY', 'DZ',))
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-                             components=('DX', 'DY', 'DZ', 'DRX', 'DRY',
-                                         'DRZ',))
+    components=('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ',))
 
+EENERR   = LocatedComponents(phys=PHY.ENER_R, type='ELEM',
+    components=('TOTALE', 'MEMBRANE', 'FLEXION', 'CISAILLE', 'COUPL_MF',))
 
-EENERR = LocatedComponents(phys=PHY.ENER_R, type='ELEM',
-                           components=('TOTALE', 'MEMBRANE', 'FLEXION', 'CISAILLE', 'COUPL_MF',))
+EENERPG  = LocatedComponents(phys=PHY.ENER_R, type='ELGA', location='RIGI',
+    components=('TOTALE', 'MEMBRANE', 'FLEXION', 'CISAILLE', 'COUPL_MF',))
 
+EENERNO  = LocatedComponents(phys=PHY.ENER_R, type='ELNO',
+    components=('TOTALE', 'MEMBRANE', 'FLEXION', 'CISAILLE', 'COUPL_MF',))
 
-EENERPG = LocatedComponents(phys=PHY.ENER_R, type='ELGA', location='RIGI',
-                            components=('TOTALE', 'MEMBRANE', 'FLEXION', 'CISAILLE', 'COUPL_MF',))
+EDEFOPC  = LocatedComponents(phys=PHY.EPSI_C, type='ELGA', location='RIGI',
+    components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ',))
 
+EDEFONC  = LocatedComponents(phys=PHY.EPSI_C, type='ELNO',
+    components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ',))
 
-EENERNO = LocatedComponents(phys=PHY.ENER_R, type='ELNO',
-                            components=('TOTALE', 'MEMBRANE', 'FLEXION', 'CISAILLE', 'COUPL_MF',))
+EDEFGPC  = LocatedComponents(phys=PHY.EPSI_C, type='ELGA', location='RIGI',
+    components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY', 'KXY', 'GAX', 'GAY',))
 
+CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+    components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY', 'KXY',))
 
-EDEFOPC = LocatedComponents(phys=PHY.EPSI_C, type='ELGA', location='RIGI',
-                            components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ',
-                                        'EPYZ',))
+CEPSINF  = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
+    components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY', 'KXY',))
 
+EDEFOPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+    components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ',))
 
-EDEFONC = LocatedComponents(phys=PHY.EPSI_C, type='ELNO',
-                            components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ',
-                                        'EPYZ',))
+EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
+    components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ',))
 
+EDEPLGA  = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='RIGI',
+    components=('DX', 'DY', 'DZ',),)
 
-EDEFGPC = LocatedComponents(phys=PHY.EPSI_C, type='ELGA', location='RIGI',
-                            components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY',
-                                        'KXY', 'GAX', 'GAY',))
+EDFVCPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+    components=('EPTHER_L',))
 
+EDFVCNO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
+    components=('EPTHER_L',))
 
-CEPSINR = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-                            components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY',
-                                        'KXY',))
+EDEFGPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
+    components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY', 'KXY', 'GAX', 'GAY',))
 
+EDEFGNO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
+    components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY', 'KXY', 'GAX', 'GAY',))
 
-CEPSINF = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
-                            components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY',
-                                        'KXY',))
+CFORCEF  = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
+    components=('FX', 'FY', 'FZ', 'MX', 'MY', 'MZ', 'REP', 'PLAN',))
 
-
-EDEFOPG = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-                            components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ',
-                                        'EPYZ',))
-
-
-EDEFONO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
-                            components=('EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ',
-                                        'EPYZ',))
-
-
-EDFVCPG = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-                            components=('EPTHER_L',))
-
-
-EDFVCNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
-                            components=('EPTHER_L',))
-
-
-EDEFGPG = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
-                            components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY',
-                                        'KXY', 'GAX', 'GAY',))
-
-
-EDEFGNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
-                            components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY',
-                                        'KXY', 'GAX', 'GAY',))
-
-
-CFORCEF = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
-                            components=('FX', 'FY', 'FZ', 'MX', 'MY',
-                                        'MZ', 'REP', 'PLAN',))
-
-
-EFORCNO = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
-                            components=('FX', 'FY', 'FZ', 'MX', 'MY',
-                                        'MZ', 'REP', 'PLAN',))
-
+EFORCNO  = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
+    components=('FX', 'FY', 'FZ', 'MX', 'MY', 'MZ', 'REP', 'PLAN',))
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
-                             components=('X', 'Y', 'Z', 'W',))
+    components=('X', 'Y', 'Z', 'W',))
 
+NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
+    components=('X', 'Y', 'Z',))
 
+CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
+    components=('INST',))
 
-
-NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
-                            components=('X', 'Y', 'Z',))
-
-
-CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
-                            components=('INST',))
-
-
-ENBSP_I = LocatedComponents(phys=PHY.NBSP_I, type='ELEM',
-                            components=('COQ_NCOU',))
+ENBSP_I  = LocatedComponents(phys=PHY.NBSP_I, type='ELEM',
+    components=('COQ_NCOU',))
 
 ENEU1_R  = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
-                             components=('X1',))
+    components=('X1',))
 
 ELNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELEM',
-                             components=('X[30]',))
-
+    components=('X[30]',))
 
 EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELGA', location='RIGI',
-                             components=('X[30]',))
-
+    components=('X[30]',))
 
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
-                             components=('X[30]',))
-
+    components=('X[30]',))
 
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='MATER',
-                             components=('X1',))
-
+    components=('X1',))
 
 ECASECT = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
-                            components=('X[16]',))
-
+    components=('X[16]',))
 
 EREFCO = LocatedComponents(phys=PHY.PREC, type='ELEM',
-                           components=('EFFORT', 'MOMENT',))
-
+    components=('EFFORT', 'MOMENT',))
 
 CPRESSF = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
-                            components=('PRES',))
-
+    components=('PRES',))
 
 CPRES_R = LocatedComponents(phys=PHY.PRES_R, type='ELEM',
-                            components=('PRES',))
+    components=('PRES',))
 
+EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
+    components=('PRES',))
 
-EPRESNO = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
-                            components=('PRES',))
+ECONTPC  = LocatedComponents(phys=PHY.SIEF_C, type='ELGA', location='RIGI',
+    components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ',))
 
-
-ECONTPC = LocatedComponents(phys=PHY.SIEF_C, type='ELGA', location='RIGI',
-                            components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ',
-                                        'SIYZ',))
-
-
-ECONTNC = LocatedComponents(phys=PHY.SIEF_C, type='ELNO',
-                            components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ',
-                                        'SIYZ',))
-
+ECONTNC  = LocatedComponents(phys=PHY.SIEF_C, type='ELNO',
+    components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ',))
 
 EEFGEPGC = LocatedComponents(phys=PHY.SIEF_C, type='ELGA', location='RIGI',
-                             components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY',
-                                         'MXY', 'QX', 'QY',))
-
+    components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY', 'MXY', 'QX', 'QY',))
 
 EEFGENOC = LocatedComponents(phys=PHY.SIEF_C, type='ELNO',
-                             components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY',
-                                         'MXY', 'QX', 'QY',))
+    components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY', 'MXY', 'QX', 'QY',))
 
+ECONTPG  = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
+    components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ',))
 
-ECONTPG = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
-                            components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ',
-                                        'SIYZ',))
+ECONTNO  = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
+    components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ',))
 
-
-ECONTNO = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
-                            components=('SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ',
-                                        'SIYZ',))
-
-
-ECOEQPG = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
-                            components=(
-                                'VMIS', 'TRESCA', 'PRIN_[3]', 'VMIS_SG', 'VECT_1_X',
-                            'VECT_1_Y', 'VECT_1_Z', 'VECT_2_X', 'VECT_2_Y', 'VECT_2_Z',
-                            'VECT_3_X', 'VECT_3_Y', 'VECT_3_Z', 'TRSIG', 'TRIAX',))
-
+ECOEQPG  = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
+    components=('VMIS', 'TRESCA', 'PRIN_[3]', 'VMIS_SG', 'VECT_1_X',
+                'VECT_1_Y', 'VECT_1_Z', 'VECT_2_X', 'VECT_2_Y', 'VECT_2_Z',
+                'VECT_3_X', 'VECT_3_Y', 'VECT_3_Z', 'TRSIG', 'TRIAX',))
 
 EEFGEPGR = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
-                             components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY',
-                                         'MXY', 'QX', 'QY',))
-
+    components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY', 'MXY', 'QX', 'QY',))
 
 EEFGENOR = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
-                             components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY',
-                                         'MXY', 'QX', 'QY',))
-
+    components=('NXX', 'NYY', 'NXY', 'MXX', 'MYY', 'MXY', 'QX', 'QY',))
 
 EGAMIMA = LocatedComponents(phys=PHY.SPMX_R, type='ELGA', location='RIGI',
-                            components=(
-                                'VAL', 'NUCOU', 'NUSECT', 'NUFIBR', 'POSIC',
-                            'POSIS',))
-
+    components=('VAL', 'NUCOU', 'NUSECT', 'NUFIBR', 'POSIC', 'POSIS',))
 
 ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
-                            components=('VARI',))
-
+    components=('VARI',))
 
 MVECTAR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NACCELR)
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-MMATUUC = ArrayOfComponents(
-    phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
+MMATUUC = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 
-MMATUUR = ArrayOfComponents(
-    phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
+MMATUUR = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
-MMATUNS = ArrayOfComponents(
-    phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
-
+MMATUNS = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 #------------------------------------------------------------
 class MEDKQU4(Element):
@@ -268,11 +191,9 @@ class MEDKQU4(Element):
     """Please document this element"""
     meshType = MT.QUAD4
     elrefe = (
-        ElrefeLoc(
-            MT.QU4, gauss=(
-                'RIGI=FPG4', 'MASS=FPG9', 'NOEU=NOEU', 'FPG1=FPG1',),
-            mater=('RIGI', 'NOEU', 'FPG1',),),
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        ElrefeLoc(MT.QU4, gauss=('RIGI=FPG4', 'MASS=FPG9', 'NOEU=NOEU', 'FPG1=FPG1',),
+                          mater=('RIGI', 'NOEU', 'FPG1',),),
+        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG2',),),
     )
     calculs = (
 
@@ -412,6 +333,12 @@ class MEDKQU4(Element):
                        (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                        (OP.DEGE_ELNO.PNBSP_I, ENBSP_I), (OP.DEGE_ELNO.PVARCPR, LC.ZVARCPG), ),
             para_out=( (SP.PDEFOGR, EDEFGNO), ),
+        ),
+
+        OP.DEPL_ELGA(te=552,
+            para_in =( (SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
+                       (OP.DEPL_ELGA.PNBSP_I, ENBSP_I), (SP.PDEPLAR, DDL_MECA),),
+            para_out=( (SP.PDEPLGA, EDEPLGA), ),
         ),
 
         OP.ECIN_ELEM(te=31,
@@ -830,15 +757,11 @@ class MEDKTR3(MEDKQU4):
     """Please document this element"""
     meshType = MT.TRIA3
     elrefe = (
-        ElrefeLoc(
-            MT.TR3, gauss=(
-                'RIGI=FPG3', 'MASS=FPG4', 'NOEU=NOEU', 'FPG1=FPG1',),
-            mater=('RIGI', 'NOEU', 'FPG1',),),
-        ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+        ElrefeLoc(MT.TR3, gauss=('RIGI=FPG3', 'MASS=FPG4', 'NOEU=NOEU', 'FPG1=FPG1',),
+                          mater=('RIGI', 'NOEU', 'FPG1',),),
+        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG2',),),
     )
 
     calculs = (
-
         OP.ACCEPTANCE(te=-1,),
-
     )

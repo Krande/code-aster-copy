@@ -191,7 +191,14 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,
 
      # Bloc non-lineaire
      b_non_lin  = BLOC(condition = """is_type("RESULTAT") in (evol_noli,)""",
-         regles=(AU_MOINS_UN ('CONTRAINTE', 'DEFORMATION', 'ENERGIE', 'CRITERES', 'VARI_INTERNE', 'PROPRIETES', 'HYDRAULIQUE', 'FORCE','CHAM_UTIL'),),
+         regles=(AU_MOINS_UN ('SOUS_POINT', 'CONTRAINTE',   'DEFORMATION', 'ENERGIE',
+                              'CRITERES',   'VARI_INTERNE', 'PROPRIETES',  'HYDRAULIQUE',
+                              'FORCE',      'CHAM_UTIL'),),
+
+         SOUS_POINT   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr=tr("Options pour le calcul de champs aux sous-points"),
+                             into=('DEPL_ELGA',),),
+
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr=tr("Options pour le calcul de contraintes et efforts generalises"),
                              into=C_NOM_CHAM_INTO(phenomene='CONTRAINTE',categorie='nonlin'),),

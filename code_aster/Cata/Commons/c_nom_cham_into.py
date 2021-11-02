@@ -317,6 +317,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  tr("Variables internes aux points de Gauss"), ),
             "VITE_ABSOLU":      ( (),
                                  tr("Vitesse absolue aux noeuds"), ),
+            "DEPL_ELGA":        ( (),
+                                 tr("Déplacements aux sous-points"), ),
         }
         d['AUTRES'] = {
             "COHE_ELEM":        ( ("nonlin", "dyna"),
@@ -360,7 +362,7 @@ class NOM_CHAM_INTO:  #COMMUN#
             "PRES":             ( (),
                                  tr("Chargement de pression"), ),
             "PRES_NOEU":        ( ("lin", "nonlin",),
-                                 tr("Pression aux noeuds"), ),                     
+                                 tr("Pression aux noeuds"), ),
             "PTOT":             ( (),
                                  tr("Pression totale de fluide en THM"), ),
             "SISE_ELNO":        ( (),

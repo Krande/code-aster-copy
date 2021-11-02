@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utpara.h"
 #include "asterfort/wkvect.h"
 !
@@ -116,7 +115,7 @@ integer, intent(in) :: nbStore
 !     ------------------------------------------------------------------
 !                      For mechanic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMeca = 125
+    integer, parameter :: nbFieldMeca = 126
     character(len=16), parameter :: fieldMeca(nbFieldMeca) = (/&
         'DEPL            ', 'VITE            ', 'ACCE            ',&
         'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ',&
@@ -165,7 +164,7 @@ integer, intent(in) :: nbStore
         'VARC_ELGA       ', 'FERRAILLAGE     ', 'EPVC_NOEU       ',&
         'EPFD_NOEU       ', 'EPFP_NOEU       ', 'PDIL_ELGA       ',&
         'MATE_ELGA       ', 'MATE_ELEM       ', 'HHO_CELL        ',&
-        'HHO_FACE        ', 'PRES_NOEU       '/)
+        'HHO_FACE        ', 'PRES_NOEU       ', 'DEPL_ELGA       '/)
 
 !     ------------------------------------------------------------------
 !                      For loads (EVOl_CHAR)
@@ -337,7 +336,7 @@ integer, intent(in) :: nbStore
             call jecroc(jexnom(resultName//'.DESC', fieldVarc(iField)))
         enddo
 !
-    elseif (resultType .eq. 'MODE_MECA') then
+    else if (resultType .eq. 'MODE_MECA') then
         nbField = nbFieldMeca
         call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
         call jeecra(resultName//'.DESC', 'DOCU', cval='MOME')
@@ -345,7 +344,7 @@ integer, intent(in) :: nbStore
             call jecroc(jexnom(resultName//'.DESC', fieldMeca(iField)))
         enddo
 !
-    elseif (resultType .eq. 'MODE_MECA_C') then
+    else if (resultType .eq. 'MODE_MECA_C') then
         nbField = nbFieldMeca
         call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
         call jeecra(resultName//'.DESC', 'DOCU', cval='MOME')
@@ -353,7 +352,7 @@ integer, intent(in) :: nbStore
             call jecroc(jexnom(resultName//'.DESC', fieldMeca(iField)))
         enddo
 !
-    elseif (resultType .eq. 'MODE_GENE') then
+    else if (resultType .eq. 'MODE_GENE') then
         nbField = nbFieldMeca
         call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
         call jeecra(resultName//'.DESC', 'DOCU', cval='MOGE')
@@ -391,7 +390,7 @@ integer, intent(in) :: nbStore
             call jecroc(jexnom(resultName//'.DESC', fieldUtil(iField)))
         enddo
 !
-    elseif (resultType .eq. 'MODE_EMPI') then
+    else if (resultType .eq. 'MODE_EMPI') then
         nbField = nbFieldRom
         call jeecra(resultName//'.DESC', 'NOMMAX', nbField)
         call jeecra(resultName//'.DESC', 'DOCU', cval='MOEM')
@@ -420,13 +419,13 @@ integer, intent(in) :: nbStore
     call jeecra(resultName//'.TACH', 'LONMAX', nbStore)
     do iField = 1, nbField
         call jecroc(jexnum(resultName//'.TACH', iField))
-    end do
+    enddo
 !
 ! - Create NOVA object (parameters)
 !
     call jelira(resultName//'.NOVA', 'NOMMAX', nbNova)
     do iNova = 1, nbNova
         call jecroc(jexnum(resultName//'.TAVA', iNova))
-    end do
+    enddo
 !
 end subroutine

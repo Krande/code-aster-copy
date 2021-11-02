@@ -33,104 +33,80 @@ from cataelem.Options.options import OP
 CCACOQU  = LocatedComponents(phys=PHY.CACOQU, type='ELEM',
     components=('SECT_L','ALPHA','BETA','DIST_N','CTOR',))
 
-
-
 NDEPLAC  = LocatedComponents(phys=PHY.DEPL_C, type='ELNO',
-    components=('DX','DY','DZ','DRX','DRY',
-          'DRZ',))
-
+    components=('DX','DY','DZ','DRX','DRY', 'DRZ',))
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('DX','DY','DZ','DRX','DRY',
-          'DRZ',))
-
+    components=('DX','DY','DZ','DRX','DRY', 'DRZ',))
 
 EENERR   = LocatedComponents(phys=PHY.ENER_R, type='ELEM',
     components=('TOTALE',))
 
-
 CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EXX',))
-
 
 CEPSINF  = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
     components=('EXX',))
 
+EDEPLGA  = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='RIGI',
+    components=('DX', 'DY', 'DZ',),)
 
 EDEFONO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EXX',))
 
-
 EDEFOPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EXX',))
-
 
 EDFVCPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EPTHER_L',))
 
-
 EDFVCNO  = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
     components=('EPTHER_L',))
-
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
     components=('X','Y','Z','W',))
 
-
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y','Z',))
 
-
-EPRESNO = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
-                            components=('PRES',))
-
+EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
+    components=('PRES',))
 
 CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
     components=('INST',))
 
-
 EGNEUT_F = LocatedComponents(phys=PHY.NEUT_F, type='ELGA', location='RIGI',
     components=('X[30]',))
-
 
 EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
     components=('X[30]',))
 
-ENBSP_I = LocatedComponents(phys=PHY.NBSP_I, type='ELEM',
-                            components=('COQ_NCOU',))
+ENBSP_I  = LocatedComponents(phys=PHY.NBSP_I, type='ELEM',
+    components=('COQ_NCOU',))
 
 EMNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='MATER',
     components=('X1',))
 
-
 EREFCO   = LocatedComponents(phys=PHY.PREC, type='ELEM',
     components=('EPSI',))
-
 
 ECONTPC  = LocatedComponents(phys=PHY.SIEF_C, type='ELGA', location='RIGI',
     components=('SIXX',))
 
-
 ECONTNC  = LocatedComponents(phys=PHY.SIEF_C, type='ELNO',
     components=('SIXX',))
-
 
 ECONTPG  = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
     components=('SIXX',))
 
-
 ECONTNO  = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
     components=('SIXX',))
 
-
 EGAMIMA  = LocatedComponents(phys=PHY.SPMX_R, type='ELGA', location='RIGI',
-    components=('VAL','NUCOU','NUSECT','NUFIBR','POSIC',
-          'POSIS',))
-
+    components=('VAL','NUCOU','NUSECT','NUFIBR','POSIC','POSIS',))
 
 ZVARIPG  = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
     components=('VARI',))
-
 
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -138,14 +114,14 @@ MMATUUC  = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 
 MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
-
 #------------------------------------------------------------
 class MEGCTR3(Element):
     """Please document this element"""
     meshType = MT.TRIA3
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','MASS=FPG3','FPG1=FPG1'), mater=('RIGI','MASS','FPG1'),),
-        )
+        ElrefeLoc(MT.TR3, gauss=('RIGI=FPG3','MASS=FPG3','FPG1=FPG1'),
+                          mater=('RIGI','MASS','FPG1'),),
+    )
     calculs = (
 
         OP.ADD_SIGM(te=581,
@@ -211,6 +187,12 @@ class MEGCTR3(Element):
         OP.COOR_ELGA_MATER(te=462,
             para_in =( (SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER), ),
             para_out=( (SP.PCOOPGM, LC.EGGEMA_R), ),
+        ),
+
+        OP.DEPL_ELGA(te=552,
+            para_in =( (SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
+                       (OP.DEPL_ELGA.PNBSP_I, ENBSP_I), (SP.PDEPLAR, DDL_MECA),),
+            para_out=( (SP.PDEPLGA, EDEPLGA), ),
         ),
 
         OP.ECIN_ELEM(te=432,
@@ -475,5 +457,6 @@ class MEGCQU4(MEGCTR3):
     """Please document this element"""
     meshType = MT.QUAD4
     elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','MASS=FPG4','FPG1=FPG1'), mater=('RIGI','MASS','FPG1'),),
-        )
+        ElrefeLoc(MT.QU4, gauss=('RIGI=FPG4','MASS=FPG4','FPG1=FPG1'),
+                          mater=('RIGI','MASS','FPG1'),),
+    )

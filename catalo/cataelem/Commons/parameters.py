@@ -1161,6 +1161,10 @@ XXXXXX = InputParameter(phys=PHY.SIEF_R, container='RESU!SIGM_ELNO!N',
 
 # Parametres 'Out' :
 # ------------------
+
+PDEPLGA = OutputParameter(phys=PHY.DEPL_R, type='ELGA',
+                          comment="""Déplacements aux sous-points""")
+
 PBIDON = OutputParameter(phys=PHY.NEUT_R, type='ELEM',
                          comment="""""")
 

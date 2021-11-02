@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -138,14 +138,12 @@ subroutine ccaccl(option, modele, mater, carael, ligrel,&
 !        ET LE BON NOMBRE DE VARIABLES INTERNES
 !     ---------------------------------------------------------------
 !
-    if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPSI_ELGA')&
-        .or. (option.eq.'EPSI_ELNO') .or. (option.eq.'SIEF_ELGA') .or.&
-        (option.eq.'SIEF_ELNO') .or. (option.eq.'SIEQ_ELGA') .or. (option.eq.'SIEQ_ELNO')&
-        .or. (option.eq.'SIGM_ELGA') .or. (option.eq.'SIGM_ELNO')&
-        .or. (option.eq.'EPVC_ELGA') .or. (option.eq.'EPVC_ELNO')&
-        .or. (option.eq.'EPME_ELGA') .or. (option.eq.'EPME_ELNO')&
-        .or. (option.eq.'EPSP_ELGA') .or. (option.eq.'EPSP_ELNO')&
-        .or. (option.eq.'VARI_ELNO')) then
+    if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPSI_ELGA') .or. &
+        (option.eq.'EPSI_ELNO') .or. (option.eq.'SIEF_ELGA') .or. (option.eq.'SIEF_ELNO') .or. &
+        (option.eq.'SIEQ_ELGA') .or. (option.eq.'SIEQ_ELNO') .or. (option.eq.'SIGM_ELGA') .or. &
+        (option.eq.'SIGM_ELNO') .or. (option.eq.'EPVC_ELGA') .or. (option.eq.'EPVC_ELNO') .or. &
+        (option.eq.'EPME_ELGA') .or. (option.eq.'EPME_ELNO') .or. (option.eq.'EPSP_ELGA') .or. &
+        (option.eq.'EPSP_ELNO') .or. (option.eq.'VARI_ELNO') .or. (option.eq.'DEPL_ELGA')) then
 !
 !       -- CONCERNANT LES VARIABLES INTERNES :
         if (option .eq. 'VARI_ELNO') then
