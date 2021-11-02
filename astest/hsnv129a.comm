@@ -141,6 +141,10 @@ U=STAT_NON_LINE(MODELE    = MOMECA,
                               REAC_ITER=0),
                 RECH_LINEAIRE=_F(RESI_LINE_RELA = 1.e-3,
                                  ITER_LINE_MAXI = 3),
+                SOLVEUR=_F(
+                   METHODE="MUMPS",
+                   POSTTRAITEMENTS="MINI",
+                ),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                ITER_GLOB_MAXI=20,),);
 
