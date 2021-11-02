@@ -799,6 +799,10 @@ class PostMissFichierTemps(PostMissFichier):
         factor = self.param['COEF_SURECH']
         coefm = self.param['COEF_MULT']
         self.L_points = int(factor * N_inst)
+        if self.param['INST_ECRI_FIN']:
+           self.L_point2 = int(self.param['INST_ECRI_FIN']/self.param['PAS_INST'])
+        else:
+           self.L_point2 = self.L_points
         self.nbr_freq = self.L_points//2 + 1
         eps = self.param['PRECISION']
         self.rho = eps**(1./(2.*N_inst))
@@ -1064,8 +1068,8 @@ class PostMissFichierTemps(PostMissFichier):
         # fmt_ligne_fin = " %13.6E" * residu
 
          txt = []
-         txt.append('%s %s' % (str(self.L_points), str(self.dt)))
-         for n in range(0, self.L_points):
+         txt.append('%s %s' % (str(self.L_point2), str(self.dt)))
+         for n in range(0, self.L_point2):
             txt.append('%s' % str(n*self.dt))
             for l in range(0, self.nrows):
                 for c in range(0, self.ncols, nb_colonne):
@@ -1077,19 +1081,19 @@ class PostMissFichierTemps(PostMissFichier):
         else:
          fid = open(self._fichier_aster(unite_type_impe), 'wb')
          lpara =[]
-         lpara.append(float(self.L_points))
+         lpara.append(float(self.L_point2))
          lpara.append(self.dt)
          lpara.append(float(self.nrows))
          print('lpara=',lpara)
          lfreq =[]
-         for n in range(0, self.L_points):
+         for n in range(0, self.L_point2):
             lfreq.append(n*self.dt)
          print('lfreq=',lfreq)
          lparaArr = NP.array(lpara)
          lfreqArr = NP.array(lfreq)
          lparaArr.tofile(fid)
          lfreqArr.tofile(fid)
-         for n in range(0, self.L_points):
+         for n in range(0, self.L_point2):
             lineArr = Zdt[:, :, n]
             lineArr.tofile(fid)
          fid.close()

@@ -147,6 +147,7 @@ CALC_MISS = MACRO(nom="CALC_MISS",
         UNITE_RESU_MASS =SIMP(statut='f',typ=UnitType(), inout='out'),
         INST_FIN       = SIMP(statut='f', typ='R', fr=tr("Instant final du calcul")),
         PAS_INST       = SIMP(statut='f', typ='R', fr=tr("Pas de temps du calcul")),
+        INST_ECRI_FIN  = SIMP(statut='f', typ='R', fr=tr("Instant final d'écriture des impédances")),
         FACTEUR_INTERPOL = SIMP(statut='f', typ='I', fr=tr("Valeur du pas d'échantillonnage et \
                                 du facteur de réduction du temps de calcul"), defaut=1, val_min=1),
         PCENT_FREQ_CALCUL = SIMP(statut='f', typ='R', fr=tr("Valeur correspondante au ratio 100*Ns/Nt, où \

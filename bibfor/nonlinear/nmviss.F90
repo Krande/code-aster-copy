@@ -29,6 +29,7 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynkk.h"
@@ -84,7 +85,7 @@ implicit none
     integer :: iordr, iarc, iarc2, iret
     integer :: id1, ifreq
     integer :: jinst, ldnew
-    integer :: nddint, unitef, nbmode, npasm, nummax
+    integer :: nddint, unitef, nbmode, npasm, nummax, nmsto
     character(len=8) :: criterion
     real(kind=8) :: precision
     real(kind=8), pointer :: vaa2(:) => null()
@@ -159,6 +160,9 @@ implicit none
     call jeveuo(tabmas, 'L', jmast)
     call jeveuo(tabamo, 'L', jamot)
 !
+    call jelira(tabrig,'LONUTI',nmsto)
+    nmsto = nmsto/(nbmode*nbmode)
+!
     instd = inst
     coef1 = (instap-instd)/pas
     coef2 = 1.d0-coef1
@@ -166,7 +170,10 @@ implicit none
     if (npasm .ne. 0 .and. npasm .lt. (nume+1-nume0)) then
         nummax = npasm
     endif
-!
+    if ((nmsto-1) .lt. nummax) then
+        nummax = (nmsto-1)
+    endif
+! 
     AS_ALLOCATE(vr=trav, size=nbmode)
     AS_ALLOCATE(vr=travd, size=nbmode)
     AS_ALLOCATE(vr=travv, size=nbmode)
