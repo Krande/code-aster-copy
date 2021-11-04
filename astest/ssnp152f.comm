@@ -233,16 +233,4 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   PRECISION=0.009,),
           )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=5,
-                  VALE_ABS='OUI',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=RESU1,
-                  NOM_CHAM='DEPL',
-                  GROUP_NO='N441',
-                  NOM_CMP='LAGS_C',
-                  VALE_CALC=9184131.429079326,
-                  VALE_REFE=9.2592592592592593E6,
-                  PRECISION=0.009,),
-          )
-
 FIN();
