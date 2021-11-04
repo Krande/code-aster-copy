@@ -28,12 +28,42 @@ import numpy
 import aster
 from libaster import FieldOnCellsReal
 
+from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
+
+
+class FieldOnCellsStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *FieldOnCells*."""
+
+    def save(self, field):
+        """Return the internal state of a *Result* to be pickled.
+
+        Arguments:
+            field (*FieldOnCells*): The *FieldOnCells* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(field)
+        self._st["model"] = field.getModel()
+        return self
+
+    def restore(self, field):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            field (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(field)
+        if self._st["model"]:
+            field.setModel(self._st["model"])
 
 
 @injector(FieldOnCellsReal)
 class ExtendedFieldOnCellsReal:
     cata_sdj = "SD.sd_champ.sd_cham_elem_class"
+    internalStateBuilder = FieldOnCellsStateBuilder
 
     def EXTR_COMP(self, comp, lgma=[], topo=0):
         """Retourne les valeurs de la composante comp du champ sur la liste

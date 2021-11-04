@@ -28,12 +28,45 @@ import numpy
 import aster
 from libaster import FieldOnNodesReal, DOFNumbering
 
+from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
+
+
+class FieldOnNodesStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *FieldOnNodes*."""
+
+    def save(self, field):
+        """Return the internal state of a *Result* to be pickled.
+
+        Arguments:
+            field (*FieldOnNodes*): The *FieldOnNodes* object to be pickled.
+
+        Returns:
+            *InternalStateBuilder*: The internal state itself.
+        """
+        super().save(field)
+        self._st["mesh"] = field.getMesh()
+        self._st["dofn"] = field.getDOFNumbering()
+        return self
+
+    def restore(self, field):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            field (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(field)
+        if self._st["mesh"]:
+            field.setMesh(self._st["mesh"])
+        if self._st["dofn"]:
+            field.setDOFNumbering(self._st["dofn"])
 
 
 @injector(FieldOnNodesReal)
 class ExtendedFieldOnNodesReal:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
+    internalStateBuilder = FieldOnNodesStateBuilder
 
     def EXTR_COMP(self, comp=' ', lgno=[], topo=0):
         """ retourne les valeurs de la composante comp du champ sur la liste
@@ -150,8 +183,6 @@ class ExtendedFieldOnNodesReal:
                         self[row-1] = val   # row are 1-based
         if assignedDOF == 0:
             raise ValueError("No bounday condition has been set - no entity handle the given degree of freedom")
-
-
 
 
 class post_comp_cham_no:
