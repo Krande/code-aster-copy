@@ -115,9 +115,6 @@ implicit none
             call rcvalb('FPG1', 1, 1, '+', zi(imate),&
                         ' ', phenom, 0, ' ', [0.d0],&
                         1, 'RHO', rho, icodre, 1)
-            if (rho(1) .le. r8prem()) then
-                call utmess('F', 'ELEMENTS5_45')
-            endif
         else
             call utmess('F', 'ELEMENTS_50')
         endif
