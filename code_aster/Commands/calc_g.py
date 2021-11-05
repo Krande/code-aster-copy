@@ -64,7 +64,6 @@ def calc_g_with_co(self, **args):
     _cham_theta_no.setMesh(args["RESULTAT"].getMesh())
     _cham_theta_no.build()
 
-
     if "CHAM_THETA" in args["THETA"]:
         # number of CHAM_THETA fields
         self.register_result(_cham_theta_no, args["THETA"]["CHAM_THETA"])
@@ -72,5 +71,6 @@ def calc_g_with_co(self, **args):
         del _cham_theta_no
 
     return _table_g
+
 
 CALC_G = UserMacro("CALC_G", calc_g_cata, calc_g_with_co)

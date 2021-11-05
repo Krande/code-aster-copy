@@ -23,7 +23,19 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-CALC_G=OPER(nom="CALC_G",op=27,sd_prod=table_container,
+
+def calcg_prod(self, THETA, **args):
+    if args.get('__all__'):
+        return ([table_container],
+                [table_container, cham_no_sdaster])
+
+    if "CHAM_THETA" in THETA and THETA["CHAM_THETA"].is_typco():
+        return [table_container, cham_no_sdaster]
+
+    return table_container
+
+
+CALC_G=OPER(nom="CALC_G", op=27, sd_prod=calcg_prod,
             fr=tr("Nouvel opérateur de calcul du taux de restitution d'énergie par la méthode theta en thermo-élasticité"
                   " et des facteurs d'intensité de contraintes."),
             reentrant='n',
