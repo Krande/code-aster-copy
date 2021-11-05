@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,6 @@ CALC_THERMECA_MULT = MACRO(
         RESU_SUPL_THER = SIMP(statut='o',typ='TXM',into=('OUI','NON')),
         b_resu_ther = BLOC(condition = "equal_to('RESU_SUPL_THER', 'OUI')",
                            fr=tr("Calcul du résultat thermique"),
-                           RESU_THER_UNIT = SIMP(statut='f',typ=evol_ther),
-                           RESU_THER = SIMP(statut='f',typ=CO))
+                           RESU_THER_UNIT = SIMP(statut='o',typ=evol_ther),
+                           RESU_THER = SIMP(statut='o',typ=CO))
 );
