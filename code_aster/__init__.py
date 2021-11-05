@@ -77,4 +77,3 @@ try:
 
 except ImportError:
     pass
-    raise

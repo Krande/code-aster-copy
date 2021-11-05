@@ -23,8 +23,7 @@
 ******************************************************
 """
 
-from libaster import PhysicalProblem
-
+from ..Objects import PhysicalProblem
 from ..Utilities import injector
 
 
