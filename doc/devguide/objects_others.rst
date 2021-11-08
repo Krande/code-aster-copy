@@ -86,10 +86,10 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.DiscreteProblem` object
+:py:class:`~code_aster.Objects.DiscreteComputation` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.DiscreteProblem
+.. autoclass:: code_aster.Objects.DiscreteComputation
    :show-inheritance:
    :members:
 
