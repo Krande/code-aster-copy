@@ -40,14 +40,51 @@ void exportDiscreteComputationToPython() {
               py::make_constructor( &initFactoryPtr< DiscreteComputation, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( "imposedDisplacement",
-              &DiscreteComputation::imposedDisplacement )
+              &DiscreteComputation::imposedDisplacement,
+                R"(
+      Return the imposed displacement assembled vector
+
+      Argument:
+      double:  current time 
+
+      Returns:
+      FieldOnNodes: imposed displacement
+        )", ( py::arg( "self" ), py::arg( "time" ) ) )
         .def( "dualReaction",
-              &DiscreteComputation::dualReaction )
+              &DiscreteComputation::dualReaction,
+               R"(
+      Return the imposed displacement assembled vector
+
+      Argument:
+      FieldOnNodes: current displacement vector
+
+      Returns:
+      FieldOnNodes: dual reaction vector (L^T*lambda)
+        )", ( py::arg( "self" ), py::arg( "disp_curr" ) ) )
         .def( "dualDisplacement",
               &DiscreteComputation::dualDisplacement,
-              computeDualizedDirichlet_overloads() )
-        .def( "neumann", &DiscreteComputation::neumann )
-        .def( "DirichletBC", &DiscreteComputation::DirichletBC )
+              computeDualizedDirichlet_overloads())
+        .def( "neumann", &DiscreteComputation::neumann,
+            R"(
+      Return the Neumann load vector
+
+      Argument:
+      std::vector: vector of times of length 3 (current time, delta_time, parameter)
+      ExternalStateVariablesBuilder: 
+
+      Returns:
+      FieldOnNodes: Neumann load vector
+        )", ( py::arg( "self" ), py::arg( "time" ), py::arg( "varCom" ) ))
+        .def( "DirichletBC", &DiscreteComputation::DirichletBC,
+           R"(
+      Return the imposed displacement vector  used to remove imposed DDL 
+
+      Argument:
+      double: current time
+
+      Returns:
+      FieldOnNodes: imposed displacement vector
+        )", ( py::arg( "self" ), py::arg( "time" ) ) )
         .def( "computeElementaryStiffnessMatrix",
               &DiscreteComputation::computeElementaryStiffnessMatrix )
         .def( "computeElementaryTangentMatrix", 
