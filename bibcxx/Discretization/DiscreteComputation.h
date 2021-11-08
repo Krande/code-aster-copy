@@ -112,7 +112,7 @@ class DiscreteComputation {
      * @return Vecteur des chargement de Neumann assemblé
      */
     FieldOnNodesRealPtr
-    Neumann( const VectorReal time,
+    neumann( const VectorReal time,
                                                   ExternalStateVariablesBuilderPtr);
 
     /**

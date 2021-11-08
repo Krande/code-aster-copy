@@ -129,7 +129,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
 };
 
 
-FieldOnNodesRealPtr DiscreteComputation::Neumann( const VectorReal time,
+FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time,
                                                      ExternalStateVariablesBuilderPtr varCom ) {
     //auto vect_elem = computeElementaryNeumannVector( time, varCom );
 

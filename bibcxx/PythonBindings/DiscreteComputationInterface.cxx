@@ -46,7 +46,7 @@ void exportDiscreteComputationToPython() {
         .def( "dualDisplacement",
               &DiscreteComputation::dualDisplacement,
               computeDualizedDirichlet_overloads() )
-        .def( "Neumann", &DiscreteComputation::Neumann )
+        .def( "neumann", &DiscreteComputation::neumann )
         .def( "DirichletBC", &DiscreteComputation::DirichletBC )
         .def( "computeElementaryStiffnessMatrix",
               &DiscreteComputation::computeElementaryStiffnessMatrix )

@@ -74,7 +74,7 @@ FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx 
     times.push_back( 0. );
 
     FieldOnNodesRealPtr chNoNeu =
-        ctx._discreteComputation->Neumann( times, ctx._varCom );
+        ctx._discreteComputation->neumann( times, ctx._varCom );
 
     //*chNoDir += *chNoLap;
     *chNoDir += *chNoNeu;
