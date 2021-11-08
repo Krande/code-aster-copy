@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist ci verification sequential
 
 F comm sdnv138c.comm D 1
-F comm sdnv138b.com1 D 1
+F comm sdnv138a.com1 D 1
 F comm sdnv138c.com2 D 1
 F mmed ssnp142c.mmed D 20
 
