@@ -72,8 +72,8 @@ charCine.build()
 
 study = code_aster.PhysicalProblem(model, affectMat)
 study.addDirichletBC(charCine)
-dProblem = code_aster.DiscreteProblem(study)
-matr_elem = dProblem.computeMechanicalStiffnessMatrix()
+dComputation = code_aster.DiscreteComputation(study)
+matr_elem = dComputation.computeMechanicalStiffnessMatrix()
 
 listLoads = study.getListOfLoads()
 

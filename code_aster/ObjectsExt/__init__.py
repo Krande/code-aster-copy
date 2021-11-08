@@ -35,7 +35,7 @@ from .constantfieldoncells_ext import ConstantFieldOnCellsReal
 from .contact_ext import Contact
 from .dirichletbc_ext import (MechanicalDirichletBC,
                               ThermalDirichletBC, AcousticDirichletBC)
-from .discreteproblem_ext import DiscreteProblem
+from .discretecomputation_ext import DiscreteComputation
 from .dofnumbering_ext import DOFNumbering
 from .dynamicmacroelement_ext import DynamicMacroElement
 from .dynamicresults_ext import TransientGeneralizedResult

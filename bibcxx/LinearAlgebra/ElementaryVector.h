@@ -151,7 +151,7 @@ class ElementaryVector : public DataStructure {
      */
     bool build();
 
-    friend class DiscreteProblem;
+    friend class DiscreteComputation;
 };
 
 /**

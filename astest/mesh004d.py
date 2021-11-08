@@ -56,7 +56,7 @@ CHT1 = AFFE_CHAR_THER(MODELE=MODT,
 # study = code_aster.PhysicalProblem(MODT, affectMat)
 # study.addDirichletBC(charCine)
 # study.addLoad(CHT1)
-# dProblem = code_aster.DiscreteProblem(study)
+# dProblem = code_aster.DiscreteComputation(study)
 
 vect_elem = CALC_VECT_ELEM(OPTION='CHAR_THER', CHARGE=CHT1)
 matr_elem = CALC_MATR_ELEM(OPTION='RIGI_THER',

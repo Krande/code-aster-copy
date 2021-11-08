@@ -26,7 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Discretization/DiscreteProblem.h"
+#include "Discretization/DiscreteComputation.h"
 #include "Solvers/LinearSolver.h"
 #include "Results/Result.h"
 #include "Loads/ListOfLoads.h"
@@ -42,7 +42,7 @@ class StaticMechanicalAlgorithm;
 class StaticMechanicalContext {
   private:
     /** @brief Problème discret */
-    DiscreteProblemPtr _discreteProblem;
+    DiscreteComputationPtr _discreteComputation;
     /** @brief Solveur linéaire */
     BaseLinearSolverPtr _linearSolver;
     /** @brief Sd de stockage des résultats */
@@ -67,22 +67,22 @@ class StaticMechanicalContext {
   public:
     /**
      * @brief Constructeur
-     * @param DiscreteProblemPtr Problème discret a résoudre par l'algo
+     * @param DiscreteComputationPtr Problème discret a résoudre par l'algo
      * @param BaseLinearSolverPtr Sovleur linéaire qui sera utilisé
      * @param ResultPtr Résultat pour le stockage des déplacements
      */
-    StaticMechanicalContext( const DiscreteProblemPtr &curPb, const BaseLinearSolverPtr linSolv,
+    StaticMechanicalContext( const DiscreteComputationPtr &curPb, const BaseLinearSolverPtr linSolv,
                              const ResultPtr container )
-        : _discreteProblem( curPb ), _linearSolver( linSolv ),
-          _listOfLoads( _discreteProblem->getPhysicalProblem()->getListOfLoads() ),
+        : _discreteComputation( curPb ), _linearSolver( linSolv ),
+          _listOfLoads( _discreteComputation->getPhysicalProblem()->getListOfLoads() ),
           _results( container ), _time( 0. ), _rank( 1 ),
           _aMatrix( new AssemblyMatrixDisplacementReal() ),
-          _isConst( _discreteProblem->getPhysicalProblem()->getCodedMaterial()->constant() ),
+          _isConst( _discreteComputation->getPhysicalProblem()->getCodedMaterial()->constant() ),
           _varCom( new ExternalStateVariablesBuilder(
-              _discreteProblem->getPhysicalProblem()->getModel(),
-              _discreteProblem->getPhysicalProblem()->getMaterialField(),
-              _discreteProblem->getPhysicalProblem()->getElementaryCharacteristics(),
-              _discreteProblem->getPhysicalProblem()->getCodedMaterial() ) ),
+              _discreteComputation->getPhysicalProblem()->getModel(),
+              _discreteComputation->getPhysicalProblem()->getMaterialField(),
+              _discreteComputation->getPhysicalProblem()->getElementaryCharacteristics(),
+              _discreteComputation->getPhysicalProblem()->getCodedMaterial() ) ),
          _timer( { {"Matrix", 0.0}, {"Rhs", 0.0}, {"Facto", 0.0}, {"Solve", 0.0}, {"Post", 0.0} })
          {};
 
@@ -106,9 +106,9 @@ class StaticMechanicalContext {
         return _timer;
     }
 
-    DiscreteProblemPtr getDiscreteProblem()
+    DiscreteComputationPtr getDiscreteComputation()
     {
-        return _discreteProblem;
+        return _discreteComputation;
     }
 
     ResultPtr getResult()

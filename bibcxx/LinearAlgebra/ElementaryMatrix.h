@@ -209,7 +209,7 @@ class ElementaryMatrix : public BaseElementaryMatrix
         return true;
     };
 
-    friend class DiscreteProblem;
+    friend class DiscreteComputation;
 };
 
 /** @typedef Definition d'une matrice élémentaire de double */

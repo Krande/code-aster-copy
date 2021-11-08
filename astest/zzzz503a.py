@@ -38,21 +38,21 @@ YOUNG = 200000.0
 POISSON = 0.3
 
 Kinv = 3.2841e-4
-Kv = 1./Kinv
+Kv = 1. / Kinv
 SY = 437.0
 Rinf = 758.0
-Qzer = 758.0-437.
+Qzer = 758.0 - 437.
 Qinf = Qzer + 100.
 b = 2.3
-C1inf = 63767.0/2.0
-C2inf = 63767.0/2.0
+C1inf = 63767.0 / 2.0
+C2inf = 63767.0 / 2.0
 Gam1 = 341.0
 Gam2 = 341.0
 C_Pa = 1.e+6
 
 acier = DEFI_MATERIAU(ELAS=_F(E=YOUNG,
-                              NU=POISSON,),
-                      VISCOCHAB=_F(K=SY*C_Pa,
+                              NU=POISSON, ),
+                      VISCOCHAB=_F(K=SY * C_Pa,
                                    B=b,
                                    MU=10,
                                    Q_M=Qinf * C_Pa,
@@ -63,7 +63,7 @@ acier = DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                    G2_0=Gam2,
                                    K_0=Kv * C_Pa,
                                    N=11,
-                                   A_K=1.,),)
+                                   A_K=1., ), )
 # acier.debugPrint(6)
 test.assertEqual(acier.getType(), "MATER_SDASTER")
 
@@ -89,13 +89,16 @@ CharMeca2.setValue(imposedPres1, "Haut")
 CharMeca2.build()
 test.assertEqual(CharMeca2.getType(), "CHAR_MECA")
 
+
 study = code_aster.PhysicalProblem(monModel, affectMat)
 study.addLoad(CharMeca1)
 study.addLoad(CharMeca2)
 listLoads = study.getListOfLoads()
-dProblem = code_aster.DiscreteProblem(study)
-vectElem = dProblem.computeElementaryMechanicalLoadsVector()
-matr_elem = dProblem.computeMechanicalStiffnessMatrix()
+study.computeDOFNumbering()
+dComputation = code_aster.DiscreteComputation(study)
+# compute Neumann
+retour = dComputation.Neumann([1, 0, 0], None)
+matr_elem = dComputation.computeMechanicalStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")
 
@@ -114,11 +117,6 @@ ccid = numeDDL.getDirichletBCDOFs()
 test.assertEqual(sum(ccid), 0)
 test.assertEqual(len(ccid), numeDDL.getNumberOfDofs())
 
-# vectElem.debugPrint(6)
-test.assertEqual(vectElem.getType(), "VECT_ELEM_DEPL_R")
-
-retour = vectElem.assembleWithLoadFunctions( numeDDL )
-
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
@@ -133,18 +131,17 @@ values, idx, jdx, neq = matrAsse.EXTR_MATR(sparse=True)
 K1 = matrAsse.EXTR_MATR()
 
 neq = K1.shape[0]
-matrAsse.setValues([0,1], [0,1], [1.,1.])
+matrAsse.setValues([0, 1], [0, 1], [1., 1.])
 K2 = matrAsse.EXTR_MATR()
 test.assertAlmostEqual(np.linalg.norm(K2), np.sqrt(2))
-
 
 matrAsse.setValues(idx.tolist(), jdx.tolist(), values.tolist())
 K3 = matrAsse.EXTR_MATR()
 test.assertEqual(np.linalg.norm(K1 - K3), 0)
 
-
 try:
     import petsc4py
+
     A = matrAsse.toPetsc()
 except (ImportError, NotImplementedError):
     pass
@@ -158,9 +155,8 @@ else:
 monSolver.factorize(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
-vcine = dProblem.computeDirichletBC(0.)
+vcine = dComputation.DirichletBC(0.)
 resu = monSolver.solveWithDirichletBC(matrAsse, vcine, retour)
-
 
 y = resu.EXTR_COMP()
 test.assertEqual(len(y.valeurs), 81)
@@ -173,12 +169,12 @@ resu.printMedFile("fort.med")
 
 # test setValues + solve
 # ----------------------
-matrAsse.setValues(idx.tolist(), jdx.tolist(), [10*v for v in values])
+matrAsse.setValues(idx.tolist(), jdx.tolist(), [10 * v for v in values])
 monSolver.factorize(matrAsse)
 resu = monSolver.solve(matrAsse, retour)
 resu2 = resu.exportToSimpleFieldOnNodes()
 resu2.updateValuePointers()
-test.assertAlmostEqual(resu2.getValue(5, 3), 0.000757555469653289/10.)
+test.assertAlmostEqual(resu2.getValue(5, 3), 0.000757555469653289 / 10.)
 
 # To be sure that vcine is Permanent #30689
 libaster.deleteTemporaryObjects()

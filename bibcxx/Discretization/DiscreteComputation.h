@@ -2,8 +2,8 @@
 #define DISCRETEPROBLEM_H_
 
 /**
- * @file DiscreteProblem.h
- * @brief Fichier entete de la classe DiscreteProblem
+ * @file DiscreteComputation.h
+ * @brief Fichier entete de la classe DiscreteComputation
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -36,11 +36,11 @@
 #include <vector>
 
 /**
- * @class DiscreteProblem
+ * @class DiscreteComputation
  * @brief Cette classe permet de definir une étude au sens Aster
  * @author Nicolas Sellenet
  */
-class DiscreteProblem {
+class DiscreteComputation {
   private:
     /** @brief Etude definie par l'utilisateur */
     PhysicalProblemPtr _study;
@@ -57,81 +57,62 @@ class DiscreteProblem {
 
   public:
     /**
-     * @typedef DiscreteProblemPtr
-     * @brief Pointeur intelligent vers un DiscreteProblem
+     * @typedef DiscreteComputationPtr
+     * @brief Pointeur intelligent vers un DiscreteComputation
      */
-    typedef boost::shared_ptr< DiscreteProblem > DiscreteProblemPtr;
+    typedef boost::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
 
-    DiscreteProblem( void ) = delete;
+    DiscreteComputation( void ) = delete;
 
     /**
      * @brief Constructeur
      * @param PhysicalProblemPtr Etude utilisateur
      */
-    DiscreteProblem( const PhysicalProblemPtr &currentStudy ) : _study( currentStudy ){};
+    DiscreteComputation( const PhysicalProblemPtr &currentStudy ) : _study( currentStudy ){};
 
     /**
      * @brief Desctructeur
      */
-    ~DiscreteProblem(){};
+    ~DiscreteComputation(){};
 
     /**
-     * @brief Calcul des matrices elementaires pour l'option CHAR_MECA
-     */
-    ElementaryVectorDisplacementRealPtr computeElementaryMechanicalLoadsVector();
-
-    /**
-     * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
-              chargements de Dirichlet
+     * @brief Fonction permettant de calculer les vecteurs des
+              chargements de Dirichlet L*U_imp
      * @param time Instant de calcul
-     * @return Vecteur élémentaire
+     * @return Vecteur assemblé de chargement
      */
-    ElementaryVectorDisplacementRealPtr computeElementaryDirichletVector( ASTERDOUBLE time = 0. );
-
     FieldOnNodesRealPtr
-    computeDirichlet( ASTERDOUBLE time = 0.);
+    imposedDisplacement( ASTERDOUBLE time = 0.);
 
     /**
-     * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
-              chargements de Dirichlet
+     * @brief Fonction permettant de calculer le vecteur pour les
+              réactions de Dirichlet L^T * \lambda
      * @param time Instant de calcul
-     * @return Vecteur élémentaire
+     * @return Vecteur de réaction assemblé
      */
-    ElementaryVectorDisplacementRealPtr
-    computeElementaryDirichletReactionVector( FieldOnNodesRealPtr lagr_curr );
-
     FieldOnNodesRealPtr
-    computeDirichletReaction( FieldOnNodesRealPtr lagr_curr);
+    dualReaction( FieldOnNodesRealPtr lagr_curr);
 
-
-
-    ElementaryVectorDisplacementRealPtr
-    computeElementaryDualizedDirichletVector( FieldOnNodesRealPtr disp_curr,
-                                              ASTERDOUBLE scaling = 1.0 );
-
+    /**
+     * @brief Fonction permettant de calculer le vecteur pour les
+              déplacements de Dirichlet L * U
+     * @param time Instant de calcul
+     * @return Vecteur de déplacements de Dirichlet assemblé
+     */
     FieldOnNodesRealPtr
-    computeDualizedDirichlet( FieldOnNodesRealPtr disp_curr,
+    dualDisplacement( FieldOnNodesRealPtr disp_curr,
                               ASTERDOUBLE scaling = 1.0);
 
-    /**
-     * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
-              forces de Laplace
-     * @return Vecteur élémentaire
-     */
-    ElementaryVectorDisplacementRealPtr computeElementaryLaplaceVector();
 
     /**
-     * @brief Fonction permettant de calculer les vecteurs élémentaires pour les
+     * @brief Fonction permettant de calculer les vecteurs  pour les
               chargements de Neumann
      * @param time Instants de calcul (vecteur de longueur 3 : instant courant, deltat, paramètre
      theta
-     * @return Vecteur élémentaire
+     * @return Vecteur des chargement de Neumann assemblé
      */
-    ElementaryVectorDisplacementRealPtr computeElementaryNeumannVector( const VectorReal time,
-                                                      ExternalStateVariablesBuilderPtr );
-
     FieldOnNodesRealPtr
-    computeNeumann( const VectorReal time,
+    Neumann( const VectorReal time,
                                                   ExternalStateVariablesBuilderPtr);
 
     /**
@@ -140,6 +121,7 @@ class DiscreteProblem {
      * @return Vecteur élémentaire contenant la rigidité mécanique
      */
     ElementaryMatrixDisplacementRealPtr computeElementaryStiffnessMatrix( ASTERDOUBLE time = 0. );
+
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires pour la matrice tangente
      * utilisée pour l'étape de prédiction de la méthode de Newton
@@ -154,11 +136,11 @@ class DiscreteProblem {
      * @brief Construction d'un vecteur de chargement cinématique
      * @return Booleen indiquant que tout s'est bien passe
      */
-    FieldOnNodesRealPtr computeDirichletBC( const ASTERDOUBLE &time ) const;
+    FieldOnNodesRealPtr DirichletBC( const ASTERDOUBLE &time ) const;
 
     /**
      * @brief Calcul des matrices elementaires pour l'option AMOR_MECA
-     */
+     */  
     ElementaryMatrixDisplacementRealPtr
     computeMechanicalDampingMatrix( const ElementaryMatrixDisplacementRealPtr &rigidity,
                                     const ElementaryMatrixDisplacementRealPtr &mass );
@@ -181,9 +163,9 @@ class DiscreteProblem {
 };
 
 /**
- * @typedef DiscreteProblemPtr
- * @brief Pointeur intelligent vers un DiscreteProblem
+ * @typedef DiscreteComputationPtr
+ * @brief Pointeur intelligent vers un DiscreteComputation
  */
-typedef boost::shared_ptr< DiscreteProblem > DiscreteProblemPtr;
+typedef boost::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
 
 #endif /* DISCRETEPROBLEM_H_ */

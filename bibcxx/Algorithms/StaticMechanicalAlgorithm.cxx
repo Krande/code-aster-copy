@@ -38,9 +38,9 @@ void StaticMechanicalAlgorithm::_computeMatrix( CurrentContext &ctx ) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    BaseDOFNumberingPtr dofNum1 = ctx._discreteProblem->getPhysicalProblem()->getDOFNumbering();
+    BaseDOFNumberingPtr dofNum1 = ctx._discreteComputation->getPhysicalProblem()->getDOFNumbering();
 
-    auto matrElem = ctx._discreteProblem->computeElementaryStiffnessMatrix( ctx._time );
+    auto matrElem = ctx._discreteComputation->computeElementaryStiffnessMatrix( ctx._time );
 
     // Build assembly matrix
     ctx._aMatrix->clearElementaryMatrix();
@@ -56,16 +56,16 @@ void StaticMechanicalAlgorithm::_computeMatrix( CurrentContext &ctx ) {
 FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx ) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    BaseDOFNumberingPtr dofNum1 = ctx._discreteProblem->getPhysicalProblem()->getDOFNumbering();
+    BaseDOFNumberingPtr dofNum1 = ctx._discreteComputation->getPhysicalProblem()->getDOFNumbering();
 
     // Build Dirichlet loads
     FieldOnNodesRealPtr chNoDir =
-        ctx._discreteProblem->computeDirichlet( ctx._time );
+        ctx._discreteComputation->imposedDisplacement( ctx._time );
 
     // Build Laplace forces
-    ElementaryVectorPtr vectElem2 = ctx._discreteProblem->computeElementaryLaplaceVector();
-    FieldOnNodesRealPtr chNoLap =
-        vectElem2->assembleWithLoadFunctions( dofNum1, ctx._time );
+    //ElementaryVectorPtr vectElem2 = ctx._discreteComputation->computeElementaryLaplaceVector();
+    //FieldOnNodesRealPtr chNoLap =
+    //   vectElem2->assembleWithLoadFunctions( dofNum1, ctx._time );
 
     // Build Neumann loads
     VectorReal times;
@@ -74,9 +74,9 @@ FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx 
     times.push_back( 0. );
 
     FieldOnNodesRealPtr chNoNeu =
-        ctx._discreteProblem->computeNeumann( times, ctx._varCom );
+        ctx._discreteComputation->Neumann( times, ctx._varCom );
 
-    *chNoDir += *chNoLap;
+    //*chNoDir += *chNoLap;
     *chNoDir += *chNoNeu;
 
     if ( ctx._varCom->hasExternalStateVariables() ) {
@@ -91,7 +91,7 @@ FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx 
 }
 
 void StaticMechanicalAlgorithm::_storeFields( CurrentContext &ctx ) {
-    const auto &study = ctx._discreteProblem->getPhysicalProblem();
+    const auto &study = ctx._discreteComputation->getPhysicalProblem();
     const auto &model = study->getModel();
     const auto &mater = study->getMaterialField();
     const auto &load = study->getListOfLoads();
@@ -117,7 +117,7 @@ void StaticMechanicalAlgorithm::_solve( CurrentContext &ctx, const FieldOnNodesR
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
 
     FieldOnNodesRealPtr diriBCsFON =
-        ctx._discreteProblem->computeDirichletBC( ctx._time );
+        ctx._discreteComputation->DirichletBC( ctx._time );
 
     FieldOnNodesRealPtr resultField =
         ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );

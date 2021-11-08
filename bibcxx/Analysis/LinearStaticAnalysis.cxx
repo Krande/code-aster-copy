@@ -29,7 +29,7 @@
 #include "Algorithms/GenericAlgorithm.h"
 #include "Algorithms/StaticMechanicalAlgorithm.h"
 #include "Numbering/DOFNumbering.h"
-#include "Discretization/DiscreteProblem.h"
+#include "Discretization/DiscreteComputation.h"
 #include "Supervis/Exceptions.h"
 #include "Analysis/LinearStaticAnalysis.h"
 #include "Supervis/CommandSyntax.h"
@@ -47,7 +47,7 @@ LinearStaticAnalysis::LinearStaticAnalysis(
 void LinearStaticAnalysis::_computeStress( StaticMechanicalContext &ctx ) {
     auto start = std::chrono::high_resolution_clock::now();
 
-    const auto &study = ctx.getDiscreteProblem()->getPhysicalProblem();
+    const auto &study = ctx.getDiscreteComputation()->getPhysicalProblem();
     const auto &model = study->getModel();
     const auto &mater = study->getMaterialField();
     const auto &load = study->getListOfLoads();
@@ -86,7 +86,7 @@ ElasticResultPtr LinearStaticAnalysis::execute( ElasticResultPtr resultC ) {
         resultC->allocate( _timeStep->size() );
 
     // Define the discrete problem
-    DiscreteProblemPtr dProblem( boost::make_shared< DiscreteProblem >( _study ) );
+    DiscreteComputationPtr dProblem( boost::make_shared< DiscreteComputation >( _study ) );
 
     if ( _model->getMesh()->isParallel() ) {
         if ( !_linearSolver->isHPCCompliant() )

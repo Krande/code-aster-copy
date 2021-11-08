@@ -57,7 +57,7 @@
 #include "PythonBindings/DebugInterface.h"
 #include "PythonBindings/DeleteTemporaryObjectsInterface.h"
 #include "PythonBindings/DirichletBCInterface.h"
-#include "PythonBindings/DiscreteProblemInterface.h"
+#include "PythonBindings/DiscreteComputationInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
 #include "PythonBindings/ElasticFourierResultInterface.h"
 #include "PythonBindings/ElasticResultInterface.h"
@@ -201,7 +201,7 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportBaseMeshToPython();
     exportMeshToPython();
     exportMedCouplingConversionToPython();
-    exportDiscreteProblemToPython();
+    exportDiscreteComputationToPython();
     exportBaseDOFNumberingToPython();
     exportDOFNumberingToPython();
     exportElementaryCharacteristicsToPython();

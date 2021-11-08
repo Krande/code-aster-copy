@@ -55,18 +55,25 @@ charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "EncastN")
 charCine.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "EncastN")
 charCine.build()
 
+#CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
+#                      PESANTEUR=_F(GRAVITE=1.0,
+#                                   DIRECTION=(0.0, -1.0, 0.0),),
+#                      INFO=1,
+#                      VERI_NORM='NON',)
+
+
 CHT1 = AFFE_CHAR_MECA(MODELE=MODT,
-                      PESANTEUR=_F(GRAVITE=1.0,
-                                   DIRECTION=(0.0, -1.0, 0.0),),
+                      PRES_REP=_F(GROUP_MA='Press',
+                                  PRES=1,),
                       INFO=1,
                       VERI_NORM='NON',)
 
 study = code_aster.PhysicalProblem(MODT, affectMat)
 study.addDirichletBC(charCine)
 study.addLoad(CHT1)
-dProblem = code_aster.DiscreteProblem(study)
-vect_elem = dProblem.computeElementaryMechanicalLoadsVector()
-matr_elem = dProblem.computeMechanicalStiffnessMatrix()
+dComputation = code_aster.DiscreteComputation(study)
+#vect_elem = dComputation.computeElementaryMechanicalLoadsVector()
+matr_elem = dComputation.computeMechanicalStiffnessMatrix()
 
 monSolver = code_aster.PetscSolver( code_aster.Renumbering.Sans )
 monSolver.setPreconditioning(code_aster.Preconditioning.Without)
@@ -77,6 +84,11 @@ numeDDL.computeNumbering()
 test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 #numeDDL.debugPrint()
 
+# compute Neumman
+study.setDOFNumbering(numeDDL)
+retour = dComputation.Neumann([0,0,0], None)
+
+
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
 matrAsse.appendElementaryMatrix(matr_elem)
 matrAsse.setDOFNumbering(numeDDL)
@@ -85,7 +97,7 @@ matrAsse.build()
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 #matrAsse.debugPrint()
 
-retour = vect_elem.assembleWithLoadFunctions( numeDDL )
+#retour = vect_elem.assembleWithLoadFunctions( numeDDL )
 
 monSolver.factorize( matrAsse )
 resu = monSolver.solve( matrAsse, retour )

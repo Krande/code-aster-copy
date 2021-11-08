@@ -19,17 +19,17 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`DiscreteProblem` --- DiscreteProblem object
+:py:class:`DiscreteComputation` --- DiscreteComputation object
 ******************************************************
 """
 
-from libaster import DiscreteProblem
+from libaster import DiscreteComputation
 
 from ..Utilities import injector
 
 
-@injector(DiscreteProblem)
-class ExtendedDiscreteProblem:
+@injector(DiscreteComputation)
+class ExtendedDiscreteComputation:
 
     def __getinitargs__(self):
         """Returns the argument required to reinitialize a MaterialField

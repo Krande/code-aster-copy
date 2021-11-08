@@ -2,11 +2,11 @@
 #define DISCRETEPROBLEMINTERFACE_H_
 
 /**
- * @file DiscreteProblemInterface.h
- * @brief Fichier entete de la classe DiscreteProblemInterface
+ * @file DiscreteComputationInterface.h
+ * @brief Fichier entete de la classe DiscreteComputationInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,8 +25,8 @@
  */
 
 #include "astercxx.h"
-#include "Discretization/DiscreteProblem.h"
+#include "Discretization/DiscreteComputation.h"
 
-void exportDiscreteProblemToPython();
+void exportDiscreteComputationToPython();
 
 #endif /* DISCRETEPROBLEMINTERFACE_H_ */
