@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -171,6 +171,8 @@ class Data(object):
             Visc_Isot_Line,
             Visc_Isot_Trac,
             Visc_Taheri,
+            Visc_Maxwell,
+            Visc_Maxwell_MT,
             Vmis_Asym_Line,
             Vmis_Cin1_Chab,
             Vmis_Cin2_Chab,
@@ -326,6 +328,8 @@ class Data(object):
                                         "VISC_ISOT_LINE",
                                         "VISC_ISOT_TRAC",
                                         "VISC_TAHERI",
+                                        "VISC_MAXWELL",
+                                        "VISC_MAXWELL_MT",
                                         "VMIS_ASYM_LINE",
                                         "VMIS_CIN1_CHAB",
                                         "VMIS_CIN2_CHAB",

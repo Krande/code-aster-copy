@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,8 @@ subroutine lc0062(fami, kpg, ksp, ndim, imate,&
 !
 ! aslint: disable=W1504,W0104
     implicit none
-#include "asterfort/utmess.h"
+#include "asterfort/utmess.h"  
+#include "asterfort/mxwell.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(3)
     real(kind=8) :: instam, instap
@@ -36,5 +37,10 @@ subroutine lc0062(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    call utmess('F', 'FERMETUR_11')
+!
+        call mxwell(fami, kpg, ksp, ndim, typmod,&
+                    imate, instam, instap, deps, sigm, option,&
+                    sigp, vip, dsidep, codret)
+!
+
 end subroutine

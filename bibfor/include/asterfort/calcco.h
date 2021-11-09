@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ interface
                       dtemp   , dp1      , dp2   ,&
                       deps    , epsv     , depsv ,&
                       tbiot   ,&
-                      phi     , rho11    , satur ,&
+                      phi     , rho11    , satur ,nl,&
                       pad     , pvp      , h11   , h12   ,&
                       congem  , congep   ,&
                       vintm   , vintp    , dsde  ,& 
@@ -46,7 +46,7 @@ interface
         real(kind=8), intent(in) :: temp, p1, p2
         real(kind=8), intent(in) :: dtemp, dp1, dp2
         real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
-        real(kind=8), intent(out) :: phi, rho11, satur
+        real(kind=8), intent(out) :: phi, rho11, satur,nl
         real(kind=8), intent(out) :: pad, pvp, h11, h12
         real(kind=8), intent(in) :: congem(dimcon)
         real(kind=8), intent(inout) :: congep(dimcon)

@@ -129,7 +129,7 @@ real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
     integer :: i, j, f
     real(kind=8) :: depsv, epsv, deps(6)
     real(kind=8) :: t, p1, p2, dt, dp1, dp2, grat(3), grap1(3), grap2(3)
-    real(kind=8) :: pvp, pad, h11, h12, rho11, phi
+    real(kind=8) :: pvp, pad, h11, h12, rho11, phi,nl
     real(kind=8) :: tperm(ndim, ndim), sat, tbiot(6), satur, dsatur, pesa(3)
     real(kind=8) :: lambp, dlambp, lambs, dlambs, viscl , viscg
     real(kind=8) :: tlambt(ndim, ndim), tdlamt(ndim, ndim)
@@ -233,7 +233,7 @@ real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
                 dt      , dp1      , dp2   ,&
                 deps    , epsv     , depsv ,&
                 tbiot   ,&
-                phi     , rho11    , satur ,&
+                phi     , rho11    , satur ,nl,&
                 pad     , pvp      , h11   , h12   ,&
                 sigm    , sigp     ,&
                 varim   , varip    , dsde  ,&

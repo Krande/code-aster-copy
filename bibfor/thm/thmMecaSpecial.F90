@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,14 @@
 ! aslint: disable=W1504
 !
 subroutine thmMecaSpecial(ds_thm , option   , lMatr , meca  , &
-                          p1     , dp1      , p2    , dp2   , satur, tbiot,&
-                          j_mater, ndim     , typmod, carcri,&
-                          addeme , adcome   , addep1, addep2,&
+                          p1     , dp1      , p2       , dp2   , satur, tbiot, nl,&
+                          j_mater, ndim     , typmod   , carcri,&
+                          addeme , adcome   , addep1   , addep2,&
                           dimdef , dimcon   ,&
                           defgem , deps     ,&
                           congem , vintm    ,&
                           congep , vintp    ,&
+                          time_prev, time_curr,&
                           dsde   , ther_meca, retcom)
 !
 use THM_type
@@ -38,12 +39,13 @@ implicit none
 #include "asterfort/elagon.h"
 #include "asterfort/dsipdp.h"
 #include "asterfort/lchbr2.h"
+#include "asterfort/mxwell_mt.h"
 !
 type(THM_DS), intent(in) :: ds_thm
 character(len=16), intent(in) :: option, meca
 aster_logical, intent(in) :: lMatr
 integer, intent(in) :: j_mater
-real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6)
+real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
 character(len=8), intent(in) :: typmod(2)
 real(kind=8), intent(in) :: carcri(*)
 integer, intent(in) :: ndim, dimdef, dimcon
@@ -52,6 +54,7 @@ real(kind=8), intent(in) :: vintm(*)
 real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
 real(kind=8), intent(inout) :: congep(dimcon)
 real(kind=8), intent(inout) :: vintp(*)
+real(kind=8), intent(in) :: time_prev, time_curr
 real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
 real(kind=8), intent(out) :: ther_meca(6)
 integer, intent(out) :: retcom
@@ -73,6 +76,7 @@ integer, intent(out) :: retcom
 ! In  dp2              : increment of gaz pressure
 ! In  satur            : saturation
 ! In  tbiot            : tensor of Biot
+! In  nl               : Eulerian porosity
 ! In  j_mater          : coded material address
 ! In  ndim             : dimension of space (2 or 3)
 ! In  typmod           : type of modelization (TYPMOD2)
@@ -84,6 +88,8 @@ integer, intent(out) :: retcom
 ! In  dimdef           : dimension of generalized strains vector
 ! In  dimcon           : dimension of generalized stresses vector
 ! In  defgem           : generalized strains - At begin of current step
+! In  time_prev        : time at beginning of step
+! In  time_curr        : time at end of step
 ! In  deps             : increment of mechanic strains
 ! In  congem           : generalized stresses - At begin of current step
 ! In  vintm            : internal state variables - At begin of current step
@@ -209,6 +215,20 @@ integer, intent(out) :: retcom
                                 dsde(adcome-1+i,addeme+ndim-1+1)+&
                                 dsde(adcome-1+i,addeme+ndim-1+2)+&
                                 dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
+            end do
+        endif
+    elseif (meca .eq. 'VISC_MAXWELL_MT') then
+! ----- Compute behaviour
+        call mxwell_mt(ndim, typmod, j_mater, time_prev, time_curr, nl,&
+                       deps, congem(adcome)  , vintm  , option   ,&
+                       congep(adcome), vintp , dsdeme , retcom)
+! ----- Add mecanic matrix
+        if (lMatr) then
+            do i = 1, 2*ndim
+                do j = 1, 2*ndim
+                    dsde(adcome+i-1,addeme+ndim+j-1) = dsde(adcome+i-1,addeme+ndim+j-1) + &
+                                                       dsdeme(i,j)
+                end do
             end do
         endif
     else

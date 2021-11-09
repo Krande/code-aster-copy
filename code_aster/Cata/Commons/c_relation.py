@@ -152,6 +152,8 @@ def C_RELATION( COMMAND ):
                                         "LEMA_SEUIL",
                                         "LETK",
                                         "LKR",
+                                        "VISC_MAXWELL",
+                                        "VISC_MAXWELL_MT",
                                         "MAZARS",
                                         "MAZARS_GC",
                                         "META_LEMA_ANI",

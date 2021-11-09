@@ -136,7 +136,7 @@ real(kind=8), intent(inout) :: valfac(maxfa, 14, 6)
     parameter     (kxx=1,kyy=2,kzz=3,kxy=4,kyz=5,kzx=6)
     parameter     (eau=1,air=2)
     real(kind=8) :: p1, dp1, grad_p1(3), p2, dp2, grad_p2(3), temp, dtemp, grad_temp(3)
-    real(kind=8) :: phi, pvp, pad, h11, h12, rho11, epsv, deps(6), depsv
+    real(kind=8) :: phi, pvp, pad, h11, h12, rho11, epsv, deps(6), depsv,nl
     real(kind=8) :: tbiot(6), satur, dsatur
     real(kind=8) :: tperm(ndim, ndim)
     real(kind=8) :: lambp, dlambp
@@ -202,7 +202,7 @@ real(kind=8), intent(inout) :: valfac(maxfa, 14, 6)
                 dtemp   , dp1      , dp2   ,&
                 deps    , epsv     , depsv ,&
                 tbiot   ,&
-                phi     , rho11    , satur ,&
+                phi     , rho11    , satur , nl,&
                 pad     , pvp      , h11   , h12   ,&
                 congem  , congep   ,&
                 vintm   , vintp    , dsde  ,& 
@@ -231,7 +231,7 @@ real(kind=8), intent(inout) :: valfac(maxfa, 14, 6)
         call thmSelectMeca(ds_thm   ,&
                            p1       , dp1      ,&
                            p2       , dp2      ,&
-                           satur    , tbiot    ,&
+                           satur    , tbiot    ,nl, &
                            option   , j_mater  , ndim  , type_elem, angl_naut,&
                            carcri   ,&
                            time_prev, time_curr, dtemp ,&

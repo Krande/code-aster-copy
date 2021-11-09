@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 subroutine thmSelectMeca(ds_thm,&
-                         p1    , dp1    , p2    , dp2   , satur    , tbiot,&
+                         p1    , dp1    , p2    , dp2   , satur    , tbiot, nl,&
                          option, j_mater, ndim  , typmod, angl_naut,&
                          carcri, instam , instap, dtemp ,&
                          addeme, addete , adcome, addep1, addep2,&
@@ -45,7 +45,7 @@ implicit none
 type(THM_DS), intent(in) :: ds_thm
 integer, intent(in) :: j_mater
 character(len=16), intent(in) :: option
-real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6)
+real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
 character(len=8), intent(in) :: typmod(2)
 real(kind=8), intent(in) :: carcri(*)
 real(kind=8), intent(in) :: instam, instap, dtemp
@@ -74,6 +74,7 @@ integer, intent(out) :: retcom
 ! In  dp2              : increment of gaz pressure
 ! In  satur            : saturation
 ! In  tbiot            : tensor of Biot
+! In  nl               : Eulerian porosity
 ! In  option           : option to compute
 ! In  j_mater          : coded material address
 ! In  ndim             : dimension of space (2 or 3)
@@ -142,13 +143,14 @@ integer, intent(out) :: retcom
     if (nume_meca .eq. 0) then
 ! ----- Special behaviours
         call thmMecaSpecial(ds_thm , option   , lMatr , meca     ,&
-                            p1     , dp1      , p2    , dp2   , satur, tbiot,&
+                            p1     , dp1      , p2    , dp2   , satur, tbiot, nl,&
                             j_mater, ndim     , typmod, carcri, &
                             addeme , adcome   , addep1, addep2,&
                             dimdef , dimcon   ,&
                             defgem , deps     ,&
                             congem , vintm    ,&
                             congep , vintp    ,&
+                            instam, instap,&
                             dsde   , ther_meca, retcom)
 
     elseif (nume_meca .eq. 1) then

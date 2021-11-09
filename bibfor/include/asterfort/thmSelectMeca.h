@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 interface 
     subroutine thmSelectMeca(ds_thm,&
-                             p1    , dp1    , p2    , dp2   , satur    , tbiot,&
+                             p1    , dp1    , p2    , dp2   , satur    , tbiot, nl,&
                              option, j_mater, ndim  , typmod, angl_naut,&
                              carcri, instam , instap, dtemp ,&
                              addeme, addete , adcome, addep1, addep2,&
@@ -31,7 +31,7 @@ interface
         type(THM_DS), intent(in) :: ds_thm
         integer, intent(in) :: j_mater
         character(len=16), intent(in) :: option
-        real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6)
+        real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
         character(len=8), intent(in) :: typmod(2)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam, instap, dtemp

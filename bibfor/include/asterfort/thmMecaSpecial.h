@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,20 @@
 !
 interface
     subroutine thmMecaSpecial(ds_thm , option   , lMatr , meca  , &
-                              p1     , dp1      , p2    , dp2   , satur, tbiot,&
+                              p1     , dp1      , p2    , dp2   , satur, tbiot, nl,&
                               j_mater, ndim     , typmod, carcri,&
                               addeme , adcome   , addep1, addep2,&
                               dimdef , dimcon   ,&
                               defgem , deps     ,&
                               congem , vintm    ,&
                               congep , vintp    ,&
+                              time_prev, time_curr,&
                               dsde   , ther_meca, retcom)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
         character(len=16), intent(in) :: option, meca
         aster_logical, intent(in) :: lMatr
-        real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6)
+        real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
         integer, intent(in) :: j_mater
         character(len=8), intent(in) :: typmod(2)
         real(kind=8), intent(in) :: carcri(*)
@@ -39,6 +40,7 @@ interface
         real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
         real(kind=8), intent(inout) :: congep(dimcon)
         real(kind=8), intent(inout) :: vintp(*)
+        real(kind=8), intent(in) :: time_prev, time_curr
         real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
         real(kind=8), intent(out) :: ther_meca(6)
         integer, intent(out) :: retcom

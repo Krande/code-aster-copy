@@ -29,7 +29,7 @@ subroutine calcco(ds_thm , l_steady ,&
                   dtemp  , dp1      , dp2   ,&
                   deps   , epsv     , depsv ,&
                   tbiot  ,&
-                  phi    , rho11    , satur ,&
+                  phi    , rho11    , satur ,nl,&
                   pad    , pvp      , h11   , h12   ,&
                   congem , congep   ,&
                   vintm  , vintp    , dsde  ,& 
@@ -63,7 +63,7 @@ integer, intent(in) :: addeme, addete, addep1, addep2
 real(kind=8), intent(in) :: temp, p1, p2
 real(kind=8), intent(in) :: dtemp, dp1, dp2
 real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
-real(kind=8), intent(out) :: phi, rho11, satur
+real(kind=8), intent(out) :: phi, rho11, satur,nl
 real(kind=8), intent(out) :: pad, pvp, h11, h12
 real(kind=8), intent(in) :: congem(dimcon)
 real(kind=8), intent(inout) :: congep(dimcon)
@@ -168,7 +168,8 @@ integer, intent(out)  :: retcom
                        phi     , rho11 , satur,&
                        congem  , congep,&
                        vintm   , vintp , dsde,&
-                       retcom)
+                       retcom)     
+        nl = phi                
     case (GAZ)
         call thmCpl002(ds_thm,&
                        lMatr, lSigm, lVari, angl_naut,&
@@ -183,7 +184,8 @@ integer, intent(out)  :: retcom
                        phi   , rho11 , satur,&
                        congem, congep,&
                        vintm , vintp , dsde,&
-                       retcom)
+                       retcom)     
+        nl = phi                
     case (LIQU_VAPE)
         call thmCpl003(ds_thm,&
                        lMatr, lSigm, lVari, lMatrPred, angl_naut,&
@@ -200,7 +202,8 @@ integer, intent(out)  :: retcom
                        pvp   , h11      , h12   ,&
                        congem, congep   ,&       
                        vintm , vintp    , dsde  ,& 
-                       retcom)
+                       retcom)     
+        nl = phi                
     case (LIQU_VAPE_GAZ)
         call thmCpl004(ds_thm,&
                        lMatr, lSigm, lVari, angl_naut,&
@@ -217,7 +220,8 @@ integer, intent(out)  :: retcom
                        pvp   , h11      , h12   ,&
                        congem, congep   ,&
                        vintm , vintp    , dsde  ,&
-                       retcom)
+                       retcom)     
+        nl = phi                
     case (LIQU_GAZ)
         call thmCpl005(ds_thm,&
                        lMatr, lSigm, lVari, angl_naut,&
@@ -233,7 +237,8 @@ integer, intent(out)  :: retcom
                        phi   , rho11    , satur ,&
                        congem, congep   ,&
                        vintm , vintp    , dsde  ,&
-                       retcom)
+                       retcom)     
+        nl = phi                
     case (LIQU_GAZ_ATM)
         call thmCpl006(ds_thm,&
                        lMatr, lSigm, lVari, angl_naut,&
@@ -249,7 +254,8 @@ integer, intent(out)  :: retcom
                        phi   , rho11    , satur ,&
                        congem, congep   ,&
                        vintm , vintp    , dsde  ,&
-                       retcom)
+                       retcom)     
+        nl = phi                
     case (LIQU_AD_GAZ_VAPE)
 
         call thmCpl009(ds_thm ,&
@@ -286,7 +292,8 @@ integer, intent(out)  :: retcom
                        pad    , pvp      , h11   , h12   ,&
                        congem , congep   ,&
                        vintm  , vintp    , dsde  ,&
-                       retcom)
+                       retcom)     
+        nl = phi                
     case default
         ASSERT(ASTER_FALSE)
     end select
