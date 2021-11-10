@@ -134,7 +134,7 @@ subroutine ajlipa(modelz, base, kdis)
     call jelira(modele//'.MAILLE', 'LONMAX', nbma)
     call wkvect(partsd//'.PRTI', base//' V I', 1, jprti)
     zi(jprti-1+1)=nbproc
-    call wkvect(partsd//'.PRTK', base//' V K24', 2, jprtk)
+    call wkvect(partsd//'.PRTK', base//' V K24', 1, jprtk)
     zk24(jprtk-1+1)= kdis
     if (kdis(1:5) .eq. 'MAIL_') then
         call wkvect(partsd//'.NUPR', base//' V I', nbma+1, jnumsd)
@@ -146,9 +146,6 @@ subroutine ajlipa(modelz, base, kdis)
             zi(jnumsd-1+ima) = -999
             if (maille(ima) .ne. 0) nbmamo = nbmamo+1
         end do
-    endif
-    if (exi_partsd) then
-        zk24(jprtk-1+2)= partsd
     endif
 
 !   -- Recuperations des mot-cles :

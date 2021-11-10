@@ -25,7 +25,7 @@ class sd_partition(AsBase):
 
     nomj = SDNom(fin=19)
     PRTI = AsVI(lonmax=1)
-    PRTK = AsVK24(lonmax=2)
+    PRTK = AsVK24(lonmax=1)
 
     # si PRTK(1) in ('MAIL_DISPERSE', 'MAIL_CONTIGU') :
     NUPR = Facultatif(AsVI())
@@ -45,11 +45,8 @@ class sd_partition(AsBase):
         ), prtk
 
         if prtk[0] == "SOUS_DOMAINE":
-            assert prtk[1] != "", prtk
-            sd2 = sd_partit_domain(prtk[1])
+            sd2 = sd_partit_domain(self.nomj())
             sd2.check(checker)
-        else:
-            assert prtk[1] == "", prtk
 
         if prtk[0] in ("MAIL_DISPERSE", "MAIL_CONTIGU"):
             assert self.NUPR.exists
