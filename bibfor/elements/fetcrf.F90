@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine fetcrf(sdpart1,nomo,nbsd)
-! person_in_charge: jacques.pellet at edf.fr
+subroutine fetcrf(nomo,nbsd)
 !-----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CREATION DE LA STRUCTURE DE DONNEES SD_PART1.
 !----------------------------------------------------------------------
@@ -52,7 +51,7 @@ subroutine fetcrf(sdpart1,nomo,nbsd)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8),intent(in) :: sdpart1,nomo
+    character(len=8),intent(in) :: nomo
     integer,intent(in) :: nbsd
 !
 !
@@ -83,7 +82,7 @@ subroutine fetcrf(sdpart1,nomo,nbsd)
 !**********************************************************************
 ! INITIALISATIONS
 !**********************************************************************
-    sdpart=sdpart1
+    sdpart=nomo//'.PARTSD'
     nomref=sdpart//'.FREF'
     nomsdm=sdpart//'.FDIM'
     nomsda=sdpart//'.FETA'

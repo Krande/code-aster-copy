@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 !
 !
-          interface 
-            subroutine adalig(ligrz,sd_partit1)
+          interface
+            subroutine adalig(ligrz,partsdz)
               character(len=*), intent(in) :: ligrz
-              character(len=8) ,optional, intent(in) :: sd_partit1
+              character(len=*) ,optional, intent(in) :: partsdz
             end subroutine adalig
-          end interface 
+          end interface

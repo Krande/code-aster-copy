@@ -1,5 +1,5 @@
 !--------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,38 +21,38 @@
 interface
   subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, ltest, rang, nbproc, mpicou,&
                     nbordr, nbpas, vldist, vcham, lisori, nbordi, lisord,&
-                    modele, sd_partition, lsdpar,&
+                    modele, partsd, lsdpar,&
                     i, ipas, ideb, ifin, irelat,&
                     chamno, lonnew, lonch, ktyp, vcnoch, noch, nochc)
-    integer           :: option
-    aster_logical     :: ldist
-    aster_logical     :: dbg_ob
-    aster_logical     :: dbgv_ob
-    aster_logical     :: lcpu
-    aster_logical     :: ltest
-    integer           :: rang
-    integer           :: nbproc
-    mpi_int           :: mpicou
-    integer           :: nbordr
-    integer           :: nbpas
-    character(len=24)  :: vldist
-    character(len=24)  :: vcham
-    character(len=24)  :: lisori
-    integer           :: nbordi
-    character(len=19)  :: lisord
-    character(len=24)  :: modele
-    character(len=8)   :: sd_partition
-    aster_logical      :: lsdpar
-    integer            :: i
-    integer            :: ipas
-    integer            :: ideb
-    integer            :: ifin
-    integer            :: irelat
-    character(len=24)  :: chamno
-    integer            :: lonnew
-    integer            :: lonch
-    character(len=1)   :: ktyp
-    character(len=24)   :: vcnoch
+    integer :: option
+    aster_logical :: ldist
+    aster_logical :: dbg_ob
+    aster_logical :: dbgv_ob
+    aster_logical :: lcpu
+    aster_logical :: ltest
+    integer :: rang
+    integer :: nbproc
+    mpi_int :: mpicou
+    integer :: nbordr
+    integer :: nbpas
+    character(len=24) :: vldist
+    character(len=24) :: vcham
+    character(len=24) :: lisori
+    integer :: nbordi
+    character(len=19) :: lisord
+    character(len=24) :: modele
+    character(len=19) :: partsd
+    aster_logical :: lsdpar
+    integer :: i
+    integer :: ipas
+    integer :: ideb
+    integer :: ifin
+    integer :: irelat
+    character(len=24) :: chamno
+    integer :: lonnew
+    integer :: lonch
+    character(len=1) :: ktyp
+    character(len=24) :: vcnoch
     real(kind=8), pointer :: noch(:)
     complex(kind=8), pointer :: nochc(:)
   end subroutine pcptcc

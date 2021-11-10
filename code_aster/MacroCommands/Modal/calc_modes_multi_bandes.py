@@ -441,20 +441,14 @@ def recup_modele_partition(MATR_RIGI, dbg):
     if (dbg):
         aster.affiche('MESSAGE', "Nom du modele retenu: " + str(nommod))
 
-    # Si parallele non centralise recuperation de lasd_partition et de son
+    # Si parallele non centralise recuperation de la sd_partition et de son
     # option de partitionnement: old_prtk1
-    sd_partitb = None
-    nompart = None
     vprtk = None
-    vpartit = nommod[0:8] + '.PARTIT'
-    sd_partitb = aster.getvectjev(vpartit)
-    if (sd_partitb is not None):
-        nompart = sd_partitb[0]
-        if (nompart is not None):
-            vprtk = aster.getvectjev(nompart[0:8] + '.PRTK')
-            if (vprtk is not None):
-                old_prtk_buff = vprtk[0]
-                old_prtk1 = old_prtk_buff.strip()
+    nompart = nommod[0:8] + '.PARTSD'
+    vprtk = aster.getvectjev(nompart[0:19] + '.PRTK')
+    if vprtk is not None:
+        old_prtk_buff = vprtk[0]
+        old_prtk1 = old_prtk_buff.strip()
     if (dbg):
         aster.affiche(
             'MESSAGE', "Nom de la partition retenue: " + str(nompart))

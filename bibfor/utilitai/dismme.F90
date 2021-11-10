@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,8 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
 !     ------------------
     character(len=7) :: typmat, kmpic, zero
     integer :: iret, i, i1, ialire, nbresu, iexi
-    character(len=8) :: mo, partit
+    character(len=8) :: mo
+    character(len=19) :: partit
     character(len=24), pointer :: rerr(:) => null()
 !
 !

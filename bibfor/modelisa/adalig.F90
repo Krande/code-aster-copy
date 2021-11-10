@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine adalig(ligrz,sd_partit1)
+subroutine adalig(ligrz,partsdz)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -43,7 +43,7 @@ subroutine adalig(ligrz,sd_partit1)
 #include "asterfort/as_allocate.h"
 !
     character(len=*), intent(in) :: ligrz
-    character(len=8), intent(in), optional :: sd_partit1
+    character(len=*), intent(in), optional :: partsdz
 !----------------------------------------------------------------------
 ! But: Reorganiser la collection .LIEL de ligrz afin de regrouper
 !      les elements de meme TYPE_ELEM dans un meme GREL.
@@ -53,11 +53,11 @@ subroutine adalig(ligrz,sd_partit1)
 !   * Faire en sorte que l'equilibrage soit bon pour DISTRIBUTION / METHODE='GROUP_ELEM' :
 !     * Pour chaque TYPE_ELEM :
 !       On decoupe le paquet d'elements en un nombre de grels multiple de nbproc.
-!     * Si sd_partit1 est n'est pas fourni :
+!     * Si partsd est n'est pas fourni :
 !       L'equilibrage est presque parfait :
 !       Les GRELS ont tous le meme nombre d'elements (a 1 pres)
 !
-!     * Si sd_partit1 est fourni:
+!     * Si partsd est fourni:
 !       * On ajoute une nouvelle contrainte pour les GRELS :
 !         * le GREL kgrel ne contient que des elements des sous-domaines affectes au
 !           processeur kproc [0, ..., nbproc-1] avec : mod(kgrel,nbproc)=kproc
@@ -65,10 +65,10 @@ subroutine adalig(ligrz,sd_partit1)
 !
 ! Arguments d'entree:
 !     ligrz  (o) : nom du ligrel
-!     sd_partit1 (f) : nom de la sd_partit1
+!     partsd (f) : nom de la partsd
 !----------------------------------------------------------------------
 
-    character(len=19) :: ligr
+    character(len=19) :: ligr, partsd
     character(len=1) :: clas
     character(len=8) :: noma
     character(len=16) :: typsd
@@ -151,10 +151,11 @@ subroutine adalig(ligrz,sd_partit1)
 1       continue
     end do
 
-!   -- si sd_partit1 est fourni, il faut utiliser un autre algorithme :
+!   -- si partsd est fourni, il faut utiliser un autre algorithme :
 !   ---------------------------------------------------------------
-    if (present(sd_partit1)) then
-        call adalig_sd(ligr,sd_partit1,tliel,nbtype,clas,teut,nteut)
+    if (present(partsdz)) then
+        partsd = partsdz
+        call adalig_sd(ligr,partsd,tliel,nbtype,clas,teut,nteut)
         goto 998
     endif
 

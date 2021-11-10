@@ -152,10 +152,13 @@ implicit none
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'PARTITION') then
 !     -------------------------------------------
-        k8 = nomsd
-        call jedetr(k8//'.PRTI')
-        call jedetr(k8//'.PRTK')
-        call jedetr(k8//'.NUPROC.MAILLE')
+        k19 = nomsd
+        call jedetr(k19//'.PRTI')
+        call jedetr(k19//'.PRTK')
+        call jedetr(k19//'.NUPR')
+        call jedetr(k19//'.FDIM')
+        call jedetr(k19//'.FETA')
+        call jedetr(k19//'.FREF')
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'CORRESP_2_MAILLA') then
@@ -298,7 +301,7 @@ implicit none
 !
         call jedetr(k8//'           .TITR')
         call jedetr(k8//'.MAILLE')
-        call jedetr(k8//'.PARTIT')
+        call detrs2('PARTITION', k8//'.PARTSD')
 !
 !
 !     ------------------------------------------------------------------
@@ -378,7 +381,7 @@ implicit none
         if (iexi .gt. 0) then
             call jeveuo(matas//'.REFA', 'L', vk24=refa)
             if (refa(19) .ne. ' ') then
-                matas2=refa(19)
+                matas2=refa(19)(1:19)
                 call jeexin(matas2, iexi2)
                 if (iexi2 .gt. 0) then
                     call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solveu2, arret='C',&

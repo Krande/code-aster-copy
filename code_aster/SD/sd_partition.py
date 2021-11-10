@@ -20,40 +20,54 @@
 from . import *
 
 
-# sd_partition (utilisee par la sd_modele) :
-#--------------------------------------------
 class sd_partition(AsBase):
-    nomj = SDNom(fin=8)
+    """Included in sd_modele"""
+
+    nomj = SDNom(fin=19)
     PRTI = AsVI(lonmax=1)
     PRTK = AsVK24(lonmax=2)
 
     # si PRTK(1) in ('MAIL_DISPERSE', 'MAIL_CONTIGU') :
-    NUPROC_MAILLE = Facultatif(AsVI(SDNom(nomj='.NUPROC.MAILLE')))
+    NUPR = Facultatif(AsVI())
 
     def check_1(self, checker):
+        if not self.PRTI.exists:
+            return
         prti = self.PRTI.get()
         assert prti[0] > 0, prti
 
         prtk = self.PRTK.get_stripped()
         assert prtk[0] in (
-            'GROUP_ELEM', 'SOUS_DOMAINE', 'MAIL_DISPERSE', 'MAIL_CONTIGU'), prtk
+            "GROUP_ELEM",
+            "SOUS_DOMAINE",
+            "MAIL_DISPERSE",
+            "MAIL_CONTIGU",
+        ), prtk
 
-        if prtk[0] == 'SOUS_DOMAINE':
-            assert prtk[1] != '', prtk
-            sd2 = sd_partit(prtk[1])
+        if prtk[0] == "SOUS_DOMAINE":
+            assert prtk[1] != "", prtk
+            sd2 = sd_partit_domain(prtk[1])
             sd2.check(checker)
         else:
-            assert prtk[1] == '', prtk
+            assert prtk[1] == "", prtk
 
-        if prtk[0] in ('MAIL_DISPERSE', 'MAIL_CONTIGU'):
-            assert self.NUPROC_MAILLE.exists
+        if prtk[0] in ("MAIL_DISPERSE", "MAIL_CONTIGU"):
+            assert self.NUPR.exists
 
 
-# sd_partit :
-#----------------------------------------------------
-class sd_partit(AsBase):
+class sd_partit_domain(AsBase):
+    """Objects that only exist for SOUS_DOMAINE"""
+
     nomj = SDNom(fin=19)
-    FDIM = AsVI(lonmax=1, )
-    FREF = AsVK8(lonmax=1, )
-    FETA = AsColl(acces='NO', stockage='DISPERSE',
-                  modelong='VARIABLE', type='I', )
+    FDIM = AsVI(
+        lonmax=1,
+    )
+    FREF = AsVK8(
+        lonmax=1,
+    )
+    FETA = AsColl(
+        acces="NO",
+        stockage="DISPERSE",
+        modelong="VARIABLE",
+        type="I",
+    )

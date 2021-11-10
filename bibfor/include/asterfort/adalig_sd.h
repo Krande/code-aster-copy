@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,15 +18,14 @@
 
 !
 !
-          interface 
-            subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,    &
+          interface
+            subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,    &
      &nteut)
-              character(len=19), intent(in) :: ligr
-              character(len=8), intent(in) :: sd_partit1
+              character(len=19), intent(in) :: ligr, partsd
               character(len=24), intent(in) :: ntliel
               integer, intent(in) :: nbtype
               character(len=1), intent(in) :: clas
               integer ,pointer :: teut(:)
               integer ,pointer :: nteut(:)
             end subroutine adalig_sd
-          end interface 
+          end interface

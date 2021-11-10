@@ -26,6 +26,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -61,14 +62,13 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     integer :: monit(12), vali(2), compt, nbma
     real(kind=8) :: eps, blreps
     character(len=5) :: klag2
-    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra, kacmum
+    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, matra, kacmum
     character(len=12) :: kooc
-    character(len=19) :: k19b
+    character(len=19) :: k19b, partsd
     character(len=24) :: kmonit(12)
     integer :: eximo1, eximo2, eximo3, eximc, eximod
     integer :: iexi, redmpi
     aster_logical :: ldgrel
-    character(len=8), pointer :: vpartit(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: prtk(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -127,28 +127,21 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
         endif
 !
 !       -- PARTITION POUR LE PARALLELISME :
-        partit=' '
-        call jeexin(modele//'.PARTIT', iexi)
-        if (iexi .gt. 0) then
-            call jeveuo(modele//'.PARTIT', 'L', vk8=vpartit)
-            if (vpartit(1) .ne. ' ') then
-                partit=vpartit(1)
-            endif
-        endif
-!
-        if (partit .ne. ' ') then
+        partsd = modele//'.PARTSD'
+        call exisd('PARTITION', partsd, iexi)
+        if (iexi .eq. 1) then
 !         -- CALCUL DISTRIBUE :
 !
-            call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
+            call jeveuo(partsd//'.PRTK', 'L', vk24=prtk)
             ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
             if (.not.ldgrel) then
-                call jeveuo(partit//'.PRTI', 'L', vi=prti)
+                call jeveuo(partsd//'.PRTI', 'L', vi=prti)
                 if (prti(1) .gt. nbproc) then
                     vali(1)=prti(1)
                     vali(2)=nbproc
                     call utmess('F', 'CALCUL_35', ni=2, vali=vali)
                 endif
-                call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=numsd)
+                call jeveuo(partsd//'.NUPR', 'L', vi=numsd)
                 nbma=size(numsd)-1
                 compt=0
                 do i = 1, nbma

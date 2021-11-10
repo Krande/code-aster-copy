@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,8 +36,7 @@ subroutine parti0(nbmat, tlimat, partit)
 ! Remarque : si les resuelem des matr_elem n'ont pas ete calcules avec la
 !            meme partition : erreur <F>
 !----------------------------------------------------------------------
-    character(len=8) :: part1
-    character(len=19) :: matel
+    character(len=19) :: matel, part1
     character(len=24) :: valk(5)
     integer :: i
 !----------------------------------------------------------------------

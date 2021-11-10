@@ -100,8 +100,7 @@ class Model : public DataStructure, public ListOfTables {
     JeveuxVectorLong _typeOfCells;
     /** @brief Vecteur Jeveux '.NOEUD' */
     JeveuxVectorLong _typeOfNodes;
-    /** @brief Vecteur Jeveux '.PARTIT' */
-    JeveuxVectorChar8 _partition;
+    /** @brief Vecteur Jeveux '.PARTIT': TODO add PARTSD objects */
     /** @brief Liste contenant les modelisations ajoutees par l'utilisateur */
     listOfModsAndGrps _modelisations;
     /** @brief Maillage sur lequel repose la modelisation */
@@ -145,7 +144,6 @@ class Model : public DataStructure, public ListOfTables {
           ListOfTables( name ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-          _partition( JeveuxVectorChar8( getName() + ".PARTIT    " ) ), _saneModel( nullptr ),
           _baseMesh( mesh ), _splitMethod( SubDomain ), _graphPartitioner( MetisPartitioner ),
           _ligrel( boost::make_shared< FiniteElementDescriptor >(
                 getName() + ".MODELE", _baseMesh ) ) {
@@ -163,7 +161,6 @@ class Model : public DataStructure, public ListOfTables {
         : DataStructure( name, 8, "MODELE" ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-          _partition( JeveuxVectorChar8( getName() + ".PARTIT    " ) ), _saneModel( nullptr ),
           _baseMesh( mesh ), _connectionMesh( mesh ), _splitMethod( Centralized ),
           _graphPartitioner( MetisPartitioner ),
           _ligrel( boost::make_shared< FiniteElementDescriptor >(

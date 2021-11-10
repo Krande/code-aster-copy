@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,6 @@
 
 subroutine xcpmo1(modmes, modthx, modmex)
 !
-! person_in_charge: sam.cuvilliez at edf.fr
-!
     implicit none
 #include "jeveux.h"
 #include "asterfort/adalig.h"
@@ -29,6 +27,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dismte.h"
+#include "asterfort/exisd.h"
 #include "asterfort/initel.h"
 #include "asterfort/indk16.h"
 #include "asterfort/jecrec.h"
@@ -61,7 +60,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !     une fois que la copie de modmes dans modmex a ete effectuee
 !
 ! --> on modifie dans cette routine certains objets de modmex en fonction
-!     de mothx : 
+!     de mothx :
 !       - le '.MAILLE' modmex//.MAILLE'
 !       - le ligrel    modmex//.MODELE'
 !
@@ -268,7 +267,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
     call jeveuo(modmes//'.MAILLE', 'L', vi=mmes)
 !
 ! - on s'assure que toute maille affectee par un element thermique
-! - enrichi dans modthx est bien affectee par un element mecanique 
+! - enrichi dans modthx est bien affectee par un element mecanique
 ! - sain dans modmes
 !
     do ima = 1, nbmx
@@ -288,16 +287,18 @@ subroutine xcpmo1(modmes, modthx, modmex)
 !
     enddo
 !
-! - copie integrale du contenu de modmes dans modmex 
+! - copie integrale du contenu de modmes dans modmex
 !
     call copisd('MODELE', 'G', modmes, modmex)
 !
-! - on supprime modmex//'.PARTIT' s'il existe car MODI_MODELE_XFEM
+! - on supprime modmex//'.PARTSD' s'il existe car MODI_MODELE_XFEM
 ! - avec mot-cle FISSURE ne recree pas cet objet s'il existe dans
 ! - le modele sain renseigne dans MODELE_IN
 !
-    call jeexin(modmex//'.PARTIT', iexi)
-    if (iexi .ne. 0) call jedetr(modmex//'.PARTIT')
+    call exisd('PARTITION', modmex//'.PARTSD', iexi)
+    if (iexi .ne. 0) then
+        call detrsd('PARTITION', modmex//'.PARTSD')
+    endif
 !
 ! - recuperation du '.MAILLE' de modmex
 !
@@ -336,7 +337,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
                 ASSERT(.false.)
             endif
 !
-!       MECANIQUE AXIS        
+!       MECANIQUE AXIS
         else if (indk16(eleaxmec, ktyelm, 1, nelaxmec) .gt. 0) then
             if (indk16(eleaxthx, ktyelt, 1, nelaxthx) .eq. 0) then
                 ASSERT(.false.)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,8 +98,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     parameter(nbecmx=10)
 !
     character(len=1) :: bas, ktyp
-    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas, partit
+    character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas
     character(len=14) :: nume_ddl,kret
+    character(len=19) :: partit
     character(len=19) :: vecas, vprof, vecel, a19, b19, c19, resu, nume_equa
     character(len=24) :: kmaila, k24prn, knueq, knequ
     character(len=24) :: knulil, kvelil, kveref, kvedsc, nomli, kvale
@@ -240,7 +241,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 vali(2)=nbproc
                 call utmess('F', 'CALCUL_35', ni=2, vali=vali)
             endif
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=numsd)
+            call jeveuo(partit//'.NUPR', 'L', vi=numsd)
         endif
     endif
 !

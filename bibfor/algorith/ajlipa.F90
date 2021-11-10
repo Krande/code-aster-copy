@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ajlipa(modelz, base, kdis, sd_partit1z)
+subroutine ajlipa(modelz, base, kdis)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,8 +26,7 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getres.h"
-#include "asterfort/fetcrf.h"
-#include "asterfort/fetskp.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
@@ -39,15 +38,12 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/sdpart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 
     character(len=*), intent(in) :: modelz
     character(len=1), intent(in) :: base
     character(len=24), intent(in) :: kdis
-    character(len=*), intent(in) :: sd_partit1z
-! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  But :
 !     Creation (ou modification) de la sd_partition d'un modele
@@ -57,16 +53,16 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 !     * il faut appeler cette routine apres adalig si cette derniere
 !       est appelee (cas de op0018)
 ! ----------------------------------------------------------------------
-    character(len=8) :: modele, partit, mopart, valk(3), nomres
+    character(len=8) :: modele, mopart, valk(3), nomres
     character(len=16) :: typres, nomcom
-    character(len=19) :: ligrmo, sd_partit1
+    character(len=19) :: ligrmo, partsd
     character(len=24) :: k24b
-    integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma
+    integer :: i, rang, nbproc, ifm, niv, ibid, nbsd, nbma
     integer :: nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
     integer :: iexi
     integer :: icobis, dist0, jnumsd, vali(3), nbmamo, ima
     integer ::  jprti, jprtk
-    aster_logical :: plein0, exi_sdpart1
+    aster_logical :: plein0, exi_partsd
     integer, pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
     integer, pointer :: maille(:) => null()
@@ -82,7 +78,7 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 ! ----------------------------------------------------------------------
     modele = modelz
     ligrmo = modele//'.MODELE'
-    sd_partit1=sd_partit1z
+    partsd = modele//'.PARTSD'
 
     call getres(nomres, typres, nomcom)
     ASSERT(nomres.eq.modele)
@@ -90,15 +86,10 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 
 !   -- s'il existe deja une partition, on la detruit :
 !   --------------------------------------------------
-    call jeexin(modele//'.PARTIT', iexi)
+    call exisd('PARTITION', partsd, iexi)
     if (iexi .gt. 0) then
         ASSERT(nomcom.eq.'MODI_MODELE')
-        call jeveuo(modele//'.PARTIT', 'E', jpart)
-        partit = zk8(jpart-1+1)
-        call detrsd('PARTITION', partit)
-        zk8(jpart-1+1)=' '
-    else
-        call wkvect(modele//'.PARTIT', base//' V K8', 1, jpart)
+        call detrsd('PARTITION', partsd)
     endif
 
 !   -- s'il n'y a pas d'elements finis dans le modele :
@@ -126,36 +117,27 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
     if (kdis .eq. 'CENTRALISE') goto 999
 
 
-!   -- la sd_partit1 est a fournir si 'SOUS_DOMAINE'
+!   -- la partsd est a fournir si 'SOUS_DOMAINE'
 !   -------------------------------------------------------------------
-    exi_sdpart1=(kdis .eq. 'SOUS_DOMAINE')
-    if (exi_sdpart1) then
-        ASSERT(sd_partit1.ne.' ')
-    else
-        ASSERT(sd_partit1.eq.' ')
-    endif
+    exi_partsd = kdis .eq. 'SOUS_DOMAINE'
 
 
 ! ----------------------------------------------------------------------
 !   Lecture des mot-cles et verifications supplementaires
-!   Creation de la sd_partit1
+!   Creation de la partsd
 ! ----------------------------------------------------------------------
     dist0 = 0
-
-    partit = modele
-    zk8(jpart-1+1) = partit
-
 
 !   -- Creation de la sd_partition :
 !   ----------------------------------------------------
     call jeveuo(modele//'.MAILLE', 'L', vi=maille)
     call jelira(modele//'.MAILLE', 'LONMAX', nbma)
-    call wkvect(partit//'.PRTI', base//' V I', 1, jprti)
+    call wkvect(partsd//'.PRTI', base//' V I', 1, jprti)
     zi(jprti-1+1)=nbproc
-    call wkvect(partit//'.PRTK', base//' V K24', 2, jprtk)
+    call wkvect(partsd//'.PRTK', base//' V K24', 2, jprtk)
     zk24(jprtk-1+1)= kdis
     if (kdis(1:5) .eq. 'MAIL_') then
-        call wkvect(partit//'.NUPROC.MAILLE', base//' V I', nbma+1, jnumsd)
+        call wkvect(partsd//'.NUPR', base//' V I', nbma+1, jnumsd)
         zi(jnumsd-1+nbma+1) = nbproc
 
 !       nbmamo : nbre de mailles du modele
@@ -165,41 +147,33 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
             if (maille(ima) .ne. 0) nbmamo = nbmamo+1
         end do
     endif
-
+    if (exi_partsd) then
+        zk24(jprtk-1+2)= partsd
+    endif
 
 !   -- Recuperations des mot-cles :
 !   -------------------------------
-    if (exi_sdpart1) then
-        call getvis('DISTRIBUTION', 'CHARGE_PROC0_SD', iocc=1, scal=dist0, nbret=ibid)
-        if (ibid.eq.0) dist0=0
-        ASSERT(sd_partit1.ne.' ')
-        zk24(jprtk-1+2)= sd_partit1
+!   uniquement pour DISTRIBUTION/METHODE='MAIL_*'
+    call getvis('DISTRIBUTION', 'CHARGE_PROC0_MA', iocc=1, scal=dist0, nbret=ibid)
 
-    else if (kdis(1:5).eq.'MAIL_') then
-        call getvis('DISTRIBUTION', 'CHARGE_PROC0_MA', iocc=1, scal=dist0, nbret=ibid)
-        ASSERT(sd_partit1.eq.' ')
-    endif
-
-
-!   -- Verification pour le cas du partitionnement avec sd_partit1 :
+!   -- Verification pour le cas du partitionnement avec partsd :
 !   -----------------------------------------------------------------
-    if (exi_sdpart1) then
-        call jeveuo(sd_partit1//'.FREF', 'L', vk8=fref)
+    if (exi_partsd) then
+        call jeveuo(partsd//'.FREF', 'L', vk8=fref)
         mopart = fref(1)
         if (modele .ne. mopart) then
-            valk(1) = sd_partit1(1:8)
+            valk(1) = partsd(1:8)
             valk(2) = modele
             valk(3) = mopart
             call utmess('F', 'PARTITION1_17', nk=3, valk=valk)
         endif
     endif
 
-
 !   -- Verifications sur le nombre de mailles ou de sous-domaines :
 !      par rapport au nombre de processeurs
 !   ---------------------------------------------------------------
-    if (exi_sdpart1) then
-        call jeveuo(sd_partit1//'.FDIM', 'L', vi=fdim)
+    if (exi_partsd) then
+        call jeveuo(partsd//'.FDIM', 'L', vi=fdim)
         nbsd = fdim(1)
 !       il faut au moins un sd par proc hors proc0
         if (((nbsd-dist0).lt.(nbproc-1)) .and. (dist0.gt.0)) then

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,9 +56,9 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
     character(len=7) :: incr, ielem, imode
-    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, partit, k8b
+    character(len=8) :: vetel, lpain(3), lpaout(1), modele, modmec, k8b
     character(len=16) :: option
-    character(len=19) :: nomcha, chgeom, matas, chharm
+    character(len=19) :: nomcha, chgeom, matas, chharm, partit
     character(len=24) :: ligrmo, lchin(3), lchout(1)
     aster_logical :: yang
     character(len=8), pointer :: vec(:) => null()

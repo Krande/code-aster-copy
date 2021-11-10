@@ -75,7 +75,6 @@ character(len=*) :: questi, repkz, nomobz
     character(len=24) :: list_elem
     character(len=8), pointer :: typema(:) => null()
     integer, pointer :: nbno(:) => null()
-    character(len=8), pointer :: partit(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,15 +100,12 @@ character(len=*) :: questi, repkz, nomobz
 !     --------------------------------
     else if (questi.eq.'PARTITION') then
 !     --------------------------------
-        repk=' '
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
-        modele=zk8(jlgrf-1+2)
-        if (modele .ne. ' ') then
-            call jeexin(modele//'.PARTIT', iexi)
-            if (iexi .gt. 0) then
-                call jeveuo(modele//'.PARTIT', 'L', vk8=partit)
-                repk=partit(1)
-            endif
+        modele = zk8(jlgrf-1+2)
+        repk = modele//'.PARTSD'
+        call exisd('PARTITION', repk, iexi)
+        if (iexi .eq. 0) then
+            repk = ' '
         endif
 !
 !     -----------------------------------

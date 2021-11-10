@@ -62,10 +62,9 @@ implicit none
     character(len=4) :: vale_type
     character(len=8) :: mesh, model, sdcont
     character(len=16) :: k16dummy, command
-    character(len=19) :: ligrmo, ligret, ligrel, ligrch
+    character(len=19) :: ligrmo, ligret, ligrel, ligrch, partit
     integer :: cont_form, algo_cont
     aster_logical :: lallv
-    character(len=8)  :: partit
     character(len=24) :: sdcont_defi
     character(len=8), pointer :: p_sdcont_type(:) => null()
 !

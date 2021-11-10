@@ -1,5 +1,5 @@
 !--------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, ltest, rang, nbproc, mpicou,&
-                  nbordr, nbpas, vldist, vcham, lisori, nbordi, lisord,&
-                  modele, sd_partition, lsdpar,&
-                  i, ipas, ideb, ifin, irelat,&
-                  chamno, lonnew, lonch, ktyp, vcnoch, noch, nochc)
+subroutine pcptcc(option, ldist, dbg_ob, dbgv_ob, lcpu, &
+                  ltest, rang, nbproc, mpicou, nbordr, &
+                  nbpas, vldist, vcham, lisori, nbordi, &
+                  lisord, modele, partsd, lsdpar, i, &
+                  ipas, ideb, ifin, irelat, chamno, &
+                  lonnew, lonch, ktyp, vcnoch, noch, &
+                  nochc)
 implicit none
 !
 #include "jeveux.h"
@@ -31,6 +33,9 @@ implicit none
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exisd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeimpo.h"
@@ -47,14 +52,13 @@ implicit none
 #include "asterfort/wkvect.h"
     integer           :: option, nbordr, i, ipas, lonnew, lonch
     character(len=1)  :: ktyp
-    character(len=19)  :: lisord
+    character(len=19)  :: lisord, partsd
     character(len=24)  :: vldist, vcham, lisori, modele, chamno, vcnoch
     aster_logical      :: ldist, dbg_ob, lsdpar
     aster_logical      :: dbgv_ob, lcpu, ltest
     integer            :: rang, nbpas, nbproc, ideb, ifin, irelat
     integer            :: nbordi
     mpi_int            :: mpicou
-    character(len=8)   :: sd_partition
     real(kind=8), pointer :: noch(:)
     complex(kind=8), pointer :: nochc(:)
 ! ---------------------------------------------------------------------
@@ -63,7 +67,7 @@ implicit none
 !  P______________C___________P_______________T__________C____C____
 ! ----------------------------------------------------------------------
     mpi_int :: mpicow, mrang, mnbproc
-    integer :: ifm, niv, iret, jldist, iaux1, k, jvcham, jordi, compt, jordr, jparti, p
+    integer :: ifm, niv, iret, jldist, iaux1, k, jvcham, jordi, compt, jordr, p
     integer :: lonmax, lonmin, jcnoch, jval
     real(kind=8) :: rzero
     complex(kind=8) :: czero
@@ -170,7 +174,7 @@ implicit none
         do k=1,nbpas*nbproc
           if (iaux1.gt.(nbproc-1)) iaux1=0
           zi(jldist+k-1)=iaux1
-          iaux1=iaux1+1          
+          iaux1=iaux1+1
         enddo
       endif
       if (dbgv_ob) call jeimpo(ifm,vldist,'vldist')
@@ -203,7 +207,7 @@ implicit none
         enddo
         if (dbg_ob) write(ifm,*)'< ',rang,'pcptcc> nbordi= ',nbordi
         ASSERT(compt.eq.nbordi)
-        if (dbgv_ob) call jeimpo(ifm,lisori,'lisori')     
+        if (dbgv_ob) call jeimpo(ifm,lisori,'lisori')
       endif
       if (dbg_ob) write(ifm,*)'< ',rang,'pcptcc> Fin de création du contexte parallélisme en temps '
 !
@@ -236,31 +240,29 @@ implicit none
       endif
       call wkvect(vldist,'V V I',iret,jldist)
       call vecint(iret,rang,zi(jldist))
-      vcham='&&PCPTCC2.VCHAM' 
+      vcham='&&PCPTCC2.VCHAM'
     else if (option.eq.2) then
 ! OPTION=2
 ! DEBRANCHE LE PARALLELISME EN ESPACE
 ! INPUT: ldist, modele, dbg_ob, rang
-! OUTPUT: sd_partition, lsdpar
-      sd_partition=' '
-      lsdpar=.False.
+! OUTPUT: partsd, lsdpar
+      partsd = ' '
       ASSERT(rang.ge.0)
-      call jeexin(modele(1:8)//'.PARTIT',iret)
-      if (iret.ne.0) then
-        call jeveuo(modele(1:8)//'.PARTIT', 'E', jparti)
-        sd_partition=zk8(jparti)
-! AFIN DE SIGNIFIER L'ACTIVATION DU PARALLELISME EN ESPACE
-        if (sd_partition.ne.' ') lsdpar=.True.
-! AFIN DE STOPPER PONCTUELLEMENT LE PARALLELISME EN ESPACE
-        if (lsdpar.and.ldist) zk8(jparti)=' '
+      call exisd('PARTITION', modele(1:8)//'.PARTSD', iret)
+      lsdpar = iret .eq. 1
+      if (lsdpar .and. ldist) then
+!         AFIN DE STOPPER PONCTUELLEMENT LE PARALLELISME EN ESPACE
+          partsd = '&&PCPTCC.PARTSD'
+          call copisd('PARTITION', 'G', modele(1:8)//'.PARTSD', partsd)
+          call detrsd('PARTITION', modele(1:8)//'.PARTSD')
       endif
       if (dbg_ob) write(ifm,*)&
-          '< ',rang,'pcptcc> lsdpar/sd_partition_init= ',lsdpar,sd_partition
+          '< ',rang,'pcptcc> lsdpar/partsd_init= ',lsdpar,partsd
 !
     else if ((option.eq.3).or.(option.eq.301)) then
 ! OPTION=3
 ! REBRANCHE LE PARALLELISME EN ESPACE ET DETRUIT OBJETS JEVEUX DU CONTEXTE PARALLELISME TEMPS
-! INPUT: ldist, modele, sd_partition, rang, lsdpar, dbg_ob, vcham, lisori (avec option=3),&
+! INPUT: ldist, modele, partsd, rang, lsdpar, dbg_ob, vcham, lisori (avec option=3),&
 !        vcnoch, vldist
 ! NETTOYAGE POUR PARALLELISME EN TEMPS
       if (ldist) then
@@ -281,10 +283,16 @@ implicit none
       endif
       if (ldist) then
         if (lsdpar) then
-          call jeveuo(modele(1:8)//'.PARTIT', 'E', jparti)
-          zk8(jparti)=sd_partition
+!         it should have been previously copied
+          call exisd('PARTITION', modele(1:8)//'.PARTSD', iret)
+          ASSERT(iret .eq. 0)
+          call exisd('PARTITION', '&&PCPTCC.PARTSD', iret)
+          ASSERT(iret .eq. 1)
+!         restore PARTSD object
+          call copisd('PARTITION', 'G', '&&PCPTCC.PARTSD', modele(1:8)//'.PARTSD')
+          call detrsd('PARTITION', '&&PCPTCC.PARTSD')
         endif
-        if (dbg_ob) write(ifm,*)'< ',rang,'pcptcc> lsdpar/sd_partition_fin= ',lsdpar,sd_partition
+        if (dbg_ob) write(ifm,*)'< ',rang,'pcptcc> lsdpar/partsd_fin= ',lsdpar,partsd
       endif
     else if (option.eq.4) then
 ! OPTION=4

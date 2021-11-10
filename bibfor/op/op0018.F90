@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ implicit none
 !
     integer :: dim_topo_curr, dim_topo_init
     integer :: ifm, niv
-    character(len=8) :: mesh, model, sd_partit1
+    character(len=8) :: mesh, model
     character(len=8) :: name_elem, z_quasi_zero, methode
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, phenomRead, modeli, list_modelisa(10), keywordfact, modeli_in
@@ -397,7 +397,6 @@ implicit none
 !      dans n'importe quel ordre :
 !        * cormgi doit etre appelee apres adalig
 !        * fetcrf doit etre appelee apres initel
-    sd_partit1=' '
     call asmpi_info(rank=mrank, size=msize)
     nbproc = to_aster_int(msize)
     call getvtx('DISTRIBUTION', 'METHODE', iocc=1, scal=kdis, nbret=n1)
@@ -409,16 +408,17 @@ implicit none
         call utmess('F','MODELE1_99', nk = 2, valk = [kdis, mesh])
     endif
     if (kdis.eq.'SOUS_DOMAINE') then
-        sd_partit1 = model
         call getvtx('DISTRIBUTION', 'PARTITIONNEUR', iocc=1, scal=methode, nbret=n1)
         ASSERT(n1.eq.1)
         call getvis('DISTRIBUTION', 'NB_SOUS_DOMAINE', iocc=1, scal=nbpart, nbret=n1)
-        if (n1.eq.0) nbpart=nbproc
-        call fetskp(model,methode,nbpart)
-        call fetcrf(sd_partit1,model,nbpart)
+        if (n1.eq.0) then
+            nbpart = nbproc
+        endif
+        call fetskp(model, methode, nbpart)
+        call fetcrf(model, nbpart)
     endif
     if (kdis.eq.'SOUS_DOMAINE') then
-        call adalig(ligrel,sd_partit1)
+        call adalig(ligrel, model//'.PARTSD')
     else
         call adalig(ligrel)
     endif
@@ -429,7 +429,7 @@ implicit none
 !
 ! - Creation de la partition :
 !
-    call ajlipa(model, 'G', kdis, sd_partit1)
+    call ajlipa(model, 'G', kdis)
 !
 ! - Check model
 !

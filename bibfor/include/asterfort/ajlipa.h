@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,9 @@
 !
 !
 interface
-    subroutine ajlipa(modelz, base, kdis, sd_partit1z)
+    subroutine ajlipa(modelz, base, kdis)
         character(len=*), intent(in) :: modelz
         character(len=1), intent(in) :: base
         character(len=24), intent(in):: kdis
-        character(len=*), intent(in) :: sd_partit1z
     end subroutine ajlipa
 end interface

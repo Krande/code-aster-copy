@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
+subroutine adalig_sd(ligr,partsd,ntliel,nbtype,clas,teut,nteut)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -42,8 +42,7 @@ subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=19), intent(in) :: ligr
-    character(len=8), intent(in) :: sd_partit1
+    character(len=19), intent(in) :: ligr, partsd
     character(len=24),intent(in) :: ntliel
     integer, intent(in) :: nbtype
     character(len=1), intent(in) :: clas
@@ -52,11 +51,11 @@ subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
 !----------------------------------------------------------------------
 ! But: Reorganiser la collection .LIEL de ligrz afin de regrouper
 !      les elements de meme TYPE_ELEM dans un meme GREL
-!      et en respectant la partition sd_partit1.
+!      et en respectant la partition partsd.
 !
 ! De plus, on veut :
 !   * Limiter la taille des GRELS (pas plus de nelmx elements)
-!   * Faire en sorte que les GRELS respectent sd_partit1 :
+!   * Faire en sorte que les GRELS respectent partsd :
 !     (tous les elements d'un GREL appartiennent aux sous-domaines traites par le
 !      processeur qui traitera ce GREL)
 !     * Pour chaque TYPE_ELEM :
@@ -72,11 +71,10 @@ subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
 !
 !
 ! Arguments d'entree:
-!     ligr       (o) : nom du ligrel
-!     sd_partit1 (o) : nom de la sd_partit1
+!     ligr   (o) : nom du ligrel
+!     partsd (o) : nom de la partsd
 !----------------------------------------------------------------------
     character(len=24) :: liel
-    character(len=19) :: part19
     character(len=8) :: noma
     integer :: i, jliel
     integer ::  igrel, itype, nbma,ksd, kproc
@@ -97,20 +95,19 @@ subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
     integer, pointer :: feta(:) => null()
     integer, pointer :: tliel(:) => null()
     integer, pointer :: lctliel(:) => null()
-    integer, pointer :: partsd(:) => null()
+    integer, pointer :: sdloc(:) => null()
 #define numail(igr,iel) tliel(lctliel(igr)+iel-1)
 !----------------------------------------------------------------------
 
     call jemarq()
 
     liel=ligr//'.LIEL'
-    part19=sd_partit1
     call dismoi('NOM_MAILLA', ligr, 'LIGREL', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jelira(ntliel, 'NMAXOC', nbgrel_av)
     call jeveuo(ntliel, 'L', vi=tliel)
     call jeveuo(jexatr(ntliel, 'LONCUM'), 'L', vi=lctliel)
-    call jelira(part19//'.FETA', 'NMAXOC', nbsd)
+    call jelira(partsd//'.FETA', 'NMAXOC', nbsd)
 
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
@@ -121,14 +118,14 @@ subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
 !      traite_par(ima) = kproc
 !   -----------------------------------------------
 !   -- on repartit les sous-domaines
-    call wkvect('&&ADALIG_SD.PART.SD', 'V V I', nbsd, vi=partsd)
-    call sdpart(nbsd, 0, partsd)
+    call wkvect('&&ADALIG_SD.PART.SD', 'V V I', nbsd, vi=sdloc)
+    call sdpart(nbsd, 0, sdloc)
 
     AS_ALLOCATE(vi=traite_par, size=nbma)
     traite_par(:)=-99
     do ksd=1,nbsd
-        if (partsd(ksd) .eq. 1) then
-            call jeveuo(jexnum(part19//'.FETA',ksd), 'L', vi=feta)
+        if (sdloc(ksd) .eq. 1) then
+            call jeveuo(jexnum(partsd//'.FETA',ksd), 'L', vi=feta)
             if (rang.eq.0) then
                 do i =1, size(feta)
                     traite_par(feta(i))=nbproc-1

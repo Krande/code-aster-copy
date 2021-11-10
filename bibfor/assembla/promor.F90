@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine promor(nuz, base)
     integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
     integer ::  rang, imd, jsmh1
 !
-    character(len=8) :: partit
+    character(len=19) :: partit
     real(kind=8) :: valr(2), rcoef, requ
     integer :: nbproc
     integer, pointer :: maille(:) => null()
@@ -170,7 +170,7 @@ subroutine promor(nuz, base)
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
         ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
+            call jeveuo(partit//'.NUPR', 'L', vi=maille)
         endif
     endif
 !

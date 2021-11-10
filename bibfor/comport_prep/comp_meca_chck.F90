@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ type(Behaviour_PrepPara), intent(inout) :: behaviourPrep
     character(len=24), parameter :: cellAffe = '&&COMPMECASAVE.LIST'
     aster_logical :: lAllCellAffe
     integer :: nbCellAffe
+    integer :: iComp, nbComp, exteDefo, lctestIret
     character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc
     character(len=16) :: relaCompPY, defoCompPY
-    integer :: iComp, nbComp, exteDefo, lctestIret
+    character(len=19) :: partit
     character(len=24) :: ligrmo
-    character(len=8) :: partit
     mpi_int :: nbCPU, mpiCurr
     aster_logical :: lElasByDefault, lNeedDeborst, lMfront, lDistParallel
 !

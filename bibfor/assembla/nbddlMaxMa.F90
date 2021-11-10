@@ -52,9 +52,9 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
 ! IN  I   nbmat         : nombre de matr_elem dans la MATR_ASSE
 !     ------------------------------------------------------------------
     character(len=3)  :: answer
-    character(len=8)  :: mesh, model, model_elem, partition, nogdco, nogdsi
+    character(len=8)  :: mesh, model, model_elem, nogdco, nogdsi
     character(len=14) :: nume_ddl
-    character(len=19) :: nomligrel, matr_elem, resu_elem, matr_asse
+    character(len=19) :: nomligrel, matr_elem, resu_elem, matr_asse, partition
     integer :: iconx1, iconx2, iel, iret, nnoe
     integer :: igrel, numa, ino, n1, nddl1, rang, jrefa, jdesc
     integer :: nddlt, nel, nec, mode, nugd, imat, nbssa, iamail
@@ -199,7 +199,7 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat) result(maxDDLMa)
         call jeveuo(partition//'.PRTK', 'L', vk24=v_prtk)
         l_dgrel=(v_prtk(1).eq.'SOUS_DOMAINE') .or. (v_prtk(1).eq.'GROUP_ELEM')
         if (.not.l_dgrel) then
-            call jeveuo(partition//'.NUPROC.MAILLE', 'L', vi=v_numsd)
+            call jeveuo(partition//'.NUPR', 'L', vi=v_numsd)
         endif
     else
         rang=0

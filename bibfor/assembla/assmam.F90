@@ -101,10 +101,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     character(len=1) :: base1, typsca
     character(len=2) :: tt
     character(len=3) :: mathpc
-    character(len=8) ::  nogdco, nogdsi, ma, ma2, mo, mo2, partit
+    character(len=8) ::  nogdco, nogdsi, ma, ma2, mo, mo2
     character(len=8) :: symel, kempic
     character(len=14) :: nudev, nu14
-    character(len=19) :: matdev, mat19, resu, matel, ligre1
+    character(len=19) :: matdev, mat19, resu, matel, ligre1, partit
     character(len=1) :: matsym
     character(len=3) :: matd,kret
     real(kind=8) :: c1, temps(7)
@@ -311,7 +311,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                 vali(2)=nbproc
                 call utmess('F', 'CALCUL_35', ni=2, vali=vali)
             endif
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+            call jeveuo(partit//'.NUPR', 'L', jnumsd)
         endif
     endif
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,8 +60,8 @@ subroutine nupodd(nu, base, rang, nbproc)
     integer :: ddl1l, ilib, neql, jconx2, idprn2
     integer :: nec
 !
-    character(len=8) :: noma, mo, partit
-    character(len=19) :: ligrmo, nomlig
+    character(len=8) :: noma, mo
+    character(len=19) :: ligrmo, nomlig, partit
 !
     aster_logical :: ldist, ldgrel
     integer, pointer :: adne(:) => null()
@@ -157,7 +157,7 @@ subroutine nupodd(nu, base, rang, nbproc)
         if (ldgrel) then
             jnumsd=1
         else
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', jnumsd)
+            call jeveuo(partit//'.NUPR', 'L', jnumsd)
         endif
     endif
     ASSERT(ldist)

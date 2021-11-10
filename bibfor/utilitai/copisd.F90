@@ -422,7 +422,7 @@ implicit none
         call copis2('L_TABLE', bas2, k81, k82)
 !
         call jedup1(k81//'.MAILLE', bas2, k82//'.MAILLE')
-        call jedup1(k81//'.PARTIT', bas2, k82//'.PARTIT')
+        call copis2('PARTITION', bas2, k81//'.PARTSD', k82//'.PARTSD')
 !
 !       -- IL FAUT METTRE A JOUR LGRF(2):
         call jeexin(k82//'.MODELE    .LGRF', iexi)
@@ -431,6 +431,16 @@ implicit none
             zk8(j1-1+2)=k82
         endif
 !
+    else if (typesd.eq.'PARTITION') then
+!     -----------------------------------
+        k191 = sd1
+        k192 = sd2
+        call jedup1(k191//'.PRTI', bas2, k192//'.PRTI')
+        call jedup1(k191//'.PRTK', bas2, k192//'.PRTK')
+        call jedup1(k191//'.NUPR', bas2, k192//'.NUPR')
+        call jedup1(k191//'.FDIM', bas2, k192//'.FDIM')
+        call jedup1(k191//'.FREF', bas2, k192//'.FREF')
+        call jedup1(k191//'.FETA', bas2, k192//'.FETA')
 !
 ! ----------------------------------------------------------------------
     else if (typesd.eq.'MATR_ELEM' .or. typesd.eq.'VECT_ELEM') then

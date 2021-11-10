@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,6 @@ subroutine exisd(typesd, nomsd, iret)
 #include "asterfort/utmess.h"
     integer :: iret
     character(len=*) :: typesd, nomsd
-! person_in_charge: jacques.pellet at edf.fr
-! A_UTIL
 ! ----------------------------------------------------------------------
 !  BUT : DETERMINER SI UNE SD EXISTE
 !  IN   TYPESD : TYPE DE LA STRUCTURE DE DONNEE A TESTER
@@ -38,10 +36,11 @@ subroutine exisd(typesd, nomsd, iret)
 !         / 'RESULTAT'
 !         / 'FONCTION'
 !         / 'MODELE'
-!         /'MAILLAGE'
-!         /'NUME_DDL'
-!         /'PROF_CHNO'
-!         /'MATR_ASSE'
+!         / 'PARTITION'
+!         / 'MAILLAGE'
+!         / 'NUME_DDL'
+!         / 'PROF_CHNO'
+!         / 'MATR_ASSE'
 !       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A TESTER
 !
 !  OUT:  IRET   : 0 -> LA SD N'EXISTE PAS
@@ -57,13 +56,14 @@ subroutine exisd(typesd, nomsd, iret)
     call jemarq()
     typ2sd = typesd
 !
+    iret = 0
 !
     if (typ2sd .eq. 'MAILLAGE') then
 !     ------------------------------
         ch8 = nomsd
         call jeexin(ch8//'.DIME', i1)
         call jeexin(ch8//'.NOMNOE', i2)
-        if (i1*i2 .ne. 0) goto 20
+        if (i1*i2 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'MODELE') then
@@ -71,8 +71,15 @@ subroutine exisd(typesd, nomsd, iret)
         ch8 = nomsd
         call jeexin(ch8//'.MAILLE', i1)
         call jeexin(ch8//'.MODELE    .LIEL', i2)
-        if (i1*i2 .ne. 0) goto 20
+        if (i1*i2 .ne. 0) iret = 1
 !
+!
+    else if (typ2sd.eq.'PARTITION') then
+!     ------------------------------
+        ch = nomsd
+        call jeexin(ch//'.PRTI', i1)
+        call jeexin(ch//'.PRTK', i2)
+        if (i1*i2 .ne. 0) iret = 1
 !
     else if (typ2sd.eq.'CARTE') then
 !     ------------------------------
@@ -80,7 +87,7 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.NOMA', i1)
         call jeexin(ch//'.DESC', i2)
         call jeexin(ch//'.VALE', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'CHAM_NO') then
@@ -89,7 +96,7 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.REFE', i1)
         call jeexin(ch//'.DESC', i2)
         call jeexin(ch//'.VALE', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'CHAM_ELEM') then
@@ -97,7 +104,7 @@ subroutine exisd(typesd, nomsd, iret)
         ch = nomsd
         call jeexin(ch//'.CELD', i1)
         call jeexin(ch//'.CELV', i2)
-        if (i1*i2 .ne. 0) goto 20
+        if (i1*i2 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'RESUELEM') then
@@ -106,7 +113,7 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.DESC', i1)
         call jeexin(ch//'.RESL', i2)
         call jeexin(ch//'.NOLI', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
     else if ((typ2sd.eq.'CHAMP').or.(typ2sd.eq.'CHAMP_GD')) then
@@ -116,18 +123,18 @@ subroutine exisd(typesd, nomsd, iret)
 !       -- CHAM_ELEM ?
         call jeexin(ch//'.CELD', i1)
         call jeexin(ch//'.CELV', i2)
-        if (i1*i2 .ne. 0) goto 20
+        if (i1*i2 .ne. 0) iret = 1
 !
 !       -- CHAM_NO OU CARTE ?
         call jeexin(ch//'.DESC', i1)
         call jeexin(ch//'.VALE', i2)
-        if (i1*i2 .ne. 0) goto 20
+        if (i1*i2 .ne. 0) iret = 1
 !
 !       -- RESUELEM ?
         call jeexin(ch//'.DESC', i1)
         call jeexin(ch//'.RESL', i2)
         call jeexin(ch//'.NOLI', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'CHAM_NO_S') then
@@ -136,7 +143,7 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.CNSD', i1)
         call jeexin(ch//'.CNSV', i2)
         call jeexin(ch//'.CNSL', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'CHAM_ELEM_S') then
@@ -145,7 +152,7 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.CESD', i1)
         call jeexin(ch//'.CESV', i2)
         call jeexin(ch//'.CESL', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'TABLE') then
@@ -154,7 +161,7 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.TBBA', i1)
         call jeexin(ch//'.TBNP', i2)
         call jeexin(ch//'.TBLP', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        if (i1*i2*i3 .ne. 0) iret = 1
 !
 !
     else if (typ2sd.eq.'RESULTAT') then
@@ -165,37 +172,37 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch//'.TAVA', i3)
         call jeexin(ch//'.ORDR', i4)
         call jeexin(ch//'.TACH', i5)
-        if (i1*i2*i3*i4*i5 .ne. 0) goto 20
+        if (i1*i2*i3*i4*i5 .ne. 0) iret = 1
 !
     else if (typ2sd.eq.'LIGREL') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch//'.LGRF', i1)
         call jeexin(ch//'.NBNO', i2)
-        if (i1*i2 .ne. 0) goto 20
+        if (i1*i2 .ne. 0) iret = 1
 !
     else if (typ2sd.eq.'FONCTION') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch//'.PROL', i1)
-        if (i1 .ne. 0) goto 20
+        if (i1 .ne. 0) iret = 1
 !
     else if (typ2sd.eq.'MATR_ASSE') then
 !     -----------------------------------
         ch = nomsd
         call jeexin(ch//'.REFA', i2)
         call jeexin(ch//'.VALM', i3)
-        if (i2*i3 .ne. 0) goto 20
+        if (i2*i3 .ne. 0) iret = 1
 !
     else if (typ2sd.eq.'NUME_DDL') then
 !     -----------------------------------
         ch = nomsd
-        
+
         call jeexin(ch(1:14)//'.NUME.DEEQ', i1)
         call jeexin(ch(1:14)//'.NUME.DELG', i2)
         call jeexin(ch(1:14)//'.NUME.LILI', i3)
         call jeexin(ch(1:14)//'.NUME.NUEQ', i4)
-        if (i1*i2*i3*i4 .ne. 0) goto 20
+        if (i1*i2*i3*i4 .ne. 0) iret = 1
 !
     else if (typ2sd.eq.'PROF_CHNO') then
 !     -----------------------------------
@@ -204,18 +211,11 @@ subroutine exisd(typesd, nomsd, iret)
         call jeexin(ch(1:19)//'.DEEQ', i2)
         call jeexin(ch(1:19)//'.LILI', i3)
         call jeexin(ch(1:19)//'.NUEQ', i4)
-        if (i1*i2*i3*i4 .ne. 0) goto 20
+        if (i1*i2*i3*i4 .ne. 0) iret = 1
 !
     else
         call utmess('F', 'UTILITAI_47', sk=typ2sd)
     endif
 !
-    iret = 0
-    goto 30
-!
-20  continue
-    iret = 1
-!
-30  continue
     call jedema()
 end subroutine

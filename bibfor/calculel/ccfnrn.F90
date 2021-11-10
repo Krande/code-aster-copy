@@ -92,9 +92,9 @@ implicit none
     character(len=1) :: stop, ktyp, kbid
     character(len=2) :: codret
     character(len=6) :: nompro
-    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, sd_partition, mesh
+    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para, mesh
     character(len=16) :: typmo, optio2, motfac
-    character(len=19) :: ligrel, chdep2, vebid, k19bid, listLoad
+    character(len=19) :: ligrel, chdep2, vebid, k19bid, listLoad, partsd
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
     character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
     character(len=24) :: carac, cnchmpc
@@ -133,7 +133,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS: INITIALISATION CONTEXTE
     call pcptcc(1, ldist, dbg_ob, dbgv_ob, lcpu, ltest, rang, nbproc, mpicou,&
                 nbordr, nbpas, vldist, vcham, lisori, nbordi, lisord,&
-                k24b, k8bid, lbid,&
+                k24b, k24bid, lbid,&
                 ibid, ibid, ibid, ibid, ibid,&
                 k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
     call jeveuo(vldist,'L',jldist)
@@ -222,7 +222,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS: ON DEBRANCHE L'EVENTUEL PARALLELISME EN ESPACE
     call pcptcc(2, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid,&
                 ibid, ibid, k24b, k24b, k24b, ibid, k19bid,&
-                modele, sd_partition, lsdpar,&
+                modele, partsd, lsdpar,&
                 ibid, ibid, ibid, ibid, ibid,&
                 k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
     if (nbproc.eq.1 .and. niv >1) then
@@ -298,7 +298,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS: CALCUL DES INDICES DE DECALAGE
         call pcptcc(4, ldist, dbg_ob, lbid, lbid, lbid, rang, nbproc, mpibid,&
                    ibid, nbpas, k24b, k24b, k24b, ibid, k19bid,&
-                   k24b, k8bid, lbid,&
+                   k24b, k24bid, lbid,&
                    i, ipas, ideb, ifin, irelat,&
                    k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
         if (lcpu) call cpu_time(rctdeb)
@@ -530,7 +530,7 @@ implicit none
 ! ON TESTE SI C'EST LE CAS SUR LES NBPROCS PAS DE TEMPS CONTIGUES ET SUR LE PAS PRECEDENT
         call pcptcc(6, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid,&
                    ibid, ibid, k24b, k24b, k24b, ibid, k19bid,&
-                   k24b, k8bid, lbid,&
+                   k24b, k24bid, lbid,&
                    ibid, ipas, ibid, ibid, ibid,&
                    k24b, lonnew, lonch, kbid, k24b, prbid, pcbid)
         lonch=lonnew
@@ -785,7 +785,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS:  COM MPI CHAM_NOS.VALE DONT LES NOMS SONT STOCKES DANS VCHAM
         call pcptcc(7, ldist, dbg_ob, lbid, lbid, lbid, rang, nbproc, mpicou,&
                    ibid, ibid, k24b, vcham, k24b, ibid, k19bid,&
-                   k24b, k8bid, lbid,&
+                   k24b, k24bid, lbid,&
                    ibid, ipas, ideb, ifin, irelat,&
                    k24b, ibid, lonch, ktyp, vcnoch, noch, nochc)
         if (lcpu) then
@@ -846,7 +846,7 @@ implicit none
 ! PARALLELISME EN TEMPS: TEST DE VERIFICATION
         call pcptcc(8, ldist, lbid, dbgv_ob, lbid, lbid, ibid, ibid, mpibid,&
                   ibid, ibid, k24b, vcham, k24b, ibid, k19bid,&
-                  k24b, k8bid, lbid,&
+                  k24b, k24bid, lbid,&
                   ibid, ibid, ideb, ifin, ibid,&
                   chamno, ibid, ibid, kbid, k24b, prbid, pcbid)
 !
@@ -902,7 +902,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS: NETTOYAGE DU CONTEXTE
     call pcptcc(3, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid,&
                 ibid, ibid, vldist, vcham, lisori, ibid, k19bid,&
-                modele, sd_partition, lsdpar,&
+                modele, partsd, lsdpar,&
                 ibid, ibid, ibid, ibid, ibid,&
                 k24b, ibid, ibid, kbid, vcnoch, prbid, pcbid)
 !

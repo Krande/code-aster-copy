@@ -116,11 +116,11 @@ implicit none
 !
     character(len=1) :: basopt, kbid, ktyp
     character(len=5) :: numopt
-    character(len=8) :: modele, carael, k8b, sd_partition, modnew
+    character(len=8) :: modele, carael, k8b, modnew
     character(len=8) :: nomail, nobase, modeli
     character(len=11) :: nobaop
     character(len=16) :: optio2, typmcl(4), motcle(4)
-    character(len=19) :: nonbor, lischa, k19b, nochou, nochok
+    character(len=19) :: nonbor, lischa, k19b, nochou, nochok, partsd
     character(len=24) :: chaout, ligrel, mater, ligres, mateco, k24b, vldist, vcham, vcnoch
     character(len=24) :: noliop, lisins, mesmai, lacalc, suropt, mode24, chamno
 !
@@ -285,7 +285,7 @@ implicit none
         if (present(tldist).and.(optio2(6:9) .eq. 'NOEU').and.(nbordl.ge.1)) then
           call pcptcc(101, ldist, dbg_ob, dbgv_ob, lcpu, ltest, rang, nbproc, mpicou,&
                 nbordl, nbpas, vldist, vcham, k24b, ibid, k19b,&
-                k24b, k8b, lbid,&
+                k24b, k24b, lbid,&
                 ibid, ibid, ibid, ibid, ibid,&
                 k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
           call jeveuo(vldist,'L',jldist)
@@ -294,7 +294,7 @@ implicit none
 ! SI LA QUESTION NE SE POSE PAS (APPEL RECURSIF CCFNRN > CALCOP OU OPTION ELGA/ELNO)
           call pcptcc(102, ldist, dbg_ob, dbgv_ob, lcpu, ltest, rang, nbproc, mpicou,&
                 nbordl, nbpas, vldist, vcham, k24b, ibid, k19b,&
-                k24b, k8b, lbid,&
+                k24b, k24b, lbid,&
                 ibid, ibid, ibid, ibid, ibid,&
                 k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
           call jeveuo(vldist,'L',jldist)
@@ -305,7 +305,7 @@ implicit none
         mode24=trim(adjustl(modele))
         call pcptcc(2, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid,&
                 ibid, ibid, k24b, k24b, k24b, ibid, k19b,&
-                mode24, sd_partition, lsdpar,&
+                mode24, partsd, lsdpar,&
                 ibid, ibid, ibid, ibid, ibid,&
                 k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
     if (nbproc.eq.1.and. niv>1) then
@@ -336,7 +336,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS: CALCUL DES INDICES DE DECALAGE
             call pcptcc(4, ldist, dbg_ob, lbid, lbid, lbid, rang, nbproc, mpibid,&
                    ibid, nbpas, k24b, k24b, k24b, ibid, k19b,&
-                   k24b, k8b, lbid,&
+                   k24b, k24b, lbid,&
                    iordr, ipas, ideb, ifin, irelat,&
                    k24b, ibid, ibid, kbid, k24b, prbid, pcbid)
 !
@@ -415,7 +415,7 @@ implicit none
 ! ON TESTE SI C'EST LE CAS SUR LES NBPROCS PAS DE TEMPS CONTIGUES ET SUR LE PAS PRECEDENT
                   call pcptcc(6, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid,&
                               ibid, ibid, k24b, k24b, k24b, ibid, k19b,&
-                              k24b, k8b, lbid,&
+                              k24b, k24b, lbid,&
                               ibid, ipas, ibid, ibid, ibid,&
                               k24b, lonnew, lonch, kbid, k24b, prbid, pcbid)
                   lonch=lonnew
@@ -431,14 +431,14 @@ implicit none
                 endif
                 call pcptcc(7, ldist, dbg_ob, lbid, lbid, lbid, rang, nbproc, mpicou,&
                             ibid, ibid, k24b, vcham, k24b, ibid, k19b,&
-                            k24b, k8b, lbid,&
+                            k24b, k24b, lbid,&
                             ibid, ipas, ideb, ifin, irelat,&
                             k24b, ibid, lonch, ktyp, vcnoch, noch, nochc)
 !
 ! PARALLELISME EN TEMPS: TEST DE VERIFICATION
                 call pcptcc(8, ldist, lbid, dbgv_ob, lbid, lbid, ibid, ibid, mpibid,&
                             ibid, ibid, k24b, vcham, k24b, ibid, k19b,&
-                            k24b, k8b, lbid,&
+                            k24b, k24b, lbid,&
                             ibid, ibid, ideb, ifin, ibid,&
                             chamno, ibid, ibid, kbid, k24b, prbid, pcbid)
 !
@@ -497,7 +497,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS: NETTOYAGE DU CONTEXTE
         call pcptcc(301, ldist, dbg_ob, lbid, lbid, lbid, rang, ibid, mpibid,&
                 ibid, ibid, vldist, vcham, k24b, ibid, k19b,&
-                mode24, sd_partition, lsdpar,&
+                mode24, partsd, lsdpar,&
                 ibid, ibid, ibid, ibid, ibid,&
                 k24b, ibid, ibid, kbid, vcnoch, prbid, pcbid)
  20     continue

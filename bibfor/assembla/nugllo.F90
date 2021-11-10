@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ subroutine nugllo(nu, base)
     integer :: iel, igr, nel, k1, n1, j, ilib
     integer :: nbproc, vali(1), jnugl, ieqg
 !
-    character(len=8) :: noma, partit, mo
-    character(len=19) :: ligrmo, nomlig
+    character(len=8) :: noma, mo
+    character(len=19) :: ligrmo, nomlig, partit
 !----------------------------------------------------------------------
     aster_logical :: ldist, ldgrel
     integer, pointer :: ddl_pres(:) => null()
@@ -184,7 +184,7 @@ subroutine nugllo(nu, base)
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
         ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
+            call jeveuo(partit//'.NUPR', 'L', vi=maille)
         endif
     endif
     ASSERT(ldist)

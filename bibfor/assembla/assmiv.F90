@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,9 +84,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     integer :: rang, nbproc, iret, ifm, niv
     character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
-    character(len=8) :: partit
     character(len=14) :: nume_ddl
-    character(len=19) :: vecas, vprof, vecel, resu
+    character(len=19) :: partit, vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
     character(len=24) :: knequa, kvale
     integer :: admodl, lcmodl, iexi
@@ -147,7 +146,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
         if (.not.ldgrel) then
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
+            call jeveuo(partit//'.NUPR', 'L', vi=maille)
         endif
     endif
 !

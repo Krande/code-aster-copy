@@ -30,7 +30,7 @@ class sd_modele(AsBase):
 
     MODELE = sd_ligrel()
     MAILLE = Facultatif(AsVI())
-    PARTIT = Facultatif(AsVK8(lonmax=1))
+    PARTSD = Facultatif(sd_partition(SDNom='.PARTSD'))
 
     # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs
     # caractéristiques de l'étude :
@@ -39,16 +39,14 @@ class sd_modele(AsBase):
     # Si le modèle vient de MODI_MODELE_XFEM :
     xfem = Facultatif(sd_modele_xfem(SDNom(nomj='')))
 
-    def check_existence(self, checker):
+    def check_existence(self, _):
         exi_liel = self.MODELE.LIEL.exists
         exi_maille = self.MAILLE.exists
         # si .LIEL => .MAILLE
         if exi_liel:
             assert exi_maille
 
-    def check_PARTIT(self, checker):
-        if self.PARTIT.exists:
-            partit = self.PARTIT.get_stripped()
-            if partit[0] != '':
-                sd2 = sd_partition(partit[0])
-                sd2.check(checker)
+    # def check_debug(self, _):
+    #     print("DEBUG: model.nomj:", self.nomj())
+    #     from ..Commands import IMPR_CO
+    #     IMPR_CO(UNITE=6, CHAINE=self.nomj().strip())

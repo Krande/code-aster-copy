@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,7 @@ character(len=19) :: meelem(*), measse(*)
 type(NL_DS_System), intent(in) :: ds_system
 integer, intent(in) :: nume_inst, list_func_acti(*)
 type(NL_DS_Contact), intent(inout) :: ds_contact
-character(len=19) :: maprec, matass
-character(len=8) :: partit
+character(len=19) :: maprec, matass, partit
 aster_logical :: ldist
 integer :: faccvg, ldccvg, condcvg
 !

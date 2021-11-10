@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ implicit none
     character(len=16) :: nomop2, nomte
     character(len=3) :: bevois, exiele
     character(len=12) :: vge
-    character(len=8) :: partit
+    character(len=19) :: partit
     real(kind=8) :: rundef
     integer, pointer :: nbligcol(:) => null()
     character(len=16), pointer :: nvge(:) => null()
@@ -242,7 +242,7 @@ implicit none
         ca_nbproc_ = to_aster_int(msize)
 
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ca_ldgrel_= prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM' 
+        ca_ldgrel_= prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
         if (.not.ca_ldgrel_) then
             call jeveuo(partit//'.PRTI', 'L', vi=prti)
             if (prti(1) .ne. ca_nbproc_) then
@@ -251,7 +251,7 @@ implicit none
                 call utmess('F', 'CALCUL_35', ni=2, vali=vali)
             endif
             ca_lparal_=.true.
-            call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=ca_numsd_)
+            call jeveuo(partit//'.NUPR', 'L', vi=ca_numsd_)
             call wkvect('&&CALCUL.PARALLELE', 'V V L', ca_nbelmx_, vl=ca_paral_)
             ca_nbobtr_=ca_nbobtr_+1
             zk24(ca_iaobtr_-1+ca_nbobtr_)='&&CALCUL.PARALLELE'
