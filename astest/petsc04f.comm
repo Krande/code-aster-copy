@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import os 
+import os
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -162,7 +162,7 @@ MESTAT = STAT_NON_LINE(
                         INFO=1,
 )
 
-DEFI_FICHIER( UNITE=87, FICHIER='/tmp/resu.med', TYPE='BINARY',)
+DEFI_FICHIER( UNITE=87, FICHIER='/tmp/resu.petsc04f.med', TYPE='BINARY',)
 
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
@@ -171,7 +171,7 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           VERSION_MED='4.1.0')
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=87)
-os.system('rm /tmp/resu.med')
+os.system('rm /tmp/resu.petsc04f.med')
 
 
 TEST_RESU(

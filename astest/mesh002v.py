@@ -18,13 +18,13 @@
 # --------------------------------------------------------------------
 
 import os
-from mpi4py import MPI
+import tempfile
 from collections import Counter
 
 import code_aster
 from code_aster.Commands import *
 from code_aster.Utilities.MedUtils.MEDPartitioner import MEDPartitioner
-#from code_aster.Utilities.MedUtils.MEDPartitioner.deal_with_pt1_post_process import add_pt1
+from mpi4py import MPI
 
 code_aster.init("--test")
 
@@ -47,27 +47,25 @@ ms = MEDPartitioner("sdlx400b.mmed")
 
 ms.partitionMesh(True)
 
-# Where to save the mesh in a single folder
-path = os.getcwd()
-path.replace("/proc."+str(rank), "")
-
-meshFolder = "/tmp/meshFolder"
+meshFolder = "/tmp/mesh002v.folder"
+try:
+    os.system(f"rm -rf {meshFolder}")
+    os.makedirs(meshFolder)
+except OSError:
+    print(f"Creation of the directory {meshFolder} failed")
 
 try:
-    os.mkdir(meshFolder)
-except OSError:
-    print ("Creation of the directory %s failed" % meshFolder)
+    # write the mesh in meshFolder
+    ms.writeMesh(meshFolder)
 
-# write the mesh in meshFolder
-ms.writeMesh(meshFolder)
+    # add PO1 (need to load sequential mesh)
+    ms.addPO1()
 
+    pMesh2 = code_aster.ParallelMesh()
+    pMesh2.readMedFile(os.path.join(meshFolder, f"sdlx400b_new_{rank}.med"), True)
+finally:
+    os.system(f"rm -rf {meshFolder}")
 
-# add PO1 (need to load sequential mesh)
-ms.addPO1()
-
-
-pMesh2 = code_aster.ParallelMesh()
-pMesh2.readMedFile(meshFolder+"/sdlx400b_new_%d.med"%rank, True)
 
 # STD Mesh for comparaison
 mesh = code_aster.Mesh()

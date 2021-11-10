@@ -56,6 +56,7 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           VERSION_MED='4.0.0')
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
+os.system('rm /tmp/zzzz504a_new_0.med')
 
 pMesh2.printMedFile("/tmp/zzzz504a_new_1.med", False)
 os.system('rm /tmp/zzzz504a_new_1.med')

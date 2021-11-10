@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
 import os
+import tempfile
 
-from code_aster.Commands import LIRE_MAILLAGE, DEFI_GROUP, RECU_TABLE
+import code_aster
+from code_aster.Commands import DEFI_GROUP, LIRE_MAILLAGE, RECU_TABLE
 
 code_aster.init("--test")
 
@@ -65,13 +66,13 @@ test.assertSequenceEqual(sorted(pmesh.getGroupsOfNodes()), sorted(global_grp))
 test.assertTrue( pmesh.hasGroupOfNodes("TOUT"))
 
 pmesh.printMedFile("mesh_%d.med"%rank)
-pmesh.printMedFile("/tmp/mesh.med", False)
-os.system('rm /tmp/mesh.med')
+pmesh.printMedFile("/tmp/mesh.mesh001c.med", local=False)
+os.system('rm /tmp/mesh.mesh001c.med')
 
 pmesh2 = code_aster.ParallelMesh()
 pmesh2.readMedFile("mesh_%d.med"%rank, True)
-pmesh2.printMedFile("/tmp/mesh2.med", False)
-os.system('rm /tmp/mesh2.med')
+pmesh2.printMedFile("/tmp/mesh2.mesh001c.med", local=False)
+os.system('rm /tmp/mesh2.mesh001c.med')
 
 #test global numbering of nodes
 nodes_gnum = pmesh.getNodes(localNumbering=False)

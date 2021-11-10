@@ -101,7 +101,7 @@ val = [0.134228076192 , 0.134176297047, 0.154099687654, 0.154189676715]
 test.assertAlmostEqual(sfon.getValue(4, 1), val[rank])
 
 
-DEFI_FICHIER( UNITE=81, FICHIER='/tmp/resu_no.med', TYPE='BINARY',)
+DEFI_FICHIER( UNITE=81, FICHIER='/tmp/resu.zzzz503c.no.med', TYPE='BINARY',)
 
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
@@ -110,9 +110,9 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           UNITE=81)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=81)
-os.system('rm /tmp/resu_no.med')
+os.system('rm /tmp/resu.zzzz503c.no.med')
 
-DEFI_FICHIER( UNITE=82, FICHIER='/tmp/resu_ma.med', TYPE='BINARY',)
+DEFI_FICHIER( UNITE=82, FICHIER='/tmp/resu.zzzz503c.ma.med', TYPE='BINARY',)
 
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
@@ -121,11 +121,11 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           UNITE=82)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=82)
-os.system('rm /tmp/resu_ma.med')
+os.system('rm /tmp/resu.zzzz503c.ma.med')
 
 # load result in sequential
 
-DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.med', TYPE='BINARY',)
+DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.zzzz503c.med', TYPE='BINARY',)
 
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
@@ -169,7 +169,7 @@ resu_std = LIRE_RESU(MODELE=model_std,
                  TOUT_ORDRE="OUI")
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-os.system('rm /tmp/resu.med')
+os.system('rm /tmp/resu.zzzz503c.med')
 
 
 SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 0)

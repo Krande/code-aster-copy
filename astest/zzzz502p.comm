@@ -197,7 +197,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='Point2',
           )
 
 
-DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.med', TYPE='BINARY',)
+DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.zzzz502p.med', TYPE='BINARY',)
 
 IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
@@ -206,6 +206,6 @@ IMPR_RESU(FICHIER_UNIQUE='OUI',
           VERSION_MED='4.1.0')
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-os.system('rm /tmp/resu.med')
+os.system('rm /tmp/resu.zzzz502p.med')
 
 FIN()
