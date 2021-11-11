@@ -273,7 +273,7 @@ class RunAster:
         logger.info("\ncoredump analysis...")
         python3 = cmd_abspath(CFG.get("python"))
         if not osp.isfile(python3):
-            logger.warn("'python3' not found in PATH.")
+            logger.warning("'python3' not found in PATH.")
             return
         tmpf = "cmd_gdb.sh"
         with open(tmpf, "w") as fobj:

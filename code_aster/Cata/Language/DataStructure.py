@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -122,14 +122,14 @@ class PythonVariable(UserDict, DataStructure):
 
     def __lt__(self, other):
         """Comparison will be relevant when it will become a Variable"""
-        warnings.warn("Comparing 'PythonVariable' may return unexpected "
-                      "results", RuntimeWarning)
+        warnings.warning("Comparing 'PythonVariable' may return unexpected "
+                         "results", RuntimeWarning)
         return True
 
     def __gt__(self, other):
         """Comparison will be relevant when it will become a Variable"""
-        warnings.warn("Comparing 'PythonVariable' may return unexpected "
-                      "results", RuntimeWarning)
+        warnings.warning("Comparing 'PythonVariable' may return unexpected "
+                         "results", RuntimeWarning)
         return True
 
     def __repr__(self):

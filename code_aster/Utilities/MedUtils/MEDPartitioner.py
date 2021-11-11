@@ -19,17 +19,17 @@
 
 # person_in_charge: nicolas.pignet at edf.fr
 
-from mpi4py import MPI
-import medcoupling as mc
-import string
 import random
+import string
 
-from .myMEDSplitter_mpi import (BuildPartNameFromOrig, MakeThePartition,
-                                    GetGraphPartitioner, setVerbose)
-from .deal_with_pt1_post_process import add_pt1
+import medcoupling as mc
+from mpi4py import MPI
 
 from ...Messages import UTMESS
 from ..logger import logger
+from .deal_with_pt1_post_process import add_pt1
+from .myMEDSplitter_mpi import (BuildPartNameFromOrig, GetGraphPartitioner,
+                                MakeThePartition, setVerbose)
 
 
 class MEDPartitioner:
@@ -80,7 +80,9 @@ class MEDPartitioner:
                             2 - informations about all steps
         """
         level = logger.getEffectiveLevel()
-        setVerbose(verbose, True)
+        if isinstance(verbose, bool):
+            verbose = int(verbose)
+        setVerbose(verbose)
 
         self._meshPartitioned = MakeThePartition(self._filename, self._meshname,
                                                 GetGraphPartitioner(None))
@@ -110,7 +112,7 @@ class MEDPartitioner:
             self._writedFilename = BuildPartNameFromOrig(full_path, MPI.COMM_WORLD.rank)
             self._meshPartitioned.write( self.writedFilename(), 2)
 
-    def addPO1(self):
+    def addPO1(self, verbose=0):
         """ Add PO1 in the partitionning meshes
             Be carefull all the meshes have to be in the same folder and the initial mesh
             is loaded so it can be memory expensive
@@ -121,8 +123,16 @@ class MEDPartitioner:
         if self._writedFilename is not None:
             if MPI.COMM_WORLD.rank == 0:
                 name_files = self._writedFilename.replace("0.med", "*.med")
-                args_dict = {"verbosity": 2, "nb_dest_par": MPI.COMM_WORLD.size, \
-                    "origin_seq": self._filename, "dest_par": name_files, "force": 1}
+                args_dict = {
+                    "verbosity": verbose,
+                    "code_aster": True,
+                    "nb_dest_par": MPI.COMM_WORLD.size,
+                    "origin_seq": self._filename,
+                    "dest_par": name_files,
+                    "force": 1
+                }
+                previous = logger.getEffectiveLevel()
                 add_pt1(args_dict)
+                logger.setLevel(previous)
 
             MPI.COMM_WORLD.barrier()

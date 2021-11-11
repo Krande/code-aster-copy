@@ -175,7 +175,7 @@ class Serializer(object):
             logger.info("Saving objects...")
             objList = []
             for name, obj in ctxt.items():
-                if name == "CO":
+                if name == "CO" or obj is logger:
                     continue
                 try:
                     logger.info(f"{name:<24s} {type(obj)}")

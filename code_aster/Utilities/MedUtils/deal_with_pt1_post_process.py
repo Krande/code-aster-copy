@@ -27,7 +27,13 @@ import sys
 
 import medcoupling as mc
 
-logger = logging.getLogger()
+STANDALONE = True
+try:
+    from ..logger import logger
+    STANDALONE = False
+except ImportError:
+    logger = logging.getLogger()
+
 
 class ColoredFormatter(logging.Formatter):
     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(30,38)
@@ -41,11 +47,9 @@ class ColoredFormatter(logging.Formatter):
         return logging.Formatter.format(self, record)
 
 
-def setVerbose(verbose=1, code_aster=False):
-    global logger
-
-    if not code_aster:
-        logger = logging.getLogger()
+def setVerbose(verbose=1):
+    """Set verbosity level"""
+    if STANDALONE:
         formatter = ColoredFormatter('%(levelname)s : %(asctime)s : %(message)s ',style='%')
         formatter.default_time_format = '%H:%M:%S'
         formatter.default_msec_format = "%s.%03d"
@@ -72,7 +76,7 @@ def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
         base_rev = base[::-1]
         m = pat.match(base_rev)
         if not m:
-            logger.warn("Le fichier MED {} du pattern de destination : impossible d extraire le proc Id !".format(fn))
+            logger.warning("Le fichier MED {} du pattern de destination : impossible d extraire le proc Id !".format(fn))
             sys.exit(1)
         proc_id = int(m.group(1)[::-1])
         remain_fn = m.group(2)[::-1]
@@ -154,7 +158,7 @@ def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
 
         if pt1_num:
             dest_mm.setRenumFieldArr(-meshDim,pt1_num)
-        logger.warn("On reecrit le proc {} avec les {} MED_POINT1 dans {}".format(dest_proc,len(pt1_to_be_present),dest_fn))
+        logger.warning("On reecrit le proc {} avec les {} MED_POINT1 dans {}".format(dest_proc,len(pt1_to_be_present),dest_fn))
         dest_mm.write(dest_fn,2)
     check = mc.DataArrayInt.Aggregate(check_all_pts1)
     check.sort()
@@ -167,7 +171,7 @@ def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
     pt1_simply_ignored = orig_pt1.buildSubstraction(check)
     # par defaut on prend le premier fichier pour lui rajouter les points manquants
     filename_with_pts_to_add = dest_fns[0][0]
-    logger.warn("Des noeuds (au nombre de {}) ont été oubliés ainsi que les cellules MED_POINT1 dessus ! On va les rajouter dans le fichier {}".format(len(pt1_simply_ignored),filename_with_pts_to_add))
+    logger.warning("Des noeuds (au nombre de {}) ont été oubliés ainsi que les cellules MED_POINT1 dessus ! On va les rajouter dans le fichier {}".format(len(pt1_simply_ignored),filename_with_pts_to_add))
     first_part_mm = mc.MEDFileMesh.New(filename_with_pts_to_add)
     coo = first_part_mm.getCoords()
     node_num = first_part_mm.getNumberFieldAtLevel(1)
@@ -185,14 +189,14 @@ def operate(isTopCall,effective_dest_file_name,nb_dest_par,origin_seq):
     first_part_mm.setRenumFieldArr(1,node_num)
     first_part_mm.setGlobalNumFieldAtLevel(1,node_glob)
     first_part_mm.write(filename_with_pts_to_add,2)
-    logger.warn("Les {} noeuds ont ete rajouter dans ! On va lui rajouter les MED_POINT1 dessus".format(len(pt1_simply_ignored),filename_with_pts_to_add))
+    logger.warning("Les {} noeuds ont ete rajouter dans ! On va lui rajouter les MED_POINT1 dessus".format(len(pt1_simply_ignored),filename_with_pts_to_add))
     return operate(False,effective_dest_file_name,nb_dest_par,origin_seq)
 
 def add_pt1(args):
     setVerbose(args["verbosity"])
 
     if args["nb_dest_par"] < 2:
-        logger.warn("Le nb de proc de destination {} est < 2 : Rien à faire".format(args["nb_dest_par"]))
+        logger.warning("Le nb de proc de destination {} est < 2 : Rien à faire".format(args["nb_dest_par"]))
         sys.exit(0)
 
     logger.info("Le fichier MED original depuis lequel on prend les MED_POINT1 : \"{}\"".format(args["origin_seq"]))
@@ -208,7 +212,7 @@ def add_pt1(args):
     if not args["force"]:
         res = input("Confirmez vous l'ecriture dans les fichiers {}. Taper 0 pour arreter".format(effective_dest_file_name))
         if res == "0":
-            logger.warn("Operation arretée. Les fichiers destinations ne seront pas modifiés")
+            logger.warning("Operation arretée. Les fichiers destinations ne seront pas modifiés")
             sys.exit(1)
 
     isok = operate(True,effective_dest_file_name,args["nb_dest_par"],args["origin_seq"])
@@ -231,7 +235,7 @@ if __name__ == '__main__':
     setVerbose(args.verbosity)
 
     if args.nb_dest_par < 2:
-        logger.warn("Le nb de proc de destination {} est < 2 : Rien à faire".format(args.nb_dest_par))
+        logger.warning("Le nb de proc de destination {} est < 2 : Rien à faire".format(args.nb_dest_par))
         sys.exit(0)
 
     logger.info("Le fichier MED original depuis lequel on prend les MED_POINT1 : \"{}\"".format(args.origin_seq))
@@ -247,7 +251,7 @@ if __name__ == '__main__':
     if not args.force:
         res = input("Confirmez vous l'ecriture dans les fichiers {}. Taper 0 pour arreter".format(effective_dest_file_name))
         if res == "0":
-            logger.warn("Operation arretée. Les fichiers destinations ne seront pas modifiés")
+            logger.warning("Operation arretée. Les fichiers destinations ne seront pas modifiés")
             sys.exit(1)
 
     isok = operate(True,effective_dest_file_name,args.nb_dest_par,args.origin_seq)

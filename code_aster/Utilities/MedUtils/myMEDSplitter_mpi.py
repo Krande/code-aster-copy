@@ -19,26 +19,27 @@
 
 # person_in_charge: nicolas.pignet@edf.fr
 
-import os
 import abc
-from datetime import datetime
+import argparse
 import logging
-
-import argparse, sys
-
-from resource import getrusage, RUSAGE_SELF
-
+import os
+import sys
+from datetime import datetime
 from distutils.version import StrictVersion
+from resource import RUSAGE_SELF, getrusage
 
 import med
 import medcoupling as mc
 import numpy as np
 from mpi4py import MPI
 
+STANDALONE = True
 try:
     from ..logger import logger
+    STANDALONE = False
 except:
-    pass
+    logger = logging.getLogger()
+
 
 class ColoredFormatter(logging.Formatter):
     BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(30,38)
@@ -52,11 +53,9 @@ class ColoredFormatter(logging.Formatter):
         return logging.Formatter.format(self, record)
 
 
-def setVerbose(verbose=1, code_aster=False):
-    global logger
-
-    if not code_aster:
-        logger = logging.getLogger()
+def setVerbose(verbose=1):
+    """Set verbosity level"""
+    if STANDALONE:
         formatter = ColoredFormatter('%(levelname)s #{} : %(asctime)s : %(message)s '.format(MPI.COMM_WORLD.rank),style='%')
         formatter.default_time_format = '%H:%M:%S'
         formatter.default_msec_format = "%s.%03d"
@@ -843,6 +842,7 @@ def GetGraphPartitioner(graph_scotch):
         return GraphPartitionerCompute
     else:
         return GraphPartitionerReload(graph_scotch)
+
 
 if __name__ == '__main__':
 
