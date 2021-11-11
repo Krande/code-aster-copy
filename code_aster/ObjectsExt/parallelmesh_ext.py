@@ -26,6 +26,7 @@ from collections import Counter
 
 from ..Messages import UTMESS
 from ..Objects import ConnectionMesh, Mesh, ParallelMesh
+from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import MPI, ExecutionParameter, Options, injector, logger
 
 try:
@@ -36,13 +37,29 @@ except ImportError:
     HAS_MEDCOUPLING = False
 
 
+class ParallelMeshStateBuilder(InternalStateBuilder):
+    """Class that returns the internal state of a *ParallelMesh*."""
+
+    def restore(self, field):
+        """Restore the *DataStructure* content from the previously saved internal
+        state.
+
+        Arguments:
+            field (*DataStructure*): The *DataStructure* object to be pickled.
+        """
+        super().restore(field)
+        field._updateGlobalGroupOfNodes()
+        field._updateGlobalGroupOfCells()
+
+
 @injector(ParallelMesh)
 class ExtendedParallelMesh:
     cata_sdj = "SD.sd_maillage.sd_maillage"
+    internalStateBuilder = ParallelMeshStateBuilder
     orig_init = ParallelMesh.__init__
 
-    def __init__(self):
-        self.orig_init()
+    def __init__(self, *args, **kwargs):
+        self.orig_init(*args, **kwargs)
         if not ExecutionParameter().option & Options.HPCMode:
             UTMESS("I", "SUPERVIS_1")
             ExecutionParameter().enable(Options.HPCMode)

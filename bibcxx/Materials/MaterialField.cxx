@@ -126,7 +126,7 @@ void MaterialField::addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav
     if ( !_mesh )
         throw std::runtime_error( "Mesh is not defined" );
     if ( !_mesh->hasGroupOfCells( nameOfGroup ) )
-        throw std::runtime_error( nameOfGroup + "not in mesh" );
+        throw std::runtime_error( nameOfGroup + " not in mesh" );
 
     _behaviours.push_back(
         listOfBehavAndGrpsValue( curBehav, MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
@@ -156,7 +156,7 @@ void MaterialField::addMaterialsOnGroupOfCells( std::vector< MaterialPtr > curMa
         throw std::runtime_error( "Mesh is not defined" );
     for ( const auto &nameOfGroup : namesOfGroup )
         if ( !_mesh->hasGroupOfCells( nameOfGroup ) )
-            throw std::runtime_error( nameOfGroup + "not in mesh" );
+            throw std::runtime_error( nameOfGroup + " not in mesh" );
 
     _materialsFieldEntity.push_back(
         listOfMatsAndGrpsValue( curMaters, MeshEntityPtr( new GroupOfCells( namesOfGroup ) ) ) );

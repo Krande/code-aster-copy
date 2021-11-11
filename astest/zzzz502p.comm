@@ -17,16 +17,14 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-import code_aster
-import os
+import os.path as osp
 
 import code_aster.LinearAlgebra
+from code_aster.Utilities import shared_tmpdir
 
 code_aster.LinearAlgebra.petscInitialize('-mat_view ::ascii_info -ksp_monitor -log_view')
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
-
-rank = code_aster.MPI.COMM_WORLD.Get_rank()
 
 MA = LIRE_MAILLAGE(FORMAT='MED', PARTITIONNEUR='PTSCOTCH')
 
@@ -196,16 +194,14 @@ TEST_RESU(RESU=(_F(GROUP_NO='Point2',
                 ),
           )
 
-
-DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.zzzz502p.med', TYPE='BINARY',)
-
-IMPR_RESU(FICHIER_UNIQUE='OUI',
+with shared_tmpdir("zzzz502p_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.zzzz502p.med")
+    DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY")
+    IMPR_RESU(FICHIER_UNIQUE='OUI',
           FORMAT='MED',
           UNITE=80,
-          RESU=_F(RESULTAT=resu,),
+          RESU=_F(RESULTAT=resu),
           VERSION_MED='4.1.0')
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-os.system('rm /tmp/resu.zzzz502p.med')
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
 
 FIN()

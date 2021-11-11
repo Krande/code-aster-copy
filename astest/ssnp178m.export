@@ -6,4 +6,5 @@ P memory_limit 512.0
 P testlist ci verification parallel
 
 F comm ssnp178m.comm D 1
+F comm ssnp178m.py D 1
 F mmed ssnp178a.mmed D 20

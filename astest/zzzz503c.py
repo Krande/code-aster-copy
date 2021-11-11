@@ -17,12 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os.path as osp
+
 import code_aster
-from code_aster.Commands import *
 from code_aster import MPI
-import os
-
-
+from code_aster.Commands import *
+from code_aster.Utilities import shared_tmpdir
 
 code_aster.init("--test")
 
@@ -101,75 +101,77 @@ val = [0.134228076192 , 0.134176297047, 0.154099687654, 0.154189676715]
 test.assertAlmostEqual(sfon.getValue(4, 1), val[rank])
 
 
-DEFI_FICHIER( UNITE=81, FICHIER='/tmp/resu.zzzz503c.no.med', TYPE='BINARY',)
+with shared_tmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.zzzz503c.no.med")
+    DEFI_FICHIER( UNITE=81, FICHIER=medfile, TYPE='BINARY')
 
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          RESU=_F(RESULTAT=resu, GROUP_NO="COTE_H"),
-          VERSION_MED='4.0.0',
-          UNITE=81)
+    IMPR_RESU(FICHIER_UNIQUE='OUI',
+            FORMAT='MED',
+            RESU=_F(RESULTAT=resu, GROUP_NO="COTE_H"),
+            VERSION_MED='4.0.0',
+            UNITE=81)
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=81)
-os.system('rm /tmp/resu.zzzz503c.no.med')
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=81)
 
-DEFI_FICHIER( UNITE=82, FICHIER='/tmp/resu.zzzz503c.ma.med', TYPE='BINARY',)
+with shared_tmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.zzzz503c.ma.med")
+    DEFI_FICHIER( UNITE=82, FICHIER=medfile, TYPE='BINARY')
 
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          RESU=_F(RESULTAT=resu, GROUP_MA="BLABLA"),
-          VERSION_MED='4.0.0',
-          UNITE=82)
+    IMPR_RESU(FICHIER_UNIQUE='OUI',
+            FORMAT='MED',
+            RESU=_F(RESULTAT=resu, GROUP_MA="BLABLA"),
+            VERSION_MED='4.0.0',
+            UNITE=82)
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=82)
-os.system('rm /tmp/resu.zzzz503c.ma.med')
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=82)
 
 # load result in sequential
+with shared_tmpdir("zzzz503c_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.zzzz503c.med")
+    DEFI_FICHIER( UNITE=80, FICHIER=medfile, TYPE='BINARY')
 
-DEFI_FICHIER( UNITE=80, FICHIER='/tmp/resu.zzzz503c.med', TYPE='BINARY',)
+    IMPR_RESU(FICHIER_UNIQUE='OUI',
+            FORMAT='MED',
+            UNITE=80,
+            RESU=_F(RESULTAT=resu,),
+            VERSION_MED='4.0.0')
 
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          UNITE=80,
-          RESU=_F(RESULTAT=resu,),
-          VERSION_MED='4.0.0')
+    mesh_std = LIRE_MAILLAGE(UNITE=80, FORMAT='MED',)
 
-mesh_std = LIRE_MAILLAGE(UNITE=80, FORMAT='MED',)
+    model_std = AFFE_MODELE(
+        AFFE=_F(MODELISATION=('3D', ),
+                PHENOMENE='MECANIQUE', TOUT='OUI'),
+        MAILLAGE=mesh_std
+    )
 
-model_std = AFFE_MODELE(
-    AFFE=_F(MODELISATION=('3D', ),
-            PHENOMENE='MECANIQUE', TOUT='OUI'),
-    MAILLAGE=mesh_std
-)
+    affectMat_std = code_aster.MaterialField(mesh_std)
+    affectMat_std.addMaterialsOnMesh( acier )
+    affectMat_std.buildWithoutExternalStateVariables()
 
-affectMat_std = code_aster.MaterialField(mesh_std)
-affectMat_std.addMaterialsOnMesh( acier )
-affectMat_std.buildWithoutExternalStateVariables()
+    charCine_std = code_aster.MechanicalDirichletBC(model_std)
+    charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
+    charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
+    charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
+    charCine_std.build()
 
-charCine_std = code_aster.MechanicalDirichletBC(model_std)
-charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dx, 0., "COTE_B")
-charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dy, 0., "COTE_B")
-charCine_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 0., "COTE_B")
-charCine_std.build()
+    charCine2_std = code_aster.MechanicalDirichletBC(model_std)
+    charCine2_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
+    charCine2_std.build()
 
-charCine2_std = code_aster.MechanicalDirichletBC(model_std)
-charCine2_std.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
-charCine2_std.build()
+    resu_std = LIRE_RESU(MODELE=model_std,
+                    FORMAT='MED',
+                    UNITE=80,
+                    TYPE_RESU='EVOL_ELAS',
+                    CHAM_MATER=affectMat_std,
+                    EXCIT=(
+                            _F(CHARGE=charCine_std, ),
+                            _F(CHARGE=charCine2_std, ),
+                        ),
+                    FORMAT_MED=(_F(NOM_RESU="resu", NOM_CHAM='DEPL'),
+                                _F(NOM_RESU="resu", NOM_CHAM='SIEF_ELGA'),),
+                    TOUT_ORDRE="OUI")
 
-resu_std = LIRE_RESU(MODELE=model_std,
-                 FORMAT='MED',
-                 UNITE=80,
-                 TYPE_RESU='EVOL_ELAS',
-                 CHAM_MATER=affectMat_std,
-                 EXCIT=(
-                        _F(CHARGE=charCine_std, ),
-                        _F(CHARGE=charCine2_std, ),
-                    ),
-                 FORMAT_MED=(_F(NOM_RESU="resu", NOM_CHAM='DEPL'),
-                             _F(NOM_RESU="resu", NOM_CHAM='SIEF_ELGA'),),
-                 TOUT_ORDRE="OUI")
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-os.system('rm /tmp/resu.zzzz503c.med')
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
 
 
 SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 0)

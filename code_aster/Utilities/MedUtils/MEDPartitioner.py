@@ -123,6 +123,8 @@ class MEDPartitioner:
         if self._writedFilename is not None:
             if MPI.COMM_WORLD.rank == 0:
                 name_files = self._writedFilename.replace("0.med", "*.med")
+                if isinstance(verbose, bool):
+                    verbose = int(verbose)
                 args_dict = {
                     "verbosity": verbose,
                     "code_aster": True,

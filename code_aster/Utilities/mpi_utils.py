@@ -22,7 +22,7 @@
 """
 This module gives common utilities for MPI.
 
-Need only mpi4py package
+Need only mpi4py package.
 """
 
 from collections import defaultdict
@@ -48,11 +48,12 @@ try:
 except:
     class FAKE_COMM_WORLD:
         """
-        This class FAKE_COMM_WORLD contains methods for compatibility with sequential libraries
+        This class FAKE_COMM_WORLD contains methods for compatibility with
+        sequential libraries
 
         Use MPI.COMM_WORLD as mpi4py to use mpi methods
-
-        Some methods can be missing (add them here with the same name and arguments than mpi4py)
+        Some methods can be missing (add them here with the same name and
+        arguments than mpi4py)
         """
 
         def __init__(self):
@@ -68,13 +69,13 @@ except:
         def Barrier(self):
             return
 
-        def bcast(self, data, root):
+        def bcast(self, data, root=0):
             return data
 
-        def Bcast(self, data, root):
+        def Bcast(self, data, root=0):
             return data
 
-        def gather(self, data, root):
+        def gather(self, data, root=0):
             return data
 
         def allreduce(self, data, op):
@@ -84,26 +85,16 @@ except:
         """
         This class MPI is an encapsulation of mpi4py for sequential libraries.
 
-        The same API than mpi4py is used
+        The same API than mpi4py is used.
 
-        It is equivalent to 'from mpi4py import MPI' of parallel libraries
+        It is equivalent to ``from mpi4py import MPI`` of parallel libraries.
         """
 
-        @staticmethod
-        def identity(data):
-            """ Identity operator
+        _identity = lambda data: data
 
-                Argument:
-                    data : an object
-
-                Return:
-                    data : the same object
-            """
-            return data
-
-        MAX = identity
-        MIN = identity
-        SUM = identity
-        PROD = identity
+        MAX = _identity
+        MIN = _identity
+        SUM = _identity
+        PROD = _identity
 
         COMM_WORLD = FAKE_COMM_WORLD()

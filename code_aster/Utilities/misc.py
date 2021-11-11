@@ -28,19 +28,20 @@ import os.path as osp
 import re
 import tempfile
 import time
+from contextlib import contextmanager
 from subprocess import Popen
 
 try:
-    from asrun.run import AsRunFactory
-
+    from asrun import create_run_instance
     HAS_ASRUN = True
 except ImportError:
     HAS_ASRUN = False
 
 import aster
-from .version import get_version
 
+from .mpi_utils import haveMPI, MPI
 from .strfunc import convert, maximize_lines
+from .version import get_version
 
 DEBUG = False
 
@@ -156,7 +157,7 @@ def get_shared_tmpdir(prefix, default_dir=None):
         return default_dir
 
     if getattr(get_shared_tmpdir, "cache_run", None) is None:
-        get_shared_tmpdir.cache_run = AsRunFactory(
+        get_shared_tmpdir.cache_run = create_run_instance(
             debug_stderr=False, log_progress="asrun.log"
         )
     run = get_shared_tmpdir.cache_run
@@ -165,3 +166,34 @@ def get_shared_tmpdir(prefix, default_dir=None):
 
     tmpdir = tempfile.mkdtemp(dir=shared_tmp, prefix=prefix)
     return tmpdir
+
+
+@contextmanager
+def shared_tmpdir(prefix, default_dir="/tmp"):
+    """Return a shared temporary directory with automatic cleanup, to be used
+    as a context manager.
+
+    Arguments:
+        prefix (str): Prefix to be used for the temporary directory.
+        default_dir (str): Local pathname that will be used if *asrun* is not
+            available (default: /tmp).
+
+    Returns:
+        str: Path of the temporary directory.
+    """
+    rank = MPI.COMM_WORLD.Get_rank()
+    tmpdir = ""
+    if rank == 0:
+        # choose a non existing directory on proc #0
+        # as the directory is shared, it should not exist on others
+        tmpdir = get_shared_tmpdir(prefix, default_dir)
+    # wait for #0 to create the temporary directory
+    tmpdir = MPI.COMM_WORLD.bcast(tmpdir)
+    try:
+        assert osp.isdir(tmpdir), f"Can not create directory on #{rank}: {tmpdir}"
+        yield tmpdir
+    finally:
+        MPI.COMM_WORLD.Barrier()
+        if rank == 0:
+            os.system(f"rm -rf {tmpdir}")
+        MPI.COMM_WORLD.Barrier()

@@ -91,7 +91,7 @@ test.assertTrue( mesh.hasGroupOfNodes("GN"+str(rank), True))
 test.assertFalse( mesh.hasGroupOfNodes("GN4", True))
 test.assertFalse( mesh.hasGroupOfNodes("GN4", False))
 
-# Link betwenn local and global numbering
+# Link between local and global numbering
 globalNodesNum = mesh.getNodes(False)
 nodesGlobFirst = [4, 44, 0]
 test.assertEqual(globalNodesNum[0], nodesGlobFirst[rank])

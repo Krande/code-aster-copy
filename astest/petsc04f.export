@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification parallel
 
 F comm petsc04f.comm D 1
+F comm petsc04f.py D 1
 F datg petsc04a.datg D 16
 F mmed petsc04e.mmed D 20

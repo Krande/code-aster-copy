@@ -26,8 +26,6 @@
 from libaster import (MechanicalLoadComplex, MechanicalLoadFunction,
                       MechanicalLoadReal)
 
-from ..Objects import (ParallelMechanicalLoadFunction,
-                       ParallelMechanicalLoadReal)
 from ..Utilities import injector
 
 
@@ -60,11 +58,3 @@ class ExtendedMechanicalLoadComplex(object):
         object during unpickling.
         """
         return (self.getName(), self.getModel())
-
-@injector(ParallelMechanicalLoadReal)
-class ExtendedParallelMechanicalLoadReal:
-    cata_sdj = "SD.sd_char_meca.sd_parallel_char_meca"
-
-@injector(ParallelMechanicalLoadFunction)
-class ExtendedParallelMechanicalLoadFunction:
-    cata_sdj = "SD.sd_char_meca.sd_parallel_char_meca"

@@ -23,7 +23,11 @@
 # ELASTOPLASTICITE  CINEMATIQUE VON MISES
 #......................................................................
 
-import os
+# imports needed for the last part that should be in second part
+import os.path as osp
+
+from code_aster.Commands import *
+from code_aster.Utilities import shared_tmpdir
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
@@ -169,18 +173,6 @@ U=CALC_CHAMP(reuse =U,
           VARI_INTERNE='VARI_NOEU',);
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CRITERES=('DERA_ELGA'))
-
-DEFI_FICHIER( UNITE=90, FICHIER='/tmp/resu.ssnp14a.90.med', TYPE='BINARY',)
-
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED', INFO=1,
-          UNITE=90,
-          RESU=_F(RESULTAT=U,),
-          VERSION_MED='4.1.0')
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=90)
-os.system('rm /tmp/resu.ssnp14a.90.med')
-
 
 VARI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                 OPERATION='EXTR',
@@ -355,18 +347,6 @@ U2=STAT_NON_LINE(MODELE=MO,
 
 U2=CALC_CHAMP(reuse=U2,RESULTAT=U2,CRITERES=('DERA_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
-DEFI_FICHIER( UNITE=91, FICHIER='/tmp/resu.ssnp14a.91.med', TYPE='BINARY',)
-
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          UNITE=91,
-          RESU=_F(RESULTAT=U2,),
-          VERSION_MED='4.0.0')
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=91)
-os.system('rm /tmp/resu.ssnp14a.91.med')
-
-
 # VMIS_ECMI_LINE
 # --------------
 
@@ -409,17 +389,6 @@ U3=STAT_NON_LINE(MODELE=MO,
                 );
 
 U3=CALC_CHAMP(reuse=U3,RESULTAT=U3,CRITERES=('DERA_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
-
-DEFI_FICHIER( UNITE=92, FICHIER='/tmp/resu.ssnp14a.92.med', TYPE='BINARY',)
-
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          UNITE=92,
-          RESU=_F(RESULTAT=U3,),
-          VERSION_MED='4.1.0')
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=92)
-os.system('rm /tmp/resu.ssnp14a.92.med')
 
 # VMIS_CIN1_CHAB
 # --------------
@@ -467,18 +436,6 @@ U4=STAT_NON_LINE(MODELE=MO,
                 );
 
 U4=CALC_CHAMP(reuse=U4,RESULTAT=U4,CRITERES=('DERA_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
-
-DEFI_FICHIER( UNITE=94, FICHIER='/tmp/resu.ssnp14a.94.med', TYPE='BINARY',)
-
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          UNITE=94,
-          RESU=_F(RESULTAT=U4,),
-          VERSION_MED='4.1.0')
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=94)
-
-os.system('rm /tmp/resu.ssnp14a.94.med')
 
 TEST_RESU(RESU=(_F(INST=1.0,
                    REFERENCE='AUTRE_ASTER',
@@ -762,5 +719,56 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               LEGENDE_X='Inst',
               LEGENDE_Y='crit erreur',);
 
+
+# Should be after POURSUITE - but ParallelMechanicalLoad can not be yet reloaded
+with shared_tmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.ssnp14a.90.med")
+    DEFI_FICHIER(UNITE=90, FICHIER=medfile, TYPE="BINARY")
+    IMPR_RESU(
+        FICHIER_UNIQUE="OUI",
+        FORMAT="MED",
+        UNITE=90,
+        RESU=_F(RESULTAT=U),
+        VERSION_MED="4.1.0",
+    )
+
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=90)
+
+with shared_tmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.ssnp14a.91.med")
+    DEFI_FICHIER(UNITE=91, FICHIER=medfile, TYPE="BINARY")
+    IMPR_RESU(
+        FICHIER_UNIQUE="OUI",
+        FORMAT="MED",
+        UNITE=91,
+        RESU=_F(RESULTAT=U2),
+        VERSION_MED="4.0.0",
+    )
+
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=91)
+
+with shared_tmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.ssnp14a.92.med")
+    DEFI_FICHIER(UNITE=92, FICHIER=medfile, TYPE="BINARY")
+    IMPR_RESU(
+        FICHIER_UNIQUE="OUI",
+        FORMAT="MED",
+        UNITE=92,
+        RESU=_F(RESULTAT=U3),
+        VERSION_MED="4.1.0",
+    )
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=92)
+
+with shared_tmpdir("ssnp14a_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu.ssnp14a.94.med")
+    DEFI_FICHIER(UNITE=94, FICHIER=medfile, TYPE="BINARY")
+    IMPR_RESU(
+        FICHIER_UNIQUE="OUI",
+        FORMAT="MED",
+        UNITE=94,
+        RESU=_F(RESULTAT=U4),
+        VERSION_MED="4.1.0",
+    )
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=94)
 
 FIN();

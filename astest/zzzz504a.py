@@ -17,9 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import os.path as osp
+
 import code_aster
-from code_aster.Commands import *
 from code_aster import MPI
+from code_aster.Commands import *
+from code_aster.Utilities import shared_tmpdir
 
 test = code_aster.TestCase()
 
@@ -35,38 +38,42 @@ rank = MPI.COMM_WORLD.Get_rank()
 if (parallel):
     rank=MPI.COMM_WORLD.Get_rank()
     pMesh2 = code_aster.ParallelMesh()
-    pMesh2.readMedFile("mesh004c/%d.med"%rank, True )
-       #os.system('echo "-mat_view :/tmp/par.txt:ascii_matlab " > ~/.petscrc')
-       #os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_par.txt " >> ~/.petscrc')
-       #os.system('echo "-ksp_view_solution ascii:/tmp/sol_par.txt  " >> ~/.petscrc')
+    pMesh2.readMedFile(f"mesh004c/{rank}.med", True )
+    # os.system('echo "-mat_view :/tmp/par.txt:ascii_matlab " > ~/.petscrc')
+    # os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_par.txt " >> ~/.petscrc')
+    # os.system('echo "-ksp_view_solution ascii:/tmp/sol_par.txt  " >> ~/.petscrc')
 else:
     pMesh2 = code_aster.Mesh()
     pMesh2.readMedFile("zzzz504a.med")
-       #os.system('echo "-mat_view :/tmp/seq.txt:ascii_matlab " > ~/.petscrc')
-       #os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_seq.txt  " >> ~/.petscrc')
-       #os.system('echo "-ksp_view_solution ascii:/tmp/sol_seq.txt  " >> ~/.petscrc')
+    # os.system('echo "-mat_view :/tmp/seq.txt:ascii_matlab " > ~/.petscrc')
+    # os.system('echo "-ksp_view_rhs ascii:/tmp/rhs_seq.txt  " >> ~/.petscrc')
+    # os.system('echo "-ksp_view_solution ascii:/tmp/sol_seq.txt  " >> ~/.petscrc')
 
 # print a unique file
-DEFI_FICHIER( UNITE=80, FICHIER='/tmp/zzzz504a_new_0.med', TYPE='BINARY',)
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, "zzzz504a.med")
+    DEFI_FICHIER(UNITE=80, FICHIER=medfile, TYPE="BINARY")
 
-IMPR_RESU(FICHIER_UNIQUE='OUI',
-          FORMAT='MED',
-          UNITE=80,
-          RESU=_F(MAILLAGE=pMesh2,),
-          VERSION_MED='4.0.0')
+    IMPR_RESU(FICHIER_UNIQUE='OUI',
+            FORMAT='MED',
+            UNITE=80,
+            RESU=_F(MAILLAGE=pMesh2,),
+            VERSION_MED='4.0.0')
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
-os.system('rm /tmp/zzzz504a_new_0.med')
+    DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
 
-pMesh2.printMedFile("/tmp/zzzz504a_new_1.med", False)
-os.system('rm /tmp/zzzz504a_new_1.med')
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, "zzzz504a_new_1.med")
+    pMesh2.printMedFile(medfile, False)
 
-# print sepated file
-pMesh2.printMedFile("/tmp/zzzz504a_%d.med"%rank, True)
-os.system('rm /tmp/zzzz504a_%d.med'%rank)
+# print separated file
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, f"zzzz504a_new_{rank}.med")
+    pMesh2.printMedFile(medfile, True)
 
-pMesh2.printMedFile("/tmp/zzzz504a_%d_0.med"%rank)
-os.system('rm /tmp/zzzz504a_%d_0.med'%rank)
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, f"zzzz504a_{rank}_0.med")
+    pMesh2.printMedFile(medfile)
 
 model = AFFE_MODELE(MAILLAGE = pMesh2,
                     AFFE = _F(MODELISATION = "D_PLAN",
@@ -108,12 +115,14 @@ resu = STAT_NON_LINE(CHAM_MATER=AFFMAT,
                      SOLVEUR=_F(METHODE='PETSC',RESI_RELA=1.e-7,PRE_COND='LDLT_SP'),)
 
 # print single file
-resu.printMedFile("/tmp/resu_new.med", False)
-os.system('rm /tmp/resu_new.med')
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, "resu_new.med")
+    resu.printMedFile(medfile, False)
 
 # print multiple files
-resu.printMedFile("/tmp/resu_new_%d.med"%rank, True)
-os.system('rm /tmp/resu_new_%d.med'%rank)
+with shared_tmpdir("zzzz504a_") as tmpdir:
+    medfile = osp.join(tmpdir, f"resu_new_{rank}.med")
+    resu.printMedFile(medfile, True)
 
 #if (parallel):
    #rank = MPI.COMM_WORLD.Get_rank()
@@ -153,7 +162,5 @@ if parallel:
     test.assertAlmostEqual(sfon.getValue(1, 2), 0.5175556367605225)
 else:
     test.assertAlmostEqual(sfon.getValue(6, 0), 0.0)
-
-
 
 FIN()

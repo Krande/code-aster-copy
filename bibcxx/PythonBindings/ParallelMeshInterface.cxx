@@ -280,7 +280,7 @@ Returns:
         )",
               ( py::arg( "self" ) ) )
         .def( "_updateGlobalGroupOfCells", &ParallelMesh::updateGlobalGroupOfCells, R"(
-Share and update global groups of cells betwenn MPI process.
+Share and update global groups of cells between MPI process.
 
 This function has to be used by developper only and not user
 
@@ -289,7 +289,7 @@ Returns:
         )",
               ( py::arg( "self" )) )
         .def( "_updateGlobalGroupOfNodes", &ParallelMesh::updateGlobalGroupOfNodes, R"(
-Share and update global groups of nodes betwenn MPI process.
+Share and update global groups of nodes between MPI process.
 
 This function has to be used by developper only and not user
 

@@ -59,12 +59,12 @@ from .listofintegers_ext import ListOfIntegers
 from .material_ext import Material
 from .materialfield_ext import MaterialField
 from .mechanicalload_ext import (MechanicalLoadReal,
-                                 MechanicalLoadFunction, MechanicalLoadComplex,
-                                 ParallelMechanicalLoadReal,
-                                 ParallelMechanicalLoadFunction)
+                                 MechanicalLoadFunction, MechanicalLoadComplex)
 from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model
+from .parallelmechanicalload_ext import (ParallelMechanicalLoadReal,
+                                         ParallelMechanicalLoadFunction)
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
 from .physicalproblem_ext import PhysicalProblem

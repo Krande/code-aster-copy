@@ -18,53 +18,38 @@
 # --------------------------------------------------------------------
 
 import os
-import tempfile
 from collections import Counter
 
 import code_aster
 from code_aster.Commands import *
+from code_aster.Utilities import logger, shared_tmpdir
 from code_aster.Utilities.MedUtils.MEDPartitioner import MEDPartitioner
-from mpi4py import MPI
+
+MPI = code_aster.MPI
 
 code_aster.init("--test")
 
 test = code_aster.TestCase()
 
 rank = code_aster.MPI.COMM_WORLD.Get_rank()
-nbproc = code_aster.MPI.COMM_WORLD.Get_size()
-print("Nb procs", nbproc)
-print("Rank", rank)
 
-if nbproc > 1:
-    is_parallel = True
-else:
-    is_parallel = False
+with shared_tmpdir("mesh002v_") as tmpdir:
+    logger.info(f"\n--- Common temporary directory for the testcase: {tmpdir}")
 
+    logger.info("splitting the mesh...")
+    ms = MEDPartitioner("sdlx400b.mmed")
+    ms.partitionMesh(verbose=True)
 
-# Split the mesh
-
-ms = MEDPartitioner("sdlx400b.mmed")
-
-ms.partitionMesh(True)
-
-meshFolder = "/tmp/mesh002v.folder"
-try:
-    os.system(f"rm -rf {meshFolder}")
-    os.makedirs(meshFolder)
-except OSError:
-    print(f"Creation of the directory {meshFolder} failed")
-
-try:
-    # write the mesh in meshFolder
-    ms.writeMesh(meshFolder)
+    # write the mesh in tmpdir
+    logger.info(f"writing mesh...")
+    ms.writeMesh(tmpdir)
 
     # add PO1 (need to load sequential mesh)
-    ms.addPO1()
+    logger.info("adding POI1 elements...")
+    ms.addPO1(verbose=True)
 
     pMesh2 = code_aster.ParallelMesh()
-    pMesh2.readMedFile(os.path.join(meshFolder, f"sdlx400b_new_{rank}.med"), True)
-finally:
-    os.system(f"rm -rf {meshFolder}")
+    pMesh2.readMedFile(os.path.join(tmpdir, f"sdlx400b_new_{rank}.med"), True)
 
 
 # STD Mesh for comparaison

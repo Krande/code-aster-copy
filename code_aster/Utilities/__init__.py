@@ -41,7 +41,8 @@ from .i18n import localization
 from .i18n import translate as _
 from .injector import injector
 from .logger import DEBUG, ERROR, INFO, WARNING, logger
-from .mpi_utils import haveMPI, MPI
+from .misc import get_shared_tmpdir, shared_tmpdir
+from .mpi_utils import MPI, haveMPI
 from .options import Options
 from .report import CR
 from .strfunc import (center, clean_string, convert, copy_text_to,
