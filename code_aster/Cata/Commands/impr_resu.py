@@ -121,7 +121,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
                 regles=(EXCLUS('NOM_CHAM_MED','NOM_RESU_MED'),),
                 NOM_CHAM_MED    =SIMP(statut='f',typ='TXM',
                                       validators=AndVal((LongStr(1,64), NoRepeat())), max='**'),
-                NOM_RESU_MED    =SIMP(statut='f',typ='TXM'),
+                NOM_RESU_MED    =SIMP(statut='f',typ='TXM', validators=LongStr(1, 8)),
               ),
    ###
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
