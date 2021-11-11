@@ -36,11 +36,10 @@ class ImprResu(ExecuteCommand):
         Arguments:
             resu (dict): factor keyword occurrence of RESU, changed in place.
         """
-        is_set = resu.get("NOM_RESU_MED") or resu.get("NOM_CHAM_MED")
-        if is_set:
+        if resu.get("NOM_CHAM_MED"):
             return
         if resu.get("RESULTAT"):
-            resu_name = resu["RESULTAT"].userName[0:8]
+            resu_name = resu.pop("NOM_RESU_MED", resu["RESULTAT"].userName[0:8])
             if not resu_name:
                 resu_name = resu["RESULTAT"].getName()
                 UTMESS('A', 'MED3_2', valk=resu_name)
