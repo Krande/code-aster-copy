@@ -1063,20 +1063,44 @@ class PostMissFichierTemps(PostMissFichier):
          else:
             nb_colonne = 6
 
-         fmt_ligne = " %13.6E" * nb_colonne
+        # fmt_ligne = " %13.6E" * nb_colonne
         # residu = NP.remainder(self.param['NB_MODE'],NB_COLONNE)
         # fmt_ligne_fin = " %13.6E" * residu
 
          txt = []
          txt.append('%s %s' % (str(self.L_point2), str(self.dt)))
-         for n in range(0, self.L_point2):
-            txt.append('%s' % str(n*self.dt))
-            for l in range(0, self.nrows):
-                for c in range(0, self.ncols, nb_colonne):
-                    txt.append(fmt_ligne % tuple(Zdt[l, c:c+nb_colonne, n]))
+
+         if int(self.param['NB_MODE']/nb_colonne) == self.param['NB_MODE']/nb_colonne or self.param['NB_MODE'] < 6:
+
+             fmt_ligne = " %13.6E" * nb_colonne
+
+             for n in range(0, self.L_point2):
+                txt.append('%s' % str(n*self.dt))
+                for l in range(0, self.nrows):
+                    for c in range(0, self.ncols, nb_colonne):
+                        txt.append(fmt_ligne % tuple(Zdt[l, c:c+nb_colonne, n]))
+
+         else:
+
+             for n in range(0, self.L_point2):
+                 Z_temp_t = NP.zeros((int(self.param['NB_MODE']*self.param['NB_MODE'])))
+                 txt.append('%s' % str(n*self.dt))
+
+                 for l in range(0, self.nrows):
+                     for c in range(0, self.ncols):
+                         Z_temp_t[l*self.param['NB_MODE']+c] = Zdt[l, c, n]
+
+                 for s in range(0, self.param['NB_MODE']*self.param['NB_MODE'], nb_colonne):
+                     if s == int(self.param['NB_MODE']*self.param['NB_MODE']/nb_colonne)*nb_colonne:
+                         Diff_V = int(self.param['NB_MODE']*self.param['NB_MODE'])-int(self.param['NB_MODE']*self.param['NB_MODE']/nb_colonne)*nb_colonne
+                         fmt_ligne = " %13.6E" * Diff_V
+                         txt.append(fmt_ligne % tuple(Z_temp_t[s:s+Diff_V]))
+                     else:
+                         fmt_ligne = " %13.6E" * nb_colonne
+                         txt.append(fmt_ligne % tuple(Z_temp_t[s:s+nb_colonne]))
 
          with open(self._fichier_aster(unite_type_impe), 'w') as fid:
-            fid.write(os.linesep.join(txt))
+             fid.write(os.linesep.join(txt))
 
         else:
          fid = open(self._fichier_aster(unite_type_impe), 'wb')
