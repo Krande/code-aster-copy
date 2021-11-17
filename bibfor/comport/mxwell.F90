@@ -51,15 +51,16 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
 #include "asterfort/get_varc.h"
+
     aster_logical :: cplan
     integer :: ndim, imate, kpg, ksp, iret, ndimsi
-    integer :: k, l, iret1, icodre(3)
+    integer :: k, l, icodre(3)
 !       
     real(kind=8) :: instam, instap, dt
     real(kind=8) :: rac2, defam(6), defap(6), valres(3)
     real(kind=8) :: em, num, e, nu, deuxGm, deuxG, bulkmodulusm, bulkmodulus
     real(kind=8) :: etadm, etad, etavm, etav
-    real(kind=8) :: alpha,coef,tm,tp,tref,depsth(6)
+    real(kind=8) :: alpha,tm,tp,tref,depsth(6),epsthe
     real(kind=8) :: depsmo, deps(6), depsdv(6), kron(6)
     real(kind=8) :: sigmmo, sigm(6), sigmdv(6), sigpmo, sigpdv(6), sigp(6), vip(*)
     real(kind=8) :: dsidep(6, 6)
@@ -136,12 +137,10 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
 !!
 ! - Get temperatures
 !
-    call get_varc(fami , kpg  , ksp , 'T',&
-                  tm, tp, tref)
+    call verift(fami, kpg, ksp, '-', imate,&
+                epsth_=epsthe)
 !
-    coef = alpha*(tp-tref) - alpha*(tm-tref)
 !
-
     depsmo = 0.d0
     depsdv(:) = 0.d0
     depsth(:) = 0.d0
@@ -149,7 +148,7 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
         depsth(k) = deps(k)
     end do
     do k = 1, 3
-        depsth(k) = depsth(k) - coef
+        depsth(k) = depsth(k) - epsthe
         depsmo = depsmo + depsth(k)
     end do
     depsmo = depsmo/3.
