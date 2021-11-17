@@ -1,0 +1,304 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+from code_aster.Applications.dynamic_substructuring import SubStructure, Structure, Interface, \
+     macPlot
+from code_aster.Utilities import shared_tmpdir
+import numpy as np
+import os.path as osp
+
+test = code_aster.TestCase()
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI'))
+
+#------------------------------------------------------#
+#--                                                  --#
+#-- DEFINITION D'UN PREMIER CALCUL SUR MODELE REDUIT --#
+#--     ET ASSSEMBLAGE DU MODELE EF DE REFERENCE     --#
+#--                                                  --#
+#------------------------------------------------------#
+
+# -- MAILLAGES DES DEUX PARTIES CARREES
+MAILLA1 = LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
+MAILLA1 = DEFI_GROUP(reuse=MAILLA1, MAILLAGE=MAILLA1,
+                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
+
+
+MAILLA2 = LIRE_MAILLAGE(FORMAT='MED', UNITE=21)
+MAILLA2 = DEFI_GROUP(reuse=MAILLA2, MAILLAGE=MAILLA2,
+                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
+
+
+# -- CONSTRUCTION DES MODELES
+MODELE1 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Cylindre1', 'Encast',),
+                               MODELISATION='3D',
+                               PHENOMENE='MECANIQUE'),
+                            ),
+                      MAILLAGE=MAILLA1)
+
+
+MODELE2 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Cylindre2',),
+                               MODELISATION='3D',
+                               PHENOMENE='MECANIQUE'),
+                            ),
+                      MAILLAGE=MAILLA2)
+
+# -- DEFINITION DU MATERIAU
+INOX = DEFI_MATERIAU(ELAS=_F(E=190.E9,
+                             NU=0.3,
+                             RHO=7800.0))
+
+
+# -- AFFECTATION DES MATERIAUX
+CHAMAT1 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Cylindre1', ),
+                                 MATER=INOX),
+                              ),
+                        MODELE=MODELE1)
+
+CHAMAT2 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Cylindre2', ),
+                                 MATER=INOX),
+                              ),
+                        MODELE=MODELE2)
+
+
+# -- DEFINITION DES CONDITIONS AUX LIMITES
+CHARGE_1 = AFFE_CHAR_MECA(
+    DDL_IMPO=(_F(GROUP_MA=('Encast'),
+                 DX=0.0,
+                 DY=0.0,
+                 DZ=0.0,),
+              _F(GROUP_MA=('Interface'),
+                 DX=0.0,
+                 DY=0.0,
+                 DZ=0.0,),
+              ),
+    MODELE=MODELE1)
+
+
+CHARGE_2 = AFFE_CHAR_MECA(DDL_IMPO=(_F(GROUP_MA=('Interface'),
+                                       DX=0.0,
+                                       DY=0.0,
+                                       DZ=0.0,),
+                                    ),
+                          MODELE=MODELE2)
+
+
+# -- ASSEMBLAGE DES MATRICES
+ASSEMBLAGE(MODELE=MODELE1,
+           NUME_DDL=CO("NUME1"),
+           CHARGE=CHARGE_1,
+           CHAM_MATER=CHAMAT1,
+           MATR_ASSE=(_F(MATRICE=CO("RAID1"),  OPTION='RIGI_MECA'),
+                      _F(MATRICE=CO("MASS1"),  OPTION='MASS_MECA'))
+           )
+
+ASSEMBLAGE(MODELE=MODELE2,
+           NUME_DDL=CO("NUME2"),
+           CHARGE=CHARGE_2,
+           CHAM_MATER=CHAMAT2,
+           MATR_ASSE=(_F(MATRICE=CO("RAID2"),  OPTION='RIGI_MECA'),
+                      _F(MATRICE=CO("MASS2"),  OPTION='MASS_MECA'))
+           )
+
+# -- CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE
+nModes1 = 25
+MODES_1 = CALC_MODES(
+    OPTION='CENTRE',
+    CALC_FREQ=_F(NMAX_FREQ=nModes1,
+                 FREQ=3.,
+                 ),
+    MATR_RIGI=RAID1,
+    MATR_MASS=MASS1,
+    TYPE_RESU='DYNAMIQUE',
+    SOLVEUR=_F(METHODE='MUMPS',
+               NPREC=11,),
+    VERI_MODE=_F(STOP_ERREUR='NON',),)
+
+
+with shared_tmpdir('foo') as tmpdir:
+    MODES_1.printMedFile(osp.join(tmpdir, 'modes1.resu.med'))
+
+nModes2 = 25
+MODES_2 = CALC_MODES(
+    OPTION='CENTRE',
+    CALC_FREQ=_F(NMAX_FREQ=nModes2,
+                 FREQ=3.,
+                 ),
+    MATR_RIGI=RAID2,
+    MATR_MASS=MASS2,
+    TYPE_RESU='DYNAMIQUE',
+    SOLVEUR=_F(METHODE='MUMPS',
+               NPREC=11,),
+    VERI_MODE=_F(STOP_ERREUR='NON',),)
+
+with shared_tmpdir('foo') as tmpdir:
+    MODES_2.printMedFile(osp.join(tmpdir, 'modes2.resu.med'))
+
+# --  DEFINITION DES INTERFACES
+
+
+# -- import maillage et divers
+subS1 = SubStructure(RAID1, MASS1, MODES_1)
+subS2 = SubStructure(RAID2, MASS2, MODES_2)
+
+interface = Interface(subS1, subS2, 'Interface')
+interface.computeInterfaceDofs('Structure')
+
+ResuS_Tuyau1 = subS1.computeInterfaceModes()
+ResuS_Tuyau2 = subS2.computeInterfaceModes()
+
+with shared_tmpdir('foo') as tmpdir:
+    ResuS_Tuyau1.printMedFile(osp.join(tmpdir, 'interface1.resu.med'))
+    ResuS_Tuyau2.printMedFile(osp.join(tmpdir, 'interface2.resu.med'))
+
+
+myStructure = Structure([subS1, subS2], [interface])
+
+omega, resuSub = myStructure.computeGlobalModes(nmodes=6)
+
+with shared_tmpdir('foo') as tmpdir:
+    for isub,resu in enumerate(resuSub) :
+        resu.printMedFile(osp.join(tmpdir, 'resu%d.resu.med'%isub))
+
+print("**** Eigen Pulses ****")
+print(omega)
+
+ref = [ 25.12740004+0.j,  25.12740049+0.j, 148.76608696+0.j, 148.76658306+0.j,
+ 179.8428347 +0.j, 310.35187247+0.j]
+
+# for idx, val in enumerate(omega):
+#     test.assertAlmostEqual(val, ref[idx])
+test.assertAlmostEqual(omega[0], ref[0], delta=1.e-5)
+
+
+# =======================================
+#  Global modes
+# =======================================
+
+
+MAILLAG = LIRE_MAILLAGE(FORMAT='MED',
+                        UNITE=22)
+
+MODELEG = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Cylindre', 'Encast',),
+                               MODELISATION='3D',
+                               PHENOMENE='MECANIQUE'),
+                            ),
+                      MAILLAGE=MAILLAG)
+
+
+CHAMATG = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Cylindre', ),
+                                 MATER=INOX),
+                              ),
+                        MODELE=MODELEG)
+
+CL = AFFE_CHAR_MECA(FACE_IMPO=(_F(DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  GROUP_MA=('Encast')),
+                               ),
+                    MODELE=MODELEG)
+
+ASSEMBLAGE(CHAM_MATER=CHAMATG,
+           CHARGE=CL,
+           MATR_ASSE=(_F(MATRICE=CO('MASS_G'),
+                         OPTION='MASS_MECA'),
+                      _F(MATRICE=CO('RAID_G'),
+                         MODE_FOURIER=0,
+                         OPTION='RIGI_MECA')),
+           MODELE=MODELEG,
+           NUME_DDL=CO('NDDL'))
+
+nModesG = 6
+MODES_G = CALC_MODES(CALC_FREQ=_F(FREQ=3.0,
+                                  NMAX_FREQ=nModesG,),
+                     MATR_MASS=MASS_G,
+                     MATR_RIGI=RAID_G,
+                     OPTION='CENTRE',
+                     TYPE_RESU='DYNAMIQUE',
+                     VERI_MODE=_F(STOP_ERREUR='NON',))
+
+
+# =======================================
+#  MAC computation
+# =======================================
+
+# Project Global result on substructure 1
+Proj_Gto1 = PROJ_CHAMP(MODELE_1=MODELEG,
+                    MODELE_2=MODELE1,
+                    RESULTAT=MODES_G,
+                    NOM_CHAM='DEPL',
+                    TOUT_ORDRE='OUI',
+                    PROJECTION='OUI',
+                    DISTANCE_MAX=0.1,
+                    NUME_DDL=NUME1,
+                    VIS_A_VIS=(
+                        _F(GROUP_MA_1='Cylindre', GROUP_MA_2='Cylindre1',),
+                    ),
+                    )
+
+# Project Global result on substructure 2
+Proj_Gto2 = PROJ_CHAMP(MODELE_1=MODELEG,
+                    MODELE_2=MODELE2,
+                    RESULTAT=MODES_G,
+                    NOM_CHAM='DEPL',
+                    TOUT_ORDRE='OUI',
+                    PROJECTION='OUI',
+                    DISTANCE_MAX=0.1,
+                    NUME_DDL=NUME2,
+                    VIS_A_VIS=(_F(GROUP_MA_1='Cylindre', GROUP_MA_2='Cylindre2',),
+                               )
+                    )
+
+# ------------------------------------------------------------------------------
+
+mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
+        name2="Approche Globale", normalize=False, dof=['DX', 'DY', 'DZ', ])
+
+mac_ref = np.array([
+[1.00446791e+00, 2.23096759e-05, 1.24939608e-05, 7.53933258e-05, 3.28452721e-23, 1.99570771e-12],
+[2.23780804e-05, 1.00446801e+00, 7.53910873e-05, 1.24926708e-05, 1.55711959e-24, 4.08259560e-11],
+[2.75246294e-08, 8.49064635e-11, 1.10836063e-01, 9.09843014e-01, 8.76326552e-26, 1.30389528e-09],
+[8.50082956e-11, 2.75234236e-08, 9.09836876e-01, 1.10836791e-01, 1.00125203e-26, 4.59706442e-08],
+[7.08942052e-22, 2.64277497e-23, 7.53103233e-20, 5.34848595e-20, 1.00816581e+00, 7.39780250e-23],
+[1.22741036e-16, 2.40140170e-15, 2.49391150e-09, 7.25691002e-11, 1.02438045e-29, 1.00317007e+00]])
+
+# for (idx, jdx), val in np.ndenumerate(mac):
+#     test.assertAlmostEqual(val, mac_ref[idx, jdx])
+test.assertAlmostEqual(mac[0,0], mac_ref[0, 0], delta=1.e-1)
+
+# ------------------------------------------------------------------------------
+
+mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
+      list1=range(3))
+
+mac_ref = np.array(
+[[1.00000000e+00, 2.22104394e-05, 1.37320888e-05],
+       [2.22785419e-05, 1.00000000e+00, 8.28622024e-05],
+       [2.74021989e-08, 8.45287880e-11, 1.21819709e-01],
+       [8.46301759e-11, 2.74009956e-08, 1.00000000e+00],
+       [7.05788652e-22, 2.63101872e-23, 8.27734270e-20],
+       [1.22195080e-16, 2.39071994e-15, 2.74105344e-09]])
+
+# for (idx, jdx), val in np.ndenumerate(mac):
+#     test.assertAlmostEqual(val, mac_ref[idx, jdx])
+test.assertAlmostEqual(mac[0,0], mac_ref[0, 0], delta=1.e-5)
+
+
+FIN()

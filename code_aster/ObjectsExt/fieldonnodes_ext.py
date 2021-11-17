@@ -23,7 +23,7 @@
 **********************************************************************
 """
 
-import numpy
+import numpy, functools
 
 import aster
 from libaster import FieldOnNodesReal, DOFNumbering
@@ -111,6 +111,23 @@ class ExtendedFieldOnNodesReal:
                 "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud)
 
+    @property
+    @functools.lru_cache()
+    def __NodeDOF2Row(self):
+        """Build the indirection table between (nodeid, dof) and row"""
+        ldofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)]
+        if not ldofNumbering:
+            raise RuntimeError("Cannot retrieve dofNumbering")
+        dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)][-1]
+        # build the indirection table between (nodeid, dof) and row
+        indir = {}
+        for row in dofNumbering.getRowsAssociatedToLagrangeMultipliers():
+            dof = dofNumbering.getComponentAssociatedToRow(row)
+            node = -1 * int(dofNumbering.getNodeAssociatedToRow(row))  # constrained nodes have id < 0
+            if node > 0 and dof != "":
+                indir.setdefault((node,dof), []).append(row)  # there may be 2 Lagrange multipliers per constraint
+        return indir
+
     def setDirichletBC(self, **kwargs):
         """Set the values of the Dirichlet boundary conditions of the degrees
         of freedom on the group of nodes or cells.
@@ -128,13 +145,6 @@ class ExtendedFieldOnNodesReal:
         mesh = dofNumbering.getMesh()
         if mesh.isParallel():
             raise RuntimeError("No support for ParallelDOFNumbering")
-        # build the indirection table between (nodeid, dof) and row
-        indir = {}
-        for row in dofNumbering.getRowsAssociatedToLagrangeMultipliers():
-            dof = dofNumbering.getComponentAssociatedToRow(row)
-            node = -1 * int(dofNumbering.getNodeAssociatedToRow(row))  # constrained nodes have id < 0
-            if node > 0 and dof != "":
-                indir.setdefault((node,dof), []).append(row)  # there may be 2 Lagrange multipliers per constraint
         # build the group of nodes to be processed
         if not ('GROUP_MA' in kwargs.keys() or
                 'GROUP_NO' in kwargs.keys() or
@@ -177,9 +187,9 @@ class ExtendedFieldOnNodesReal:
             for (dof, val) in kwargs.items():
                 if dof in ['GROUP_MA','GROUP_NO','NOEUD']:  # only process DOF here
                     continue
-                if (node, dof) in indir.keys():
+                if (node, dof) in self.__NodeDOF2Row.keys():
                     assignedDOF += 1
-                    for row in indir[(node, dof)]:
+                    for row in self.__NodeDOF2Row[(node, dof)]:
                         self[row-1] = val   # row are 1-based
         if assignedDOF == 0:
             raise ValueError("No bounday condition has been set - no entity handle the given degree of freedom")

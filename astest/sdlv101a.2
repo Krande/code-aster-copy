@@ -1,0 +1,22 @@
+import code_aster
+from code_aster.Applications.dynamic_substructuring import SubStructure, Structure, Interface
+
+test = code_aster.TestCase()
+
+POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'))
+
+myStructure = Structure([subS1, subS2], [interface])
+
+omega, resuSub = myStructure.computeGlobalModes(nmodes=6)
+
+print("**** Eigen Pulses ****")
+print(omega)
+
+ref = [ 26.57863935+0.j,  26.58531003+0.j,  95.40312436+0.j,
+       158.29365126+0.j, 158.45435916+0.j, 191.3877163 +0.j]
+
+# for idx, val in enumerate(omega):
+#     test.assertAlmostEqual(val, ref[idx])
+test.assertAlmostEqual(omega[0], ref[0], delta=1.e-5)
+
+FIN()

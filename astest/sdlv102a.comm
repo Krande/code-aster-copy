@@ -1,0 +1,232 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+from code_aster.Applications.dynamic_substructuring import SubStructure, Structure, Interface
+from code_aster.Utilities import shared_tmpdir
+import os.path as osp
+
+test = code_aster.TestCase()
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+
+#------------------------------------------------------#
+#--                                                  --#
+#-- DEFINITION D'UN PREMIER CALCUL SUR MODELE REDUIT --#
+#--     ET ASSSEMBLAGE DU MODELE EF DE REFERENCE     --#
+#--                                                  --#
+#------------------------------------------------------#
+
+#-- MAILLAGES DES DEUX BOUTS DE TUYAU
+MAILLA1 = LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
+MAILLA1 = MODI_MAILLAGE(reuse=MAILLA1,
+                        MAILLAGE=MAILLA1,
+                        ORIE_NORM_COQUE=_F(GROUP_MA=('IFS_2D', ),
+                                           GROUP_NO=('nNormDZ',),
+                                           VECT_NORM=(-1.0, 0.0, 0.0)))
+MAILLA1 = DEFI_GROUP(reuse=MAILLA1, MAILLAGE=MAILLA1,
+                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
+
+
+MAILLA2 = LIRE_MAILLAGE(FORMAT='MED', UNITE=21)
+MAILLA2 = MODI_MAILLAGE(reuse=MAILLA2,
+                        MAILLAGE=MAILLA2,
+                        ORIE_NORM_COQUE=_F(GROUP_MA=('IFS_2D', ),
+                                           GROUP_NO=('nNormDZ', ),
+                                           VECT_NORM=(-1.0, 0.0, 0.0)))
+MAILLA2 = DEFI_GROUP(reuse=MAILLA2, MAILLAGE=MAILLA2,
+                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
+
+
+#-- CONSTRUCTION DES MODELES
+MODELE1 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('s1Tuyau', 'Tuyau'),
+                             MODELISATION='3D',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('s1Eau', 'Eau'),
+                             MODELISATION='3D_FLUIDE',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('IFS_2D', ),
+                             MODELISATION='FLUI_STRU',
+                             PHENOMENE='MECANIQUE')),
+                    MAILLAGE=MAILLA1)
+
+
+MODELE2 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('s2Tuyau', 'Tuyau'),
+                             MODELISATION='3D',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('s2Eau', 'Eau'),
+                             MODELISATION='3D_FLUIDE',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('IFS_2D', ),
+                             MODELISATION='FLUI_STRU',
+                             PHENOMENE='MECANIQUE')),
+                    MAILLAGE=MAILLA2)
+
+#-- DEFINITION DU MATERIAU
+acier = DEFI_MATERIAU(ELAS=_F(E=190.e9,
+                              NU=0.3,
+                              RHO=7800.0))
+
+eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0,
+                              RHO=732.0))
+
+#-- AFFECTATION DES MATERIAUX
+CHAMAT1 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Tuyau'),
+                                  MATER=(acier, )),
+                               _F(GROUP_MA=('IFS_2D', 'Eau'),
+                                  MATER=(eau, ))),
+                         MODELE=MODELE1)
+
+CHAMAT2 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Tuyau'),
+                                  MATER=(acier, )),
+                               _F(GROUP_MA=('IFS_2D', 'Eau'),
+                                  MATER=(eau, ))),
+                         MODELE=MODELE2)
+
+
+#-- DEFINITION DES CONDITIONS AUX LIMITES
+CHARGE_1 = AFFE_CHAR_MECA(FACE_IMPO=(_F(DX=0.0,
+                                        DY=0.0,
+                                        DZ=0.0,
+                                        GROUP_MA=('s1Tuyau', )),
+                                     _F(GROUP_MA=('s1Eau',),
+                                        PRES=0.0),
+                                     _F(DX=0.0, DY=0.0, DZ=0.0, PRES=0.,
+                                       GROUP_MA=('Interface', )),
+                                        ),
+                        MODELE = MODELE1)
+
+CHARGE_2 = AFFE_CHAR_MECA(FACE_IMPO=(_F(DX=0.0,
+                                        DY=0.0,
+                                        DZ=0.0,
+                                        GROUP_MA=('s2Tuyau', )),
+                                     _F(GROUP_MA=('s2Eau',),
+                                        PRES=0.0),
+                                     _F(DX=0.0, DY=0.0, DZ=0.0, PRES=0.,
+                                        GROUP_MA=('Interface', )),
+                                    ),
+                        MODELE = MODELE2)
+
+
+#-- ASSEMBLAGE DES MATRICES
+ASSEMBLAGE(MODELE=MODELE1,
+                NUME_DDL=CO("NUME1"),
+                CHARGE=CHARGE_1,
+                CHAM_MATER=CHAMAT1,
+                MATR_ASSE=(_F(  MATRICE = CO("RAID1"),  OPTION = 'RIGI_MECA'),
+                           _F(  MATRICE = CO("MASS1"),  OPTION = 'MASS_MECA'))
+                 )
+
+ASSEMBLAGE(MODELE=MODELE2,
+                NUME_DDL=CO("NUME2"),
+                CHARGE=CHARGE_2,
+                CHAM_MATER=CHAMAT2,
+                MATR_ASSE=(_F(  MATRICE = CO("RAID2"),  OPTION = 'RIGI_MECA'),
+                           _F(  MATRICE = CO("MASS2"),  OPTION = 'MASS_MECA'))
+                 )
+
+#-- CALCULS DES MODES AVEC LES C.L. ASSOCIEES AUX TYPES D'INTERFACE
+def printToMedFile(resu, filename:str):
+   DEFI_FICHIER(ACCES='NEW',
+               ACTION='ASSOCIER',
+               FICHIER=filename,
+               TYPE='BINARY',
+               UNITE=99)
+   IMPR_RESU(FORMAT='MED', UNITE=99,
+            RESU=_F(RESULTAT=resu,
+                     NOM_CHAM='DEPL', PARTIE='REEL',
+                     ),)
+   DEFI_FICHIER(ACTION='LIBERER',
+               UNITE=99)
+
+nModes1=12
+
+MODES_1=CALC_MODES(
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=nModes1,
+                              FREQ=3.,
+                              ),
+                 MATR_RIGI=RAID1,
+                 MATR_MASS=MASS1,
+                 TYPE_RESU='DYNAMIQUE',
+                 SOLVEUR=_F(METHODE='MUMPS',
+                            NPREC=11,),
+                 VERI_MODE=_F(STOP_ERREUR='NON',),);
+
+
+with shared_tmpdir('foo') as tmpdir:
+   printToMedFile(MODES_1, osp.join(tmpdir, 'modes1.resu.med'))
+
+nModes2=12
+
+MODES_2=CALC_MODES(
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(NMAX_FREQ=nModes2,
+                              FREQ=3.,
+                              ),
+                 MATR_RIGI=RAID2,
+                 MATR_MASS=MASS2,
+                 TYPE_RESU='DYNAMIQUE',
+                 SOLVEUR=_F(METHODE='MUMPS',
+                            NPREC=11,),
+                 VERI_MODE=_F(STOP_ERREUR='NON',),);
+
+with shared_tmpdir('foo') as tmpdir:
+   printToMedFile(MODES_2, osp.join(tmpdir, 'modes2.resu.med'))
+
+#--  DEFINITION DES INTERFACES
+
+subS1 = SubStructure(RAID1, MASS1, MODES_1)
+subS2 = SubStructure(RAID2, MASS2, MODES_2)
+
+interface = Interface(subS1, subS2, 'Interface')
+interface.computeInterfaceDofs('IFS')
+
+ResuS_Tuyau1 = subS1.computeInterfaceModes()
+ResuS_Tuyau2 = subS2.computeInterfaceModes()
+
+with shared_tmpdir('foo') as tmpdir:
+    ResuS_Tuyau1.printMedFile(osp.join(tmpdir, 'interface1.resu.med'))
+    ResuS_Tuyau2.printMedFile(osp.join(tmpdir, 'interface2.resu.med'))
+
+
+myStructure = Structure([subS1, subS2],[interface,])
+
+nmodes=6
+omega, resuSub = myStructure.computeGlobalModes(nmodes=nmodes)
+
+with shared_tmpdir('foo') as tmpdir:
+    for isub,resu in enumerate(resuSub) :
+        resu.printMedFile(osp.join(tmpdir, 'resu%d.resu.med'%isub))
+
+print("**** Eigen Pulses ****")
+print(omega)
+
+ref = [ 14.54542733+0.j,  27.99701576+0.j,  44.29580172+0.j,  76.16987969+0.j,
+  82.13327483+0.j, 115.95593236+0.j]
+
+# for idx, val in enumerate(omega):
+#     test.assertAlmostEqual(val, ref[idx])
+test.assertAlmostEqual(omega[0], ref[0], delta=1.e-5)
+
+FIN()
