@@ -1,0 +1,142 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+mesh0 = LIRE_MAILLAGE(UNITE=25, FORMAT='MED',)
+
+mesh  = CREA_MAILLAGE(MAILLAGE=mesh0,
+    CREA_MAILLE=_F(NOM='GRILLE',GROUP_MA='MGFacePla',PREF_MAILLE='G'),
+)
+
+model = AFFE_MODELE(
+    MAILLAGE=mesh,
+    AFFE=(
+        _F(MODELISATION=('DKT', ),PHENOMENE='MECANIQUE',
+           TOUT='OUI'),
+        _F(MODELISATION=('GRILLE_EXCENTRE', ), PHENOMENE='MECANIQUE',
+           GROUP_MA=('GRILLE',),),
+    ),
+)
+
+load = AFFE_CHAR_MECA(
+    MODELE=model,
+    DDL_IMPO=(
+        _F(GROUP_MA=('MGBordMurBas', 'MGBordMurHau'), LIAISON='ENCASTRE'),
+    ),
+    FORCE_ARETE=_F(FZ=-2.0E+07, GROUP_MA=('MGBordPlaDro', ),),
+    LIAISON_MAIL=(
+        _F(GROUP_MA_ESCL=('MGBordPlaGau', ), GROUP_MA_MAIT=('MGFaceMur', ),
+           TYPE_RACCORD='COQUE',
+           DISTANCE_ALARME=0.15,DISTANCE_MAX=0.15,
+        ),
+    ),
+)
+
+elemprop = AFFE_CARA_ELEM(
+    MODELE=model,
+    COQUE=(
+        _F(ANGL_REP=(1.0, 1.0), EPAIS=0.15, GROUP_MA=('MGFaceMur', ),),
+        _F(ANGL_REP=(1.0, 1.0), EPAIS=0.15, GROUP_MA=('MGFacePla', ),),
+    ),
+    GRILLE=(
+        _F(GROUP_MA='GRILLE', SECTION= 0.015, EXCENTREMENT= 0.15, VECT_1=(1.0,0.0,0.0),),
+    ),
+)
+
+mater    = DEFI_MATERIAU( ELAS=_F(E=2e+11, NU=0.2),)
+fieldmat = AFFE_MATERIAU(MAILLAGE=mesh, AFFE=_F(MATER=(mater, ), TOUT='OUI'),)
+#
+inst_fin = 1.0
+listr = DEFI_LIST_REEL(
+    DEBUT=0.0,
+    INTERVALLE=_F(JUSQU_A=inst_fin, NOMBRE=5),
+)
+fctm = DEFI_FONCTION(
+    NOM_PARA='INST',
+    VALE=(0.0,      0.0,
+          inst_fin, 1.0),
+)
+
+resnonl = STAT_NON_LINE(
+    MODELE=model,
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    EXCIT=_F(CHARGE=load, FONC_MULT=fctm),
+    INCREMENT=_F(LIST_INST=listr),
+)
+
+# Les déplacements aux points de Gauss
+resnonl=CALC_CHAMP(reuse=resnonl,
+    MODELE=model,
+    CARA_ELEM=elemprop,
+    CHAM_MATER=fieldmat,
+    RESULTAT=resnonl,
+    TOUT='OUI',
+    SOUS_POINT='DEPL_ELGA',
+)
+
+#  Maille, Point, Sous-point, DX, DZ
+resultats=[
+    ('M108', 3, 1, -5.245458325E-02, -1.439874213E-01,),
+    ('M108', 3, 2, -3.904565949E-02, -1.439874213E-01,),
+    ('M108', 3, 3, -2.563673573E-02, -1.439874213E-01,),
+    ('M109', 2, 1, -5.245458325E-02, -1.439874213E-01,),
+    ('M109', 2, 2, -3.904565949E-02, -1.439874213E-01,),
+    ('M109', 2, 3, -2.563673573E-02, -1.439874213E-01,),
+]
+
+for maille,point,spoint,dx,dz in resultats:
+    TEST_RESU(
+        RESU=(
+            _F(RESULTAT=resnonl, NUME_ORDRE=5, NOM_CHAM='DEPL_ELGA',
+               MAILLE=maille, POINT=point, SOUS_POINT=spoint,
+               NOM_CMP='DX', VALE_CALC=dx, VALE_REFE=dx, REFERENCE='AUTRE_ASTER',),
+            _F(RESULTAT=resnonl, NUME_ORDRE=5, NOM_CHAM='DEPL_ELGA',
+               MAILLE=maille, POINT=point, SOUS_POINT=spoint,
+               NOM_CMP='DZ', VALE_CALC=dz, VALE_REFE=dz, REFERENCE='AUTRE_ASTER',),
+    ),
+)
+
+"""
+leficdepl  = './REPE_OUT/depl_elga.med'
+unit = DEFI_FICHIER(ACTION='ASSOCIER', FICHIER=leficdepl, ACCES='NEW', TYPE='LIBRE')
+IMPR_RESU(FORMAT='MED',UNITE=unit,
+    RESU=_F(RESULTAT=resnonl, CARA_ELEM=elemprop, NOM_CHAM =('DEPL_ELGA',),),
+)
+DEFI_FICHIER(ACTION='LIBERER', UNITE=unit)
+
+
+leficresu  = './REPE_OUT/dep_elga.txt'
+unit = DEFI_FICHIER(ACTION='ASSOCIER', FICHIER=leficresu, ACCES='NEW', TYPE='ASCII')
+IMPR_RESU(
+    FORMAT='RESULTAT',UNITE=unit,
+    RESU=(
+        _F(NOM_CHAM=('DEPL_ELGA', ),
+           #NOM_CMP=('DX', 'DY', 'DZ'),
+           RESULTAT=resnonl, INST=inst_fin,
+           GROUP_MA=('MGFacePla',),
+        ),
+    ),
+)
+DEFI_FICHIER(ACTION='LIBERER', UNITE=unit)
+"""
+
+
+FIN()
