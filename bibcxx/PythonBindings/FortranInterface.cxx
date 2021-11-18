@@ -36,7 +36,11 @@ void exportFortranToPython() {
     // These functions are for internal use.
     py::def( "jeveux_init", &jeveux_init, R"(
 Initialize the memory manager (Jeveux).
-        )" );
+
+Arguments:
+    mpi_comm (int): Identifier of MPI communicator (from ``py2f()``).
+        )",
+             ( py::arg( "mpi_comm" ) ) );
 
     py::def( "jeveux_finalize", &jeveux_finalize, R"(
 Finalize the memory manager (Jeveux).

@@ -26,6 +26,7 @@
 #   include "mpi.h"
 #else
 #   define MPI_COMM_WORLD       0
+#   define MPI_COMM_NULL        -12345
 #   define MPI_Fint             int
 #   define MPI_Comm             int
 #   define MPI_Comm_c2f(a)      a
@@ -77,7 +78,7 @@ struct aster_comm_t {
  *
  */
 
-extern void aster_mpi_init(int, char **);
+extern void aster_mpi_init(const MPI_Fint);
 
 extern aster_comm_t* aster_get_comm_world();
 extern aster_comm_t* aster_get_current_comm();

@@ -28,12 +28,14 @@
 #include "aster_fort_ds.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
+#include "aster_mpi.h"
 #include "aster_utils.h"
 #include "astercxx.h"
 #include "shared_vars.h"
 
-void jeveux_init() {
+void jeveux_init( int fcomm ) {
     ASTERINTEGER dbg = 0;
+    aster_mpi_init( (MPI_Fint) fcomm );
     CALL_IBMAIN();
 
     // now Jeveux is available

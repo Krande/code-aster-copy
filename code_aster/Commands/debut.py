@@ -50,7 +50,7 @@ from ..Supervis import CommandSyntax, ExecuteCommand, Serializer, loadObjects
 from ..Supervis.code_file import track_coverage
 from ..Supervis.ctopy import checksd, print_header
 from ..Supervis.TestResult import testresu_print
-from ..Utilities import ExecutionParameter, Options, import_object, logger
+from ..Utilities import MPI, ExecutionParameter, Options, import_object, logger
 from ..Utilities.i18n import localization
 
 try:
@@ -91,7 +91,7 @@ class ExecutionStarter:
         params.testresu_print = testresu_print
         copy_datafiles(params.export.datafiles)
         aster_core.register(params, MessageLog)
-        libaster.jeveux_init()
+        libaster.jeveux_init( 0 )
         cls._is_initialized = True
         return True
 

@@ -28,7 +28,7 @@
 
 #include "astercxx.h"
 
-void jeveux_init();
+void jeveux_init( int fcomm = 0 );
 
 void jeveux_finalize( const ASTERINTEGER options = 0 );
 

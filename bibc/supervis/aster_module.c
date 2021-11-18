@@ -2424,8 +2424,6 @@ PyObject* PyInit_aster(void)
     aster = PyModule_Create(&aster_def);
 
     init_etape_stack();
-    /* don't take of mpiexec arguments */
-    aster_mpi_init(0, NULL);
     return aster;
 }
 #endif

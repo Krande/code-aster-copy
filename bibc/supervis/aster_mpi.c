@@ -66,11 +66,12 @@ static MPI_Errhandler errhdlr;
  *   PUBLIC FUNCTIONS
  *
  */
-void aster_mpi_init(int argc, char **argv)
+void aster_mpi_init( const MPI_Fint init_comm_world )
 {
     /*! MPI initialization */
+    /* aster_world is COMM_WORLD for code_aster */
+    MPI_Comm aster_world;
 #ifdef ASTER_HAVE_MPI
-    printf("MPI_Init...\n");
     int isdone;
 #ifdef OPEN_MPI
     void *handle = 0;
@@ -86,19 +87,30 @@ void aster_mpi_init(int argc, char **argv)
     if (!handle) handle = dlopen("libmpi.so.0", mode);
     if (!handle) handle = dlopen("libmpi.so",   mode);
 #endif
+    printf("checking MPI initialization...\n");
+    if ( init_comm_world == 0 ) {
+        aster_world = MPI_COMM_WORLD;
+        printf("using COMM_WORLD.\n");
+    } else {
+        printf("using MPI communicator passed in argument.\n");
+        aster_world = MPI_Comm_f2c( init_comm_world );
+    }
+    // MPI should have been initialized during mpi4py import
     MPI_Initialized(&isdone);
     if(! isdone) {
         printf("calling MPI_Init...\n");
-        AS_ASSERT(MPI_Init(&argc, &argv) == MPI_SUCCESS);
+        AS_ASSERT(MPI_Init(0, NULL) == MPI_SUCCESS);
     } else {
-        printf("MPI is already initialized.\n");
+        printf("MPI is initialized.\n");
     }
     AS_ASSERT(atexit(terminate) == 0);
     /* set the error handler */
     AS_ASSERT(MPI_Comm_create_errhandler(errhdlr_func, &errhdlr) == MPI_SUCCESS);
-    AS_ASSERT(MPI_Comm_set_errhandler(MPI_COMM_WORLD, errhdlr) == MPI_SUCCESS);
+    AS_ASSERT(MPI_Comm_set_errhandler(aster_world, errhdlr) == MPI_SUCCESS);
+#else
+    aster_world = 0;
 #endif
-    aster_mpi_world.id = MPI_COMM_WORLD;
+    aster_mpi_world.id = aster_world;
     aster_mpi_world.parent = NULL;
     aster_mpi_world.level = 0;
     strncpy(aster_mpi_world.name, "WORLD", NAME_LENGTH);
@@ -111,7 +123,7 @@ void aster_mpi_init(int argc, char **argv)
 
 /* API that works on aster_comm_t */
 aster_comm_t* aster_get_comm_world() {
-    /*! Return the original "MPI_COMM_WORLD" node */
+    /*! Return the original "COMM_APP" node */
     return &aster_mpi_world;
 }
 
@@ -995,7 +1007,7 @@ void DEFP( ASABRT, asabrt, _IN ASTERINTEGER *iret )
      */
     gErrFlg = 1;
 #ifdef ASTER_HAVE_MPI
-    MPI_Abort( MPI_COMM_WORLD, (int)(*iret) );
+    MPI_Abort( aster_mpi_world.id, (int)(*iret) );
 #else
     CALL_ABORTF();
 #endif
