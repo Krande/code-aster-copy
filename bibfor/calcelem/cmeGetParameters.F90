@@ -138,7 +138,7 @@ character(len=8), intent(out) :: calcElemModel
         mate = ' '
         if (option.eq.'RIGI_GEOM')  then
             ! necessaire seulement pour CABLE 
-            call dismoi('SI_CABLE', model, 'MODELE', repk=answer)
+            call dismoi('EXI_CABLE', model, 'MODELE', repk=answer)
             if (answer .eq. 'OUI') then
                 call utmess('A', 'MECHANICS1_40')
             endif

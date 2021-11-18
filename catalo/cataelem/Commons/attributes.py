@@ -204,6 +204,12 @@ BORD_ISO = Attribute(value=(
   BORD_ISO = 'OUI' => l'element est l'element de bord "standard" partage par les elements isoparametriques 2D ou 3D.
 """)
 
+CABLE = Attribute(value=(
+                   'OUI',
+                   ),
+                   comment="""
+  CABLE =  'OUI' :  l'element est un element de cable (sans rigidité de compression)
+""")
 
 CL_DUAL = Attribute(value=(
                     'OUI',
@@ -278,6 +284,7 @@ FOURIER = Attribute(value=(
 
 FLUIDE = Attribute(value=(
     'OUI',
+    'NON'
 ),
     comment="""
   FLUIDE =  'OUI' : l'element est destine a une etude d'un fluide
@@ -413,6 +420,14 @@ PESA = Attribute(value=(
   PESA =  'OUI' : l'element est destine a une etude fluide à surface libre
 """)
 
+PLAQUE = Attribute(value=(
+                  'OUI',
+                  ),
+                  comment="""
+  PLAQUE  =  'OUI' :  l'element est un element de plaque
+""")
+
+
 POUTRE = Attribute(value=(
                    'OUI',
                    ),
@@ -420,6 +435,13 @@ POUTRE = Attribute(value=(
   POUTRE =  'OUI' :  l'element est un element de poutre, de barre, de cable, de tuyau, ... (element de structure lineique).
 """)
 
+POUX = Attribute(value=(
+    'OUI',
+    'NON',
+),
+    comment="""
+  POUX  =  'OUI' :  l'élément est de type poutre 'à la POUX' (RDM)
+""")
 
 SIGM = Attribute(value=(
                  'NON',
@@ -436,6 +458,14 @@ SOUS_POINT = Attribute(value=(
                        ),
                        comment="""
   SOUS_POINT = 'OUI' => l'element peut definir des sous-points dans AFFE_CARA_ELEM
+""")
+
+STRX = Attribute(value=(
+                 'OUI',
+                 'NON',
+                 ),
+                 comment="""
+  STRX : indique si l'élément a besoin du champ STRX
 """)
 
 TUYAU = Attribute(value=(

@@ -50,9 +50,7 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mtcmbl.h"
@@ -121,7 +119,7 @@ implicit none
     character(len=19) :: force0, force1
     character(len=19) :: solveu
     character(len=24) :: modele, mate, carele, charge, infoch, fomult, numedd, mateco
-    character(len=24) :: criter, kineLoad
+    character(len=24) :: criter, kineLoad, answer
     character(len=24) :: lifo(*)
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0, fexte(*), famor(*), fliai(*)
     aster_logical :: lcrea, lamort, limped, lmodst, l_harm, l_matr_impe, l_damp_modal
@@ -129,36 +127,33 @@ implicit none
     integer, parameter :: nbtyar = 6
     integer :: igrpa, ipepa, perc, freqpr, last_prperc
     integer :: iddeeq, ierr
-    integer :: igrel, iexci, iexcl
+    integer :: iexci, iexcl
     integer :: ifimpe
     integer :: idepla
     integer :: ivite1, ivitea, ivita1
     integer :: iacce1, iaccea
-    integer :: ialiel, iarchi
+    integer :: iarchi
     integer :: iwk1, iwk2, iforc2
     integer :: alarm, archiv
     integer :: ibid, iret
     integer :: ifm, niv
     integer :: ifonde, imtres
-    integer :: ipas, istop, itypel, istoc, jstoc
+    integer :: ipas, istop, istoc, jstoc
     integer :: jbint, jlpas, jmltap, jnbpa
     integer :: jnoacc, jnodep, jnovit, jpsdel
-    integer :: n1, na, nbexci, nbexcl, nbgrel, nbgrpa, nbordr
-    integer :: nbptpa, nbv, nd, nel, nmodam, npatot, nv, ierc
-    character(len=3) :: repk
+    integer :: n1, na, nbexci, nbexcl, nbgrpa, nbordr
+    integer :: nbptpa, nbv, nd, nmodam, npatot, nv, ierc
     character(len=4) :: typ1(nbtyar)
-    character(len=8) :: k8b, matr_resu, modsta
+    character(len=8) :: mateFromRigid, matr_resu, modsta
     character(len=8) :: nomddl
     character(len=8) :: mailla
-    character(len=19) :: nolig
-    character(len=16) :: typear(nbtyar), nomte, k16bid, typres
+    character(len=16) :: typear(nbtyar), k16bid, typres
     character(len=14) :: numddl
     character(len=19) :: maprec
     character(len=19) :: lisarc
     character(len=24) :: lispas, libint, linbpa
     character(len=24) :: lisins
     character(len=24), parameter :: k24amo = '&&K24AMO'
-    character(len=24) :: ligrel
     character(len=24), parameter :: vitini = '&&VITINI'
     character(len=24), parameter :: vitent = '&&VITENT', famomo = '&&FAMOMO'
     character(len=24) :: veanec, vaanec, deeq, vaonde, veonde
@@ -190,7 +185,7 @@ implicit none
 !
     call infniv(ifm, niv)
 !
-    call getres(k16bid, typres, k8b)
+    call getres(k16bid, typres, mateFromRigid)
 !
 ! 1.2. ==> NOM DES STRUCTURES
 !
@@ -213,44 +208,18 @@ implicit none
         valmod=k24amo(1:19)//'.VALM'
         basmod=k24amo(1:19)//'.BASM'
     endif
-!
-! 1.3. ==> VERIFICATION DE LA PRESENCE D'ELEMENTS AVEC L'OPTION
-!         'IMPE_ABSO'
-!
-    ligrel = modele(1:8)//'.MODELE'
-    nolig = ligrel(1:19)
-!
-    limped = .true.
-!
-    call jelira(nolig//'.LIEL', 'NUTIOC', nbgrel)
-    repk = 'NON'
-    do igrel = 1, nbgrel
-        call jeveuo(jexnum(nolig//'.LIEL', igrel), 'L', ialiel)
-        call jelira(jexnum(nolig//'.LIEL', igrel), 'LONMAX', nel)
-        itypel = zi(ialiel-1+nel)
-        call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
-        if ((nomte(1:9).eq.'MEFA_FACE') .or. (nomte(1:6).eq.'MEFASE')) then
-            repk = 'OUI'
-            goto 10
-        endif
-    end do
-!
-    if (repk .eq. 'NON') then
-        limped = .false.
-    endif
-!
- 10 continue
-!
-! 1.4. ==>
-!
 
-    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=k8b, arret = 'C', ier = ierc)
+! - IMPE_ABSO elements in model ?
+    limped = ASTER_FALSE
+    call dismoi('EXI_IMPE_ABSO', modele, 'MODELE', repk=answer)
+    limped = answer .eq. 'OUI'
+    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=mateFromRigid, arret = 'C', ier = ierc)
     if (ierc .ne. 0) then
-        k8b = ' '
+        mateFromRigid = ' '
     endif
-
-    if (k8b .eq. ' ') limped = .false.
-!
+    if (mateFromRigid .eq. ' ') then
+        limped = ASTER_FALSE
+    endif
     if (limped) then
         call utmess('I', 'DYNALINE1_23')
     endif
@@ -294,8 +263,8 @@ implicit none
     call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
     call getfac('EXCIT', nbexci)
     do iexci = 1, nbexci
-        call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
-        if (k8b .eq. 'OUI' .and. nbv .eq. 0) then
+        call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=mateFromRigid, nbret=nd)
+        if (mateFromRigid .eq. 'OUI' .and. nbv .eq. 0) then
             call utmess('F', 'DYNALINE1_46')
         endif
     end do
@@ -317,8 +286,8 @@ implicit none
         call wkvect('&&DLNEWI.IPSD', 'V V R', nbexci*neq, jpsdel)
         do iexci = 1, nbexci
 !     --- CAS D'UN ACCELEROGRAMME
-            call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
-            if (k8b .eq. 'OUI') then
+            call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=mateFromRigid, nbret=nd)
+            if (mateFromRigid .eq. 'OUI') then
                 zi(jmltap+iexci-1) = 1
                 call getvid('EXCIT', 'ACCE', iocc=iexci, scal=zk8(jnoacc+ iexci-1), nbret=na)
                 call getvid('EXCIT', 'VITE', iocc=iexci, scal=zk8(jnovit+ iexci-1), nbret=nv)

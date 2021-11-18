@@ -319,10 +319,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
-    63 : _("""
- phénomène inconnu :  %(k1)s
-"""),
-
     65 : _("""
  le type de concept : " %(k1)s " est inconnu
 """),

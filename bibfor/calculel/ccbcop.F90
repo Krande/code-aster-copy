@@ -113,8 +113,6 @@ character(len=19), intent(in) :: listStoreJv, listOptionJv
 !
 !     ON VERIFIE QUE CARA_ELEM EST RENSEIGNES POUR LES COQUES
     exipla=.false.
-    call dismoi('EXI_COQ1D', model, 'MODELE', repk=answer)
-    if (answer(1:3) .eq. 'OUI') exipla=.true.
     call dismoi('EXI_COQ3D', model, 'MODELE', repk=answer)
     if (answer(1:3) .eq. 'OUI') exipla=.true.
     call dismoi('EXI_PLAQUE', model, 'MODELE', repk=answer)
