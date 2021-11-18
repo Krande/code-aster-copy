@@ -228,7 +228,9 @@ Conseil :
 """),
 
     44 : _("""
- fichier MED :  %(k1)s maillage :  %(k2)s erreur numéro  %(i1)d
+ Fichier MED :  %(k1)s
+ Nom du maillage :  %(k2)s
+ Erreur numéro  %(i1)d
 """),
 
     51 : _("""
@@ -322,7 +324,7 @@ Conseil:
 """),
 
     77 : _("""
- Le paramètre '%(k1)s' doit être fourni  
+ Le paramètre '%(k1)s' doit être fourni
 """),
 
     78 : _("""

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     character(len=6), parameter :: nompro = 'LRMHDF'
     integer, parameter :: edlect=0
-    integer :: iaux 
+    integer :: iaux
     integer :: nmatyp(MT_NTYMAX)
     integer :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
     integer :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
@@ -132,7 +132,7 @@ integer :: nbnoeu, nbmail, nbcoor
 !
     call as_mficom(nofimd, hdfok, medok, codret)
     if (hdfok .eq. 0) then
-        valk (1) = nofimd(1:32)
+        valk (1) = nofimd
         valk (2) = nomamd
         vali (1) = codret
         call utmess('A', 'MODELISA9_44', nk=2, valk=valk, si=vali(1))

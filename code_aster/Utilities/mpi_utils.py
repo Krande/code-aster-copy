@@ -55,31 +55,44 @@ except:
         Some methods can be missing (add them here with the same name and
         arguments than mpi4py)
         """
+        rank = 0
+        size = 1
 
         def __init__(self):
             if haveMPI():
                 raise RuntimeError("mpi4py is mandatory for mpi execution")
 
         def Get_rank(self):
+            """Return the process rank."""
             return 0
 
         def Get_size(self):
+            """Return the number of processes."""
             return 1
 
         def Barrier(self):
+            """Set a barrier."""
             return
 
         def bcast(self, data, root=0):
+            """Broadcast"""
             return data
 
         def Bcast(self, data, root=0):
+            """Broadcast with buffers."""
             return data
 
         def gather(self, data, root=0):
+            """Gather"""
             return data
 
         def allreduce(self, data, op):
+            """Allreduce"""
             return op(data)
+
+        def py2f():
+            """Return the communicator id."""
+            return 0
 
     class MPI:
         """
@@ -90,11 +103,9 @@ except:
         It is equivalent to ``from mpi4py import MPI`` of parallel libraries.
         """
 
-        _identity = lambda data: data
-
-        MAX = _identity
-        MIN = _identity
-        SUM = _identity
-        PROD = _identity
+        MAX = max
+        MIN = min
+        SUM = sum
+        PROD = sum
 
         COMM_WORLD = FAKE_COMM_WORLD()

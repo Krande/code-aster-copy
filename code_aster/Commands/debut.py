@@ -69,11 +69,12 @@ class ExecutionStarter:
     params = _is_initialized = None
 
     @classmethod
-    def init(cls, argv=None):
+    def init(cls, argv=None, fcomm=0):
         """Initialization of class attributes.
 
         Attributes:
             argv (list[str]): List of command line arguments.
+            fcomm (int, optional): Id of the MPI communicator.
 
         Returns:
             bool: *True* if the initialization has been done, *False* if the
@@ -91,7 +92,7 @@ class ExecutionStarter:
         params.testresu_print = testresu_print
         copy_datafiles(params.export.datafiles)
         aster_core.register(params, MessageLog)
-        libaster.jeveux_init( 0 )
+        libaster.jeveux_init(fcomm)
         cls._is_initialized = True
         return True
 
@@ -269,18 +270,20 @@ def init(*argv, **kwargs):
     Arguments:
         argv (list): List of command line arguments.
         kwargs (dict): Keywords arguments passed to 'DEBUT'/'POURSUITE' +
-            'debug' same as -g/--debug,
-            'noargv' to ignore previously passed arguments.
+            'debug (bool)' same as -g/--debug,
+            'debugpy (int)' to start a debugpy session on this port number,
+            'noargv (bool)' to ignore previously passed arguments,
+            'comm (*mpi4py.MPI.Comm*)' to select the MPI communicator.
     """
-    if kwargs.get("noargv"):
+    if kwargs.pop("noargv", False):
         ExecutionParameter().set_argv([])
-    kwargs.pop("noargv", None)
-    if not ExecutionStarter.init(argv):
+    comm = kwargs.pop("comm", None)
+    fcomm = comm.py2f() if comm else 0
+    if not ExecutionStarter.init(argv, fcomm):
         return
 
-    if kwargs.get("debug"):
+    if kwargs.pop("debug", False):
         ExecutionParameter().enable(Options.Debug)
-    kwargs.pop("debug", None)
 
     if kwargs.get("debugpy") and HAS_DEBUGPY:
         debugpy.listen(("localhost", kwargs["debugpy"]))
