@@ -20,21 +20,25 @@
 #
 # person_in_charge: mathieu.courtois at edf.fr
 
+import code_aster
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+test = code_aster.TestCase()
 
 a = 2.
 
 mult2 = FORMULE(NOM_PARA='INST', VALE='INST * a', a=a)
 
-assert mult2(2.) == 4.
 print("mult2(2.) =", mult2(2.))
+test.assertEqual(mult2(2.), 4.)
 
 from fort11 import formula_def
 
 mult3, mult2inc = formula_def(mult2)
 
-assert mult3(6.) == 18.
 print("mult3(6.) =", mult3(6.))
+test.assertEqual(mult3(6.), 18.)
 
 # the *python* function objects are not pickled by E_JDC, so ``funct3`` won't be
 # available to evaluate ``mult3`` in POURSUITE.
@@ -45,5 +49,7 @@ freal = CALC_FONC_INTERP(FONCTION=mult3,
 IMPR_FONCTION(COURBE=_F(FONCTION=freal), UNITE=6)
 
 DETRUIRE(NOM=mult3)
+
+test.printSummary()
 
 FIN()

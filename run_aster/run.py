@@ -33,7 +33,6 @@ from subprocess import PIPE, run
 
 from .command_files import add_import_commands, stop_at_end
 from .config import CFG
-from .export import Export
 from .logger import WARNING, logger
 from .status import StateOptions, Status, get_status
 from .timer import Timer
