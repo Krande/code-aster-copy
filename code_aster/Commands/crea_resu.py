@@ -29,6 +29,7 @@ from ..Objects import (LoadResult, ThermalResult,
                        ModeResultComplex, ModeResult,
                        MultipleElasticResult, NonLinearResult)
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 
 
 class ResultCreator(ExecuteCommand):
@@ -79,42 +80,40 @@ class ResultCreator(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        fkw = keywords.get("AFFE")
-        if fkw is not None:
-            if type(fkw) not in (list, tuple): fkw = fkw,
-            for occ in fkw:
-                chamGd = occ.get("CHAM_GD")
-                if chamGd is not None:
-                    isFieldOnNodesReal = isinstance(chamGd, FieldOnNodesReal)
-                    isFieldOnNodesComplex = isinstance(chamGd, FieldOnNodesComplex)
-                    if isFieldOnNodesReal or isFieldOnNodesComplex:
-                        mesh = chamGd.getMesh()
-                        if mesh is not None:
-                            self._result.setMesh(mesh)
-                            break
+        fkw = force_list(keywords.get("AFFE", []))
+        for occ in fkw:
+            chamGd = occ.get("CHAM_GD")
+            if chamGd is not None:
+                isFieldOnNodesReal = isinstance(chamGd, FieldOnNodesReal)
+                isFieldOnNodesComplex = isinstance(chamGd, FieldOnNodesComplex)
+                if isFieldOnNodesReal or isFieldOnNodesComplex:
+                    mesh = chamGd.getMesh()
+                    if mesh is not None:
+                        self._result.setMesh(mesh)
+                        break
 
-        if keywords.get("ECLA_PG") is not None:
-            self._result.setMesh(keywords.get("ECLA_PG").get("MODELE_INIT").getMesh())
+        if keywords.get("ECLA_PG"):
+            self._result.setMesh(keywords["ECLA_PG"]["MODELE_INIT"].getMesh())
 
-        if keywords.get("CONV_CHAR") is not None:
-            self._result.setMesh(keywords.get("CONV_CHAR").get("MATR_RIGI").getMesh())
+        if keywords.get("CONV_CHAR"):
+            self._result.setMesh(keywords["CONV_CHAR"]["MATR_RIGI"].getMesh())
 
-        if keywords.get("CONV_RESU") is not None:
-            self._result.setMesh(keywords.get("CONV_RESU").get("MATR_RIGI").getMesh())
+        if keywords.get("CONV_RESU"):
+            self._result.setMesh(keywords["CONV_RESU"]["MATR_RIGI"].getMesh())
 
-        if keywords.get("PROL_RTZ") is not None:
+        if keywords.get("PROL_RTZ"):
             self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
 
 
-        if fkw is None:
+        if not fkw:
             fkw = keywords.get("ASSE")
-        if fkw is None:
+        if not fkw:
             fkw = keywords.get("PREP_VRC2")
-        if fkw is None:
+        if not fkw:
             fkw = keywords.get("PREP_VRC1")
 
 
-        if fkw is not None:
+        if fkw:
             chamMater = fkw[0].get("CHAM_MATER")
             if chamMater is not None:
                 self._result.setMaterialField(chamMater)
