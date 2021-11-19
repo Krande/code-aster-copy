@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,7 @@ def runtest(self):
         with open(out, 'rb') as fobj:
             btext = fobj.read()
         text = btext.decode("utf8", "replace")
-        if 'NOOK_TEST_RESU' in text:
+        if retcode == 2 and 'NOOK_TEST_RESU' in text:
             retcode = 'nook'
         if retcode == 0:
             func = Logs.info
