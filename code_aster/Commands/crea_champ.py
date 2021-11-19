@@ -23,6 +23,7 @@ from ..Objects import (FieldOnCellsReal, FieldOnNodesComplex,
                        FieldOnNodesReal, FullResult, ModeResult,
                        ConstantFieldOnCellsReal)
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 
 
 class FieldCreator(ExecuteCommand):
@@ -108,13 +109,18 @@ class FieldCreator(ExecuteCommand):
         """
 
         if isinstance(self._result, FieldOnNodesReal):
-            if self._result.getDOFNumbering() is None:
-                if "COMB" in keywords:
-                    for comb in keywords["COMB"]:
-                        dofNum = comb['CHAM_GD'].getDOFNumbering()
-                        if dofNum is not None:
-                            self._result.setDOFNumbering(dofNum)
-                            break
+            if not self._result.getDOFNumbering():
+                for comb in force_list(keywords.get("COMB", [])):
+                    dofNum = comb['CHAM_GD'].getDOFNumbering()
+                    if dofNum:
+                        self._result.setDOFNumbering(dofNum)
+                        break
+            if not self._result.getMesh():
+                for comb in force_list(keywords.get("COMB", [])):
+                    mesh = comb['CHAM_GD'].getMesh()
+                    if mesh:
+                        self._result.setMesh(mesh)
+                        break
 
         self._result.build()
 
