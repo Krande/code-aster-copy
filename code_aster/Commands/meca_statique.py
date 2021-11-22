@@ -78,7 +78,11 @@ class MechanicalSolver(ExecuteCommand):
             mechaSolv.setTimeStepManager([inst])
         listInst = keywords.get("LIST_INST")
         if listInst != None:
-            mechaSolv.setTimeStepManager(listInst.getValues())
+            timeValues = listInst.getValues()
+            inst_fin = keywords.get("INST_FIN")
+            if inst_fin is not None:
+                timeValues = [time for time in timeValues if time <= inst_fin]
+            mechaSolv.setTimeStepManager(timeValues)
 
         fkw = force_list(keywords.get("EXCIT", []))
         for curDict in fkw:
