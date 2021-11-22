@@ -84,7 +84,7 @@ implicit none
     integer :: iocc
     integer :: nbnoeu, jdirec
     integer :: idim, nume_node, nfaci
-    integer :: ibid, ndim
+    integer :: ibid, geomDime
     integer :: ino, jprnm, nbec
     integer :: nbcmp, inom
     real(kind=8) :: repe_defi(3)
@@ -129,11 +129,10 @@ implicit none
     coef_cplx_unit = (1.d0,0.d0)
     coef_real_unit = 1.d0
     dof_name = 'DEPL'
-!
+
 ! - Model informations
-!
     model = ligrmo(1:8)
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Type of coefficients
@@ -203,12 +202,12 @@ implicit none
 !
 ! ----- Some verifications
 !
-        if (ndim .eq. 3 .and. l_dtan) then
+        if (geomDime .eq. 3 .and. l_dtan) then
             call utmess('F', 'CHARGES2_63')
         endif
         if (vale_type .eq. 'FONC') then
             if (l_dnor .or. l_dtan) then
-                if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+                if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
                     call utmess('F', 'CHARGES2_6')
                 endif
             endif
@@ -217,12 +216,12 @@ implicit none
 ! ----- Normals and/or tangents
 !
         if (l_dnor) then
-            call canort(mesh, nb_elem, zi(jlima), ndim, nb_node,&
+            call canort(mesh, nb_elem, zi(jlima), geomDime, nb_node,&
                         zi(jlino), 1)
             call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
         endif
         if (l_dtan) then
-            call canort(mesh, nb_elem, zi(jlima), ndim, nb_node,&
+            call canort(mesh, nb_elem, zi(jlima), geomDime, nb_node,&
                         zi(jlino), 2)
             call jeveuo('&&CANORT.TANGENT', 'L', vr=tangent)
         endif
@@ -233,21 +232,21 @@ implicit none
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                do idim = 1, ndim
-                    repe_defi(idim) = normale(ndim*(ino-1)+idim)
+                do idim = 1, geomDime
+                    repe_defi(idim) = normale(geomDime*(ino-1)+idim)
                 end do
 !
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*nume_node)) then
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dnor,&
                                     val_c_dnor, val_f_dnor, vale_type, ibid, list_rela,&
-                                    ndim, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                                    geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                         goto 105
                     endif
                 endif
 !
-                repe_type = ndim
+                repe_type = geomDime
                 call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [repe_type],&
                             repe_defi, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
                             coef_type, vale_type, 0.d0, list_rela)
@@ -262,22 +261,22 @@ implicit none
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                do idim = 1, ndim
-                    repe_defi(idim) = tangent(ndim* (ino-1)+idim)
+                do idim = 1, geomDime
+                    repe_defi(idim) = tangent(geomDime* (ino-1)+idim)
                 end do
 !
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*nume_node)) then
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dtan,&
                                     val_c_dtan, val_f_dtan, vale_type, ibid, list_rela,&
-                                    ndim, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
+                                    geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                         goto 115
                     endif
                 endif
 !
-                repe_type = ndim
-                call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [ndim],&
+                repe_type = geomDime
+                call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [geomDime],&
                             repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
                             coef_type, vale_type, 0.d0, list_rela)
 !
@@ -298,7 +297,7 @@ implicit none
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afddli(model, nbcmp, zk8(inom), nume_node, name_node,&
+                call afddli(model, geomDime, nbcmp, zk8(inom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node- 1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
                             coef_type, n_keyword, keywordlist, nbterm, vale_type,&
                             vale_real, vale_func, vale_cplx, icompt, list_rela,&

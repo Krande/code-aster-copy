@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
+    subroutine afddli(model, geomDime, gran_cmp_nb, gran_cmp_name, node_nume, node_name, &
                       prnm, repe_type, repe_defi, coef_type, cmp_nb, &
                       cmp_name, cmp_acti, vale_type, vale_real, vale_func, &
                       vale_cplx, cmp_count, list_rela, lxfem, jnoxfl, &
                       jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv,&
                       mesh, ch_xfem_heav)
         character(len=8), intent(in) :: model
+        integer, intent(in) :: geomDime
         integer, intent(in) :: gran_cmp_nb
         character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
         integer, intent(in) :: node_nume 
