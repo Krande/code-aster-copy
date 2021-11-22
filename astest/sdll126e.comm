@@ -258,7 +258,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.719758862700E-04,
                         VALE_PARA=250.0,
                         REFERENCE='AUTRE_ASTER',
                         FONCTION=MOD_Y_D2,
-                        TOLE_MACHINE=3.0E-5,), #TODO TOLE_MACHINE
+                        TOLE_MACHINE=1.e-4) #TODO TOLE_MACHINE
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=7.021222336860E-04,
@@ -266,7 +266,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=7.021222336860E-04,
                         VALE_PARA=250.0,
                         REFERENCE='AUTRE_ASTER',
                         FONCTION=MOD_X_D2,
-                        TOLE_MACHINE=7.0E-5,), #TODO TOLE_MACHINE
+                        TOLE_MACHINE=1.e-4) #TODO TOLE_MACHINE
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=97.91353304649,
@@ -274,7 +274,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=97.91353304649,
                         VALE_PARA=250.0,
                         REFERENCE='AUTRE_ASTER',
                         FONCTION=PHA_Y_D2,
-                        TOLE_MACHINE=5.0E-5,), #TODO TOLE_MACHINE
+                        TOLE_MACHINE=1.e-4) #TODO TOLE_MACHINE
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-173.9231999123,
@@ -282,7 +282,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-173.9231999123,
                         VALE_PARA=250.0,
                         REFERENCE='AUTRE_ASTER',
                         FONCTION=PHA_X_D2,
-                        TOLE_MACHINE=3.0E-5,), #TODO TOLE_MACHINE
+                        TOLE_MACHINE=1.e-4) #TODO TOLE_MACHINE
               )
 
 FIN()
