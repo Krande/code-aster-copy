@@ -57,11 +57,19 @@ AFFMAT = AFFE_MATERIAU(MAILLAGE=pMesh2,
                        AFFE=_F(TOUT='OUI',
                                MATER=MATER1,),)
 
+LINSTC=DEFI_LIST_REEL(VALE=( 1.0, 2.0),)
+
+
 resu = MECA_STATIQUE(CHAM_MATER=AFFMAT,
                      MODELE=model,
+                     LIST_INST = LINSTC, INST_FIN=1.0,
                      EXCIT=(_F(CHARGE=char_cin,),
                             _F(CHARGE=char_meca,),),
                      )
+
+ranks = resu.getRanks()
+test.assertEqual(len(ranks), 1)
+test.assertAlmostEqual(ranks[0], 1.0)
 resu.debugPrint(10+rank)
 
 test.assertEqual("resu", resu.userName)
