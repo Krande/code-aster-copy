@@ -94,13 +94,12 @@ class ResultCreator(ExecuteCommand):
 
         if keywords.get("ECLA_PG"):
             self._result.setMesh(keywords["ECLA_PG"]["MODELE_INIT"].getMesh())
-
         if keywords.get("CONV_CHAR"):
             self._result.setMesh(keywords["CONV_CHAR"]["MATR_RIGI"].getMesh())
-
         if keywords.get("CONV_RESU"):
-            self._result.setMesh(keywords["CONV_RESU"]["MATR_RIGI"].getMesh())
-
+            self._result.setMesh(keywords["CONV_RESU"]["RESU_INIT"].getMesh())
+        if keywords.get("KUCV"):
+            self._result.setMesh(keywords["KUCV"]["RESU_INIT"].getMesh())
         if keywords.get("PROL_RTZ"):
             self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
 
