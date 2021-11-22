@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine lc0076(fami, kpg, ksp, ndim, imate,&
 
  
 ! aslint: disable=W1504,W0104
-    use Behaviour_module, only : behaviourOption
     use vmis_isot_nl_module, only: CONSTITUTIVE_LAW, Init, InitViscoPlasticity, Integrate 
     implicit none
 #include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
 
 ! ----------------------------------------------------------------------
     integer             :: imate, ndim, kpg, ksp, codret, icomp
@@ -56,8 +56,11 @@ subroutine lc0076(fami, kpg, ksp, ndim, imate,&
     
     ndimsi = 2*ndim
     eps    = epsm(1:ndimsi) + deps(1:ndimsi)
-    
-    call behaviourOption(option, compor,lMatr , lVect ,lVari , lSigm)
+
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lVect = L_VECT(option)
+    lMatr = L_MATR(option)
 
     cl = Init(ndimsi, option, fami, kpg, ksp, imate, nint(carcri(1)), &
             carcri(3))
