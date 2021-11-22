@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! person_in_charge: mickael.abbas at edf.fr
+!
 subroutine caddlp(load, mesh, ligrmo, vale_type)
 !
 implicit none
@@ -50,12 +51,10 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load
+character(len=8), intent(in) :: mesh
+character(len=19), intent(in) :: ligrmo
+character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,7 +100,7 @@ implicit none
     integer :: i_keyword
     character(len=24) :: list_node
     integer :: jlino
-    integer :: nb_node
+    integer :: nb_node, geomDime
     character(len=8) :: model, k8bid, nomg, name_node
     character(len=16) :: keywordfact, keyword
     character(len=19) :: lisrel, k19bid
@@ -129,7 +128,10 @@ implicit none
 !
     coef_type = 'REEL'
     ASSERT(vale_type .eq. 'REEL')
+
+! - Model informations
     model = ligrmo(1:8)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Create list of excluded keywords for using in load_read_keyw
@@ -187,7 +189,7 @@ implicit none
 !
 ! --------- Final linear relation
 !
-            call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
+            call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
                         zi(jprnm-1+(nume_node-1)*nbec+1), dimension(nume_node),&
                         zr(jdirec+3*(nume_node-1)), coef_type, cmp_nb_glo, cmp_name_glo,&
                         cmp_acti_glo, vale_type, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,&

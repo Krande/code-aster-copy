@@ -101,7 +101,7 @@ implicit none
     aster_logical :: lxfem
     character(len=24) :: list_node
     integer :: jlino
-    integer :: nb_node
+    integer :: nb_node, geomDime
     aster_logical :: l_bloc, l_ocmp
     integer :: nb_typ_bloc
     character(len=16) :: val_t_bloc(3)
@@ -116,7 +116,8 @@ implicit none
     character(len=16) :: typblc(3), lec_typ_blc
     aster_logical :: istypblc (3)
     integer :: cmp_nb_depl, cmp_nb_rota, cmp_nb_fourier
-    integer :: pointer  
+    integer :: pointer
+!
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -129,7 +130,11 @@ implicit none
     typblc(2) = 'ROTATION' 
     typblc(3) = 'TUYAU_FOURIER'
     list_rela = '&&CADDLI.RLLISTE'
+
+
+! - Model informations
     model = ligrmo(1:8)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
@@ -285,7 +290,7 @@ implicit none
                 endif
 
                             
-                call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
+                call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
                             coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
@@ -317,7 +322,7 @@ implicit none
             do ino = 1, nb_node
                 nume_node = zi(jlino-1+ino)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afddli(model, nbcmp, zk8(jnom), nume_node, name_node,&
+                call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
                             coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&

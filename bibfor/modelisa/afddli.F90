@@ -15,15 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
+! aslint: disable=W1504
+!
+subroutine afddli(model, geomDime, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
                   prnm, repe_type, repe_defi, coef_type, cmp_nb,&
                   cmp_name, cmp_acti, vale_type, vale_real, vale_func,&
                   vale_cplx, cmp_count, list_rela, lxfem, jnoxfl,&
                   jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv,&
                   mesh, ch_xfem_heav)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -31,42 +32,40 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 #include "asterc/indik8.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xddlim.h"
 !
-! aslint: disable=W1504
-!
-    character(len=8), intent(in) :: model
-    integer, intent(in) :: gran_cmp_nb
-    character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
-    integer, intent(in) :: node_nume
-    character(len=8), intent(in) :: node_name
-    character(len=8), intent(in) :: mesh
-    integer, intent(in) :: prnm(*)
-    integer, intent(in) :: repe_type
-    real(kind=8), intent(in) :: repe_defi(3)
-    character(len=4), intent(in) :: coef_type
-    integer, intent(in) :: cmp_nb
-    character(len=16), intent(in) :: cmp_name(cmp_nb)
-    integer, intent(in) :: cmp_acti(cmp_nb)
-    character(len=4), intent(in) :: vale_type
-    real(kind=8), intent(in) :: vale_real(cmp_nb)
-    character(len=8), intent(in) :: vale_func(cmp_nb)
-    complex(kind=8), intent(in) :: vale_cplx(cmp_nb)
-    integer, intent(inout) :: cmp_count(cmp_nb)
-    character(len=19), intent(in) :: list_rela
-    aster_logical, intent(in) :: lxfem
-    integer, intent(in) :: jnoxfl
-    integer, intent(in) :: jnoxfv
-    character(len=19), intent(in) :: connex_inv
-    character(len=19), intent(in) :: ch_xfem_stat
-    character(len=19), intent(in) :: ch_xfem_lnno
-    character(len=19), intent(in) :: ch_xfem_ltno
-    character(len=19), intent(in) :: ch_xfem_heav
+character(len=8), intent(in) :: model
+integer, intent(in) :: geomDime
+integer, intent(in) :: gran_cmp_nb
+character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
+integer, intent(in) :: node_nume
+character(len=8), intent(in) :: node_name
+character(len=8), intent(in) :: mesh
+integer, intent(in) :: prnm(*)
+integer, intent(in) :: repe_type
+real(kind=8), intent(in) :: repe_defi(3)
+character(len=4), intent(in) :: coef_type
+integer, intent(in) :: cmp_nb
+character(len=16), intent(in) :: cmp_name(cmp_nb)
+integer, intent(in) :: cmp_acti(cmp_nb)
+character(len=4), intent(in) :: vale_type
+real(kind=8), intent(in) :: vale_real(cmp_nb)
+character(len=8), intent(in) :: vale_func(cmp_nb)
+complex(kind=8), intent(in) :: vale_cplx(cmp_nb)
+integer, intent(inout) :: cmp_count(cmp_nb)
+character(len=19), intent(in) :: list_rela
+aster_logical, intent(in) :: lxfem
+integer, intent(in) :: jnoxfl
+integer, intent(in) :: jnoxfv
+character(len=19), intent(in) :: connex_inv
+character(len=19), intent(in) :: ch_xfem_stat
+character(len=19), intent(in) :: ch_xfem_lnno
+character(len=19), intent(in) :: ch_xfem_ltno
+character(len=19), intent(in) :: ch_xfem_heav
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,29 +110,23 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, i_cmp, cmp_index
-    real(kind=8) :: coef_real_unit, rbid(3)
-    complex(kind=8) :: coef_cplx_unit
+    integer :: i_cmp, cmp_index
+    real(kind=8) :: rbid(3)
+    real(kind=8), parameter :: coef_real_unit = 1.d0
+    complex(kind=8), parameter :: coef_cplx_unit = dcmplx(1.d0,0.d0)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! - Initializations
-!
-    coef_real_unit = 1.d0
-    coef_cplx_unit = dcmplx(1.d0,0.d0)
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
-!
+
 ! - Loop on components
-!
     do i_cmp = 1, cmp_nb
 !
 ! ----- Is component exists on this node ?
 !
         cmp_index = indik8(gran_cmp_name, cmp_name(i_cmp)(1:8), 1, gran_cmp_nb)
         ASSERT(cmp_index.gt.0)
-        if (.not.exisdg(prnm,cmp_index)) goto 25
+        if (.not.exisdg(prnm,cmp_index)) cycle
 !
 ! ----- Apply on component, XFEM case
 !
@@ -145,19 +138,17 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
               if (cmp_name(i_cmp)(1:1).eq.'D'.or.cmp_name(i_cmp).eq.'PRE1') then
                 call xddlim(model, cmp_name(i_cmp)(1:8), node_name, node_nume, vale_real(i_cmp),&
                             vale_cplx(i_cmp), vale_func(i_cmp), vale_type, cmp_count(i_cmp),&
-                            list_rela, ndim, rbid, jnoxfv, ch_xfem_stat,&
+                            list_rela, geomDime, rbid, jnoxfv, ch_xfem_stat,&
                             ch_xfem_lnno, ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
-                goto 25
+                cycle
               endif
             endif
         endif
-!
+
 ! ----- Count
-!
         cmp_count(i_cmp) = cmp_count(i_cmp) + 1
-!
+
 ! ----- Apply on active component
-!
         ASSERT(cmp_acti(i_cmp).le.1)
         ASSERT(cmp_acti(i_cmp).ge.0)
         if (cmp_acti(i_cmp) .eq. 1) then
@@ -167,7 +158,6 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
                         list_rela)
         endif
 !
- 25     continue
     end do
 !
     call jedema()
