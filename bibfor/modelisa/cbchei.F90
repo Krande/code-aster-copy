@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,10 +81,10 @@ subroutine cbchei(char, noma, ligrmo, fonree)
             if (typch .eq. 'CART') then
                 call carces(chepsi, 'ELEM', ' ', 'V', chames,&
                             ' ', cret)
-            elseif (typch(1:2) .eq. 'EL') then
+            elseif (typch .eq. 'ELGA') then
                 call celces(chepsi, 'V', chames)
             else
-                ASSERT(ASTER_FALSE)
+                call utmess('F', 'CHARGES_8', sk=typch)
             endif
 
             call jeveuo(chames//'.CESD', 'L', jcesd)
