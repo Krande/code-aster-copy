@@ -171,7 +171,7 @@ FORCF2 = RECU_FONCTION(TABLE=POST22,
                        PARA_X='INST',
                        PARA_Y='DY')
 
-if HAS_MATPLOTLIB:
+if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
 
     fig, ax = plt.subplots(1, 1, figsize=(8,6))
 

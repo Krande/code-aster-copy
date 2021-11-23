@@ -237,7 +237,7 @@ INCLUDE(ALARME='NON',
         DONNEE=osp.join(mac3c, testconfig['tests']))
 
 ################################################################################################
-if HAS_MATPLOTLIB:
+if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
 
     fig, ax = plt.subplots(1, 1, figsize=(8,6))
 
