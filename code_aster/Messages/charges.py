@@ -55,6 +55,10 @@ Le champ fourni à PRE_EPSI via la mot-clé EPSI contient une composante non aut
 
     7 : _("""Il n'est pas possible d'affecter une pression sur un élément de coque solide avec des fissures."""),
 
+    8 : _("""
+Le champ fourni à PRE_EPSI via la mot-clé EPSI doit être de type CARTE ou ELGA, or il est de type : %(k1)s.
+"""),
+
     9 : _("""La maille %(k1)s n'est pas un quadrangle, il n'est pas possible d'y affecter une pression."""),
 
     10 : _("""On n'a pas trouvé l'élément volumique rattaché à la maille de surface sur laquelle on veut appliquer une pression."""),
