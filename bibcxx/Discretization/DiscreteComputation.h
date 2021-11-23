@@ -77,32 +77,28 @@ class DiscreteComputation {
 
     /**
      * @brief Fonction permettant de calculer les vecteurs des
-              chargements de Dirichlet L*U_imp
+              chargements de Dirichlet B*U_imp
      * @param time Instant de calcul
      * @return Vecteur assemblé de chargement
      */
-    FieldOnNodesRealPtr
-    imposedDisplacement( ASTERDOUBLE time = 0.);
+    FieldOnNodesRealPtr imposedDisplacement( ASTERDOUBLE time = 0. );
 
     /**
      * @brief Fonction permettant de calculer le vecteur pour les
-              réactions de Dirichlet L^T * \lambda
+              réactions de Dirichlet B^T * \lambda
      * @param time Instant de calcul
      * @return Vecteur de réaction assemblé
      */
-    FieldOnNodesRealPtr
-    dualReaction( FieldOnNodesRealPtr lagr_curr);
+    FieldOnNodesRealPtr dualReaction( FieldOnNodesRealPtr lagr_curr );
 
     /**
      * @brief Fonction permettant de calculer le vecteur pour les
-              déplacements de Dirichlet L * U
+              déplacements de Dirichlet B * U
      * @param time Instant de calcul
      * @return Vecteur de déplacements de Dirichlet assemblé
      */
-    FieldOnNodesRealPtr
-    dualDisplacement( FieldOnNodesRealPtr disp_curr,
-                              ASTERDOUBLE scaling = 1.0);
-
+    FieldOnNodesRealPtr dualDisplacement( FieldOnNodesRealPtr disp_curr,
+                                          ASTERDOUBLE scaling = 1.0 );
 
     /**
      * @brief Fonction permettant de calculer les vecteurs  pour les
@@ -111,9 +107,7 @@ class DiscreteComputation {
      theta
      * @return Vecteur des chargement de Neumann assemblé
      */
-    FieldOnNodesRealPtr
-    neumann( const VectorReal time,
-                                                  ExternalStateVariablesBuilderPtr);
+    FieldOnNodesRealPtr neumann( const VectorReal time, ExternalStateVariablesBuilderPtr );
 
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires de rigidité
@@ -136,11 +130,18 @@ class DiscreteComputation {
      * @brief Construction d'un vecteur de chargement cinématique
      * @return Booleen indiquant que tout s'est bien passe
      */
-    FieldOnNodesRealPtr DirichletBC( const ASTERDOUBLE &time ) const;
+    FieldOnNodesRealPtr dirichletBC( const ASTERDOUBLE &time ) const;
+
+    /**
+     * @brief Construction d'un vecteur de chargement cinématique
+     * @return Booleen indiquant que tout s'est bien passe
+     */
+    FieldOnNodesRealPtr incrementalDirichletBC( const ASTERDOUBLE &time,
+                                                const FieldOnNodesRealPtr disp_curr ) const;
 
     /**
      * @brief Calcul des matrices elementaires pour l'option AMOR_MECA
-     */  
+     */
     ElementaryMatrixDisplacementRealPtr
     computeMechanicalDampingMatrix( const ElementaryMatrixDisplacementRealPtr &rigidity,
                                     const ElementaryMatrixDisplacementRealPtr &mass );

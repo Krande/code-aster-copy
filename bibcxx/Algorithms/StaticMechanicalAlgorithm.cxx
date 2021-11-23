@@ -117,7 +117,7 @@ void StaticMechanicalAlgorithm::_solve( CurrentContext &ctx, const FieldOnNodesR
     cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
 
     FieldOnNodesRealPtr diriBCsFON =
-        ctx._discreteComputation->DirichletBC( ctx._time );
+        ctx._discreteComputation->dirichletBC( ctx._time );
 
     FieldOnNodesRealPtr resultField =
         ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );

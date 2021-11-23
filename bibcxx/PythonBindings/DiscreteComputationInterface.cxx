@@ -59,7 +59,7 @@ void exportDiscreteComputationToPython() {
       FieldOnNodes: current displacement vector
 
       Returns:
-      FieldOnNodes: dual reaction vector (L^T*lambda)
+      FieldOnNodes: dual reaction vector (B^T*lambda)
         )", ( py::arg( "self" ), py::arg( "disp_curr" ) ) )
         .def( "dualDisplacement",
               &DiscreteComputation::dualDisplacement,
@@ -75,7 +75,7 @@ void exportDiscreteComputationToPython() {
       Returns:
       FieldOnNodes: Neumann load vector
         )", ( py::arg( "self" ), py::arg( "time" ), py::arg( "varCom" ) ))
-        .def( "DirichletBC", &DiscreteComputation::DirichletBC,
+        .def( "dirichletBC", &DiscreteComputation::dirichletBC,
            R"(
       Return the imposed displacement vector  used to remove imposed DDL 
 
@@ -85,6 +85,20 @@ void exportDiscreteComputationToPython() {
       Returns:
       FieldOnNodes: imposed displacement vector
         )", ( py::arg( "self" ), py::arg( "time" ) ) )
+        .def( "incrementalDirichletBC", &DiscreteComputation::incrementalDirichletBC,
+           R"(
+      Return the incremental imposed displacement vector used to remove imposed DDL 
+      for incremental resolution
+
+      incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imosed
+
+      Argument:
+      double: current time
+      FieldOnNodes: displacement field at current time
+
+      Returns:
+      FieldOnNodes: incremental imposed displacement vector
+        )", ( py::arg( "self" ), py::arg( "time" ), py::arg( "disp" ) ) )
         .def( "computeElementaryStiffnessMatrix",
               &DiscreteComputation::computeElementaryStiffnessMatrix )
         .def( "computeElementaryTangentMatrix", 

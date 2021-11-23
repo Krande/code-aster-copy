@@ -58,7 +58,7 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE time )
     cmdSt.setResult( resultName, "AUCUN" );
 
     CALLO_VEDIME( modelName, nameLcha, nameInfc, &time, typres, resultName );
-    
+
     vect_elem->isEmpty( false );
     vect_elem->setListOfLoads( _study->getListOfLoads() );
     cmdSt.free();
@@ -97,9 +97,8 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
     return vect_elem->assemble( _study->getDOFNumbering() );
 };
 
-
 FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr disp_curr,
-                                                               ASTERDOUBLE scaling ) {
+                                                           ASTERDOUBLE scaling ) {
 
     ElementaryVectorDisplacementRealPtr vect_elem =
         boost::make_shared< ElementaryVectorDisplacementReal >();
@@ -128,15 +127,14 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     return bume;
 };
 
-
 FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time,
-                                                     ExternalStateVariablesBuilderPtr varCom ) {
-    //auto vect_elem = computeElementaryNeumannVector( time, varCom );
+                                                  ExternalStateVariablesBuilderPtr varCom ) {
+    // auto vect_elem = computeElementaryNeumannVector( time, varCom );
 
     if ( time.size() != 3 )
         throw std::runtime_error( "Invalid number of parameter" );
 
-    ElementaryVectorDisplacementRealPtr vect_elem  =
+    ElementaryVectorDisplacementRealPtr vect_elem =
         boost::make_shared< ElementaryVectorDisplacementReal >();
     const auto &curCodedMater = _study->getCodedMaterial()->getCodedMaterialField();
     const auto &curMater = _study->getCodedMaterial()->getMaterialField();
@@ -156,7 +154,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time,
     std::string varCName( blanc );
     if ( varCom != nullptr )
         varCName = varCom->getName() + ".TOUT";
-    std::string resultName( vect_elem ->getName() );
+    std::string resultName( vect_elem->getName() );
     std::string materName( curMater->getName() + "                " );
     std::string codmaName( curCodedMater->getName() + "                " );
 
@@ -180,7 +178,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time,
     return vect_elem->assembleWithLoadFunctions( _study->getDOFNumbering(), time[0] + time[1] );
 };
 
-FieldOnNodesRealPtr DiscreteComputation::DirichletBC( const ASTERDOUBLE &time ) const {
+FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) const {
     const auto &_listOfLoad = _study->getListOfLoads();
     const auto &list = _listOfLoad->getListVector();
     const auto &loadInformations = _listOfLoad->getInformationVector();
@@ -209,6 +207,33 @@ FieldOnNodesRealPtr DiscreteComputation::DirichletBC( const ASTERDOUBLE &time ) 
     return retour;
 };
 
+FieldOnNodesRealPtr
+DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
+                                             const FieldOnNodesRealPtr disp_curr ) const {
+    auto dofNume = _study->getDOFNumbering();
+
+    if ( dofNume->hasDirichletBC() ) {
+        auto diri_curr = dirichletBC( time );
+        auto diri_impo = *(diri_curr) - *(disp_curr);
+
+        // Set to zero terms not imposed
+        auto eliminatedDofs = dofNume->getDirichletBCDOFs();
+        auto nbElimination = eliminatedDofs.size();
+
+        for ( ASTERINTEGER ieq = 0; ieq < nbElimination; ieq++ ) {
+            if ( eliminatedDofs[ieq] == 0 )
+                diri_impo[ieq] = 0.0;
+        }
+
+        return boost::make_shared< FieldOnNodesReal >(diri_impo);
+    } 
+
+    FieldOnNodesRealPtr diri_impo = boost::make_shared< FieldOnNodesReal >( dofNume );
+    diri_impo->setValues( 0.0 );
+    diri_impo->build();
+
+    return diri_impo;
+};
 
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
@@ -270,7 +295,6 @@ ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::computeElementaryJacobianMatrix( ASTERDOUBLE time ) {
     return this->computeElementaryStiffnessMatrix( time );
 };
-
 
 SyntaxMapContainer DiscreteComputation::computeMatrixSyntax( const std::string &optionName ) {
     SyntaxMapContainer dict;
