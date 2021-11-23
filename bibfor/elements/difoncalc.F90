@@ -156,6 +156,7 @@ implicit none
     fsInverse(:) = 0.0
     allocate(combss(1,1))
     combss(:,:)  = 0
+    fsite(:) = 0.d0
     !
     ! calcul de fCP et fslid
     ! force horizontale pour le glissement
