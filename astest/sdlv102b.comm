@@ -232,9 +232,8 @@ print(omega)
 ref = [14.54542733+0.j,  27.99701576+0.j,  44.29580172+0.j,  76.16987969+0.j,
        82.13327483+0.j, 115.95593236+0.j]
 
-# for idx, val in enumerate(omega):
-#     test.assertAlmostEqual(val, ref[idx])
-test.assertAlmostEqual(omega[0], ref[0], delta=1.e-5)
+for idx, val in enumerate(omega):
+    test.assertAlmostEqual(val, ref[idx], delta=1.e-5)
 
 
 # =======================================
@@ -352,9 +351,8 @@ mac_ref = np.array([[1.00000000e+00, 7.93002766e-14, 3.63372139e-14, 6.97325032e
         6.84405185e-01, 6.34334347e-03],
        [2.24812538e-17, 1.38767475e-05, 1.08556450e-13, 5.40962118e-01,
         1.32347137e-08, 1.00000000e+00]])
-# for (idx, jdx), val in np.ndenumerate(mac):
-#     test.assertAlmostEqual(val, mac_ref[idx, jdx])
-test.assertAlmostEqual(mac[0,0], mac_ref[0, 0])
+for (idx, jdx), val in np.ndenumerate(mac):
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
 
 # ------------------------------------------------------------------------------
 
@@ -367,9 +365,8 @@ mac_ref = np.array([[1.00000000e+00, 5.68168484e-15, 5.22953574e-11],
        [1.74680828e-13, 3.11969982e-03, 1.44228134e-08],
        [1.68332369e-13, 3.03454699e-03, 1.40339997e-08],
        [2.64795246e-13, 4.65560243e-03, 2.14756542e-08]])
-# for (idx, jdx), val in np.ndenumerate(mac):
-#     test.assertAlmostEqual(val, mac_ref[idx, jdx])
-test.assertAlmostEqual(mac[0,0], mac_ref[0, 0])
+for (idx, jdx), val in np.ndenumerate(mac):
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
 
 
 FIN()

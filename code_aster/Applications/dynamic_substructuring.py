@@ -20,8 +20,13 @@
 import numpy as np
 import scipy.sparse
 import scipy.sparse.linalg
+import os
 from ..Objects.user_extensions import WithEmbeddedObjects
-import matplotlib.pyplot as plt
+try :
+    import matplotlib.pyplot as plt
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
 
 from ..Commands import (CREA_CHAMP, RESOUDRE, CREA_RESU, FACTORISER)
 
@@ -113,8 +118,16 @@ class Interface(WithEmbeddedObjects):
         for i1 in range(3):
             Coord_t[:, i1] -= np.mean(Coord_t[:, i1])
 
-        U, _, _ = np.linalg.svd(Coord_t.T)
+        # if there is an ovious mean plane, we use it. Otherwise we compute it with a SVD
+        CoordSum = np.abs(Coord_t).sum(axis=0)
+        if np.any(CoordSum<1.e-12):
+            indx = np.where(CoordSum<1.e-12)[0][0]
+            U = np.eye(3)
+            U[:,[2, indx]] = U[:,[indx,2]]  # swap the columns
+        else:
+            U, _, _ = np.linalg.svd(Coord_t.T)
 
+        # project onto the mean plane
         NewCoord = np.matmul(U.T, Coord_t.T)
 
         # place the centre in [0,0,0]
@@ -639,8 +652,9 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         plt.switch_backend("TkAgg")  # switch to interactive plot
     except ImportError:
         interactive_is_possible = False
-    plt.figure()
-    plt.jet()
+    if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
+        plt.figure()
+        plt.jet()
     # build lists of modes for each substructure
     if not isinstance(lres1, (list, tuple)):
         lres1 = [lres1]
@@ -756,22 +770,23 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
     print(" " * 100, end="\r")  # in order to clean the progress print
     if normalize:
         mac = np.dot(mac, np.linalg.inv(np.diag(np.amax(mac, axis=0))))
-    plt.imshow(mac, interpolation="nearest")
-    plt.grid(False)
-    ax = plt.axes()
-    label1 = name1 or res1.getName()
-    label2 = name2 or res2.getName()
-    ax.set_xlabel(label1)
-    ax.set_ylabel(label2)
-    plt.xticks(range(nModes1), ["{:.1f}".format(lFreq1[idx]) for idx in lMode1], rotation=45)
-    plt.yticks(range(nModes2), ["{:.1f}".format(lFreq2[idx]) for idx in lMode2])
-    cbar = plt.colorbar()
-    cbar.ax.set_ylabel("MAC")
-    for (x_val, y_val), val in np.ndenumerate(np.transpose(mac)):
-        ax.text(x_val, y_val, "{:.1f}".format(val) if (val > 0.2) else "", va="center",
-                ha="center", color="white",)
-    if interactive_plot and interactive_is_possible:
-        plt.show()
-    if save_plot_filename:
-        plt.savefig(save_plot_filename)
+    if HAS_MATPLOTLIB and os.getenv("DISPLAY"):
+        plt.imshow(mac, interpolation="nearest")
+        plt.grid(False)
+        ax = plt.axes()
+        label1 = name1 or res1.getName()
+        label2 = name2 or res2.getName()
+        ax.set_xlabel(label1)
+        ax.set_ylabel(label2)
+        plt.xticks(range(nModes1), ["{:.1f}".format(lFreq1[idx]) for idx in lMode1], rotation=45)
+        plt.yticks(range(nModes2), ["{:.1f}".format(lFreq2[idx]) for idx in lMode2])
+        cbar = plt.colorbar()
+        cbar.ax.set_ylabel("MAC")
+        for (x_val, y_val), val in np.ndenumerate(np.transpose(mac)):
+            ax.text(x_val, y_val, "{:.1f}".format(val) if (val > 0.2) else "", va="center",
+                    ha="center", color="white",)
+        if interactive_plot and interactive_is_possible:
+            plt.show()
+        if save_plot_filename:
+            plt.savefig(save_plot_filename)
     return mac

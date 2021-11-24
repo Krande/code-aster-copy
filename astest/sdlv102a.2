@@ -19,9 +19,8 @@ print(omega)
 ref = [ 14.54542733+0.j,  27.99701576+0.j,  44.29580172+0.j,  76.16987969+0.j,
   82.13327483+0.j, 115.95593236+0.j]
 
-# for idx, val in enumerate(omega):
-#     test.assertAlmostEqual(val, ref[idx])
-test.assertAlmostEqual(omega[0], ref[0], delta=1.e-5)
+for idx, val in enumerate(omega):
+    test.assertAlmostEqual(val, ref[idx], delta=1.e-5)
 
 
 FIN()
