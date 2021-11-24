@@ -239,16 +239,16 @@ implicit none
             QCPite(ii)=vloc(12+ii)
             ! initilisation de l'incrément d'écrouissage en CP à 0
             dQCP(ii)=0.0
-            if (ii .LE. 2) then
-                ! Initialisation de l'écrouissage en glissement qui va être modifié
-                !   à l'écrousissage initial
-                Qslite(ii)=vloc(10+ii)
-                ! initilisation de l'incrément d'écrouissage en glissement à 0
-                dQsl(ii)=0.0
-            endif
             ! stockage des rigidité tangeante élastique (avec décollement) dans un vecteur
             !   à 5 composantes pour des calculs simplifiés
             KtangPetit(ii)=raidTang(ii)
+        enddo
+        do ii=1,2
+            ! Initialisation de l'écrouissage en glissement qui va être modifié
+            !   à l'écrousissage initial
+            Qslite(ii)=vloc(10+ii)
+            ! initilisation de l'incrément d'écrouissage en glissement à 0
+            dQsl(ii)=0.0
         enddo
         do while ((Noconv) .and.(Ite .LE. nbdecp))
             ! limitation de la boucle à nombre d'itérations
@@ -446,21 +446,25 @@ implicit none
             do ii=1,8
                 do jj=1,8
                     MatAinvTot(ii,jj)= sum(dfdF(ii,:)*KtangPetit(:)*dfDF(jj,:))
-                    if ((ii .LE. 4).and. (jj .LE. 4)) then
-                        ! on regarde si il faut rajouter le terme d'écrousissage sliding
-                        MatAinvTot(ii,jj)=MatAinvTot(ii,jj)- dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1) - &
-                                dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
+                enddo
+            enddo
+            do ii = 1, 4
+                do jj=1,4
+                    ! on regarde si il faut rajouter le terme d'écrouissage sliding
+                    MatAinvTot(ii,jj) = MatAinvTot(ii,jj)- dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1) - &
+                        dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
+                enddo
+            enddo
+            do ii = 5, 8
+                do jj = 5, 8
+                    ! on regarde si il faut rajouter le terme d'écrousissage CP
+                    if (dfdF(ii,3).GT.r8prem()) then
+                        signeHHCP3(3)=+1.0
+                    else
+                        signeHHCP3(3)=-1.0
                     endif
-                    if ((ii .GE. 5).and. (jj .GE. 5)) then
-                        ! on regarde si il faut rajouter le terme d'écrousissage CP
-                        if (dfdF(ii,3).GT.r8prem()) then
-                            signeHHCP3(3)=+1.0
-                        else
-                            signeHHCP3(3)=-1.0
-                        endif
-                        MatAinvTot(ii,jj)=MatAinvTot(ii,jj)- &
-                                sum( dfdQCP(ii-4,:)*HHCP(:)*signeHHCP3(:)*dfdF(jj,:))
-                    endif
+                    MatAinvTot(ii,jj)=MatAinvTot(ii,jj)- &
+                            sum( dfdQCP(ii-4,:)*HHCP(:)*signeHHCP3(:)*dfdF(jj,:))
                 enddo
             enddo
             ! on teste toutes les combinaisons et on enlève celle la plus haute
