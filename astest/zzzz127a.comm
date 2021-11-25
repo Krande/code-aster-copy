@@ -116,15 +116,25 @@ MEST21=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
 
 # --------------------
 
+# répéter exprès LIAISON_MAIL (issue31296) pour tester ELIM_MULT='NON'
 CH22=AFFE_CHAR_MECA(  MODELE=MO,
-            LIAISON_MAIL=_F( MAILLE_MAIT = ('Q1','Q2',),
+            LIAISON_MAIL=(_F( MAILLE_MAIT = ('Q1','Q2',),
                              MAILLE_ESCL = 'S1',
                              DISTANCE_MAX = 1.E-6 ,
                              TRAN = ( 5., 10.,),
                              CENTRE = (10., 0.,),
                              ANGL_NAUT = 180.,
                              DDL_MAIT = 'DNOR',
-                             DDL_ESCL = 'DNOR') )
+                             DDL_ESCL = 'DNOR'),
+                          _F( MAILLE_MAIT = ('Q1','Q2',),
+                             MAILLE_ESCL = 'S1',
+                             DISTANCE_MAX = 1.E-6 ,
+                             TRAN = ( 5., 10.,),
+                             CENTRE = (10., 0.,),
+                             ANGL_NAUT = 180.,
+                             DDL_MAIT = 'DNOR',
+                             ELIM_MULT='NON',
+                             DDL_ESCL = 'DNOR') ) )
 
 MEST22=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH22)) )

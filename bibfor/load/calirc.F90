@@ -311,7 +311,7 @@ character(len=8), intent(in) :: mesh
 !       PRECEDENTES DE LIAISON_MAILLE
 !       ----------------------------------------------------------------------
         call getvtx(motfac, 'ELIM_MULT', iocc=iocc, scal=kelim, nbret=ibid)
-        if (kelim .eq. 'NON') then
+        if (kelim .eq. 'OUI') then
             kkno2=0
             AS_ALLOCATE(vi=linonu2bis, size=nbno2)
             do kno2 = 1, nbno2

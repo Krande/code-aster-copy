@@ -63,7 +63,7 @@ load0 = AFFE_CHAR_MECA(FORCE_ARETE=_F(FZ=-1.0,
                                       GROUP_MA=('force_arete', )),
                        MODELE=model)
 
-load1 = AFFE_CHAR_MECA(LIAISON_MAIL=_F(ELIM_MULT='NON',
+load1 = AFFE_CHAR_MECA(LIAISON_MAIL=_F(ELIM_MULT='OUI',
                                        GROUP_MA_MAIT=('coque_enca', ),
                                        GROUP_NO_ESCL=('nds_escl', ),
                                        TYPE_RACCORD='COQUE'),

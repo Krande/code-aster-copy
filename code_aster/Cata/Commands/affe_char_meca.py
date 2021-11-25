@@ -426,7 +426,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                  EPAIS           =SIMP(statut='o',typ='R'),
                  CHAM_NORMALE    =SIMP(statut='o',typ=cham_no_sdaster),
               ),
-              ELIM_MULT       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+              ELIM_MULT       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
 
            LIAISON_PROJ     =FACT(statut='f',max=1,

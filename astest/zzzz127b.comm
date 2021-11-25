@@ -128,7 +128,7 @@ CH22=AFFE_CHAR_MECA( INFO=2, MODELE=MO,
                        TRAN = ( 5., 10., 0.,),
                        CENTRE = (10., 0., 0.,),
                        ANGL_NAUT = (180.,0.,0.,),
-                       DDL_MAIT = 'DNOR',
+                       DDL_MAIT = 'DNOR',ELIM_MULT='NON',
                        DDL_ESCL = 'DNOR') )
 
 MEST22=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
