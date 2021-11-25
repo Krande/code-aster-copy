@@ -70,8 +70,10 @@ void exportConverters() {
     exportJeveuxVectorConverter< ASTERINTEGER4 >();
     exportJeveuxVectorConverter< ASTERINTEGER >();
     exportJeveuxVectorConverter< ASTERDOUBLE >();
+    exportJeveuxVectorConverter< ASTERCOMPLEX >();
 
     exportJeveuxCollectionConverter< ASTERINTEGER4 >();
     exportJeveuxCollectionConverter< ASTERINTEGER >();
     exportJeveuxCollectionConverter< ASTERDOUBLE >();
+    exportJeveuxCollectionConverter< ASTERCOMPLEX >();
 };

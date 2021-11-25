@@ -26,7 +26,7 @@
 import numpy, functools
 
 import aster
-from libaster import FieldOnNodesReal, DOFNumbering
+from libaster import FieldOnNodesReal, FieldOnNodesComplex, DOFNumbering
 
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
@@ -195,9 +195,59 @@ class ExtendedFieldOnNodesReal:
             raise ValueError("No bounday condition has been set - no entity handle the given degree of freedom")
 
 
+@injector(FieldOnNodesComplex)
+class ExtendedFieldOnNodesComplex:
+    cata_sdj = "SD.sd_champ.sd_cham_no_class"
+    internalStateBuilder = FieldOnNodesStateBuilder
+
+    def EXTR_COMP(self, comp=' ', lgno=[], topo=0):
+        """ retourne les valeurs de la composante comp du champ sur la liste
+        de groupes de noeuds lgno avec eventuellement l'info de la
+        topologie si topo>0. Si lgno est une liste vide, c'est equivalent
+        a un TOUT='OUI' dans les commandes aster
+
+        Arguments:
+            comp (str): Name of the component.
+            lgno (list[str]): List of groups of nodes.
+            topo (int): ``topo == 1`` means to return informations about the
+                support of the field.
+
+        Returns:
+            :py:class:`.post_comp_cham_no`: Object containing the values and,
+            eventually, the topological informations of the support.
+        """
+
+        ncham = self.getName()
+        ncham = ncham + (19 - len(ncham)) * ' '
+        nchams = aster.get_nom_concept_unique('_')
+        ncmp = comp + (8 - len(comp)) * ' '
+
+        aster.prepcompcham(ncham, nchams, ncmp, "NO      ", topo, lgno)
+
+        valeurs = numpy.array(
+            aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.V'))
+
+        if (topo > 0):
+            noeud = (
+                aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.N'))
+        else:
+            noeud = None
+
+        if comp[:1] == ' ':
+            comp = (aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.C'))
+            aster.prepcompcham(
+                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+            return post_comp_cham_no(valeurs, noeud, comp)
+        else:
+            aster.prepcompcham(
+                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+            return post_comp_cham_no(valeurs, noeud)
+
+
 class post_comp_cham_no:
     """Container object that store the results of
-    :py:meth:`code_aster.Objects.FieldOnNodesReal.EXTR_COMP`.
+    :py:meth:`code_aster.Objects.FieldOnNodesReal.EXTR_COMP` and
+    :py:meth:`code_aster.Objects.FieldOnNodesComplex.EXTR_COMP`.
 
     The support of the field may be unknown. In this case, :py:attr:`noeud`
     and :py:attr:`comp` are set to *None*.
