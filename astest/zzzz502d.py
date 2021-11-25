@@ -26,32 +26,32 @@ code_aster.init("--test")
 test = code_aster.TestCase()
 
 # For a Mesh
-mesh=LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
+mesh = LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
 
 nbNodes = mesh.getNumberOfNodes()
 
-model=AFFE_MODELE(MAILLAGE=mesh,
+model = AFFE_MODELE(MAILLAGE=mesh,
                     AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),)
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D', ), )
 
-dofNume = NUME_DDL(MODELE=model,)
+dofNume = NUME_DDL(MODELE=model, )
 
 field = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                      OPERATION='AFFE',
-                      NUME_DDL=dofNume,
-                      MODELE=model,
-                      AFFE=_F(TOUT='OUI',
-                              NOM_CMP=('DX','DY','DZ'),
-                              VALE=(-1.0, 2.0, 3.0),
-                              ),)
+                   OPERATION='AFFE',
+                   NUME_DDL=dofNume,
+                   MODELE=model,
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP=('DX', 'DY', 'DZ'),
+                           VALE=(-1.0, 2.0, 3.0),
+                           ), )
 
-norm_1 = (1.0 + 2.0 + 3.0)*nbNodes
-norm_2 = sqrt(14.0*nbNodes)
+norm_1 = (1.0 + 2.0 + 3.0) * nbNodes
+norm_2 = sqrt(14.0 * nbNodes)
 norm_inf = 3.0
 
-test.assertEqual(field.size(), 3*nbNodes)
-test.assertSequenceEqual(mesh.getInnerNodes(), range(1, nbNodes+1))
+test.assertEqual(field.size(), 3 * nbNodes)
+test.assertSequenceEqual(mesh.getInnerNodes(), range(1, nbNodes + 1))
 test.assertEqual(len(mesh.getInnerNodes()), nbNodes)
 test.assertEqual(len(field.getValues()), field.size())
 test.assertAlmostEqual(sum([abs(x) for x in field.getValues()]), norm_1)
@@ -59,7 +59,7 @@ test.assertAlmostEqual(field.norm("NORM_1"), norm_1)
 test.assertAlmostEqual(field.norm("NORM_2"), norm_2)
 test.assertAlmostEqual(field.norm("NORM_INFINITY"), norm_inf)
 test.assertAlmostEqual(max(field.getValues()), norm_inf)
-test.assertAlmostEqual(field.dot(field), norm_2*norm_2)
+test.assertAlmostEqual(field.dot(field), norm_2 * norm_2)
 
 f0 = field.duplicate()
 f = field.duplicate()
@@ -73,36 +73,33 @@ test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 myField = code_aster.FieldOnNodesReal(dofNume)
 myField.setValues(1.0)
-test.assertAlmostEqual(myField.norm("NORM_1"), 3*nbNodes)
+test.assertAlmostEqual(myField.norm("NORM_1"), 3 * nbNodes)
 
+field2 = field - myField
 
-field2 =  field - myField
-
-test.assertAlmostEqual(field2.norm("NORM_2"),sqrt( (4.0 + 1.0 + 4.0)*nbNodes))
-
-
+test.assertAlmostEqual(field2.norm("NORM_2"), sqrt((4.0 + 1.0 + 4.0) * nbNodes))
 
 # For a Parallel Mesh
-meshp=LIRE_MAILLAGE(FORMAT='MED', UNITE=20, PARTITIONNEUR="PTSCOTCH")
+meshp = LIRE_MAILLAGE(FORMAT='MED', UNITE=20, PARTITIONNEUR="PTSCOTCH")
 
-modelp=AFFE_MODELE(MAILLAGE=meshp,
-                    AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='3D',),)
+modelp = AFFE_MODELE(MAILLAGE=meshp,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D', ), )
 
 fieldp = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                      OPERATION='AFFE',
-                      MODELE=modelp,
-                      AFFE=_F(TOUT='OUI',
-                              NOM_CMP=('DX','DY','DZ'),
-                              VALE=(1.0, 2.0, 3.0),
-                              ),)
+                    OPERATION='AFFE',
+                    MODELE=modelp,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP=('DX', 'DY', 'DZ'),
+                            VALE=(1.0, 2.0, 3.0),
+                            ), )
 
-test.assertEqual(fieldp.size(), 3*meshp.getNumberOfNodes())
+test.assertEqual(fieldp.size(), 3 * meshp.getNumberOfNodes())
 test.assertAlmostEqual(fieldp.norm("NORM_1"), norm_1)
 test.assertAlmostEqual(fieldp.norm("NORM_2"), norm_2)
 test.assertAlmostEqual(fieldp.norm("NORM_INFINITY"), norm_inf)
-test.assertAlmostEqual(fieldp.dot(fieldp), norm_2*norm_2)
+test.assertAlmostEqual(fieldp.dot(fieldp), norm_2 * norm_2)
 
 f0 = fieldp.duplicate()
 f = fieldp.duplicate()
@@ -116,5 +113,12 @@ test.assertAlmostEqual(f3.norm("NORM_2"), 0)
 
 
 test.printSummary()
+
+# TEST EXTR_COMP for FieldOnNodesComplex
+
+f_complex = code_aster.FieldOnNodesComplex(dofNume)
+f_complex.setValues(1+2j)
+vals_complex = f_complex.EXTR_COMP('DX').valeurs
+test.assertEqual(vals_complex[0], 1+2j)
 
 code_aster.close()

@@ -123,11 +123,16 @@ Returns:
         .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesComplex >))
         .def( "__init__",
               py::make_constructor(&initFactoryPtr< FieldOnNodesComplex, std::string >))
+        .def( "__init__",
+              py::make_constructor( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
         .def( "exportToSimpleFieldOnNodes",
               &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "__getitem__",
               +[]( const FieldOnNodesComplex &v, int i ) { return v.operator[]( i ); } )
+        .def(
+            "__setitem__",
+            +[]( FieldOnNodesComplex &v, int i, ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
         .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
         .def( "setDOFNumbering", &FieldOnNodesComplex::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
@@ -136,5 +141,21 @@ Returns:
         .def( "getDOFNumbering", &FieldOnNodesComplex::getDOFNumbering )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
+        .def( "getValues", &FieldOnNodesComplex::getValues,
+              py::return_value_policy< py::copy_const_reference >(),R"(
+Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...] 
+(m is the total number of componenets)
+
+Returns:
+    list[complex]: List of values.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setValues", &FieldOnNodesComplex::setValues, R"(
+Set values of the field
+
+Argument:
+    complex: value to set
+        )",
+              ( py::arg( "self" ), py::arg( "value" ) ) )
         .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
 };
