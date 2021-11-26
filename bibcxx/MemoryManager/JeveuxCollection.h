@@ -459,7 +459,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     allocate( int size, JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
             _namesMap->allocate( size );
-        if ( _namesMap->size() != size )
+        if ( _namesMap->capacity() != size )
             throw std::runtime_error( "Sizes do not match" );
 
         return genericAllocation( size, Named, Sparse, objectSizes, _namesMap->getName() );
@@ -477,7 +477,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
                         JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
             _namesMap->allocate( size );
-        if ( _namesMap->size() != size )
+        if ( _namesMap->capacity() != size )
             throw std::runtime_error( "Sizes do not match" );
 
         return genericAllocation( size, Named, Contiguous, objectSizes, _namesMap->getName(),
