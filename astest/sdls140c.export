@@ -1,0 +1,13 @@
+P time_limit 300
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential 
+
+F comm sdls140c.comm D 1
+F mmed sdls140a.mmed D 20
+F nom  sdls140a.py D 0
+F libr sdls140c.52 D 52
+F libr sdls140c.53 D 53
+F mail sdls140c.mail D 22
