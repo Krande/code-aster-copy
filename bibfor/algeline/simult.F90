@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,6 @@ subroutine simult()
     character(len=19) :: resu
     character(len=24) :: magrno, manono
     character(len=8) :: kbid
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
@@ -100,23 +99,23 @@ subroutine simult()
 !     --- ON RECUPERE LES POINTS D'ANCRAGE ---
 !
     call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0,&
-                iarg, 0, kbid, nbno)
+                0, kbid, nbno)
     if (nbno .ne. 0) then
 !
 !        --- ON RECUPERE UNE LISTE DE NOEUD ---
         nbno = -nbno
         call wkvect('&&SIMULT.NOEUD', 'V V K8', nbno, idno)
         call getvem(mailla, 'NOEUD', ' ', 'NOEUD', 0,&
-                    iarg, nbno, zk8(idno), nbv)
+                    nbno, zk8(idno), nbv)
     else
 !
 !        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
         call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0,&
-                    iarg, 0, kbid, nbgr)
+                    0, kbid, nbgr)
         nbgr = -nbgr
         AS_ALLOCATE(vk24=group_no, size=nbgr)
         call getvem(mailla, 'GROUP_NO', ' ', 'GROUP_NO', 0,&
-                    iarg, nbgr, group_no, nbv)
+                    nbgr, group_no, nbv)
 !
 !        --- ECLATE LE GROUP_NO EN NOEUD ---
         call compno(mailla, nbgr, group_no, nbno)

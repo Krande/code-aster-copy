@@ -72,7 +72,6 @@ implicit none
     character(len=24) :: lisma, nogma, nogma2
     character(len=24) :: valk(2)
     character(len=132) :: card
-    integer :: iarg
     integer :: i, iagm1, iagm2, ialii1, ialii2, iret
     integer :: idlima, ier, ierr, ifm, igm, igm1
     integer :: igm2, ii, iii, ili1, ili2, im1
@@ -121,12 +120,12 @@ implicit none
         endif
 !
         call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc,&
-                    iarg, 0, kbid, n2)
+                    0, kbid, n2)
         call getvtx('CREA_GROUP_MA', 'INTERSEC', iocc=iocc, nbval=0, nbret=n3)
         call getvtx('CREA_GROUP_MA', 'UNION', iocc=iocc, nbval=0, nbret=n4)
         call getvtx('CREA_GROUP_MA', 'DIFFE   ', iocc=iocc, nbval=0, nbret=n5)
         call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc,&
-                    iarg, 0, kbid, n6)
+                    0, kbid, n6)
         call getvtx('CREA_GROUP_MA', 'OPTION', iocc=iocc, nbval=0, nbret=n7)
         call getvtx('CREA_GROUP_MA', 'TOUT', iocc=iocc, nbval=0, nbret=n8)
         n2 = -n2
@@ -159,7 +158,7 @@ implicit none
             end if
             AS_ALLOCATE(vk8=l_maille, size=n2)
             call getvem(ma, 'MAILLE', 'CREA_GROUP_MA', 'MAILLE', iocc,&
-                        iarg, n2, l_maille, n1)
+                        n2, l_maille, n1)
             call wkvect('&&SSCGMA.MAILLE', 'V V I', n2, jmail)
             call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmat)
             AS_ALLOCATE(vi=maille2, size=nbmat)
@@ -202,7 +201,7 @@ implicit none
 !       ---------------------
         if (n6 .gt. 0) then
             call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'GROUP_MA', iocc,&
-                        iarg, 1, nogma2, nbid)
+                        1, nogma2, nbid)
             call getvtx('CREA_GROUP_MA', 'POSITION', iocc=iocc, nbval=0, nbret=n6b)
             call jenonu(jexnom(ma//'.GROUPEMA', nogma2), igm2)
             call jelira(jexnum(ma//'.GROUPEMA', igm2), 'LONUTI', ili2)
@@ -251,7 +250,7 @@ implicit none
 !       -------------------
         if (n3 .gt. 0) then
             call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'INTERSEC', iocc,&
-                        iarg, n3, lik8, nbid)
+                        n3, lik8, nbid)
             n3 = nbid
             do igm = 1, n3
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
@@ -306,7 +305,7 @@ implicit none
 !       -------------------
         if (n4 .gt. 0) then
             call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'UNION', iocc,&
-                        iarg, n4, lik8, nbid)
+                        n4, lik8, nbid)
             n4 = nbid
             do igm = 1, n4
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)
@@ -371,7 +370,7 @@ implicit none
 !       -------------------
         if (n5 .gt. 0) then
             call getvem(ma, 'GROUP_MA', 'CREA_GROUP_MA', 'DIFFE', iocc,&
-                        iarg, n5, lik8, nbid)
+                        n5, lik8, nbid)
             n5 = nbid
             do igm = 1, n5
                 call jenonu(jexnom(ma//'.GROUPEMA', lik8(igm)), igm2)

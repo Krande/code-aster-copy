@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
     integer :: n1, n2, n3, n4, n5, n6, n7
     integer :: i, nbmat, nbma, n1f, n4f, iret
     integer :: ima, nbno, adrm, numa, jgrma, igr, nbmat0
-    integer :: noe1, noe2, noe3, iarg, jdccf, jdvcf
+    integer :: noe1, noe2, noe3, jdccf, jdvcf
     real(kind=8) :: ang(2), angx(2), sl, ez, ctr, axey(3), xnorm, epsi
     real(kind=8) :: axex(3), vn1n2(3), vn1n3(3), vecnor(3)
     character(len=8) :: slf, ezf
@@ -148,9 +148,9 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
         ctr = 1.d-10
 !
         call getvem(noma, 'GROUP_MA', 'GRILLE', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
+                    lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'GRILLE', 'MAILLE', ioc,&
-                    iarg, lmax, zk8(jdls2), nm)
+                    lmax, zk8(jdls2), nm)
 !
         call getvr8('GRILLE', 'SECTION', iocc=ioc, scal=sl, nbret=n1)
         call getvid('GRILLE', 'SECTION_FO', iocc=ioc, scal=slf, nbret=n1f)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
     character(len=8) :: k8b, spect, noeu, nomsp0(3), nompu(2),dircopy
     character(len=9) :: niveau
     character(len=24) :: obj1, obj2, valk(2), grnoeu
-    integer :: iarg, ival
+    integer :: ival
     character(len=24), pointer :: group_no(:) => null()
     character(len=8), pointer :: noeud(:) => null()
     real(kind=8) :: correc
@@ -197,12 +197,12 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
                 ndir(id) = 1
 !
                 call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc,&
-                            iarg, 0, noeu, n1)
+                            0, noeu, n1)
                 if (n1 .ne. 0) then
                     nno = -n1
                     AS_ALLOCATE(vk8=noeud, size=nno)
                     call getvem(noma, 'NOEUD', motfac, 'NOEUD', ioc,&
-                                iarg, nno, noeud, n1)
+                                nno, noeud, n1)
                     do 20 ino = 1, nno
                         noeu = noeud(ino)
                         call jenonu(jexnom(obj2, noeu), iret)
@@ -231,11 +231,11 @@ subroutine asexc2(motfac, nbocc, nbmode, momec, amort,&
 !
                 else
                     call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc,&
-                                iarg, 0, k8b, n1)
+                                0, k8b, n1)
                     ngr = -n1
                     AS_ALLOCATE(vk24=group_no, size=ngr)
                     call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', ioc,&
-                                iarg, ngr, group_no, n1)
+                                ngr, group_no, n1)
                     do 30 igr = 1, ngr
                         grnoeu = group_no(igr)
                         call jeexin(jexnom(obj1, grnoeu), iret)

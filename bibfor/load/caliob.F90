@@ -30,7 +30,6 @@ implicit none
 #include "asterfort/char_read_keyw.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getnode.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"

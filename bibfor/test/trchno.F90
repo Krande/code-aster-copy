@@ -66,7 +66,6 @@ subroutine trchno(ific, nocc)
     character(len=33) :: nonoeu
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
     character(len=200) :: lign1, lign2
-    integer :: iarg
     aster_logical :: lref, l_parallel_mesh
     character(len=8), pointer :: nom_cmp(:) => null()
     aster_logical :: skip
@@ -277,7 +276,7 @@ subroutine trchno(ific, nocc)
 !
             call getvtx('CHAM_NO', 'NOM_CMP', iocc=iocc, scal=noddl, nbret=n1)
             call getvem(nomma, 'NOEUD', 'CHAM_NO', 'NOEUD', iocc,&
-                        iarg, 1, nonoeu(1:8), n1)
+                        1, nonoeu(1:8), n1)
             if (n1 .ne. 0) then
                 nl1 = lxlgut(lign1)
                 nl2 = lxlgut(lign2)
@@ -290,7 +289,7 @@ subroutine trchno(ific, nocc)
             endif
 !
             call getvem(nomma, 'GROUP_NO', 'CHAM_NO', 'GROUP_NO', iocc,&
-                        iarg, 1, nogrno, n2)
+                        1, nogrno, n2)
 
             ng = 0
             if(n2 == 0 .and. l_parallel_mesh) then

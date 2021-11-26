@@ -66,7 +66,6 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
     character(len=19) :: cart1, cart2, cartes(2)
     character(len=24) :: para, mongrm
     character(len=24) :: valk(2)
-    integer :: iarg
     character(len=8), pointer :: vncmp1(:) => null()
     character(len=8), pointer :: vncmp2(:) => null()
     character(len=8) :: model
@@ -191,7 +190,7 @@ subroutine caflux(char, ligrmo, noma, ndim, fonree)
                 call tbexp2(nomtab, 'GROUP_MA')
 !
                 call getvem(noma, 'GROUP_MA', motclf, 'GROUP_MA', iocc,&
-                            iarg, 1, mongrm, ngr)
+                            1, mongrm, ngr)
                 para = 'AIRE'
                 call tbliva(nomtab, 1, 'GROUP_MA', [ibid], [r8b],&
                             [c16b], mongrm, k8b, [r8b], para,&

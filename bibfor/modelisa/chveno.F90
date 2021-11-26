@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,6 @@ subroutine chveno(fonree, noma, nomo)
     character(len=19) :: limamo
     character(len=24) :: grmama, mailma, nogr, nomail
     character(len=24) :: valk(2)
-    integer :: iarg
     integer, pointer :: nume_maille(:) => null()
     character(len=24), pointer :: objet(:) => null()
 !
@@ -173,7 +172,7 @@ subroutine chveno(fonree, noma, nomo)
                 nbobj = -nbobj
                 AS_ALLOCATE(vk24=objet, size=nbobj)
                 call getvem(noma, typmc(ic), motfac, valmc(ic), iocc,&
-                            iarg, nbobj, objet, nbobj)
+                            nbobj, objet, nbobj)
                 if (typmc(ic) .eq. 'GROUP_MA') then
                     do iobj = 1, nbobj
                         nogr = objet(iobj)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,6 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
     character(len=24) :: conxma, grmama, nomama, nonoma, tymama
     character(len=24) :: valk(3), nogrno(2), nogrna(2), nogrma
     character(len=24) :: param(6), vk(5)
-    integer :: iarg
     character(len=8), pointer :: nomail_def(:) => null()
     character(len=8), pointer :: nomnoe_ch1(:) => null()
     character(len=8), pointer :: nomnoe_ch2(:) => null()
@@ -136,7 +135,7 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
 ! 1.1 SAISIE DES MAILLES ASSOCIEES
 ! ---
     call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl,&
-                iarg, 0, k8b, nbmail)
+                0, k8b, nbmail)
 !
 !.... SAISIE DIRECTE
 !
@@ -146,7 +145,7 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
         AS_ALLOCATE(vk8=nomail_def, size=nbmail)
         call wkvect('&&TOPOCA.NUMAIL_DEF', 'V V I', nbmail, jnumad)
         call getvem(mailla, 'MAILLE', 'DEFI_CABLE', 'MAILLE', icabl,&
-                    iarg, nbmail, nomail_def, ibid)
+                    nbmail, nomail_def, ibid)
         do 10 imail = 1, nbmail
             call jenonu(jexnom(nomama, nomail_def(imail)), zi(jnumad+ imail-1))
  10     continue
@@ -156,7 +155,7 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
     else
 !
         call getvem(mailla, 'GROUP_MA', 'DEFI_CABLE', 'GROUP_MA', icabl,&
-                    iarg, 1, nogrma, ibid)
+                    1, nogrma, ibid)
         call jelira(jexnom(grmama, nogrma), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmama, nogrma), 'L', jnumad)
 !
@@ -209,12 +208,12 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
 ! 1.4 SAISIE DES NOEUDS D'ANCRAGE DU CABLE
 ! ---
     call getvem(mailla, 'NOEUD', 'DEFI_CABLE', 'NOEUD_ANCRAGE', icabl,&
-                iarg, 0, k8b, ibid)
+                0, k8b, ibid)
 !
     if (ibid .eq. 0) then
 !
         call getvem(mailla, 'GROUP_NO', 'DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl,&
-                    iarg, 2, nogrna(1), ibid)
+                    2, nogrna(1), ibid)
 !
         call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b,&
                     iret)
@@ -241,7 +240,7 @@ subroutine topoca( tablca, mailla, icabl, nbf0, nbnoca, &
     else
 !
         call getvem(mailla, 'NOEUD', 'DEFI_CABLE', 'NOEUD_ANCRAGE', icabl,&
-                    iarg, 2, noancr(1), ibid)
+                    2, noancr(1), ibid)
 !
     endif
 !

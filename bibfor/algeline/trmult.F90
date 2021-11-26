@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     character(len=16) :: acces
     character(len=19) :: chamno
     complex(kind=8) :: c16b
-    integer :: iarg, imode
+    integer :: imode
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, id,   idno, ii, in
@@ -114,22 +114,22 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 !     --- RECUPERATION DES POINTS D'ANCRAGE ---
 !
     call getvem(mailla, 'NOEUD', 'EXCIT', 'NOEUD', numexi,&
-                iarg, 0, kbid, nbno)
+                0, kbid, nbno)
     if (nbno .ne. 0) then
 !        --- ON RECUPERE UNE LISTE DE NOEUD ---
         nbno = - nbno
         call wkvect('&&TRMULT.NOEUD', 'V V K8', nbno, idno)
         call getvem(mailla, 'NOEUD', 'EXCIT', 'NOEUD', numexi,&
-                    iarg, nbno, zk8(idno), nbv)
+                    nbno, zk8(idno), nbv)
     else
 !        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
         call getvem(mailla, 'GROUP_NO', 'EXCIT', 'GROUP_NO', numexi,&
-                    iarg, 0, kbid, nbgr)
+                    0, kbid, nbgr)
         nbgr = - nbgr
         if (nbgr .ne. 0) then
             AS_ALLOCATE(vk24=group_no, size=nbgr)
             call getvem(mailla, 'GROUP_NO', 'EXCIT', 'GROUP_NO', numexi,&
-                        iarg, nbgr, group_no, nbv)
+                        nbgr, group_no, nbv)
 !           --- ECLATE LE GROUP_NO EN NOEUD ---
             call compno(mailla, nbgr, group_no, nbno)
             call wkvect('&&TRMULT.NOEUD', 'V V K8', nbno, idno)

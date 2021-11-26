@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,6 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
     character(len=19) :: kvec, kval, moncha
     character(len=24) :: kvx1, kvx2, kve2, kve3, kve4, kve5, obj1, obj2
     character(len=24) :: grnoeu, valk(2), kve6, kve7, kve8
-    integer :: iarg
     character(len=24), pointer :: group_no(:) => null()
     character(len=8), pointer :: noeud(:) => null()
 !
@@ -195,12 +194,12 @@ subroutine ascalc(resu, masse, mome, psmo, stat,&
                     obj1 = noma//'.GROUPENO'
                     obj2 = noma//'.NOMNOE'
                     call getvem(noma, 'GROUP_NO', motfa1, 'GROUP_NO', ioc,&
-                                iarg, 0, k8b, n1)
+                                0, k8b, n1)
                     if (n1 .ne. 0) then
                         ngr = -n1
                         AS_ALLOCATE(vk24=group_no, size=ngr)
                         call getvem(noma, 'GROUP_NO', motfa1, 'GROUP_NO', ioc,&
-                                    iarg, ngr, group_no, n1)
+                                    ngr, group_no, n1)
                         do igr = 1, ngr
                             grnoeu = group_no(igr)
                             call jeexin(jexnom(obj1, grnoeu), iret)

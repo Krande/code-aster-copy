@@ -106,7 +106,6 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     real(kind=8) :: un
     real(kind=8) :: xg, yg, zg, xpou, ypou, zpou, xnorm, s1, s
     complex(kind=8) :: betac, ccmp(3)
-    integer :: iarg
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
     integer, pointer :: dime(:) => null()
@@ -265,11 +264,11 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     nbgno = 0
 !
     call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
-                iarg, 0, k8bid, nbno)
+                0, k8bid, nbno)
 !
     if (nbno .eq. 0) then
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
-                    iarg, 0, k8bid, nbgno)
+                    0, k8bid, nbgno)
         if (nbgno .eq. 0) then
             valk(1) = motfac
             valk(2) = option
@@ -283,7 +282,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
             call utmess('F', 'MODELISA6_49')
         endif
         call getvem(noma, 'NOEUD', motfac, 'NOEUD_2', iocc,&
-                    iarg, nbno, noepou, nno)
+                    nbno, noepou, nno)
     endif
 !
     if (nbgno .ne. 0) then
@@ -292,7 +291,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
             call utmess('F', 'MODELISA6_50')
         endif
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_2', iocc,&
-                    iarg, nbgno, nogrno, nno)
+                    nbgno, nogrno, nno)
         call jelira(jexnom(grnoma, nogrno), 'LONUTI', n1)
         if (n1 .ne. 1) then
             call utmess('F', 'MODELISA6_43', sk=nogrno)

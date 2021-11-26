@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,6 @@ subroutine cla110(nomres, modgen)
     real(kind=8) :: matrot(nbcmpm, nbcmpm)
     real(kind=8) :: matbuf(nbcmpm, nbcmpm), mattmp(nbcmpm, nbcmpm)
     character(len=8) :: k8bid, exclu
-    integer :: iarg
     integer, pointer :: nldtyp(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
@@ -157,7 +156,7 @@ subroutine cla110(nomres, modgen)
             call getvtx('NOM_GROUP_MA', 'NOM', iocc=i, scal=zk24(lutnom-1+ i), nbret=ibid)
             call getvtx('NOM_GROUP_MA', 'SOUS_STRUC', iocc=i, scal=zk8( lutsst-1+i), nbret=ibid)
             call getvem(mailla, 'GROUP_MA', 'NOM_GROUP_MA', 'GROUP_MA', i,&
-                        iarg, 1, zk24(lutgma-1+i), ibid)
+                        1, zk24(lutgma-1+i), ibid)
 !           --- RECHERCHE SI LA SOUS-STRUCTURE EXISTE ---
             is = 0
  90         continue

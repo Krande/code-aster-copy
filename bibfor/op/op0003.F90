@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,6 @@ subroutine op0003()
     character(len=19) :: nomfon, listpa, listfo
     character(len=24) :: nommas
     character(len=24) :: valk(2)
-    integer :: iarg
     real(kind=8), pointer :: fon(:) => null()
     real(kind=8), pointer :: par(:) => null()
 !     ------------------------------------------------------------------
@@ -191,7 +190,7 @@ subroutine op0003()
         endif
         call getvr8(' ', 'VALE_Y', nbval=nblv, vect=zr(jval), nbret=n)
         call getvem(nommai, 'NOEUD', ' ', 'NOEUD_PARA', 0,&
-                    iarg, nblv, zk8( jnoe), n)
+                    nblv, zk8( jnoe), n)
         nbval = 2*(nbrma+1)
         call wkvect(nomfon//'.VALE', 'G V R', nbval, lval)
 !

@@ -76,7 +76,7 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
 ! --------------------------------------------------------------------------------------------------
-    integer :: i, idw, ier, iisec, ioc, isec, itabl, iarg
+    integer :: i, idw, ier, iisec, ioc, isec, itabl
     integer :: ivect, ixma, j
     integer :: jdcba, jdcbaf, jdge, jdgef, jdgm
     integer :: jdme, jdvba, jdvbaf
@@ -165,8 +165,8 @@ subroutine aceaba(noma, nomo, lmax, nbarre, nbocc,&
 !   lecture et stockage des donnees  dans l objet tampon
     do ioc = 1, nbocc
         call codent(ioc, 'G', kioc)
-        call getvem(noma, 'GROUP_MA', 'BARRE', 'GROUP_MA', ioc,  iarg, lmax, barre, ng)
-        call getvem(noma, 'MAILLE', 'BARRE', 'MAILLE', ioc, iarg, lmax, barre2, nm)
+        call getvem(noma, 'GROUP_MA', 'BARRE', 'GROUP_MA', ioc, lmax, barre, ng)
+        call getvem(noma, 'MAILLE', 'BARRE', 'MAILLE', ioc, lmax, barre2, nm)
         call getvtx('BARRE', 'SECTION', iocc=ioc, scal=sec, nbret=nsec)
         call getvid('BARRE', 'TABLE_CARA', iocc=ioc, scal=tabcar, nbret=ntab)
         if (ntab .eq. 1) then

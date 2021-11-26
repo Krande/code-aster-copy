@@ -64,7 +64,6 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     character(len=24) :: nomgrn
     character(len=15) :: nrepnd
     character(len=17) :: nrepgn
-    integer :: iarg
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: list_n(:) => null()
 !
@@ -82,15 +81,15 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
 ! --- RECUPERATION DES ENTITES
 !
     call getvem(nmaila, 'GROUP_NO', mcf, 'GROUP_NO', iocc,&
-                iarg, 0, zk24(1), nbrgpn)
+                0, zk24(1), nbrgpn)
     call getvem(nmaila, 'NOEUD', mcf, 'NOEUD', iocc,&
-                iarg, 0, zk8, nbneud)
+                0, zk8, nbneud)
     nbrgpn = -nbrgpn
     nbneud = -nbneud
     if (nbrgpn .ne. 0) then
         call wkvect('&OP0051.NOM.GRP.ND', 'V V K24', nbrgpn, agrpn)
         call getvem(nmaila, 'GROUP_NO', mcf, 'GROUP_NO', iocc,&
-                    iarg, nbrgpn, zk24(agrpn), n1)
+                    nbrgpn, zk24(agrpn), n1)
         do 10, i = 1, nbrgpn, 1
             call jelira(jexnom(nrepgn, zk24(agrpn+i-1)), 'LONUTI', n1)
             nbtnd = nbtnd + n1
@@ -99,7 +98,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
     if (nbneud .ne. 0) then
         call wkvect('&OP0051.NOM.NOEUD', 'V V K8', nbneud, aneud)
         call getvem(nmaila, 'NOEUD', mcf, 'NOEUD', iocc,&
-                    iarg, nbneud, zk8( aneud), n1)
+                    nbneud, zk8( aneud), n1)
         nbtnd = nbtnd + nbneud
     endif
 !

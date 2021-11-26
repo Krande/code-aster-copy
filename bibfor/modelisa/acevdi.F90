@@ -69,7 +69,6 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
 ! --------------------------------------------------------------------------------------------------
     integer ::  i3d, i2d, ndim1, ioc, nc, ng, nm, nsom, nbmail, un
     integer :: n1, ima, nbgrm,  ig, jmail, numa, nutyma, lmax2
-    integer :: iarg
     character(len=4) :: type
     character(len=8) :: k8b, nomu, noma, nomo, nomail, typel
     character(len=16) :: concep, cmd
@@ -104,8 +103,8 @@ subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
     do ioc = 1, nbocc
         call getvtx(mcf, 'CARA', iocc=ioc, scal=cara, nbret=nc)
 !
-        call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, iarg, 0, k8b, ng)
-        call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc, iarg, 0, k8b, nm)
+        call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, 0, k8b, ng)
+        call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc, 0, k8b, nm)
 !
         nsom = ng + nm
         if ((nsom.eq.ng) .or. (nsom.eq.nm) ) then

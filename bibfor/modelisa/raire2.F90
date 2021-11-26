@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,6 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     real(kind=8) :: zero, x(8), y(8), z(8), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
     aster_logical :: lfonc
-    integer :: iarg
 !
 !-----------------------------------------------------------------------
     integer :: i, ifr, ii
@@ -100,9 +99,9 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
     zg = zero
     call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=0, nbret=ncg)
     call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
-                iarg, 0, k8b, nno)
+                0, k8b, nno)
     call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
-                iarg, 0, k8b, ngn)
+                0, k8b, ngn)
     if (ncg .ne. 0) then
         call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=3, vect=c,&
                     nbret=ncg)
@@ -111,14 +110,14 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu,&
         zg = c(3)
     else if (nno.ne.0) then
         call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
-                    iarg, 1, nomnoe, nno)
+                    1, nomnoe, nno)
         call jenonu(jexnom(manono, nomnoe), inoe)
         xg = vale(1+3*(inoe-1)+1-1)
         yg = vale(1+3*(inoe-1)+2-1)
         zg = vale(1+3*(inoe-1)+3-1)
     else if (ngn.ne.0) then
         call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
-                    iarg, 1, nomgr, ngn)
+                    1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
         xg = vale(1+3*(inoe-1)+1-1)

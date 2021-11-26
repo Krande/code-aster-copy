@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,6 @@ subroutine sscgno(ma, nbgnin)
     character(len=24) :: nomnoe, grpnoe, cooval, lisno, mafour
     character(len=24) :: valk(2), nogno, nogno2
     character(len=80) :: card
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -176,7 +175,7 @@ subroutine sscgno(ma, nbgnin)
 !       ---------------------
     if (n3 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'INTERSEC', iocc,&
-                    iarg, n3, lik8, nbid)
+                    n3, lik8, nbid)
         n3=nbid
     end if
     if (n3 .gt. 0) then
@@ -229,7 +228,7 @@ subroutine sscgno(ma, nbgnin)
 !       ------------------
     if (n4 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'UNION', iocc,&
-                    iarg, n4, lik8, nbid)
+                    n4, lik8, nbid)
         n4 = nbid
     end if
     if (n4 .gt. 0) then
@@ -292,7 +291,7 @@ subroutine sscgno(ma, nbgnin)
 !       ------------------
     if (n5 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'DIFFE', iocc,&
-                    iarg, n5, lik8, nbid)
+                    n5, lik8, nbid)
         n5=nbid
     endif
     if (n5 .gt. 0) then
@@ -440,7 +439,7 @@ subroutine sscgno(ma, nbgnin)
     if (n2 .gt. 0) then
         AS_ALLOCATE(vk8=l_noeud, size=n2)
         call getvem(ma, 'NOEUD', motfac, 'NOEUD', iocc,&
-                    iarg, n2, l_noeud, nb)
+                    n2, l_noeud, nb)
         n2=nb
     end if
     if (n2 .gt. 0) then
@@ -485,12 +484,12 @@ subroutine sscgno(ma, nbgnin)
 !       ---------------------
     if (n8 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'GROUP_NO', iocc,&
-                    iarg, 1, nogno2, nbid)
+                    1, nogno2, nbid)
         n8 = nbid
     end if
     if (n8 .gt. 0) then
         call getvem(ma, 'GROUP_NO', motfac, 'GROUP_NO', iocc,&
-                    iarg, 1, nogno2, nbid)
+                    1, nogno2, nbid)
         call jenonu(jexnom(grpnoe, nogno2), ign2)
         call jelira(jexnum(grpnoe, ign2), 'LONUTI', ili2)
         call jeveuo(jexnum(grpnoe, ign2), 'L', iagn2)

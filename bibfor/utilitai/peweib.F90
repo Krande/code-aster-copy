@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,7 +92,6 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
     character(len=24) :: kvalrc, kvalrk, vale2(2)
     aster_logical :: opti
     complex(kind=8) :: c16b
-    integer :: iarg
     character(len=8), pointer :: l_nom_mat(:) => null()
     real(kind=8), pointer :: trav1(:) => null()
 !
@@ -352,9 +351,9 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
             endif
             call getvtx(motcl3, 'TOUT', iocc=inum, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', motcl3, 'MAILLE', inum,&
-                        iarg, 0, k8b, nm)
+                        0, k8b, nm)
             call getvem(noma, 'GROUP_MA', motcl3, 'GROUP_MA', inum,&
-                        iarg, 0, k8b, ng)
+                        0, k8b, ng)
             call getvr8(motcl3, 'COEF_MULT', iocc=inum, scal=coesym, nbret=n1)
 !
             if (nt .ne. 0) then
@@ -383,7 +382,7 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
                 nbgrma = -ng
                 call wkvect('&&PEWEIB_GROUPM', 'V V K24', nbgrma, jgr)
                 call getvem(noma, 'GROUP_MA', motcl3, 'GROUP_MA', inum,&
-                            iarg, nbgrma, zk24(jgr), ng)
+                            nbgrma, zk24(jgr), ng)
                 vale2(2) = 'GROUP_MA'
                 do ig = 1, nbgrma
                     nomgrm = zk24(jgr+ig-1)
@@ -425,7 +424,7 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
                 nbmail = -nm
                 call wkvect('&&PEWEIB_MAILLE', 'V V K8', nbmail, jma)
                 call getvem(noma, 'MAILLE', motcl3, 'MAILLE', inum,&
-                            iarg, nbmail, zk8(jma), nm)
+                            nbmail, zk8(jma), nm)
                 valek(2) = 'MAILLE'
                 do im = 1, nbmail
                     nommai = zk8(jma+im-1)

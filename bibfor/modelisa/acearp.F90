@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,6 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
     character(len=24) :: mlgnno, mlgnma
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: transl, trarot
-    integer :: iarg
 !
     data repdis  /'GLOBAL          ','LOCAL           '/
     data kma     /'K','M','A'/
@@ -133,7 +132,7 @@ subroutine acearp(infdonn, lmax, noemaf, nbocc, infcarte, ivr)
 !       Par défaut on est dans le repère global, matrices symétriques
         irep = 1; isym = 1; rep = repdis(1)
 !
-        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, iarg, lmax, zk24(jdls), ng)
+        call getvem(noma, 'GROUP_MA', 'RIGI_PARASOL', 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
         call getvtx('RIGI_PARASOL', 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
         call getvr8('RIGI_PARASOL', 'VALE', iocc=ioc, nbval=nbval, vect=val, nbret=nval)
         call getvtx('RIGI_PARASOL', 'REPERE', iocc=ioc, scal=rep, nbret=nrep)

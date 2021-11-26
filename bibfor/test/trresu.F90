@@ -89,7 +89,6 @@ integer, intent(in) :: ific, nocc
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno, nogrma, compor
     character(len=33) :: titres, valk(3)
     character(len=200) :: lign1, lign2
-    integer :: iarg
     aster_logical :: lref, skip, l_parallel_mesh
     character(len=8), pointer :: nom_cmp(:) => null()
 !     NONOEU= NOM_NOEUD (K8) SUIVI EVENTUELLEMENT DU NOM DU GROUP_NO
@@ -395,7 +394,7 @@ integer, intent(in) :: ific, nocc
                 call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=mesh)
                 l_parallel_mesh = isParallelMesh(mesh)
                 call getvem(mesh, 'NOEUD', 'RESU', 'NOEUD', iocc,&
-                            iarg, 1, nonoeu(1:8), n1)
+                            1, nonoeu(1:8), n1)
                 if (n1 .ne. 0) then
                     if (l_parallel_mesh) then
                         call utmess('F', 'MODELISA7_86')
@@ -409,7 +408,7 @@ integer, intent(in) :: ific, nocc
                 endif
 !
                 call getvem(mesh, 'GROUP_NO', 'RESU', 'GROUP_NO', iocc,&
-                            iarg, 1, nogrno, n2)
+                            1, nogrno, n2)
 
                 ng = 0
                 if(n2 == 0 .and. l_parallel_mesh) then
@@ -490,7 +489,7 @@ integer, intent(in) :: ific, nocc
 !
                     cellName = ' '
                     call getvem(mesh, 'MAILLE', 'RESU', 'MAILLE', iocc,&
-                                iarg, 1, cellName, n1a)
+                                1, cellName, n1a)
 
                     if(n1a > 0) then
                         if (l_parallel_mesh) then
@@ -498,7 +497,7 @@ integer, intent(in) :: ific, nocc
                         endif
                     else
                         call getvem(mesh, 'GROUP_MA', 'RESU', 'GROUP_MA', iocc,&
-                                iarg, 1, nogrma, n1b)
+                                1, nogrma, n1b)
                         if( n1b == 1) then
                             call jelira(jexnom(mesh//'.GROUPEMA', nogrma),'LONUTI',ival=n1b)
                             if (n1b .ne. 1) call utmess('F', 'TEST0_20',sk=nogrma,si=n1b)

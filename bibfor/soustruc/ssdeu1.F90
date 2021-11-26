@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,6 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 !
     character(len=8) :: kbi81
     character(len=24) :: valk(2)
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -78,7 +77,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 !     --CAS NOEUD:
 !     ------------
     call getvem(noma, 'NOEUD', 'EXTERIEUR', 'NOEUD', 1,&
-                iarg, 0, kbi81, n1)
+                0, kbi81, n1)
     if (n1 .ne. 0) then
         n3=-n1
         if (ndim .lt. n3) then
@@ -86,7 +85,7 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
             call wkvect('&&SSDEU1.WK1', 'V V K8', 2*n3, iawk1)
         endif
         call getvem(noma, 'NOEUD', 'EXTERIEUR', 'NOEUD', 1,&
-                    iarg, n3, zk8( iawk1), ibid)
+                    n3, zk8( iawk1), ibid)
         nbno=nbno+n3
         if (motcle .eq. 'LISTE') then
             do 100 i = 1, n3
@@ -104,13 +103,13 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 !     --CAS GROUP_NO:
 !     ---------------
     call getvem(noma, 'GROUP_NO', 'EXTERIEUR', 'GROUP_NO', 1,&
-                iarg, 0, kbi81, n2)
+                0, kbi81, n2)
     if (n2 .ne. 0) then
         n3=-n2
         call jedetr('&&SSDEU1.WK1')
         call wkvect('&&SSDEU1.WK1', 'V V K24', 2*n3, iawk1)
         call getvem(noma, 'GROUP_NO', 'EXTERIEUR', 'GROUP_NO', 1,&
-                    iarg, n3, zk24(iawk1), ibid)
+                    n3, zk24(iawk1), ibid)
         ico=nbno
         do 101 i = 1, n3
             call jeexin(jexnom(noma//'.GROUPENO', zk24(iawk1-1+i)), iret)

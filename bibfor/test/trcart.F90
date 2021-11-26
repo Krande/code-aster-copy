@@ -64,7 +64,6 @@ subroutine trcart(ific, nocc)
     character(len=16) :: tbtxt(2), tbref(2)
     character(len=24) :: nogrma
     character(len=200) :: lign1, lign2
-    integer :: iarg
     aster_logical :: lref, l_parallel_mesh
     aster_logical :: skip
     real(kind=8) :: ordgrd
@@ -136,10 +135,10 @@ subroutine trcart(ific, nocc)
         endif
 !
         call getvem(nomma, 'MAILLE', 'CARTE', 'MAILLE', iocc,&
-                    iarg, 1, nomail, n1a)
+                    1, nomail, n1a)
         if (n1a.eq.0) then
             call getvem(nomma, 'GROUP_MA', 'CARTE', 'GROUP_MA', iocc,&
-                    iarg, 1, nogrma, n1b)
+                    1, nogrma, n1b)
             ASSERT(n1b.eq.1)
             call jelira(jexnom(nomma//'.GROUPEMA', nogrma),'LONUTI',ival=n1b)
             if (n1b .ne. 1) call utmess('F', 'TEST0_20',sk=nogrma,si=n1b)

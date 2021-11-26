@@ -72,7 +72,6 @@ implicit none
     character(len=15) :: coordo
     character(len=1) :: nompar(3)
     real(kind=8) :: valpar(3), vale
-    integer :: iarg
 !-----------------------------------------------------------------------
     integer :: i, ier, igr, in, indnoe, ino
     integer :: iocc, iret, j
@@ -226,14 +225,14 @@ implicit none
 !
 !
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
-                    iarg, 0, liste1, ng)
+                    0, liste1, ng)
         if (ng .ne. 0) then
 !
 !           -- CAS DE GROUP_NO :
 !           --------------------
             ng = -ng
             call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO', i,&
-                        iarg, ng, liste1, n)
+                        ng, liste1, n)
             indnoe = 0
             do j = 1, ng
                 call jeveuo(jexnom(grouno, liste1(j)), 'L', jgr0)
@@ -274,11 +273,11 @@ implicit none
 !           CAS DE NOEUD :
 !           -------------
             call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
-                        iarg, 0, liste2, nbno)
+                        0, liste2, nbno)
             if (nbno .ne. 0) then
                 nbno = -nbno
                 call getvem(noma, 'NOEUD', motfac, 'NOEUD', i,&
-                            iarg, nbno, liste2, n)
+                            nbno, liste2, n)
                 if (typco2 .eq. 'FONC') then
                     do k = 1, n
                         call jenonu(jexnom(noma//'.NOMNOE', liste2(k)), in)

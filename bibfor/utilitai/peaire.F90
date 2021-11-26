@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,6 @@ subroutine peaire(resu, modele, nbocc)
     character(len=16) :: noparr(nbparr)
     character(len=24) :: grpma
     complex(kind=8) :: c16b
-    integer :: iarg
     character(len=8), pointer :: lgrf(:) => null()
 !     ------------------------------------------------------------------
     data noparr / 'GROUP_MA' , 'AIRE' , 'LONGUEUR' /
@@ -75,12 +74,12 @@ subroutine peaire(resu, modele, nbocc)
 !
     do 10 iocc = 1, nbocc
         call getvem(noma, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc,&
-                    iarg, 0, k8b, ngb)
+                    0, k8b, ngb)
         if (ngb .ne. 0) then
             ngb = -ngb
             call wkvect('&&PEAIRE.GROUP_NO', 'V V K24', ngb, jgb)
             call getvem(noma, 'GROUP_MA', 'AIRE_INTERNE', 'GROUP_MA_BORD', iocc,&
-                        iarg, ngb, zk24(jgb), ng)
+                        ngb, zk24(jgb), ng)
             do 40 igb = 1, ngb
                 call jeexin(jexnom(grpma, zk24(jgb+igb-1)), iret)
                 if (iret .eq. 0) then

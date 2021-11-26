@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     integer           :: ibid, iret, ier, ino1, ino2
     integer           :: ind1, ind2, inod, gnod, inog
     integer           :: gnog, bono1, bono2, compt1, compt2
-    integer           :: iarg, ipat, j1, j2, nbmail
+    integer           :: ipat, j1, j2, nbmail
     integer           :: nbno, nddl1, nddl2, nbmode
     integer           :: j, neq, mxlevel, nbrfis, nn1
     integer           :: nn2, numai, i
@@ -152,10 +152,10 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
     comp(2)='DRY'
     comp(3)='DRZ'
 
-    call getvem(mesh1, 'NOEUD', motfac, 'NOEUD_D', icomp, iarg, 1, nomno1, ibid)
-    call getvem(mesh1, 'NOEUD', motfac, 'NOEUD_G', icomp, iarg, 1, nomno2, ibid)
+    call getvem(mesh1, 'NOEUD', motfac, 'NOEUD_D', icomp, 1, nomno1, ibid)
+    call getvem(mesh1, 'NOEUD', motfac, 'NOEUD_G', icomp, 1, nomno2, ibid)
 !
-    call getvem(mesh1, 'GROUP_NO', motfac, 'GROUP_NO_D', icomp, iarg, 1, nomgr1, ibid)
+    call getvem(mesh1, 'GROUP_NO', motfac, 'GROUP_NO_D', icomp, 1, nomgr1, ibid)
     if (ibid .ne. 0) then
         call utnono(' ', mesh1, 'NOEUD', nomgr1, nomno1, iret)
         if (iret .eq. 10) then
@@ -169,7 +169,7 @@ subroutine dtmprep_noli_rotf(sd_dtm_, sd_nl_, icomp)
 !
     call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=nomno1)
 
-    call getvem(mesh1, 'GROUP_NO', motfac, 'GROUP_NO_G', icomp, iarg, 1, nomgr2, ibid)
+    call getvem(mesh1, 'GROUP_NO', motfac, 'GROUP_NO_G', icomp, 1, nomgr2, ibid)
     if (ibid .ne. 0) then
         call utnono(' ', mesh1, 'NOEUD', nomgr2, nomno2, iret)
         if (iret .eq. 10) then

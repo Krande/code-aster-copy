@@ -65,7 +65,7 @@ subroutine carbe3(charge)
     character(len=19) :: lisrel
     character(len=24) :: ddlstr, grouno, noeuma, gromai
     complex(kind=8) :: betac
-    integer :: ifm, niv, iarg, iret
+    integer :: ifm, niv, iret
     integer :: idxrbe, idxlig, idxcol, idxvec, idxnoe, idxgro, idxter
     integer :: idxddl
     integer :: posesc, posmai, cntlig, cntddl, cntnoe, inilig
@@ -131,10 +131,10 @@ subroutine carbe3(charge)
     maxles = 0
     do idxrbe = 1, nbrbe3
         call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_ESCL', idxrbe,&
-                    iarg, 0, k8bid, nbgrou)
+                    0, k8bid, nbgrou)
         maxles = max(maxles,-nbgrou)
         call getvem(noma, 'NOEUD', motfac, 'NOEUD_ESCL', idxrbe,&
-                    iarg, 0, k8bid, nbnoeu)
+                    0, k8bid, nbnoeu)
         maxles = max(maxles,-nbnoeu)
     end do
 !
@@ -206,7 +206,7 @@ subroutine carbe3(charge)
         nbent = -nbent
         if (nbent .ne. 0) then
             call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_MAIT', idxrbe,&
-                        iarg, 1, gromai, nbent)
+                        1, gromai, nbent)
             call jeveuo(jexnom(grouno, gromai), 'L', jnogro)
             call jelira(jexnom(grouno, gromai), 'LONUTI', nbent)
             if (nbent .ne. 1) then
@@ -218,7 +218,7 @@ subroutine carbe3(charge)
         call getvtx(motfac, 'NOEUD_MAIT', iocc=idxrbe, nbval=0, nbret=nbent)
         if (nbent .ne. 0) then
             call getvem(noma, 'NOEUD', motfac, 'NOEUD_MAIT', idxrbe,&
-                        iarg, 1, noemai, nbent)
+                        1, noemai, nbent)
         endif
 !
         call jenonu(jexnom(noma//'.NOMNOE', noemai), posmai)

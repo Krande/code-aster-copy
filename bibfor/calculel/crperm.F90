@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,6 @@ subroutine crperm()
     character(len=19) :: prchno
     character(len=24) :: ch1, ch2, chs1, chs2, linoeu, gma1, gma2, lima1, lima2
     character(len=24) :: ligrel, chsi1(4), chsi2(4)
-    integer :: iarg
     integer, pointer :: ordr(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -179,9 +178,9 @@ subroutine crperm()
     do ip = 1, nbperm
 !
         call getvem(ma1, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_INIT', ip,&
-                    iarg, 1, gma1, n1)
+                    1, gma1, n1)
         call getvem(ma2, 'GROUP_MA', 'PERM_CHAM', 'GROUP_MA_FINAL', ip,&
-                    iarg, 1, gma2, n1)
+                    1, gma2, n1)
 !
         call getvr8('PERM_CHAM', 'TRAN', iocc=ip, nbval=3, vect=tran,&
                     nbret=n1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ subroutine op0104()
     character(len=8) :: k8b, ma, ma2
     character(len=16) :: nomcmd, typcon, option
     character(len=24) :: grpmai, grpnoe, grpmav, grpnov, gpptnm, gpptnn, nomg
-    integer :: iarg
     aster_logical :: l_write
 !     ------------------------------------------------------------------
     call jemarq()
@@ -142,7 +141,7 @@ subroutine op0104()
             goto 10
         endif
         call getvem(ma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
-                    iarg, 0, k8b, n2)
+                    0, k8b, n2)
         if (n2 .ne. 0) then
             nbgrno = nbgrno - n2
             goto 10

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
     aster_logical :: lfonc, trans
-    integer :: iarg, appui
+    integer :: appui
 ! --------------------------------------------------------------------------------------------------
     integer :: i, ii
     integer :: ij, im, in, inoe, iret
@@ -97,8 +97,8 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
 !
 !   Récupération du centre
     call getvr8('RIGI_PARASOL', 'COOR_CENTRE', iocc=ioc, nbval=0, nbret=ncg)
-    call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, iarg, 0, k8b, nno)
-    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, iarg, 0, k8b, ngn)
+    call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, 0, k8b, nno)
+    call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 0, k8b, ngn)
     xg = 0.0
     yg = 0.0
     zg = 0.0
@@ -108,13 +108,13 @@ subroutine rairep(noma, ioc, km, rigi, nbgr,&
         yg = c(2)
         zg = c(3)
     else if (nno.ne.0) then
-        call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, iarg, 1, nomnoe, nno)
+        call getvem(noma, 'NOEUD', 'RIGI_PARASOL', 'NOEUD_CENTRE', ioc, 1, nomnoe, nno)
         call jenonu(jexnom(manono, nomnoe), inoe)
         xg = vale(1+3*(inoe-1)+1-1)
         yg = vale(1+3*(inoe-1)+2-1)
         zg = vale(1+3*(inoe-1)+3-1)
     else if (ngn.ne.0) then
-        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, iarg, 1, nomgr, ngn)
+        call getvem(noma, 'GROUP_NO', 'RIGI_PARASOL', 'GROUP_NO_CENTRE', ioc, 1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
         call jenuno(jexnum(manono, inoe), nomnoe)

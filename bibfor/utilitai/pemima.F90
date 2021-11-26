@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !
     integer :: iret, nbcmp, nzero, nbordr, iocc, nbma, nbtot
     integer :: n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
-    integer :: nbgma, igm, nbpar, nn, inum, nli, nlo, iarg
+    integer :: nbgma, igm, nbpar, nn, inum, nli, nlo
     parameter(nzero=0,nbpar=3)
     real(kind=8) :: prec, inst
     complex(kind=8) :: cbid
@@ -208,12 +208,12 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
             call getvem(mailla, 'GROUP_MA', 'MINMAX', 'GROUP_MA', iocc,&
-                    iarg, 0, k8b, n1)
+                    0, k8b, n1)
             nbgma=-n1
             if (nbgma > 0) then
                 call wkvect('&&PEMIMA_GMA', 'V V K24', nbgma, vk24=v_gma)
                 call getvem(mailla, 'GROUP_MA', 'MINMAX', 'GROUP_MA', iocc,&
-                        iarg, nbgma, v_gma, n1)
+                        nbgma, v_gma, n1)
                 do igm = 1, nbgma
                     call jeexin(jexnom(mailla//'.GROUPEMA', v_gma(igm)), iret)
                     if (iret .eq. 0) then

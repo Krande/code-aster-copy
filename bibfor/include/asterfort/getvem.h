@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,13 +20,12 @@
 !
 interface
     subroutine getvem(noma, typent, motfac, motcle, iocc,&
-                      iarg, mxval, vk, nbval)
+                      mxval, vk, nbval)
         character(len=*) :: noma
         character(len=*) :: typent
         character(len=*) :: motfac
         character(len=*) :: motcle
         integer :: iocc
-        integer :: iarg
         integer :: mxval
         character(len=*) :: vk(*)
         integer :: nbval

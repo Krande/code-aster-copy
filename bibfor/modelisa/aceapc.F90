@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer           :: iarg
     character(len=19) :: cartar
     character(len=24) :: tmpnar, tmpvar, mlggma, mlgnma, mlgcnx, mlgcoo
 !
@@ -121,8 +120,8 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
         zr(jdvc+isiy) = 1.0
         zr(jdvc+isiz) = 1.0
 !
-        call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, iarg, lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE',   'POUTRE', 'MAILLE',   ioc, iarg, lmax, zk24(jdls), nm)
+        call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
+        call getvem(noma, 'MAILLE',   'POUTRE', 'MAILLE',   ioc, lmax, zk24(jdls), nm)
 !
         call getvr8('POUTRE', 'COEF_FLEX',    iocc=ioc, scal=xfl,  nbret=nfl)
         call getvr8('POUTRE', 'COEF_FLEX_XY', iocc=ioc, scal=xfly, nbret=nfly)

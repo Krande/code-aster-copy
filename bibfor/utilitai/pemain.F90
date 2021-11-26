@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,6 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
     character(len=24) :: lchin(16), lchout(1), mlggma, mlgnma, valk2(2)
     character(len=24) :: chgeom, chgeo2, chcara(18), chharm, ligrel
     complex(kind=8) :: c16b
-    integer :: iarg
     real(kind=8), pointer :: trav1(:) => null()
     integer, pointer :: v_allma(:) => null()
 !
@@ -173,9 +172,9 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
         orig(3) = zero
         call getvtx('MASS_INER', 'TOUT', iocc=iocc, nbval=0, nbret=nt)
         call getvem(noma, 'GROUP_MA', 'MASS_INER', 'GROUP_MA', iocc,&
-                    iarg, 0, k8b, ng)
+                    0, k8b, ng)
         call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc,&
-                    iarg, 0, k8b, nm)
+                    0, k8b, nm)
 
         call getvr8('MASS_INER', 'ORIG_INER', iocc=iocc, nbval=0, nbret=nr)
         if (nr .ne. 0) then
@@ -196,7 +195,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
             nbgrma = -ng
             call wkvect('&&PEMAIN_GROUPM', 'V V K24', nbgrma, jgr)
             call getvem(noma, 'GROUP_MA', 'MASS_INER', 'GROUP_MA', iocc,&
-                        iarg, nbgrma, zk24(jgr), ng)
+                        nbgrma, zk24(jgr), ng)
             valk2(2) = 'GROUP_MA'
             do ig = 1, nbgrma
                 call jeexin(jexnom(mlggma, zk24(jgr+ig-1)), iret)
@@ -236,7 +235,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
             nbmail = -nm
             call wkvect('&&PEMAIN_MAILLE', 'V V K8', nbmail, jma)
             call getvem(noma, 'MAILLE', 'MASS_INER', 'MAILLE', iocc,&
-                        iarg, nbmail, zk8(jma), nm)
+                        nbmail, zk8(jma), nm)
             valk(2) = 'MAILLE'
             do im = 1, nbmail
                 call jeexin(jexnom(mlgnma, zk8(jma+im-1)), iret)

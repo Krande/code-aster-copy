@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,6 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
     character(len=16) :: momail, mogrma
     character(len=16) :: motfac
     character(len=24) :: noeuma, mailma, grmama, lisnoe
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -115,7 +114,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
         ng = -ng
         AS_ALLOCATE(vk24=trav1, size=ng)
         call getvem(noma, 'GROUP_MA', motfac, mogrma, iocc,&
-                    iarg, ng, trav1, ngr)
+                    ng, trav1, ngr)
         do igr = 1, ngr
             call jeveuo(jexnom(grmama, trav1(igr)), 'L', jgro)
             call jelira(jexnom(grmama, trav1(igr)), 'LONUTI', nbmail)
@@ -138,7 +137,7 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz,&
         nbma = -nbma
         AS_ALLOCATE(vk8=trav2, size=nbma)
         call getvem(noma, 'MAILLE', motfac, momail, iocc,&
-                    iarg, nbma, trav2, nmai)
+                    nbma, trav2, nmai)
         do ima = 1, nmai
             call jenonu(jexnom(noma//'.NOMMAI', trav2(ima)), ibid)
             call jelira(jexnum(noma//'.CONNEX', ibid), 'LONMAX', n2)

@@ -28,7 +28,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/imprel.h"
 #include "asterfort/infniv.h"

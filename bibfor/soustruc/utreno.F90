@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
     integer :: n1, iret
     character(len=16) :: mcnoeu, mcgrno
     character(len=24) :: valk(2), nogno
-    integer :: iarg
 !     ------------------------------------------------------------------
     aster_logical :: ok_noeud2
 !     ------------------------------------------------------------------
@@ -61,7 +60,7 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
     call getvtx(mcf, mcnoeu, iocc=iocc, nbval=0, nbret=n1)
     if (n1 .ne. 0) then
         call getvem(ma, 'NOEUD', mcf, mcnoeu, iocc,&
-                    iarg, 1, noeud, n1)
+                    1, noeud, n1)
         ok_noeud2 = .true.
     endif
 !

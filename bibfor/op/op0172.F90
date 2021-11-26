@@ -70,7 +70,6 @@ subroutine op0172()
     character(len=19) :: enerpo
     character(len=24) :: nprno, deeq, nomch1, nomob1, nomob2
     character(len=24) :: magrno, manono, magrma, manoma, nomgr, amo_neg
-    integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iadmo1, iamomo, ic, idam, iddeeq, idepmo
@@ -202,12 +201,12 @@ subroutine op0172()
 !
 !        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
     call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_RADIER', 1,&
-                iarg, 0, k8b, nbgr)
+                0, k8b, nbgr)
     if (nbgr .eq. 0) goto 114
     nbgr = -nbgr
     call wkvect('&&OP0172.GROUP_NO', 'V V K24', nbgr, idgn)
     call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_RADIER', 1,&
-                iarg, nbgr, zk24(idgn), nbv)
+                nbgr, zk24(idgn), nbv)
 !
 !        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
     call compno(noma, nbgr, zk24(idgn), nbno)
@@ -225,7 +224,7 @@ subroutine op0172()
 !
 114 continue
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
-                iarg, 0, k8b, nbgr)
+                0, k8b, nbgr)
     if (nbgr .eq. 0) then
         call utmess('F', 'PREPOST4_19')
     endif
@@ -234,7 +233,7 @@ subroutine op0172()
     call wkvect('&&OP0172.NOEUD', 'V V I', nbnoeu, idno)
     call wkvect('&&OP0172.PARNO', 'V V I', nbnoeu, idn2)
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
-                iarg, nbgr, zk24(idgm), nbv)
+                nbgr, zk24(idgm), nbv)
     do i = 1, nbgr
         call jelira(jexnom(magrma, zk24(idgm+i-1)), 'LONUTI', nb)
         call jeveuo(jexnom(magrma, zk24(idgm+i-1)), 'L', ldgm)
@@ -263,7 +262,7 @@ subroutine op0172()
         call utmess('F', 'PREPOST4_20')
     endif
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
-                iarg, 0, k8b, nbgr)
+                0, k8b, nbgr)
     if (nbgr .eq. 0) then
         call utmess('F', 'PREPOST4_19')
     endif
@@ -271,7 +270,7 @@ subroutine op0172()
     call wkvect('&&OP0172.GROUP_MA', 'V V K24', nbgr, idgm)
     call wkvect('&&OP0172.NOEUD', 'V V I', nbnoeu, idno)
     call getvem(noma, 'GROUP_MA', 'ENER_SOL', 'GROUP_MA_RADIER', 1,&
-                iarg, nbgr, zk24(idgm), nbv)
+                nbgr, zk24(idgm), nbv)
     call raire2(noma, rigi, nbgr, zk24(idgm), nbnoeu,&
                 nbno, zi(idno), zr(irigno))
 112 continue
@@ -283,9 +282,9 @@ subroutine op0172()
     endif
     call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=0, nbret=ncg)
     call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
-                iarg, 0, k8b, nno)
+                0, k8b, nno)
     call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
-                iarg, 0, k8b, ngn)
+                0, k8b, ngn)
     if (ncg .ne. 0) then
         call getvr8('ENER_SOL', 'COOR_CENTRE', iocc=1, nbval=3, vect=c,&
                     nbret=ncg)
@@ -294,14 +293,14 @@ subroutine op0172()
         zg = c(3)
     else if (nno.ne.0) then
         call getvem(noma, 'NOEUD', 'ENER_SOL', 'NOEUD_CENTRE', 1,&
-                    iarg, 1, nomnoe, nno)
+                    1, nomnoe, nno)
         call jenonu(jexnom(manono, nomnoe), inoe)
         xg = vale(3*(inoe-1)+1)
         yg = vale(3*(inoe-1)+2)
         zg = vale(3*(inoe-1)+3)
     else if (ngn.ne.0) then
         call getvem(noma, 'GROUP_NO', 'ENER_SOL', 'GROUP_NO_CENTRE', 1,&
-                    iarg, 1, nomgr, ngn)
+                    1, nomgr, ngn)
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)
         inoe = zi(ldgn)
 !        CALL JENUNO(JEXNUM(MANONO,INOE),NOMNOE)
@@ -382,11 +381,11 @@ subroutine op0172()
 !        --- ON RECUPERE LES SOUS_STRUC ET LEURS AMOR ---
 !
     call getvem(noma, 'GROUP_MA', 'AMOR_INTERNE', 'GROUP_MA', 1,&
-                iarg, 0, k8b, nbga)
+                0, k8b, nbga)
     nbga= -nbga
     call wkvect('&&OP0172.GAMOR', 'V V K24', nbga, idga)
     call getvem(noma, 'GROUP_MA', 'AMOR_INTERNE', 'GROUP_MA', 1,&
-                iarg, nbga, zk24(idga), nbg)
+                nbga, zk24(idga), nbg)
     call wkvect('&&OP0172.AMINT', 'V V R', nbga, idam)
     call getvr8('AMOR_INTERNE', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nba)
     nba = -nba

@@ -65,7 +65,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 #include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, ifm, ioc, ixma, iarg
+    integer :: ii, ifm, ioc, ixma
     integer :: jj, jad, jin, jdcmpo, jdco, jdgm, nbid
     integer :: jdls, jdme, jdno, jdori, jdtm, jinit
     integer :: jdvlvo, nbmagr, nbmail
@@ -166,8 +166,8 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
         nbalarme = 0
         do ioc = 1, nbocc(ACE_ORIENTATION)
 !           Pour les MAILLES
-            call getvem(noma,'GROUP_MA','ORIENTATION','GROUP_MA',ioc,iarg,lmax,zk24(jdls),ng)
-            call getvem(noma,'MAILLE',  'ORIENTATION','MAILLE',  ioc,iarg,lmax,zk24(jdls),nm)
+            call getvem(noma,'GROUP_MA','ORIENTATION','GROUP_MA',ioc,lmax,zk24(jdls),ng)
+            call getvem(noma,'MAILLE',  'ORIENTATION','MAILLE',  ioc,lmax,zk24(jdls),nm)
 !           Seuil correspondant à la longueur nulle pour une maille :
 !               si seglong .LT. longseuil ==> maille de taille nulle
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=longseuil, nbret=nbid)

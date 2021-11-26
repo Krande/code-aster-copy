@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,12 +17,12 @@
 ! --------------------------------------------------------------------
 
 subroutine getvem(noma, typent, motfac, motcle, iocc,&
-                  iarg, mxval, vk, nbval)
+                  mxval, vk, nbval)
     implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/verima.h"
     character(len=*) :: noma, typent, motfac, motcle, vk(*)
-    integer :: iocc, iarg, mxval, nbval
+    integer :: iocc, mxval, nbval
 !       RECUPERATION DES VALEURS D'UNE LISTE (VOIR POINT D'ENTREE)
 !     ------------------------------------------------------------------
 ! IN  MOTFAC : CH*(*) : MOT CLE FACTEUR

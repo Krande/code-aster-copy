@@ -96,7 +96,6 @@ subroutine op0037()
     character(len=24) :: kvalk, noparm(nbpamt), noparf(nbpaft), nopara(nbpamt)
     character(len=24) :: mate, cara, modele, typeba, nomgrn
 !
-    integer :: iarg
 !     ------------------------------------------------------------------
     data  nomcmp / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
     data  kvec  / '&&OP0037.VAL_PROPRE'/
@@ -426,7 +425,7 @@ subroutine op0037()
     endif
 !
     call getvem(noma, 'NOEUD', ' ', 'NOEUD', 1,&
-                iarg, 1, noeud, ln)
+                1, noeud, ln)
     call getvtx(' ', 'GROUP_NO', scal=nomgrn, nbret=lgr)
 !
     if (lgr .ne. 0) then
@@ -606,7 +605,7 @@ subroutine op0037()
     call getfac('MODE_SIGNE', mosign)
     if (mosign .ne. 0) then
         call getvem(noma, 'NOEUD', 'MODE_SIGNE', 'NOEUD', 1,&
-                    iarg, 1, noeud, l)
+                    1, noeud, l)
         if (l .eq. 0) then
             call getvtx('MODE_SIGNE', 'GROUP_NO', iocc=1, scal=nomgrn, nbret=l)
             call utnono(' ', noma, 'NOEUD', nomgrn, noeud,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
     real(kind=8) :: b(3), afl, ace, rapp
     character(len=19) :: cartpf
     character(len=24) :: tmpnpf, tmpvpf
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
@@ -75,9 +74,9 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
         ace = 0.d0
         rapp = 0.d0
         call getvem(noma, 'GROUP_MA', 'POUTRE_FLUI', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
+                    lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'POUTRE_FLUI', 'MAILLE', ioc,&
-                    iarg, lmax, zk8(jdls2), nm)
+                    lmax, zk8(jdls2), nm)
         call getvr8('POUTRE_FLUI', 'B_T', iocc=ioc, scal=b(1), nbret=nb1)
         call getvr8('POUTRE_FLUI', 'B_N', iocc=ioc, scal=b(2), nbret=nb2)
         call getvr8('POUTRE_FLUI', 'B_TN', iocc=ioc, scal=b(3), nbret=nb3)

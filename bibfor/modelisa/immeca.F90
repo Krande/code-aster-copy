@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,6 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
     integer :: n1, ibe, jbe
 !
     character(len=24) :: param(3), parcr
-    integer :: iarg
     integer, pointer :: cnx_maille(:) => null()
     real(kind=8), pointer :: d2_min_max(:) => null()
     integer, pointer :: no_min_max(:) => null()
@@ -181,7 +180,7 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe,&
 !     TRAITEMENT DU MOT-CLE 'GROUP_NO_ANCRAGE'
     if (n1 .eq. 0) then
         call getvem(mailla, 'GROUP_NO', 'DEFI_CABLE', 'GROUP_NO_ANCRAGE', icabl,&
-                    iarg, 2, nogrna(1), ibid)
+                    2, nogrna(1), ibid)
 !
         call utnono(' ', mailla, 'NOEUD', nogrna(1), k8b,&
                     iret)

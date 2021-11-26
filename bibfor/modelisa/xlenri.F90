@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,6 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 !
     integer :: nbmae, nbnoe, n, jmae, jnoe, i
     character(len=8) :: k8b
-    integer :: iarg
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,7 +66,7 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 !     (GOINOP PERMET DE DISTINGUER OP0041 et OP0010)
     if (.not.goinop) then
         call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_ENRI', 1,&
-                    iarg, 0, k8b, n)
+                    0, k8b, n)
     else
         n=0
     endif

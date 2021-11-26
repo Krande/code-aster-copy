@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
     integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
     integer :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
     integer :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
-    integer :: i, nbgrma_tot, deca, iarg, nbtot
+    integer :: i, nbgrma_tot, deca, nbtot
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec
     real(kind=8) :: energy_tout, energy_ma
     complex(kind=8) :: c16b
@@ -256,7 +256,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
         call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
         do iocc = 1, nbocc
             call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc,&
-                            iarg, 0, k8b, ng)
+                            0, k8b, ng)
             if(ng <0) then
                 nbgrma_tot = nbgrma_tot - ng
             end if
@@ -577,9 +577,9 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
 !       ------------
             call getvtx(motfac, 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', motfac, 'MAILLE', iocc,&
-                        iarg, 0, k8b, nm)
+                        0, k8b, nm)
             call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc,&
-                        iarg, 0, k8b, ng)
+                        0, k8b, ng)
 !
 ! ---   TRAITEMENT DU MOT CLE "TOUT" ,LA QUANTITE EST CALCULEE
 ! ---   SUR TOUT LE MODELE :
@@ -666,7 +666,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
                 nbgrma = -ng
                 call wkvect('&&PEINGL_GROUPM', 'V V K24', nbgrma, jgr)
                 call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA', iocc,&
-                            iarg, nbgrma, zk24(jgr), ng)
+                            nbgrma, zk24(jgr), ng)
 !
 ! ---     BOUCLE SUR LES GROUPES DE MAILLES :
 !         ---------------------------------
@@ -861,7 +861,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh,&
                 nbmail = -nm
                 call wkvect('&&PEINGL_MAILLE', 'V V K8', nbmail, jma)
                 call getvem(noma, 'MAILLE', motfac, 'MAILLE', iocc,&
-                            iarg, nbmail, zk8(jma), nm)
+                            nbmail, zk8(jma), nm)
 !
 ! ---    BOUCLE SUR LES MAILLES :
 !        ----------------------

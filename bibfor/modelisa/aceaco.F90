@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
 !     LOCAMB : EXISTANCE DE MEMBRANE
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
 ! ----------------------------------------------------------------------
-    integer :: nvec, iarg, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf, jdls2
+    integer :: nvec, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf, jdls2
     integer :: na, nco, ncr, nex, ng, nin, nk, nm, nv, nvf, nexf
     integer :: iret
     aster_logical :: lcartf
@@ -137,9 +137,9 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
         xiner = 0.d0
         inert = 'NON'
         call getvem(noma, 'GROUP_MA', 'COQUE', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
+                    lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'COQUE', 'MAILLE', ioc,&
-                    iarg, lmax, zk8(jdls2), nm)
+                    lmax, zk8(jdls2), nm)
         call getvr8('COQUE', 'EPAIS', iocc=ioc, scal=epa, nbret=nv)
         call getvid('COQUE', 'EPAIS_FO', iocc=ioc, scal=epaf, nbret=nvf)
         call getvr8('COQUE', 'ANGL_REP', iocc=ioc, nbval=2, vect=ang,&

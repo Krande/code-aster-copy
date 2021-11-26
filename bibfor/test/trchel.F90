@@ -72,7 +72,6 @@ subroutine trchel(ific, nocc)
     character(len=33) :: nonoeu
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno, nogrma
     character(len=200) :: lign1, lign2
-    integer :: iarg
     aster_logical :: lref, l_parallel_mesh
     aster_logical :: skip
     real(kind=8) :: ordgrd
@@ -283,9 +282,9 @@ subroutine trchel(ific, nocc)
             call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
             n1=0
             call getvem(nomma, 'MAILLE', 'CHAM_ELEM', 'MAILLE', iocc,&
-                        iarg, 1, nomail, n1a)
+                        1, nomail, n1a)
             if (n1a .eq. 0) then
-                call getvem(nomma, 'GROUP_MA', 'CHAM_ELEM', 'GROUP_MA', iocc, iarg, 1, nogrma, n1b)
+                call getvem(nomma, 'GROUP_MA', 'CHAM_ELEM', 'GROUP_MA', iocc, 1, nogrma, n1b)
                 if( n1b == 1) then
                     call jelira(jexnom(nomma//'.GROUPEMA', nogrma), 'LONUTI', nbmag)
                     if ( nbmag .gt. 1) call utmess('F', 'TEST0_20' , sk=nogrma, si=nbmag)
@@ -319,7 +318,7 @@ subroutine trchel(ific, nocc)
             endif
 !
             call getvem(nomma, 'NOEUD', 'CHAM_ELEM', 'NOEUD', iocc,&
-                        iarg, 1, nonoeu(1:8), n3)
+                        1, nonoeu(1:8), n3)
             if (n3 .ne. 0) then
                 nl1 = lxlgut(lign1)
                 nl2 = lxlgut(lign2)
@@ -333,7 +332,7 @@ subroutine trchel(ific, nocc)
             endif
 !
             call getvem(nomma, 'GROUP_NO', 'CHAM_ELEM', 'GROUP_NO', iocc,&
-                        iarg, 1, nogrno, n4)
+                        1, nogrno, n4)
             if (n4 .ne. 0) then
                 nl1 = lxlgut(lign1)
                 nl2 = lxlgut(lign2)

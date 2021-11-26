@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,6 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
     integer :: nummai, nutyel
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nbcar = 100
-    integer :: iarg
     character(len=6) :: kioc
     character(len=8) :: car(nbcar)
     character(len=24) :: mlgnma, mlggma
@@ -98,17 +97,17 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
             if ( mcl.eq.ACE_RIGI_PARASOL .or. &
                  mcl.eq.ACE_MASS_AJOU ) then
                 call getvem(noma, 'GROUP_MA_POI1', ACE_MCLEF(mcl), 'GROUP_MA_POI1', ioc,&
-                            iarg, lmax, zk24(jdls), ng)
+                            lmax, zk24(jdls), ng)
                 if (ng .eq. 0) then
                     call getvem(noma, 'GROUP_MA_SEG2', ACE_MCLEF(mcl), 'GROUP_MA_SEG2', ioc,&
-                                iarg, lmax, zk24(jdls), ng)
+                                lmax, zk24(jdls), ng)
                 endif
             else if ( mcl.eq.ACE_MASS_REP ) then
                 call getvtx(ACE_MCLEF(mcl), 'GROUP_MA_POI1', iocc=ioc, nbval=lmax, &
                             vect=zk24(jdls), nbret= ng )
             else
-                call getvem(noma,'GROUP_MA',ACE_MCLEF(mcl),'GROUP_MA',ioc,iarg,lmax,zk24(jdls),ng)
-                call getvem(noma,'MAILLE',  ACE_MCLEF(mcl),'MAILLE',  ioc,iarg,lmax,zk24(jdls),nm)
+                call getvem(noma,'GROUP_MA',ACE_MCLEF(mcl),'GROUP_MA',ioc,lmax,zk24(jdls),ng)
+                call getvem(noma,'MAILLE',  ACE_MCLEF(mcl),'MAILLE',  ioc,lmax,zk24(jdls),nm)
             endif
             if (mcl.eq.ACE_POUTRE     .or. mcl.eq.ACE_DISCRET .or. mcl.eq.ACE_ORIENTATION .or. &
                 mcl.eq.ACE_DISCRET_2D .or. mcl.eq.ACE_RIGI_PARASOL) then

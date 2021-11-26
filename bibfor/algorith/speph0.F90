@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine speph0(nomu, table)
     integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn
     integer :: nbmail, i, inoeud, iddl, nupo, ivari, napex1, jvnomai
     integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
-    integer :: isip, icham, tmod(1), nbmcl, iarg, ncmp
+    integer :: isip, icham, tmod(1), nbmcl, ncmp
     integer :: i1, lnumi, lnumj, mxval, lfreq, lrefes, lfreqs, nbno, nbgrno, nbgrma
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
@@ -181,7 +181,7 @@ subroutine speph0(nomu, table)
                 call wkvect('&&SPEPH0.LISTENOEEXC', 'V V K8', nbgrno, ilnoex)
                 AS_ALLOCATE(nbgrno, vk24 = group_noeud)
                 call getvem(maillage, 'GROUP_NO', 'EXCIT', 'GROUP_NO', 1,&
-                                    iarg, nbgrno, group_noeud, iret)
+                                    nbgrno, group_noeud, iret)
                 do i = 1, nbgrno
                     call utnono(' ', maillage, 'NOEUD', group_noeud(i), noeud,&
                                 iret)
@@ -312,7 +312,7 @@ subroutine speph0(nomu, table)
             AS_ALLOCATE(nbgrno, vk8=noeud_rep)
             AS_ALLOCATE(nbgrno, vk24 = group_noeud)
             call getvem(maillage, 'GROUP_NO', '', 'GROUP_NO', 1,&
-                        iarg, nbgrno, group_noeud, iret)
+                        nbgrno, group_noeud, iret)
             do i = 1, nbgrno
                 call utnono(' ', maillage, 'NOEUD', group_noeud(i), noeud,&
                             iret)
@@ -345,7 +345,7 @@ subroutine speph0(nomu, table)
                 AS_ALLOCATE(nbgrma, vk8=maille_rep)
                 do i = 1, nbgrma
                     call getvem(maillage, 'GROUP_MA', 'EXCIT', 'GROUP_MA', i,&
-                                    iarg, 0, group, iret)
+                                    0, group, iret)
                     call utnono(' ', maillage, 'MAILLE', group, mail,&
                                 iret)
                     if (iret.eq.10) then

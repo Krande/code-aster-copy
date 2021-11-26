@@ -97,7 +97,6 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
     character(len=16) :: motfac, motcle, typmcl, phenom
     character(len=19) :: ligrel
     character(len=24) :: karg
-    integer :: iarg
     mpi_int :: mrank
     aster_logical :: l_parallel_mesh, l_group_ma, l_keep_prop, l_all
     integer, pointer :: maille(:) => null()
@@ -212,17 +211,17 @@ subroutine reliem(mo, ma, typem, motfaz, iocc,&
 !
 !
         call getvem(ma, typmcl, motfac, motcle, iocc,&
-                    iarg, 0, karg, nem)
+                    0, karg, nem)
         nem = -nem
         if (nem .eq. 0) goto 90
         if (typmcl(1:6) .ne. 'GROUP_') then
             call wkvect('&&RELIEM.NOM_EM', 'V V K8', nem, inoem)
             call getvem(ma, typmcl, motfac, motcle, iocc,&
-                        iarg, nem, zk8(inoem), nem)
+                        nem, zk8(inoem), nem)
         else
             call wkvect('&&RELIEM.NOM_EM', 'V V K24', nem, inoem)
             call getvem(ma, typmcl, motfac, motcle, iocc,&
-                        iarg, nem, zk24(inoem), nem)
+                        nem, zk24(inoem), nem)
         endif
 !
         do iem = 1, nem

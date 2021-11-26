@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,6 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
     character(len=24) :: mlggma, mlgnma, compor, nomma2
     character(len=24) :: lchout(2), contg, varipg, varimg, depla, ssoup
     complex(kind=8) :: c16b
-    integer :: iarg
 !
     data noparr/'NUME_ORDRE','INST','LIEU','ENTITE',&
      &     'TX_CROIS_CAVITES','VOLUME_CONCERNE'/
@@ -238,9 +237,9 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
         do iocc = 1, nbocc
             call getvtx(option(1:11), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc,&
-                        iarg, 0, k8b, nm)
+                        0, k8b, nm)
             call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc,&
-                        iarg, 0, k8b, ng)
+                        0, k8b, ng)
 !
             if (nt .ne. 0) then
                 if (optcal(2) .eq. 'OUI') then
@@ -291,7 +290,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 nbgrma = -ng
                 call wkvect('&&PERITR_GROUPM', 'V V K24', nbgrma, jgr)
                 call getvem(noma, 'GROUP_MA', option(1:11), 'GROUP_MA', iocc,&
-                            iarg, nbgrma, zk24(jgr), ng)
+                            nbgrma, zk24(jgr), ng)
                 do ig = 1, nbgrma
                     nomma2 = zk24(jgr+ig-1)
                     call jeexin(jexnom(mlggma, nomma2), iret)
@@ -357,7 +356,7 @@ subroutine peritr(resu, modele, cara, nh, nbocc)
                 nbmail = -nm
                 call wkvect('&&PERITR_MAILLE', 'V V K8', nbmail, jma)
                 call getvem(noma, 'MAILLE', option(1:11), 'MAILLE', iocc,&
-                            iarg, nbmail, zk8(jma), nm)
+                            nbmail, zk8(jma), nm)
                 do im = 1, nbmail
                     nommai = zk8(jma+im-1)
                     call jeexin(jexnom(mlgnma, nommai), iret)

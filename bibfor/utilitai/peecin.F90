@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,6 @@ implicit none
     character(len=24) :: chtemp, opt, mlggma, mlgnma, chharm, nomgrm, valk2(2)
     aster_logical :: exitim, l_modal
     complex(kind=8) :: c16b
-    integer :: iarg
 !
     data noparr/'NUME_ORDRE','FREQ','LIEU','ENTITE','TOTALE',&
      &     'POUR_CENT'/
@@ -303,9 +302,9 @@ implicit none
         do iocc = 1, nbocc
             call getvtx(option(1:9), 'TOUT', iocc=iocc, nbval=0, nbret=nt)
             call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
-                        iarg, 0, k8b, nm)
+                        0, k8b, nm)
             call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&
-                        iarg, 0, k8b, ng)
+                        0, k8b, ng)
             if (nt .ne. 0) then
                 call peenca(chelem, nbpaep, varpep, 0, [ibid])
                 valk(1) = noma
@@ -324,7 +323,7 @@ implicit none
                 nbgrma = -ng
                 call wkvect('&&PEECIN_GROUPM', 'V V K24', nbgrma, jgr)
                 call getvem(noma, 'GROUP_MA', option(1:9), 'GROUP_MA', iocc,&
-                            iarg, nbgrma, zk24(jgr), ng)
+                            nbgrma, zk24(jgr), ng)
                 valk2(2) = 'GROUP_MA'
                 do ig = 1, nbgrma
                     nomgrm = zk24(jgr+ig-1)
@@ -358,7 +357,7 @@ implicit none
                 nbma = -nm
                 call wkvect('&&PEECIN_MAILLE', 'V V K8', nbma, jma)
                 call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc,&
-                            iarg, nbma, zk8(jma), nm)
+                            nbma, zk8(jma), nm)
                 valk(2) = 'MAILLE'
                 do im = 1, nbma
                     nommai = zk8(jma+im-1)

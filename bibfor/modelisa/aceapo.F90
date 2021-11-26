@@ -78,7 +78,6 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
     character(len=24) :: tmpnpo, tmpvpo, tmpgen, tmpnge, tmpvge, typca, nommai
     character(len=24) :: tmpnpf, tmpvpf, tmpgef, modmai, mlggma, mlgnma
     character(len=24) :: vmessk(2)
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -170,8 +169,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
         if ( sec .eq. 'COUDE' ) cycle
 !
         call codent(ioc, 'G', kioc)
-        call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, iarg, lmax, poutre, ng)
-        call getvem(noma, 'MAILLE', 'POUTRE', 'MAILLE', ioc, iarg, lmax, poutre, nm)
+        call getvem(noma, 'GROUP_MA', 'POUTRE', 'GROUP_MA', ioc, lmax, poutre, ng)
+        call getvem(noma, 'MAILLE', 'POUTRE', 'MAILLE', ioc, lmax, poutre, nm)
         call getvtx('POUTRE', 'VARI_SECT', iocc=ioc, scal=varsec, nbret=nvsec)
 !
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ subroutine dtmprep_noli_revi(sd_dtm_, sd_nl_, icomp)
 
     if (gno .ne. 0) then
         call getvem(mesh1, 'GROUP_NO', motfac, 'GROUP_NO', icomp,&
-                        1, 1, nomgr1, ibid)
+                        1, nomgr1, ibid)
         call utnono(' ', mesh1, 'NOEUD', nomgr1, noeu, iret)
 !             # Si le GROUP_NO contient plus d'un noeud
         if (iret .eq. 1)  call utmess('F','ALGORITH5_57', sk=nomgr1)

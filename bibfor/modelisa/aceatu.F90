@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,6 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     character(len=16) :: concep, cmd, nunoel
     character(len=24) :: mlgnma, mlgnno, mlggno, mlgcoo, mlgcnx, modmai, nomlu
     character(len=24) :: nomnoe
-    integer :: iarg
     integer, pointer :: eltuy(:) => null()
     integer, pointer :: lismapart(:) => null()
     integer, pointer :: lisnopart(:) => null()
@@ -233,8 +232,8 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
         call wkvect('&&ACEATU.LISCOZK', 'V V R', 3*nbocc(ACE_ORIENTATION), jcozk)
         do ioc = 1, nbocc(ACE_ORIENTATION)
 !           Un seul noeud permis
-            call getvem(noma, 'GROUP_NO', 'ORIENTATION', 'GROUP_NO', ioc, iarg, 1, nomlu, nj)
-            call getvem(noma, 'NOEUD', 'ORIENTATION', 'NOEUD', ioc, iarg, 1, nomlu, nn)
+            call getvem(noma, 'GROUP_NO', 'ORIENTATION', 'GROUP_NO', ioc, 1, nomlu, nj)
+            call getvem(noma, 'NOEUD', 'ORIENTATION', 'NOEUD', ioc, 1, nomlu, nn)
             call getvtx('ORIENTATION', 'CARA', iocc=ioc, scal=car, nbret=ncar)
             call getvr8('ORIENTATION', 'VALE', iocc=ioc, nbval=3, vect=val, nbret=nval)
             call getvr8('ORIENTATION', 'PRECISION', iocc=ioc, scal=epsi, nbret=ibid)

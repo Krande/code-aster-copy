@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
 ! ----------------------------------------------------------------------
     character(len=24) :: magrma, manoma
     character(len=8) :: k8b
-    integer :: iarg
 !-----------------------------------------------------------------------
     integer :: i,   ii, ij, in, inoe
     integer :: ioc, ldgm, ldnm, nb, nbgr, nbgrmx, nbv
@@ -60,7 +59,7 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
     do 10 ioc = 1, nbocc
 !        --- ON RECUPERE UNE LISTE DE GROUP_MA ---
         call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc,&
-                    iarg, 0, k8b, nbgr)
+                    0, k8b, nbgr)
         nbgr = -nbgr
         nbgrmx = max(nbgrmx,nbgr)
 10  end do
@@ -70,10 +69,10 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
     do 11 ioc = 1, nbocc
         noema2 = 0
         call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc,&
-                    iarg, 0, k8b, nbgr)
+                    0, k8b, nbgr)
         nbgr = -nbgr
         call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc,&
-                    iarg, nbgr, group_ma, nbv)
+                    nbgr, group_ma, nbv)
 !
 !        --- ON ECLATE LES GROUP_MA ---
         do 20 i = 1, nbgr

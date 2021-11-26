@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     character(len=8) :: k8b, koui
     character(len=16) :: selec
     character(len=24) :: grpma, grpno, nomgno, nomgma
-    integer :: iarg,nbgnaj
+    integer :: nbgnaj
     character(len=24), pointer :: v_gno(:) => null(), v_gma(:) => null()
 !
 ! DEB-------------------------------------------------------------------
@@ -95,12 +95,12 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 !      CRITERE DE SELECTION
         call getvtx('CREA_GROUP_NO', 'CRIT_NOEUD', iocc=iocc, scal=selec, nbret=ibid)
         call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
-                    iarg, 0, k8b, nb)
+                    0, k8b, nb)
         call getvtx('CREA_GROUP_NO', 'NOM', iocc=iocc, nbval=0, nbret=no)
         nbgma = -nb
         call wkvect('&&SSGNGM.LISTE_GMA', 'V V K24', nbgma, ialgma)
         call getvem(noma, 'GROUP_MA', 'CREA_GROUP_NO', 'GROUP_MA', iocc,&
-                    iarg, nbgma, zk24(ialgma), nb)
+                    nbgma, zk24(ialgma), nb)
         if (no .ne. 0) then
             nbgno = -no
             if (nbgno .ne. nbgma) then

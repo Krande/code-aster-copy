@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,6 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr )
     character(len=24) :: nogp, mlgnno, mlgnma
 !
     aster_logical :: transl, lvale
-    integer :: iarg
     data repdis  /'GLOBAL          ','LOCAL           '/
     data kma     /'K','M','A'/
 ! --------------------------------------------------------------------------------------------------
@@ -136,7 +135,7 @@ subroutine aceamr(infdonn, lmax, noemaf, nbocc, infcarte, ivr )
         lvale=.false.
 !
         call getvem(noma, 'GROUP_MA', 'MASS_AJOU', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
+                    lmax, zk24(jdls), ng)
         call r8inir(nbval, 0.0d0, vale, 1)
         call getvtx('MASS_AJOU', 'GROUP_MA_POI1', iocc=ioc, scal=nogp, nbret=ngp)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,7 +112,6 @@ subroutine conori(ma)
 !-----------------------------------------------------------------------
     parameter(nbnomx=100)
     character(len=8) :: macor(nbnomx+2), macoc(nbnomx+2), macos(nbnomx+2)
-    integer :: iarg
 !
     call jemarq()
 !
@@ -126,7 +125,7 @@ subroutine conori(ma)
 !     ------------------------------------------------------------------
     ic=1
     call getvem(ma, 'GROUP_MA', 'ORIE_FISSURE', 'GROUP_MA', ic,&
-                iarg, 0, kbid, nbgco)
+                0, kbid, nbgco)
     nbgco=-nbgco
 !
 !     ==================================================================
@@ -158,7 +157,7 @@ subroutine conori(ma)
 !     RECHERCHE DES NOMS DES GROUP_MA_FISSURE DANS .COMM
 !     ------------------------------------------------------------------
         call getvem(ma, 'GROUP_MA', 'ORIE_FISSURE', 'GROUP_MA', ic,&
-                    iarg, nbgco, zk24(io8gco), idum)
+                    nbgco, zk24(io8gco), idum)
         if (niv .eq. 2) then
             write (ifm,*)' '
             write (ifm,*)' LA LISTE DES ORIE_FISSURE'

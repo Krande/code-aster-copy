@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ subroutine crcore()
     integer :: jcpt, nbr, ivmx, k, iocc, nboini, inoe, ncmp
     integer :: tnum(1)
     integer :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec
-    integer :: ngn, nbno, ino, in, nbd, jchi2, jchi1, iarg, ldgn, jdist
+    integer :: ngn, nbno, ino, in, nbd, jchi2, jchi1, ldgn, jdist
 !
     real(kind=8) :: rbid, tps, prec, coefr
     real(kind=8) :: dist, dire(3), coorre(3), vs, delay, dt, tp2
@@ -245,7 +245,7 @@ subroutine crcore()
     endif
 !
     call getvem(noma, 'GROUP_NO', 'CONV_RESU', 'GROUP_NO_INTERF', 1,&
-                    iarg, 1, nomgr, ngn)
+                    1, nomgr, ngn)
     if (ngn .ne. 0) then
         magrno = noma//'.GROUPENO'
         call jeveuo(jexnom(magrno, nomgr), 'L', ldgn)

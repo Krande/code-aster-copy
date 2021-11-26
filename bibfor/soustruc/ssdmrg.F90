@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine ssdmrg(mag)
 !
     character(len=8) :: kbid, crit
     real(kind=8) :: prec, di, dj
-    integer :: iarg
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, iacoo2
@@ -98,7 +97,7 @@ subroutine ssdmrg(mag)
  3      continue
     else
         call getvem(mag, 'MAILLE', 'RECO_GLOBAL', 'SUPER_MAILLE', iocc,&
-                    iarg, nbsma, lik8, n1)
+                    nbsma, lik8, n1)
         if (n1 .lt. 0) then
             call utmess('F', 'SOUSTRUC_63')
         endif

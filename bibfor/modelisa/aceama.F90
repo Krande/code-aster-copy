@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine aceama(nomu, noma, lmax, nbocc)
     real(kind=8) :: ang(3), orig(3), angeul(3)
     character(len=19) :: cartma
     character(len=24) :: tmpnma, tmpvma
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
@@ -91,9 +90,9 @@ subroutine aceama(nomu, noma, lmax, nbocc)
         orig(2) = 0.d0
         orig(3) = 0.d0
         call getvem(noma, 'GROUP_MA', 'MASSIF', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
+                    lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'MASSIF', 'MAILLE', ioc,&
-                    iarg, lmax, zk8(jdls2), nm)
+                    lmax, zk8(jdls2), nm)
         call getvr8('MASSIF', 'ANGL_REP', iocc=ioc, nbval=3, vect=ang(1),&
                     nbret=nrep)
         call getvr8('MASSIF', 'ANGL_EULER', iocc=ioc, nbval=3, vect=angeul(1),&

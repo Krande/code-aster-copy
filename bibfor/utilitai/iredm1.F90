@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,6 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     character(len=24) :: nomch0
     character(len=80) :: titre
     aster_logical :: lamor
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -133,13 +132,13 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         write(imess,'(A80)') titre
     endif
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1,&
-                iarg, 0, k8b, nbgr)
+                0, k8b, nbgr)
     nbgr = -nbgr
     AS_ALLOCATE(vk24=group_solstru, size=nbgr)
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_INTERF', 1,&
-                iarg, nbgr, group_solstru, nbv)
+                nbgr, group_solstru, nbv)
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_STR', 1,&
-                iarg, 0, k8b, nbgr2)
+                0, k8b, nbgr2)
     nbgr2 = -nbgr2
     if (nbgr2 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_FLUSTRU', 'V V K24', 1, idgm2)
@@ -147,9 +146,9 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         call wkvect('&&IREDM1.GROUP_FLUSTRU', 'V V K24', nbgr2, idgm2)
     endif
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_STR', 1,&
-                iarg, nbgr2, zk24(idgm2), nbv)
+                nbgr2, zk24(idgm2), nbv)
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_SOL', 1,&
-                iarg, 0, k8b, nbgr3)
+                0, k8b, nbgr3)
     nbgr3 = -nbgr3
     if (nbgr3 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_FLUSOL', 'V V K24', 1, idgm3)
@@ -157,9 +156,9 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         call wkvect('&&IREDM1.GROUP_FLUSOL', 'V V K24', nbgr3, idgm3)
     endif
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_FLU_SOL', 1,&
-                iarg, nbgr3, zk24(idgm3), nbv)
+                nbgr3, zk24(idgm3), nbv)
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_SOL_SOL', 1,&
-                iarg, 0, k8b, nbgr4)
+                0, k8b, nbgr4)
     nbgr4 = -nbgr4
     if (nbgr4 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_LIBRE', 'V V K24', 1, idgm4)
@@ -167,9 +166,9 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         call wkvect('&&IREDM1.GROUP_LIBRE', 'V V K24', nbgr4, idgm4)
     endif
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_SOL_SOL', 1,&
-                iarg, nbgr4, zk24(idgm4), nbv)
+                nbgr4, zk24(idgm4), nbv)
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_CONTROL', 1,&
-                iarg, 0, k8b, nbgr5)
+                0, k8b, nbgr5)
     nbgr5 = -nbgr5
     if (nbgr5 .eq. 0) then
         call wkvect('&&IREDM1.GROUP_CONTROL', 'V V K24', 1, idgm5)
@@ -177,7 +176,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
         call wkvect('&&IREDM1.GROUP_CONTROL', 'V V K24', nbgr5, idgm5)
     endif
     call getvem(noma, 'GROUP_MA', ' ', 'GROUP_MA_CONTROL', 1,&
-                iarg, nbgr5, zk24(idgm5), nbv)
+                nbgr5, zk24(idgm5), nbv)
 !
 !
 !        TABLEAU DE PARTICIPATION DES NOEUDS DE L INTERFACE

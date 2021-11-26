@@ -57,9 +57,9 @@ subroutine orilgm(noma)
 !
 ! ========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ifm, niv, nbf1, nbf2, nbf3, jjj, jgro, n1, n2
-    integer :: n3, noeud, iocc, ngv, ier, ndim, igr, ng, nbmail, norit, norien
-    integer :: ntrait, jjv, nbmavo, jmavo, nbmato, ima, nbmavi, jmavi, k, jgv
+    integer :: ifm, niv, nbf1, nbf3, jjj, jgro, n1, n2
+    integer :: n3, noeud, iocc, ier, ndim, igr, ng, nbmail, norit, norien
+    integer :: ntrait, jjv, nbmato, ima, nbmavi, jmavi, k
     integer :: ncf3, ngs, jgs, nbmasu, jmafr
     real(kind=8) :: vect(3)
     aster_logical :: reorie, orivec
@@ -67,7 +67,6 @@ subroutine orilgm(noma)
     character(len=16) :: mofac,  mofb3d, mofc3d
     character(len=24) :: nomnoe, grmama, nnoeud, gmat
     character(len=24) :: valk(2), cmd
-    integer :: iarg
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
 !
@@ -108,11 +107,11 @@ subroutine orilgm(noma)
 !
     do iocc = 1, nbf1
         call getvem(noma, 'GROUP_MA', mofac, 'GROUP_MA_PEAU', iocc,&
-                    iarg, 0, k8b, ng)
+                    0, k8b, ng)
         ng = -ng
         call wkvect('&&ORILGM.WORK', 'V V K24', ng, jjj)
         call getvem(noma, 'GROUP_MA', mofac, 'GROUP_MA_PEAU', iocc,&
-                    iarg, ng, zk24(jjj), ng)
+                    ng, zk24(jjj), ng)
 !        PRESENCE DE GROUP_MA_INTERNE ?
 !        ---------------------------
         call getvtx(mofac, 'GROUP_MA_INTERNE', iocc=iocc, nbval=0, nbret=ngs)
@@ -120,7 +119,7 @@ subroutine orilgm(noma)
             ngs = -ngs
             call wkvect('&&ORILGM.WORK2', 'V V K24', ngs, jgs)
             call getvem(noma, 'GROUP_MA', mofac, 'GROUP_MA_INTERNE', iocc,&
-                        iarg, ngs, zk24(jgs), ngs)
+                        ngs, zk24(jgs), ngs)
             call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmato)
             call wkvect('&&ORILGM.WORK3', 'V V I', nbmato, jjv)
             do ima = 1, nbmato
@@ -204,11 +203,11 @@ subroutine orilgm(noma)
             endif
         endif
         call getvem(noma, 'GROUP_MA', mofb3d, 'GROUP_MA', iocc,&
-                    iarg, 0, k8b, ng)
+                    0, k8b, ng)
         ng = -ng
         call wkvect('&&ORILGM.WORK', 'V V K24', ng, jjj)
         call getvem(noma, 'GROUP_MA', mofb3d, 'GROUP_MA', iocc,&
-                    iarg, ng, zk24(jjj), ng)
+                    ng, zk24(jjj), ng)
         if (orivec) then
             do igr = 1, ng
                 gmat = zk24(jjj+igr-1)
@@ -270,11 +269,11 @@ subroutine orilgm(noma)
             endif
         endif
         call getvem(noma, 'GROUP_MA', mofc3d, 'GROUP_MA', iocc,&
-                    iarg, 0, k8b, ng)
+                    0, k8b, ng)
         ng = -ng
         call wkvect('&&ORILGM.WORK', 'V V K24', ng, jjj)
         call getvem(noma, 'GROUP_MA', mofc3d, 'GROUP_MA', iocc,&
-                    iarg, ng, zk24(jjj), ng)
+                    ng, zk24(jjj), ng)
         if (orivec) then
             do igr = 1, ng
                 gmat = zk24(jjj+igr-1)

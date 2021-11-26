@@ -61,7 +61,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
 #include "asterfort/wkvect.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbcar, nbval, nrd, iarg
+    integer :: nbcar, nbval, nrd
     parameter    ( nbcar = 100 , nbval = 1000 , nrd = 2 )
     integer :: jdc(3), jdv(3), dimcar, nm, ii, l, iv, ndim
     integer :: jdcinf, jdvinf, ncmp, nn
@@ -124,8 +124,8 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
         irep = 1
         isym = 1
         val(:) = 0.0d0
-        call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc,iarg, lmax, zk24(jdls), ng)
-        call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc,iarg, lmax, zk8( jdls2), nm)
+        call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, lmax, zk24(jdls), ng)
+        call getvem(noma, 'MAILLE', mcf, 'MAILLE', ioc, lmax, zk8( jdls2), nm)
         call getvr8(mcf, 'VALE', iocc=ioc, nbval=nbval, vect=val, nbret=nval)
         ASSERT(nbval .ge. 1)
         call getvtx(mcf, 'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)

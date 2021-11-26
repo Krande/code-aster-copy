@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
     character(len=8) :: fcx
     character(len=19) :: cartca, cartcf
     character(len=24) :: tmpnca, tmpvca, tmpncf, tmpvcf
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
@@ -78,9 +77,9 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
     do 10 ioc = 1, nbocc
         sct = 0.d0
         call getvem(noma, 'GROUP_MA', 'CABLE', 'GROUP_MA', ioc,&
-                    iarg, lmax, zk24(jdls), ng)
+                    lmax, zk24(jdls), ng)
         call getvem(noma, 'MAILLE', 'CABLE', 'MAILLE', ioc,&
-                    iarg, lmax, zk8( jdls2), nm)
+                    lmax, zk8( jdls2), nm)
 !
         call getvr8('CABLE', 'SECTION', iocc=ioc, scal=sct, nbret=nv)
         if (nv .eq. 0) then

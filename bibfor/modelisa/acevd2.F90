@@ -61,7 +61,6 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
     character(len=8) :: nomu, car(nbcar)
     character(len=16) :: concep, cmd
     character(len=24) :: tmpdis, mlgnno, grpma
-    integer :: iarg
 ! --------------------------------------------------------------------------------------------------
     character(len=24), pointer :: zjdls(:) => null()
 ! --------------------------------------------------------------------------------------------------
@@ -80,8 +79,8 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 !
 !   Boucle sur les occurences
     do ioc = 1, nbocc
-        call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, iarg, lmax, zjdls, ng)
-        call getvem(noma, 'MAILLE',   mcf, 'MAILLE',   ioc, iarg, lmax, zjdls, nm)
+        call getvem(noma, 'GROUP_MA', mcf, 'GROUP_MA', ioc, lmax, zjdls, ng)
+        call getvem(noma, 'MAILLE',   mcf, 'MAILLE',   ioc, lmax, zjdls, nm)
         call getvtx(mcf,  'CARA', iocc=ioc, nbval=nbcar, vect=car, nbret=ncar)
 !
         if (ncar .gt. ncar) then

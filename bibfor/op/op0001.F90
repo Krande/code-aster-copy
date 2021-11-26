@@ -38,7 +38,6 @@ subroutine op0001()
 #include "asterc/getres.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chckma.h"
-#include "asterfort/getvem.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"

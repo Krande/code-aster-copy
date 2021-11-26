@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,6 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     character(len=19) :: pref19
     character(len=24) :: coni, conr, noeuma
     character(len=24) :: prefix, lisin1, lisin2, lisou1, lisou2
-    integer :: iarg
 !
 ! ---------------------------------------------------------------------
 ! --- DEBUT
@@ -117,16 +116,16 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z,&
     endif
 !
     call getvem(noma, 'GROUP_NO', motfac, 'GROUP_NO_1', iocc,&
-                iarg, 0, k8bid, ng1)
+                0, k8bid, ng1)
     if (ng1 .eq. 0) then
         call getvem(noma, 'NOEUD', motfac, 'NOEUD_1', iocc,&
-                    iarg, 0, k8bid, nbno1)
+                    0, k8bid, nbno1)
         if (nbno1 .eq. 0) then
             call getvem(noma, 'GROUP_MA', motfac, 'GROUP_MA_1', iocc,&
-                        iarg, 0, k8bid, ngm1)
+                        0, k8bid, ngm1)
             if (ngm1 .eq. 0) then
                 call getvem(noma, 'MAILLE', motfac, 'MAILLE_1', iocc,&
-                            iarg, 0, k8bid, nbma1)
+                            0, k8bid, nbma1)
                 if (nbma1 .eq. 0) goto 999
             endif
         endif
