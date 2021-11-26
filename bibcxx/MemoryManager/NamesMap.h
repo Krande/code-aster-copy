@@ -26,11 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "astercxx.h"
-#include "aster_fort_jeveux.h"
-#include "aster_utils.h"
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxObject.h"
+#include "aster_fort_jeveux.h"
+#include "aster_utils.h"
+#include "astercxx.h"
 
 /**
  * @class NamesMapClass
@@ -122,10 +122,25 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
     };
 
     /**
-     * @brief Get the size
+     * @brief Get the size (=NOMUTI)
      * @return size of object
      */
     ASTERINTEGER size() const {
+        if ( !exists() )
+            return 0;
+
+        ASTERINTEGER vectSize;
+        JeveuxChar8 param( "NOMUTI" );
+        JeveuxChar32 dummy( " " );
+        CALLO_JELIRA( _name, param, &vectSize, dummy );
+        return vectSize;
+    };
+
+    /**
+     * @brief Get the capacity  (=NOMMAX)
+     * @return capicity of object
+     */
+    ASTERINTEGER capacity() const {
         if ( !exists() )
             return 0;
 
