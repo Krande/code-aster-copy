@@ -326,9 +326,11 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
     call jecreo(kveref, bas//' V K24')
     call jeecra(kveref, 'LONMAX', 4)
+    call jeecra(kveref, 'LONUTI', 4)
     call jeveuo(kveref, 'E', idverf)
     call jecreo(kvedsc, bas//' V I')
     call jeecra(kvedsc, 'LONMAX', 2)
+    call jeecra(kvedsc, 'LONUTI', 2)
     call jeecra(kvedsc, 'DOCU', cval='CHNO')
     call jeveuo(kvedsc, 'E', idveds)
     zk24(idverf)=ma
@@ -345,6 +347,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         call utmess('F', 'ASSEMBLA_11')
     endif
     call jeecra(kvale, 'LONMAX', nb_equa)
+    call jeecra(kvale, 'LONUTI', nb_equa)
     call jeveuo(kvale, 'E', jvale)
 !
 !

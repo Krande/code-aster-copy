@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,6 +96,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
     tamp(1:19) = chpout
     call jecreo(tamp, classe//' V K24')
     call jeecra(tamp, 'LONMAX', nbval)
+    call jeecra(tamp, 'LONUTI', nbval)
     call jeveuo(tamp, 'E', lchpou)
     nbval1=nbval-1
     do ival = 0, nbval1
@@ -115,6 +116,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
     desc(1:19) = chpout
     call jecreo(desc, classe//' V I')
     call jeecra(desc, 'LONMAX', nbval)
+    call jeecra(desc, 'LONUTI', nbval)
     nbval1=nbval-1
 !
     call jeecra(desc, 'DOCU', cval=docu)
@@ -138,6 +140,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
     vale(1:19) = chpout
     call jecreo(vale, classe//' V '//type)
     call jeecra(vale, 'LONMAX', nbval)
+    call jeecra(vale, 'LONUTI', nbval)
     call jeveuo(vale, 'E', lchp)
 !
 !

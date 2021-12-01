@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,11 +103,13 @@ subroutine agcart(ngdmxn, chinz)
 ! ------------------------------
     call jelira(jexnum('&CATA.GD.NOMCMP', igd), 'LONMAX', ncmp)
     call juveca(chin//'.VALE', ngdmxn*ncmp)
+    call jeecra(chin//'.VALE', 'LONUTI', ngdmxn*ncmp)
 !
 !
 ! ---  AGRANDISSEMENT DE NOLI
 ! ------------------------------
     call juveca(chin//'.NOLI', ngdmxn)
+    call jeecra(chin//'.NOLI', 'LONUTI', ngdmxn)
 !
 !
 ! ---  AGRANDISSEMENT DE LIMA : ON NE FAIT RIEN :

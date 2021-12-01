@@ -100,6 +100,9 @@ extern void DEFVSP( JEXNUM, jexnum, const char *, STRING_SIZE, const char *, STR
 extern void DEFVSS( JEXNOM, jexnom, const char *, STRING_SIZE, const char *, STRING_SIZE,
                     const char *, STRING_SIZE );
 
+#define CALLO_JUVECA( a, b) CALLOP( JUVECA, juveca, a, b )
+void DEFSP( JUVECA, juveca, const char *, STRING_SIZE, ASTERINTEGER * );
+
 #define CALLO_JEVEUOC( a, b, c ) CALLOOP( JEVEUOC, jeveuoc, a, b, c )
 void DEFSSP( JEVEUOC, jeveuoc, const char *, STRING_SIZE, const char *, STRING_SIZE, void * );
 

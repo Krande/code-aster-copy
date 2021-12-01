@@ -224,17 +224,17 @@ bool TableContainer::build() {
         int usedSize = 0;
         if ( !test1 ) {
             _dsName1->updateValuePointer();
-            usedSize = _dsName1->usedSize();
+            usedSize = _dsName1->size();
         } else {
             _dsName2->updateValuePointer();
-            usedSize = _dsName2->usedSize();
+            usedSize = _dsName2->size();
         }
         _objectType->updateValuePointer();
         _objectName->updateValuePointer();
 
-        if ( usedSize != _objectType->usedSize() )
+        if ( usedSize != _objectType->size() )
             throw std::runtime_error( "Unconsistent sizes" );
-        if ( usedSize != _objectName->usedSize() )
+        if ( usedSize != _objectName->size() )
             throw std::runtime_error( "Unconsistent sizes" );
         for ( int i = 0; i < usedSize; ++i ) {
             const auto type = trim( ( *_objectType )[i].toString() );

@@ -102,9 +102,6 @@ aster_logical, intent(in), optional :: l_verbose
 ! - Set ELASTIQUE COMPOR
     call comp_meca_elas(compor, nb_cmp, l_etat_init)
 
-! - Default ELASTIQUE COMPOR <CARTE> on all mesh
-    call nocart(compor, 1, nb_cmp)
-
 ! - Read informations from command file
     call comp_meca_read(l_etat_init, ds_compor_prep, model)
 

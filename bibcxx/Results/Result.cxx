@@ -120,7 +120,7 @@ ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
     _serialNumber->updateValuePointer();
     _rspr->updateValuePointer();
 
-    ASTERINTEGER nb_ranks = _serialNumber->usedSize();
+    ASTERINTEGER nb_ranks = _serialNumber->size();
 
     AS_ASSERT( rank <= nb_ranks );
 
@@ -166,7 +166,7 @@ bool Result::allocate( ASTERINTEGER nbRanks ) {
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
     _serialNumber->updateValuePointer();
-    ASTERINTEGER nbRanks = _serialNumber->usedSize();
+    ASTERINTEGER nbRanks = _serialNumber->size();
     for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
         const ASTERINTEGER iordr = ( *_serialNumber )[rank];
         if ( _mapElemCara.find( iordr ) == _mapElemCara.end() )
@@ -176,7 +176,7 @@ void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &c
 
 void Result::setMaterialField( const MaterialFieldPtr &mater ) {
     _serialNumber->updateValuePointer();
-    ASTERINTEGER nbRanks = _serialNumber->usedSize();
+    ASTERINTEGER nbRanks = _serialNumber->size();
     for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
         const ASTERINTEGER iordr = ( *_serialNumber )[rank];
         if ( _mapMaterial.find( iordr ) == _mapMaterial.end() )
@@ -186,7 +186,7 @@ void Result::setMaterialField( const MaterialFieldPtr &mater ) {
 
 void Result::setModel( const ModelPtr &model ) {
     _serialNumber->updateValuePointer();
-    ASTERINTEGER nbRanks = _serialNumber->usedSize();
+    ASTERINTEGER nbRanks = _serialNumber->size();
     for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
         const ASTERINTEGER iordr = ( *_serialNumber )[rank];
         if ( _mapModel.find( iordr ) == _mapModel.end() )
@@ -342,12 +342,12 @@ ModelPtr Result::getModel( ASTERINTEGER rank ) const {
     return ( *curIter ).second;
 };
 
-ASTERINTEGER Result::getNumberOfRanks() const { return _serialNumber->usedSize(); };
+ASTERINTEGER Result::getNumberOfRanks() const { return _serialNumber->size(); };
 
 VectorLong Result::getRanks() const {
     VectorLong v;
     _serialNumber->updateValuePointer();
-    for ( ASTERINTEGER j = 0; j < _serialNumber->usedSize(); ++j ) {
+    for ( ASTERINTEGER j = 0; j < _serialNumber->size(); ++j ) {
         v.push_back( ( *_serialNumber )[j] );
     }
     return v;
@@ -391,7 +391,7 @@ PyObject *Result::getAccessParameters() const {
     _rs24->updateValuePointer();
     AS_ASSERT( _calculationParameter->build() );
 
-    ASTERINTEGER nb_ranks = _serialNumber->usedSize();
+    ASTERINTEGER nb_ranks = _serialNumber->size();
 
     var_name = "NUME_ORDRE";
     PyObject *listValues = PyList_New( nb_ranks );
@@ -668,7 +668,7 @@ bool Result::build() {
     AS_ASSERT( _calculationParameter->build( true ) );
     AS_ASSERT( _namesOfFields->build( true ) );
 
-    const auto numberOfSerialNum = _serialNumber->usedSize();
+    const auto numberOfSerialNum = _serialNumber->size();
     _nbRanks = numberOfSerialNum;
     BaseMeshPtr curMesh( nullptr );
     const ASTERINTEGER iordr = ( *_serialNumber )[_nbRanks - 1];

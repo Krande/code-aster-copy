@@ -26,23 +26,20 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 bool TimeStepper::setValues( const VectorReal &values ) {
-    if ( _values->isAllocated() )
-        _values->deallocate();
+    _values->clear();
+    _values->reserve( values.size() );
+    AS_ASSERT( _values->updateValuePointer() );
 
-    _values->allocate( values.size() );
-    if ( !_values->updateValuePointer() )
-        throw std::runtime_error( "Unable to update pointers of TimeStepper" );
-
-    int compteur = 0;
+    ASTERINTEGER compteur = 0;
     ASTERDOUBLE save = 0.;
     for ( VectorRealCIter tmp = values.begin(); tmp != values.end(); ++tmp ) {
-        ( *_values )[compteur] = *tmp;
+        _values->push_back( *tmp );
         const ASTERDOUBLE &curVal = *tmp;
         if ( compteur != 0 && save >= curVal )
             throw std::runtime_error( "Time function not strictly increasing" );
         save = *tmp;
         ++compteur;
     }
-    //     ( *_values )[ compteur ] = -9999.;
+
     return true;
 };

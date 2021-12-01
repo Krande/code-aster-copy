@@ -93,7 +93,7 @@ bool GenericMaterialProperty::buildJeveuxVectors(
             throw std::runtime_error( "Mandatory material property " + nameOfProperty +
                                       " is missing" );
     }
-    doubleValues->setUsedSize( position );
+    doubleValues->setSize( position );
 
     for ( auto curIter : _mapOfComplexMaterialProperties ) {
         std::string nameOfProperty = curIter.second.getName();
@@ -112,9 +112,9 @@ bool GenericMaterialProperty::buildJeveuxVectors(
                                       " is missing" );
     }
     if ( pos3 != 0 )
-        complexValues->setUsedSize( position );
+        complexValues->setSize( position );
     else
-        complexValues->setUsedSize( pos3 );
+        complexValues->setSize( pos3 );
 
     for ( auto curIter : _mapOfTableMaterialProperties ) {
         std::string nameOfProperty = curIter.second.getName();
@@ -200,7 +200,7 @@ bool GenericMaterialProperty::buildJeveuxVectors(
             throw std::runtime_error( "Mandatory material property " + nameOfProperty +
                                       " is missing" );
     }
-    char16Values->setUsedSize( position2 );
+    char16Values->setSize( position2 );
 
     return true;
 };

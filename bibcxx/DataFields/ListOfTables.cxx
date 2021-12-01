@@ -40,7 +40,7 @@ bool ListOfTables::update_tables() {
         return true;
     }
 
-    const int size = _dsId->usedSize();
+    const int size = _dsId->size();
     for ( int i = 0; i < size; i++ ) {
         const auto id = trim( ( *_dsId )[i].toString() );
         const auto name = trim( ( *_dsName )[i].toString() );

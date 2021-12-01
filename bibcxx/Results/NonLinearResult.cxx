@@ -35,7 +35,7 @@ void NonLinearResult::setContact( const ContactPtr contact,
 
 void NonLinearResult::setContact( const ContactPtr contact ) {
     _serialNumber->updateValuePointer();
-    ASTERINTEGER nbRanks = _serialNumber->usedSize();
+    ASTERINTEGER nbRanks = _serialNumber->size();
     for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
         const ASTERINTEGER iordr = ( *_serialNumber )[rank];
         if ( _mapContact.find( iordr ) == _mapContact.end() )

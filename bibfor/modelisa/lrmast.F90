@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -452,9 +452,11 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
     call jecreo(titre, 'G V K80')
     if (nbltit .ne. 0) then
         call jeecra(titre, 'LONMAX', nbltit)
+        call jeecra(titre, 'LONUTI', nbltit)
     else
         nbltit = 1
         call jeecra(titre, 'LONMAX', 1)
+        call jeecra(titre, 'LONUTI', 1)
         call jeveuo(titre, 'E', iad)
         call enlird(dat)
         zk80(iad)=dat
@@ -471,6 +473,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     call jecreo(cooval, 'G V R')
     call jeecra(cooval, 'LONMAX', nbnoeu*3)
+    call jeecra(cooval, 'LONUTI', nbnoeu*3)
     call codent(nbcoor, 'G', dimesp)
     call jeecra(cooval, 'DOCU', cval=dimesp)
 !
@@ -482,6 +485,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
 !
     call jecreo(coodsc, 'G V I')
     call jeecra(coodsc, 'LONMAX', 3)
+    call jeecra(coodsc, 'LONUTI', 3)
     call jeecra(coodsc, 'DOCU', 0, 'CHNO')
     call jeveuo(coodsc, 'E', iad)
     zi(iad) = ntgeo
@@ -662,6 +666,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         call jelira(jexnum(conxv, i), 'LONMAX', nbno)
         call jenonu(jexnom(nomu//'.NOMMAI', nomn), ibid)
         call jeecra(jexnum(connex, ibid), 'LONMAX', nbno)
+        call jeecra(jexnum(connex, ibid), 'LONUTI', nbno)
         call jeveuo(jexnum(connex, ibid), 'E', jgcnx)
         do j = 1, nbno
             nom = zk8(jvcnx+j-1)

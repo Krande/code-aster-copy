@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,7 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -48,7 +49,7 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 !     ------------------------------------------------------------------
 !
     integer :: ipara, iatava, ire1, ire2, idebu, imaxi, iloty
-    integer :: iaobj, len
+    integer :: iaobj, len, lonuti
     character(len=8) :: k8b, nomobj, k8debu, k8maxi
     character(len=24) :: valk(3)
     character(len=16) :: nopara
@@ -80,6 +81,11 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 !
     call jeveuo(nomsd//nomobj, cel, iaobj)
     iad = iaobj - 1 + (iordr-1)*imaxi + idebu
+!
+    call jelira(nomsd//nomobj, 'LONUTI', lonuti)
+    if(lonuti < iordr*imaxi) then
+        call jeecra(nomsd//nomobj, 'LONUTI', iordr*imaxi)
+    end if
 !
     if (itype .ne. 0) then
         call jelira(nomsd//nomobj, 'TYPE', cval=type)
