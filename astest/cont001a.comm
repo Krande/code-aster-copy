@@ -1,0 +1,73 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#
+import code_aster
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      #DEBUG=_F(SDVERI='OUI',),
+      INFO=1,);
+
+test = code_aster.TestCase()
+
+
+Mail=LIRE_MAILLAGE(UNITE=20,
+                   FORMAT='MED',);
+
+Mail=MODI_MAILLAGE(reuse=Mail,
+                   MAILLAGE=Mail,
+                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_2','Group_1','Group_3','Group_4',),),);
+
+
+MODI=AFFE_MODELE(MAILLAGE=Mail,
+                    AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='D_PLAN',),);
+
+"""
+DEFICO=DEFI_CONT(MODELE=MODI,
+                    INFO=2,
+                    ALGO_RESO_GEOM='NEWTON',
+                    ALGO_RESO_CONT='NEWTON',
+                    ZONE=_F(APPARIEMENT='MORTAR',
+                            GROUP_MA_MAIT='Group_2',
+                            GROUP_MA_ESCL='Group_1',
+                            ALGO_CONT='LAGRANGIENNE',
+                            CONTACT_INIT='OUI',),)
+
+
+test.assertTrue(DEFICO is not None)
+
+"""
+DEFICO2=DEFI_CONT(MODELE=MODI,
+                    INFO=2,
+                    FROTTEMENT='OUI',
+                    ALGO_RESO_GEOM='POINT_FIXE',
+                    ALGO_RESO_CONT='NEWTON',
+                    ZONE=_F(APPARIEMENT='MORTAR',
+                            GROUP_MA_MAIT='Group_2',
+                            GROUP_MA_ESCL='Group_1',
+                            ALGO_CONT='NITSCHE',
+                            LISSAGE='OUI',),)
+
+
+test.assertTrue(DEFICO2 is not None)
+
+FIN();

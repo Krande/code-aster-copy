@@ -82,6 +82,7 @@ from .defi_compor import DEFI_COMPOR
 from .defi_composite import DEFI_COMPOSITE
 from .defi_constante import DEFI_CONSTANTE
 from .defi_contact import DEFI_CONTACT
+from .defi_cont import DEFI_CONT
 from .defi_domaine_reduit import DEFI_DOMAINE_REDUIT
 from .defi_fichier import DEFI_FICHIER
 from .defi_fiss_xfem import DEFI_FISS_XFEM
