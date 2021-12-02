@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                                       VECT_NORM=(0.,0.,1.,),
                                       GROUP_NO='A1',),);
 
-# MAILLAGE 
+# MAILLAGE
 
 MA=CREA_MAILLAGE(MAILLAGE=MAIL,
                  CREA_MAILLE=(_F(NOM='ACIER2L',
@@ -113,7 +113,7 @@ BETON_E=DEFI_MATERIAU(ELAS=_F(E=EB,
                                         SYC  = 32.308e6,
                                         EPSC = 0.002,
                                         N = 2
-                                        ),                   );                   
+                                        ),                   );
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
                             NU=0.2,
@@ -229,7 +229,7 @@ LINST2=DEFI_LIST_INST(METHODE='MANUEL',
                       ECHEC=_F(ACTION='DECOUPE',
                                SUBD_METHODE='MANUEL',
                                SUBD_PAS=4,
-                               SUBD_PAS_MINI=0.0001,),);
+                               SUBD_PAS_MINI=1e-12,),);
 
 #-----------------------------------------------
 # CALCUL DES RESULTATS POUR LE CHARGEMENT chf1
@@ -250,6 +250,7 @@ RESU_R1=STAT_NON_LINE(MODELE=MO,
                       INCREMENT=_F(LIST_INST=LINST2,
                                    INST_FIN=3.975,
                                    PRECISION=0.1,),
+                     SOLVEUR=_F(POSTTRAITEMENTS="FORCE",),
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=25,),
                       ARCHIVAGE=_F(LIST_INST=INST2,),);
@@ -267,6 +268,7 @@ RESU_G1=STAT_NON_LINE(MODELE=MO,
                                 FONC_MULT=chf1,),
                              _F(CHARGE=COND_1,
                                 FONC_MULT=chf1,),),
+                     SOLVEUR=_F(POSTTRAITEMENTS="FORCE",),
                       COMPORTEMENT=(_F(RELATION='BETON_REGLE_PR',
                                        ITER_CPLAN_MAXI=20,
                                        GROUP_MA='DALLE',),

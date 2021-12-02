@@ -211,7 +211,7 @@ DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/CHMAT.concept",
              NB_VALE_I=235,
-             VALE_CALC_I=50343706,
+             VALE_CALC_I=50343777,
              NB_VALE=0,
              VALE_CALC=0.00000000000,
              VALE_CALC_K="09cecc01a49955005fa1d85f56d3e380",

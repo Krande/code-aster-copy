@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 TEST_FICHIER(
     FICHIER     ='./REPE_OUT/carelem1.concept',EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
     NB_VALE_I   =  3548,
-    VALE_CALC_I =  105246599,
+    VALE_CALC_I =  105256346,
     NB_VALE     =  10304,
     VALE_CALC   =  1120.999973,
     VALE_CALC_K = "c36aa5e9a259a51009aa5ef0127f8caf",
