@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -74,8 +74,9 @@ Si le calcul venait à échouer, vérifiez la définition de vos surfaces de con
     16 : _("""
 Les zones de contact numéro %(i1)i et numéro %(i2)i ont %(i3)i noeuds communs à leurs surfaces esclaves : c'est interdit.
 Conseil :
- - changez vos surfaces de contact.
- - pour la méthode LAC, il faut désactiver le lissage
+ - changez vos surfaces de contact,
+ - définissez alternativement les zones possédant un noeud commun comme maître et esclave,
+ - pour la méthode LAC, il faut désactiver le lissage.
 """),
 
 
