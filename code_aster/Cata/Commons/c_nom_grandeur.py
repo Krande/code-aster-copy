@@ -107,6 +107,7 @@ def C_NOM_GRANDEUR():
         "LISTMA",
         "MACOMP",
         "MASS_R",
+        "MATE_R",
         "MATE_F",
         "NBSP_I",
         "NEUT_F",

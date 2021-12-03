@@ -2057,7 +2057,7 @@ MATE_R   = PhysicalQuantity(type='R',
        'NU',
        'RHO',
     ),
-    comment="""  MATE_R Type:R Parmètres matériaux
+    comment="""  MATE_R Type:R Paramètres matériaux
        E   : module d'Young
        NU  : Coef. de Poisson
        RHO : Masse volumique
