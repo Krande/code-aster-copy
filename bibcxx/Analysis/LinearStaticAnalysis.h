@@ -27,8 +27,9 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
+#include "Algorithms/StaticMechanicalContext.h"
 #include "Algorithms/TimeStepper.h"
-#include "Solvers/LinearSolver.h"
+#include "Analysis/GenericAnalysis.h"
 #include "Loads/DirichletBC.h"
 #include "Loads/ListOfLoads.h"
 #include "Loads/MechanicalLoad.h"
@@ -36,9 +37,9 @@
 #include "Materials/MaterialField.h"
 #include "Modeling/Model.h"
 #include "Results/ElasticResult.h"
-#include "Supervis/Exceptions.h"
-#include "Analysis/GenericAnalysis.h"
+#include "Solvers/LinearSolver.h"
 #include "Studies/StudyDescription.h"
+#include "Supervis/Exceptions.h"
 
 class LinearStaticAnalysis : public GenericAnalysis {
   private:
@@ -52,6 +53,10 @@ class LinearStaticAnalysis : public GenericAnalysis {
     TimeStepperPtr _timeStep;
     /** @brief Study */
     StudyDescriptionPtr _study;
+    /** @brief Compute SIEF_ELGA */
+    bool _sief_elga;
+
+    void _computeStress( StaticMechanicalContext & );
 
   public:
     /**
@@ -69,7 +74,7 @@ class LinearStaticAnalysis : public GenericAnalysis {
     /**
      * @brief Lancement de la resolution
      */
-    ElasticResultPtr execute();
+    ElasticResultPtr execute( ElasticResultPtr resultC = boost::make_shared< ElasticResult >() );
 
     /**
      * @brief Methode permettant de definir le solveur lineaire
@@ -84,6 +89,11 @@ class LinearStaticAnalysis : public GenericAnalysis {
      * @param curVec Liste de pas de temps
      */
     void setTimeStepManager( const VectorReal &curVec ) { *_timeStep = curVec; };
+
+    void setStressComputation( const bool& comput)
+    {
+        _sief_elga = comput;
+    }
 };
 
 /**

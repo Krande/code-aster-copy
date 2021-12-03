@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine deleteTemporaryObjects()
+subroutine cleanJeveuxMemory()
 !
 implicit none
 !
@@ -30,12 +30,17 @@ implicit none
 !
 ! Memory routine
 !
-! Delete all temporary Jeveux objects
+! Clean Jeveux objects
 !
 ! --------------------------------------------------------------------------------------------------
 !
+!   Delete matrix and their mumps/petsc associated instances
+    call detmat()
+!   Free objects kept in memory using jeveut
+    call jelibz('G')
 !   Delete objects on the volatile database
     call jedetv()
     call jereou('V', 0.01d0)
+    call jerecu('G')
 !
 end subroutine

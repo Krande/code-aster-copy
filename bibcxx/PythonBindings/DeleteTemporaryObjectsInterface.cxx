@@ -34,4 +34,8 @@ void exportDeleteTemporaryObjectsToPython() {
     py::def( "deleteTemporaryObjects", deleteTemporaryObjects, R"(
 Delete temporary Jeveux objects
         )");
+
+    py::def( "cleanJeveuxMemory", cleanJeveuxMemory, R"(
+Clean Jeveux objects (temporary, matrix, base, ...)
+        )");
 };

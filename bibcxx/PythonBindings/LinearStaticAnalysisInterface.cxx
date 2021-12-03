@@ -28,6 +28,8 @@
 
 namespace py = boost::python;
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( exec_overloads, execute, 0, 1 )
+
 void exportLinearStaticAnalysisToPython() {
 
     py::class_< LinearStaticAnalysis, LinearStaticAnalysisPtr > c1(
@@ -43,7 +45,8 @@ void exportLinearStaticAnalysisToPython() {
 #ifdef ASTER_HAVE_MPI
     addParallelMechanicalLoadToInterface( c1 );
 #endif /* ASTER_HAVE_MPI */
-    c1.def( "execute", &LinearStaticAnalysis::execute );
+    c1.def( "execute", &LinearStaticAnalysis::execute, exec_overloads() );
     c1.def( "setLinearSolver", &LinearStaticAnalysis::setLinearSolver );
     c1.def( "setTimeStepManager", &LinearStaticAnalysis::setTimeStepManager );
+    c1.def( "setStressComputation", &LinearStaticAnalysis::setStressComputation );
 };

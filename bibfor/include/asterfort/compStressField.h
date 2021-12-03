@@ -16,26 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine deleteTemporaryObjects()
+#include "asterf_types.h"
 !
-implicit none
-!
-#include "asterfort/detmat.h"
-#include "asterfort/jedetv.h"
-#include "asterfort/jelibz.h"
-#include "asterfort/jerecu.h"
-#include "asterfort/jereou.h"
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Memory routine
-!
-! Delete all temporary Jeveux objects
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   Delete objects on the volatile database
-    call jedetv()
-    call jereou('V', 0.01d0)
-!
-end subroutine
+interface
+    subroutine compStressField(result, model, mater, mateco, cara_elem, list_load, &
+                           l_sief_elga, l_strx_elga, nbrank, times)
+        character(len=*), intent(in) :: model, cara_elem, list_load, result, mater, mateco
+        aster_logical, intent(in) :: l_sief_elga, l_strx_elga
+        integer, intent(in) :: nbrank
+        real(kind=8), intent(in) :: times(*)
+    end subroutine compStressField
+end interface

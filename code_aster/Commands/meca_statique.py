@@ -21,10 +21,9 @@
 
 from ..Objects import ( MechanicalLoadReal, DirichletBC, MechanicalLoadFunction,
                         ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction,
-                        LinearStaticAnalysis)
+                        LinearStaticAnalysis, ElasticResult)
 from ..Supervis import ExecuteCommand
-from ..Utilities import force_list, unsupported
-from .calc_champ import CALC_CHAMP
+from ..Utilities import force_list
 from .common_keywords import create_solver
 
 
@@ -33,7 +32,8 @@ class MechanicalSolver(ExecuteCommand):
     command_name = "MECA_STATIQUE"
 
     def create_result(self, keywords):
-        """Does nothing, creating by *exec*."""
+        """Create Result"""
+        self._result = ElasticResult()
 
     @staticmethod
     def _addLoad(mechaSolv, fkw):
@@ -84,9 +84,11 @@ class MechanicalSolver(ExecuteCommand):
         for curDict in fkw:
             self._addLoad(mechaSolv, curDict)
 
+        mechaSolv.setStressComputation( keywords["OPTION"] == "SIEF_ELGA" )
+
         solver = create_solver(keywords.get("SOLVEUR"))
         mechaSolv.setLinearSolver(solver)
-        self._result = mechaSolv.execute()
+        self._result = mechaSolv.execute( self._result )
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -94,19 +96,9 @@ class MechanicalSolver(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        if self._result is not None:
-            contrainte = []
-            if keywords["MODELE"].existsMultiFiberBeam():
-                contrainte.append("STRX_ELGA")
-            if keywords.get("OPTION") == "SIEF_ELGA":
-                contrainte.append("SIEF_ELGA")
 
-            if contrainte:
-                CALC_CHAMP(reuse=self._result,
-                        RESULTAT=self._result,
-                        CONTRAINTE=contrainte)
-            else:
-                self._result.build()
+        if self._result is not None and self._result.getNumberOfRanks() > 0:
+            self._result.build()
 
 
     def add_dependencies(self, keywords):

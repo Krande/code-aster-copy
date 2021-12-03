@@ -24,27 +24,57 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include <stdexcept>
+#include <chrono>
 
 #include "Algorithms/GenericAlgorithm.h"
 #include "Algorithms/StaticMechanicalAlgorithm.h"
-#include "Algorithms/StaticMechanicalContext.h"
 #include "Numbering/DOFNumbering.h"
 #include "Discretization/DiscreteProblem.h"
 #include "Supervis/Exceptions.h"
 #include "Analysis/LinearStaticAnalysis.h"
 #include "Supervis/CommandSyntax.h"
+#include "MemoryManager/deleteTemporaryObjects.h"
 
 LinearStaticAnalysis::LinearStaticAnalysis(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara )
     : _model( model ), _materialField( mater ), _linearSolver( BaseLinearSolverPtr() ),
-      _timeStep( boost::make_shared< TimeStepper >()  ),
+      _timeStep( boost::make_shared< TimeStepper >()  ), _sief_elga(true),
       _study( boost::make_shared< StudyDescription >( _model, _materialField, cara ) ) {
     _timeStep->setValues( VectorReal( 1, 0. ) );
 };
 
-ElasticResultPtr LinearStaticAnalysis::execute() {
-    ElasticResultPtr resultC( boost::make_shared< ElasticResult >() );
+void LinearStaticAnalysis::_computeStress( StaticMechanicalContext &ctx ) {
+    auto start = std::chrono::high_resolution_clock::now();
+
+    const auto &study = ctx.getDiscreteProblem()->getStudyDescription();
+    const auto &model = study->getModel();
+    const auto &mater = study->getMaterialField();
+    const auto &load = study->getListOfLoads();
+    const auto &cara = study->getElementaryCharacteristics();
+    const auto &mateco = study->getCodedMaterial();
+
+    bool l_sief_elga = _sief_elga;
+    bool l_strx_elga = model->existsMultiFiberBeam();
+
+    std::string caraName = "        ";
+    if( cara )
+        caraName = cara->getName();
+
+    auto times = _timeStep->getValues();
+
+    ASTERINTEGER nbrank = times.size();
+
+    CALLO_COMPSTRESSFIELD(ctx.getResult()->getName(), model->getName(), mater->getName(),
+                          mateco->getName(), caraName, load->getName(),
+                          (ASTERLOGICAL *)&l_sief_elga, (ASTERLOGICAL *)&l_strx_elga,
+                          &nbrank, times.data());
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    ctx._timer["Post"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
+}
+
+ElasticResultPtr LinearStaticAnalysis::execute( ElasticResultPtr resultC ) {
 
     _study->getCodedMaterial()->allocate(true);
 
@@ -85,5 +115,32 @@ ElasticResultPtr LinearStaticAnalysis::execute() {
     const std::string matass_name = currentContext.getStiffnessMatrix()->getName();
     CALLO_DETMATRIX(matass_name);
 
+    // Compute Post-process:
+    _computeStress(currentContext);
+
+    // Cleaning
+    cleanJeveuxMemory();
+
+    auto timer = currentContext.getTimer();
+
+    std::cout << std::scientific
+              << "Temps CPU consommé dans le calcul "
+              <<   timer["Matrix"] + timer["Rhs"] + timer["Solve"] + timer["Post"] + timer["Facto"]
+              << "s dont:" << std::endl;
+    std::cout << std::scientific
+              << "*Calcul et assemblage de la matrice en "
+              <<   timer["Matrix"]  << "s" << std::endl;
+    std::cout << std::scientific
+              << "*Calcul et assemblage du second membre en "
+              <<   timer["Rhs"]  << "s" << std::endl;
+     std::cout << std::scientific
+              << "*Factorisation de la matrice en "
+              <<   timer["Facto"]  << "s" << std::endl;
+    std::cout << std::scientific
+              << "*Résolution du système linéaire en "
+              <<   timer["Solve"]  << "s" << std::endl;
+    std::cout << std::scientific
+              << "*Post-traitements en "
+              <<   timer["Post"]  << "s" << std::endl;
     return resultC;
 };

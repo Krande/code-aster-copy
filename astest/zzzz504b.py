@@ -64,6 +64,8 @@ resu = MECA_STATIQUE(CHAM_MATER=AFFMAT,
                      )
 resu.debugPrint(10+rank)
 
+test.assertEqual("resu", resu.userName)
+
 resu.printMedFile("test"+str(rank)+".med")
 #from shutil import copyfile
 #copyfile("test"+str(rank)+".med", "/home/siavelis/test"+str(rank)+".med")

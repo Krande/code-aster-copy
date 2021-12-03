@@ -62,6 +62,14 @@ void DEFSSSSSSSSPPPP( CACHVC, cachvc, const char *, STRING_SIZE, const char *, S
                       const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *,
                       ASTERINTEGER * );
 
+#define CALLO_COMPSTRESSFIELD( a, b, c, d, e, f, g, h, i, j )                                      \
+    CALLOOOOOOPPPP( COMPSTRESSFIELD, compstressfield, a, b, c, d, e, f, g, h, i, j)
+void DEFSSSSSSPPPP( COMPSTRESSFIELD, compstressfield, const char *, STRING_SIZE,
+                      const char *, STRING_SIZE,const char *, STRING_SIZE,
+                      const char *, STRING_SIZE, const char *, STRING_SIZE,
+                      const char *, STRING_SIZE,
+                      ASTERLOGICAL *, ASTERLOGICAL *, ASTERINTEGER *, ASTERDOUBLE * );
+
 #define CALLO_CORICH( a, b, c, d ) CALLOOPP( CORICH, corich, a, b, c, d )
 void DEFSSPP( CORICH, corich, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *,
               ASTERINTEGER * );

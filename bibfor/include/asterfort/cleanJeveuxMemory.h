@@ -16,26 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine deleteTemporaryObjects()
-!
-implicit none
-!
-#include "asterfort/detmat.h"
-#include "asterfort/jedetv.h"
-#include "asterfort/jelibz.h"
-#include "asterfort/jerecu.h"
-#include "asterfort/jereou.h"
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Memory routine
-!
-! Delete all temporary Jeveux objects
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   Delete objects on the volatile database
-    call jedetv()
-    call jereou('V', 0.01d0)
-!
-end subroutine
+interface
+    subroutine cleanJeveuxMemory( )
+! Empty
+    end subroutine cleanJeveuxMemory
+end interface

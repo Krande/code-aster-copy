@@ -23,7 +23,10 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include <chrono>
+
 #include "Algorithms/StaticMechanicalAlgorithm.h"
+#include "aster_fort_calcul.h"
 
 template <>
 void updateContextFromStepper< TimeStepper::const_iterator, StaticMechanicalContext >(
@@ -31,24 +34,29 @@ void updateContextFromStepper< TimeStepper::const_iterator, StaticMechanicalCont
     context.setStep( *curStep, curStep.rank );
 };
 
-void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
+void StaticMechanicalAlgorithm::_computeMatrix( CurrentContext &ctx ) {
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     BaseDOFNumberingPtr dofNum1 = ctx._results->getLastDOFNumbering();
 
-    ctx._varCom->build( ctx._time );
+    auto matrElem = ctx._discreteProblem->computeElementaryStiffnessMatrix( ctx._time );
 
-    if ( ctx._rank == 1 || !ctx._isConst ) {
-        auto matrElem = ctx._discreteProblem->computeElementaryStiffnessMatrix( ctx._time );
+    // Build assembly matrix
+    ctx._aMatrix->clearElementaryMatrix();
+    ctx._aMatrix->appendElementaryMatrix( matrElem );
+    ctx._aMatrix->setDOFNumbering( dofNum1 );
+    ctx._aMatrix->setListOfLoads( ctx._listOfLoads );
+    ctx._aMatrix->build();
 
-        // Build assembly matrix
-        ctx._aMatrix->clearElementaryMatrix();
-        ctx._aMatrix->appendElementaryMatrix( matrElem );
-        ctx._aMatrix->setDOFNumbering( dofNum1 );
-        ctx._aMatrix->setListOfLoads( ctx._listOfLoads );
-        ctx._aMatrix->build();
+    auto finish = std::chrono::high_resolution_clock::now();
+    ctx._timer["Matrix"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
+}
 
-        // Matrix factorization
-        ctx._linearSolver->factorize( ctx._aMatrix );
-    }
+FieldOnNodesRealPtr StaticMechanicalAlgorithm::_computeRhs( CurrentContext &ctx ) {
+    auto start = std::chrono::high_resolution_clock::now();
+
+    BaseDOFNumberingPtr dofNum1 = ctx._results->getLastDOFNumbering();
 
     // Build Dirichlet loads
     ElementaryVectorPtr vectElem1 =
@@ -77,18 +85,13 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
         *chNoDir += *varComLoad;
     }
 
-    CommandSyntax cmdSt( "MECA_STATIQUE" );
-    cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
+    auto finish = std::chrono::high_resolution_clock::now();
+    ctx._timer["Rhs"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
 
-    FieldOnNodesRealPtr diriBCsFON =
-        ctx._discreteProblem->computeDirichletBC( dofNum1, ctx._time, Temporary );
+    return chNoDir;
+}
 
-    FieldOnNodesRealPtr resultField =
-        ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );
-
-    resultField = ctx._linearSolver->solveWithDirichletBC(
-        ctx._aMatrix, diriBCsFON, chNoDir, resultField );
-
+void StaticMechanicalAlgorithm::_storeFields( CurrentContext &ctx ) {
     const auto &study = ctx._discreteProblem->getStudyDescription();
     const auto &model = study->getModel();
     const auto &mater = study->getMaterialField();
@@ -106,4 +109,47 @@ void StaticMechanicalAlgorithm::oneStep( const CurrentContext &ctx ) {
               << "   Champ stocké <DEPL> à l'instant "
               <<   ctx._time
               <<  " pour le numéro d'ordre " <<  ctx._rank  << std::endl;
+}
+
+void StaticMechanicalAlgorithm::_solve( CurrentContext &ctx, const FieldOnNodesRealPtr rhs ) {
+    auto start = std::chrono::high_resolution_clock::now();
+
+    BaseDOFNumberingPtr dofNum1 = ctx._results->getLastDOFNumbering();
+
+    CommandSyntax cmdSt( "MECA_STATIQUE" );
+    cmdSt.setResult( ctx._results->getName(), ctx._results->getType() );
+
+    FieldOnNodesRealPtr diriBCsFON =
+        ctx._discreteProblem->computeDirichletBC( dofNum1, ctx._time );
+
+    FieldOnNodesRealPtr resultField =
+        ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );
+
+    resultField = ctx._linearSolver->solveWithDirichletBC(
+        ctx._aMatrix, diriBCsFON, rhs, resultField );
+
+    auto finish = std::chrono::high_resolution_clock::now();
+    ctx._timer["Solve"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
+}
+
+void StaticMechanicalAlgorithm::oneStep( CurrentContext &ctx ) {
+
+    ctx._varCom->build( ctx._time );
+
+    if ( ctx._rank == 1 || !ctx._isConst ) {
+        _computeMatrix( ctx);
+
+        // Matrix factorization
+        auto start = std::chrono::high_resolution_clock::now();
+        ctx._linearSolver->factorize( ctx._aMatrix );
+        auto finish = std::chrono::high_resolution_clock::now();
+        ctx._timer["Facto"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();
+    }
+
+    FieldOnNodesRealPtr rhs = _computeRhs(ctx);
+
+    _solve(ctx, rhs);
+
+    _storeFields(ctx);
+
 };
