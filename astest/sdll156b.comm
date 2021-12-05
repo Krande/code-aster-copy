@@ -257,6 +257,6 @@ resuPostRoche_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(GROUP_MA='RUN',
                                  NUME_ORDRE=1,
                                  ),
                                 ),
-                    )        
+                    ) 
                     
 FIN()

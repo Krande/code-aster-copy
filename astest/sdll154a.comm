@@ -412,7 +412,7 @@ chPostRocheTout_D = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                  NUME_ORDRE=1,
                                  ),
                                 ),
-                    )
+                    )               
 
 # 2- deplacement + pression (DP)                    
 chPostRocheTout_DP = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
@@ -619,11 +619,11 @@ chLuPostRocheTout = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                     )
 
 
-IMPR_RESU(UNITE=6, FORMAT='RESULTAT', 
-           RESU=_F(CHAM_GD=chLuPostRocheTout, 
-                   NOM_CMP=('X1','X2','X3','X4','X5','X6',
-                            'X7','X8','X9','X10','X11','X12',
-                            'X13','X14','X15','X16','X17','X18','X19','X20')))
+# IMPR_RESU(UNITE=6, FORMAT='RESULTAT', 
+           # RESU=_F(CHAM_GD=chLuPostRocheTout, 
+                   # NOM_CMP=('X1','X2','X3','X4','X5','X6',
+                            # 'X7','X8','X9','X10','X11','X12',
+                            # 'X13','X14','X15','X16','X17','X18','X19','X20')))
 
 
 
@@ -692,11 +692,11 @@ chLuPostRocheGrMa = POST_ROCHE(RCCM_RX='NON',ZONE_ANALYSE=(_F(
                                  DIRECTION='COMBI',
                                  ),
                                 ),
-                     PRESSION=(_F(
-                                     GROUP_MA='TUYAU',
-                                     VALE = 1E6,
-                                    ),
-                                  ),
+                     PRESSION=(_F(GROUP_MA='TUYAU',
+                                  VALE=1E6,)),
+                     COUDE=_F(GROUP_MA='TUYAU',
+                              ANGLE  = 90,
+                              RCOURB = 0.01,)
                     )
 
 # Tests cas de calcul

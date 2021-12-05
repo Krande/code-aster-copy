@@ -123,7 +123,7 @@ POST_ROCHE=MACRO(nom="POST_ROCHE",
             
          ),
 
-         PRESSION        =FACT(statut='f',
+         PRESSION        =FACT(statut='f', max='**',
                                regles=(UN_PARMI('TOUT','GROUP_MA',),),
             TOUT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
             GROUP_MA     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

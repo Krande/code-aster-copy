@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), IMPR_MACRO='OUI')
 
 # maillage, modele, caraelem
 
@@ -238,7 +238,7 @@ chPostRocheTout = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
 # 5- seisme inertiel + pression (SP)
 # 6- seisme inertiel + pression + poids propre (SPG)
 # 7- seisme inertiel + deplacement (SD)
-                    
+
 # 1- deplacement (D)
 chPostRocheTout_D = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                      TOUT='OUI',
@@ -391,4 +391,5 @@ chPostRocheTout_SD = POST_ROCHE(RCCM_RX='NON', ZONE_ANALYSE=(_F(
                                 ),
 
                     )                    
+
 FIN()

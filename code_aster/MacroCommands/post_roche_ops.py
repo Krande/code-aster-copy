@@ -46,6 +46,7 @@ def post_roche_ops(self, **kwargs):
     PRCommon.classification()
     PRCommon.materAndBeamParams()
     PRCommon.calcGeomParams()
+    PRCommon.calcSigmaP()
     PRCommon.sismInerTran()
     PRCommon.createFonctionsFields()
 
@@ -135,40 +136,43 @@ class PostRocheCommon():
 
         # - RESU_MECA ou RESU_MECA_TRAN ---
 
-        dResuMeca = []
+        dKey = []
         if kwargs.get('RESU_MECA'):
             self.mcf = 'RESU_MECA'
-            for j in kwargs.get('RESU_MECA'):
-                dResuMeca.append(j.cree_dict_valeurs(j.mc_liste))
+            args = kwargs.get('RESU_MECA')
         else:
             self.mcf = 'RESU_MECA_TRAN'
-            for j in kwargs.get('RESU_MECA_TRAN'):
-                dResuMeca.append(j.cree_dict_valeurs(j.mc_liste))
+            args = kwargs.get('RESU_MECA_TRAN')
 
-        self.dResuMeca = dResuMeca
+        for j in args:
+            dKey.append(j.cree_dict_valeurs(j.mc_liste))
+        self.dResuMeca = dKey
 
         # zone analysee
-
-        dZone = []
-        for j in kwargs.get('ZONE_ANALYSE'):
-            dZone.append(j.cree_dict_valeurs(j.mc_liste))
-        self.dZone = dZone
+        
+        dKey = []
+        args = kwargs.get('ZONE_ANALYSE')
+        for j in args:
+            dKey.append(j.cree_dict_valeurs(j.mc_liste))
+        self.dZone = dKey
 
         # coude
-
-        dCoude = []
-        if kwargs.get('COUDE'):
-            for j in kwargs.get('COUDE'):
-                dCoude.append(j.cree_dict_valeurs(j.mc_liste))
-        self.dCoude = dCoude
+        
+        dKey = []
+        args = kwargs.get('COUDE')
+        if args:
+            for j in args:
+                dKey.append(j.cree_dict_valeurs(j.mc_liste))
+        self.dCoude = dKey
 
         # pressions
 
-        dPression = []
-        if kwargs.get('PRESSION'):
-            for j in kwargs.get('PRESSION'):
-                dPression.append(j.cree_dict_valeurs(j.mc_liste))
-        self.dPression = dPression
+        dKey = []
+        args = kwargs.get('PRESSION')
+        if args:
+            for j in args:
+                dKey.append(j.cree_dict_valeurs(j.mc_liste))
+        self.dPression = dKey
 
         # Autres paramètres
         self.l_mc_inst  = ['NUME_ORDRE', 'INST', 'PRECISION', 'CRITERE']
@@ -388,17 +392,12 @@ class PostRocheCommon():
                                                NOM_CMP = ('X1','X2',),
                                                NOM_CMP_RESU = ('X2','X3',),
                                                ),
-                                             _F(CHAM_GD = self.chCoude,
-                                               TOUT = 'OUI',
-                                               NOM_CMP = ('X1','X2',),
-                                               NOM_CMP_RESU = ('X2','X3',),
-                                               ),
                                              )
                                )
 
         fB2_droit = DEFI_CONSTANTE(VALE=1.)
         flambda = FORMULE(NOM_PARA=('R', 'EP','X3'),VALE='EP*X3/(R-EP/2)**2') # noté f dans RB 3680
-        fB2_coude = FORMULE(NOM_PARA=('R','EP','X3'),VALE='1.3/flambda(R,EP,X3)**(2./3)', flambda=flambda)
+        fB2_coude = FORMULE(NOM_PARA=('R','EP','X3'),VALE='max(1,1.3/flambda(R,EP,X3)**(2./3))', flambda=flambda)
 
         fZ = FORMULE(NOM_PARA=('I', 'R','I2','R2'), VALE='min(I/R,I2/R2)')
         # fZ = FORMULE(NOM_PARA=('I', 'R'), VALE='I/R')
@@ -444,6 +443,38 @@ class PostRocheCommon():
 
         self.chParams = chParams
 
+
+    def calcSigmaP(self,):
+        """
+           Calcul de la contrainte de pression
+        """
+        
+        foncsigP = FORMULE(NOM_PARA=(
+                                  'X1',                # Pression
+                                  'R','R2','EP','EP2',          # R, EP
+                                  ),
+                  VALE='0.87*X1*max((R-EP)/EP,(R2-EP2)/EP2)')
+                  # VALE='0.87*X1*(R-EP)/EP')
+        
+
+
+        chFoncSigP  = CREA_CHAMP(OPERATION='AFFE',
+                         TYPE_CHAM='ELNO_NEUT_F',
+                         MODELE=self.model,
+                         PROL_ZERO='OUI',
+                         AFFE= (_F(NOM_CMP=('X1',),
+                                   VALE_F=(foncsigP,),
+                                   **self.dicAllZones),))
+
+
+        chSigPres= CREA_CHAMP(OPERATION='EVAL',
+                                TYPE_CHAM='ELNO_NEUT_R',
+                                CHAM_F=chFoncSigP,
+                                CHAM_PARA=(self.chPression, self.chRochElno) )
+
+        # IMPR_RESU(UNITE=6, FORMAT='RESULTAT', RESU=_F(CHAM_GD=chSigPres))
+        
+        self.chSigPres = chSigPres
 
     def classification(self,):
         """
@@ -1327,7 +1358,8 @@ class PostRocheCommon():
                                          )
                            )
 
-        foncA = FORMULE(NOM_PARA=('X2','X3','X4','X5','X6', # Z, D1, D21, D22, D23
+        
+        fonc = FORMULE(NOM_PARA=('X2','X3','X4','X5','X6', # Z, D1, D21, D22, D23
                                   'X7','X8','X9',       # MT, MFY, MFZ de M
                                   'X10','X11','X12',    # g(_opt)*(MT, MFY, MFZ) de m
                                   'X13','X14','X15',    # gs(_opt)*(MT, MFY, MFZ) de msi
@@ -1335,21 +1367,21 @@ class PostRocheCommon():
                                   'X17','X18',          # R, EP
                                   ),
                 VALE='sqrt((X3*X16*(X17-X18)/X18)**2 + 1/X2**2*(X4**2*(X7+X10+X13)**2+X5**2*(X8+X11+X14)**2+X6**2*(X9+X12+X15)**2))')
+        
 
-
-
-        chFoncA  = CREA_CHAMP(OPERATION='AFFE',
+        chFonc  = CREA_CHAMP(OPERATION='AFFE',
                          TYPE_CHAM='ELNO_NEUT_F',
                          MODELE=self.model,
                          PROL_ZERO='OUI',
                          AFFE= (_F(NOM_CMP=('X1',),
-                                   VALE_F=(foncA,),
-                                   **self.dicAllZones),))
+                                   VALE_F=(fonc,),
+                                   **self.dicAllZones),
+                                   ))
 
 
         chContEquiv= CREA_CHAMP(OPERATION='EVAL',
                                 TYPE_CHAM='ELNO_NEUT_R',
-                                CHAM_F=chFoncA,
+                                CHAM_F=chFonc,
                                 CHAM_PARA=(chUtil) )
 
         if opt:
@@ -1683,7 +1715,7 @@ class PostRocheCalc():
                                 MODELE=self.param.model,
                                 TYPE_CHAM = 'ELNO_NEUT_R',
                                 PROL_ZERO = 'OUI',
-                                ASSE      = (_F(CHAM_GD = self.param.chPression,
+                                ASSE      = (_F(CHAM_GD = self.param.chSigPres,
                                                TOUT = 'OUI',
                                                NOM_CMP = ('X1',),
                                                ),
@@ -1778,7 +1810,7 @@ class PostRocheCalc():
         """
 
         if self.param.lRCCM_RX:
-            # X1 = Pression
+            # X1 = sigPression
             # X2 = sig Vraie
             # X3 = coef ressort max
             
@@ -1786,7 +1818,7 @@ class PostRocheCalc():
                                 MODELE=self.param.model,
                                 TYPE_CHAM = 'ELNO_NEUT_R',
                                 PROL_ZERO = 'OUI',
-                                ASSE      = (_F(CHAM_GD = self.param.chPression,
+                                ASSE      = (_F(CHAM_GD = self.param.chSigPres,
                                                TOUT = 'OUI',
                                                NOM_CMP = ('X1',),
                                                ),
