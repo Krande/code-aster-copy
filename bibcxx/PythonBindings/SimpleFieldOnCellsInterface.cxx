@@ -3,7 +3,7 @@
  * @brief Interface python de SimpleFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,6 +38,27 @@ void exportSimpleFieldOnCellsToPython() {
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< SimpleFieldOnCellsReal, std::string >))
         .def( "getValue", &SimpleFieldOnCellsReal::getValue,
-              py::return_value_policy< py::return_by_value >() )
+              py::return_value_policy< py::return_by_value >(), R"(
+Arguments:
+    ima  (int): Index of cells.
+    icmp (int): Index of component.
+    ipt  (int): Index of point.
+    ispt (int): Index of sub-point.
+
+Returns:
+    (float): Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*.
+        )", (py::arg( "self" ), py::arg("ima"), py::arg("icmp"), py::arg("ipt"), py::arg("ispt")))
+        .def( "getNumberOfComponents", &SimpleFieldOnCellsReal::getNumberOfComponents )
+        .def( "getNameOfComponent", &SimpleFieldOnCellsReal::getNameOfComponent )
+        .def( "getNameOfComponents", &SimpleFieldOnCellsReal::getNameOfComponents )
+        .def( "getNumberOfCells", &SimpleFieldOnCellsReal::getNumberOfCells )
+        .def( "getMaxNumberOfPoints", &SimpleFieldOnCellsReal::getMaxNumberOfPoints )
+        .def( "getMaxNumberOfSubPoints", &SimpleFieldOnCellsReal::getMaxNumberOfSubPoints )
+        .def( "getNumberOfPointsOfCell", &SimpleFieldOnCellsReal::getNumberOfPointsOfCell )
+        .def( "getNumberOfSubPointsOfCell", &SimpleFieldOnCellsReal::getNumberOfSubPointsOfCell )
+        .def( "getNumberOfComponentsForSubpointsOfCell",
+              &SimpleFieldOnCellsReal::getNumberOfComponentsForSubpointsOfCell )
+        .def( "getPhysicalQuantity", &SimpleFieldOnCellsReal::getPhysicalQuantity )
+        .def( "getFieldLocation", &SimpleFieldOnCellsReal::getFieldLocation )
         .def( "updateValuePointers", &SimpleFieldOnCellsReal::updateValuePointers );
 };

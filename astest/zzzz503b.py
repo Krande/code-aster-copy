@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,15 @@ fieldOnElem = U2.getFieldOnCellsReal("SIEF_ELGA", 30)
 
 sfon = fieldOnElem.exportToSimpleFieldOnCells()
 
-test.assertAlmostEqual(sfon.getValue(0, 0), -325.03920740223253)
+test.assertAlmostEqual(sfon.getValue(0, 0, 0, 0), -325.03920740223253)
+test.assertIn(sfon.getPhysicalQuantity(), ('SIEF_R',))
+test.assertIn(sfon.getFieldLocation(), ('ELGA',))
+test.assertSequenceEqual(sfon.getNameOfComponents(), ['SIXX', 'SIYY', 'SIZZ', 'SIXZ'])
+test.assertEqual(sfon.getMaxNumberOfPoints(), 4)
+test.assertEqual(sfon.getNumberOfPointsOfCell(0), 4)
+test.assertEqual(sfon.getNumberOfCells(), 1)
+test.assertEqual(sfon.getNumberOfComponents(), 4)
+test.assertEqual(sfon.getNumberOfSubPointsOfCell(0), 12)
 
 test.printSummary()
 

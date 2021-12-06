@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe SimpleFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -33,6 +33,7 @@
 
 #include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
+#include "Utilities/Tools.h"
 
 /**
  * @class SimpleFieldOnCells
@@ -52,13 +53,97 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
     /** @brief Vecteur Jeveux '.CESL' */
     JeveuxVectorLogical _allocated;
     /** @brief Nombre de éléments */
-    int _nbNodes;
+    int _nbCells;
     /** @brief Nombre de composantes */
     int _nbComp;
     /** @brief Number of points */
     int _nbPt;
     /** @brief Number of under points */
     int _nbSpt;
+
+    /**
+     * Some unsafe functions to access values without checking dimension
+     * Their public version add an if statement
+     */
+
+    int _ptCell( const int& ima )      const { return ( *_size )[4 + 4*ima + 1]; }
+    int _sptCell( const int& ima )     const { return ( *_size )[4 + 4*ima + 2]; }
+    int _cmpsSptCell( const int& ima ) const { return ( *_size )[4 + 4*ima + 3]; }
+    int _shiftCell( const int& ima )   const { return ( *_size )[4 + 4*ima + 4]; }
+
+    std::string _nameCmp( const int& icmp) const { return trim(( *_component )[icmp].toString()); }
+
+    /**
+     * Calculate the position of value in CESV array
+     */
+    int _positionInArray( const int& icmp, const int& ima,
+                 const int& ipt, const int& ispt) const {
+
+      int npt = this->_ptCell(ima);
+      int nspt = this->_sptCell(ima);
+      int ncmp = this->_cmpsSptCell(ima);
+      int decal = this->_shiftCell(ima);
+      return decal + ipt*nspt*ncmp + ispt*ncmp + icmp;
+    };
+
+    /**
+     * Calculate the size of CESV array
+     */
+    int _nbValArray( ) const {
+      int nbVal = 0;
+      for (int ima=0 ; ima<this->getNumberOfCells() ;  ima++){
+        int npt = this->_ptCell(ima);
+        int nspt = this->_sptCell(ima);
+        int ncmp = this->_cmpsSptCell(ima);
+        nbVal = nbVal + npt*nspt*ncmp;
+      }
+      return nbVal;
+    }
+
+    /**
+     * Functions to check an out-of-range condition
+     */
+    void _checkCellOOR( const int& ima ) const {
+      int nbCells = this->getNumberOfCells();
+      if ( ima < 0 || ima >= nbCells) {
+        throw std::runtime_error( "Cell index '"+std::to_string(ima)+"' is out of range");
+      };
+    }
+
+    void _checkPtOOR( const int& ima, const int& ipt ) const {
+      int npt = this->_ptCell(ima);
+      if ( ipt  < 0 || ipt  >= npt  ) {
+        throw std::runtime_error( "Point     '"+std::to_string(ipt)
+                                  + "' is out of range for cell '"
+                                  +std::to_string(ima)+"'");
+      }
+    }
+
+    void _checkSptOOR( const int& ima, const int& ispt ) const {
+      int nspt = this->_sptCell(ima);
+      if ( ispt < 0 || ispt >= nspt ) {
+        throw std::runtime_error( "SubPoint  '"+std::to_string(ispt)
+                                  +"' is out of range for cell '"
+                                  +std::to_string(ima)+"'");
+      }
+    }
+
+    void _checkCmpAtCellOOR( const int& ima, const int& icmp ) const {
+      int ncmp = this->_cmpsSptCell(ima);
+      if ( icmp < 0 || icmp >= ncmp ) {
+        throw std::runtime_error( "Component '"+std::to_string(icmp)
+                                  +"' is out of range for cell '"
+                                  +std::to_string(ima)+"'");
+      }
+    }
+
+    void _checkCmpOOR( const int& icmp ) const {
+      int ncmp = this->getNumberOfComponents();
+      if ( icmp < 0 || icmp >= ncmp ) {
+        throw std::runtime_error( "Component '"+std::to_string(icmp)
+                                  +"' is out of range");
+      }
+    }
 
   public:
     /**
@@ -77,8 +162,8 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
           _size( JeveuxVectorLong( getName() + ".CESD" ) ),
           _component( JeveuxVectorChar8( getName() + ".CESC" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".CESV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CESL" ) ), _nbNodes( 0 ), _nbComp( 0 ),
-          _nbPt( 0 ), _nbSpt( 0 ){};
+          _allocated( JeveuxVectorLogical( getName() + ".CESL" ) ),
+          _nbCells( 0 ), _nbComp( 0 ), _nbPt( 0 ), _nbSpt( 0 ){};
 
     /**
      * @brief Constructeur
@@ -94,15 +179,124 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
      */
     ValueType &operator[]( int i ) { return _values->operator[]( i ); };
 
-    ValueType const &getValue( int nodeNumber, int compNumber ) const
-    {
+    /**
+     * @brief Access to the (icmp) component of the (ima) cell
+              at the (ipt) point, at the (ispt) sub-point.
+    */
+    ValueType const &getValue( const int& ima, const int& icmp,
+                               const int& ipt, const int& ispt  ) const {
+
 #ifdef ASTER_DEBUG_CXX
-        if ( _nbNodes == 0 || _nbComp == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+      if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0)
+        throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
-        const long position = nodeNumber * _nbComp + compNumber;
-        return ( *_values )[position];
+
+      this->_checkCellOOR(ima);
+      this->_checkPtOOR(ima, ipt);
+      this->_checkSptOOR(ima, ispt);
+      this->_checkCmpAtCellOOR(ima, icmp);
+
+      int position = this->_positionInArray(icmp, ima, ipt, ispt);
+      bool allocated = ( *_allocated )[position];
+
+#ifdef ASTER_DEBUG_CXX
+      if ( !allocated ){
+        std::cout <<
+          "DEBUG: Position ("+std::to_string(icmp)
+          +", "+std::to_string(ima)
+          +", "+std::to_string(ipt)
+          +", "+std::to_string(ispt)
+          +") is valid but not allocated!"
+                  << std::endl;
+      };
+#endif
+
+      return ( *_values )[position];
+    }
+
+    /**
+     * @brief Get number of points of the i-th cell
+     */
+    int getNumberOfPointsOfCell( const int& ima ) const {
+      this->_checkCellOOR(ima);
+      return this->_ptCell(ima);
+    }
+
+    /**
+     * @brief Get number of sub-points of the i-th cell
+     */
+    int getNumberOfSubPointsOfCell( const int& ima ) const {
+      this->_checkCellOOR(ima);
+      return this->_sptCell(ima);
+    }
+
+    /**
+     * @brief Get number of components of the i-th cell
+     */
+    int getNumberOfComponentsForSubpointsOfCell( const int& ima ) const {
+      this->_checkCellOOR(ima);
+      return this->_cmpsSptCell(ima);
+    }
+
+    /**
+     * @brief Get number of components
+     */
+    int getNumberOfComponents() const { return _nbComp; }
+
+    /**
+     * @brief Get number of nodes
+     */
+    int getNumberOfCells() const { return _nbCells; }
+
+    /**
+     * @brief Get number of points
+     */
+    int getMaxNumberOfPoints() const { return _nbPt; }
+
+    /**
+     * @brief Get number of sub-points
+     */
+    int getMaxNumberOfSubPoints() const { return _nbSpt; }
+
+    /**
+     * @brief Get the name of the i-th component
+     */
+    std::string getNameOfComponent( const int& icmp ) const {
+
+      if ( icmp < 0 || icmp >= this->getNumberOfComponents()) {
+        throw std::runtime_error( "Component '"+std::to_string(icmp)
+                                  +"' is out of range");
+      };
+      return this->_nameCmp(icmp);
     };
+
+    /**
+     * @Brief Get the names of all the components
+     */
+    VectorString getNameOfComponents() const {
+
+      int size = this->getNumberOfComponents();
+      VectorString names;
+      names.reserve(size);
+      for ( int icmp = 0 ; icmp < size; icmp++ ) {
+        names.push_back(this->_nameCmp(icmp));
+      }
+      return names;
+    }
+
+    /**
+     * @brief Get physical quantity
+     */
+    std::string getPhysicalQuantity() const {
+      return trim(( *_descriptor )[1].toString());
+    }
+
+    /**
+     * @brief Get field location
+     */
+    std::string getFieldLocation() const {
+      return trim(( *_descriptor )[2].toString());
+    }
 
     /**
      * @brief Mise a jour des pointeurs Jeveux
@@ -115,12 +309,12 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
         retour = ( retour && _values->updateValuePointer() );
         retour = ( retour && _allocated->updateValuePointer() );
         if ( retour ) {
-            _nbNodes = ( *_size )[0];
+            _nbCells = ( *_size )[0];
             _nbComp = ( *_size )[1];
             _nbPt = ( *_size )[2];
             _nbSpt = ( *_size )[3];
-            if ( _values->size() != _nbNodes * _nbComp * _nbPt * _nbSpt )
-                throw std::runtime_error( "Programming error" );
+            if ( _values->size() != this->_nbValArray() )
+              throw std::runtime_error( "Programming error" );
         }
         return retour;
     };

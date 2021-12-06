@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,8 +53,7 @@
 template < class ValueType > class FieldOnCells : public DataField {
   private:
     typedef SimpleFieldOnCells< ValueType > SimpleFieldOnCellsValueType;
-    typedef boost::shared_ptr< SimpleFieldOnCellsReal >
-        SimpleFieldOnCellsValueTypePtr;
+    typedef boost::shared_ptr< SimpleFieldOnCellsValueType > SimpleFieldOnCellsValueTypePtr;
 
     /** @brief Vecteur Jeveux '.CELD' */
     JeveuxVectorLong _descriptor;
@@ -91,7 +90,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @brief Constructeur
      */
     FieldOnCells( )
-        : FieldOnCells( ResultNaming::getNewResultName() ){};
+        : FieldOnCells( DataStructureNaming::getNewName() ){};
 
 
     /**
@@ -187,7 +186,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @brief Copy constructor
      */
     FieldOnCells( const FieldOnCells &toCopy )
-        : FieldOnCells(ResultNaming::getNewResultName(), toCopy) {};
+        : FieldOnCells(DataStructureNaming::getNewName(), toCopy) {};
 
     /**
      * @brief Wrap of copy constructor
@@ -559,14 +558,14 @@ template < class ValueType > class FieldOnCells : public DataField {
         /*if ( getMesh()->isParallel() ) {
             AS_ASSERT(false);
         }*/
-        
+
         JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
         bool retour = CellsRank->updateValuePointer();
 
         if(!_model || _model->isEmpty()){
             raiseAsterError("Model not assigned to the FieldOnCells or empty");
         }
-        
+
         JeveuxCollectionLong collec = _model->getFiniteElementDescriptor()->getListOfGroupOfCells();
         JeveuxVectorLong descr = _descriptor;
         nbgrp =  (*descr)[1];
@@ -580,7 +579,7 @@ template < class ValueType > class FieldOnCells : public DataField {
             auto liel = collec->getObject(i+1);
 
             if( normType == "NORM_1"){
-                for(auto p = 0; p < nel; p++){ 
+                for(auto p = 0; p < nel; p++){
 
                     if((*CellsRank)[liel[p]-1] != rank) continue;
                     beg = (*descr)[adress + 3 + 4 * p + 4] - 1;
@@ -592,7 +591,7 @@ template < class ValueType > class FieldOnCells : public DataField {
                 }
             }
             else if( normType == "NORM_2"){
-                for(auto p = 0; p < nel; p++){ 
+                for(auto p = 0; p < nel; p++){
 
                     if((*CellsRank)[liel[p]-1] != rank) continue;
                     beg = (*descr)[adress + 3 + 4 * p + 4] - 1;
@@ -604,9 +603,9 @@ template < class ValueType > class FieldOnCells : public DataField {
                 }
             }
             else if( normType == "NORM_INFINITY") {
-                for(auto p = 0; p < nel; p++){ 
-                    
-                    if((*CellsRank)[liel[p]-1] != rank) continue;
+                for(auto p = 0; p < nel; p++){
+
+                  if((*CellsRank)[liel[p]-1] != rank) continue;
                     beg = (*descr)[adress + 3 + 4 * p + 4] - 1;
                     end = beg + (*descr)[adress + 3 + 4 * p + 3];
 
@@ -621,7 +620,7 @@ template < class ValueType > class FieldOnCells : public DataField {
             }
 
         }
- 
+
 #ifdef ASTER_HAVE_MPI
         if ( getMesh()->isParallel() ) {
             ASTERDOUBLE norm2 = norme;
