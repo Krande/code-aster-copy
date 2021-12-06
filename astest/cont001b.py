@@ -39,16 +39,12 @@ fmt_raison = '-'*80+"""
 Mail = LIRE_MAILLAGE(UNITE=20,
                      FORMAT='MED',)
 
-Mail = MODI_MAILLAGE(reuse=Mail,
-                     MAILLAGE=Mail,
-                     ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_2', 'Group_1', 'Group_3', 'Group_4',),),)
-
-
 MODI = AFFE_MODELE(MAILLAGE=Mail,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='D_PLAN',),)
 
+# Check no shared nodes
 is_ok = 0
 try:
     DEFICO = DEFI_CONT(MODELE=MODI,
@@ -61,6 +57,21 @@ except AsterError as err:
         is_ok = 1
 
 test.assertEqual(is_ok, 1)
+
+# check normals orientations
+is_ok = 0
+try:
+    DEFICO = DEFI_CONT(MODELE=MODI,
+                       ZONE=(_F(GROUP_MA_MAIT='Group_1',
+                             GROUP_MA_ESCL='Group_2',),),)
+except AsterError as err:
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MODELISA4_24":
+        is_ok = 1
+
+test.assertEqual(is_ok, 1)
+
 
 
 FIN()

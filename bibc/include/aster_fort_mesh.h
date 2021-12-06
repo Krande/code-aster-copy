@@ -63,6 +63,18 @@ extern void DEFSS( GET_MED_CONNECTIVITY, get_med_connectivity, const char *, STR
 extern void DEFSPPSS( CNVINV, cncinv, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
                      const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALL_CHVENO( a, b, c ) CALLSSS( CHVENO, chveno, a, b, c )
+#define CALLO_CHVENO( a, b, c ) \
+    CALLOOO( CHVENO, chveno, a, b, c )
+extern void DEFSSS( CHVENO, chveno, const char *, STRING_SIZE,
+                     const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+
+#define CALL_CHECKNORMALS( a, b, c ) CALLSSS( CHECKNORMALS, checknormals, a, b, c )
+#define CALLO_CHECKNORMALS( a, b, c ) \
+    CALLOOO( CHECKNORMALS, checknormals, a, b, c )
+extern void DEFSSS( CHECKNORMALS, checknormals, const char *, STRING_SIZE,
+                     const char *, STRING_SIZE, const char *, STRING_SIZE );
 
 #ifdef __cplusplus
 }

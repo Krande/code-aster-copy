@@ -20,8 +20,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_fort_mesh.h"
+
 #include "Contact/ContactZone.h"
 #include "Messages/Messages.h"
+#include "Utilities/Tools.h"
 
 ContactZone::ContactZone( const std::string name, const ModelPtr model )
     : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ){};
@@ -44,4 +47,9 @@ bool ContactZone::build() {
     if ( commonNodes.size() > 0 ) {
         UTMESS( "F", "CONTACT1_1" );
     }
+
+    // check mesh orientation (normals)
+    std::string slave = ljust(_slave, 24, ' ');
+    std::string master = ljust(_master, 24, ' ');
+    CALL_CHECKNORMALS(_model->getName().c_str(), slave.c_str(), master.c_str());
 }
