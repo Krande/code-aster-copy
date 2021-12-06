@@ -28,10 +28,22 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 M=LIRE_MAILLAGE(UNITE=20,
                 FORMAT="ASTER")
 
+M=DEFI_GROUP(reuse=M,
+             MAILLAGE=M,
+             CREA_GROUP_MA=_F(NOM='M1',
+                              MAILLE='M1'))
+
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN'))
+
+COELGA_M1 = CALC_CHAM_ELEM(MODELE=MO,
+                           GROUP_MA='M1',
+                           OPTION='COOR_ELGA')
+
+COELGA_TOUT = CALC_CHAM_ELEM(MODELE=MO,
+                             OPTION='COOR_ELGA')
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=178600.0,
                             NU=0.3,
@@ -134,6 +146,12 @@ CH_MATE_ELEM = CREA_CHAMP(RESULTAT=U2,
                           OPERATION='EXTR',
                           NOM_CHAM='MATE_ELEM',
                           NUME_ORDRE=1)
+
+IMPR_RESU(FORMAT="MED",
+          RESU=(
+              _F(CHAM_GD=COELGA_TOUT),
+              _F(CHAM_GD=COELGA_M1)
+          ))
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CH_MATE_ELEM,
                         NOM_CMP='E',
