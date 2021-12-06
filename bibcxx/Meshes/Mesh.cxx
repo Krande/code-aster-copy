@@ -101,6 +101,24 @@ const VectorLong Mesh::getNodes( const std::string name, const bool localNumberi
     return _groupsOfNodes->getObjectFromName( name ).toVector();
 }
 
+const VectorLong Mesh::getNodesFromCells( const std::string name ) const
+{
+    const auto cellsId = getCells(name);
+
+    const auto& connecExp = getConnectivityExplorer();
+
+    SetLong nodes;
+
+    for(auto& cellId : cellsId)
+    {
+        const auto cell = connecExp[cellId];
+        for(auto& node : cell)
+            nodes.insert(node);
+    }
+
+    return VectorLong(nodes.begin(), nodes.end());
+};
+
 bool Mesh::isQuadratic() const
 {
     auto cellsType = getMedCellsTypes();

@@ -53,7 +53,8 @@ class NewContactAssignment(ExecuteCommand):
                       "PENALISATION": ContactAlgo.Penalization}
         _type_cont = {"UNILATERAL": ContactType.Unilateral,
                       "BILATERAL": ContactType.Bilateral, "COLLE": ContactType.Stick}
-        _vari_cont = {"RAPIDE": ContactVariant.Rapide, "ROBUSTE":ContactVariant.Robust}
+        _vari_cont = {"RAPIDE": ContactVariant.Rapide,
+                      "ROBUSTE": ContactVariant.Robust}
 
         # add global informations
         self._result.setVerbosity(verbosity)
@@ -72,7 +73,8 @@ class NewContactAssignment(ExecuteCommand):
             # contact parameters
             contParam = ContactParameter()
             contParam.setAlgorithm(_algo_cont[zone["ALGO_CONT"]])
-            if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
+            if _algo_cont[zone["ALGO_CONT"]] in (ContactAlgo.Nitsche,
+                                                 ContactAlgo.Lagrangian):
                 contParam.setVariant(_vari_cont[zone["VARIANTE"]])
             else:
                 contParam.setVariant(ContactVariant.Empty)

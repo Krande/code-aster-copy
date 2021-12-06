@@ -30,6 +30,7 @@
 #include <stdexcept>
 #include <list>
 #include <vector>
+#include <set>
 #include <string>
 #include <map>
 #include <iostream>
@@ -46,6 +47,9 @@ typedef std::vector< ASTERINTEGER > VectorLong;
 typedef std::vector< ASTERDOUBLE > VectorReal;
 typedef std::vector< ASTERCOMPLEX > VectorComplex;
 typedef std::vector< std::string > VectorString;
+
+typedef std::set< ASTERINTEGER4 > SetInt;
+typedef std::set< ASTERINTEGER > SetLong;
 
 #define AS_ABORT(message) \
             DEBUG_LOC; std::cout << message << std::endl; \

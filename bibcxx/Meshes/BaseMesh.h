@@ -217,6 +217,14 @@ class BaseMesh : public DataStructure, public ListOfTables {
     }
 
     /**
+     * @brief Returns the nodes indexes of a group of cells
+     * @return VectorLong
+     */
+    virtual const VectorLong getNodesFromCells( const std::string name ) const {
+        throw std::runtime_error( "Not allowed" );
+    }
+
+    /**
      * @brief Returns the nodes indexes of inner nodes
      * @return VectorLong
      */
@@ -244,7 +252,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Get the JeveuxVector for outer subdomain cells
      * @return VectorLong
      */
-    virtual const JeveuxVectorLong getCellsRank() const { 
+    virtual const JeveuxVectorLong getCellsRank() const {
         throw std::runtime_error( "Not allowed" );
     }
 

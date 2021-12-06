@@ -21,12 +21,27 @@
  */
 
 #include "Contact/ContactZone.h"
-
+#include "Messages/Messages.h"
 
 ContactZone::ContactZone( const std::string name, const ModelPtr model )
-        : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ){};
+    : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ){};
 
-bool ContactZone::build()
-{
-    // nothing
+bool ContactZone::build() {
+    const auto mesh = getMesh();
+
+    // check that there is no nodes in common
+    auto slaveNodes = mesh->getNodesFromCells( getSlaveGroupOfCells() );
+    auto masterNodes = mesh->getNodesFromCells( getMasterGroupOfCells() );
+
+    std::sort( slaveNodes.begin(), slaveNodes.end() );
+    std::sort( masterNodes.begin(), masterNodes.end() );
+
+    VectorLong commonNodes;
+
+    std::set_intersection( slaveNodes.begin(), slaveNodes.end(), masterNodes.begin(),
+                           masterNodes.end(), std::back_inserter( commonNodes ) );
+
+    if ( commonNodes.size() > 0 ) {
+        UTMESS( "F", "CONTACT1_1" );
+    }
 }

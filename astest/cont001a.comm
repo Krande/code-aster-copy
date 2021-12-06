@@ -49,10 +49,12 @@ DEFICO = DEFI_CONT(MODELE=MODI,
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
                             ALGO_CONT='LAGRANGIEN',
+                            VARIANTE='ROBUSTE',
                             CONTACT_INIT='OUI',),
                          _F(APPARIEMENT='MORTAR',
                             GROUP_MA_MAIT='Group_4',
                             GROUP_MA_ESCL='Group_3',
+                            VARIANTE = "RAPIDE",
                             ALGO_CONT='NITSCHE',
                             CONTACT_INIT='INTERPENETRE',)),)
 
@@ -65,7 +67,7 @@ test.assertTrue(DEFICO.hasSmoothing())
 test.assertTrue(DEFICO.checkNormals())
 
 algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
-vari_cont = [code_aster.ContactVariant.Empty, code_aster.ContactVariant.Robust]
+vari_cont = [code_aster.ContactVariant.Robust, code_aster.ContactVariant.Rapide]
 
 for i in range(DEFICO.getNumberOfContactZones()):
     zone = DEFICO.getContactZone(i)

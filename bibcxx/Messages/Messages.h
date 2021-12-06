@@ -1,6 +1,9 @@
+#ifndef MESSAGES_H_
+#define MESSAGES_H_
+
 /**
- * @file ContactNew.cxx
- * @brief Implementation de Contact
+ * @file Message.h
+ * @brief Fichier entete de la class Messages
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
@@ -20,9 +23,22 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Contact/ContactNew.h"
+#include "aster_fort_utils.h"
 
-bool ContactNew::build()
+
+void UTMESS( char* error, char* message)
 {
-    // build FiniteElementDescriptor
+    CALL_UTMESS(error, message);
 }
+
+void UTMESS( const char* error, const char* message)
+{
+    UTMESS((char*)error, (char*)message);
+}
+
+void UTMESS( const std::string& error, const std::string& message)
+{
+    UTMESS( &error[0], &message[0]);
+}
+
+#endif /* MESSAGES_H_ */

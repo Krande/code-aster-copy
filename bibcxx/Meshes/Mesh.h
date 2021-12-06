@@ -134,6 +134,11 @@ class Mesh : public BaseMesh {
     // const VectorLong getNodes( const std::string name,
     //                              const bool same_rank ) const; //not possible
 
+    /**
+     * @brief Returns the nodes indexes of a group of cells
+     * @return VectorLong
+     */
+    const VectorLong getNodesFromCells( const std::string name ) const;
 
     /**
      * @brief Get inner nodes
