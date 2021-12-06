@@ -113,32 +113,49 @@ Returns:
     PairingParameter: pairing parameters
         )",
               ( py::arg( "self" ) ) )
-      .def( "setSlaveGroupOfCells", &ContactZone::setSlaveGroupOfCells, R"(
+        .def( "setSlaveGroupOfCells", &ContactZone::setSlaveGroupOfCells, R"(
 Set slave's name of group of cells
 
 Arguments:
     str: slave's name
         )",
-              ( py::arg( "self" ), py::arg("slave_name") ) )
-      .def( "getSlaveGroupOfCells", &ContactZone::getSlaveGroupOfCells, R"(
+              ( py::arg( "self" ), py::arg( "slave_name" ) ) )
+        .def( "getSlaveGroupOfCells", &ContactZone::getSlaveGroupOfCells, R"(
 Get slave's name of group of cells
 
 Returns:
     str: slave's name
         )",
               ( py::arg( "self" ) ) )
-            .def( "setMasterGroupOfCells", &ContactZone::setMasterGroupOfCells, R"(
+        .def( "setMasterGroupOfCells", &ContactZone::setMasterGroupOfCells, R"(
 Set master's name of group of cells
 
 Arguments:
     str: master's name
         )",
-              ( py::arg( "self" ), py::arg("master_name") ) )
-      .def( "getMasterGroupOfCells", &ContactZone::getMasterGroupOfCells, R"(
+              ( py::arg( "self" ), py::arg( "master_name" ) ) )
+        .def( "getMasterGroupOfCells", &ContactZone::getMasterGroupOfCells, R"(
 Get master's name of group of cells
 
 Returns:
     str: master's name
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "checkNormals",
+              static_cast< void ( ContactZone::* )( const bool & ) >( &ContactZone::checkNormals ),
+              R"(
+Set True if there is check to verify that normals are outwards
+
+Arguments:
+      Bool: True if checking is performed else False
+        )",
+              ( py::arg( "self" ), py::arg( "check" ) ) )
+        .def( "checkNormals",
+              static_cast< bool ( ContactZone::* )() const >( &ContactZone::checkNormals ), R"(
+Reruen True if there is check to verify that normals are outwards
+
+Returns:
+      Bool: True if checking is performed else False
         )",
               ( py::arg( "self" ) ) );
 };

@@ -21,8 +21,18 @@
  */
 
 #include "Contact/ContactNew.h"
+#include "Messages/Messages.h"
 
-bool ContactNew::build()
-{
+ContactNew::ContactNew( const std::string name, const ModelPtr model )
+    : DataStructure( name, 8, "CHAR_CONT" ), _model( model ),
+      _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
+                                                              _model->getMesh() ) ),
+      _verbosity( 1 ), _friction( false ), _smoothing( false ) {
+    // model has to be mechanics
+    if ( !_model->isMechanical() )
+        UTMESS( "F", "CONTACT1_2" );
+};
+
+bool ContactNew::build() {
     // build FiniteElementDescriptor
 }

@@ -60,12 +60,12 @@ class NewContactAssignment(ExecuteCommand):
         self._result.setVerbosity(verbosity)
         self._result.hasFriction(keywords["FROTTEMENT"] == "OUI")
         self._result.hasSmoothing(keywords["LISSAGE"] == "OUI")
-        self._result.checkNormals(keywords["VERI_NORM"] == "OUI")
 
         # add infomations for each ZONE
         list_zones = keywords["ZONE"]
         for zone in list_zones:
             contZone = ContactZone(model)
+            contZone.checkNormals(zone["VERI_NORM"] == "OUI")
             contZone.setVerbosity(verbosity)
             contZone.setSlaveGroupOfCells(zone["GROUP_MA_ESCL"])
             contZone.setMasterGroupOfCells(zone["GROUP_MA_MAIT"])

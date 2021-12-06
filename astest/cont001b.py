@@ -69,9 +69,41 @@ except AsterError as err:
     # on verifie que l'erreur fatale est bien celle que l'on attendait :
     if err.id_message == "MODELISA4_24":
         is_ok = 1
+test.assertEqual(is_ok, 1)
+
+
+is_ok = 0
+try:
+    DEFICO = DEFI_CONT(MODELE=MODI,
+                       ZONE=(_F(GROUP_MA_MAIT='Group_1',
+                            VERI_NORM='NON',
+                             GROUP_MA_ESCL='Group_2',),),)
+    is_ok = 1
+except AsterError as err:
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "MODELISA4_24":
+        is_ok = 0
 
 test.assertEqual(is_ok, 1)
 
+
+# check mechanical model
+is_ok = 0
+try:
+    MODI_THER = AFFE_MODELE(MAILLAGE=Mail,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='PLAN',),)
+    DEFICO = DEFI_CONT(MODELE=MODI_THER,
+                       ZONE=(_F(GROUP_MA_MAIT='Group_1',
+                             GROUP_MA_ESCL='Group_2',),),)
+except AsterError as err:
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "CONTACT1_2":
+        is_ok = 1
+test.assertEqual(is_ok, 1)
 
 
 FIN()

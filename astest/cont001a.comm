@@ -64,7 +64,6 @@ test.assertEqual(DEFICO.getVerbosity(), 2)
 test.assertEqual(DEFICO.getModel().getName(), MODI.getName())
 test.assertFalse(DEFICO.hasFriction())
 test.assertTrue(DEFICO.hasSmoothing())
-test.assertTrue(DEFICO.checkNormals())
 
 algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
 vari_cont = [code_aster.ContactVariant.Robust, code_aster.ContactVariant.Rapide]
@@ -72,6 +71,7 @@ vari_cont = [code_aster.ContactVariant.Robust, code_aster.ContactVariant.Rapide]
 for i in range(DEFICO.getNumberOfContactZones()):
     zone = DEFICO.getContactZone(i)
     test.assertEqual(zone.getVerbosity(), 2)
+    test.assertTrue(zone.checkNormals())
     test.assertEqual(zone.getModel().getName(), MODI.getName())
     contParam = zone.getContactParameter()
     test.assertEqual(contParam.getAlgorithm(), algo_cont[i])
@@ -86,9 +86,9 @@ DEFICO2 = DEFI_CONT(MODELE=MODI,
                     INFO=2,
                     FROTTEMENT='OUI',
                     LISSAGE='NON',
-                    VERI_NORM='NON',
                     ZONE=_F(ALGO_CONT='NITSCHE',
                             VARIANTE='RAPIDE',
+                            VERI_NORM='NON',
                             SYME='OUI',
                             COEF_CONT=312.,
                             TYPE_CONT='BILATERAL',
@@ -108,7 +108,6 @@ test.assertEqual(DEFICO2.getVerbosity(), 2)
 test.assertEqual(DEFICO2.getModel().getName(), MODI.getName())
 test.assertTrue(DEFICO2.hasFriction())
 test.assertFalse(DEFICO2.hasSmoothing())
-test.assertFalse(DEFICO2.checkNormals())
 
 for i in range(DEFICO2.getNumberOfContactZones()):
     zone = DEFICO2.getContactZone(i)
@@ -116,6 +115,7 @@ for i in range(DEFICO2.getNumberOfContactZones()):
     test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_1')
     test.assertEqual(zone.getMasterGroupOfCells(), 'Group_2')
     test.assertEqual(zone.getModel().getName(), MODI.getName())
+    test.assertFalse(zone.checkNormals())
     contParam = zone.getContactParameter()
     test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
     test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)

@@ -47,14 +47,13 @@ DEFI_CONT=OPER(nom = "DEFI_CONT", op=None, sd_prod   = char_contact, reentrant =
         LISSAGE         = SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI","NON"),
                                 fr=tr("Lissage des normales par moyennation aux noeuds"),),
 
-# VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
-        VERI_NORM       =SIMP(statut='f', typ='TXM', defaut="OUI", into=("OUI","NON"),
-                                 fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),),
-
 
 # ----- définition mot-clé facteur sans frottement
         b_zone_nofric     = BLOC(condition = """equal_to("FROTTEMENT", 'NON') """,
                 ZONE = FACT(statut='o', max='**',
+# VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
+                VERI_NORM       =SIMP(statut='f', typ='TXM', defaut="OUI", into=("OUI","NON"),
+                                 fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),),
 # Method for contact
                 ALGO_CONT   = SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
                                         into=("LAGRANGIEN","NITSCHE","PENALISATION",),),
@@ -107,6 +106,9 @@ DEFI_CONT=OPER(nom = "DEFI_CONT", op=None, sd_prod   = char_contact, reentrant =
 # ----- définition mot-clé facteur avec frottement
         b_zone_fric     = BLOC(condition = """equal_to("FROTTEMENT", 'OUI') """,
                 ZONE = FACT(statut='o', max='**',
+# VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
+                VERI_NORM       =SIMP(statut='f', typ='TXM', defaut="OUI", into=("OUI","NON"),
+                                 fr=tr("Vérification de l'orientation (sortante) des normales aux surfaces"),),
 # Method for contact
                 ALGO_CONT   = SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
                                         into=("LAGRANGIEN","NITSCHE","PENALISATION",),),

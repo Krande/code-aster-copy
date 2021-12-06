@@ -1,8 +1,5 @@
-#ifndef MESSAGES_H_
-#define MESSAGES_H_
-
 /**
- * @file Message.h
+ * @file Message.cxx
  * @brief Fichier entete de la class Messages
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -23,14 +20,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "astercxx.h"
+#include "Messages/Messages.h"
+#include "aster_fort_utils.h"
 
-/* Encapsulation of utmess */
+void UTMESS( char *error, char *message ) { CALL_UTMESS( error, message ); }
 
-void UTMESS( char *error, char *message );
+void UTMESS( const char *error, const char *message ) { UTMESS( (char *)error, (char *)message ); }
 
-void UTMESS( const char *error, const char *message );
-
-void UTMESS( const std::string &error, const std::string &message );
-
-#endif /* MESSAGES_H_ */
+void UTMESS( const std::string &error, const std::string &message ) {
+    UTMESS( &error[0], &message[0] );
+}

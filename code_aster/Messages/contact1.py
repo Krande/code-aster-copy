@@ -26,4 +26,8 @@ cata_msg = {
 Il y a des noeuds en commun entre les surfaces esclace et maitre. Ceci est interdit
 """),
 
+    2 : _("""
+Le modèle n'est pas de type mécanique, ce n'est pas possible.
+"""),
+
 }

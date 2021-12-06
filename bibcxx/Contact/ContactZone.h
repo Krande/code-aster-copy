@@ -47,6 +47,8 @@ class ContactZone : public DataStructure {
     std::string _slave;
     /** @brief Master side */
     std::string _master;
+    /** @brief  Check direction of normal */
+    bool _checkNormal;
 
   public:
     /**
@@ -91,14 +93,17 @@ class ContactZone : public DataStructure {
 
     void setPairingParameter( const PairingParameterPtr pairParam ) { _pairParam = pairParam; };
 
-    void setSlaveGroupOfCells( const std::string& slave) {_slave = slave;};
+    void setSlaveGroupOfCells( const std::string &slave ) { _slave = slave; };
 
-    std::string getSlaveGroupOfCells( ) const { return _slave;};
+    std::string getSlaveGroupOfCells() const { return _slave; };
 
-    void setMasterGroupOfCells( const std::string& master) {_master = master;};
+    void setMasterGroupOfCells( const std::string &master ) { _master = master; };
 
-    std::string getMasterGroupOfCells( ) const { return _master;};
+    std::string getMasterGroupOfCells() const { return _master; };
 
+    void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
+
+    bool checkNormals() const { return _checkNormal; }
 };
 
 /**

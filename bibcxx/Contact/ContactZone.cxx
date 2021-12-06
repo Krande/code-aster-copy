@@ -27,7 +27,12 @@
 #include "Utilities/Tools.h"
 
 ContactZone::ContactZone( const std::string name, const ModelPtr model )
-    : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ){};
+    : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ),
+      _checkNormal( true ) {
+    // model has to be mechanics
+    if ( !_model->isMechanical() )
+        UTMESS( "F", "CONTACT1_2" );
+};
 
 bool ContactZone::build() {
     const auto mesh = getMesh();
@@ -49,7 +54,9 @@ bool ContactZone::build() {
     }
 
     // check mesh orientation (normals)
-    std::string slave = ljust(_slave, 24, ' ');
-    std::string master = ljust(_master, 24, ' ');
-    CALL_CHECKNORMALS(_model->getName().c_str(), slave.c_str(), master.c_str());
+    if ( checkNormals() ) {
+        std::string slave = ljust( _slave, 24, ' ' );
+        std::string master = ljust( _master, 24, ' ' );
+        CALL_CHECKNORMALS( _model->getName().c_str(), slave.c_str(), master.c_str() );
+    }
 }

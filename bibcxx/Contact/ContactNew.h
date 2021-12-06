@@ -44,8 +44,6 @@ class ContactNew : public DataStructure {
     bool _friction;
     /** @brief Smoothing for normals */
     bool _smoothing;
-    /** @brief  Check direction of normal */
-    bool _checkNormal;
 
   public:
     /**
@@ -61,11 +59,7 @@ class ContactNew : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ContactNew( const std::string name, const ModelPtr model )
-        : DataStructure( name, 8, "CHAR_CONT" ), _model( model ),
-          _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
-                                                                  _model->getMesh() ) ),
-          _verbosity( 1 ), _friction( false ), _smoothing( false ), _checkNormal( true ){};
+    ContactNew( const std::string name, const ModelPtr model );
 
     /**
      * @brief Constructeur
@@ -103,10 +97,6 @@ class ContactNew : public DataStructure {
     void hasSmoothing( const bool &smoothing ) { _smoothing = smoothing; }
 
     bool hasSmoothing() const { return _smoothing; }
-
-    void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
-
-    bool checkNormals() const { return _checkNormal; }
 };
 
 /**

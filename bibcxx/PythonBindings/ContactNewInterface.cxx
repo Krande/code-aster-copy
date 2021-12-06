@@ -134,22 +134,5 @@ Reruen True if smoothing is used to compute outward normals else False
 Returns:
       Bool: True if smoothing is used else False
         )",
-              ( py::arg( "self" ) ) )
-        .def( "checkNormals",
-              static_cast< void ( ContactNew::* )( const bool & ) >( &ContactNew::checkNormals ),
-              R"(
-Set True if there is check to verify that normals are outwards
-
-Arguments:
-      Bool: True if checking is performed else False
-        )",
-              ( py::arg( "self" ), py::arg( "check" ) ) )
-        .def( "checkNormals",
-              static_cast< bool ( ContactNew::* )() const >( &ContactNew::checkNormals ), R"(
-Reruen True if there is check to verify that normals are outwards
-
-Returns:
-      Bool: True if checking is performed else False
-        )",
               ( py::arg( "self" ) ) );
 };
