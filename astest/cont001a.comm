@@ -22,62 +22,102 @@ import code_aster
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-      #DEBUG=_F(SDVERI='OUI',),
-      INFO=1,);
+      # DEBUG=_F(SDVERI='OUI',),
+      INFO=1,)
 
 test = code_aster.TestCase()
 
 
-Mail=LIRE_MAILLAGE(UNITE=20,
-                   FORMAT='MED',);
+Mail = LIRE_MAILLAGE(UNITE=20,
+                     FORMAT='MED',)
 
-Mail=MODI_MAILLAGE(reuse=Mail,
-                   MAILLAGE=Mail,
-                   ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_2','Group_1','Group_3','Group_4',),),);
+Mail = MODI_MAILLAGE(reuse=Mail,
+                     MAILLAGE=Mail,
+                     ORIE_PEAU=_F(GROUP_MA_PEAU=('Group_2', 'Group_1', 'Group_3', 'Group_4',),),)
 
 
-MODI=AFFE_MODELE(MAILLAGE=Mail,
-                    AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='D_PLAN',),);
+MODI = AFFE_MODELE(MAILLAGE=Mail,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN',),)
 
-"""
-DEFICO=DEFI_CONT(MODELE=MODI,
-                    INFO=2,
-                    ALGO_RESO_GEOM='NEWTON',
-                    ALGO_RESO_CONT='NEWTON',
-                    ZONE=_F(APPARIEMENT='MORTAR',
+
+DEFICO = DEFI_CONT(MODELE=MODI,
+                   INFO=2,
+                   LISSAGE='OUI',
+                   ZONE=(_F(APPARIEMENT='MORTAR',
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
-                            ALGO_CONT='LAGRANGIENNE',
-                            CONTACT_INIT='OUI',),)
+                            ALGO_CONT='LAGRANGIEN',
+                            CONTACT_INIT='OUI',),
+                         _F(APPARIEMENT='MORTAR',
+                            GROUP_MA_MAIT='Group_4',
+                            GROUP_MA_ESCL='Group_3',
+                            ALGO_CONT='NITSCHE',
+                            CONTACT_INIT='INTERPENETRE',)),)
 
 
-test.assertTrue(DEFICO is not None)
+test.assertEqual(DEFICO.getNumberOfContactZones(), 2)
+test.assertEqual(DEFICO.getVerbosity(), 2)
+test.assertEqual(DEFICO.getModel().getName(), MODI.getName())
+test.assertFalse(DEFICO.hasFriction())
+test.assertTrue(DEFICO.hasSmoothing())
+test.assertTrue(DEFICO.checkNormals())
 
-"""
-DEFICO2=DEFI_CONT(MODELE=MODI,
+algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
+vari_cont = [code_aster.ContactVariant.Empty, code_aster.ContactVariant.Robust]
+
+for i in range(DEFICO.getNumberOfContactZones()):
+    zone = DEFICO.getContactZone(i)
+    test.assertEqual(zone.getVerbosity(), 2)
+    test.assertEqual(zone.getModel().getName(), MODI.getName())
+    contParam = zone.getContactParameter()
+    test.assertEqual(contParam.getAlgorithm(), algo_cont[i])
+    test.assertEqual(contParam.getType(), code_aster.ContactType.Unilateral)
+    test.assertEqual(contParam.getVariant(), vari_cont[i])
+    test.assertEqual(contParam.getCoefficient(), 100.)
+    fricParam = zone.getFrictionParameter()
+    pairParam = zone.getPairingParameter()
+
+
+DEFICO2 = DEFI_CONT(MODELE=MODI,
                     INFO=2,
                     FROTTEMENT='OUI',
-                    LISSAGE = 'NON',
-                    VERI_NORM = 'OUI',
-                    ZONE=_F(ALGO_CONT='NITSCHE', 
-                            VARIRANTE = 'RAPIDE',
-                            SYME = 'OUI',
-                            TYPE_CONT ='BILATERAL',
-                            APPARIEMENT = 'MORTAR',
-                            DIST_APPA = -1,
+                    LISSAGE='NON',
+                    VERI_NORM='NON',
+                    ZONE=_F(ALGO_CONT='NITSCHE',
+                            VARIANTE='RAPIDE',
+                            SYME='OUI',
+                            COEF_CONT=312.,
+                            TYPE_CONT='BILATERAL',
+                            APPARIEMENT='MORTAR',
+                            DIST_APPA=-1,
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
-                            CONTACT_INIT = 'INTERPENETRE',
-                            ALGO_FROT = 'NITSCHE',
-                            TYPE_FROT ='COULOMB',
-                            COULOMB = 100.,
-                            # DIST_SUPP = 
-                            # COEF_CONT = ,
+                            CONTACT_INIT='INTERPENETRE',
+                            ALGO_FROT='NITSCHE',
+                            TYPE_FROT='COULOMB',
+                            COULOMB=100.,
                             ),)
 
 
-test.assertTrue(DEFICO2 is not None)
+test.assertEqual(DEFICO2.getNumberOfContactZones(), 1)
+test.assertEqual(DEFICO2.getVerbosity(), 2)
+test.assertEqual(DEFICO2.getModel().getName(), MODI.getName())
+test.assertTrue(DEFICO2.hasFriction())
+test.assertFalse(DEFICO2.hasSmoothing())
+test.assertFalse(DEFICO2.checkNormals())
 
-FIN();
+for i in range(DEFICO2.getNumberOfContactZones()):
+    zone = DEFICO2.getContactZone(i)
+    test.assertEqual(zone.getVerbosity(), 2)
+    test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_1')
+    test.assertEqual(zone.getMasterGroupOfCells(), 'Group_2')
+    test.assertEqual(zone.getModel().getName(), MODI.getName())
+    contParam = zone.getContactParameter()
+    test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
+    test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
+    test.assertEqual(contParam.getVariant(), code_aster.ContactVariant.Rapide)
+    test.assertEqual(contParam.getCoefficient(), 312.)
+
+FIN()

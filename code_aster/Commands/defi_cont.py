@@ -17,16 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.sellenet@edf.fr
-
-from ..Objects import Contact
+from ..Objects import ContactNew, ContactZone, ContactParameter, \
+    FrictionParameter, PairingParameter, ContactAlgo, ContactType, ContactVariant
 from ..Supervis import ExecuteCommand
 
 # C'est la nouvelle commande à remplir qui sera en python et c++
 
+
 class NewContactAssignment(ExecuteCommand):
-    """Command that creates the :class:`~code_aster.Objects.XXXXContact` by assigning
-    finite elements"""
+    """Command that creates the :class:`~code_aster.Objects.ContactNew` by
+    assigning finite elements"""
     command_name = "DEFI_CONT"
 
     def create_result(self, keywords):
@@ -35,8 +35,7 @@ class NewContactAssignment(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = Contact(keywords["MODELE"])
-
+        self._result = ContactNew(keywords["MODELE"])
 
     def exec_(self, keywords):
         """Execute the command.
@@ -45,6 +44,68 @@ class NewContactAssignment(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
+        print("ARGS: ", keywords, flush=True)
+        model = keywords["MODELE"]
+        verbosity = keywords["INFO"]
+
+        # usefull dict
+        _algo_cont = {"LAGRANGIEN": ContactAlgo.Lagrangian, "NITSCHE": ContactAlgo.Nitsche,
+                      "PENALISATION": ContactAlgo.Penalization}
+        _type_cont = {"UNILATERAL": ContactType.Unilateral,
+                      "BILATERAL": ContactType.Bilateral, "COLLE": ContactType.Stick}
+        _vari_cont = {"RAPIDE": ContactVariant.Rapide, "ROBUSTE":ContactVariant.Robust}
+
+        # add global informations
+        self._result.setVerbosity(verbosity)
+        self._result.hasFriction(keywords["FROTTEMENT"] == "OUI")
+        self._result.hasSmoothing(keywords["LISSAGE"] == "OUI")
+        self._result.checkNormals(keywords["VERI_NORM"] == "OUI")
+
+        # add infomations for each ZONE
+        list_zones = keywords["ZONE"]
+        for zone in list_zones:
+            contZone = ContactZone(model)
+            contZone.setVerbosity(verbosity)
+            contZone.setSlaveGroupOfCells(zone["GROUP_MA_ESCL"])
+            contZone.setMasterGroupOfCells(zone["GROUP_MA_MAIT"])
+
+            # contact parameters
+            contParam = ContactParameter()
+            contParam.setAlgorithm(_algo_cont[zone["ALGO_CONT"]])
+            if _algo_cont[zone["ALGO_CONT"]] == ContactAlgo.Nitsche:
+                contParam.setVariant(_vari_cont[zone["VARIANTE"]])
+            else:
+                contParam.setVariant(ContactVariant.Empty)
+            contParam.setType(_type_cont[zone["TYPE_CONT"]])
+            contParam.setCoefficient(zone["COEF_CONT"])
+            contZone.setContactParameter(contParam)
+
+            # friction parameters
+            if self._result.hasFriction():
+                fricParam = FrictionParameter()
+
+                contZone.setFrictionParameter(fricParam)
+
+            # pairing parameters
+            pairParam = PairingParameter()
+
+            contZone.setPairingParameter(pairParam)
+
+            # build then append
+            contZone.build()
+            self._result.appendContactZone(contZone)
+
+        # build result
+        self._result.build()
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # Add no dependencies since everything is done in c++ directly
 
 
 DEFI_CONT = NewContactAssignment.run

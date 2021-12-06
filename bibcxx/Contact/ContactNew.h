@@ -36,6 +36,16 @@ class ContactNew : public DataStructure {
     ModelPtr _model;
     /** @brief Ligel ".CHME.LIGRE" */
     FiniteElementDescriptorPtr _FEDesc;
+    /** @brief List of contact zone */
+    std::vector< ContactZonePtr > _zones;
+    /** @brief Level of verbosity */
+    ASTERINTEGER _verbosity;
+    /** @brief Friction */
+    bool _friction;
+    /** @brief Smoothing for normals */
+    bool _smoothing;
+    /** @brief  Check direction of normal */
+    bool _checkNormal;
 
   public:
     /**
@@ -54,7 +64,8 @@ class ContactNew : public DataStructure {
     ContactNew( const std::string name, const ModelPtr model )
         : DataStructure( name, 8, "CHAR_CONT" ), _model( model ),
           _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
-                                                                  _model->getMesh() ) ){};
+                                                                  _model->getMesh() ) ),
+          _verbosity( 1 ), _friction( false ), _smoothing( false ), _checkNormal( true ){};
 
     /**
      * @brief Constructeur
@@ -66,6 +77,36 @@ class ContactNew : public DataStructure {
     FiniteElementDescriptorPtr getFiniteElementDescriptor() const { return _FEDesc; }
 
     BaseMeshPtr getMesh() const { return _model->getMesh(); }
+
+    void appendContactZone( const ContactZonePtr zone ) { _zones.push_back( zone ); }
+
+    ASTERINTEGER getNumberOfContactZones() const { return _zones.size(); }
+
+    ContactZonePtr getContactZone( const ASTERINTEGER &zone_id ) const {
+        AS_ASSERT( zone_id >= 0 && zone_id < getNumberOfContactZones() );
+
+        return _zones[zone_id];
+    }
+
+    std::vector< ContactZonePtr > getContactZones() const { return _zones; }
+
+    void setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }
+
+    ASTERINTEGER getVerbosity() const { return _verbosity; }
+
+    bool build();
+
+    void hasFriction( const bool &friction ) { _friction = friction; }
+
+    bool hasFriction() const { return _friction; }
+
+    void hasSmoothing( const bool &smoothing ) { _smoothing = smoothing; }
+
+    bool hasSmoothing() const { return _smoothing; }
+
+    void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
+
+    bool checkNormals() const { return _checkNormal; }
 };
 
 /**

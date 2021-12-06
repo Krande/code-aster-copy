@@ -21,3 +21,12 @@
  */
 
 #include "Contact/ContactZone.h"
+
+
+ContactZone::ContactZone( const std::string name, const ModelPtr model )
+        : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ){};
+
+bool ContactZone::build()
+{
+    // nothing
+}

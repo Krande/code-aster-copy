@@ -1,6 +1,9 @@
+#ifndef CONTACT_ENUM_H_
+#define CONTACT_ENUM_H_
+
 /**
- * @file ContactNew.cxx
- * @brief Implementation de Contact
+ * @file ContactEnum.h
+ * @brief Fichier entete de la class ContactEnum
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
@@ -20,9 +23,25 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Contact/ContactNew.h"
 
-bool ContactNew::build()
-{
-    // nothing for the moment
-}
+#include "astercxx.h"
+
+/* Define here Enum for Contact problem
+*
+*  Thinkd to bind enum in python
+*/
+
+enum class ContactAlgo { Lagrangian, Nitsche, Penalization};
+
+enum class ContactVariant { Empty, Rapide, Robust};
+
+enum class ContactType { Unilateral, Bilateral, Stick};
+
+enum class FrictionAlgo { Lagrangian, Nitsche, Penalization};
+
+enum class FrictionType { Without, Tresca, Coulomb, Stick};
+
+enum class PairingAlgo { Mortar };
+
+
+#endif /* CONTACT_ENUM_H_ */

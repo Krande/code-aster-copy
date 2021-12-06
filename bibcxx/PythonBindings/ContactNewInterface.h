@@ -1,6 +1,9 @@
+#ifndef CONTACTNEWINTERFACE_H_
+#define CONTACTNEWINTERFACE_H_
+
 /**
- * @file ContactNew.cxx
- * @brief Implementation de Contact
+ * @file ContactNewInterface.h
+ * @brief Fichier entete de la classe ContactNewInterface
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
@@ -20,9 +23,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
 #include "Contact/ContactNew.h"
 
-bool ContactNew::build()
-{
-    // nothing for the moment
-}
+void exportContactNewToPython();
+
+#endif /* CONTACTNEWINTERFACE_H_ */

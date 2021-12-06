@@ -1,6 +1,9 @@
+#ifndef CONTACTPARAMINTERFACE_H_
+#define CONTACTPARAMINTERFACE_H_
+
 /**
- * @file ContactNew.cxx
- * @brief Implementation de Contact
+ * @file ContactParametersInterface.h
+ * @brief Fichier entete de la classe ContactParametersInterface
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
@@ -20,9 +23,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Contact/ContactNew.h"
+#include "astercxx.h"
+#include "Contact/ContactParameters.h"
 
-bool ContactNew::build()
-{
-    // nothing for the moment
-}
+void exportContactParametersToPython();
+
+#endif /* CONTACTPARAMINTERFACE_H_ */

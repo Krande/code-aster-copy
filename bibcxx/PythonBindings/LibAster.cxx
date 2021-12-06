@@ -48,6 +48,10 @@
 #include "PythonBindings/ConnectionMeshInterface.h"
 #include "PythonBindings/ConstantFieldOnCellsInterface.h"
 #include "PythonBindings/ContactInterface.h"
+#include "PythonBindings/ContactEnumInterface.h"
+#include "PythonBindings/ContactNewInterface.h"
+#include "PythonBindings/ContactParametersInterface.h"
+#include "PythonBindings/ContactZoneInterface.h"
 #include "PythonBindings/ConvertersInterface.h"
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
 #include "PythonBindings/CrackInterface.h"
@@ -55,13 +59,13 @@
 #include "PythonBindings/CrackTipInterface.h"
 #include "PythonBindings/CreateEnthalpyInterface.h"
 #include "PythonBindings/CyclicSymmetryModeInterface.h"
-#include "PythonBindings/DOFNumberingInterface.h"
 #include "PythonBindings/DataFieldInterface.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/DebugInterface.h"
 #include "PythonBindings/DeleteTemporaryObjectsInterface.h"
 #include "PythonBindings/DirichletBCInterface.h"
 #include "PythonBindings/DiscreteComputationInterface.h"
+#include "PythonBindings/DOFNumberingInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
 #include "PythonBindings/ElasticFourierResultInterface.h"
 #include "PythonBindings/ElasticResultInterface.h"
@@ -88,8 +92,8 @@
 #include "PythonBindings/GeneralizedAssemblyMatrixInterface.h"
 #include "PythonBindings/GeneralizedAssemblyVectorInterface.h"
 #include "PythonBindings/GeneralizedDOFNumberingInterface.h"
-#include "PythonBindings/GeneralizedModeResultInterface.h"
 #include "PythonBindings/GeneralizedModelInterface.h"
+#include "PythonBindings/GeneralizedModeResultInterface.h"
 #include "PythonBindings/GeneralizedResultInterface.h"
 #include "PythonBindings/GenericFunctionInterface.h"
 #include "PythonBindings/GridInterface.h"
@@ -110,11 +114,11 @@
 #include "PythonBindings/MedCouplingConversionInterface.h"
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
 #include "PythonBindings/MeshEntitiesInterface.h"
-#include "PythonBindings/MeshInterface.h"
 #include "PythonBindings/MeshesMappingInterface.h"
+#include "PythonBindings/MeshInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
-#include "PythonBindings/ModeResultInterface.h"
 #include "PythonBindings/ModelInterface.h"
+#include "PythonBindings/ModeResultInterface.h"
 #include "PythonBindings/MultipleElasticResultInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
@@ -238,6 +242,10 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportFortranToPython();
     exportFunction2DToPython();
     exportContactToPython();
+    exportContactEnumToPython();
+    exportContactParametersToPython();
+    exportContactNewToPython();
+    exportContactZoneToPython();
     exportAssemblyMatrixToPython();
     exportElementaryMatrixToPython();
     exportElementaryVectorToPython();

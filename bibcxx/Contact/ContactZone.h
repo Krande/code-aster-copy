@@ -23,6 +23,8 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Contact/ContactEnum.h"
+#include "Contact/ContactParameters.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
@@ -33,6 +35,18 @@ class ContactZone : public DataStructure {
   private:
     /** @brief Modele */
     ModelPtr _model;
+    /** @brief Level of verbosity */
+    ASTERINTEGER _verbosity;
+    /** @brief Parameter for contact only */
+    ContactParameterPtr _contParam;
+    /** @brief Parameter for friction only */
+    FrictionParameterPtr _fricParam;
+    /** @brief Parameter for pairing only */
+    PairingParameterPtr _pairParam;
+    /** @brief Slave side */
+    std::string _slave;
+    /** @brief Master side */
+    std::string _master;
 
   public:
     /**
@@ -48,8 +62,7 @@ class ContactZone : public DataStructure {
     /**
      * @brief Constructeur
      */
-    ContactZone( const std::string name, const ModelPtr model )
-        : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ){};
+    ContactZone( const std::string name, const ModelPtr model );
 
     /**
      * @brief Constructeur
@@ -59,6 +72,33 @@ class ContactZone : public DataStructure {
     ModelPtr getModel() const { return _model; }
 
     BaseMeshPtr getMesh() const { return _model->getMesh(); }
+
+    void setVerbosity( const ASTERINTEGER &level ) { _verbosity = level; }
+
+    ASTERINTEGER getVerbosity() const { return _verbosity; }
+
+    bool build();
+
+    ContactParameterPtr getContactParameter() const { return _contParam; };
+
+    FrictionParameterPtr getFrictionParameter() const { return _fricParam; };
+
+    PairingParameterPtr getPairingParameter() const { return _pairParam; };
+
+    void setContactParameter( const ContactParameterPtr contParam ) { _contParam = contParam; };
+
+    void setFrictionParameter( const FrictionParameterPtr fricParam ) { _fricParam = fricParam; };
+
+    void setPairingParameter( const PairingParameterPtr pairParam ) { _pairParam = pairParam; };
+
+    void setSlaveGroupOfCells( const std::string& slave) {_slave = slave;};
+
+    std::string getSlaveGroupOfCells( ) const { return _slave;};
+
+    void setMasterGroupOfCells( const std::string& master) {_master = master;};
+
+    std::string getMasterGroupOfCells( ) const { return _master;};
+
 };
 
 /**
