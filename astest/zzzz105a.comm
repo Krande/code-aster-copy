@@ -33,6 +33,13 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='D_PLAN'))
 
+COELGA_M1 = CALC_CHAM_ELEM(MODELE=MO,
+                           GROUP_MA='M1',
+                           OPTION='COOR_ELGA')
+
+COELGA_TOUT = CALC_CHAM_ELEM(MODELE=MO,
+                             OPTION='COOR_ELGA')
+
 ACIER=DEFI_MATERIAU(ELAS=_F(E=178600.0,
                             NU=0.3,
                             RHO=0.0,
@@ -134,6 +141,12 @@ CH_MATE_ELEM = CREA_CHAMP(RESULTAT=U2,
                           OPERATION='EXTR',
                           NOM_CHAM='MATE_ELEM',
                           NUME_ORDRE=1)
+
+IMPR_RESU(FORMAT="MED",
+          RESU=(
+              _F(CHAM_GD=COELGA_TOUT),
+              _F(CHAM_GD=COELGA_M1)
+          ))
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CH_MATE_ELEM,
                         NOM_CMP='E',
