@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     real(kind=8) :: sig(6), eps(6), epse(6), epsp(6), vepsp(6)
     real(kind=8) :: epsl(6), epsel(6), epspl(6), eqepsp, jacaux(3)
     real(kind=8) :: vsig(6), sigl(6), eqsig, vsige, equi(17)
-    real(kind=8) :: phymin, rbid(6), vepspe, vepse(6), eqepse
+    real(kind=8) :: phymin, vepspe, vepse(6), eqepse
     real(kind=8) :: nm1x, nm1y, nm1z, br(6), vecpro(3, 3), valpro(3)
     real(kind=8) :: eprmax, eprmin, signm1, tol, toldyn, ar(6)
     real(kind=8) :: fxm, fym, fzm, sinm1m, somdef, vepsem, respc(24)
@@ -160,10 +160,16 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
     vepst = 0.d0
     epspac = 0.d0
     raysph = 0.d0
-    dom(1) = 0.d0
-    dom(2) = 0.d0
-    nrupt(1) = 1.d7
-    nrupt(2) = 1.d7
+    dom(:) = 0.d0
+    nrupt(:) = 1.d7
+    valpro(:) = 0.0d0
+    valpar(:) = 0.0d0
+    dtaum(:) = 0.0d0
+    normax(:) = 0.0d0
+    normoy(:) = 0.0d0
+    epnmax(:) = 0.0d0
+    epnmoy(:) = 0.0d0
+
 !
     do i = 1, 24
         resupc(i) = 0.0d0
@@ -287,7 +293,7 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, rbid, rbid, rbid,&
+                call teneps(jrwork, adrl, sigl, epsl, epsel,&
                             epspl)
 !
                 do k = 1, 6
@@ -431,8 +437,8 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, sigl, rbid, rbid,&
-                            rbid)
+                call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                            epspl)
 !
                 do i = 1, 6
                     vsig(i)= sig(i) - sigl(i)
@@ -513,8 +519,8 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
-!
-                call teneps(jrwork, adrl, rbid, epsl, epsel,&
+
+                call teneps(jrwork, adrl, sigl, epsl, epsel,&
                             epspl)
 !
                 do i = 1, 6
@@ -560,8 +566,8 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
             do l = j, ordfin
                 adrl = (l-1)*tspaq+kwork*sompgw*decal+(ipg-1)*decal
 !
-                call teneps(jrwork, adrl, rbid, rbid, epsel,&
-                            rbid)
+               call teneps(jrwork, adrl, sigl, epsl, epsel,&
+                            epspl)
 !
                 do k = 1, 6
                     vepse(k)= epse(k) - epsel(k)
