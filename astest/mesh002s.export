@@ -1,3 +1,5 @@
+# if you change this file, don't forget to pass the test!
+#
 # aslint: disable=C2002
 P time_limit 120
 P memory_limit 1024
@@ -7,7 +9,6 @@ P mpi_nbnoeud 1
 P testlist ci verification parallel
 
 F comm mesh002s.py D 1
-F nom mesh002s.30 D 0
 F nom adls102a.mmed D 0
 F nom adlv100a.mmed D 0
 F nom adlv100o.mmed D 0
@@ -333,9 +334,6 @@ F nom sdnv103b.mmed D 0
 F nom sdnv103d.mmed D 0
 F nom sdnv103e.mmed D 0
 F nom sdnv103f.mmed D 0
-F nom sdnv103h.mmed D 0
-F nom sdnv104c.mmed D 0
-F nom sdnv104d.mmed D 0
 F nom sdnv106a.mmed D 0
 F nom sdnv107a.mmed D 0
 F nom sdnv107b.mmed D 0
@@ -345,7 +343,6 @@ F nom sdnv109a.mmed D 0
 F nom sdnv109b.mmed D 0
 F nom sdnv110a.mmed D 0
 F nom sdnv112a.mmed D 0
-F nom sdnv143c.mmed D 0
 F nom sdnx100a.mmed D 0
 F nom sdnx100i.mmed D 0
 F nom sdnx101a.mmed D 0
@@ -525,3 +522,4 @@ F nom zzzz206a.mmed D 0
 F nom zzzz315a.mmed D 0
 F nom zzzz319b.mmed D 0
 F nom zzzz383b.mmed D 0
+
