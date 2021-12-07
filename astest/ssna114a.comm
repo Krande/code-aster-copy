@@ -1,0 +1,188 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+#           
+# ======================================================================
+# TRIAX AVEC VISC_MAXWELL et COUPLAGE HYDRAULIQUE  CONFINEMENT DE 0.5 MPa
+# ======================================================================
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+#
+BIDON=DEFI_CONSTANTE(VALE=1.)
+
+UN=DEFI_CONSTANTE(VALE=1.)
+
+ZERO=DEFI_CONSTANTE(VALE=0.)
+
+VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3)
+
+VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-5)
+
+DVISCOL=DEFI_CONSTANTE(VALE=0.)
+
+DVISCOG=DEFI_CONSTANTE(VALE=0.)
+
+KINT=DEFI_CONSTANTE(VALE=1.E-21)
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='ASTER', )
+#MAILLAGE=CREA_MAILLAGE(MAILLAGE  = MAIL, LINE_QUAD = _F(TOUT='OUI'),     );
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(  TOUT = 'OUI',
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'AXIS',
+                                   )
+                          )
+
+
+
+BITUME=DEFI_MATERIAU( ELAS=_F( 
+                            E = 24.1E6,   
+                            NU= 0.47,   
+                            ALPHA=0. 
+                        ),
+                       VISC_MAXWELL =_F(
+                        ETA_D=1.59e+7,
+                        ETA_V=1.e+10,),
+                           )
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(  TOUT = 'OUI',    MATER = BITUME,  )
+                          )
+
+CHAR_U1=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              PRES_REP=_F(   GROUP_MA = 'M4',
+                                          PRES = 1.)
+                       )
+
+CHAR_U2=AFFE_CHAR_MECA(    MODELE=MODELE,
+                             PRES_REP=_F(   GROUP_MA = 'M3',
+                                         PRES = 1.)
+                        )
+
+DEPL_1=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              FACE_IMPO=(_F(  GROUP_MA = 'M2',
+                                          DY = 0.),
+                                        )
+                           )
+
+COEF1=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 0.0,       0.0,
+                                1000.0,    5.E5,)
+                       )
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+
+TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
+                           INTERVALLE=(_F(  JUSQU_A = 500.0,    NOMBRE = 1),
+                                       _F(  JUSQU_A = 1000.0,   NOMBRE =  1),
+                         ),)
+
+COMPOR = 'VISC_MAXWELL'
+#COMPOR = 'ELAS'
+U1=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F(CHARGE = CHAR_U1,FONC_MULT = COEF1,), 
+                             _F(CHARGE = CHAR_U2,FONC_MULT = COEF1,),
+                             _F(CHARGE = DEPL_1,)
+                              ),
+                 COMPORTEMENT=_F(RELATION = COMPOR,),
+                 INCREMENT=_F(LIST_INST = TEMPS1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,)
+               )
+
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
+
+U1=CALC_CHAMP(reuse=U1,RESULTAT=U1,
+             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU',VARI_INTERNE='VARI_NOEU')
+
+
+TEMPS2=DEFI_LIST_REEL(   DEBUT=1000.,
+                         INTERVALLE=(_F(  JUSQU_A = 2000.00,    NOMBRE = 10, ),
+                                                        ))
+
+
+DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              FACE_IMPO=_F(  GROUP_MA = 'M4',
+                                          DY = 1.))
+
+COEF2=DEFI_FONCTION(      NOM_PARA='INST',
+                          PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                          VALE=( 1000.0,     -7.6E-04,
+                                2000.0,     -0.01,
+                                ) )
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION
+#***********************************************************************
+U2=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F(CHARGE = CHAR_U2,FONC_MULT = COEF1,), 
+                             _F(CHARGE = DEPL_2,FONC_MULT = COEF2,), 
+                             _F(CHARGE = DEPL_1,), ),
+                 COMPORTEMENT=_F(RELATION = COMPOR,),
+                 ETAT_INIT=_F(EVOL_NOLI = U1,),
+                 INCREMENT=_F(LIST_INST = TEMPS2,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,ITER_GLOB_MAXI = 30,)
+               )
+
+
+U2=CALC_CHAMP(reuse=U2,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'),CONTRAINTE=('SIGM_ELNO'),RESULTAT=U2)
+
+
+U2=CALC_CHAMP(  reuse=U2,
+             RESULTAT=U2,
+             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU',VARI_INTERNE='VARI_NOEU'
+          )
+
+
+
+
+TEST_RESU(RESU=_F(INST=1000.,
+                  RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='N4',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.013744813278010203,
+                  ),
+          )
+TEST_RESU(RESU=_F(INST=2000.,
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='N4',
+                  NOM_CMP='DX',
+                  VALE_CALC=-0.040608890992805256,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST=2000.,
+                  RESULTAT=U2,
+                  NOM_CHAM='SIGM_NOEU',
+                  GROUP_NO='N4',
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-499822.92092595476,
+                  ),
+          )
+
+FIN()
