@@ -66,7 +66,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     character(len=12) :: kooc
     character(len=19) :: k19b, partsd
     character(len=24) :: kmonit(12)
-    integer :: eximo1, eximo2, eximo3, eximc, eximod
+    integer :: eximo1, eximo2, eximo3, eximod
     integer :: iexi, redmpi
     aster_logical :: ldgrel
     real(kind=8), pointer :: slvr(:) => null()
@@ -200,6 +200,13 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     endif
 !
 ! --- LECTURES PARAMETRES DEDIES AU SOLVEUR
+    pcpiv = 0
+    ktypr = ' '
+    ktyps = ' '
+    kacmum = ' '
+    blreps = 0.
+    redmpi = 1
+
     call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=ibid)
     ASSERT(ibid.eq.1)
     call getvtx(motfac, 'TYPE_RESOL', iocc=1, scal=ktypr, nbret=ibid)
@@ -211,27 +218,21 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
     ASSERT(ibid.eq.1)
     call getvis(motfac, 'REDUCTION_MPI', iocc=1, scal=redmpi, nbret=ibid)
-! --- CAR ABSENT DU CATALOGUE POUR LE CALCUL MODAL: SCHEMA PARALLELE EMBOITE DEJA PRESENT
-! --- POUR CES OPERATEURS
-!    ASSERT(ibid.eq.1)
-!
-    ktypp='SANS'
-    eximc=getexm(motfac,'POSTTRAITEMENTS')
-    if (eximc .eq. 1) then
-        call getvtx(motfac, 'POSTTRAITEMENTS', iocc=1, scal=ktypp, nbret=ibid)
-    endif
-!
+    ! --- CAR ABSENT DU CATALOGUE POUR LE CALCUL MODAL: SCHEMA PARALLELE EMBOITE DEJA PRESENT
+    ! --- POUR CES OPERATEURS
+    ktypp = 'SANS'
+    ktyprn = ' '
+    klag2 = ' '
+    call getvtx(motfac, 'POSTTRAITEMENTS', iocc=1, scal=ktypp, nbret=ibid)
     call getvtx(motfac, 'RENUM', iocc=1, scal=ktyprn, nbret=ibid)
     ASSERT(ibid.eq.1)
     call getvtx(motfac, 'ELIM_LAGR', iocc=1, scal=klag2, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
     eps=-1.d0
-    eximc=getexm(motfac,'RESI_RELA')
-    if (eximc .eq. 1) then
-        call getvr8(motfac, 'RESI_RELA', iocc=1, scal=eps, nbret=ibid)
-    endif
+    call getvr8(motfac, 'RESI_RELA', iocc=1, scal=eps, nbret=ibid)
 !
+    kooc = ' '
     call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=kooc, nbret=ibid)
     ASSERT(ibid.eq.1)
 !
