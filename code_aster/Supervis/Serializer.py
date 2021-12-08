@@ -74,7 +74,6 @@ ARGS = '_MARK_DS_ARGS_'
 STATE = '_MARK_DS_STATE_'
 LIST = '_MARK_LIST_'
 DICT = '_MARK_DICT_'
-UNSTACKED = object()
 
 # same values in op9999
 class FinalizeOptions:
@@ -188,6 +187,7 @@ class Serializer(object):
                 if isinstance(obj, DataStructure):
                     saved.append(name)
 
+        logger.debug(f"Objects saved: {objList}")
         with open(self._info_filename, "wb") as pick:
             # add management objects on the stack
             pickle.dump(objList, pick)
@@ -234,10 +234,7 @@ class Serializer(object):
                     logger.debug(f"loading: {name}...")
                     try:
                         obj = unpickler.load_one()
-                        if obj is UNSTACKED:
-                            pool.insert(0, name)
-                            continue
-                        logger.debug(f"read object: {type(obj)}...")
+                        logger.debug(f"object restored: {name} {type(obj)}...")
                     except Exception as exc:
                         if isinstance(exc, EOFError):
                             raise
@@ -604,6 +601,7 @@ class AsterUnpickler(pickle.Unpickler):
     def __init__(self, fileobj):
         pickle.Unpickler.__init__(self, fileobj)
         self._stack = AsterUnpickler.BufferStack()
+        self._depth = 0
 
     def load_one(self):
         """Load one object.
@@ -612,19 +610,24 @@ class AsterUnpickler(pickle.Unpickler):
             *misc*: Loaded object.
         """
         obj = self.load()
+        self._depth += 1
+        logger.debug(f"load_one: {self._depth} / {obj}")
         if not isinstance(obj, str):
+            self._depth -= 1
             return obj
         if obj == LIST:
             size = self.load_one()
             for _ in range(size):
                 self.load_one()
-            return UNSTACKED
-        elif obj == DICT:
+            logger.debug(f"list: {self._depth} / {obj}")
+            obj = self.load_one()
+        if obj == DICT:
             size = self.load_one()
             for _ in range(size):
                 self.load_one()
-            return UNSTACKED
-        elif obj == ARGS:
+            logger.debug(f"dict: {self._depth} / {obj}")
+            obj = self.load_one()
+        if obj == ARGS:
             nbobj = self.load_one()
             name = self.load_one()
             init_args = []
@@ -649,6 +652,7 @@ class AsterUnpickler(pickle.Unpickler):
             # 'load' will call 'persistent_load'
             obj = self.load_one()
             logger.debug(f"loaded DataStructure '{obj}'")
+        self._depth -= 1
         return obj
 
     def recover_ds(self, class_id, key_id):
@@ -700,7 +704,7 @@ def _filteringContext(context):
     re_system = re.compile("^__.*__$")
     ctxt = {}
     for name, obj in list(context.items()):
-        if name in ignored or re_system.search(name):
+        if not name or name in ignored or re_system.search(name):
             continue
         if getattr(numpy, name, None) is obj: # see issue29282
             continue
