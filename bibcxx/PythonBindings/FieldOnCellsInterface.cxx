@@ -32,14 +32,18 @@ namespace py = boost::python;
 #include "PythonBindings/FieldOnCellsInterface.h"
 
 void exportFieldOnCellsToPython() {
-    py::class_< FieldOnCellsReal, FieldOnCellsRealPtr,
-            py::bases< DataField > >( "FieldOnCellsReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsReal >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnCellsReal, std::string >))
+    py::class_< FieldOnCellsReal, FieldOnCellsRealPtr, py::bases< DataField > >( "FieldOnCellsReal",
+                                                                                 py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsReal > ) )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
         .def( "exportToSimpleFieldOnCells",
               &FieldOnCellsReal::exportToSimpleFieldOnCells )
-        .def( "getModel", &FieldOnCellsReal::getModel )
+        .def( "getModel", &FieldOnCellsReal::getModel, R"(
+                  Return the model associated with the FieldOnCellsReal object
+                  Returns:
+                  Model: Model Object
+                  )",
+              ( py::arg( "self" ) ) )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build )
