@@ -90,6 +90,9 @@ def calcul_ops(self, **kwargs):
                                        NOM_PARA="NOM_SD",
                                        FILTRE=_F(NOM_PARA="NOM_OBJET",
                                                  VALE_K=name))
+            if hasattr(content[name], "setModel"):
+                content[name].setModel(kwargs["MODELE"])
+
         result_type = namedtuple("Result", objects)
         result = result_type(**content)
 

@@ -17,6 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import code_aster
+
 DEBUT(
     CODE=_F(NIV_PUB_WEB='INTERNET'),
     IGNORE_ALARM=('MECANONLINE5_37','MECANONLINE2_37'),
@@ -29,6 +31,7 @@ DEBUT(
 #          DEFINITION DE L'ETUDE
 #=========================================================
 
+test = code_aster.TestCase()
 
 MA = LIRE_MAILLAGE(FORMAT='GMSH',
                    UNITE=19,
@@ -168,18 +171,21 @@ MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='MATR_TANG_ELEM'),)
 
-SIGM=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
+SIGM=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='SIEF_ELGA'),)
 
-VARI=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
+VARI=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='VARI_ELGA'),)
 
+test.assertIsNotNone(MATR.getModel())
+test.assertIsNotNone(SIGM.getModel())
+test.assertIsNotNone(VARI.getModel())
 
 F_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT,
@@ -188,7 +194,7 @@ F_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                            VALE_K='FORC_INTE_ELEM'),)
 
 
-CODE=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
+CODE=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
@@ -200,6 +206,26 @@ FORC=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='FORC_NODA_ELEM'),)
+
+# just to check model dependency
+res = CALCUL(__use_namedtuple__=True,
+             OPTION=('COMPORTEMENT','FORC_INTE_ELEM','MATR_TANG_ELEM',
+                     'FORC_NODA_ELEM'),
+             MODELE=MO,
+             CHAM_MATER=CHMAT,
+             INCREMENT=_F(LIST_INST=LIST,
+                          NUME_ORDRE=1),
+             EXCIT=_F(CHARGE=CHARGE),
+             DEPL=U,
+             INCR_DEPL=DU,
+             SIGM=SIGP,
+             VARI=VARIP,
+             COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
+             INFO=2,);
+
+test.assertIsNotNone(res.MATR_TANG_ELEM.getModel())
+test.assertIsNotNone(res.SIEF_ELGA.getModel())
+test.assertIsNotNone(res.VARI_ELGA.getModel())
 
 
 FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,
@@ -389,7 +415,7 @@ CONT=CALCUL(reuse=CONT,
             INFO=2,);
 
 
-SIGM3=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
+SIGM3=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
                  TABLE=CONT,
                  NOM_PARA='NOM_SD',
                  FILTRE=(_F(NOM_PARA='NOM_OBJET',
@@ -490,5 +516,7 @@ CONT2=CALCUL(
 #
 # ==========     FIN DE LA VALIDATION DE : CALCUL/TABLE   ==============
 #
+
+test.printSummary()
 
 FIN();
