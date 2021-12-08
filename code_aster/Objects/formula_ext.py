@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@
 """
 
 import traceback
-from pickle import dumps, loads
+from pickle import PicklingError, dumps, loads
 
 from libaster import Formula
 
+from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import force_list, initial_context, injector, logger
-from .Serialization import InternalStateBuilder
 
 
 class FormulaStateBuilder(InternalStateBuilder):
@@ -51,7 +51,12 @@ class FormulaStateBuilder(InternalStateBuilder):
             if val is not init.get(key):
                 user_ctxt[key] = val
         self._st["expr"] = form.getExpression()
-        self._st["ctxt"] = dumps(user_ctxt)
+        try:
+            self._st["ctxt"] = dumps(user_ctxt)
+        except PicklingError as exc:
+            logger.warning("Can not pickle the formula context:")
+            logger.warning(str(exc))
+            self._st["ctxt"] = dumps({})
         return self
 
     def restore(self, form):
