@@ -34,6 +34,14 @@ test.assertEqual(pres[1][0](1.0), 2.0)
 test.assertEqual(a(17), 1.0)
 test.assertEqual(b(89), 2.0)
 
+
+def Y0(X):
+    return 0.0
+
+
+form.setContext(dict(Y0=Y0))
+test.assertEqual(form(0.0), 0.0)
+
 test.printSummary()
 
 code_aster.close()

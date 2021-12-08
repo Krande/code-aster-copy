@@ -24,12 +24,12 @@
 """
 
 import traceback
-from pickle import dumps, loads
+from pickle import PicklingError, dumps, loads
 
 from libaster import Formula
 
-from ..Utilities import force_list, initial_context, injector, logger
 from ..Objects.Serialization import InternalStateBuilder
+from ..Utilities import force_list, initial_context, injector, logger
 
 
 class FormulaStateBuilder(InternalStateBuilder):
@@ -51,7 +51,12 @@ class FormulaStateBuilder(InternalStateBuilder):
             if val is not init.get(key):
                 user_ctxt[key] = val
         self._st["expr"] = form.getExpression()
-        self._st["ctxt"] = dumps(user_ctxt)
+        try:
+            self._st["ctxt"] = dumps(user_ctxt)
+        except PicklingError as exc:
+            logger.warning("Can not pickle the formula context:")
+            logger.warning(str(exc))
+            self._st["ctxt"] = dumps({})
         return self
 
     def restore(self, form):

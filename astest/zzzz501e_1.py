@@ -26,4 +26,14 @@ pres = [FORMULE(NOM_PARA="X", VALE="X"), (FORMULE(NOM_PARA="X", VALE="X * 2"),)]
 a = DEFI_CONSTANTE(VALE=1)
 b = DEFI_CONSTANTE(VALE=2)
 
+
+def Y0(X):
+    return 0.0
+
+
+form = FORMULE(NOM_PARA="X", VALE="Y0(X)", Y0=Y0)
+
+# pickle raises an error because Y0 is not the same object as in formula context
+Y0 = 0.123456
+
 FIN()
