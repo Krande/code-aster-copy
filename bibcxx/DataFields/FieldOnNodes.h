@@ -431,7 +431,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Comput norm
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
-    ASTERDOUBLE norm( const std::string normType ) const {
+    template < class type = ValueType >
+    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
+    norm( const std::string normType ) const {
         ASTERDOUBLE norme = 0.0;
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
@@ -486,7 +488,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Dot product
      * @param tmp object FieldOnNodesDescriptionPtr
      */
-    ASTERDOUBLE dot( const FieldOnNodesPtr &tmp ) const {
+    template < class type = ValueType >
+    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
+    dot( const FieldOnNodesPtr &tmp ) const {
         bool retour = tmp->updateValuePointers();
         retour = ( retour && _valuesList->updateValuePointer() );
         const int taille = _valuesList->size();

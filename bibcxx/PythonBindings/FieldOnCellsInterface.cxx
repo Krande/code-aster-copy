@@ -45,10 +45,25 @@ void exportFieldOnCellsToPython() {
                               ( py::arg( "model" ), py::arg( "behaviour" ), py::arg( "typcham" ),
                                 py::arg( "carael" ) = py::object() ) ) )
         .def( py::init< const FieldOnCellsReal & >() )
-        .def( "duplicate", &FieldOnCellsReal::duplicate )
+        .def( "duplicate", &FieldOnCellsReal::duplicate,R"(
+                  Return a duplicated FieldOnCellsReal as a copy
+                  Returns:
+                  FieldOnCellsReal
+                  )",
+              ( py::arg( "self" ) ) )
         .def( "exportToSimpleFieldOnCells", &FieldOnCellsReal::exportToSimpleFieldOnCells )
-        .def( "getModel", &FieldOnCellsReal::getModel )
-        .def( "getMesh", &FieldOnCellsReal::getMesh )
+        .def( "getModel", &FieldOnCellsReal::getModel, R"(
+                  Return the model associated with the FieldOnCellsReal object
+                  Returns:
+                  Model: Model Object
+                  )",
+              ( py::arg( "self" ) )  )
+        .def( "getMesh", &FieldOnCellsReal::getMesh,  R"(
+                  Return the Mesh associated with the FieldOnCellsReal object
+                  Returns:
+                  BaseMesh: Mesh object
+                  )",
+              ( py::arg( "self" ) ) )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build )
@@ -94,7 +109,7 @@ void exportFieldOnCellsToPython() {
                   Function: Callable Python object
 
                   Returns:
-                  bool: New FieldOnCells object with the trasformed values
+                  FieldOnCellsReal: New FieldOnCellsReal object with the transformed values
                         )",
               ( py::arg( "self" ), py::arg( "Function" ) ) )
         .def( "printMedFile", &FieldOnCellsReal::printMedFile, print_overloads( R"(
@@ -115,7 +130,7 @@ void exportFieldOnCellsToPython() {
                   normType: "NORM_1", "NORM_2", "NORM_INFINITY"
 
                   Returns:
-                  double: euclidean norm
+                  double: Euclidean norm
                         )" )
         .def( "dot", &FieldOnCellsReal::dot< ASTERDOUBLE >, R"(
                   Return the dot product of two fields
@@ -140,7 +155,12 @@ void exportFieldOnCellsToPython() {
         .def( "setModel", &FieldOnCellsComplex::setModel )
         .def( "build", &FieldOnCellsComplex::build )
         .def( "getValues", &FieldOnCellsComplex::getValues,
-               py::return_value_policy<py::copy_const_reference>())
+               py::return_value_policy<py::copy_const_reference>(),R"(
+                  Return a list of values as (x1, y1, z1, x2, y2, z2...)
+                  Returns:
+                  list[complex]: List of values.
+                  )",
+              ( py::arg( "self" ) ))
         .def( "__getitem__",
               +[]( const FieldOnCellsComplex& v, int i ) { return v[i]; } )
         .def( "__setitem__",
@@ -162,15 +182,15 @@ void exportFieldOnCellsToPython() {
                         )",
                               ( py::arg( "self" ) ) )
         .def( "transform", &FieldOnCellsComplex::transform<ASTERCOMPLEX>, R"(
-                  Apply Function to each value of _ValuesList of the FieldOnCells object.
+                  Apply Function to each value of _ValuesList of the FieldOnCellsComplex object.
 
                   Arguments:
                   Function: Callable Python object
 
                   Returns:
-                  bool: New FieldOnCells object with the trasformed values
+                  FieldOnCellsComplex: New FieldOnCellsComplex object with the trasformed values
                         )",
-                              ( py::arg( "self" ), py::arg( "Function" ) ))
+                              ( py::arg( "self" ), py::arg( "function" ) ))
         .def( "printMedFile", &FieldOnCellsComplex::printMedFile, R"(
                   Print the field in MED format.
 
