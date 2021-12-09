@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ subroutine op0155()
 #include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/w155ce.h"
@@ -51,7 +52,7 @@ subroutine op0155()
     character(len=16) :: crit, typesd, k16b, nopara
     character(len=8) :: resu, nomres
     character(len=3) :: type
-    character(len=19) :: resu19, nomr19
+    character(len=19) :: resu19, nomr19, comporToCopy, comporToSave
     real(kind=8) :: prec
     character(len=24) :: nompar
 !     ------------------------------------------------------------------
@@ -100,6 +101,7 @@ subroutine op0155()
 !
 !
 !     -- 5. RECOPIE DES PARAMETRES DE RESU VERS NOMRES :
+!           ET DE LA CARTE DE COMPORTEMENT 
 !     --------------------------------------------------
     nompar='&&OP0155'//'.NOMS_PARA'
     call rsnopa(resu, 2, nompar, nbac, nbpa)
@@ -111,6 +113,17 @@ subroutine op0155()
 !
     do 20 i = 1, nbordr
         nuordr=zi(jordr-1+i)
+!            COPIE DE LA CARTE DE COMPORTEMENT 
+!            --UTILE SI ON RÉCUPÈRE LES NOMS DES VARIABLES INTERNES
+!     --------------------------------------------------
+
+        call rsexch(' ', resu19, 'COMPORTEMENT', nuordr, comporToCopy,iret)
+        call rsexch(' ', nomr19, 'COMPORTEMENT', nuordr, comporToSave,iret)
+        call copisd('CHAMP_GD', 'G', comporToCopy, comporToSave)
+
+!            COPIE DES PARAMÈTRES
+!     --------------------------------------------------
+
         do 10 j = 1, nbpara
             nopara=zk16(jnompa-1+j)
             call rsadpa(resu, 'L', 1, nopara, nuordr,&
