@@ -118,9 +118,10 @@ subroutine op0155()
 !     --------------------------------------------------
 
         call rsexch(' ', resu19, 'COMPORTEMENT', nuordr, comporToCopy,iret)
-        call rsexch(' ', nomr19, 'COMPORTEMENT', nuordr, comporToSave,iret)
-        call copisd('CHAMP_GD', 'G', comporToCopy, comporToSave)
-
+        if (iret .eq. 0) then
+            call rsexch(' ', nomr19, 'COMPORTEMENT', nuordr, comporToSave,iret)
+            call copisd('CHAMP_GD', 'G', comporToCopy, comporToSave)
+        endif
 !            COPIE DES PARAMÈTRES
 !     --------------------------------------------------
 

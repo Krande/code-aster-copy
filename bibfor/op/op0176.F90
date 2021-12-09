@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
+#include "asterfort/copisd.h"
 #include "asterfort/dyarc0.h"
 #include "asterfort/extrs1.h"
 #include "asterfort/extrs2.h"
@@ -40,6 +41,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rscrsd.h"
+#include "asterfort/rsexch.h"
 #include "asterfort/rsinfo.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/rs_get_liststore.h"
@@ -57,12 +59,13 @@ implicit none
 !
     character(len=6) :: nompro
     parameter ( nompro = 'OP0176' )
-    integer :: ibid, storeNb, nbexcl, jexcl, nbarch
+    integer :: ibid, storeNb, nbexcl, jexcl, nbarch, iStore
     integer :: nbac, nbpa, iret, nbnosy, paraNb, nbrest
     integer :: mesgUnit, ifm, niv
     character(len=8) :: noma, nomo, nocara, nochmat
     character(len=16) :: typcon, nomcmd
     character(len=19) :: resultOutName, resultInName
+    character(len=19) ::  comporToCopy, comporToSave 
     character(len=24) :: lisarc, lichex, paraJvName
     aster_logical :: lrest
     integer :: nmail, nmode, ncara, nchmat
@@ -149,6 +152,14 @@ implicit none
                     nomo, nocara, nochmat, storeNb, storeIndx, paraNb, paraName,&
                     nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
     endif
+    
+    do iStore = 1, storeNb
+        call rsexch(' ', resultInName, 'COMPORTEMENT', storeIndx(iStore), comporToCopy,iret)
+        if (iret .eq. 0) then
+            call rsexch(' ', resultoutName, 'COMPORTEMENT', storeIndx(iStore), comporToSave,iret)
+            call copisd('CHAMP_GD', 'G', comporToCopy, comporToSave)
+        endif
+    enddo
     AS_DEALLOCATE(vi = storeIndx)
 !
     call titre()

@@ -148,6 +148,22 @@ TLOG=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 25)
               )
 
+ULOG_VI=EXTR_RESU(RESULTAT=TLOG,
+               ARCHIVAGE=_F(
+                 NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
+                 NOM_CHAM = 'VARI_ELGA'))
+
+IMPR_RESU(
+          #MODELE=MO,
+          FORMAT='MED',
+          UNITE=8,
+          RESU=(
+                _F(RESULTAT=ULOG_VI,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP=('V1',),
+                   NUME_ORDRE = 1),
+                ));
+
 ULOG=EXTR_RESU(RESULTAT=TLOG,ARCHIVAGE=_F(NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),))
 
 ULOG=CALC_CHAMP(reuse=ULOG,
