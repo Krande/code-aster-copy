@@ -110,7 +110,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N403',      ),
-                     VALE_CALC=11.765085866881403,
+                     VALE_CALC=11.670526365696219,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -119,7 +119,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N2862',      ),
-                     VALE_CALC=11.611407777888743,
+                     VALE_CALC=11.659585537818089,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.01,
                      REFERENCE='ANALYTIQUE'       )
@@ -128,7 +128,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N375',      ),
-                     VALE_CALC=11.745127920084224,
+                     VALE_CALC=11.651202347308148,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.035,
                      REFERENCE='ANALYTIQUE'       )
@@ -137,7 +137,7 @@ for i in range(2) :
                      NOM_PARA='G',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N292',      ),
-                     VALE_CALC=11.76665393837242,
+                     VALE_CALC=11.668932871514919,
                      VALE_REFE=1.158648E+01,
                      PRECISION=0.04,
                      REFERENCE='ANALYTIQUE'       )
@@ -145,7 +145,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MAX',
-           VALE_CALC=11.771188573755818,
+           VALE_CALC=11.709973999887785,
            VALE_REFE=1.158648E+01,
            PRECISION=0.05,
            REFERENCE='ANALYTIQUE'       )
@@ -153,7 +153,7 @@ for i in range(2) :
    TEST_TABLE(TABLE=GLOC1[i],
            NOM_PARA='G',
            TYPE_TEST = 'MIN',
-           VALE_CALC=11.56758132781171,
+           VALE_CALC=11.64255746909685,
            VALE_REFE=1.158648E+01,
            PRECISION=0.01,
            REFERENCE='ANALYTIQUE'       )
