@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,6 +126,22 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(),
 
 RESU=CALC_CHAMP(reuse=RESU,RESULTAT=RESU,CONTRAINTE=('SIGM_ELNO'))
 
+
+RESU_VI=POST_CHAMP(RESULTAT=RESU,
+                   EXTR_COQUE=_F(NOM_CHAM='VARI_ELGA',
+                                 NUME_COUCHE=1,
+                                 NIVE_COUCHE='INF',),);
+
+IMPR_RESU(
+          #MODELE=MO,
+          FORMAT='MED',
+          UNITE=8,
+          RESU=(
+                _F(RESULTAT=RESU_VI,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP=('V1',),
+                   NUME_ORDRE = 1),
+                ));
 
 RESUPOS=POST_CHAMP(RESULTAT=RESU,
                    EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
