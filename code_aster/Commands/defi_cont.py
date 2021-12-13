@@ -18,7 +18,8 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 from ..Objects import ContactNew, ContactZone, ContactParameter, \
-    FrictionParameter, PairingParameter, ContactAlgo, ContactType, ContactVariant
+    FrictionParameter, PairingParameter, ContactAlgo, ContactType, ContactVariant, \
+    FrictionAlgo, FrictionType
 from ..Supervis import ExecuteCommand
 
 # C'est la nouvelle commande à remplir qui sera en python et c++
@@ -55,6 +56,10 @@ class NewContactAssignment(ExecuteCommand):
                       "BILATERAL": ContactType.Bilateral, "COLLE": ContactType.Stick}
         _vari_cont = {"RAPIDE": ContactVariant.Rapide,
                       "ROBUSTE": ContactVariant.Robust}
+        _algo_frot = {"LAGRANGIEN": FrictionAlgo.Lagrangian, "NITSCHE": FrictionAlgo.Nitsche,
+                      "PENALISATION": FrictionAlgo.Penalization}
+        _type_frot = {"TRESCA": FrictionType.Tresca, "SANS": FrictionType.Without,
+                      "COULOMB": FrictionType.Coulomb, "COLLE": FrictionType.Stick}
 
         # add global informations
         self._result.setVerbosity(verbosity)
@@ -85,7 +90,14 @@ class NewContactAssignment(ExecuteCommand):
             # friction parameters
             if self._result.hasFriction():
                 fricParam = FrictionParameter()
-
+                fricParam.hasFriction(keywords["FROTTEMENT"] == "OUI")
+                fricParam.setAlgorithm(_algo_frot[zone["ALGO_FROT"]])
+                fricParam.setType(_type_frot[zone["TYPE_FROT"]])
+                if fricParam.getType() == FrictionType.Tresca:
+                    fricParam.setTresca(zone["TRESCA"])
+                elif fricParam.getType() == FrictionType.Coulomb:
+                    fricParam.setCoulomb(zone["COULOMB"])
+                fricParam.setCoefficient(zone["COEF_FROT"])
                 contZone.setFrictionParameter(fricParam)
 
             # pairing parameters

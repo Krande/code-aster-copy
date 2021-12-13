@@ -54,7 +54,7 @@ Returns:
     ContactType: contact type.
         )",
               ( py::arg( "self" ) ) )
-      .def( "setType", &ContactParameter::setType, R"(
+        .def( "setType", &ContactParameter::setType, R"(
 Set the contact type used. It is a value of an enum
 
 Arguments:
@@ -68,7 +68,7 @@ Returns:
     ContactVariant: contact variant.
         )",
               ( py::arg( "self" ) ) )
-      .def( "setVariant", &ContactParameter::setVariant, R"(
+        .def( "setVariant", &ContactParameter::setVariant, R"(
 Set the contact variant used. It is a value of an enum
 
 Arguments:
@@ -76,14 +76,14 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg("variant") ) )
         .def( "getCoefficient", &ContactParameter::getCoefficient, R"(
-Return the contact coefficient used. It is a value of an enum
+Return the contact coefficient used. It is a value of an real8
 
 Returns:
     float: contact coefficient.
         )",
               ( py::arg( "self" ) ) )
-      .def( "setCoefficient", &ContactParameter::setCoefficient, R"(
-Set the contact coefficient used. It is a value of an enum
+        .def( "setCoefficient", &ContactParameter::setCoefficient, R"(
+Set the contact coefficient used. It is a value of an real8
 
 Arguments:
     float: contact coefficient.
@@ -92,7 +92,95 @@ Arguments:
 
     py::class_< FrictionParameter, FrictionParameter::FrictionParameterPtr >( "FrictionParameter",
                                                                               py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FrictionParameter > ) );
+        .def( "__init__", py::make_constructor( &initFactoryPtr< FrictionParameter > ) )
+        .def( "getAlgorithm", &FrictionParameter::getAlgorithm, R"(
+Return the Friction algorithm used. It is a value of an enum
+
+Returns:
+    FrictionAlgo: Friction algorithm.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setAlgorithm", &FrictionParameter::setAlgorithm, R"(
+Set the Friction algorithm used. It is a value of an enum
+
+Arguments:
+    FrictionAlgo: Friction algorithm.
+        )",
+              ( py::arg( "self" ), py::arg( "algo" ) ) )
+        .def( "getType", &FrictionParameter::getType, R"(
+Return the Friction type used. It is a value of an enum
+
+Returns:
+    FrictionType: Friction type.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setType", &FrictionParameter::setType, R"(
+Set the Friction type used. It is a value of an enum
+
+Arguments:
+    FrictionType: Friction type.
+        )",
+              ( py::arg( "self" ), py::arg("type") ) )
+        .def( "getCoefficient", &FrictionParameter::getCoefficient, R"(
+Return the Friction coefficient used. It is a value of an real8
+
+Returns:
+    float: Friction coefficient.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setCoefficient", &FrictionParameter::setCoefficient, R"(
+Set the Friction coefficient used. It is a value of an real8
+
+Arguments:
+    float: Friction coefficient.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "getTresca", &FrictionParameter::getTresca, R"(
+Return the Tresca coefficient used. It is a value of an real8
+
+Returns:
+    float: Tresca coefficient.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setTresca", &FrictionParameter::setTresca, R"(
+Set the Tresca coefficient used. It is a value of an real8
+
+Arguments:
+    float: Tresca coefficient.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "getCoulomb", &FrictionParameter::getCoulomb, R"(
+Return the Coulomb coefficient used. It is a value of an real8
+
+Returns:
+    float: Coulomb coefficient.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setCoulomb", &FrictionParameter::setCoulomb, R"(
+Set the Coulomb coefficient used. It is a value of an real8
+
+Arguments:
+    float: Coulomb coefficient.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "hasFriction",
+              static_cast< void ( FrictionParameter::* )( const bool & ) >
+                                        ( &FrictionParameter::hasFriction ), R"(
+Set True if friction is present in at least one contact zone else False
+
+Arguments:
+      Bool: True if friction is present else False
+        )",
+              ( py::arg( "self" ), py::arg( "friction" ) ) )
+        .def( "hasFriction",
+              static_cast< bool ( FrictionParameter::* )() const >
+                               ( &FrictionParameter::hasFriction ), R"(
+Reruen True if friction is present in at least one contact zone else False
+
+Returns:
+      Bool: True if friction is present else False
+        )",
+              ( py::arg( "self" ) ) );
 
     py::class_< PairingParameter, PairingParameter::PairingParameterPtr >( "PairingParameter",
                                                                            py::no_init )

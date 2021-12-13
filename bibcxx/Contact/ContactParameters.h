@@ -44,6 +44,9 @@ class ContactParameter {
      */
     typedef boost::shared_ptr< ContactParameter > ContactParameterPtr;
 
+    /**
+     * @brief Constructeur
+     */
     ContactParameter()
         : _algo( ContactAlgo::Lagrangian ), _type( ContactType::Unilateral ),
           _vari( ContactVariant::Empty ), _coeff( 100. ){};
@@ -81,6 +84,10 @@ class FrictionParameter {
     FrictionType _type;
     /** @brief Friction coefficient = COEF_FROT */
     ASTERDOUBLE _coeff;
+    /** @brief TRESCA coefficient = TRESCA */
+    ASTERDOUBLE _tresca;
+    /** @brief COULOMB coefficient = COULOMB */
+    ASTERDOUBLE _coulomb;
 
   public:
     /**
@@ -88,6 +95,39 @@ class FrictionParameter {
      * @brief Pointeur intelligent vers un FrictionParameter
      */
     typedef boost::shared_ptr< FrictionParameter > FrictionParameterPtr;
+
+    /**
+     * @brief Constructeur
+     */
+
+    FrictionParameter()
+        : _friction(false), _algo( FrictionAlgo::Lagrangian ), 
+         _type( FrictionType::Without ), _coeff( 100. ), _tresca(-1.),
+         _coulomb(-1.){};
+
+    FrictionAlgo getAlgorithm() const { return _algo; };
+
+    FrictionType getType() const { return _type; };
+
+    ASTERDOUBLE getCoefficient() const { return _coeff; };
+
+    ASTERDOUBLE getTresca() const { return _tresca; };
+
+    ASTERDOUBLE getCoulomb() const { return _coulomb; };
+
+    void setAlgorithm( const FrictionAlgo &algo ) { _algo = algo; };
+
+    void setType( const FrictionType &type ) { _type = type; };
+
+    void setCoefficient( const ASTERDOUBLE &coeff ) { _coeff = coeff; };
+
+    void setTresca( const ASTERDOUBLE &tresca ) { _tresca = tresca; };
+
+    void setCoulomb( const ASTERDOUBLE &coulomb ) { _coulomb = coulomb; };
+
+    void hasFriction( const bool &friction ) { _friction = friction; }
+
+    bool hasFriction() const { return _friction; }
 };
 
 /**
@@ -96,13 +136,17 @@ class FrictionParameter {
  */
 typedef boost::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
+
 class PairingParameter {
   private:
   /** @brief Pairing algorithm = APPARIEMENT */
     PairingAlgo _algo;
   /** @brief Additional pairing distance = DIST_APPA */
     ASTERDOUBLE _dist_appa;
-
+  /** @brief initial contact state = CONTACT_INIT */
+  //  ContactInit _cont_init; 
+  /** @brief initial threshold distance = SEUIL_INIT */
+  //  ASTERDOUBLE _seuil;
   public:
     /**
      * @typedef PairingParameterPtr

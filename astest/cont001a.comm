@@ -73,13 +73,16 @@ for i in range(DEFICO.getNumberOfContactZones()):
     test.assertEqual(zone.getVerbosity(), 2)
     test.assertTrue(zone.checkNormals())
     test.assertEqual(zone.getModel().getName(), MODI.getName())
+
     contParam = zone.getContactParameter()
     test.assertEqual(contParam.getAlgorithm(), algo_cont[i])
     test.assertEqual(contParam.getType(), code_aster.ContactType.Unilateral)
     test.assertEqual(contParam.getVariant(), vari_cont[i])
     test.assertEqual(contParam.getCoefficient(), 100.)
-    fricParam = zone.getFrictionParameter()
+
+    fricParam = zone.getFrictionParameter()  # None
     pairParam = zone.getPairingParameter()
+    # test.assertEqual(pairParam.getType(), code_aster.PairingAlgo.Mortar)
 
 
 DEFICO2 = DEFI_CONT(MODELE=MODI,
@@ -121,5 +124,79 @@ for i in range(DEFICO2.getNumberOfContactZones()):
     test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
     test.assertEqual(contParam.getVariant(), code_aster.ContactVariant.Rapide)
     test.assertEqual(contParam.getCoefficient(), 312.)
+    fricParam = zone.getFrictionParameter()  
+    test.assertTrue(fricParam.hasFriction())
+
+
+DEFICO3 = DEFI_CONT(MODELE=MODI,
+                    INFO=2,
+                    FROTTEMENT='OUI',
+                    LISSAGE='NON',
+                    ZONE=_F(ALGO_CONT='NITSCHE',
+                            VERI_NORM='NON',
+                            COEF_CONT=312.,
+                            TYPE_CONT='BILATERAL',
+                            APPARIEMENT='MORTAR',
+                            DIST_APPA=-1,
+                            GROUP_MA_MAIT='Group_2',
+                            GROUP_MA_ESCL='Group_1',
+                            CONTACT_INIT='INTERPENETRE',
+                            #ALGO_FROT='NITSCHE',
+                            #TYPE_FROT='COULOMB',
+                            #COULOMB=100.,
+                            ),)
+
+
+test.assertEqual(DEFICO3.getNumberOfContactZones(), 1)
+test.assertEqual(DEFICO3.getVerbosity(), 2)
+test.assertEqual(DEFICO3.getModel().getName(), MODI.getName())
+test.assertTrue(DEFICO3.hasFriction())
+test.assertFalse(DEFICO3.hasSmoothing())
+
+for i in range(DEFICO3.getNumberOfContactZones()):
+    zone = DEFICO3.getContactZone(i)
+    test.assertEqual(zone.getVerbosity(), 2)
+    test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_1')
+    test.assertEqual(zone.getMasterGroupOfCells(), 'Group_2')
+    test.assertEqual(zone.getModel().getName(), MODI.getName())
+    test.assertFalse(zone.checkNormals())
+    contParam = zone.getContactParameter()
+    test.assertEqual(contParam.getAlgorithm(), code_aster.ContactAlgo.Nitsche)
+    test.assertEqual(contParam.getType(), code_aster.ContactType.Bilateral)
+    test.assertEqual(contParam.getCoefficient(), 312.)
+    fricParam = zone.getFrictionParameter()  
+    test.assertTrue(fricParam.hasFriction())
+    test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
+    test.assertEqual(fricParam.getType(), code_aster.FrictionType.Without)
+    print(fricParam.getTresca())        # vide, valeur hasard, ex. 6.9214098795144e-310
+    print(fricParam.getCoulomb())       # vide, valeur hasard, ex. 2.37e-322
+
+DEFICO4 = DEFI_CONT(MODELE=MODI,
+                    INFO=2,
+                    FROTTEMENT='OUI',
+                    LISSAGE='NON',
+                    ZONE=_F(ALGO_CONT='NITSCHE',
+                            VERI_NORM='NON',
+                            COEF_CONT=312.,
+                            TYPE_CONT='BILATERAL',
+                            APPARIEMENT='MORTAR',
+                            DIST_APPA=-1,
+                            GROUP_MA_MAIT='Group_2',
+                            GROUP_MA_ESCL='Group_1',
+                            CONTACT_INIT='INTERPENETRE',
+                            #ALGO_FROT='NITSCHE',
+                            TYPE_FROT='COULOMB',
+                            COULOMB=200.,
+                            ),)
+
+for i in range(DEFICO4.getNumberOfContactZones()):
+    zone = DEFICO4.getContactZone(i)
+    contParam = zone.getContactParameter()
+    fricParam = zone.getFrictionParameter()  
+    test.assertTrue(fricParam.hasFriction())
+    test.assertEqual(fricParam.getAlgorithm(), code_aster.FrictionAlgo.Nitsche)
+    test.assertEqual(fricParam.getType(), code_aster.FrictionType.Coulomb)
+    print(fricParam.getTresca()) # vide, valeur par defaut : 6.9214098795144e-310
+    test.assertEqual(fricParam.getCoulomb(), 200.)
 
 FIN()
