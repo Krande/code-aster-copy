@@ -55,6 +55,24 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     /** @brief Nombre de composantes */
     int _nbComp;
 
+    /**
+     * Functions to check an out-of-range condition
+     */
+    void _checkNodeOOR( const int& ino ) const {
+      int nbNodes = this->getNumberOfNodes();
+      if ( ino < 0 || ino >= nbNodes) {
+        throw std::runtime_error( "Node index '"+std::to_string(ino)+"' is out of range");
+      };
+    }
+
+    void _checkCmpOOR( const int& icmp ) const {
+      int ncmp = this->getNumberOfComponents();
+      if ( icmp < 0 || icmp >= ncmp ) {
+        throw std::runtime_error( "Component '"+std::to_string(icmp)
+                                  +"' is out of range");
+      }
+    }
+
   public:
     /**
      * @typedef SimpleFieldOnNodesPtr
@@ -72,7 +90,8 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
           _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
           _component( JeveuxVectorChar8( getName() + ".CNSC" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ), _nbNodes( 0 ), _nbComp( 0 ){};
+          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
+          _nbNodes( 0 ), _nbComp( 0 ){};
 
     /**
      * @brief Constructeur
@@ -89,22 +108,29 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
      */
     ValueType &operator[]( int i ) { return _values->operator[]( i ); };
 
-    const ValueType &getValue( int nodeNumber, int compNumber ) const
-    {
+    const ValueType &getValue( int ino, int icmp ) const {
+
 #ifdef ASTER_DEBUG_CXX
-        if ( _nbNodes == 0 || _nbComp == 0 )
-            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+      if ( this->getNumberOfNodes() == 0 || this->getNumberOfComponents() == 0 )
+        throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
 
-    if ( nodeNumber < 0 || nodeNumber > _nbNodes) {
-      throw std::runtime_error("Out of range");
-    };
-    if ( compNumber < 0 || compNumber > _nbComp) {
-      throw std::runtime_error("Out of range");
-    };
+      this->_checkNodeOOR(ino);
+      this->_checkCmpOOR(icmp);
+      const long position = ino * this->getNumberOfComponents() + icmp;
+      bool allocated = ( *_allocated )[position];
 
-        const long position = nodeNumber * _nbComp + compNumber;
-        return ( *_values )[position];
+#ifdef ASTER_DEBUG_CXX
+      if ( !allocated ){
+        std::cout <<
+          "DEBUG: Position ("+std::to_string(ino)
+          +", "+std::to_string(icmp)
+          +") is valid but not allocated!"
+                  << std::endl;
+      };
+#endif
+
+      return ( *_values )[position];
     };
 
     /**
@@ -157,6 +183,13 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
         names.push_back(this->getNameOfComponent(i));
       }
       return names;
+    }
+
+    /**
+     * @brief Get physical quantity
+     */
+    std::string getPhysicalQuantity() const {
+      return trim(( *_descriptor )[1].toString());
     }
 
     /**
