@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,5 +83,11 @@ test.assertEqual(monModel.getName(), study.getModel().getName())
 test.assertEqual(affectMat.getName(), study.getMaterialField().getName())
 test.assertEqual(None, study.getElementaryCharacteristics())
 
+# comparison between DataStructures
+test.assertEqual(study.getMesh(), monMaillage)
+test.assertEqual(study.getModel(), monModel)
+test.assertNotEqual(study.getModel(), monMaillage)
+test.assertNotEqual(study.getModel(), "model ?")
+test.assertNotEqual(study.getModel(), object())
 
 FIN()

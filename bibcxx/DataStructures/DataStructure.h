@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DataStructure
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -97,6 +97,11 @@ class DataStructure {
      * @brief Destructeur
      */
     ~DataStructure();
+
+    inline long id()
+    {
+        return long(this);
+    };
 
     /**
      * @brief Function to add a datastructure as a dependency

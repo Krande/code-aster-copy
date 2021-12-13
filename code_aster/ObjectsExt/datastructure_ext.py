@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,12 +111,19 @@ class ExtendedDataStructure:
         """
         return libaster.use_count(self)
 
+    def __eq__(self, other):
+        """Tell if *other* is a *DataStructure* and points to the same object.
+
+        Returns:
+            bool: *True* if the objects are the same.
+        """
+        return isinstance(other, DataStructure) and self.id() == other.id()
+
     # transitional functions - to remove later
     @property
     @deprecated(case=1, help="Use 'getName()' instead.")
     def nom(self):
         return self.getName()
-
 
 
 # This dictionnary avoids to add the DataStructure "_ext.py" file just
