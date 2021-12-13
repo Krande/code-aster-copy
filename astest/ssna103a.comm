@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -219,6 +219,7 @@ U3=STAT_NON_LINE(
 
 T1=RECA_WEIBULL(   LIST_PARA=('SIGM_REFE','M',),
                    RESU=( _F(   EVOL_NOLI = U1,
+                                LIST_INST = L_INST,
                                 CHAM_MATER = CM50,
                                 TEMPE = -50.,
                                 LIST_INST_RUPT = ( 10., 20., 30.,
@@ -246,7 +247,6 @@ T1=RECA_WEIBULL(   LIST_PARA=('SIGM_REFE','M',),
                                 LIST_INST_RUPT = (  10., 20., 30.,
                                                     40., 50., 60., 70., 80., 90., 100.,
                                                     110.,  120.,  130., 140.,  150.,),
-
                                 MODELE = MO,
                                 TOUT = 'OUI',
                                 COEF_MULT = 12.5664)),

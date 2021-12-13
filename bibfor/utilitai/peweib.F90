@@ -187,11 +187,15 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat,&
 !
         np = 0
         if (.not.opti) then
-            call getvr8(' ', 'PRECISION', scal=prec, nbret=np)
+            call getvr8(motcl2, 'PRECISION', scal=prec, nbret=np)
+        else 
+            call getvr8(motcl2, 'PRECISION', iocc=iresu, scal=prec, nbret=np)
         endif
         nc = 0
         if (.not.opti) then
-            call getvtx(' ', 'CRITERE', scal=crit, nbret=nc)
+            call getvtx(motcl2, 'CRITERE', scal=crit, nbret=nc)
+        else
+            call getvtx(motcl2, 'CRITERE', iocc=iresu, scal=crit, nbret=nc)
         endif
 !
         if (.not.opti) then
