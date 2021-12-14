@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 2016 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 2016 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ private
  Mat, public :: ap(nmxins)
  KSP, public :: kp(nmxins)
  Vec, public :: b, x
-
+ aster_logical, public :: user_ksp(nmxins)
 ! Les variables suivantes sont utilisees par les preconditionneurs multigrille
  integer(kind=4), public :: tblocs(nmxins)
 !

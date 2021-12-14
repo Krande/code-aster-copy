@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,6 +57,7 @@ use lmp_module, only : lmp_update
 !---------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
+#include "asterc/create_custom_ksp.h"
 #include "asterc/matfpe.h"
 #include "asterfort/apalmc.h"
 #include "asterfort/apalmd.h"
@@ -224,12 +225,22 @@ use lmp_module, only : lmp_update
 !        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
 !
-        call KSPCreate(mpicomm, kp(kptsc), ierr)
-        ASSERT(ierr.eq.0)
-        !
-        call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), ierr )
+        if (precon == 'UTILISATEUR') then
+            call create_custom_ksp(kp(kptsc), ap(kptsc), ierr)
+            ASSERT(ierr.eq.0)
+            user_ksp(kptsc) = ASTER_TRUE
 
-        ASSERT(ierr == 0)
+            if (niv >= 2) then
+                call KSPView(kp(kptsc), PETSC_VIEWER_STDOUT_SELF, ierr)
+                ASSERT(ierr.eq.0)
+            endif
+        else
+            call KSPCreate(mpicomm, kp(kptsc), ierr)
+            ASSERT(ierr.eq.0)
+            !
+            call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), ierr )
+            ASSERT(ierr == 0)
+        endif
         !
         !  Initialisation du préconditionneur
         !
@@ -541,7 +552,8 @@ use lmp_module, only : lmp_update
         call MatDestroy(a, ierr)
         ASSERT(ierr.eq.0)
 !
-        if ( ksp /= PETSC_NULL_KSP) then
+!       user KSP will be removed on Python object deletion
+        if ( ksp /= PETSC_NULL_KSP .and. .not. user_ksp(kptsc) ) then
            call KSPDestroy(ksp, ierr)
            ASSERT(ierr.eq.0)
         endif

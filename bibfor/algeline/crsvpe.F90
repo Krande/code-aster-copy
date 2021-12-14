@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -138,7 +138,7 @@ subroutine crsvpe(motfac, solveu,  kellag )
     case ('BLOC_LAGR')
 
 !   PAS DE PARAMETRES POUR LES AUTRES PRECONDITIONNEURS
-    case( 'JACOBI', 'SOR', 'SANS','FIELDSPLIT')
+    case( 'JACOBI', 'SOR', 'FIELDSPLIT', 'UTILISATEUR', 'SANS')
 !     RIEN DE PARTICULIER...
 !
     case default

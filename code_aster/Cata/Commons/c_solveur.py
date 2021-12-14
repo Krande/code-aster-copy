@@ -167,6 +167,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _BlocPE_GAMG = {}
     _BlocPE_LAGAUG = {}
     _BlocPE_FIELD = {}
+    _BlocPE_UTIL = {}
     _BlocXX_Autres = {}
 
 # --------------------------------------------------------------------
@@ -341,7 +342,9 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _BlocGC['PRE_COND'] = SIMP(
         statut='f', typ='TXM', defaut="LDLT_INC", into=("LDLT_INC", "LDLT_SP", "LDLT_DP"), )
     _BlocPE['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_SP",
-                               into=("LDLT_INC", "LDLT_SP", "LDLT_DP", "JACOBI", "SOR", "ML", "BOOMER", "GAMG", "BLOC_LAGR", "FIELDSPLIT", "SANS", ), )
+                               into=("LDLT_INC", "LDLT_SP", "LDLT_DP", "JACOBI", "SOR",
+                                     "ML", "BOOMER", "GAMG", "BLOC_LAGR", "FIELDSPLIT",
+                                     "UTILISATEUR", "SANS"))
 
 # --------------------------------------------------------------------
 
@@ -427,6 +430,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
     _BlocPE_FIELD['NOM_CMP'] = SIMP(
         statut='f', typ='TXM', max='**',)
 
+    _BlocPE_UTIL['KSP_UTIL'] = SIMP(statut="f", typ=not_checked)
 # --------------------------------------------------------------------
 #
 # PREPARATION DU MOT-CLE FACTEUR
@@ -510,6 +514,10 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
                                       b_fieldsplit=BLOC(
                                           condition="""is_in("PRE_COND", ('FIELDSPLIT'))""",
                                                           **_BlocPE_FIELD
+                                      ),
+                                      b_util=BLOC(
+                                          condition="""is_in("PRE_COND", ('UTILISATEUR'))""",
+                                                          **_BlocPE_UTIL
                                       ),
                                       b_autres=BLOC(
                                           condition="""is_in("PRE_COND", ('JACOBI','SOR','SANS'))""",

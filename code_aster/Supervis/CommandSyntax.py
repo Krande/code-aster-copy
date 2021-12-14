@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -365,7 +365,7 @@ class CommandSyntax(object):
             maxval (int): Maximum number of values read.
 
         Returns:
-            int, list: Returns three values ``(size, values)``.
+            int, list: Returns two values ``(size, values)``.
             ``size`` is the number of the values provided by the user.
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of result names.
@@ -387,7 +387,7 @@ class CommandSyntax(object):
             maxval (int): Maximum number of values read.
 
         Returns:
-            int, list: Returns three values ``(size, values)``.
+            int, list: Returns two values ``(size, values)``.
             ``size`` is the number of the values provided by the user.
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of strings.
@@ -409,7 +409,7 @@ class CommandSyntax(object):
             maxval (int): Maximum number of values read.
 
         Returns:
-            int, list: Returns three values ``(size, values)``.
+            int, list: Returns two values ``(size, values)``.
             ``size`` is the number of the values provided by the user.
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of integers.
@@ -432,7 +432,7 @@ class CommandSyntax(object):
             maxval (int): Maximum number of values read.
 
         Returns:
-            int, list: Returns three values ``(size, values)``.
+            int, list: Returns two values ``(size, values)``.
             ``size`` is the number of the values provided by the user.
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of floats.
@@ -458,7 +458,7 @@ class CommandSyntax(object):
             maxval (int): Maximum number of values read.
 
         Returns:
-            int, list: Returns three values ``(size, values)``.
+            int, list: Returns two values ``(size, values)``.
             ``size`` is the number of the values provided by the user.
             If ``size > maxval``, ``-size`` is returned.
             ``values`` is a list of complex numbers.
@@ -483,6 +483,24 @@ class CommandSyntax(object):
         if size > maxval:
             size = -size
         return size, tuple(values[:maxval])
+
+    def getvpy(self, factName, simpName, occurrence):
+        """Wrapper function to return a list of Python objects.
+
+        Arguments:
+            factName (str): Name of the factor keyword.
+            occurrence (int): Index of the occurrence (start from 0).
+            simpName (str): Name of the simple keyword.
+
+        Returns:
+            list: Tuple containing the objects provided by the user.
+        """
+        try:
+            values = tuple(self.getValue( factName, occurrence, simpName ))
+        except Exception as exc:
+            print("DEBUG: exception:", str(exc))
+            values = ()
+        return len(values), values
 
     def getres(self):
         """Return the name and type of the result, and the command name.

@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -866,6 +866,55 @@ void DEFSSPPSP(GETVID_WRAP,getvid_wrap,
         FreeStr(mfc);
         FreeStr(mcs);
         return ;
+}
+
+/* ------------------------------------------------------------------ */
+void getvpy( _IN const char *mfc, _IN const char *mcs, _IN const int ioc,
+             _OUT PyObject **rhs )
+{
+        /*
+          Return an array of Python objects for a user keyword.
+
+          Inputs:
+              motfac (string): factor keyword or " "
+              motcle (string): simple keyword
+              iocc (int): number of occurrence (1-based)
+
+          Outputs:
+              rhs (PyObject**): pointer on the tuple
+
+          The caller must free the array of 'PyObject*'!
+        */
+        PyObject *res = (PyObject*)0;
+        PyObject *tup = (PyObject*)0;
+        int nbval = 0;
+        int ok = 0;
+        /*
+                VERIFICATION
+                Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce
+                cas, le numero d'occurrence (ioc) doit etre strictement positif.
+                Si le mot-cle simple est recherche sans un mot-cle facteur ioc n'est pas utilise
+        */
+        if( isalpha(mfc[0] ) && ( ioc <= 0 ) )
+        {
+                printf( "<F> GETVPY : le numero d'occurence (IOCC=%ld) est invalide\n", ioc );
+                printf( "             commande : %s\n",
+                       PyUnicode_AsUTF8(PyObject_CallMethod(get_sh_etape(),"getName","")));
+                printf( "             mot-cle facteur : %s\n", mfc);
+                printf( "             mot-cle simple  : %s\n", mcs);
+                MYABORT( "erreur d'utilisation detectee") ;
+        }
+        res=PyObject_CallMethod(get_sh_etape(),"getvpy","ssi", mfc, mcs, ioc - 1);
+
+        if (res == NULL)MYABORT("erreur dans la partie Python");
+
+        ok = PyArg_ParseTuple(res, "iO", &nbval, &tup);
+        if (!ok)MYABORT("erreur dans la partie Python");
+
+        *rhs = tup;
+        Py_INCREF( tup );
+        Py_DECREF( res );                /*  decrement sur le refcount du retour */
+        return;
 }
 
 

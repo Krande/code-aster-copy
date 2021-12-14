@@ -3,7 +3,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,6 +25,7 @@
 
 #include "Python.h"
 #include "aster_fort_petsc.h"
+#include "aster_module.h"
 #include "astercxx.h"
 
 #include "Solvers/MatrixToPetsc.h"
@@ -34,20 +35,20 @@ void petscFinalize() {
     std::string off = "OFF", foo = " ";
     CALLO_AP_ON_OFF( off, foo );
     std::cout << "...PETSc finalized" << std::endl;
-};
+}
 
 void petscInitializeWithOptions( const std::string &options ) {
 
     std::string on = "ON";
     CALLO_AP_ON_OFF( on, options );
     std::cout << "PETSc initialized..." << std::endl;
-};
+}
 #else
 void petscFinalize() { std::cout << "PETSc library non available" << std::endl; };
 
 void petscInitializeWithOptions( const std::string &options ) {
     std::cout << "PETSc library non available" << std::endl;
-};
+}
 #endif
 
 template <>
@@ -57,3 +58,39 @@ PyObject *assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >(
 template <>
 PyObject *assemblyMatrixToPetsc< AssemblyMatrixTemperatureRealPtr >(
     const AssemblyMatrixTemperatureRealPtr matr );
+
+#ifdef ASTER_HAVE_PETSC4PY
+void DEFPPP( CREATE_CUSTOM_KSP, create_custom_ksp, _OUT KSP *ksp, _IN Mat *mat,
+             _OUT ASTERINTEGER *ierr ) {
+
+    /* get user function to build KSP solver */
+    std::string mcf( "SOLVEUR" );
+    std::string mcs( "KSP_UTIL" );
+    PyObject *tuple;
+    getvpy( mcf.c_str(), mcs.c_str(), 1, &tuple );
+    AS_ASSERT( PyTuple_Check( tuple ) && PyTuple_Size( tuple ) == 1 );
+    PyObject *builder = PyTuple_GetItem( tuple, 0 );
+    Py_DECREF( tuple );
+
+    /* create petsc4py Mat */
+    PyObject *petsc4py = PyImport_ImportModule( "petsc4py.PETSc" );
+    PyObject *pyMat = PyObject_CallMethod( petsc4py, "Mat", NULL );
+    /* filled with Mat */
+    struct PyPetscMatObject *pyx_mat = (struct PyPetscMatObject *)pyMat;
+    Mat matInit = pyx_mat->mat;
+    pyx_mat->mat = *mat;
+    /* call user function */
+    PyObject *pyKSP = PyObject_CallFunction( builder, "O", pyMat );
+
+    /* extract KSP from petsc4py KSP */
+    struct PyPetscKSPObject *pyx_ksp = (struct PyPetscKSPObject*)pyKSP;
+    *ksp = pyx_ksp->ksp;
+
+    // restore pyMat content to be safely destroyed by gc
+    pyx_mat->mat = matInit;
+    Py_DECREF( pyMat );
+    Py_DECREF( petsc4py );
+
+    return;
+}
+#endif

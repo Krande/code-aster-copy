@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -175,6 +175,7 @@ use elg_module
         do k = 1, nmxins
             ap(k) = PETSC_NULL_MAT
             kp(k) = PETSC_NULL_KSP
+            user_ksp(k) = ASTER_FALSE
             nomats(k) = ' '
             nosols(k) = ' '
             nonus(k) = ' '
