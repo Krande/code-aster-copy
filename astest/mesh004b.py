@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,8 +75,7 @@ dComputation = code_aster.DiscreteComputation(study)
 #vect_elem = dComputation.computeElementaryMechanicalLoadsVector()
 matr_elem = dComputation.computeMechanicalStiffnessMatrix()
 
-monSolver = code_aster.PetscSolver( code_aster.Renumbering.Sans )
-monSolver.setPreconditioning(code_aster.Preconditioning.Without)
+monSolver = code_aster.PetscSolver( RENUM="SANS", PRE_COND="SANS" )
 
 numeDDL = code_aster.ParallelDOFNumbering()
 numeDDL.setElementaryMatrix(matr_elem)

@@ -206,12 +206,6 @@ class BaseLinearSolver : public DataStructure {
     PyObject *getKeywords() const;
 
     /**
-     * @brief Recuperer le nom du solveur
-     * @return chaine contenant le nom Aster du solveur
-     */
-    const std::string getSolverName() const { return LinearSolverNames[(int)_linearSolver]; };
-
-    /**
      * @brief Methode permettant de savoir si la matrice est vide
      * @return true si vide
      */

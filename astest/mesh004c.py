@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,9 +66,6 @@ matr_elem = CALC_MATR_ELEM(OPTION='RIGI_THER',
                            CHAM_MATER=affectMat,
                            )
 
-# monSolver = code_aster.PetscSolver( code_aster.Renumbering.Sans )
-# monSolver.setPreconditioning(code_aster.Preconditioning.Without)
-
 numeDDL = code_aster.ParallelDOFNumbering()
 numeDDL.setElementaryMatrix(matr_elem)
 numeDDL.computeNumbering()
@@ -87,10 +84,6 @@ test.assertEqual(matrAsse.getType(), "MATR_ASSE_TEMP_R")
 vecass = ASSE_VECTEUR(VECT_ELEM=vect_elem, NUME_DDL=numeDDL)
 vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL,
                        CHAR_CINE=charCine,)
-
-# monSolver.factorize( matrAsse )
-# resu = monSolver.solve( matrAsse, vecass )
-# resu.debugPrint(6)
 
 matrAsse = FACTORISER(reuse=matrAsse,
                       MATR_ASSE=matrAsse,

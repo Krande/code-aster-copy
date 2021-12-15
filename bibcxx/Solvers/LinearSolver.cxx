@@ -59,8 +59,12 @@ BaseLinearSolver::BaseLinearSolver( const std::string name,
                                                  };
 
 void BaseLinearSolver::setKeywords( PyObject *user_keywords ) {
+    Py_XDECREF( _keywords );
     _keywords = user_keywords;
     Py_INCREF( _keywords );
+#ifdef ASTER_DEBUG_CXX
+    PYDBG("setKeywords:", _keywords);
+#endif
 }
 
 PyObject *BaseLinearSolver::getKeywords() const {

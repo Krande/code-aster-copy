@@ -52,8 +52,3 @@ Utility functions for executors
    :show-inheritance:
    :members:
    :special-members: __init__
-
-.. automodule:: code_aster.Commands.common_keywords
-   :show-inheritance:
-   :members:
-   :special-members: __init__

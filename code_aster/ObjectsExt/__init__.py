@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -29,42 +29,45 @@ from .datastructure_ext import DataStructure
 
 # extend DataStructures using metaclasses
 from .acousticload_ext import AcousticLoadComplex
-from .assemblymatrix_ext import (AssemblyMatrixDisplacementComplex,
-                                 AssemblyMatrixDisplacementReal)
+from .assemblymatrix_ext import AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementReal
 from .constantfieldoncells_ext import ConstantFieldOnCellsReal
 from .contact_ext import Contact
-from .dirichletbc_ext import (MechanicalDirichletBC,
-                              ThermalDirichletBC, AcousticDirichletBC)
+from .dirichletbc_ext import MechanicalDirichletBC, ThermalDirichletBC, AcousticDirichletBC
 from .discretecomputation_ext import DiscreteComputation
 from .dofnumbering_ext import DOFNumbering
 from .dynamicmacroelement_ext import DynamicMacroElement
 from .dynamicresults_ext import TransientGeneralizedResult
 from .elementarycharacteristics_ext import ElementaryCharacteristics
-from .elementarymatrix_ext import (ElementaryMatrixDisplacementComplex,
-                                   ElementaryMatrixDisplacementReal,
-                                   ElementaryMatrixPressureComplex,
-                                   ElementaryMatrixTemperatureReal)
+from .elementarymatrix_ext import (
+    ElementaryMatrixDisplacementComplex,
+    ElementaryMatrixDisplacementReal,
+    ElementaryMatrixPressureComplex,
+    ElementaryMatrixTemperatureReal,
+)
 from .fieldoncells_ext import FieldOnCellsReal
 from .fieldonnodes_ext import FieldOnNodesReal
 from .formula_ext import Formula
 from .function2d_ext import Function2D
 from .function_ext import Function
-from .generalizedassemblymatrix_ext import (GeneralizedAssemblyMatrixComplex,
-                                            GeneralizedAssemblyMatrixReal)
-from .generalizedassemblyvector_ext import (GeneralizedAssemblyVectorComplex,
-                                            GeneralizedAssemblyVectorReal)
+from .generalizedassemblymatrix_ext import (
+    GeneralizedAssemblyMatrixComplex,
+    GeneralizedAssemblyMatrixReal,
+)
+from .generalizedassemblyvector_ext import (
+    GeneralizedAssemblyVectorComplex,
+    GeneralizedAssemblyVectorReal,
+)
 from .generalizedmodel_ext import GeneralizedModel
+from .linearsolver_ext import GcpcSolver, LdltSolver, MultFrontSolver, MumpsSolver, PetscSolver
 from .listoffloats_ext import ListOfFloats
 from .listofintegers_ext import ListOfIntegers
 from .material_ext import Material
 from .materialfield_ext import MaterialField
-from .mechanicalload_ext import (MechanicalLoadReal,
-                                 MechanicalLoadFunction, MechanicalLoadComplex)
+from .mechanicalload_ext import MechanicalLoadReal, MechanicalLoadFunction, MechanicalLoadComplex
 from .mesh_ext import Mesh
 from .meshcoordinatesfield_ext import MeshCoordinatesField
 from .model_ext import Model
-from .parallelmechanicalload_ext import (ParallelMechanicalLoadReal,
-                                         ParallelMechanicalLoadFunction)
+from .parallelmechanicalload_ext import ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction
 from .parallelmesh_ext import ConnectionMesh, ParallelMesh
 from .prestressingcable_ext import PrestressingCable
 from .physicalproblem_ext import PhysicalProblem

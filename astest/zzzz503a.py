@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -102,7 +102,7 @@ matr_elem = dComputation.computeMechanicalStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")
 
-monSolver = code_aster.MumpsSolver(code_aster.Renumbering.Metis)
+monSolver = code_aster.MumpsSolver()
 
 numeDDL = code_aster.DOFNumbering()
 numeDDL.setElementaryMatrix(matr_elem)

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -21,10 +21,9 @@
 
 from ..Objects import ( MechanicalLoadReal, DirichletBC, MechanicalLoadFunction,
                         ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction,
-                        LinearStaticAnalysis, ElasticResult)
+                        LinearStaticAnalysis, ElasticResult, BaseLinearSolver )
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
-from .common_keywords import create_solver
 
 
 class MechanicalSolver(ExecuteCommand):
@@ -90,7 +89,7 @@ class MechanicalSolver(ExecuteCommand):
 
         mechaSolv.setStressComputation( keywords["OPTION"] == "SIEF_ELGA" )
 
-        solver = create_solver(keywords.get("SOLVEUR"))
+        solver = BaseLinearSolver.factory(keywords.get("SOLVEUR"))
         mechaSolv.setLinearSolver(solver)
         self._result = mechaSolv.execute( self._result )
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ charCine2 = code_aster.MechanicalDirichletBC(monModel)
 charCine2.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
 charCine2.build()
 
-monSolver = code_aster.MumpsSolver(code_aster.Renumbering.Metis)
+monSolver = code_aster.MumpsSolver()
 
 mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
 mecaStatique.addDirichletBC(charCine)
