@@ -3,7 +3,7 @@
  * @brief
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,12 +29,7 @@ bool GenericModalBasis::build() {
     CommandSyntax cmdSt( "DEFI_BASE_MODALE" );
     cmdSt.setResult( getName(), "MODE_MECA" );
 
-    CapyConvertibleSyntax syntax;
-    CapyConvertibleContainer solverSyntaxContainer( "SOLVEUR", _solver->getListOfParameters() );
-    syntax.addCapyConvertibleContainer( solverSyntaxContainer );
-    for ( const auto &iter : _vectorOfModalBasis )
-        syntax.addCapyConvertibleContainer( iter._container );
-
+    PyObject *syntax = _solver->getKeywords();
     cmdSt.define( syntax );
 
     try {
@@ -45,5 +40,6 @@ bool GenericModalBasis::build() {
     }
     _isEmpty = false;
 
+    Py_DECREF( syntax );
     return true;
 };
