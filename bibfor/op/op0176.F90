@@ -59,13 +59,12 @@ implicit none
 !
     character(len=6) :: nompro
     parameter ( nompro = 'OP0176' )
-    integer :: ibid, storeNb, nbexcl, jexcl, nbarch, iStore
+    integer :: ibid, storeNb, nbexcl, jexcl, nbarch
     integer :: nbac, nbpa, iret, nbnosy, paraNb, nbrest
     integer :: mesgUnit, ifm, niv
     character(len=8) :: noma, nomo, nocara, nochmat
     character(len=16) :: typcon, nomcmd
     character(len=19) :: resultOutName, resultInName
-    character(len=19) ::  comporToCopy, comporToSave 
     character(len=24) :: lisarc, lichex, paraJvName
     aster_logical :: lrest
     integer :: nmail, nmode, ncara, nchmat
@@ -153,13 +152,7 @@ implicit none
                     nbarch, archi, nbexcl, zk16(jexcl), nbnosy)
     endif
     
-    do iStore = 1, storeNb
-        call rsexch(' ', resultInName, 'COMPORTEMENT', storeIndx(iStore), comporToCopy,iret)
-        if (iret .eq. 0) then
-            call rsexch(' ', resultoutName, 'COMPORTEMENT', storeIndx(iStore), comporToSave,iret)
-            call copisd('CHAMP_GD', 'G', comporToCopy, comporToSave)
-        endif
-    enddo
+
     AS_DEALLOCATE(vi = storeIndx)
 !
     call titre()

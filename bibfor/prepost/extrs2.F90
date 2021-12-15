@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,10 +125,12 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     do i = 1, nbnosy
 !
         call jenuno(jexnum(resuin//'.DESC', i), nomsym)
-        do j = 1, nbexcl
-            if (chexcl(j) .eq. nomsym) goto 30
-        end do
-!
+        if (nomsym .eq. 'COMPORTEMENT') then
+        else
+            do j = 1, nbexcl
+                if (chexcl(j) .eq. nomsym) goto 30
+            end do
+        endif
         do j = 1, nbordr
             if (nuarch(j) .eq. 0) goto 20
             call rsexch(' ', resuin, nomsym, nuordr(j), chamin,&
