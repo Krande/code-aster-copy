@@ -29,26 +29,9 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
-const std::set< Renumbering > WrapMultFront::setOfAllowedRenumbering( MultFrontRenumbering,
-                                                                      MultFrontRenumbering +
-                                                                          nbRenumberingMultFront );
-
-const std::set< Renumbering >
-    WrapLdlt::setOfAllowedRenumbering( LdltRenumbering, LdltRenumbering + nbRenumberingLdlt );
-
-const std::set< Renumbering >
-    WrapMumps::setOfAllowedRenumbering( MumpsRenumbering, MumpsRenumbering + nbRenumberingMumps );
-
-const std::set< Renumbering >
-    WrapPetsc::setOfAllowedRenumbering( PetscRenumbering, PetscRenumbering + nbRenumberingPetsc );
-
-const std::set< Renumbering >
-    WrapGcpc::setOfAllowedRenumbering( GcpcRenumbering, GcpcRenumbering + nbRenumberingGcpc );
-
-BaseLinearSolver::BaseLinearSolver( const std::string name,
-                                    const LinearSolverEnum currentBaseLinearSolver )
-    : DataStructure( name, 19, "SOLVEUR" ), _linearSolver( currentBaseLinearSolver ),
-      _isEmpty( true ), _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
+BaseLinearSolver::BaseLinearSolver( const std::string name )
+    : DataStructure( name, 19, "SOLVEUR" ), _isEmpty( true ),
+      _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
       _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
       _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ),
@@ -63,7 +46,7 @@ void BaseLinearSolver::setKeywords( PyObject *user_keywords ) {
     _keywords = user_keywords;
     Py_INCREF( _keywords );
 #ifdef ASTER_DEBUG_CXX
-    PYDBG("setKeywords:", _keywords);
+    PYDBG( "setKeywords:", _keywords );
 #endif
 }
 
@@ -125,10 +108,9 @@ bool BaseLinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatri
     cmdSt.define( dict );
 
     CALLO_MATRIX_FACTOR( solverName, base, &cret, _matrixPrec->getName(), matass, &npvneg, &istop );
-    currentMatrix->_isFactorized = true;
 
-    auto solverType = std::string( LinearSolverNames[_linearSolver] );
-    currentMatrix->setSolverName( solverType );
+    currentMatrix->_isFactorized = true;
+    currentMatrix->setSolverName( getSolverName() );
 
     Py_DECREF( dict );
     return true;
@@ -162,8 +144,7 @@ FieldOnNodesRealPtr BaseLinearSolver::solve( const AssemblyMatrixDisplacementRea
                   currentRHS->getName(), result->getName(), base, &rdummy, &cdummy, blanc,
                   (ASTERLOGICAL *)&prepos, &istop, &iret );
 
-    auto solverType = std::string( LinearSolverNames[_linearSolver] );
-    currentMatrix->setSolverName( solverType );
+    currentMatrix->setSolverName( getSolverName() );
 
     return result;
 };
@@ -198,8 +179,7 @@ BaseLinearSolver::solveWithDirichletBC( const AssemblyMatrixDisplacementRealPtr 
                   dirichletBCField->getName(), &nsecm, currentRHS->getName(), result->getName(),
                   base, &rdummy, &cdummy, blanc, (ASTERLOGICAL *)&prepos, &istop, &iret );
 
-    auto solverType = std::string( LinearSolverNames[_linearSolver] );
-    currentMatrix->setSolverName( solverType );
+    currentMatrix->setSolverName( getSolverName() );
 
     return result;
 };

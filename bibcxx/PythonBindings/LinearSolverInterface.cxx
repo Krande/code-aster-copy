@@ -26,6 +26,7 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
+#include "Solvers/AllowedLinearSolver.h"
 #include "PythonBindings/LinearSolverInterface.h"
 #include <PythonBindings/factory.h>
 
@@ -109,6 +110,8 @@ void exportLinearSolverToPython() {
         // .def( "__init__", py::make_constructor( &initFactoryPtr< BaseLinearSolver > ) )
         // .def( "__init__", py::make_constructor( &initFactoryPtr< BaseLinearSolver, std::string >
         // ) )
+        .def( "getSolverName", &BaseLinearSolver::getSolverName )
+        .def( "supportParallelMesh", &BaseLinearSolver::supportParallelMesh )
         .def( "setKeywords", &BaseLinearSolver::setKeywords )
         .def( "build", &BaseLinearSolver::build )
         .def( "solve", &BaseLinearSolver::solve, solve_overloads() )

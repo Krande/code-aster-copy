@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,6 +27,7 @@
 #########################################################################
 
 DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
 MA=LIRE_MAILLAGE(FORMAT='MED')
 DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'))
 MO=AFFE_MODELE(MAILLAGE=MA, AFFE=_F(TOUT='OUI',PHENOMENE='MECANIQUE',MODELISATION='3D'))
@@ -64,6 +65,16 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,GROUP_NO='C',RESULTAT=RESU13,NOM_CHAM='DEPL',NOM_
 # 2: Calcul avec LDLT
 #--------------------
 solver='LDLT'
+ordering='RCMK'
+RESU21=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=iinfo,
+                    EXCIT=( _F(CHARGE = CHAR),_F(CHARGE = CHARCI)),
+                    SOLVEUR=_F(METHODE=solver, RENUM=ordering),)
+TEST_RESU(RESU=_F(NUME_ORDRE=1,GROUP_NO='C',RESULTAT=RESU21,NOM_CHAM='DEPL',NOM_CMP='DZ',
+                  VALE_CALC=-41.60757189956,),)
+
+# 2b: Calcul avec GCPC
+#--------------------
+solver='GCPC'
 ordering='RCMK'
 RESU21=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,INFO=iinfo,
                     EXCIT=( _F(CHARGE = CHAR),_F(CHARGE = CHARCI)),

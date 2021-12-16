@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -290,7 +290,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
 
     _BlocMU['PCENT_PIVOT'] = SIMP(
         statut='f', typ='I', defaut=20, val_min=1, )
-        
+
 # --------------------------------------------------------------------
 
     if (_type != 'SD'):

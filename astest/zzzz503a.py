@@ -180,6 +180,27 @@ test.assertAlmostEqual(resu2.getValue(5, 3), 0.000757555469653289 / 10.)
 libaster.deleteTemporaryObjects()
 test.assertTrue(vcine.updateValuePointers())
 
+# check other solvers attributes
+test.assertEqual(monSolver.getSolverName(), "MUMPS")
+test.assertTrue(monSolver.supportParallelMesh(), "support of ParallelMesh")
+
+monSolver = code_aster.LdltSolver()
+test.assertEqual(monSolver.getSolverName(), "LDLT")
+test.assertFalse(monSolver.supportParallelMesh(), "support of ParallelMesh")
+
+monSolver = code_aster.MultFrontSolver()
+test.assertEqual(monSolver.getSolverName(), "MULT_FRONT")
+test.assertFalse(monSolver.supportParallelMesh(), "support of ParallelMesh")
+
+monSolver = code_aster.PetscSolver()
+test.assertEqual(monSolver.getSolverName(), "PETSC")
+test.assertTrue(monSolver.supportParallelMesh(), "support of ParallelMesh")
+
+monSolver = code_aster.GcpcSolver()
+test.assertEqual(monSolver.getSolverName(), "GCPC")
+test.assertFalse(monSolver.supportParallelMesh(), "support of ParallelMesh")
+
+
 test.printSummary()
 
 FIN()

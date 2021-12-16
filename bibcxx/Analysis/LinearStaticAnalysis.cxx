@@ -3,7 +3,7 @@
  * @brief Fichier source contenant le source du solveur de mecanique statique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -89,7 +89,7 @@ ElasticResultPtr LinearStaticAnalysis::execute( ElasticResultPtr resultC ) {
     DiscreteComputationPtr dProblem( boost::make_shared< DiscreteComputation >( _study ) );
 
     if ( _model->getMesh()->isParallel() ) {
-        if ( !_linearSolver->isHPCCompliant() )
+        if ( !_linearSolver->supportParallelMesh() )
             throw std::runtime_error( "ParallelMesh not allowed with this linear solver" );
     }
     // Build the linear solver (sd_solver)

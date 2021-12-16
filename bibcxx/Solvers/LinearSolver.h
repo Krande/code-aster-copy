@@ -33,108 +33,15 @@
 #include "DataStructures/DataStructure.h"
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "MemoryManager/JeveuxVector.h"
-#include "Solvers/AllowedLinearSolver.h"
 #include "Supervis/ResultNaming.h"
-#include "Utilities/GenericParameter.h"
 #include "astercxx.h"
-
-/**
- * @struct LinearStaticAnalysis predefinition
- * @todo to remove
- */
-class LinearStaticAnalysis;
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
-// Ces wrappers sont la pour autoriser que les set soient const
-// Sinon, on aurait pas pu passer directement des const set<> en parametre template
-/**
- * @struct WrapMultFront
- * @brief Structure destinee a contenir les renumeroteurs autorises pour MultFront
- */
-struct WrapMultFront {
-    static const LinearSolverEnum solverType = MultFront;
-    static const std::set< Renumbering > setOfAllowedRenumbering;
-    static const bool isHPCCompliant = false;
-    static const Renumbering defaultRenumbering = Metis;
-};
-
-/**
- * @struct WrapLdlt
- * @brief Structure destinee a contenir les renumeroteurs autorises pour Ldlt
- */
-struct WrapLdlt {
-    static const LinearSolverEnum solverType = Ldlt;
-    static const std::set< Renumbering > setOfAllowedRenumbering;
-    static const bool isHPCCompliant = false;
-    static const Renumbering defaultRenumbering = RCMK;
-};
-
-/**
- * @struct WrapMumps
- * @brief Structure destinee a contenir les renumeroteurs autorises pour Mumps
- */
-struct WrapMumps {
-    static const LinearSolverEnum solverType = Mumps;
-    static const std::set< Renumbering > setOfAllowedRenumbering;
-    static const bool isHPCCompliant = true;
-    static const Renumbering defaultRenumbering = Auto;
-};
-
-/**
- * @struct WrapPetsc
- * @brief Structure destinee a contenir les renumeroteurs autorises pour Petsc
- */
-struct WrapPetsc {
-    static const LinearSolverEnum solverType = Petsc;
-    static const std::set< Renumbering > setOfAllowedRenumbering;
-    static const bool isHPCCompliant = true;
-    static const Renumbering defaultRenumbering = Sans;
-};
-
-/**
- * @struct WrapGcpc
- * @brief Structure destinee a contenir les renumeroteurs autorises pour Gcpc
- */
-struct WrapGcpc {
-    static const LinearSolverEnum solverType = Gcpc;
-    static const std::set< Renumbering > setOfAllowedRenumbering;
-    static const bool isHPCCompliant = false;
-    static const Renumbering defaultRenumbering = Sans;
-};
-
-/**
- * @struct RenumberingChecker
- * @brief Struct statiquepermetant de verifier si un renumeroteur est autorise
-         pour un solveur donne
- * @author Nicolas Sellenet
- */
-template < class Wrapping > struct RenumberingChecker {
-    static bool isHPCCompliant() { return Wrapping::isHPCCompliant; }
-};
-
-/** @typedef Definition du verificateur de renumeroteur pour MultFront */
-typedef RenumberingChecker< WrapMultFront > MultFrontRenumberingChecker;
-/** @typedef Definition du verificateur de renumeroteur pour Ldlt */
-typedef RenumberingChecker< WrapLdlt > LdltRenumberingChecker;
-/** @typedef Definition du verificateur de renumeroteur pour Mumps */
-typedef RenumberingChecker< WrapMumps > MumpsRenumberingChecker;
-/** @typedef Definition du verificateur de renumeroteur pour Petsc */
-typedef RenumberingChecker< WrapPetsc > PetscRenumberingChecker;
-/** @typedef Definition du verificateur de renumeroteur pour Gcpc */
-typedef RenumberingChecker< WrapGcpc > GcpcRenumberingChecker;
 
 /**
  * @class BaseLinearSolver
  * @brief Cette classe permet de definir un solveur lineaire
- * @author Nicolas Sellenet
- * @todo verifier que tous les mots-clés sont modifiables par des set
  */
 class BaseLinearSolver : public DataStructure {
   protected:
-    /** @brief Type du solveur lineaire */
-    LinearSolverEnum _linearSolver;
-    /** @brief Le solveur est-il vide ? */
     bool _isEmpty;
 
     JeveuxVectorChar24 _charValues;
@@ -156,32 +63,32 @@ class BaseLinearSolver : public DataStructure {
 
     /**
      * @brief Constructeur
-     * @param currentBaseLinearSolver Type de solveur
-     * @param currentRenumber Type de renumeroteur
-     * @todo recuperer le code retour de isAllowedRenumberingForSolver
      */
-    BaseLinearSolver( const LinearSolverEnum currentBaseLinearSolver = MultFront )
-        : BaseLinearSolver( ResultNaming::getNewResultName(), currentBaseLinearSolver ){};
+    BaseLinearSolver() : BaseLinearSolver( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      * @param name Name of the DataStructure
-     * @param currentBaseLinearSolver Type de solveur
-     * @param currentRenumber Type de renumeroteur
-     * @todo recuperer le code retour de isAllowedRenumberingForSolver
      */
-    BaseLinearSolver( const std::string name,
-                      const LinearSolverEnum currentBaseLinearSolver = MultFront );
+    BaseLinearSolver( const std::string name );
 
     /**
      * @brief Destructor
      */
     ~BaseLinearSolver() { Py_XDECREF( _keywords ); };
 
-    // /** @brief Returns a ListSyntaxMapContainer object "listsyntax",
-    //     ready to be inserted  in a CommandSyntax object with the key SOLVEUR
-    // */
-    // ListSyntaxMapContainer buildListSyntax();
+    /**
+     * @brief Return the solver name.
+     * @return string
+     */
+    // can not be pure virtual because of boost wrapping
+    virtual const std::string getSolverName() const { return ""; };
+
+    /**
+     * @brief Tell if the solver support HPC distributed parallelism.
+     * @return bool
+     */
+    virtual const bool supportParallelMesh() const { return false; };
 
     /**
      * @brief Construction de la sd_solveur
@@ -210,12 +117,6 @@ class BaseLinearSolver : public DataStructure {
      * @return true si vide
      */
     bool isEmpty() { return _isEmpty; };
-
-    /**
-     * @brief Methode permettant de savoir si le HPC est autorise
-     * @return true si le découpage de domain est autorisé
-     */
-    virtual bool isHPCCompliant() { return false; };
 
     /**
      * @brief Factorisation d'une matrice
@@ -258,35 +159,43 @@ class BaseLinearSolver : public DataStructure {
  */
 typedef boost::shared_ptr< BaseLinearSolver > BaseLinearSolverPtr;
 
-/**
- * @class LinearSolver
- * @brief Cette classe permet de definir un solveur lineaire
- * @author Nicolas Sellenet
- * @todo verifier que tous les mots-clés sont modifiables par des set
- */
-template < typename linSolvWrap > class LinearSolver : public BaseLinearSolver {
+class LdltSolver : public BaseLinearSolver {
   public:
-    /**
-     * @typedef LinearSolverPtr
-     * @brief Pointeur intelligent vers un LinearSolver
-     */
-    typedef boost::shared_ptr< LinearSolver< linSolvWrap > > LinearSolverPtr;
-
-    /**
-     * @brief Constructeur
-     */
-    LinearSolver() : LinearSolver( ResultNaming::getNewResultName() ){};
-
-    LinearSolver( const std::string name ) : BaseLinearSolver( name, linSolvWrap::solverType ){};
-
-    bool isHPCCompliant() { return RenumberingChecker< linSolvWrap >::isHPCCompliant(); };
+    LdltSolver( const std::string name ) : BaseLinearSolver( name ){};
+    LdltSolver() : BaseLinearSolver(){};
+    const std::string getSolverName() const { return "LDLT"; };
 };
 
-typedef LinearSolver< WrapMultFront > MultFrontSolver;
-typedef LinearSolver< WrapLdlt > LdltSolver;
-typedef LinearSolver< WrapMumps > MumpsSolver;
-typedef LinearSolver< WrapPetsc > PetscSolver;
-typedef LinearSolver< WrapGcpc > GcpcSolver;
+class MultFrontSolver : public BaseLinearSolver {
+  public:
+    MultFrontSolver( const std::string name ) : BaseLinearSolver( name ){};
+    MultFrontSolver() : BaseLinearSolver(){};
+
+    const std::string getSolverName() const { return "MULT_FRONT"; };
+};
+
+class MumpsSolver : public BaseLinearSolver {
+  public:
+    MumpsSolver( const std::string name ) : BaseLinearSolver( name ){};
+    MumpsSolver() : BaseLinearSolver(){};
+    const std::string getSolverName() const { return "MUMPS"; };
+    const bool supportParallelMesh() const { return true; };
+};
+
+class PetscSolver : public BaseLinearSolver {
+  public:
+    PetscSolver( const std::string name ) : BaseLinearSolver( name ){};
+    PetscSolver() : BaseLinearSolver(){};
+    const std::string getSolverName() const { return "PETSC"; };
+    const bool supportParallelMesh() const { return true; };
+};
+
+class GcpcSolver : public BaseLinearSolver {
+  public:
+    GcpcSolver( const std::string name ) : BaseLinearSolver( name ){};
+    GcpcSolver() : BaseLinearSolver(){};
+    const std::string getSolverName() const { return "GCPC"; };
+};
 
 /** @brief Enveloppe d'un pointeur intelligent vers un BaseLinearSolver< MultFront > */
 typedef boost::shared_ptr< MultFrontSolver > MultFrontSolverPtr;

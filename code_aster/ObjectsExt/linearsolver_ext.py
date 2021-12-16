@@ -50,12 +50,15 @@ class ExtendedBaseLinearSolver:
             :class:`~code_aster.Objects.BaseLinearSolver` (derivated of):
             Instance of a solver or *None* if none is selected.
         """
-        if mcf and type(mcf) in (list, tuple):
-            kwargs = mcf[0]
-        name = kwargs.get("METHODE", "MUMPS")
+        if mcf:
+            if isinstance(mcf, (list, tuple)):
+                mcf = mcf[0]
+            if isinstance(mcf, dict):
+                kwargs = mcf
+        name = kwargs.get("METHODE")
         klass = None
         for sub in cls.__subclasses__():
-            if sub.solver_name() == name:
+            if sub.solverName() == name:
                 klass = sub
                 break
         assert klass, f"Unknown solver: {name}"
@@ -80,7 +83,7 @@ class BaseLinearSolverExt:
         self.setKeywords(keywords)
 
     @classmethod
-    def solver_name(cls):
+    def solverName(cls):
         """Return the solver name.
 
         Returns:
