@@ -27,83 +27,12 @@
 
 namespace py = boost::python;
 #include "PythonBindings/LinearSolverInterface.h"
-#include "Solvers/AllowedLinearSolver.h"
 #include <PythonBindings/factory.h>
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solveWithDirichletBC_overloads, solveWithDirichletBC, 3, 4 )
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solve_overloads, solve, 2, 3 )
 
 void exportLinearSolverToPython() {
-
-    py::enum_< LinearSolverEnum >( "LinearSolverName" )
-        .value( "MultFront", MultFront )
-        .value( "Ldlt", Ldlt )
-        .value( "Mumps", Mumps )
-        .value( "Petsc", Petsc )
-        .value( "Gcpc", Gcpc );
-
-    py::enum_< Renumbering >( "Renumbering" )
-        .value( "MD", MD )
-        .value( "MDA", MDA )
-        .value( "Metis", Metis )
-        .value( "RCMK", RCMK )
-        .value( "AMD", AMD )
-        .value( "AMF", AMF )
-        .value( "PORD", PORD )
-        .value( "QAMD", QAMD )
-        .value( "Scotch", Scotch )
-        .value( "Auto", Auto )
-        .value( "Parmetis", Parmetis )
-        .value( "Ptscotch", Ptscotch )
-        .value( "Sans", Sans );
-
-    py::enum_< Preconditioning >( "Preconditioning" )
-        .value( "IncompleteLdlt", IncompleteLdlt )
-        .value( "SimplePrecisionLdlt", SimplePrecisionLdlt )
-        .value( "Jacobi", Jacobi )
-        .value( "Sor", Sor )
-        .value( "Ml", Ml )
-        .value( "Boomer", Boomer )
-        .value( "Gamg", Gamg )
-        .value( "LagrBloc", LagrBloc )
-        .value( "Without", Without );
-
-    py::enum_< IterativeSolverAlgorithm >( "IterativeSolverAlgorithm" )
-        .value( "ConjugateGradiant", ConjugateGradiant )
-        .value( "ConjugateResidual", ConjugateResidual )
-        .value( "GMRes", GMRes )
-        .value( "GCR", GCR )
-        .value( "FGMRes", FGMRes );
-
-    py::enum_< LagrangeTreatment >( "LagrangeTreatment" )
-        .value( "Eliminate", Eliminate )
-        .value( "NotEliminate", NotEliminate )
-        .value( "LagrangeEliminateReal", LagrangeEliminateReal );
-
-    py::enum_< MemoryManagement >( "MemoryManagement" )
-        .value( "InCore", InCore )
-        .value( "OutOfCore", OutOfCore )
-        .value( "Automatic", Automatic )
-        .value( "Evaluation", Evaluation );
-
-    py::enum_< MatrixType >( "MatrixType" )
-        .value( "NonSymetric", NonSymetric )
-        .value( "Symetric", Symetric )
-        .value( "SymetricPositiveDefinite", SymetricPositiveDefinite )
-        .value( "Undefined", Undefined );
-
-    py::enum_< MumpsPostTreatment >( "MumpsPostTreatment" )
-        .value( "WithoutPostTreatment", WithoutPostTreatment )
-        .value( "AutomaticPostTreatment", AutomaticPostTreatment )
-        .value( "ForcedPostTreatment", ForcedPostTreatment )
-        .value( "MinimalPostTreatment", MinimalPostTreatment );
-
-    py::enum_< MumpsAcceleration >( "MumpsAcceleration" )
-        .value( "AutomaticAcceleration", AutomaticAcceleration )
-        .value( "FullRank", FullRank )
-        .value( "FullRankPlus", FullRankPlus )
-        .value( "LowRank", LowRank )
-        .value( "LowRankPlus", LowRankPlus );
 
     py::class_< LinearSolver, LinearSolver::LinearSolverPtr, py::bases< DataStructure > >(
         "LinearSolver", py::no_init )

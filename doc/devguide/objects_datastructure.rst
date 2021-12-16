@@ -119,15 +119,6 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.LinearSolver` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.LinearSolver
-   :show-inheritance:
-   :members:
-
-
-================================================================================
 :py:class:`~code_aster.Objects.BaseMesh` object
 ================================================================================
 
@@ -785,6 +776,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.LinearSolver` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.LinearSolver
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.LineicForceReal` object
 ================================================================================
 
@@ -1286,3 +1286,4 @@
 .. autoclass:: code_aster.Objects.XfemCrack
    :show-inheritance:
    :members:
+

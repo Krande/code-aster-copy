@@ -282,10 +282,6 @@ Documentation of all other types.
 :py:class:`~code_aster.Objects.enum` subclasses
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.LinearSolverName
-   :show-inheritance:
-   :members:
-
 .. autoclass:: code_aster.Objects.EntityType
    :show-inheritance:
    :members:
@@ -298,23 +294,7 @@ Documentation of all other types.
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.IterativeSolverAlgorithm
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.LagrangeTreatment
-   :show-inheritance:
-   :members:
-
 .. autoclass:: code_aster.Objects.Loads
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.MatrixType
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.MemoryManagement
    :show-inheritance:
    :members:
 
@@ -326,27 +306,11 @@ Documentation of all other types.
    :show-inheritance:
    :members:
 
-.. autoclass:: code_aster.Objects.MumpsAcceleration
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.MumpsPostTreatment
-   :show-inheritance:
-   :members:
-
 .. autoclass:: code_aster.Objects.PhysicalQuantityComponent
    :show-inheritance:
    :members:
 
 .. autoclass:: code_aster.Objects.Physics
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Preconditioning
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Renumbering
    :show-inheritance:
    :members:
 
@@ -378,3 +342,4 @@ Documentation of all other types.
 .. autoclass:: code_aster.Objects.TimeLimitError
    :show-inheritance:
    :members:
+

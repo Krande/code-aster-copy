@@ -3,7 +3,7 @@
  * @brief Interface python de CppToFortranGlossary
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,17 +34,8 @@ void exportCppToFortranGlossaryToPython() {
         // fake initFactoryPtr: not a DataStructure
         // fake initFactoryPtr: not a DataStructure
         .def( "getComponent", &Glossary::getComponent )
-        .def( "getIterativeSolverAlgorithm", &Glossary::getIterativeSolverAlgorithm )
-        .def( "getLagrangeTreatment", &Glossary::getLagrangeTreatment )
-        .def( "getMatrixType", &Glossary::getMatrixType )
-        .def( "getMemoryManagement", &Glossary::getMemoryManagement )
         .def( "getModeling", &Glossary::getModeling )
-        .def( "getMumpsAcceleration", &Glossary::getMumpsAcceleration )
-        .def( "getMumpsPostTreatment", &Glossary::getMumpsPostTreatment )
-        .def( "getPhysics", &Glossary::getPhysics )
-        .def( "getRenumbering", &Glossary::getRenumbering )
-        .def( "getPreconditioning", &Glossary::getPreconditioning )
-        .def( "getSolver", &Glossary::getSolver );
+        .def( "getPhysics", &Glossary::getPhysics );
 
     def( "getGlossary", &getReferenceToGlossary,
          py::return_value_policy< py::reference_existing_object >() );
