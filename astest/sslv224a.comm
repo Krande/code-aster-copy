@@ -21,20 +21,11 @@
 #TP MECANIQUE DE LA RUPTURE, EXERCICE 5 : ZONES COHESIVES
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
-# MODELIDATION B : ELEMENTS INTERFACE
+# MODELIDATION A : ELEMENTS JOINTS
 
-# CE FICHIER EST LA VERSION CORRIGEE DU 5EME EXERCICE DES TPS
-# POUR LA PREPARATION DES TPS, FOURNIR EGALEMENT UNE VERSION A TROUS DE CE FICHIER :
-# - REMPLACER LES PARAMETRES INITIAUX PAR UNE VALEUR BIDON (EX. : 999)
-# - ENLEVER LE LINE_QUAD et le DEFI_GROUP
-# - ENLEVER LES GROUP_MA DES AFFE_CHAR_MECA, AFFE_MATERIAU, AFFE_CARA_ELEM
-# - ENLEVER LE COMPORTEMENT DE STAT_NON_LINE
-# - METTRE RESI_XXX_RELA A LA PLACE DE RESI_REFE_RELA DANS STAT_NON_LINE
-# - ENLEVER LE PILOTAGE DANS STAT_NON_LINE
-# - SUPPRIMER LES TEST_TABLE
 
-tfin = 4.5
-nbarch = int(10*tfin)
+tfin = 10
+nbarch = 10*tfin
 
 young = 100
 nu=0.
@@ -52,23 +43,17 @@ deplx = 0.0
 deplz = 0.0
 
 # LECTURE DU MAILLAGE
-
-M  =  LIRE_MAILLAGE(
+MA  =  LIRE_MAILLAGE(
                     FORMAT='MED',
                     )
 
-MA=CREA_MAILLAGE(MAILLAGE=M,
-                 LINE_QUAD=_F(TOUT='OUI'),)
 
-MA=DEFI_GROUP(reuse=MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=_F(NOM='DCB_GB',
-                               GROUP_MA='DCB_GB',),)
 
 #ORIENTATION DES MAILLES SUR LESQUELLES ON AFFECTE LA CZM
 MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
                    ORIE_FISSURE=_F(GROUP_MA='DCB_J'),
+                   INFO=2
                    )
 
 #AFFECTATION DU MODELE
@@ -84,19 +69,19 @@ MO=AFFE_MODELE(
                 _F(
                         GROUP_MA = 'DCB_J',
                         PHENOMENE = 'MECANIQUE',
-                        MODELISATION = '3D_INTERFACE'
+                        MODELISATION = '3D_JOINT'
                        ),
 
                  )
               )
 
-# AFFECTATION DES ANGLES NAUTIQUES : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
-# POUR LES ELEMENTS D'INTERFACE UNIQUEMENT
-
-ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
-                     MASSIF=(
-                             _F(GROUP_MA='DCB_J',ANGL_REP=(-90, 0 ,-90)),
-                                 ));
+## AFFECTATION DES ANGLES NAUTIQUES : POSITION DE LA FISSURE DANS LE REPERE GLOBAL
+## POUR LES ELEMENTS D'INTERFACE UNIQUEMENT
+#
+#ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
+#                     MASSIF=(
+#                             _F(GROUP_MA='DCB_J',ANGL_REP=(-90, 0 ,-90)),
+#                                 ));
 
 #DEFINITION ET AFFECTATION DU MATERIAU
 ACIER=DEFI_MATERIAU(
@@ -174,37 +159,29 @@ FCT = DEFI_FONCTION(
 U=STAT_NON_LINE(
   MODELE     = MO,
   CHAM_MATER = CM,
-  CARA_ELEM  = ORIEN_FI,
   EXCIT      = (
                  _F(CHARGE = SYMETRIE),
                  _F(CHARGE = TRACTION ,
-#                   FONC_MULT=FCT,
-                    TYPE_CHARGE = 'FIXE_PILO'
+                    FONC_MULT=FCT,
                     ),
                ),
   COMPORTEMENT  = (
                 _F(RELATION = 'ELAS'      , GROUP_MA = ('DCB_1','DCB_2')),
-                _F(RELATION = 'CZM_OUV_MIX',    GROUP_MA = 'DCB_J', ),
+                _F(RELATION = 'CZM_EXP_REG',    GROUP_MA = 'DCB_J', ),
+#                _F(RELATION = 'CZM_LIN_REG',    GROUP_MA = 'DCB_J', ),
                 ),
   INCREMENT  = _F(LIST_INST = L_INST,
                   INST_FIN = tfin,
                  ),
   NEWTON     = _F(MATRICE    = 'TANGENTE'  , REAC_ITER=1 ,
                    ),
-  PILOTAGE   = _F(
-                  SELECTION = 'RESIDU',
-                  TYPE = 'PRED_ELAS',
-                  GROUP_MA = 'DCB_J',
-                  COEF_MULT = 1,
-                  ETA_PILO_R_MIN = 0.),
 
-    CONVERGENCE = _F(
-                   RESI_REFE_RELA = 1.E-6,
-                   SIGM_REFE      = sigc,
-                   DEPL_REFE      = dc,
+  CONVERGENCE = _F(
+                   RESI_GLOB_RELA = 5.E-5,
                    ITER_GLOB_MAXI = 20,
                   ),
-  SOLVEUR = _F(METHODE='MUMPS', RENUM='METIS'),
+  SOLVEUR = _F(METHODE = 'MUMPS', #NPREC=-1
+   ),
   ARCHIVAGE = _F(
     LIST_INST     = INS_ARCH
   ))
@@ -246,38 +223,35 @@ FRES = POST_RELEVE_T(
    RESULTAT     =  U,
    TOUT_ORDRE   = 'OUI',
     ))
+
 # IMPRESSION DES RESULTATS POUR TRACE COURBES f/deP
+#--------------------------------------------------
 IMPR_TABLE(TABLE = DEP_IMP)
 IMPR_TABLE(TABLE = FRES)
 
-# IMPRESSION DU RESULTAT POUR VISUALISATION MED
-MA2 = CREA_MAILLAGE(MAILLAGE=MA,RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',),),);
-MO2=AFFE_MODELE(MAILLAGE=MA2,
-                AFFE=(_F(GROUP_MA = ('DCB_1','DCB_2'),
-                         PHENOMENE = 'MECANIQUE',
-                         MODELISATION = '3D',
-                        ),
-                     ),
-               )
-U2=EXTR_RESU(RESULTAT=U,
-             RESTREINT=_F(MODELE=MO2))
-IMPR_RESU(  FORMAT  = 'MED',
-  RESU=_F(RESULTAT=U2),
-  UNITE=80
-         )
+# impression du resultat (reduit sur la modelisation '3D') pour visualisation :
+#------------------------------------------------------------------------------
+MAred=CREA_MAILLAGE(MAILLAGE=MA,  RESTREINT=_F(GROUP_MA=('DCB_1','DCB_2',)))
+
+MOred=AFFE_MODELE(MAILLAGE=MAred,
+                 AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE',  MODELISATION='3D',))
+
+Ured=EXTR_RESU(RESULTAT=U, RESTREINT=_F(MODELE=MOred,  ))
+IMPR_RESU(FORMAT= 'MED', RESU=_F(RESULTAT=Ured), UNITE=81 ,)
+
 ##########################################################################
 # TEST
 ##########################################################################
 #
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC=4.852245498,
-           VALE_REFE=4.71,
+           PRECISION=1.E-2,
+           VALE_CALC=4.901842832,
+           VALE_REFE=4.8600000000000003,
            NOM_PARA='DY',
            TABLE=FRES,
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=4.5,),
+                     VALE=10.0,),
            )
 
 FIN()

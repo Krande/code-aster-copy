@@ -48,7 +48,7 @@ deply_b = -deply/2.
 deplx = 0.0
 deplz = 0.0
 
-# Paramètres de la loi CZM_TURON pour être équivalent forma08a (DCB avec CZM_LIN_REG)
+# Paramètres de la loi CZM_TURON pour être équivalent sslv224a (DCB avec CZM_LIN_REG)
 k = sigc**2 * (1 - pen) / (2 * tenac * pen)
 sigc1 = sigc * (1 - pen)
 sigc2 = sigc1
