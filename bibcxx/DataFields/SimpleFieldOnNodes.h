@@ -29,6 +29,7 @@
 
 #include "astercxx.h"
 
+#include "MemoryManager/NumpyAccess.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
 #include "Utilities/Tools.h"
@@ -149,13 +150,43 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     const ValueType *getDataPtr() const { return _values->getDataPtr(); }
 
     /**
-     * @brief Get values
+     * @brief Get values with mask
      */
-    std::vector< ValueType > getValues() const {
-      const ValueType *ptr = _values->getDataPtr();
-      std::vector< ValueType > vect( ptr, ptr + _values->size() );
-      return vect;
+    PyObject *getValues( ) {
+
+      npy_intp dims[2] = {this->getNumberOfNodes(), this->getNumberOfComponents()};
+
+      PyObject *values = PyArray_SimpleNewFromData(2, dims,
+                                                   npy_type< ValueType >::value,
+                                                   _values->getDataPtr());
+      PyObject *mask = PyArray_SimpleNewFromData(2, dims, NPY_BOOL, _allocated->getDataPtr());
+      AS_ASSERT( values != NULL );
+      AS_ASSERT( mask != NULL );
+
+      PyObject *values_copy = PyArray_ZEROS(2, dims, npy_type< ValueType >::value, 0);
+      PyObject *ret = PyArray_PutMask((PyArrayObject*) values_copy, values, mask);
+      AS_ASSERT( values_copy != NULL );
+      AS_ASSERT( ret != NULL );
+
+      PyObject *mask_copy = PyArray_NewLikeArray((PyArrayObject *)mask, NPY_ANYORDER, NULL, 0);
+      PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask);
+      AS_ASSERT( mask_copy != NULL );
+
+      PyArray_ENABLEFLAGS((PyArrayObject*) values_copy, NPY_ARRAY_OWNDATA);
+      PyArray_ENABLEFLAGS((PyArrayObject*) mask_copy, NPY_ARRAY_OWNDATA);
+
+      Py_XDECREF( values );
+      Py_XDECREF( mask );
+      Py_XDECREF( ret );
+
+      PyObject *resu_tuple = PyTuple_New( 2 );
+      PyTuple_SetItem(resu_tuple, 0, values_copy);
+      PyTuple_SetItem(resu_tuple, 1, mask_copy);
+
+      return resu_tuple;
+
     }
+
 
     /**
      * @brief Get the name of the i-th component

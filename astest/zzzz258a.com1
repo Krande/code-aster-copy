@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,9 @@ ranks = dico_par['NUME_ORDRE']
 rf = U2_2.getFieldOnNodesReal('DEPL', ranks[0] )
 sf = rf.exportToSimpleFieldOnNodes()
 
-test.assertAlmostEqual(sf.getValues()[6], 0.314065725792971)
+values, mask = sf.getValues()
+test.assertAlmostEqual(values[3,0], 0.314065725792971)
+test.assertEqual(mask[3,0], True)
 test.assertEqual(sf.getNameOfComponents(), ['DX', 'DY'])
 test.assertEqual(sf.getNumberOfComponents(), 2)
 test.assertEqual(sf.getNumberOfNodes(), 16)

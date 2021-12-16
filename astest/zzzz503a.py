@@ -163,7 +163,7 @@ test.assertEqual(len(y.valeurs), 81)
 
 resu2 = resu.exportToSimpleFieldOnNodes()
 resu2.updateValuePointers()
-test.assertAlmostEqual(resu2.getValue(5, 3), 0.000757555469653289)
+test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289)
 
 resu.printMedFile("fort.med")
 
@@ -174,7 +174,7 @@ monSolver.factorize(matrAsse)
 resu = monSolver.solve(matrAsse, retour)
 resu2 = resu.exportToSimpleFieldOnNodes()
 resu2.updateValuePointers()
-test.assertAlmostEqual(resu2.getValue(5, 3), 0.000757555469653289 / 10.)
+test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289 / 10.)
 
 # To be sure that vcine is Permanent #30689
 libaster.deleteTemporaryObjects()
