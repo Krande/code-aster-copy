@@ -31,6 +31,7 @@
 
 #include "astercxx.h"
 
+#include "MemoryManager/NumpyAccess.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
 #include "Utilities/Tools.h"
@@ -296,6 +297,65 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
      */
     std::string getFieldLocation() const {
       return trim(( *_descriptor )[2].toString());
+    }
+
+    /**
+     * @brief Get cells holding components
+     */
+    VectorLong getCellsWithComponents( ) const {
+      VectorLong values;
+      for (int ima=0 ; ima<this->getNumberOfCells() ;  ima++){
+        if ( this->_cmpsSptCell(ima) > 0 )
+          values.push_back(ima);
+      }
+      return values;
+    }
+
+    /**
+     * @brief Get values on cells holding components, with mask
+     */
+    PyObject *getValues( ) {
+
+      int sz = 0;
+      int ncmp_max = this->getNumberOfComponents();
+      VectorLong cells = this->getCellsWithComponents();
+
+      for ( const auto &ima : cells ) {
+        sz = sz + this->_ptCell(ima) * this->_sptCell(ima);
+      }
+      AS_ASSERT( sz > 0 );
+
+      npy_intp dims[2] = {sz, ncmp_max};
+      PyObject *data = PyArray_ZEROS(2, dims, npy_type< ValueType >::value, 0);
+      PyObject *mask = PyArray_ZEROS(2, dims, NPY_BOOL, 0);
+
+      ValueType *dataptr = (double *)PyArray_DATA((PyArrayObject *) data);
+      bool *maskptr = (bool *)PyArray_DATA((PyArrayObject *) mask);
+
+      int j=0;
+      for ( const auto &ima : cells ) {
+        for ( int ipt = 0 ; ipt < this->_ptCell(ima); ipt++ ) {
+          for ( int ispt = 0 ; ispt < this->_sptCell(ima); ispt++ ) {
+            for ( int icmp = 0 ; icmp < this->_cmpsSptCell(ima); icmp++) {
+              int posjv = this->_positionInArray(icmp, ima, ipt, ispt);
+              if ( ( *_allocated )[posjv] ) {
+                dataptr[j+icmp] = ( *_values )[posjv] ;
+                maskptr[j+icmp] = true ;
+              }
+            }
+            j = j + ncmp_max;
+          }
+        }
+      }
+
+      PyArray_ENABLEFLAGS((PyArrayObject*) data, NPY_ARRAY_OWNDATA);
+      PyArray_ENABLEFLAGS((PyArrayObject*) mask, NPY_ARRAY_OWNDATA);
+
+      PyObject *resu_tuple = PyTuple_New( 2 );
+      PyTuple_SetItem(resu_tuple, 0, data);
+      PyTuple_SetItem(resu_tuple, 1, mask);
+
+      return resu_tuple;
     }
 
     /**

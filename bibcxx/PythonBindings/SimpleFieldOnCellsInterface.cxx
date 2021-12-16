@@ -39,15 +39,38 @@ void exportSimpleFieldOnCellsToPython() {
                               &initFactoryPtr< SimpleFieldOnCellsReal, std::string >))
         .def( "getValue", &SimpleFieldOnCellsReal::getValue,
               py::return_value_policy< py::return_by_value >(), R"(
-Arguments:
+Returns the value of the `icmp` component of the field on the `ima` cell,
+at the `ipt` point, at the `ispt` sub-point.
+
+Args:
     ima  (int): Index of cells.
     icmp (int): Index of component.
     ipt  (int): Index of point.
     ispt (int): Index of sub-point.
 
 Returns:
-    (float): Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*.
+    (float): Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*;
+             NaN if the position is not allocated.
         )", (py::arg( "self" ), py::arg("ima"), py::arg("icmp"), py::arg("ipt"), py::arg("ispt")))
+
+        .def( "getValues", &SimpleFieldOnCellsReal::getValues, R"(
+Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
+The first array contains the field values while the second one is a mask
+which is `True` if the corresponding value exists, `False` otherwise.
+
+Where the mask is `False` the corresponding value is set to zero.
+
+Returns:
+    ndarray (float): Field values.
+    ndarray (bool): Mask for the field values.
+        )", (py::arg( "self" )))
+
+        .def( "getCellsWithComponents", &SimpleFieldOnCellsReal::getCellsWithComponents, R"(
+Returns the list of cells where the field is defined.
+
+Returns:
+    tuple (int): Indexes of cells where the field is defined.
+        )", (py::arg( "self" )) )
         .def( "getNumberOfComponents", &SimpleFieldOnCellsReal::getNumberOfComponents )
         .def( "getNameOfComponent", &SimpleFieldOnCellsReal::getNameOfComponent )
         .def( "getNameOfComponents", &SimpleFieldOnCellsReal::getNameOfComponents )
