@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,10 +29,10 @@
 #include <list>
 #include <stdexcept>
 
-#include "astercxx.h"
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_petsc.h"
+#include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
@@ -44,7 +44,6 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
-
 #ifdef ASTER_HAVE_PETSC4PY
 #include <petscmat.h>
 #endif
@@ -54,7 +53,7 @@
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
 
-class BaseLinearSolver;
+class LinearSolver;
 
 /**
  * @class AssemblyMatrix
@@ -114,20 +113,19 @@ class AssemblyMatrix : public DataStructure {
     /** @brief Solver name (MUMPS or PETSc) */
     std::string _solverName;
 
-    friend class BaseLinearSolver;
+    friend class LinearSolver;
 
   public:
     /**
      * @typedef AssemblyMatrixPtr
      * @brief Pointeur intelligent vers un AssemblyMatrix
      */
-    typedef boost::shared_ptr< AssemblyMatrix< ValueType, PhysicalQuantity > >
-        AssemblyMatrixPtr;
+    typedef boost::shared_ptr< AssemblyMatrix< ValueType, PhysicalQuantity > > AssemblyMatrixPtr;
 
     /**
      * @brief Constructeur
      */
-    AssemblyMatrix( );
+    AssemblyMatrix();
 
     /**
      * @brief Constructeur
@@ -151,7 +149,7 @@ class AssemblyMatrix : public DataStructure {
      * @brief Function d'ajout d'un chargement
      * @param Args... Liste d'arguments template
      */
-    template < typename... Args > void addLoad( const Args &... a ) {
+    template < typename... Args > void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
@@ -204,7 +202,7 @@ class AssemblyMatrix : public DataStructure {
     /**
      * @brief Set new values
      */
-    void setValues(const VectorLong idx, const VectorLong jdx, const VectorReal values) {
+    void setValues( const VectorLong idx, const VectorLong jdx, const VectorReal values ) {
         // Template class raises error. It must be specialized in each instanciated class.
         throw std::runtime_error( "Not implemented" );
     };
@@ -213,8 +211,8 @@ class AssemblyMatrix : public DataStructure {
      * @brief Transpose
      */
     void transpose() {
-        if (get_sh_jeveux_status() == 1 ) {
-            CALLO_MATR_ASSE_TRANSPOSE(getName());
+        if ( get_sh_jeveux_status() == 1 ) {
+            CALLO_MATR_ASSE_TRANSPOSE( getName() );
         }
     };
 
@@ -222,8 +220,8 @@ class AssemblyMatrix : public DataStructure {
      * @brief Transpose and conjugate
      */
     void transposeConjugate() {
-        if (get_sh_jeveux_status() == 1 ) {
-            CALLO_MATR_ASSE_TRANSPOSE_CONJUGATE(getName());
+        if ( get_sh_jeveux_status() == 1 ) {
+            CALLO_MATR_ASSE_TRANSPOSE_CONJUGATE( getName() );
         }
     };
 
@@ -231,29 +229,29 @@ class AssemblyMatrix : public DataStructure {
      * @brief Print the matrix in code_aster format
      */
     void print() const {
-        if (get_sh_jeveux_status() == 1 ) {
-            const ASTERINTEGER unit(6);
+        if ( get_sh_jeveux_status() == 1 ) {
+            const ASTERINTEGER unit( 6 );
             std::string format( " " );
-            CALLO_MATR_ASSE_PRINT(getName(), &unit, format);
+            CALLO_MATR_ASSE_PRINT( getName(), &unit, format );
         }
     };
 
     /**
      * @brief Print the matrix in matlab format
      */
-    void print(const std::string format) const {
-        if (get_sh_jeveux_status() == 1 ) {
-            const ASTERINTEGER unit(6);
-            CALLO_MATR_ASSE_PRINT(getName(), &unit, format);
+    void print( const std::string format ) const {
+        if ( get_sh_jeveux_status() == 1 ) {
+            const ASTERINTEGER unit( 6 );
+            CALLO_MATR_ASSE_PRINT( getName(), &unit, format );
         }
     };
 
     /**
      * @brief Print the matrix in matlab format in given logical unit
      */
-    void print(const ASTERINTEGER unit, const std::string format) const {
-        if (get_sh_jeveux_status() == 1 ) {
-            CALLO_MATR_ASSE_PRINT(getName(), &unit, format);
+    void print( const ASTERINTEGER unit, const std::string format ) const {
+        if ( get_sh_jeveux_status() == 1 ) {
+            CALLO_MATR_ASSE_PRINT( getName(), &unit, format );
         }
     };
 
@@ -322,21 +320,16 @@ class AssemblyMatrix : public DataStructure {
         return true;
     };
 
-
     /**
      * @brief Return True if CCID object exists for DirichletElimination
      */
-    bool hasDirichletEliminationDOFs() const
-    {
-        return _ccid->exists();
-    }
+    bool hasDirichletEliminationDOFs() const { return _ccid->exists(); }
 
-     /**
+    /**
      * @brief Return CCID object if exists for DirichletElimination
      */
-    JeveuxVectorLong getDirichletBCDOFs() const
-    {
-        if( hasDirichletEliminationDOFs() )
+    JeveuxVectorLong getDirichletBCDOFs() const {
+        if ( hasDirichletEliminationDOFs() )
             return _ccid;
 
         raiseAsterError( "JeveuxError: CCID not existing" );
@@ -345,18 +338,15 @@ class AssemblyMatrix : public DataStructure {
     }
 
     ASTERDOUBLE
-    getLagrangeScaling() const
-    {
-        if( _scaleFactorLagrangian->exists() )
-        {
+    getLagrangeScaling() const {
+        if ( _scaleFactorLagrangian->exists() ) {
             ASTERDOUBLE scaling = 0.0;
-            CALLO_CONLAG(getName(), &scaling);
+            CALLO_CONLAG( getName(), &scaling );
             return scaling;
         }
 
         return 1.0;
     }
-
 
     ListOfLoadsPtr getListOfLoads() const { return _listOfLoads; }
 
@@ -364,18 +354,19 @@ class AssemblyMatrix : public DataStructure {
      * @brief Methode permettant de definir la liste de chargement
      * @param lLoads objet de type ListOfLoadsPtr
      */
-    void setListOfLoads(const ListOfLoadsPtr load)
-    {
-        if( !load )
-            raiseAsterError("Empty load");
+    void setListOfLoads( const ListOfLoadsPtr load ) {
+        if ( !load )
+            raiseAsterError( "Empty load" );
 
         _listOfLoads = load;
     }
 };
 
 /** @typedef Definition d'une matrice assemblee de double */
-template <> void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues(const VectorLong idx,
-            const VectorLong jdx, const VectorReal values);
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Displacement >::setValues( const VectorLong idx,
+                                                             const VectorLong jdx,
+                                                             const VectorReal values );
 typedef AssemblyMatrix< ASTERDOUBLE, Displacement > AssemblyMatrixDisplacementReal;
 
 /** @typedef Definition d'une matrice assemblee de complexe */
@@ -383,13 +374,16 @@ template class AssemblyMatrix< ASTERCOMPLEX, Displacement >;
 typedef AssemblyMatrix< ASTERCOMPLEX, Displacement > AssemblyMatrixDisplacementComplex;
 
 /** @typedef Definition d'une matrice assemblee de double temperature */
-template <> void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues(const VectorLong idx,
-            const VectorLong jdx, const VectorReal values);
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Temperature >::setValues( const VectorLong idx,
+                                                            const VectorLong jdx,
+                                                            const VectorReal values );
 typedef AssemblyMatrix< ASTERDOUBLE, Temperature > AssemblyMatrixTemperatureReal;
 
 /** @typedef Definition d'une matrice assemblee de double pression */
-template <> void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues(const VectorLong idx,
-            const VectorLong jdx, const VectorReal values);
+template <>
+void AssemblyMatrix< ASTERDOUBLE, Pressure >::setValues( const VectorLong idx, const VectorLong jdx,
+                                                         const VectorReal values );
 typedef AssemblyMatrix< ASTERDOUBLE, Pressure > AssemblyMatrixPressureReal;
 
 /** @typedef Definition d'une matrice assemblee de ASTERCOMPLEX temperature */
@@ -400,23 +394,17 @@ typedef AssemblyMatrix< ASTERCOMPLEX, Temperature > AssemblyMatrixTemperatureCom
 template class AssemblyMatrix< ASTERCOMPLEX, Pressure >;
 typedef AssemblyMatrix< ASTERCOMPLEX, Pressure > AssemblyMatrixPressureComplex;
 
-typedef boost::shared_ptr< AssemblyMatrixDisplacementReal >
-    AssemblyMatrixDisplacementRealPtr;
-typedef boost::shared_ptr< AssemblyMatrixDisplacementComplex >
-    AssemblyMatrixDisplacementComplexPtr;
-typedef boost::shared_ptr< AssemblyMatrixTemperatureReal >
-    AssemblyMatrixTemperatureRealPtr;
-typedef boost::shared_ptr< AssemblyMatrixTemperatureComplex >
-    AssemblyMatrixTemperatureComplexPtr;
-typedef boost::shared_ptr< AssemblyMatrixPressureReal >
-    AssemblyMatrixPressureRealPtr;
-typedef boost::shared_ptr< AssemblyMatrixPressureComplex >
-    AssemblyMatrixPressureComplexPtr;
+typedef boost::shared_ptr< AssemblyMatrixDisplacementReal > AssemblyMatrixDisplacementRealPtr;
+typedef boost::shared_ptr< AssemblyMatrixDisplacementComplex > AssemblyMatrixDisplacementComplexPtr;
+typedef boost::shared_ptr< AssemblyMatrixTemperatureReal > AssemblyMatrixTemperatureRealPtr;
+typedef boost::shared_ptr< AssemblyMatrixTemperatureComplex > AssemblyMatrixTemperatureComplexPtr;
+typedef boost::shared_ptr< AssemblyMatrixPressureReal > AssemblyMatrixPressureRealPtr;
+typedef boost::shared_ptr< AssemblyMatrixPressureComplex > AssemblyMatrixPressureComplexPtr;
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( )
+AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix()
     : DataStructure( 19, "MATR_ASSE_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                         ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" )),
+                             ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ),
       _description( JeveuxVectorChar24( getName() + ".REFA" ) ),
       _matrixValues( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
       _scaleFactorLagrangian( JeveuxVectorReal( getName() + ".CONL" ) ),
@@ -430,7 +418,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( )
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
       _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ), _isEmpty( true ), _isFactorized( false ),
-      _listOfLoads( boost::make_shared< ListOfLoads >( ) ){};
+      _listOfLoads( boost::make_shared< ListOfLoads >() ){};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string &name )
@@ -450,7 +438,7 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string
       _ccll( JeveuxVectorLong( getName() + ".CCLL" ) ),
       _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ), _isEmpty( true ), _isFactorized( false ),
-      _listOfLoads( boost::make_shared< ListOfLoads >( ) ){};
+      _listOfLoads( boost::make_shared< ListOfLoads >() ){};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 bool AssemblyMatrix< ValueType, PhysicalQuantity >::build() {

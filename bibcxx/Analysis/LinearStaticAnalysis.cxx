@@ -38,7 +38,7 @@
 LinearStaticAnalysis::LinearStaticAnalysis(
     const ModelPtr &model, const MaterialFieldPtr &mater,
     const ElementaryCharacteristicsPtr &cara )
-    : _model( model ), _materialField( mater ), _linearSolver( BaseLinearSolverPtr() ),
+    : _model( model ), _materialField( mater ), _linearSolver( LinearSolverPtr() ),
       _timeStep( boost::make_shared< TimeStepper >()  ), _sief_elga(true),
       _study( boost::make_shared< PhysicalProblem >( _model, _materialField, cara ) ) {
     _timeStep->setValues( VectorReal( 1, 0. ) );

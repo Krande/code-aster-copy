@@ -21,7 +21,7 @@
 
 from ..Objects import ( MechanicalLoadReal, DirichletBC, MechanicalLoadFunction,
                         ParallelMechanicalLoadReal, ParallelMechanicalLoadFunction,
-                        LinearStaticAnalysis, ElasticResult, BaseLinearSolver )
+                        LinearStaticAnalysis, ElasticResult, LinearSolver )
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
 
@@ -89,7 +89,7 @@ class MechanicalSolver(ExecuteCommand):
 
         mechaSolv.setStressComputation( keywords["OPTION"] == "SIEF_ELGA" )
 
-        solver = BaseLinearSolver.factory(keywords.get("SOLVEUR"))
+        solver = LinearSolver.factory(keywords.get("SOLVEUR"))
         mechaSolv.setLinearSolver(solver)
         self._result = mechaSolv.execute( self._result )
 

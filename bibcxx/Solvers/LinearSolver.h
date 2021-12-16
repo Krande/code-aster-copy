@@ -37,10 +37,10 @@
 #include "astercxx.h"
 
 /**
- * @class BaseLinearSolver
+ * @class LinearSolver
  * @brief Cette classe permet de definir un solveur lineaire
  */
-class BaseLinearSolver : public DataStructure {
+class LinearSolver : public DataStructure {
   protected:
     bool _isEmpty;
 
@@ -56,26 +56,26 @@ class BaseLinearSolver : public DataStructure {
 
   public:
     /**
-     * @typedef BaseLinearSolverPtr
-     * @brief Pointeur intelligent vers un BaseLinearSolver
+     * @typedef LinearSolverPtr
+     * @brief Pointeur intelligent vers un LinearSolver
      */
-    typedef boost::shared_ptr< BaseLinearSolver > BaseLinearSolverPtr;
+    typedef boost::shared_ptr< LinearSolver > LinearSolverPtr;
 
     /**
      * @brief Constructeur
      */
-    BaseLinearSolver() : BaseLinearSolver( ResultNaming::getNewResultName() ){};
+    LinearSolver() : LinearSolver( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Constructeur
      * @param name Name of the DataStructure
      */
-    BaseLinearSolver( const std::string name );
+    LinearSolver( const std::string name );
 
     /**
      * @brief Destructor
      */
-    ~BaseLinearSolver() { Py_XDECREF( _keywords ); };
+    ~LinearSolver() { Py_XDECREF( _keywords ); };
 
     /**
      * @brief Return the solver name.
@@ -154,62 +154,62 @@ class BaseLinearSolver : public DataStructure {
 };
 
 /**
- * @typedef BaseLinearSolverPtr
- * @brief Pointeur intelligent vers un BaseLinearSolver
+ * @typedef LinearSolverPtr
+ * @brief Pointeur intelligent vers un LinearSolver
  */
-typedef boost::shared_ptr< BaseLinearSolver > BaseLinearSolverPtr;
+typedef boost::shared_ptr< LinearSolver > LinearSolverPtr;
 
-class LdltSolver : public BaseLinearSolver {
+class LdltSolver : public LinearSolver {
   public:
-    LdltSolver( const std::string name ) : BaseLinearSolver( name ){};
-    LdltSolver() : BaseLinearSolver(){};
+    LdltSolver( const std::string name ) : LinearSolver( name ){};
+    LdltSolver() : LinearSolver(){};
     const std::string getSolverName() const { return "LDLT"; };
 };
 
-class MultFrontSolver : public BaseLinearSolver {
+class MultFrontSolver : public LinearSolver {
   public:
-    MultFrontSolver( const std::string name ) : BaseLinearSolver( name ){};
-    MultFrontSolver() : BaseLinearSolver(){};
+    MultFrontSolver( const std::string name ) : LinearSolver( name ){};
+    MultFrontSolver() : LinearSolver(){};
 
     const std::string getSolverName() const { return "MULT_FRONT"; };
 };
 
-class MumpsSolver : public BaseLinearSolver {
+class MumpsSolver : public LinearSolver {
   public:
-    MumpsSolver( const std::string name ) : BaseLinearSolver( name ){};
-    MumpsSolver() : BaseLinearSolver(){};
+    MumpsSolver( const std::string name ) : LinearSolver( name ){};
+    MumpsSolver() : LinearSolver(){};
     const std::string getSolverName() const { return "MUMPS"; };
     const bool supportParallelMesh() const { return true; };
 };
 
-class PetscSolver : public BaseLinearSolver {
+class PetscSolver : public LinearSolver {
   public:
-    PetscSolver( const std::string name ) : BaseLinearSolver( name ){};
-    PetscSolver() : BaseLinearSolver(){};
+    PetscSolver( const std::string name ) : LinearSolver( name ){};
+    PetscSolver() : LinearSolver(){};
     const std::string getSolverName() const { return "PETSC"; };
     const bool supportParallelMesh() const { return true; };
 };
 
-class GcpcSolver : public BaseLinearSolver {
+class GcpcSolver : public LinearSolver {
   public:
-    GcpcSolver( const std::string name ) : BaseLinearSolver( name ){};
-    GcpcSolver() : BaseLinearSolver(){};
+    GcpcSolver( const std::string name ) : LinearSolver( name ){};
+    GcpcSolver() : LinearSolver(){};
     const std::string getSolverName() const { return "GCPC"; };
 };
 
-/** @brief Enveloppe d'un pointeur intelligent vers un BaseLinearSolver< MultFront > */
+/** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< MultFront > */
 typedef boost::shared_ptr< MultFrontSolver > MultFrontSolverPtr;
 
-/** @brief Enveloppe d'un pointeur intelligent vers un BaseLinearSolver< Ldlt > */
+/** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Ldlt > */
 typedef boost::shared_ptr< LdltSolver > LdltSolverPtr;
 
-/** @brief Enveloppe d'un pointeur intelligent vers un BaseLinearSolver< Mumps > */
+/** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Mumps > */
 typedef boost::shared_ptr< MumpsSolver > MumpsSolverPtr;
 
-/** @brief Enveloppe d'un pointeur intelligent vers un BaseLinearSolver< Petsc > */
+/** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Petsc > */
 typedef boost::shared_ptr< PetscSolver > PetscSolverPtr;
 
-/** @brief Enveloppe d'un pointeur intelligent vers un BaseLinearSolver< Gcpc > */
+/** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Gcpc > */
 typedef boost::shared_ptr< GcpcSolver > GcpcSolverPtr;
 
 #endif /* LINEARSOLVER_H_ */

@@ -30,13 +30,13 @@ from ..Objects import (
     MultFrontSolver,
     MumpsSolver,
     PetscSolver,
-    BaseLinearSolver,
+    LinearSolver,
 )
 from ..Utilities import injector, logger
 
 
-@injector(BaseLinearSolver)
-class ExtendedBaseLinearSolver:
+@injector(LinearSolver)
+class ExtendedLinearSolver:
     @classmethod
     def factory(cls, mcf=None, **kwargs):
         """Create the solver object from the SOLVEUR factor keyword.
@@ -47,7 +47,7 @@ class ExtendedBaseLinearSolver:
             kwargs (dict): Valid SOLVEUR keywords (syntax checked, with defaults).
 
         Returns:
-            :class:`~code_aster.Objects.BaseLinearSolver` (derivated of):
+            :class:`~code_aster.Objects.LinearSolver` (derivated of):
             Instance of a solver or *None* if none is selected.
         """
         if mcf:
@@ -66,7 +66,7 @@ class ExtendedBaseLinearSolver:
         return solver
 
 
-class BaseLinearSolverExt:
+class LinearSolverExt:
     """Base object for LinearSolver."""
 
     cata_sdj = "SD.sd_solveur.sd_solveur"
@@ -92,30 +92,30 @@ class BaseLinearSolverExt:
         return cls._name
 
 @injector(GcpcSolver)
-class ExtendedGcpcSolver(BaseLinearSolverExt):
+class ExtendedGcpcSolver(LinearSolverExt):
     _name = "GCPC"
     _init = GcpcSolver.__init__
 
 
 @injector(LdltSolver)
-class ExtendedLdltSolver(BaseLinearSolverExt):
+class ExtendedLdltSolver(LinearSolverExt):
     _name = "LDLT"
     _init = LdltSolver.__init__
 
 
 @injector(MultFrontSolver)
-class ExtendedMultFrontSolver(BaseLinearSolverExt):
+class ExtendedMultFrontSolver(LinearSolverExt):
     _name = "MULT_FRONT"
     _init = MultFrontSolver.__init__
 
 
 @injector(MumpsSolver)
-class ExtendedMumpsSolver(BaseLinearSolverExt):
+class ExtendedMumpsSolver(LinearSolverExt):
     _name = "MUMPS"
     _init = MumpsSolver.__init__
 
 
 @injector(PetscSolver)
-class ExtendedPetscSolver(BaseLinearSolverExt):
+class ExtendedPetscSolver(LinearSolverExt):
     _name = "PETSC"
     _init = PetscSolver.__init__

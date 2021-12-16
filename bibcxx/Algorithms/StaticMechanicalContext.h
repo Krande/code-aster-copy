@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StaticMechanicalContext
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,10 +27,10 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Discretization/DiscreteComputation.h"
-#include "Solvers/LinearSolver.h"
-#include "Results/Result.h"
 #include "Loads/ListOfLoads.h"
 #include "Materials/BaseExternalStateVariables.h"
+#include "Results/Result.h"
+#include "Solvers/LinearSolver.h"
 
 class StaticMechanicalAlgorithm;
 
@@ -44,7 +44,7 @@ class StaticMechanicalContext {
     /** @brief Problème discret */
     DiscreteComputationPtr _discreteComputation;
     /** @brief Solveur linéaire */
-    BaseLinearSolverPtr _linearSolver;
+    LinearSolverPtr _linearSolver;
     /** @brief Sd de stockage des résultats */
     ResultPtr _results;
     /** @brief Chargements */
@@ -68,10 +68,10 @@ class StaticMechanicalContext {
     /**
      * @brief Constructeur
      * @param DiscreteComputationPtr Problème discret a résoudre par l'algo
-     * @param BaseLinearSolverPtr Sovleur linéaire qui sera utilisé
+     * @param LinearSolverPtr Sovleur linéaire qui sera utilisé
      * @param ResultPtr Résultat pour le stockage des déplacements
      */
-    StaticMechanicalContext( const DiscreteComputationPtr &curPb, const BaseLinearSolverPtr linSolv,
+    StaticMechanicalContext( const DiscreteComputationPtr &curPb, const LinearSolverPtr linSolv,
                              const ResultPtr container )
         : _discreteComputation( curPb ), _linearSolver( linSolv ),
           _listOfLoads( _discreteComputation->getPhysicalProblem()->getListOfLoads() ),
@@ -83,8 +83,11 @@ class StaticMechanicalContext {
               _discreteComputation->getPhysicalProblem()->getMaterialField(),
               _discreteComputation->getPhysicalProblem()->getElementaryCharacteristics(),
               _discreteComputation->getPhysicalProblem()->getCodedMaterial() ) ),
-         _timer( { {"Matrix", 0.0}, {"Rhs", 0.0}, {"Facto", 0.0}, {"Solve", 0.0}, {"Post", 0.0} })
-         {};
+          _timer( { { "Matrix", 0.0 },
+                    { "Rhs", 0.0 },
+                    { "Facto", 0.0 },
+                    { "Solve", 0.0 },
+                    { "Post", 0.0 } } ){};
 
     /**
      * @brief Function to set the "position" of the context
@@ -96,23 +99,13 @@ class StaticMechanicalContext {
         _rank = rank;
     };
 
-    AssemblyMatrixDisplacementRealPtr getStiffnessMatrix(void)
-    {
-        return _aMatrix;
-    }
+    AssemblyMatrixDisplacementRealPtr getStiffnessMatrix( void ) { return _aMatrix; }
 
-    std::map< std::string, ASTERDOUBLE> getTimer()
-    {
-        return _timer;
-    }
+    std::map< std::string, ASTERDOUBLE > getTimer() { return _timer; }
 
-    DiscreteComputationPtr getDiscreteComputation()
-    {
-        return _discreteComputation;
-    }
+    DiscreteComputationPtr getDiscreteComputation() { return _discreteComputation; }
 
-    ResultPtr getResult()
-    { return _results;}
+    ResultPtr getResult() { return _results; }
 
     friend class StaticMechanicalAlgorithm;
 };

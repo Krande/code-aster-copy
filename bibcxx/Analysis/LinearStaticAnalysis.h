@@ -6,7 +6,7 @@
  * @brief Definition of the static mechanical solver
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,7 +48,7 @@ class LinearStaticAnalysis : public GenericAnalysis {
     /** @brief Champ de materiau a utiliser */
     MaterialFieldPtr _materialField;
     /** @brief Solveur lineaire */
-    BaseLinearSolverPtr _linearSolver;
+    LinearSolverPtr _linearSolver;
     /** @brief Liste de pas de temps */
     TimeStepperPtr _timeStep;
     /** @brief Study */
@@ -80,7 +80,7 @@ class LinearStaticAnalysis : public GenericAnalysis {
      * @brief Methode permettant de definir le solveur lineaire
      * @param currentSolver Solveur lineaire
      */
-    void setLinearSolver( const BaseLinearSolverPtr &currentSolver ) {
+    void setLinearSolver( const LinearSolverPtr &currentSolver ) {
         _linearSolver = currentSolver;
     };
 

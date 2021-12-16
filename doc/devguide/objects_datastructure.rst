@@ -119,10 +119,10 @@
 
 
 ================================================================================
-:py:class:`~code_aster.Objects.BaseLinearSolver` object
+:py:class:`~code_aster.Objects.LinearSolver` object
 ================================================================================
 
-.. autoclass:: code_aster.Objects.BaseLinearSolver
+.. autoclass:: code_aster.Objects.LinearSolver
    :show-inheritance:
    :members:
 
@@ -1286,4 +1286,3 @@
 .. autoclass:: code_aster.Objects.XfemCrack
    :show-inheritance:
    :members:
-

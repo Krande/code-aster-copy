@@ -26,8 +26,8 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
-#include "Solvers/AllowedLinearSolver.h"
 #include "PythonBindings/LinearSolverInterface.h"
+#include "Solvers/AllowedLinearSolver.h"
 #include <PythonBindings/factory.h>
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solveWithDirichletBC_overloads, solveWithDirichletBC, 3, 4 )
@@ -35,7 +35,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solve_overloads, solve, 2, 3 )
 
 void exportLinearSolverToPython() {
 
-    py::enum_< LinearSolverEnum >( "BaseLinearSolverName" )
+    py::enum_< LinearSolverEnum >( "LinearSolverName" )
         .value( "MultFront", MultFront )
         .value( "Ldlt", Ldlt )
         .value( "Mumps", Mumps )
@@ -105,42 +105,40 @@ void exportLinearSolverToPython() {
         .value( "LowRank", LowRank )
         .value( "LowRankPlus", LowRankPlus );
 
-    py::class_< BaseLinearSolver, BaseLinearSolver::BaseLinearSolverPtr,
-                py::bases< DataStructure > >( "BaseLinearSolver", py::no_init )
-        // .def( "__init__", py::make_constructor( &initFactoryPtr< BaseLinearSolver > ) )
-        // .def( "__init__", py::make_constructor( &initFactoryPtr< BaseLinearSolver, std::string >
+    py::class_< LinearSolver, LinearSolver::LinearSolverPtr, py::bases< DataStructure > >(
+        "LinearSolver", py::no_init )
+        // .def( "__init__", py::make_constructor( &initFactoryPtr< LinearSolver > ) )
+        // .def( "__init__", py::make_constructor( &initFactoryPtr< LinearSolver, std::string >
         // ) )
-        .def( "getSolverName", &BaseLinearSolver::getSolverName )
-        .def( "supportParallelMesh", &BaseLinearSolver::supportParallelMesh )
-        .def( "setKeywords", &BaseLinearSolver::setKeywords )
-        .def( "build", &BaseLinearSolver::build )
-        .def( "solve", &BaseLinearSolver::solve, solve_overloads() )
-        .def( "solveWithDirichletBC", &BaseLinearSolver::solveWithDirichletBC,
+        .def( "getSolverName", &LinearSolver::getSolverName )
+        .def( "supportParallelMesh", &LinearSolver::supportParallelMesh )
+        .def( "setKeywords", &LinearSolver::setKeywords )
+        .def( "build", &LinearSolver::build )
+        .def( "solve", &LinearSolver::solve, solve_overloads() )
+        .def( "solveWithDirichletBC", &LinearSolver::solveWithDirichletBC,
               solveWithDirichletBC_overloads() )
-        .def( "factorize", &BaseLinearSolver::factorize );
+        .def( "factorize", &LinearSolver::factorize );
 
-    py::class_< MultFrontSolver, MultFrontSolverPtr, py::bases< BaseLinearSolver > >(
-        "MultFrontSolver", py::no_init )
+    py::class_< MultFrontSolver, MultFrontSolverPtr, py::bases< LinearSolver > >( "MultFrontSolver",
+                                                                                  py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< MultFrontSolver > ) )
         .def( "__init__", py::make_constructor( &initFactoryPtr< MultFrontSolver, std::string > ) );
 
-    py::class_< LdltSolver, LdltSolverPtr, py::bases< BaseLinearSolver > >( "LdltSolver",
-                                                                            py::no_init )
+    py::class_< LdltSolver, LdltSolverPtr, py::bases< LinearSolver > >( "LdltSolver", py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< LdltSolver > ) )
         .def( "__init__", py::make_constructor( &initFactoryPtr< LdltSolver, std::string > ) );
 
-    py::class_< MumpsSolver, MumpsSolverPtr, py::bases< BaseLinearSolver > >( "MumpsSolver",
-                                                                              py::no_init )
+    py::class_< MumpsSolver, MumpsSolverPtr, py::bases< LinearSolver > >( "MumpsSolver",
+                                                                          py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< MumpsSolver > ) )
         .def( "__init__", py::make_constructor( &initFactoryPtr< MumpsSolver, std::string > ) );
 
-    py::class_< PetscSolver, PetscSolverPtr, py::bases< BaseLinearSolver > >( "PetscSolver",
-                                                                              py::no_init )
+    py::class_< PetscSolver, PetscSolverPtr, py::bases< LinearSolver > >( "PetscSolver",
+                                                                          py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< PetscSolver > ) )
         .def( "__init__", py::make_constructor( &initFactoryPtr< PetscSolver, std::string > ) );
 
-    py::class_< GcpcSolver, GcpcSolverPtr, py::bases< BaseLinearSolver > >( "GcpcSolver",
-                                                                            py::no_init )
+    py::class_< GcpcSolver, GcpcSolverPtr, py::bases< LinearSolver > >( "GcpcSolver", py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< GcpcSolver > ) )
         .def( "__init__", py::make_constructor( &initFactoryPtr< GcpcSolver, std::string > ) );
 };

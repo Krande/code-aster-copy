@@ -29,7 +29,7 @@
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
-BaseLinearSolver::BaseLinearSolver( const std::string name )
+LinearSolver::LinearSolver( const std::string name )
     : DataStructure( name, 19, "SOLVEUR" ), _isEmpty( true ),
       _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
@@ -41,7 +41,7 @@ BaseLinearSolver::BaseLinearSolver( const std::string name )
 
                                                  };
 
-void BaseLinearSolver::setKeywords( PyObject *user_keywords ) {
+void LinearSolver::setKeywords( PyObject *user_keywords ) {
     Py_XDECREF( _keywords );
     _keywords = user_keywords;
     Py_INCREF( _keywords );
@@ -50,7 +50,7 @@ void BaseLinearSolver::setKeywords( PyObject *user_keywords ) {
 #endif
 }
 
-PyObject *BaseLinearSolver::getKeywords() const {
+PyObject *LinearSolver::getKeywords() const {
     /* Returns a dict containing the SOLVEUR keywords.
      *
      * Return value: New reference.
@@ -62,7 +62,7 @@ PyObject *BaseLinearSolver::getKeywords() const {
     return dict;
 }
 
-bool BaseLinearSolver::build() {
+bool LinearSolver::build() {
     if ( _charValues->exists() ) {
         _charValues->deallocate();
         _doubleValues->deallocate();
@@ -90,7 +90,7 @@ bool BaseLinearSolver::build() {
     return true;
 };
 
-bool BaseLinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatrix ) {
+bool LinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatrix ) {
     if ( _isEmpty )
         build();
 
@@ -116,9 +116,9 @@ bool BaseLinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatri
     return true;
 };
 
-FieldOnNodesRealPtr BaseLinearSolver::solve( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-                                             const FieldOnNodesRealPtr &currentRHS,
-                                             FieldOnNodesRealPtr result ) const {
+FieldOnNodesRealPtr LinearSolver::solve( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
+                                         const FieldOnNodesRealPtr &currentRHS,
+                                         FieldOnNodesRealPtr result ) const {
 
     if ( !currentMatrix->isFactorized() ) {
         throw std::runtime_error( "Matrix must be factored first" );
@@ -150,10 +150,10 @@ FieldOnNodesRealPtr BaseLinearSolver::solve( const AssemblyMatrixDisplacementRea
 };
 
 FieldOnNodesRealPtr
-BaseLinearSolver::solveWithDirichletBC( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-                                        const FieldOnNodesRealPtr &dirichletBCField,
-                                        const FieldOnNodesRealPtr &currentRHS,
-                                        FieldOnNodesRealPtr result ) const {
+LinearSolver::solveWithDirichletBC( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
+                                    const FieldOnNodesRealPtr &dirichletBCField,
+                                    const FieldOnNodesRealPtr &currentRHS,
+                                    FieldOnNodesRealPtr result ) const {
 
     if ( !currentMatrix->isFactorized() ) {
         throw std::runtime_error( "Matrix must be factored first" );

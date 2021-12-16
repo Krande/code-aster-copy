@@ -282,7 +282,7 @@ Documentation of all other types.
 :py:class:`~code_aster.Objects.enum` subclasses
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.BaseLinearSolverName
+.. autoclass:: code_aster.Objects.LinearSolverName
    :show-inheritance:
    :members:
 
@@ -378,4 +378,3 @@ Documentation of all other types.
 .. autoclass:: code_aster.Objects.TimeLimitError
    :show-inheritance:
    :members:
-
