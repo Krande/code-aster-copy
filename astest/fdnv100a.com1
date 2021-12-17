@@ -1,0 +1,44 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+
+code_aster.init("--test", "--continue")
+
+test = code_aster.TestCase()
+
+sief_elga = RESU.getFieldOnCellsReal('SIEF_ELGA', 8).exportToSimpleFieldOnCells()
+values, mask = sief_elga.getValues()
+#test.assertAlmostEqual(values[3,0], 0.000550376598358751, places=6)
+test.assertEqual(mask[3,0], True)
+test.assertEqual(mask[0,8], False)
+test.assertEqual(values.shape, mask.shape)
+test.assertEqual(values.shape, (35329, 9))
+
+acce_noeu = RESU.getFieldOnNodesReal('ACCE', 8).exportToSimpleFieldOnNodes()
+values, mask = acce_noeu.getValues()
+test.assertAlmostEqual(values[3,0], 0.14853528594483775, places=6)
+test.assertEqual(mask[3,0], True)
+test.assertEqual(mask[0,8], False)
+test.assertEqual(values.shape, mask.shape)
+test.assertEqual(values.shape, (8163, 9))
+
+test.printSummary()
+
+code_aster.close()

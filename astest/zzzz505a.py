@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -191,11 +191,27 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
                      TYPE_TEST='SOMM_ABS', )
           )
 
-# TEST EXTR_COMP for FieldOnNodesComplex
 
+# TEST EXTR_COMP for FieldOnNodesReal
+f_real = code_aster.FieldOnNodesReal(dofNume)
+f_real.setValues(1.0)
+vals_real = f_real.EXTR_COMP('DX').valeurs
+test.assertEqual(vals_real[0], 1.0)
+
+sf_real = f_real.exportToSimpleFieldOnNodes()
+sf_real_values, sf_real_mask = sf_real.getValues()
+test.assertEqual(sf_real_values[0][0], 1.0)
+test.assertEqual(sf_real_mask.all(), True)
+
+# TEST EXTR_COMP for FieldOnNodesComplex
 f_complex = code_aster.FieldOnNodesComplex(dofNume)
 f_complex.setValues(1+2j)
 vals_complex = f_complex.EXTR_COMP('DX').valeurs
 test.assertEqual(vals_complex[0], 1+2j)
+
+sf_complex = f_complex.exportToSimpleFieldOnNodes()
+sf_complex_values, sf_complex_mask = sf_complex.getValues()
+test.assertEqual(sf_complex_values[0][0], 1+2j)
+test.assertEqual(sf_complex_mask.all(), True)
 
 code_aster.close()
