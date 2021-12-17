@@ -48,6 +48,8 @@ class GenericLoadFunction {
 
     GenericLoadFunction( const Function2DPtr &func ) : _generic( func ){};
 
+    GenericLoadFunction() {};
+
     std::string getName() const {
         if ( _generic.type() == typeid( FunctionPtr ) )
             return boost::get< FunctionPtr >( _generic )->getName();

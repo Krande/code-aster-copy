@@ -43,7 +43,7 @@ enum class FrictionType { Without, Tresca, Coulomb, Stick};
 
 enum class PairingAlgo { Mortar };
 
-enum class ContactInit { INTERPENETRE, NON, OUI };
+enum class InitState { Interpenetre, Non, Oui };
 
 
 #endif /* CONTACT_ENUM_H_ */

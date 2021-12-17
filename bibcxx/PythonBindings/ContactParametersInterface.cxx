@@ -76,19 +76,19 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg("variant") ) )
         .def( "getCoefficient", &ContactParameter::getCoefficient, R"(
-Return the contact coefficient used. It is a value of an real8
+Return the contact coefficient used. It is a value of a float
 
 Returns:
     float: contact coefficient.
         )",
               ( py::arg( "self" ) ) )
         .def( "setCoefficient", &ContactParameter::setCoefficient, R"(
-Set the contact coefficient used. It is a value of an real8
+Set the contact coefficient used. It is a value of a float
 
 Arguments:
     float: contact coefficient.
         )",
-              ( py::arg( "self" ) ) );
+              ( py::arg( "self" ), py::arg("coeff") ) );
 
     py::class_< FrictionParameter, FrictionParameter::FrictionParameterPtr >( "FrictionParameter",
                                                                               py::no_init )
@@ -122,47 +122,47 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg("type") ) )
         .def( "getCoefficient", &FrictionParameter::getCoefficient, R"(
-Return the Friction coefficient used. It is a value of an real8
+Return the Friction coefficient used. It is a value of a float
 
 Returns:
     float: Friction coefficient.
         )",
               ( py::arg( "self" ) ) )
         .def( "setCoefficient", &FrictionParameter::setCoefficient, R"(
-Set the Friction coefficient used. It is a value of an real8
+Set the Friction coefficient used. It is a value of a float
 
 Arguments:
     float: Friction coefficient.
         )",
-              ( py::arg( "self" ) ) )
+              ( py::arg( "self" ), py::arg("coeff") ) )
         .def( "getTresca", &FrictionParameter::getTresca, R"(
-Return the Tresca coefficient used. It is a value of an real8
+Return the Tresca coefficient used. It is a value of a float
 
 Returns:
     float: Tresca coefficient.
         )",
               ( py::arg( "self" ) ) )
         .def( "setTresca", &FrictionParameter::setTresca, R"(
-Set the Tresca coefficient used. It is a value of an real8
+Set the Tresca coefficient used. It is a value of a float
 
 Arguments:
     float: Tresca coefficient.
         )",
-              ( py::arg( "self" ) ) )
+              ( py::arg( "self" ) , py::arg("tresca") ) )
         .def( "getCoulomb", &FrictionParameter::getCoulomb, R"(
-Return the Coulomb coefficient used. It is a value of an real8
+Return the Coulomb coefficient used. It is a value of a float
 
 Returns:
     float: Coulomb coefficient.
         )",
               ( py::arg( "self" ) ) )
         .def( "setCoulomb", &FrictionParameter::setCoulomb, R"(
-Set the Coulomb coefficient used. It is a value of an real8
+Set the Coulomb coefficient used. It is a value of a float
 
 Arguments:
     float: Coulomb coefficient.
         )",
-              ( py::arg( "self" ) ) )
+              ( py::arg( "self" ), py::arg("coulomb") ) )
         .def( "hasFriction",
               static_cast< void ( FrictionParameter::* )( const bool & ) >
                                         ( &FrictionParameter::hasFriction ), R"(
@@ -184,5 +184,125 @@ Returns:
 
     py::class_< PairingParameter, PairingParameter::PairingParameterPtr >( "PairingParameter",
                                                                            py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< PairingParameter > ) );
+        .def( "__init__", py::make_constructor( &initFactoryPtr< PairingParameter > ) )
+        .def( "getAlgorithm", &PairingParameter::getAlgorithm, R"(
+Return the Pairing algorithm used. It is a value of an enum
+
+Returns:
+    PairingAlgo: Pairing algorithm.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setAlgorithm", &PairingParameter::setAlgorithm, R"(
+Set the Pairing algorithm used. It is a value of an enum
+
+Arguments:
+    PairingAlgo: Pairing algorithm.
+        )",
+              ( py::arg( "self" ), py::arg( "algo" ) ) )
+        .def( "getPairingDistance", &PairingParameter::getPairingDistance, R"(
+Return the pairing distance used. It is a value of a float
+
+Returns:
+    float: pairing distance.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setPairingDistance", &PairingParameter::setPairingDistance, R"(
+Set the pairing distance used. It is a value of a float
+
+Arguments:
+    float: pairing distance.
+        )",
+              ( py::arg( "self" ), py::arg("dist_appa") ) )
+        .def( "getInitState", &PairingParameter::getInitState, R"(
+Return the initial contact state. It is a value of an enum
+
+Returns:
+    InitState: Initial contact state.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setInitState", &PairingParameter::setInitState, R"(
+Set the initial contact state. It is a value of an enum
+
+Arguments:
+    InitState: Initial contact state.
+        )",
+              ( py::arg( "self" ), py::arg( "cont_init" ) ) )
+        .def( "getThreshold", &PairingParameter::getThreshold, R"(
+Return the distance threshold. It is a value of a float
+
+Returns:
+    float: distance threshold.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setThreshold", &PairingParameter::setThreshold, R"(
+Set the distance threshold used. It is a value of a float
+
+Arguments:
+    float: distance threshold.
+        )",
+              ( py::arg( "self" ), py::arg("seuil") ) )
+        .def( "getElementaryCharacteristics", &PairingParameter::getElementaryCharacteristics, R"(
+Return the elementary characteristics. It is a value of a pointer
+
+Returns:
+    ElementaryCharacteristicsPtr: cara_elel pointer.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setElementaryCharacteristics", &PairingParameter::setElementaryCharacteristics, R"(
+Set the elementary characteristics. It is a value of a pointer
+
+Arguments:
+    ElementaryCharacteristicsPtr: cara_elel pointer.
+        )",
+              ( py::arg( "self" ), py::arg( "cara" ) ) )
+        .def( "getDistFonction", &PairingParameter::getDistFonction, R"(
+Return the fictive distance fonction. It is a value of a pointer
+
+Returns:
+    GenericLoadFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "setDistFonction", &PairingParameter::setDistFonction, R"(
+Set the fictive distance fonction. It is a value of a pointer
+
+Arguments:
+    GenericLoadFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
+        )",
+              ( py::arg( "self" ), py::arg( "dist_supp" ) ) )
+        .def( "hasBeamDistance",
+              static_cast< void ( PairingParameter::* )( const bool & ) >
+                                        ( &PairingParameter::hasBeamDistance ), R"(
+Set True if fictive distance for beam is present else False
+
+Arguments:
+      Bool: True if fictive distance for beam is present else False
+        )",
+              ( py::arg( "self" ), py::arg( "beam" ) ) )
+        .def( "hasBeamDistance",
+              static_cast< bool ( PairingParameter::* )() const >
+                               ( &PairingParameter::hasBeamDistance ), R"(
+Reruen True if fictive distance for beam is present else False
+
+Returns:
+      Bool: True if fictive distance for beam is present else False
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "hasShellDistance",
+              static_cast< void ( PairingParameter::* )( const bool & ) >
+                                        ( &PairingParameter::hasShellDistance ), R"(
+Set True if fictive distance for shell is present else False
+
+Arguments:
+      Bool: True if fictive distance for shell is present else False
+        )",
+              ( py::arg( "self" ), py::arg( "shell" ) ) )
+        .def( "hasShellDistance",
+              static_cast< bool ( PairingParameter::* )() const >
+                               ( &PairingParameter::hasShellDistance ), R"(
+Reruen True if fictive distance for shell is present else False
+
+Returns:
+      Bool: True if fictive distance for shell is present else False
+        )",
+              ( py::arg( "self" ) ) );
 };

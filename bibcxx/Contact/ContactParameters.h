@@ -24,7 +24,9 @@
  */
 
 #include "Contact/ContactEnum.h"
+#include "Discretization/ElementaryCharacteristics.h"
 #include "astercxx.h"
+#include "Loads/ListOfLoads.h"
 
 class ContactParameter {
   private:
@@ -144,9 +146,21 @@ class PairingParameter {
   /** @brief Additional pairing distance = DIST_APPA */
     ASTERDOUBLE _dist_appa;
   /** @brief initial contact state = CONTACT_INIT */
-  //  ContactInit _cont_init; 
+    InitState _cont_init; 
   /** @brief initial threshold distance = SEUIL_INIT */
-  //  ASTERDOUBLE _seuil;
+    ASTERDOUBLE _seuil;
+  // DIST_SUPP ?? fonction, formul
+  /** @brief fictive distance fonction = DIST_SUPP */
+    GenericLoadFunction _dist_supp;
+  /** @brief if fictive distance for beam = DIST_POUTRE */
+    bool _beam;
+  /** @brief if fictive distance for shell = DIST_COQUE */
+    bool _shell;
+  /** @brief structural element characteristics = CARA_ELEM */
+    ElementaryCharacteristicsPtr _cara ;
+  /** @brief structural element characteristics = DIST_SUPP */
+    //
+
   public:
     /**
      * @typedef PairingParameterPtr
@@ -154,7 +168,48 @@ class PairingParameter {
      */
     typedef boost::shared_ptr< PairingParameter > PairingParameterPtr;
 
-    PairingParameter() : _algo(PairingAlgo::Mortar), _dist_appa(-1.0){};
+    /**
+     * @brief Constructeur
+     */
+     // , _dist_supp(nullptr) ?? initiation ??
+    PairingParameter() : _algo(PairingAlgo::Mortar), _dist_appa(-1.0),
+                         _cont_init(InitState::Interpenetre),
+                         _seuil(-1.0), _beam(false), 
+                         _shell(false), _cara(nullptr) {};
+
+    PairingAlgo getAlgorithm() const { return _algo; };
+
+    ASTERDOUBLE getPairingDistance() const { return _dist_appa; };
+
+    InitState getInitState() const { return _cont_init; };
+
+    ASTERDOUBLE getThreshold() const { return _seuil; };
+
+    GenericLoadFunction getDistFonction() const { return _dist_supp; };
+
+    ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _cara; };
+
+    void setAlgorithm( const PairingAlgo &algo ) { _algo = algo; };
+
+    void setPairingDistance( const ASTERDOUBLE &dist_appa ) { _dist_appa = dist_appa; };
+
+    void setInitState( const InitState &cont_init ) { _cont_init = cont_init; };
+
+    void setThreshold( const ASTERDOUBLE &seuil ) { _seuil = seuil; };    
+    
+    void setDistFonction( const GenericLoadFunction &dist_supp) { _dist_supp = dist_supp; };  
+
+    void hasBeamDistance( const bool &beam ) { _beam = beam; }
+
+    bool hasBeamDistance() const { return _beam; }    
+    
+    void hasShellDistance( const bool &shell ) { _shell = shell; }
+
+    bool hasShellDistance() const { return _shell; }
+
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) 
+                                                                { _cara = cara; };
+
 };
 
 /**

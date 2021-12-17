@@ -19,7 +19,7 @@
 
 from ..Objects import ContactNew, ContactZone, ContactParameter, \
     FrictionParameter, PairingParameter, ContactAlgo, ContactType, ContactVariant, \
-    FrictionAlgo, FrictionType
+    FrictionAlgo, FrictionType, PairingAlgo, InitState
 from ..Supervis import ExecuteCommand
 
 # C'est la nouvelle commande à remplir qui sera en python et c++
@@ -48,7 +48,9 @@ class NewContactAssignment(ExecuteCommand):
         print("ARGS: ", keywords, flush=True)
         model = keywords["MODELE"]
         verbosity = keywords["INFO"]
-
+        threshold = keywords.get("SEUIL_INIT")
+        fict_dist = keywords.get("DIST_SUPP")
+        
         # usefull dict
         _algo_cont = {"LAGRANGIEN": ContactAlgo.Lagrangian, "NITSCHE": ContactAlgo.Nitsche,
                       "PENALISATION": ContactAlgo.Penalization}
@@ -60,6 +62,9 @@ class NewContactAssignment(ExecuteCommand):
                       "PENALISATION": FrictionAlgo.Penalization}
         _type_frot = {"TRESCA": FrictionType.Tresca, "SANS": FrictionType.Without,
                       "COULOMB": FrictionType.Coulomb, "COLLE": FrictionType.Stick}
+        _algo_pair = {"MORTAR": PairingAlgo.Mortar}
+        _init_cont = {"INTERPENETRE": InitState.Interpenetre, "NON": InitState.Non,
+                      "OUI": InitState.Oui}              
 
         # add global informations
         self._result.setVerbosity(verbosity)
@@ -102,8 +107,19 @@ class NewContactAssignment(ExecuteCommand):
 
             # pairing parameters
             pairParam = PairingParameter()
-
             contZone.setPairingParameter(pairParam)
+            pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
+            pairParam.setPairingDistance(zone["DIST_APPA"]) 
+            pairParam.setInitState(_init_cont[zone["CONTACT_INIT"]])
+            pairParam.hasBeamDistance(zone["DIST_POUTRE"] == "OUI")
+            pairParam.hasShellDistance(zone["DIST_COQUE"] == "OUI")
+            if (pairParam.hasBeamDistance() or pairParam.hasShellDistance() ):
+                pairParam.setElementaryCharacteristics(zone["CARA_ELEM"]) 
+            if threshold != None:  
+                pairParam.setThreshold(zone["SEUIL_INIT"])  
+            if fict_dist != None:  
+                pairParam.setDistFonction(zone["DIST_SUPP"])            
+            
 
             # build then append
             contZone.build()
