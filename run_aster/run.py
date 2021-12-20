@@ -429,7 +429,7 @@ def get_procid():
 def get_nbcores():
     """Return the number of available cores.
 
-    Return:
+    Returns:
         int: Number of cores.
     """
     proc = run(['nproc'], stdout=PIPE, universal_newlines=True)

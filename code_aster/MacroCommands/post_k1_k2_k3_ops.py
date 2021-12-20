@@ -1580,7 +1580,7 @@ def get_erreur(self, ndim, __tabi, type_para):
     params.extend(['K1', 'ERR_K1', 'K2', 'ERR_K2'])
     if ndim == 3:
         params.extend(['K3', 'ERR_K3'])
-        
+
 
     __tabi = CALC_TABLE(TABLE=__tabi,
                         reuse=__tabi, ACTION=(
@@ -1646,7 +1646,7 @@ def get_tabout(
         mcfact.append(_F(PARA="COOR_X", LISTE_R=[coor[0],] * 3))
         mcfact.append(_F(PARA="COOR_Y", LISTE_R=[coor[1],] * 3))
         mcfact.append(_F(PARA="COOR_Z", LISTE_R=[coor[2],] * 3))
-        
+
     if (ino == 0 and iord == 0) and inst is None:
         tabout = CREA_TABLE(LISTE=mcfact, TITRE=titre)
         tabout = get_erreur(self, ndim, tabout, type_para)
@@ -1732,10 +1732,8 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
         if RESULTAT.getNumberOfRanks() > 0:
             cham_maters = []
             for j in RESULTAT.getRanks():
-                try:
+                if RESULTAT.hasMaterialField(j):
                     cham_maters += [RESULTAT.getMaterialField(j)]
-                except RuntimeError:
-                    pass
             if(len(cham_maters)):
                 CHAM_MATER = cham_maters[0]
             else:
@@ -2055,9 +2053,9 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
 # Recuperation des coordonnees des points du fond de fissure
 # (x,y,z,absc_curv)
         (Coorfo, Vpropa, Nnoff) = get_coor_xfem(args, FISSURE, ndim)
-        
+
         d_coor = {i:[Coorfo[4*i], Coorfo[4*i+1], Coorfo[4*i+2]] for i in range(Nnoff)}
-        
+
 #     Calcul de la direction de propagation en chaque point du fond
         (VDIR, VNOR, absfon) = get_direction_xfem(Nnoff, Vpropa, Coorfo, ndim)
 
@@ -2180,7 +2178,7 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
                 liste_noeu_a_extr.append(ino)
                 if mater_fonc :
                     para = 0.
-                
+
             else:
 
 #           SI NBVAL >= 3 :

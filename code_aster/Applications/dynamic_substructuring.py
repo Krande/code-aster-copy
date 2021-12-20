@@ -574,13 +574,13 @@ class Structure(WithEmbeddedObjects):
             lag = np.array(numb.getRowsAssociatedToLagrangeMultipliers()) - 1
 
             modes = sub.modes
-            em = [modes.getFieldOnNodesReal('DEPL', r-1).getValues() for r in modes.getRanks()]
+            em = [modes.getFieldOnNodesReal('DEPL', r).getValues() for r in modes.getRanks()]
             decalage += len(em)
             em = np.vstack(em).T
             em[lag, :] = 0.  # mise a zero des Lagrange
 
             imodes = sub.iModes
-            im = [imodes.getFieldOnNodesReal('DEPL', r-1).getValues() for r in imodes.getRanks()]
+            im = [imodes.getFieldOnNodesReal('DEPL', r).getValues() for r in imodes.getRanks()]
             lIndexOfInterfModes.append(np.arange(len(im)) + decalage)
             lNumberOfInterfModes.append(len(im))
             decalage += len(im)
@@ -674,8 +674,10 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         raise KeyError("list2 is out of bound")
     nModes1 = len(list1) if list1 else nres1
     nModes2 = len(list2) if list2 else nres2
-    lMode1 = list1 if list1 else range(nModes1)
-    lMode2 = list2 if list2 else range(nModes2)
+    lMode1 = list1 if list1 else range(1,nModes1+1)
+    lMode2 = list2 if list2 else range(1,nModes2+1)
+    lMode11 = list1 if list1 else range(nModes1)
+    lMode22 = list2 if list2 else range(nModes2)
     lFreq1 = lres1[0].getAccessParameters()["FREQ"]
     lFreq2 = lres2[0].getAccessParameters()["FREQ"]
     rhof = fluid_material.RCVALE("FLUIDE", nomres=("RHO"), stop=2)[0][0] if fluid_material else 1.
@@ -778,8 +780,8 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         label2 = name2 or res2.getName()
         ax.set_xlabel(label1)
         ax.set_ylabel(label2)
-        plt.xticks(range(nModes1), ["{:.1f}".format(lFreq1[idx]) for idx in lMode1], rotation=45)
-        plt.yticks(range(nModes2), ["{:.1f}".format(lFreq2[idx]) for idx in lMode2])
+        plt.xticks(range(nModes1), ["{:.1f}".format(lFreq1[idx]) for idx in lMode11], rotation=45)
+        plt.yticks(range(nModes2), ["{:.1f}".format(lFreq2[idx]) for idx in lMode22])
         cbar = plt.colorbar()
         cbar.ax.set_ylabel("MAC")
         for (x_val, y_val), val in np.ndenumerate(np.transpose(mac)):

@@ -83,65 +83,67 @@ void exportFieldOnCellsToPython() {
         .def( -py::self )
         .def( "setValues", &FieldOnCellsReal::setValues,
               R"(
-                  Set values of the field
-                  Argument:
-                  float: value to set
+Set values of the field
+
+Arguments:
+    float: value to set
                   )",
               ( py::arg( "self" ), py::arg( "value" ) ) )
         .def( "getValues", &FieldOnCellsReal::getValues,
               py::return_value_policy< py::copy_const_reference >(), R"(
-                  Return a list of values as (x1, y1, z1, x2, y2, z2...)
-                  Returns:
-                  list[float]: List of values.
+Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+Returns:
+    list[float]: List of values.
                   )",
               ( py::arg( "self" ) ) )
         .def( "size", &FieldOnCellsReal::size, R"(
-                  Return the size of the field
+Return the size of the field
 
-                  Return:
-                  int: number of element in the field
+Returns:
+    int: number of element in the field
                         )",
               ( py::arg( "self" ) ) )
         .def( "transform", &FieldOnCellsReal::transform< ASTERDOUBLE >, R"(
-                  Apply Function to each value of _ValuesList of the FieldOnCells object.
+Apply Function to each value of _ValuesList of the FieldOnCells object.
 
-                  Arguments:
-                  Function: Callable Python object
+Arguments:
+    func (Function): Callable Python object
 
-                  Returns:
-                  FieldOnCellsReal: New FieldOnCellsReal object with the transformed values
+Returns:
+    FieldOnCellsReal: New FieldOnCells object with the trasformed values
                         )",
-              ( py::arg( "self" ), py::arg( "Function" ) ) )
+              ( py::arg( "self" ), py::arg( "func" ) ) )
         .def( "printMedFile", &FieldOnCellsReal::printMedFile, print_overloads( R"(
-                  Print the field in MED format.
+Print the field in MED format.
 
-                  Arguments:
-                  filename (str): Path to the file to be printed.
-                  local (bool=True) : print local values only (relevent for ParallelMesh only)
+Arguments:
+    filename (str): Path to the file to be printed.
+    local (bool): Print local values only (relevant for ParallelMesh only, default: *True*)
 
-                  Returns:
-                  bool: *True* if succeeds, *False* otherwise.
+Returns:
+    bool: *True* if succeeds, *False* otherwise.
                         )",
               ( py::arg( "self" ), py::arg( "filename" ), py::arg( "local" ) ) ) )
         .def( "norm", &FieldOnCellsReal::norm< ASTERDOUBLE >, R"(
-                  Return the euclidean norm of the field
+Return the euclidean norm of the field
 
-                  Argument:
-                  normType: "NORM_1", "NORM_2", "NORM_INFINITY"
+Arguments:
+    normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
 
-                  Returns:
-                  double: Euclidean norm
+Returns:
+    float: euclidean norm
                         )" )
         .def( "dot", &FieldOnCellsReal::dot< ASTERDOUBLE >, R"(
-                  Return the dot product of two fields
+Return the dot product of two fields
 
-                  Argument:
-                  FieldOnNodes: field
+Arguments:
+    field (FieldOnNodes): other field
 
-                  Returns:
-                  double: dot produc
+Returns:
+    float: dot product
                               )",
-              ( py::arg( "self" ), py::arg( "field" ) ) );
+              ( py::arg( "self" ), py::arg( "other" ) ) );
 
     py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr,
             py::bases< DataField > >( "FieldOnCellsComplex", py::no_init )
@@ -175,30 +177,80 @@ void exportFieldOnCellsToPython() {
         .def( py::self * float() )
         .def( float() * py::self )
         .def( "size", &FieldOnCellsComplex::size, R"(
-                  Return the size of the field
+Return the size of the field
 
-                  Return:
-                  int: number of element in the field
+Returns:
+    int: number of element in the field
                         )",
                               ( py::arg( "self" ) ) )
         .def( "transform", &FieldOnCellsComplex::transform<ASTERCOMPLEX>, R"(
-                  Apply Function to each value of _ValuesList of the FieldOnCellsComplex object.
+Apply Function to each value of _ValuesList of the FieldOnCells object.
 
-                  Arguments:
-                  Function: Callable Python object
+Arguments:
+    func (Function): Callable Python object
 
-                  Returns:
-                  FieldOnCellsComplex: New FieldOnCellsComplex object with the trasformed values
+Returns:
+    bool: New FieldOnCells object with the trasformed values
                         )",
-                              ( py::arg( "self" ), py::arg( "function" ) ))
+                              ( py::arg( "self" ), py::arg( "func" ) ))
         .def( "printMedFile", &FieldOnCellsComplex::printMedFile, R"(
-                  Print the field in MED format.
+Print the field in MED format.
 
-                  Arguments:
-                  filename (str): Path to the file to be printed.
+Arguments:
+    filename (str): Path to the file to be printed.
 
+Returns:
+    bool: *True* if succeeds, *False* otherwise.
+                        )",
+                  ( py::arg( "self" ), py::arg( "filename" ) )  );
+
+
+    py::class_< FieldOnCellsLong, FieldOnCellsLongPtr,
+            py::bases< DataField > >( "FieldOnCellsLong", py::no_init )
+        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnCellsLong >) )
+        .def( "__init__",
+              py::make_constructor(&initFactoryPtr< FieldOnCellsLong, std::string >) )
+        .def(py::init<const FieldOnCellsLong&>() )
+        .def( "duplicate", &FieldOnCellsLong::duplicate)
+        .def( "getModel", &FieldOnCellsLong::getModel )
+        .def( "setDescription", &FieldOnCellsLong::setDescription )
+        .def( "setModel", &FieldOnCellsLong::setModel )
+        .def( "build", &FieldOnCellsLong::build )
+        .def( "getValues", &FieldOnCellsLong::getValues,
+               py::return_value_policy<py::copy_const_reference>(),R"(
+                  Return a list of values as (x1, y1, z1, x2, y2, z2...)
                   Returns:
-                  bool: *True* if succeeds, *False* otherwise.
+                  list[int]: List of values.
+                  )",
+              ( py::arg( "self" ) ))
+        .def( "__getitem__",
+              +[]( const FieldOnCellsLong& v, int i ) { return v[i]; } )
+        .def( "__setitem__",
+              +[]( FieldOnCellsLong &v, ASTERINTEGER i, ASTERINTEGER f )
+               { return v.operator[]( i )=f; } )
+        .def( "__len__",
+              +[]( const FieldOnCellsLong& v ) { return v.size(); } )
+        .def( py::self + py::self )
+        .def( py::self - py::self )
+        .def( py::self += py::self )
+        .def( py::self -= py::self )
+        .def( py::self * float() )
+        .def( float() * py::self )
+        .def( "size", &FieldOnCellsLong::size, R"(
+Return the size of the field
+
+Returns:
+    int: number of element in the field
+                        )",
+                              ( py::arg( "self" ) ) )
+        .def( "printMedFile", &FieldOnCellsLong::printMedFile, R"(
+Print the field in MED format.
+
+Arguments:
+    filename (str): Path to the file to be printed.
+
+Returns:
+    bool: *True* if succeeds, *False* otherwise.
                         )",
                   ( py::arg( "self" ), py::arg( "filename" ) )  );
 };

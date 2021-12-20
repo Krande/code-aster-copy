@@ -24,7 +24,7 @@
 """
 
 import aster
-from libaster import Result, AsterError
+from libaster import Result
 
 from ..Utilities import injector, logger
 from ..Objects.Serialization import InternalStateBuilder
@@ -52,14 +52,10 @@ class ResultStateBuilder(InternalStateBuilder):
         # list of ElementaryCharacteristics
         self._st["cara_elem"] = []
         for i in self._st["rank"]:
-            try:
+            if result.hasModel(i):
                 self._st["model"].append(result.getModel(i))
-            except AsterError:
-                pass
-            try:
+            if result.hasMaterialField(i):
                 self._st["mater"].append(result.getMaterialField(i))
-            except AsterError:
-                pass
             if result.hasElementaryCharacteristics(i):
                 self._st["cara_elem"].append(result.getElementaryCharacteristics(i))
 

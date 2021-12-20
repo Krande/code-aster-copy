@@ -90,7 +90,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @brief Constructeur
      */
     FieldOnCells( )
-        : FieldOnCells( DataStructureNaming::getNewName() ){};
+        : FieldOnCells( ResultNaming::getNewResultName() ){};
 
 
     /**
@@ -263,7 +263,7 @@ template < class ValueType > class FieldOnCells : public DataField {
      * @param currentMesh objet Model sur lequel la charge reposera
      */
     ASTERBOOL setModel( ModelPtr &currentModel ) {
-        if ( currentModel->isEmpty() )
+        if ( currentModel->isEmpty() || currentModel == nullptr )
             raiseAsterError( "Model is empty" );
 
         _model = currentModel;
@@ -605,7 +605,7 @@ template < class ValueType > class FieldOnCells : public DataField {
             else if( normType == "NORM_INFINITY") {
                 for(auto p = 0; p < nel; p++){
 
-                  if((*CellsRank)[liel[p]-1] != rank) continue;
+                    if((*CellsRank)[liel[p]-1] != rank) continue;
                     beg = (*descr)[adress + 3 + 4 * p + 4] - 1;
                     end = beg + (*descr)[adress + 3 + 4 * p + 3];
 

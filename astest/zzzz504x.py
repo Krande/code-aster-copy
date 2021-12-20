@@ -71,7 +71,7 @@ study.addLoad(CHT1)
 study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
-retour = dComputation.neumann([0, 0, 0], None)
+retour = dComputation.neumann([0, 0, 0])
 matr_elem = dComputation.computeMechanicalStiffnessMatrix()
 
 monSolver = code_aster.MumpsSolver()
@@ -92,7 +92,7 @@ test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 monSolver.factorize(matrAsse)
 
 vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL, CHAR_CINE=charCine, )
-resu = monSolver.solveWithDirichletBC(matrAsse, vcine, retour)
+resu = monSolver.solveWithDirichletBC(retour, vcine)
 
 TEST_RESU(
     CHAM_NO=_F(

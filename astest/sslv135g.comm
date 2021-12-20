@@ -127,7 +127,7 @@ for i in range(NBALP):
                             VALE        =( 0.,  (ALP[i]+1)*SA,
                                            1.,  (ALP[i]-1)*SA,
                                            2.,  (ALP[i]+1)*SA,))
-   SOL[i] = MECA_STATIQUE(   TITRE = 'TEST BIAXIAL TRACTION-COMPRESSION ALTERNATIVE ELASTIC',
+   SOL[i] = MECA_STATIQUE(
                           MODELE = TROISD,
                           CHAM_MATER = MAT,
                           EXCIT = _F( CHARGE = TR_CS,

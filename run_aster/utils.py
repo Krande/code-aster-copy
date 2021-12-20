@@ -169,7 +169,7 @@ def _waitstatus_to_exitcode(status):
     Arguments:
         status (int): status as returned by `os.wait()`/`os.waitpid()`.
 
-    Return:
+    Returns:
         int: exit code.
     """
     if os.WIFSIGNALED(status):

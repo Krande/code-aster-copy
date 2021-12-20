@@ -77,8 +77,8 @@ U2 = MECA_STATIQUE(MODELE=MO,
 ###                 de FieldsOnCells class                    ###
 
 
-fieldOnElem1 = U2.getFieldOnCellsReal("SIEF_ELGA", 31)
-fieldOnElem2 = U2.getFieldOnCellsReal("SIEF_ELGA", 30)
+fieldOnElem1 = U2.getFieldOnCellsReal("SIEF_ELGA", 32)
+fieldOnElem2 = U2.getFieldOnCellsReal("SIEF_ELGA", 31)
 
 # subscript operator __getitem__
 val0 = fieldOnElem1.getValues()[0]

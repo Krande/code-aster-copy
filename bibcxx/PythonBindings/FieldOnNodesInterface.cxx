@@ -73,29 +73,29 @@ void exportFieldOnNodesToPython() {
               R"(
 Return the euclidean norm of the field
 
-Argument:
-    normType: "NORM_1", "NORM_2", "NORM_INFINITY"
+Arguments:
+    normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
 
 Returns:
-    double: euclidean norm
+    float: euclidean norm
         )",
               ( py::arg( "self" ) ) )
         .def( "dot", &FieldOnNodesReal::dot< ASTERDOUBLE >,
               R"(
 Return the dot product of two fields
 
-Argument:
-    FieldOnNodes: field
+Arguments:
+    other (FieldOnNodes): other field
 
 Returns:
-    double: dot produc
+    float: dot product
         )",
-              ( py::arg( "self" ), py::arg( "field" ) ) )
+              ( py::arg( "self" ), py::arg( "other" ) ) )
         .def( "size", &FieldOnNodesReal::size,
               R"(
 Return the size of the field
 
-Return:
+Returns:
     int: number of element in the field
         )",
               ( py::arg( "self" ) ) )
@@ -103,8 +103,8 @@ Return:
               R"(
 Set values of the field
 
-Argument:
-    float: value to set
+Arguments:
+    value (float): value to set
         )",
               ( py::arg( "self" ), py::arg( "value" ) ) )
         .def( "getValues", &FieldOnNodesReal::getValues,

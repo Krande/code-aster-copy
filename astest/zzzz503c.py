@@ -77,23 +77,21 @@ charCine2.build()
 
 monSolver = code_aster.PetscSolver( RENUM="SANS", PRE_COND="SOR" )
 
-mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
-mecaStatique.addDirichletBC(charCine)
-mecaStatique.addDirichletBC(charCine2)
-mecaStatique.setLinearSolver(monSolver)
+resu = MECA_STATIQUE(MODELE=monModel, CHAM_MATER=affectMat,
+  EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charCine2)),
+  SOLVEUR = _F(METHODE="PETSC", RENUM="SANS", PRE_COND="SOR"))
 
-resu = mecaStatique.execute()
 
 test.assertFalse(resu.hasElementaryCharacteristics())
 test.assertFalse(resu.hasElementaryCharacteristics(1))
 
 resu=CALC_CHAMP(RESULTAT=resu, reuse=resu, CONTRAINTE=('SIEF_ELGA'))
 
-DEPL = resu.getFieldOnNodesReal("DEPL", 0)
+DEPL = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = DEPL.exportToSimpleFieldOnNodes()
 sfon.updateValuePointers()
 
-SIEF = resu.getFieldOnCellsReal("SIEF_ELGA", 0)
+SIEF = resu.getFieldOnCellsReal("SIEF_ELGA", 1)
 
 
 val = [0.134228076192 , 0.134176297047, 0.154099687654, 0.154189676715]
@@ -173,8 +171,8 @@ with shared_tmpdir("zzzz503c_") as tmpdir:
     DEFI_FICHIER(ACTION='LIBERER',UNITE=80)
 
 
-SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 0)
-DEPL_std = resu_std.getFieldOnNodesReal("DEPL", 0)
+SIEF_std = resu_std.getFieldOnCellsReal("SIEF_ELGA", 1)
+DEPL_std = resu_std.getFieldOnNodesReal("DEPL", 1)
 
 rela = abs(DEPL.norm("NORM_2")- DEPL_std.norm("NORM_2"))/DEPL_std.norm("NORM_2")
 test.assertAlmostEqual(rela, 0.0, delta=1e-12)

@@ -58,18 +58,12 @@ charCine2 = code_aster.MechanicalDirichletBC(monModel)
 charCine2.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
 charCine2.build()
 
-monSolver = code_aster.MumpsSolver()
-
-mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
-mecaStatique.addDirichletBC(charCine)
-mecaStatique.addDirichletBC(charCine2)
-mecaStatique.setLinearSolver(monSolver)
-
-resu = mecaStatique.execute()
+resu = MECA_STATIQUE(MODELE=monModel, CHAM_MATER=affectMat,
+  EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charCine2)),)
 
 resu.printMedFile("fort."+str(rank+40)+".med")
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 0)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 sfon.updateValuePointers()
 

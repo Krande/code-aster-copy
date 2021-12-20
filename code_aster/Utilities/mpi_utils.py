@@ -26,7 +26,7 @@ Need only mpi4py package.
 """
 
 from collections import defaultdict
-from .base_utils import ReadOnlyDict
+from .base_utils import ReadOnlyDict, force_list
 
 try:
     from .aster_config import config as _cfg
@@ -88,7 +88,7 @@ except:
 
         def allreduce(self, data, op):
             """Allreduce"""
-            return op(data)
+            return op(force_list(data))
 
         def py2f():
             """Return the communicator id."""

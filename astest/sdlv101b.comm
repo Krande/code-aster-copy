@@ -284,7 +284,7 @@ for (idx, jdx), val in np.ndenumerate(mac):
 # ------------------------------------------------------------------------------
 
 mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
-      list1=range(3))
+      list1=range(1,4))
 
 mac_ref = np.array([
 [1.00000000e+00, 2.22104394e-05, 1.37320888e-05],

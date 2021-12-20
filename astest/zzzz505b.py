@@ -79,6 +79,10 @@ SOLUT=STAT_NON_LINE(MODELE=model,
 print("Field in original SNL:", flush=True)
 SOLUT.printListOfFields()
 
+fields = sorted(["COMPORTEMENT", "DEPL", "SIEF_ELGA", "VARI_ELGA"])
+
+test.assertSequenceEqual(sorted(SOLUT.getFieldsNames()), fields )
+
 nbRank = SOLUT.getNumberOfRanks()
 
 
@@ -98,11 +102,15 @@ for rank in range(nbRank):
     SOLUN.setTimeValue( SOLUT.getTimeValue(rank), rank)
 
 list_field = []
-list_field += SOLUN.getFieldsOnNodesNames()
-list_field += SOLUN.getFieldsOnCellsNames()
-list_field += SOLUN.getConstantFieldsOnCellsNames()
+list_field += SOLUN.getFieldsOnNodesRealNames()
+list_field += SOLUN.getFieldsOnNodesComplexNames()
+list_field += SOLUN.getFieldsOnCellsRealNames()
+list_field += SOLUN.getFieldsOnCellsComplexNames()
+list_field += SOLUN.getFieldsOnCellsLongNames()
+list_field += SOLUN.getConstantFieldsOnCellsChar16Names()
+list_field += SOLUN.getConstantFieldsOnCellsRealNames()
 
-test.assertSequenceEqual( sorted(list_field), sorted(["DEPL", "VARI_ELGA", "SIEF_ELGA", "COMPORTEMENT"]))
+test.assertSequenceEqual( sorted(list_field), fields)
 
 
 #=======================================================

@@ -623,7 +623,7 @@ class CommandSyntax(object):
     def getoper(self):
         """Return the operator number.
 
-        Return:
+        Returns:
             int: Number of the fortran operator subroutine.
         """
         return self._commandCata.definition['op']

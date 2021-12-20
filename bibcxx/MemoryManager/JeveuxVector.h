@@ -77,7 +77,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         if ( capa > 0 ) {
             AS_ASSERT( this->allocate( capa ) );
-            this->setSize(size);
+            this->setSize( size );
             AS_ASSERT( toCopy.updateValuePointer() );
             for ( ASTERINTEGER i = 0; i < size; ++i )
                 this->operator[]( i ) = toCopy[i];
@@ -301,14 +301,18 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     };
 
     /** @brief Convert to std::vector */
-    std::vector< ValueType > toVector() const {
-        if ( _valuePtr == nullptr )
-            throw std::runtime_error( "Pointer is null" );
+    std::vector< ValueType > toVector() {
         std::vector< ValueType > toReturn;
-        ASTERINTEGER size = this->size();
-        toReturn.reserve( size );
-        for ( ASTERINTEGER i = 0; i < size; ++i )
-            toReturn.push_back( _valuePtr[i] );
+        bool ret = updateValuePointer();
+
+        if ( ret ) {
+            ASTERINTEGER size = this->size();
+            toReturn.reserve( size );
+
+            for ( ASTERINTEGER i = 0; i < size; ++i )
+                toReturn.push_back( _valuePtr[i] );
+        }
+
         return toReturn;
     };
 

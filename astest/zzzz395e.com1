@@ -20,6 +20,11 @@
 
 POURSUITE(CODE='OUI')
 
+try:
+    stnl.getElementaryCharacteristics(1)
+except IndexError:
+    pass
+
 # Tests de la base primale (DEPL) obtenue par POD
 TEST_RESU(RESU=(
                 _F(RESULTAT=base_p,

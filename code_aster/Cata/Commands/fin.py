@@ -45,7 +45,7 @@ FIN = FIN_PROC(nom="FIN",
                fr=tr("Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE"),
                compat_syntax=compat_syntax,
         # FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
-        # NonConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
+        # ConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
         # En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
         RETASSAGE=SIMP(
             fr=tr("retassage de la base GLOBALE"),

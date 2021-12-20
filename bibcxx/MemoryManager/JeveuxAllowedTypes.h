@@ -68,7 +68,7 @@ template <> struct AllowedJeveuxType< ASTERINTEGER > {
 
 template <> struct AllowedJeveuxType< ASTERINTEGER4 > {
     static const unsigned short numTypeJeveux = Integer4;
-    typedef short type;
+    typedef ASTERINTEGER4 type;
 };
 
 template <> struct AllowedJeveuxType< ASTERDOUBLE > {

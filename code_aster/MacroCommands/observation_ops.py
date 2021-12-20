@@ -24,7 +24,6 @@ import copy
 import numpy
 
 import aster
-from libaster import AsterError
 
 from ..Cata.DataStructure import dyna_harmo, dyna_trans, evol_elas, mode_meca
 from ..Cata.Syntax import _F
@@ -80,10 +79,8 @@ def observation_ops(self,
     if RESULTAT.getNumberOfRanks() > 0:
         cara_elems = []
         for j in RESULTAT.getRanks():
-            try:
+            if RESULTAT.hasElementaryCharacteristics(j):
                 cara_elems += [RESULTAT.getElementaryCharacteristics(j)]
-            except AsterError:
-                pass
         assert len(cara_elems) <= 1
         if(len(cara_elems)):
             cara_elem = cara_elems[0]
@@ -95,10 +92,9 @@ def observation_ops(self,
     if RESULTAT.getNumberOfRanks() > 0:
         cham_maters = []
         for j in RESULTAT.getRanks():
-            try:
+            if RESULTAT.hasMaterialField(j):
                 cham_maters += [RESULTAT.getMaterialField(j)]
-            except AsterError:
-                pass
+
         cham_maters=list(set(cham_maters))
         assert len(cham_maters) <= 1
         if(len(cham_maters)):

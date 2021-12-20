@@ -60,16 +60,12 @@ charMeca = AFFE_CHAR_MECA(MODELE=monModel, DOUBLE_LAGRANGE="NON",
 
 monSolver = code_aster.MumpsSolver()
 
-mecaStatique = code_aster.LinearStaticAnalysis(monModel, affectMat)
-mecaStatique.addDirichletBC(charCine)
-mecaStatique.addLoad(charMeca)
-mecaStatique.setLinearSolver(monSolver)
-
-resu = mecaStatique.execute()
+resu = MECA_STATIQUE(MODELE=monModel, CHAM_MATER=affectMat,
+  EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charMeca)),)
 
 resu.printMedFile("fort."+str(rank+40)+".med")
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 0)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 sfon.updateValuePointers()
 

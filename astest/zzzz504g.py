@@ -65,7 +65,7 @@ resu.debugPrint(10+rank)
 
 resu.printMedFile("test"+str(rank)+".med")
 
-MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 0)
+MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 sfon.debugPrint(10+rank)
 sfon.updateValuePointers()
