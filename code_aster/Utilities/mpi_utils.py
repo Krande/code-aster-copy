@@ -22,11 +22,11 @@
 """
 This module gives common utilities for MPI.
 
-Need only mpi4py package
+Need only mpi4py package.
 """
 
 from collections import defaultdict
-from .base_utils import ReadOnlyDict
+from .base_utils import ReadOnlyDict, force_list
 
 try:
     from .aster_config import config as _cfg
@@ -48,42 +48,64 @@ try:
 except:
     class FAKE_COMM_WORLD:
         """
-        This class FAKE_COMM_WORLD contains methods for compatibility with sequential libraries
+        This class FAKE_COMM_WORLD contains methods for compatibility with
+        sequential libraries
 
         Use MPI.COMM_WORLD as mpi4py to use mpi methods
-
-        Some methods can be missing (add them here with the same name and arguments than mpi4py)
+        Some methods can be missing (add them here with the same name and
+        arguments than mpi4py)
         """
+        rank = 0
+        size = 1
 
         def __init__(self):
             if haveMPI():
                 raise RuntimeError("mpi4py is mandatory for mpi execution")
 
         def Get_rank(self):
+            """Return the process rank."""
             return 0
 
         def Get_size(self):
+            """Return the number of processes."""
             return 1
 
         def Barrier(self):
+            """Set a barrier."""
             return
 
-        def bcast(self, data, root):
+        def bcast(self, data, root=0):
+            """Broadcast"""
             return data
 
-        def Bcast(self, data, root):
+        def Bcast(self, data, root=0):
+            """Broadcast with buffers."""
             return data
 
-        def gather(self, data, root):
+        def gather(self, data, root=0):
+            """Gather"""
             return data
+
+        def allreduce(self, data, op):
+            """Allreduce"""
+            return op(force_list(data))
+
+        def py2f():
+            """Return the communicator id."""
+            return 0
 
     class MPI:
         """
         This class MPI is an encapsulation of mpi4py for sequential libraries.
 
-        The same API than mpi4py is used
+        The same API than mpi4py is used.
 
-        It is equivalent to 'from mpi4py import MPI' of parallel libraries
+        It is equivalent to ``from mpi4py import MPI`` of parallel libraries.
         """
+
+        MAX = max
+        MIN = min
+        SUM = sum
+        PROD = sum
 
         COMM_WORLD = FAKE_COMM_WORLD()

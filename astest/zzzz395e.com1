@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,11 @@
 # person_in_charge: mickael.abbas at edf.fr
 
 POURSUITE(CODE='OUI')
+
+try:
+    stnl.getElementaryCharacteristics(1)
+except RuntimeError:
+    pass
 
 # Tests de la base primale (DEPL) obtenue par POD
 TEST_RESU(RESU=(

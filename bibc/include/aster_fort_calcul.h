@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -166,6 +166,10 @@ void DEFSSS( AFVARC, afvarc, const char *, STRING_SIZE, const char *, STRING_SIZ
 
 #define CALLO_CMTREF( a, b ) CALLOO( CMTREF, cmtref, a, b )
 void DEFSS( CMTREF, cmtref, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALLO_RSAGSD( a, b ) CALLOP( RSAGSD, rsagsd, a, b)
+void DEFSP( RSAGSD, rsagsd, const char *, STRING_SIZE, ASTERINTEGER *);
+
 
 #ifdef __cplusplus
 }

@@ -103,7 +103,6 @@ COEF=DEFI_FONCTION(         NOM_PARA='INST',
                                             8., -3.,                  ))
 
 DEPL=MECA_STATIQUE(
-                    TITRE='TEST TRACTION SIMPLE/COMPTAGE RAINFLOW EN 3D',
                                     MODELE=TRIDIM,
                                 CHAM_MATER=MAT,
                                    EXCIT=_F(  CHARGE = TRAC,

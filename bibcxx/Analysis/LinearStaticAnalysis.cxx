@@ -3,7 +3,7 @@
  * @brief Fichier source contenant le source du solveur de mecanique statique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -78,12 +78,14 @@ ElasticResultPtr LinearStaticAnalysis::execute( ElasticResultPtr resultC ) {
 
     _study->getCodedMaterial()->allocate(true);
 
+    int nbRank = resultC->getNumberOfRanks();
+
     if ( !_timeStep )
         throw std::runtime_error( "No time list" );
     if ( _timeStep->size() == 0 )
-        resultC->allocate( 1 );
+        resultC->resize( nbRank + 1 );
     else
-        resultC->allocate( _timeStep->size() );
+        resultC->resize( nbRank + _timeStep->size() );
 
     // Define the discrete problem
     DiscreteProblemPtr dProblem( boost::make_shared< DiscreteProblem >( _study ) );

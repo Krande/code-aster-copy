@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StaticMechanicalContext
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -52,7 +52,7 @@ class StaticMechanicalContext {
     /** @brief Pas de temps courant */
     ASTERDOUBLE _time;
     /** @brief rank */
-    ASTERINTEGER _rank;
+    ASTERINTEGER _rank, _initRank;
     /** @brief Assembly matrix */
     AssemblyMatrixDisplacementRealPtr _aMatrix;
     /** @brief Are elastic properties constant */
@@ -75,7 +75,7 @@ class StaticMechanicalContext {
                              const ResultPtr container )
         : _discreteProblem( curPb ), _linearSolver( linSolv ),
           _listOfLoads( _discreteProblem->getStudyDescription()->getListOfLoads() ),
-          _results( container ), _time( 0. ), _rank( 1 ),
+          _results( container ), _time( 0. ), _rank( 1 ), _initRank(container->getNumberOfRanks()),
           _aMatrix( new AssemblyMatrixDisplacementReal( Temporary ) ),
           _isConst( _discreteProblem->getStudyDescription()->getCodedMaterial()->constant() ),
           _varCom( new ExternalStateVariablesBuilder(
@@ -93,7 +93,7 @@ class StaticMechanicalContext {
      */
     void setStep( const ASTERDOUBLE &time, const ASTERINTEGER &rank ) {
         _time = time;
-        _rank = rank;
+        _rank = _initRank + rank;
     };
 
     AssemblyMatrixDisplacementRealPtr getStiffnessMatrix(void)

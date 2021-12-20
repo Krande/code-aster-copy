@@ -122,11 +122,10 @@ void StaticMechanicalAlgorithm::_solve( CurrentContext &ctx, const FieldOnNodesR
     FieldOnNodesRealPtr diriBCsFON =
         ctx._discreteProblem->computeDirichletBC( dofNum1, ctx._time );
 
-    FieldOnNodesRealPtr resultField =
-        ctx._results->getEmptyFieldOnNodesReal( "DEPL", ctx._rank );
+    FieldOnNodesRealPtr resultField = ctx._linearSolver->solveWithDirichletBC(
+        ctx._aMatrix, diriBCsFON, rhs);
 
-    resultField = ctx._linearSolver->solveWithDirichletBC(
-        ctx._aMatrix, diriBCsFON, rhs, resultField );
+    ctx._results->setField(resultField, "DEPL", ctx._rank );
 
     auto finish = std::chrono::high_resolution_clock::now();
     ctx._timer["Solve"] += std::chrono::duration<ASTERDOUBLE>(finish - start).count();

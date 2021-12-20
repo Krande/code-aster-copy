@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -120,26 +120,22 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
           _mesh( nullptr ), _dofDescription( nullptr ),
           _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
 
-    /**
-     * @brief Copy constructor
-     */
-    FieldOnNodes( const FieldOnNodes &toCopy )
-        :DataField( toCopy.getMemoryType(), "CHAM_NO" ),
-          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
-          _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
-          _mesh( nullptr ), _dofDescription( nullptr ),
-          _title( JeveuxVectorChar80( getName() + ".TITR" ) ) {
+
+    /** @brief Copy constructor */
+    FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy ) : FieldOnNodes( name ) {
         // JeveuxVector to be duplicated
-        *(_descriptor) = *(toCopy._descriptor);
-        *(_reference) = *(toCopy._reference);
-        *(_valuesList) = *(toCopy._valuesList);
-        *(_title) = *(toCopy._title);
+        *( _descriptor ) = *( toCopy._descriptor );
+        *( _reference ) = *( toCopy._reference );
+        *( _valuesList ) = *( toCopy._valuesList );
+        *( _title ) = *( toCopy._title );
         // Pointers to be copied
         _dofNum = toCopy._dofNum;
         _dofDescription = toCopy._dofDescription;
         _mesh = toCopy._mesh;
     }
+
+    FieldOnNodes( const FieldOnNodes &toCopy ) :
+        FieldOnNodes( DataStructureNaming::getNewName(Permanent), toCopy ){};
 
     /**
      * @brief Constructor with DOFNumbering

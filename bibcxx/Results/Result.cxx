@@ -27,6 +27,7 @@
 #include "aster_fort_jeveux.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
+#include "aster_fort_calcul.h"
 
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Results/Result.h"
@@ -34,7 +35,17 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
+std::pair< ASTERINTEGER, std::string > Result::_getNewFieldName( const std::string &name,
+                                                                 const ASTERINTEGER &rank ) const {
+    auto trim_name = trim( name );
+    ASTERINTEGER retour;
+    retour = 0;
+    std::string null( " " );
+    std::string returnName( 19, ' ' );
+    CALLO_RSEXCH( null, getName(), trim_name, &rank, returnName, &retour );
 
+    return std::make_pair( retour, returnName );
+};
 
 void Result::_checkMesh( const BaseMeshPtr mesh ) const
 {
@@ -110,10 +121,12 @@ void Result::addTimeValue( ASTERDOUBLE value, int rank ) {
 };
 
 bool Result::allocate( int nbRanks ) {
-    std::string base( JeveuxMemoryTypesNames[getMemoryType()] );
+    std::string base( "G" );
     ASTERINTEGER nbordr = nbRanks;
     CALLO_RSCRSD( base, getName(), getType(), &nbordr );
-    _nbRanks = nbRanks;
+
+    AS_ASSERT( _calculationParameter->build( true ) );
+    AS_ASSERT( _namesOfFields->build( true ) );
     return true;
 };
 
@@ -159,31 +172,6 @@ BaseDOFNumberingPtr Result::getEmptyDOFNumbering() {
     return retour;
 };
 
-FieldOnNodesRealPtr
-Result::getEmptyFieldOnNodesReal( const std::string name,
-                                                      const int rank ) {
-
-    if ( rank > _nbRanks || rank <= 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
-
-    ASTERINTEGER retour;
-    retour = 0;
-    const ASTERINTEGER rankLong = rank;
-    std::string null( " " );
-    std::string returnName( 19, ' ' );
-    CALLO_RSEXCH( null, getName(), name, &rankLong, returnName, &retour );
-    CALLO_RSNOCH( getName(), name, &rankLong );
-    std::string bis( returnName.c_str(), 19 );
-    FieldOnNodesRealPtr result( new FieldOnNodesReal( bis ) );
-
-    auto curIter = _dictOfVectorOfFieldsNodes.find( name );
-    if ( curIter == _dictOfVectorOfFieldsNodes.end() ) {
-        _dictOfVectorOfFieldsNodes[name] = VectorOfFieldsNodes( _nbRanks );
-    }
-    _dictOfVectorOfFieldsNodes[name][rank - 1] = result;
-    return result;
-};
-
 #ifdef ASTER_HAVE_MPI
 BaseDOFNumberingPtr Result::getEmptyParallelDOFNumbering() {
     std::string resuName( getName() );
@@ -219,6 +207,12 @@ Result::getElementaryCharacteristics( int rank ) {
         throw std::runtime_error( "Rank not found" );
     return ( *curIter ).second;
 };
+
+bool Result::hasElementaryCharacteristics( ASTERINTEGER rank ) const {
+    return _mapElemCara.count( rank ) > 0;
+};
+
+bool Result::hasElementaryCharacteristics() const { return !_mapElemCara.empty(); };
 
 ListOfLoadsPtr Result::getListOfLoads( int rank ) {
     auto curIter = _mapLoads.find( rank );
@@ -273,6 +267,12 @@ bool Result::hasMultipleModel()
     return false;
 }
 
+bool Result::hasModel( const ASTERINTEGER &rank ) const { return _mapModel.count( rank ) > 0; }
+
+bool Result::hasMaterialField( const ASTERINTEGER &rank ) const {
+    return _mapMaterial.count( rank ) > 0;
+}
+
 std::vector< ModelPtr > Result::getModels() const
 {
     return unique(_mapModel);
@@ -306,28 +306,31 @@ int Result::getNumberOfRanks() const
     return _serialNumber->usedSize();
 };
 
-VectorLong Result::getRanks() const
-{
-    VectorLong v;
-    _serialNumber->updateValuePointer();
-    for ( int j = 0; j < _serialNumber->usedSize(); ++j ) {
-        v.push_back( ( *_serialNumber )[j] );
-    }
-    return v;
-};
+VectorLong Result::getRanks() const { return _serialNumber->toVector(); };
 
 FieldOnCellsRealPtr Result::getFieldOnCellsReal( const std::string name,
-                                                                           const int rank ) const
-{
-    if ( rank > _nbRanks || rank <= 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
+                                                 const ASTERINTEGER rank ) const {
+    return _dictOfMapOfFieldOnCellsReal.at( name ).at( rank );
+};
 
-    auto curIter = _dictOfVectorOfFieldsCells.find( trim( name ) );
-    if ( curIter == _dictOfVectorOfFieldsCells.end() )
-      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
+FieldOnCellsComplexPtr Result::getFieldOnCellsComplex( const std::string name,
+                                                       const ASTERINTEGER rank ) const {
+    return _dictOfMapOfFieldOnCellsComplex.at( name ).at( rank );
+};
 
-    FieldOnCellsRealPtr toReturn = curIter->second[rank - 1];
-    return toReturn;
+FieldOnCellsLongPtr Result::getFieldOnCellsLong( const std::string name,
+                                                 const ASTERINTEGER rank ) const {
+    return _dictOfMapOfFieldOnCellsLong.at( name ).at( rank );
+};
+
+ConstantFieldOnCellsChar16Ptr
+Result::getConstantFieldOnCellsChar16( const std::string name, const ASTERINTEGER rank ) const {
+    return _dictOfMapOfConstantFieldOnCellsChar16.at( name ).at( rank );
+};
+
+ConstantFieldOnCellsRealPtr Result::getConstantFieldOnCellsReal( const std::string name,
+                                                                 const ASTERINTEGER rank ) const {
+    return _dictOfMapOfConstantFieldOnCellsReal.at( name ).at( rank );
 };
 
 PyObject *Result::getAccessParameters() const
@@ -346,7 +349,7 @@ PyObject *Result::getAccessParameters() const
   _rs24->updateValuePointer();
   AS_ASSERT( _calculationParameter->build() );
 
-  ASTERINTEGER nb_ranks = _serialNumber->usedSize();
+    ASTERINTEGER nb_ranks = getNumberOfRanks();
 
   var_name = "NUME_ORDRE";
   PyObject *listValues = PyList_New( nb_ranks );
@@ -414,54 +417,329 @@ PyObject *Result::getAccessParameters() const
   return returnDict;
 }
 
-VectorString Result::getFieldsOnNodesNames() const
-{
-  VectorString names;
-  names.reserve( _dictOfVectorOfFieldsNodes.size());
+VectorString Result::getFieldsOnNodesRealNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfFieldOnNodesReal.size() );
 
-  for ( auto& it : _dictOfVectorOfFieldsNodes ) {
-    std::string name = it.first;
-    names.push_back(trim(name)) ;
-  }
-  return names;
+    for ( auto &it : _dictOfMapOfFieldOnNodesReal ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
 };
 
-VectorString Result::getFieldsOnCellsNames() const
-{
-  VectorString names;
-  names.reserve( _dictOfVectorOfFieldsCells.size());
+VectorString Result::getFieldsOnNodesComplexNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfFieldOnNodesComplex.size() );
 
-  for ( auto& it : _dictOfVectorOfFieldsCells ) {
-    std::string name = it.first;
-    names.push_back(trim(name)) ;
-  }
-  return names;
+    for ( auto &it : _dictOfMapOfFieldOnNodesComplex ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
 };
 
+VectorString Result::getFieldsOnCellsRealNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfFieldOnCellsReal.size() );
+
+    for ( auto &it : _dictOfMapOfFieldOnCellsReal ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
+};
+
+VectorString Result::getFieldsOnCellsComplexNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfFieldOnCellsComplex.size() );
+
+    for ( auto &it : _dictOfMapOfFieldOnCellsComplex ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
+};
+
+VectorString Result::getFieldsOnCellsLongNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfFieldOnCellsLong.size() );
+
+    for ( auto &it : _dictOfMapOfFieldOnCellsLong ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
+};
+
+VectorString Result::getConstantFieldsOnCellsChar16Names() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfConstantFieldOnCellsChar16.size() );
+
+    for ( auto &it : _dictOfMapOfConstantFieldOnCellsChar16 ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
+};
+
+VectorString Result::getConstantFieldsOnCellsRealNames() const {
+    VectorString names;
+    names.reserve( _dictOfMapOfConstantFieldOnCellsReal.size() );
+
+    for ( auto &it : _dictOfMapOfConstantFieldOnCellsReal ) {
+        std::string name = it.first;
+        names.push_back( trim( name ) );
+    }
+    return names;
+};
 
 FieldOnNodesRealPtr Result::getFieldOnNodesReal( const std::string name,
-                                                                     const int rank ) const
+                                                                     const ASTERINTEGER rank ) const
 {
 
-    if ( rank > _nbRanks || rank <= 0 )
-      raiseAsterError( "IndexError: Rank '" + std::to_string(rank) + "' is out of range" );
-
-    auto curIter = _dictOfVectorOfFieldsNodes.find( trim( name ) );
-    if ( curIter == _dictOfVectorOfFieldsNodes.end() )
-      raiseAsterError( "ValueError: Field " + name + " unknown in the results container" );
-
-    FieldOnNodesRealPtr toReturn = curIter->second[rank - 1];
-    return toReturn;
+    return _dictOfMapOfFieldOnNodesReal.at( name ).at( rank );
 };
 
-void Result::listFields() const
-{
-    std::cout << "Content of DataStructure : ";
-    for ( auto curIter : _dictOfVectorOfFieldsNodes ) {
-        std::cout << curIter.first << " - ";
+FieldOnNodesComplexPtr Result::getFieldOnNodesComplex( const std::string name,
+                                                       const ASTERINTEGER rank ) const {
+
+    return _dictOfMapOfFieldOnNodesComplex.at( name ).at( rank );
+};
+
+bool Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 101 );
+
+    if ( rschex.first == 101 )
+        resize( std::max( (int)1, 2 * getNumberOfRanks() ) );
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >( internalName, *field );
+
+    _fieldBuidler.addFieldOnNodesDescription( result->getDescription() );
+
+    if ( _dictOfMapOfFieldOnNodesReal.count( trim_name ) == 0 ) {
+        _dictOfMapOfFieldOnNodesReal[trim_name] = MapOfFieldOnNodesReal();
     }
-    for ( auto curIter : _dictOfVectorOfFieldsCells ) {
-        std::cout << curIter.first << " - ";
+
+    _dictOfMapOfFieldOnNodesReal[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+bool Result::setField( const FieldOnNodesComplexPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 101 );
+
+    if ( rschex.first == 101 )
+        resize( std::max( (int)1, 2 * getNumberOfRanks() ) );
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    FieldOnNodesComplexPtr result =
+        boost::make_shared< FieldOnNodesComplex >( internalName, *field );
+
+    _fieldBuidler.addFieldOnNodesDescription( result->getDescription() );
+
+    if ( _dictOfMapOfFieldOnNodesComplex.count( trim_name ) == 0 ) {
+        _dictOfMapOfFieldOnNodesComplex[trim_name] = MapOfFieldOnNodesComplex();
+    }
+
+    _dictOfMapOfFieldOnNodesComplex[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+bool Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 101 );
+
+    if ( rschex.first == 101 )
+        resize( std::max( (int)1, 2 * getNumberOfRanks() ) );
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    FieldOnCellsRealPtr result = boost::make_shared< FieldOnCellsReal >( internalName, *field );
+
+    if ( _dictOfMapOfFieldOnCellsReal.count( trim_name ) == 0 ) {
+        _dictOfMapOfFieldOnCellsReal[trim_name] = MapOfFieldOnCellsReal();
+    }
+
+    _dictOfMapOfFieldOnCellsReal[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+bool Result::setField( const FieldOnCellsComplexPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 101 );
+
+    if ( rschex.first == 101 )
+        resize( std::max( (int)1, 2 * getNumberOfRanks() ) );
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    FieldOnCellsComplexPtr result =
+        boost::make_shared< FieldOnCellsComplex >( internalName, *field );
+
+    if ( _dictOfMapOfFieldOnCellsComplex.count( trim_name ) == 0 ) {
+        _dictOfMapOfFieldOnCellsComplex[trim_name] = MapOfFieldOnCellsComplex();
+    }
+
+    _dictOfMapOfFieldOnCellsComplex[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+bool Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 101 );
+
+    if ( rschex.first == 101 )
+        resize( std::max( (int)1, 2 * getNumberOfRanks() ) );
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    FieldOnCellsLongPtr result = boost::make_shared< FieldOnCellsLong >( internalName, *field );
+
+    if ( _dictOfMapOfFieldOnCellsLong.count( trim_name ) == 0 ) {
+        _dictOfMapOfFieldOnCellsLong[trim_name] = MapOfFieldOnCellsLong();
+    }
+
+    _dictOfMapOfFieldOnCellsLong[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+bool Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 101 );
+
+    if ( rschex.first == 101 )
+        resize( std::max( (int)1, 2 * getNumberOfRanks() ) );
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    auto result = boost::make_shared< ConstantFieldOnCellsChar16 >( internalName, *field );
+
+    if ( _dictOfMapOfConstantFieldOnCellsChar16.count( trim_name ) == 0 ) {
+        _dictOfMapOfConstantFieldOnCellsChar16[trim_name] = MapOfConstantFieldOnCellsChar16();
+    }
+
+    _dictOfMapOfConstantFieldOnCellsChar16[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+bool Result::setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
+                       const ASTERINTEGER rank ) {
+    CALL_JEMARQ();
+
+    if ( !field )
+        raiseAsterError( "ValueError: field is empty" );
+
+    auto trim_name = trim( name );
+    auto rschex = _getNewFieldName( trim_name, rank );
+    AS_ASSERT( rschex.first <= 101 );
+
+    if ( rschex.first == 101 )
+        resize( std::max( (int)1, 2 * getNumberOfRanks() ) );
+
+    CALLO_RSNOCH( getName(), name, &rank );
+    std::string internalName( rschex.second.c_str(), 19 );
+    auto result = boost::make_shared< ConstantFieldOnCellsReal >( internalName, *field );
+
+    if ( _dictOfMapOfConstantFieldOnCellsReal.count( trim_name ) == 0 ) {
+        _dictOfMapOfConstantFieldOnCellsReal[trim_name] = MapOfConstantFieldOnCellsReal();
+    }
+
+    _dictOfMapOfConstantFieldOnCellsReal[trim_name][rank] = result;
+
+    CALL_JEDEMA();
+    return true;
+};
+
+VectorString Result::getFieldsNames() const {
+    VectorString vField;
+    for ( auto curIter : _dictOfMapOfFieldOnNodesReal ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfFieldOnNodesComplex ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfFieldOnCellsReal ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfFieldOnCellsComplex ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfFieldOnCellsLong ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfConstantFieldOnCellsChar16 ) {
+        vField.push_back( curIter.first );
+    }
+    for ( auto curIter : _dictOfMapOfConstantFieldOnCellsReal ) {
+        vField.push_back( curIter.first );
+    }
+    return vField;
+}
+
+void Result::listFields() const {
+    auto vField = getFieldsNames();
+    std::cout << "Content of DataStructure : ";
+    for ( auto field : vField ) {
+        std::cout << field << " - ";
     }
     std::cout << std::endl;
 }
@@ -511,26 +789,19 @@ bool Result::build()
     AS_ASSERT( _calculationParameter->build( true ) );
     AS_ASSERT( _namesOfFields->build( true ) );
 
-    const auto numberOfSerialNum = _serialNumber->usedSize();
-    _nbRanks = numberOfSerialNum;
-    BaseMeshPtr curMesh( nullptr );
-    const ASTERINTEGER iordr = ( *_serialNumber )[_nbRanks - 1];
-    if ( _mapModel.find( iordr ) != _mapModel.end() ){
-        curMesh = _mapModel[iordr]->getMesh();
-    }
-    else if ( _mesh != nullptr ){
-        curMesh = _mesh;
-    }
-    int cmpt = 1;
-    for ( const auto curIter : _namesOfFields->getVectorOfObjects() ) {
-        auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
-        AS_ASSERT ( numberOfSerialNum <= curIter.size() );
+    const auto nbRanks = getNumberOfRanks();
 
-        for ( int rank = 0; rank < numberOfSerialNum; ++rank ) {
-            std::string name( trim( curIter[rank].toString() ) );
+    ASTERINTEGER cmpt = 1;
+    for ( const auto &curIter : _namesOfFields->getVectorOfObjects() ) {
+        auto nomSymb = trim( _symbolicNamesOfFields->getStringFromIndex( cmpt ) );
+        AS_ASSERT( nbRanks <= curIter.size() );
+
+        for ( ASTERINTEGER index = 0; index < nbRanks; ++index ) {
+            std::string name( trim( curIter[index].toString() ) );
             if ( name != "" ) {
+                const ASTERINTEGER rank = ( *_serialNumber )[index];
                 CALL_JEMARQ();
-                const std::string questi( "TYPE_CHAMP" );
+                std::string questi( "TYPE_CHAMP" );
                 const std::string typeco( "CHAMP" );
                 ASTERINTEGER repi = 0, ier = 0;
                 JeveuxChar32 repk( " " );
@@ -539,49 +810,136 @@ bool Result::build()
                 CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
                 const std::string resu( trim( repk.toString() ) );
 
+                questi = "TYPE_SCA";
+                repk = " ";
+                CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
+                const std::string scalaire( trim( repk.toString() ) );
+
                 if ( resu == "NOEU" ) {
-                    const auto &iterField = _dictOfVectorOfFieldsNodes.find( nomSymb );
-                    if ( iterField == _dictOfVectorOfFieldsNodes.end() )
-                        _dictOfVectorOfFieldsNodes[nomSymb] = VectorOfFieldsNodes(
-                            numberOfSerialNum, FieldOnNodesRealPtr( nullptr ) );
-                    else if ( int(iterField->second.size()) != numberOfSerialNum ) {
-                        iterField->second.resize( numberOfSerialNum,
-                                                 FieldOnNodesRealPtr( nullptr ) );
-                    }
-
-                    ASTERINTEGER test2 = _dictOfVectorOfFieldsNodes[nomSymb][rank].use_count();
-                    if ( test2 == 0 ) {
-                        FieldOnNodesRealPtr result =
-                            _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
-                        _dictOfVectorOfFieldsNodes[nomSymb][rank] = result;
-                    }
-                } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
-                    const auto &iterField = _dictOfVectorOfFieldsCells.find( nomSymb );
-                    if ( iterField == _dictOfVectorOfFieldsCells.end() )
-                        _dictOfVectorOfFieldsCells[nomSymb] = VectorOfFieldsCells(
-                            numberOfSerialNum, FieldOnCellsRealPtr( nullptr ) );
-                    else if ( int(iterField->second.size()) != numberOfSerialNum ) {
-                        iterField->second.resize( numberOfSerialNum,
-                                                 FieldOnCellsRealPtr( nullptr ) );
-                    }
-
-                    ASTERINTEGER test2 = _dictOfVectorOfFieldsCells[nomSymb][rank].use_count();
-                    if ( test2 == 0 ) {
-                        AS_ASSERT( curMesh != nullptr );
-                        FieldOnCellsRealPtr result =
-                            _fieldBuidler.buildFieldOnCells< ASTERDOUBLE >( name, curMesh );
-                        auto iterModel = _mapModel.find(( *_serialNumber )[rank]);
-                        if ( iterModel != _mapModel.end() )
-                            if ( not((( *iterModel ).second)->isEmpty()) )
-                                result->setModel(( *iterModel ).second);
-                        else if (not(hasMultipleModel())){
-                            ModelPtr curModel = getModel();
-                            if ( not(curModel->isEmpty()) )
-                                result->setModel(curModel);
+                    if ( scalaire == "R" ) {
+                        if ( _dictOfMapOfFieldOnNodesReal.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfFieldOnNodesReal[nomSymb] = MapOfFieldOnNodesReal();
                         }
-                        _dictOfVectorOfFieldsCells[nomSymb][rank] = result;
 
+                        if ( _dictOfMapOfFieldOnNodesReal[nomSymb].count( rank ) == 0 ) {
+                            AS_ASSERT( _mesh != nullptr );
+                            FieldOnNodesRealPtr result =
+                                _fieldBuidler.buildFieldOnNodes< ASTERDOUBLE >( name );
+                            result->setMesh( _mesh );
+                            _dictOfMapOfFieldOnNodesReal[nomSymb][rank] = result;
+                        }
+                    } else if ( scalaire == "C" ) {
+                        if ( _dictOfMapOfFieldOnNodesComplex.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfFieldOnNodesComplex[nomSymb] = MapOfFieldOnNodesComplex();
+                        }
+
+                        if ( _dictOfMapOfFieldOnNodesComplex[nomSymb].count( rank ) == 0 ) {
+                            AS_ASSERT( _mesh != nullptr );
+                            FieldOnNodesComplexPtr result =
+                                _fieldBuidler.buildFieldOnNodes< ASTERCOMPLEX >( name );
+                            result->setMesh( _mesh );
+                            _dictOfMapOfFieldOnNodesComplex[nomSymb][rank] = result;
+                        }
+                    } else {
+                        AS_ABORT( "Type not supported: " + scalaire );
                     }
+
+                } else if ( resu == "ELEM" || resu == "ELNO" || resu == "ELGA" ) {
+                    if ( scalaire == "R" ) {
+                        if ( _dictOfMapOfFieldOnCellsReal.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfFieldOnCellsReal[nomSymb] = MapOfFieldOnCellsReal();
+                        }
+
+                        if ( _dictOfMapOfFieldOnCellsReal[nomSymb].count( rank ) == 0 ) {
+                            AS_ASSERT( _mesh != nullptr );
+                            FieldOnCellsRealPtr result =
+                                _fieldBuidler.buildFieldOnCells< ASTERDOUBLE >( name, _mesh );
+                            auto iterModel = _mapModel.find( rank );
+                            if ( iterModel != _mapModel.end() ) {
+                                if ( !( ( *iterModel ).second )->isEmpty() )
+                                    result->setModel( ( *iterModel ).second );
+                            } else if ( !hasMultipleModel() ) {
+                                ModelPtr curModel = getModel();
+                                if ( curModel && !curModel->isEmpty() )
+                                    result->setModel( curModel );
+                            }
+                            _dictOfMapOfFieldOnCellsReal[nomSymb][rank] = result;
+                        }
+                    } else if ( scalaire == "C" ) {
+                        if ( _dictOfMapOfFieldOnCellsComplex.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfFieldOnCellsComplex[nomSymb] = MapOfFieldOnCellsComplex();
+                        }
+
+                        if ( _dictOfMapOfFieldOnCellsComplex[nomSymb].count( rank ) == 0 ) {
+                            AS_ASSERT( _mesh != nullptr );
+                            FieldOnCellsComplexPtr result =
+                                _fieldBuidler.buildFieldOnCells< ASTERCOMPLEX >( name, _mesh );
+                            auto iterModel = _mapModel.find( rank );
+                            if ( iterModel != _mapModel.end() ) {
+                                if ( !( ( *iterModel ).second )->isEmpty() )
+                                    result->setModel( ( *iterModel ).second );
+                            } else if ( !hasMultipleModel() ) {
+                                ModelPtr curModel = getModel();
+                                if ( curModel && !curModel->isEmpty() )
+                                    result->setModel( curModel );
+                            }
+                            _dictOfMapOfFieldOnCellsComplex[nomSymb][rank] = result;
+                        }
+                    } else if ( scalaire == "I" ) {
+                        if ( _dictOfMapOfFieldOnCellsLong.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfFieldOnCellsLong[nomSymb] = MapOfFieldOnCellsLong();
+                        }
+
+                        if ( _dictOfMapOfFieldOnCellsLong[nomSymb].count( rank ) == 0 ) {
+                            AS_ASSERT( _mesh != nullptr );
+                            FieldOnCellsLongPtr result =
+                                _fieldBuidler.buildFieldOnCells< ASTERINTEGER >( name, _mesh );
+                            auto iterModel = _mapModel.find( rank );
+                            if ( iterModel != _mapModel.end() ) {
+                                if ( !( ( *iterModel ).second )->isEmpty() )
+                                    result->setModel( ( *iterModel ).second );
+                            } else if ( !hasMultipleModel() ) {
+                                ModelPtr curModel = getModel();
+                                if ( curModel && !curModel->isEmpty() )
+                                    result->setModel( curModel );
+                            }
+                            _dictOfMapOfFieldOnCellsLong[nomSymb][rank] = result;
+                        }
+                    } else {
+                        AS_ABORT( "Type not supported: " + scalaire );
+                    }
+                } else if ( resu == "CART" ) {
+                    if ( scalaire == "K16" ) {
+                        if ( _dictOfMapOfConstantFieldOnCellsChar16.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfConstantFieldOnCellsChar16[nomSymb] =
+                                MapOfConstantFieldOnCellsChar16();
+                        }
+
+                        if ( _dictOfMapOfConstantFieldOnCellsChar16[nomSymb].count( rank ) == 0 ) {
+                            AS_ASSERT( _mesh != nullptr );
+                            ConstantFieldOnCellsChar16Ptr result =
+                                _fieldBuidler.buildConstantFieldOnCells< JeveuxChar16 >( name,
+                                                                                         _mesh );
+                            _dictOfMapOfConstantFieldOnCellsChar16[nomSymb][rank] = result;
+                        }
+                    } else if ( scalaire == "R" ) {
+                        if ( _dictOfMapOfConstantFieldOnCellsReal.count( nomSymb ) == 0 ) {
+                            _dictOfMapOfConstantFieldOnCellsReal[nomSymb] =
+                                MapOfConstantFieldOnCellsReal();
+                        }
+
+                        if ( _dictOfMapOfConstantFieldOnCellsReal[nomSymb].count( rank ) == 0 ) {
+                            AS_ASSERT( _mesh != nullptr );
+                            ConstantFieldOnCellsRealPtr result =
+                                _fieldBuidler.buildConstantFieldOnCells< ASTERDOUBLE >( name,
+                                                                                        _mesh );
+                            _dictOfMapOfConstantFieldOnCellsReal[nomSymb][rank] = result;
+                        }
+                    } else {
+                        AS_ABORT( "Type not supported: " + scalaire );
+                    }
+                } else {
+                    std::cout << "Field not build : " << name << " (" << resu << ")" << std::endl;
                 }
                 CALL_JEDEMA();
             }
@@ -592,3 +950,14 @@ bool Result::build()
     CALL_JEDEMA();
     return update_tables();
 };
+
+bool Result::resize( ASTERINTEGER nbRanks ) {
+    if ( getNumberOfRanks() == 0 ) {
+        return allocate( nbRanks );
+    } else {
+        CALLO_RSAGSD( getName(), &nbRanks );
+        return true;
+    }
+
+    return true;
+}

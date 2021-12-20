@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -33,7 +33,11 @@ class MechanicalSolver(ExecuteCommand):
 
     def create_result(self, keywords):
         """Create Result"""
-        self._result = ElasticResult()
+
+        if "reuse" in keywords:
+            self._result = keywords["RESULTAT"]
+        else:
+            self._result = ElasticResult()
 
     @staticmethod
     def _addLoad(mechaSolv, fkw):

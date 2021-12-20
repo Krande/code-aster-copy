@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),);
 
 #--------------------------------------------------------------
-# 3- DEFINITION DES CHARGEMENTS 
+# 3- DEFINITION DES CHARGEMENTS
 #--------------------------------------------------------------
 
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
@@ -75,14 +75,15 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 
 # NB. LA LISTE D'INSTANT EST GROSSIERE ICI POUR LIMITER LE TEMPS DE CALCUL
 
-L_INST=DEFI_LIST_REEL(VALE=(0.,864000.,2592000.,4320000.,8640000.,),);
+L_INST=DEFI_LIST_REEL(VALE=(0.,864000.,2592000.,4320000.,8640000.,),)
+
 
 RESUSTA=MECA_STATIQUE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CARAMECA,
                       EXCIT=_F(CHARGE=CLIM,),
                       LIST_INST=L_INST,
-                      INST_FIN=4320000,);
+                      INST_FIN=4320000.,);
 
 RESUSTA=MECA_STATIQUE(reuse =RESUSTA,
                       RESULTAT=RESUSTA,
@@ -91,7 +92,7 @@ RESUSTA=MECA_STATIQUE(reuse =RESUSTA,
                       CARA_ELEM=CARAMECA,
                       EXCIT=(_F(CHARGE=CLIM,),
                              _F(CHARGE=CHARGEF,),),
-                      LIST_INST=L_INST,);
+                      INST=8640000.,);
 
 RESUSTA=CALC_CHAMP(reuse =RESUSTA,
                    RESULTAT=RESUSTA,

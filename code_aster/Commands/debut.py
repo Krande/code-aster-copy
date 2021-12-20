@@ -35,8 +35,6 @@ passed during the initialization to the
 :py:class:`~code_aster.Utilities.ExecutionParameter.ExecutionParameter`.
 """
 
-import sys
-
 import aster_core
 import libaster
 from run_aster.run import copy_datafiles

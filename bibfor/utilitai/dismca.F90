@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ implicit none
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/dismgd.h"
 !
 character(len=*), intent(in) :: question_
 character(len=*), intent(in) :: object_
@@ -57,7 +58,7 @@ character(len=*), intent(out)  :: answerk_
     character(len=19)   :: object, func_name, field
     integer, parameter  :: max_para_name=15
     character(len=8)    :: func_type, para_name(max_para_name), type, nogd
-    integer             :: iexi, iret
+    integer             :: iexi, iret, repi
     integer             :: jvale, i_zone, i_para, nb_zone, ltyp, nb_para
     integer, pointer            :: v_desc(:) => null()
     character(len=24), pointer  :: v_prol(:) => null()
@@ -94,6 +95,11 @@ character(len=*), intent(out)  :: answerk_
         call jeveuo(object//'.DESC', 'L', vi=v_desc)
         call jenuno(jexnum('&CATA.GD.NOMGD', v_desc(1)), nogd)
         answerk = 'CART_'//nogd
+!
+    else if (question .eq. 'TYPE_SCA') then
+        call jeveuo(object//'.DESC', 'L', vi=v_desc)
+        call jenuno(jexnum('&CATA.GD.NOMGD', v_desc(1)), nogd)
+        call dismgd(question, nogd, repi, answerk, ierd)
 !
     else if (question(1:7) .eq. 'NOM_GD ') then
         call jeveuo(object//'.DESC', 'L', vi=v_desc)

@@ -6,7 +6,7 @@
  * @brief Header of class FieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,6 +30,7 @@
 
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
+#include "DataFields/ConstantFieldOnCells.h"
 #include "Meshes/BaseMesh.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Numbering/DOFNumbering.h"
@@ -55,18 +56,18 @@ class FieldBuilder {
      * @brief Add a existing FieldOnNodesDescription in FieldBuilder
      */
     void addFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &fond ) {
-        AS_ASSERT(fond);
-
+        if(fond){
         _mapProfChno[trim( fond->getName() )] = fond;
+        }
     };
 
     /**
      * @brief Add a existing FiniteElementDescriptor in FieldBuilder
      */
     void addFiniteElementDescriptor( const FiniteElementDescriptorPtr &fed ) {
-        AS_ASSERT(fed);
-
+        if(fed){
         _mapLigrel[trim( fed->getName() )] = fed;
+        }
     };
 
     /**
@@ -79,7 +80,7 @@ class FieldBuilder {
         typedef FiniteElementDescriptorPtr FEDDescP;
 
         boost::shared_ptr< FieldOnCells< ValueType > > result(
-            new FieldOnCellsReal( name ) );
+            new FieldOnCells< ValueType > ( name ) );
         result->updateValuePointers();
 
         const std::string name2 = trim( ( *( *result )._reference )[0].toString() );
@@ -98,6 +99,20 @@ class FieldBuilder {
     };
 
     /**
+     * @brief Build a ConstantFieldOnCells with a FiniteElementDescriptor
+     */
+    template < typename ValueType >
+    boost::shared_ptr< ConstantFieldOnCells< ValueType > >
+    buildConstantFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
+
+        boost::shared_ptr< ConstantFieldOnCells< ValueType > > field =
+            boost::make_shared< ConstantFieldOnCells< ValueType > >( name, mesh );
+        field->updateValuePointers();
+
+        return field;
+    };
+
+    /**
      * @brief Build a FieldOnNodes with a FieldOnNodesDescription
      */
     template < typename ValueType >
@@ -106,7 +121,7 @@ class FieldBuilder {
         typedef FieldOnNodesDescriptionPtr FONDescP;
 
         boost::shared_ptr< FieldOnNodes< ValueType > > result(
-            new FieldOnNodesReal( name ) );
+            new FieldOnNodes< ValueType >( name ) );
         result->updateValuePointers();
 
         const std::string name2 = trim( ( *( *result )._reference )[1].toString() );

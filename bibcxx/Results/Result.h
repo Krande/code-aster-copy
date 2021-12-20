@@ -54,15 +54,28 @@
  */
 class Result : public DataStructure, public ListOfTables {
   protected:
-    typedef std::vector< FieldOnNodesRealPtr > VectorOfFieldsNodes;
-    typedef std::vector< FieldOnCellsRealPtr > VectorOfFieldsCells;
+    typedef std::map< ASTERINTEGER, FieldOnNodesRealPtr > MapOfFieldOnNodesReal;
+    typedef std::map< ASTERINTEGER, FieldOnCellsRealPtr > MapOfFieldOnCellsReal;
+    typedef std::map< ASTERINTEGER, ConstantFieldOnCellsRealPtr > MapOfConstantFieldOnCellsReal;
+
+    typedef std::map< ASTERINTEGER, FieldOnNodesComplexPtr > MapOfFieldOnNodesComplex;
+    typedef std::map< ASTERINTEGER, FieldOnCellsComplexPtr > MapOfFieldOnCellsComplex;
+
+    typedef std::map< ASTERINTEGER, FieldOnCellsLongPtr > MapOfFieldOnCellsLong;
+
+    typedef std::map< ASTERINTEGER, ConstantFieldOnCellsChar16Ptr > MapOfConstantFieldOnCellsChar16;
 
     /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
-    typedef std::map< std::string, VectorOfFieldsNodes > mapStrVOFN;
-    /** @typedef Iterateur sur le std::map */
-    typedef mapStrVOFN::iterator mapStrVOFNIterator;
-    /** @typedef Valeur contenue dans mapStrVOFN */
-    typedef mapStrVOFN::value_type mapStrVOFNValue;
+    typedef std::map< std::string, MapOfFieldOnNodesReal > mapStrMoFNR;
+    typedef std::map< std::string, MapOfFieldOnCellsReal > mapStrMoFCR;
+    typedef std::map< std::string, MapOfConstantFieldOnCellsReal > mapStrMoCFCR;
+
+    typedef std::map< std::string, MapOfFieldOnNodesComplex > mapStrMoFNC;
+    typedef std::map< std::string, MapOfFieldOnCellsComplex > mapStrMoFCC;
+
+    typedef std::map< std::string, MapOfFieldOnCellsLong > mapStrMoFCI;
+
+    typedef std::map< std::string, MapOfConstantFieldOnCellsChar16 > mapStrMoCFCK16;
 
     /** @typedef std::map du rang et des pointers vers ElementaryCharacteristicsPtr */
     typedef std::map< int, ElementaryCharacteristicsPtr > mapRankCaraElem;
@@ -73,12 +86,6 @@ class Result : public DataStructure, public ListOfTables {
     /** @typedef std::map du rang et des pointers vers ModelPtr */
     typedef std::map< int, ModelPtr > mapRankModel;
 
-    /** @typedef std::map d'une chaine et des pointers vers toutes les DataStructure */
-    typedef std::map< std::string, VectorOfFieldsCells > mapStrVOFE;
-    /** @typedef Iterateur sur le std::map */
-    typedef mapStrVOFE::iterator mapStrVOFEIterator;
-    /** @typedef Valeur contenue dans mapStrVOFE */
-    typedef mapStrVOFE::value_type mapStrVOFEValue;
     /** @brief Pointeur de nom Jeveux '.DESC' */
     NamesMapChar16 _symbolicNamesOfFields;
     /** @brief Collection '.TACH' */
@@ -89,8 +96,6 @@ class Result : public DataStructure, public ListOfTables {
     JeveuxCollectionChar8 _calculationParameter;
     /** @brief Vecteur Jeveux '.ORDR' */
     JeveuxVectorLong _serialNumber;
-    /** @brief Nombre de numéros d'ordre */
-    int _nbRanks;
     /** @brief Vecteur Jeveux '.RSPI' */
     JeveuxVectorLong _rspi;
     /** @brief Vecteur Jeveux '.RSPR' */
@@ -103,9 +108,15 @@ class Result : public DataStructure, public ListOfTables {
     JeveuxVectorChar24 _rs24;
 
     /** @brief Liste des champs aux noeuds */
-    mapStrVOFN _dictOfVectorOfFieldsNodes;
+    mapStrMoFNR _dictOfMapOfFieldOnNodesReal;
+    mapStrMoFNC _dictOfMapOfFieldOnNodesComplex;
     /** @brief Liste des champs aux éléments */
-    mapStrVOFE _dictOfVectorOfFieldsCells;
+    mapStrMoFCR _dictOfMapOfFieldOnCellsReal;
+    mapStrMoFCC _dictOfMapOfFieldOnCellsComplex;
+    mapStrMoFCI _dictOfMapOfFieldOnCellsLong;
+    /** @brief Liste des cartes K16 */
+    mapStrMoCFCR _dictOfMapOfConstantFieldOnCellsReal;
+    mapStrMoCFCK16 _dictOfMapOfConstantFieldOnCellsChar16;
     /** @brief Liste des NUME_DDL */
     std::vector< BaseDOFNumberingPtr > _listOfDOFNum;
     /** @brief List of ElementaryCharacteristicsPtr */
@@ -121,6 +132,14 @@ class Result : public DataStructure, public ListOfTables {
     BaseMeshPtr _mesh;
     /** @brief Object to correctly manage fields and field descriptions */
     FieldBuilder _fieldBuidler;
+
+    /**
+     * @brief Get a name for field (wrap to rsexch.F90)
+     * @param name Symbolic name of the field
+     * @param rank Rank
+     */
+    std::pair< ASTERINTEGER, std::string > _getNewFieldName( const std::string &name,
+                                                             const ASTERINTEGER &rank ) const;
 
     void _checkMesh( const BaseMeshPtr mesh) const;
 
@@ -147,7 +166,7 @@ class Result : public DataStructure, public ListOfTables {
           _namesOfFields( JeveuxCollectionChar24( getName() + ".TACH" ) ),
           _accessVariables( NamesMapChar16( getName() + ".NOVA" ) ),
           _calculationParameter( JeveuxCollectionChar8( getName() + ".TAVA" ) ),
-          _serialNumber( JeveuxVectorLong( getName() + ".ORDR" ) ), _nbRanks( 0 ),
+          _serialNumber( JeveuxVectorLong( getName() + ".ORDR" ) ),
           _rspi( JeveuxVectorLong( getName() + ".RSPI" ) ),
           _rspr( JeveuxVectorReal( getName() + ".RSPR" ) ),
           _rsp8( JeveuxVectorChar8( getName() + ".RSP8" ) ),
@@ -240,15 +259,6 @@ class Result : public DataStructure, public ListOfTables {
 #endif /* ASTER_HAVE_MPI */
 
     /**
-     * @brief Obtenir un champ aux noeuds réel vide à partir de son nom et de son numéro d'ordre
-     * @param name nom Aster du champ
-     * @param rank numéro d'ordre
-     * @return FieldOnNodesRealPtr pointant vers le champ
-     */
-    FieldOnNodesRealPtr getEmptyFieldOnNodesReal( const std::string name,
-                                                      const int rank ) ;
-
-    /**
      * @brief Obtenir le dernier DOFNumbering
      * @return Dernier DOFNumbering
      */
@@ -274,12 +284,20 @@ class Result : public DataStructure, public ListOfTables {
     std::vector< ElementaryCharacteristicsPtr >
     getAllElementaryCharacteristics() const;
 
+    bool hasElementaryCharacteristics() const;
+
     /**
      * @brief Get elementary characteristics
      * @param rank
      */
     ElementaryCharacteristicsPtr
     getElementaryCharacteristics( int rank ) ;
+
+    /**
+     * @brief Get elementary characteristics
+     * @param rank
+     */
+    bool hasElementaryCharacteristics( ASTERINTEGER rank ) const;
 
     /**
      * @brief Get material
@@ -290,6 +308,12 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Get material
      */
     MaterialFieldPtr getMaterialField() ;
+
+    /**
+     * @brief Get material
+     * @param rank
+     */
+    bool hasMaterialField( const ASTERINTEGER &rank ) const;
 
     /**
      * @brief Get material
@@ -306,6 +330,11 @@ class Result : public DataStructure, public ListOfTables {
      * @brief check for multiple models
      */
     bool hasMultipleModel() ;
+
+    /**
+     * @brief check for multiple models
+     */
+    bool hasModel( const ASTERINTEGER &rank ) const;
 
     /**
      * @brief Get models
@@ -329,8 +358,53 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank numéro d'ordre
      * @return FieldOnCellsRealPtr pointant vers le champ
      */
-    FieldOnCellsRealPtr getFieldOnCellsReal( const std::string name, const int rank ) const
-        ;
+    FieldOnCellsRealPtr getFieldOnCellsReal( const std::string name,
+                                             const ASTERINTEGER rank ) const;
+
+    FieldOnCellsComplexPtr getFieldOnCellsComplex( const std::string name,
+                                                   const ASTERINTEGER rank ) const;
+
+    FieldOnCellsLongPtr getFieldOnCellsLong( const std::string name,
+                                             const ASTERINTEGER rank ) const;
+
+    /**
+     * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnCellsRealPtr pointant vers le champ
+     */
+    ConstantFieldOnCellsChar16Ptr getConstantFieldOnCellsChar16( const std::string name,
+                                                                 const ASTERINTEGER rank ) const;
+
+    ConstantFieldOnCellsRealPtr getConstantFieldOnCellsReal( const std::string name,
+                                                             const ASTERINTEGER rank ) const;
+
+    /**
+     * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnCellsRealPtr pointant vers le champ
+     */
+    bool setField( const FieldOnCellsRealPtr field, const std::string &name,
+                   const ASTERINTEGER rank );
+
+    bool setField( const FieldOnCellsComplexPtr field, const std::string &name,
+                   const ASTERINTEGER rank );
+
+    bool setField( const FieldOnCellsLongPtr field, const std::string &name,
+                   const ASTERINTEGER rank );
+
+    /**
+     * @brief Ajouter un champ par éléments réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnCellsRealPtr pointant vers le champ
+     */
+    bool setField( const ConstantFieldOnCellsRealPtr field, const std::string &name,
+                   const ASTERINTEGER rank );
+
+    bool setField( const ConstantFieldOnCellsChar16Ptr field, const std::string &name,
+                   const ASTERINTEGER rank );
 
     /**
     * @brief Get dict of access variables and their values
@@ -339,16 +413,30 @@ class Result : public DataStructure, public ListOfTables {
     PyObject *getAccessParameters() const;
 
     /**
-    * @brief Get the list of fields on nodes
-    * @return std::vector< string >
-    */
-    VectorString getFieldsOnNodesNames() const;
+     * @brief Get the list of fields on nodes
+     * @return std::vector< string >
+     */
+    VectorString getFieldsOnNodesRealNames() const;
+
+    VectorString getFieldsOnNodesComplexNames() const;
 
     /**
-    * @brief Get the list of fields on elements
-    * @return std::vector< string >
-    */
-    VectorString getFieldsOnCellsNames() const;
+     * @brief Get the list of fields on elements
+     * @return std::vector< string >
+     */
+    VectorString getFieldsOnCellsRealNames() const;
+
+    VectorString getFieldsOnCellsComplexNames() const;
+
+    VectorString getFieldsOnCellsLongNames() const;
+
+    /**
+     * @brief Get the list of constant fields on cells
+     * @return std::vector< string >
+     */
+    VectorString getConstantFieldsOnCellsRealNames() const;
+
+    VectorString getConstantFieldsOnCellsChar16Names() const;
 
     /**
      * @brief Obtenir un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
@@ -356,8 +444,23 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank numéro d'ordre
      * @return FieldOnNodesRealPtr pointant vers le champ
      */
-    FieldOnNodesRealPtr getFieldOnNodesReal( const std::string name, const int rank ) const
-        ;
+    FieldOnNodesRealPtr getFieldOnNodesReal( const std::string name,
+                                             const ASTERINTEGER rank ) const;
+
+    FieldOnNodesComplexPtr getFieldOnNodesComplex( const std::string name,
+                                                   const ASTERINTEGER rank ) const;
+
+    /**
+     * @brief Ajouter un champ aux noeuds réel à partir de son nom et de son numéro d'ordre
+     * @param name nom Aster du champ
+     * @param rank numéro d'ordre
+     * @return FieldOnNodesRealPtr pointant vers le champ
+     */
+    bool setField( const FieldOnNodesRealPtr field, const std::string &name,
+                   const ASTERINTEGER rank );
+
+    bool setField( const FieldOnNodesComplexPtr field, const std::string &name,
+                   const ASTERINTEGER rank );
 
     /**
      * @brief Impression de la sd au format MED
@@ -385,6 +488,12 @@ class Result : public DataStructure, public ListOfTables {
     VectorLong getRanks() const;
 
     /**
+     * @brief Get all the fields stored in the Result
+     * @return VectorString
+     */
+    VectorString getFieldsNames() const;
+
+    /**
     * @brief Print all the fields stored in the Result
     * @return nbRanks
     */
@@ -401,6 +510,11 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir l'agrandissement de dictOfVectorOfFieldsNodes et dictOfVectorOfFieldsCells
      */
     bool build() ;
+
+    /**
+     * @brief Update the  Result's size
+     */
+    bool resize( ASTERINTEGER nbRanks );
 };
 
 /**

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -50,8 +50,7 @@
 template < class ValueType > class FieldOnCells : public DataField {
   private:
     typedef SimpleFieldOnCells< ValueType > SimpleFieldOnCellsValueType;
-    typedef boost::shared_ptr< SimpleFieldOnCellsReal >
-        SimpleFieldOnCellsValueTypePtr;
+    typedef boost::shared_ptr< SimpleFieldOnCellsValueType > SimpleFieldOnCellsValueTypePtr;
 
     /** @brief Vecteur Jeveux '.CELD' */
     JeveuxVectorLong _descriptor;
@@ -94,6 +93,37 @@ template < class ValueType > class FieldOnCells : public DataField {
           _reference( JeveuxVectorChar24( getName() + ".CELK" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ), _model( nullptr ),
           _title( JeveuxVectorChar80( getName() + ".TITR" ) ){};
+
+
+        /** @brief Copy constructor */
+    FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
+        // JeveuxVector to be duplicated
+        *( _descriptor ) = *( toCopy._descriptor );
+        *( _reference ) = *( toCopy._reference );
+        *( _valuesList ) = *( toCopy._valuesList );
+        *( _title ) = *( toCopy._title );
+        // Pointers to be copied
+        _dofDescription = toCopy._dofDescription;
+        _model = toCopy._model;
+        updateValuePointers();
+    }
+
+    /** @brief Move constructor */
+    FieldOnCells( FieldOnCells &&other ) : DataField{ std::move( other ) } {
+        _descriptor = other._descriptor;
+        _reference = other._reference;
+        _valuesList = other._valuesList;
+        _title = other._title;
+        _dofDescription = other._dofDescription;
+        _model = other._model;
+        updateValuePointers();
+    }
+
+    /**
+     * @brief Copy constructor
+     */
+    FieldOnCells( const FieldOnCells &toCopy )
+        : FieldOnCells( DataStructureNaming::getNewName(Permanent), toCopy ){};
 
     /**
      * @brief
@@ -221,6 +251,15 @@ typedef FieldOnCells< ASTERDOUBLE > FieldOnCellsReal;
  * @brief Definition d'un champ aux éléments de double
  */
 typedef boost::shared_ptr< FieldOnCellsReal > FieldOnCellsRealPtr;
+
+/** @typedef FieldOnCellsReal Class d'une carte de Complex */
+typedef FieldOnCells< ASTERCOMPLEX > FieldOnCellsComplex;
+
+/**
+ * @typedef FieldOnCellsPtrComplex
+ * @brief Definition d'un champ aux éléments de Complex
+ */
+typedef boost::shared_ptr< FieldOnCellsComplex > FieldOnCellsComplexPtr;
 
 /** @typedef FieldOnCellsLong Class d'une carte de long */
 typedef FieldOnCells< ASTERINTEGER > FieldOnCellsLong;

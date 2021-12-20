@@ -1760,10 +1760,8 @@ def post_k1_k2_k3_ops(self, RESULTAT, FOND_FISS =None, FISSURE=None, MATER=None,
         if RESULTAT.getNumberOfRanks() > 0:
             cham_maters = []
             for j in RESULTAT.getRanks():
-                try:
+                if RESULTAT.hasMaterialField(j):
                     cham_maters += [RESULTAT.getMaterialField(j)]
-                except RuntimeError:
-                    pass
             if(len(cham_maters)):
                 CHAM_MATER = cham_maters[0]
             else:

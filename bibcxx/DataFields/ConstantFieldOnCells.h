@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ConstantFieldOnCells
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -291,6 +291,21 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
           _mesh( ligrel->getMesh() ), _FEDesc( ligrel ), _isAllocated( false ),
           _componentNames( getName() + ".NCMP" ), _valuesListTmp( getName() + ".VALV" ){};
+
+    ConstantFieldOnCells( const std::string &name, const ConstantFieldOnCells &toCopy )
+        : ConstantFieldOnCells( name, toCopy.getMesh() ) {
+        *( _meshName ) = *( toCopy._meshName );
+        *( _descriptor ) = *( toCopy._descriptor );
+        *( _valuesList ) = *( toCopy._valuesList );
+        *( _nameOfLigrels ) = *( toCopy._nameOfLigrels );
+        *( _listOfMeshCells ) = *( toCopy._listOfMeshCells );
+        *( _componentNames ) = *( toCopy._componentNames );
+        *( _valuesListTmp ) = *( toCopy._valuesListTmp );
+        _FEDesc = toCopy._FEDesc;
+        _isAllocated = toCopy._isAllocated;
+
+        updateValuePointers();
+    };
 
     typedef boost::shared_ptr< ConstantFieldOnCells< ValueType > >
         ConstantFieldOnCellsValueTypePtr;

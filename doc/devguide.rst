@@ -84,12 +84,13 @@ Contents
 ..  toctree::
     :maxdepth: 3
 
-    devguide/commands
     devguide/datastructures
     devguide/supervis
     devguide/cata
-    devguide/boost
+    devguide/exec_commands
+    devguide/commands_implementation
     devguide/messages
+    devguide/boost
     devguide/helpers
     devguide/utilities
     devguide/naming-conventions
