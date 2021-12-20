@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -29,10 +29,10 @@
 #include <list>
 #include <stdexcept>
 
+#include "astercxx.h"
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_petsc.h"
-#include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
@@ -40,6 +40,7 @@
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Meshes/BaseMesh.h"
+#include "Studies/PhysicalProblem.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
@@ -131,6 +132,11 @@ class AssemblyMatrix : public DataStructure {
      * @brief Constructeur
      */
     AssemblyMatrix( const std::string &name );
+
+    /**
+     * @brief Constructeur
+     */
+    AssemblyMatrix( const PhysicalProblemPtr phys_prob );
 
     /**
      * @brief Destructeur
@@ -439,6 +445,13 @@ AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string
       _ccva( JeveuxVector< ValueType >( getName() + ".CCVA" ) ),
       _ccii( JeveuxVectorLong( getName() + ".CCII" ) ), _isEmpty( true ), _isFactorized( false ),
       _listOfLoads( boost::make_shared< ListOfLoads >() ){};
+
+template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const PhysicalProblemPtr phys_prob )
+    : AssemblyMatrix() {
+    _dofNum = phys_prob->getDOFNumbering();
+    _listOfLoads = phys_prob->getListOfLoads();
+};
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 bool AssemblyMatrix< ValueType, PhysicalQuantity >::build() {

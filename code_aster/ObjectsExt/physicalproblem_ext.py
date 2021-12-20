@@ -23,7 +23,7 @@
 ******************************************************
 """
 
-from ..Objects import PhysicalProblem
+from ..Objects import PhysicalProblem, DirichletBC
 from ..Utilities import injector
 
 
@@ -36,3 +36,26 @@ class ExtendedPhysicalProblem:
         """
         return (self.getModel(), self.getMaterialField(),
             self.getElementaryCharacteristics())
+
+    def addLoadFromDict(self, dictLoad):
+        """Add a load from a dict - to remove quickly
+
+        Arguments:
+            a dict with key "CHARGE" for the load and
+            optionally "FONC_MULT" for a load function
+        """
+        charge = dictLoad["CHARGE"]
+        if "FONC_MULT" in dictLoad:
+            if isinstance(charge, DirichletBC):
+                self.addDirichletBC(charge, dictLoad["FONC_MULT"])
+            else:
+                self.addLoad(charge, dictLoad["FONC_MULT"])
+        else:
+            if isinstance(charge, DirichletBC):
+                self.addDirichletBC(charge)
+            else:
+                self.addLoad(charge)
+
+        if not hasattr(self, 'allLoadsDict'):
+            self.allLoadsDict = []
+        self.allLoadsDict.append(dictLoad)

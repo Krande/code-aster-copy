@@ -122,6 +122,8 @@ class PhysicalProblem {
      */
     BaseDOFNumberingPtr getDOFNumbering() const { return _dofNume; };
 
+    ExternalStateVariablesBuilderPtr getExternalStateVariables() const { return _varCom; };
+
     /**
      * @brief Renvoit la carte COMPOR
      */

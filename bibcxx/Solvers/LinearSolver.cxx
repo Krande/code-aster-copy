@@ -3,7 +3,7 @@
  * @brief Initialisation des renumeroteurs autorises pour les solvers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,7 +34,7 @@ LinearSolver::LinearSolver( const std::string name )
       _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
       _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
-      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ),
+      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ), _matrix( nullptr ),
       _matrixPrec(
           new AssemblyMatrixDisplacementReal( ResultNaming::getNewResultName() + ".PREC" ) ),
       _commandName( "SOLVEUR" ), _xfem( false ), _keywords( NULL ){
@@ -42,6 +42,7 @@ LinearSolver::LinearSolver( const std::string name )
                                                  };
 
 void LinearSolver::setKeywords( PyObject *user_keywords ) {
+    _isEmpty = true;
     Py_XDECREF( _keywords );
     _keywords = user_keywords;
     Py_INCREF( _keywords );
@@ -90,15 +91,28 @@ bool LinearSolver::build() {
     return true;
 };
 
+bool LinearSolver::deleteFactorizedMatrix() {
+
+    if ( _matrix && _matrix->isFactorized() && get_sh_jeveux_status() == 1 ) {
+        CALLO_DETMATRIX( _matrix->getName() );
+        _matrix->deleteFactorizedMatrix();
+    }
+
+    return true;
+};
+
 bool LinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatrix ) {
     if ( _isEmpty )
         build();
+
+    deleteFactorizedMatrix();
+    _matrix = currentMatrix;
 
     const std::string solverName( getName() + "           " );
     std::string base( "G" );
     ASTERINTEGER cret = 0, npvneg = 0, istop = -9999;
     const std::string matpre( _matrixPrec->getName() );
-    const std::string matass = currentMatrix->getName();
+    const std::string matass = _matrix->getName();
 
     // Definition du bout de fichier de commande pour SOLVEUR
     CommandSyntax cmdSt( _commandName );
@@ -109,18 +123,17 @@ bool LinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatrix ) 
 
     CALLO_MATRIX_FACTOR( solverName, base, &cret, _matrixPrec->getName(), matass, &npvneg, &istop );
 
-    currentMatrix->_isFactorized = true;
-    currentMatrix->setSolverName( getSolverName() );
+    _matrix->_isFactorized = true;
+    _matrix->setSolverName( getSolverName() );
 
     Py_DECREF( dict );
     return true;
 };
 
-FieldOnNodesRealPtr LinearSolver::solve( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-                                         const FieldOnNodesRealPtr &currentRHS,
+FieldOnNodesRealPtr LinearSolver::solve( const FieldOnNodesRealPtr currentRHS,
                                          FieldOnNodesRealPtr result ) const {
 
-    if ( !currentMatrix->isFactorized() ) {
+    if ( !_matrix ) {
         throw std::runtime_error( "Matrix must be factored first" );
     }
 
@@ -140,22 +153,21 @@ FieldOnNodesRealPtr LinearSolver::solve( const AssemblyMatrixDisplacementRealPtr
     bool prepos( true );
     std::string base( JeveuxMemoryTypesNames[Permanent] );
 
-    CALLO_RESOUD( currentMatrix->getName(), _matrixPrec->getName(), getName(), blanc, &nsecm,
+    CALLO_RESOUD( _matrix->getName(), _matrixPrec->getName(), getName(), blanc, &nsecm,
                   currentRHS->getName(), result->getName(), base, &rdummy, &cdummy, blanc,
                   (ASTERLOGICAL *)&prepos, &istop, &iret );
 
-    currentMatrix->setSolverName( getSolverName() );
+    _matrix->setSolverName( getSolverName() );
 
     return result;
 };
 
-FieldOnNodesRealPtr
-LinearSolver::solveWithDirichletBC( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-                                    const FieldOnNodesRealPtr &dirichletBCField,
-                                    const FieldOnNodesRealPtr &currentRHS,
-                                    FieldOnNodesRealPtr result ) const {
+FieldOnNodesRealPtr LinearSolver::solveWithDirichletBC( const FieldOnNodesRealPtr currentRHS,
+                                                        const FieldOnNodesRealPtr dirichletBCField,
 
-    if ( !currentMatrix->isFactorized() ) {
+                                                        FieldOnNodesRealPtr result ) const {
+
+    if ( !_matrix ) {
         throw std::runtime_error( "Matrix must be factored first" );
     }
 
@@ -175,11 +187,11 @@ LinearSolver::solveWithDirichletBC( const AssemblyMatrixDisplacementRealPtr &cur
     bool prepos( true );
     std::string base( JeveuxMemoryTypesNames[Permanent] );
 
-    CALLO_RESOUD( currentMatrix->getName(), _matrixPrec->getName(), getName(),
+    CALLO_RESOUD( _matrix->getName(), _matrixPrec->getName(), getName(),
                   dirichletBCField->getName(), &nsecm, currentRHS->getName(), result->getName(),
                   base, &rdummy, &cdummy, blanc, (ASTERLOGICAL *)&prepos, &istop, &iret );
 
-    currentMatrix->setSolverName( getSolverName() );
+    _matrix->setSolverName( getSolverName() );
 
     return result;
 };

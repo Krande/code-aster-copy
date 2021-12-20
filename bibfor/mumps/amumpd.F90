@@ -142,11 +142,10 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
     lmhpc = mathpc.eq.'OUI'
 !
     lquali=.false.
-    call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
 !
 ! --- ANALYSE PAR BLOCS
-    lbloc=((slvk(5)(1:4).eq.'FR++').or.(slvk(5)(1:4).eq.'LR++'))
     if( action(1:5).ne.'DETR_' ) then
+        call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
         call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
         call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
 !
@@ -212,6 +211,7 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
 !       --------------------------------------------------------------
 !        CHOIX ICNTL VECTEUR DE PARAMETRES POUR MUMPS (ANALYSE+FACTO):
 !       --------------------------------------------------------------
+        lbloc=((slvk(5)(1:4).eq.'FR++').or.(slvk(5)(1:4).eq.'LR++'))
         call amumpi(2, lquali, ldist, kxmps, type, lmhpc, lbloc)
 !
 !       ----------------------------------------------------------
@@ -569,9 +569,16 @@ subroutine amumpd(action, kxmps, rsolu, vcine, nbsol,&
                     deallocate(dmpsk%jcn,stat=ibid)
                 endif
             endif
-            if ((rang.eq.0).and.(lbloc)) then
-              deallocate(dmpsk%blkptr,stat=ibid)
-            endif
+!
+            call jeexin(nosolv//'.SLVK', ibid)
+            if(ibid .ne. 0) then
+                call jeveuo(nosolv//'.SLVK', 'E', vk24=slvk)
+                lbloc=((slvk(5)(1:4).eq.'FR++').or.(slvk(5)(1:4).eq.'LR++'))
+                if ((rang.eq.0).and.lbloc) then
+                    deallocate(dmpsk%blkptr,stat=ibid)
+                endif
+            end if
+!
             etams(kxmps)=' '
             nonus(kxmps)=' '
             nomats(kxmps)=' '

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,14 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jacques.pellet at edf.fr
-
 from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-MECA_STATIQUE=OPER(nom="MECA_STATIQUE",
-                   op=None,
+MECA_STATIQUE=MACRO(nom="MECA_STATIQUE",
+                   op=OPS("code_aster.MacroCommands.meca_statique_ops.meca_statique_ops"),
                    sd_prod=evol_elas,
                    fr=tr("Résoudre un problème de mécanique statique linéaire"),
                    reentrant='f:RESULTAT',
@@ -40,7 +38,6 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem,
          fr=tr("le CARA_ELEM est nécessaire dès que le modèle contient des éléments de structure : coques, poutres, ..."),
          ),
-         TITRE           =SIMP(statut='f',typ='TXM'),
          EXCIT           =FACT(statut='f',max='**',
            CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -61,4 +58,4 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",
          translation={
             "MECA_STATIQUE": "Static mechanical analysis",
          }
-)  ;
+)

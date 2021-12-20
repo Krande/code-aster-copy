@@ -32,6 +32,10 @@ namespace py = boost::python;
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDualizedDirichlet_overloads,
     dualDisplacement, 1, 2 )
 
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeElasticStiffnessMatrix_overloads,
+    elasticStiffnessMatrix, 0, 1 )
+
 void exportDiscreteComputationToPython() {
 
     py::class_< DiscreteComputation, DiscreteComputation::DiscreteComputationPtr >
@@ -44,22 +48,22 @@ void exportDiscreteComputationToPython() {
                 R"(
       Return the imposed displacement assembled vector
 
-      Argument:
-      double:  current time 
+      Arguments:
+            float: current time
 
       Returns:
-      FieldOnNodes: imposed displacement
+            FieldOnNodes: imposed displacement
         )", ( py::arg( "self" ), py::arg( "time" ) ) )
         .def( "dualReaction",
               &DiscreteComputation::dualReaction,
                R"(
       Return the imposed displacement assembled vector
 
-      Argument:
-      FieldOnNodes: current displacement vector
+      Arguments:
+            disp_curr (FieldOnNodes): current displacement vector
 
       Returns:
-      FieldOnNodes: dual reaction vector (B^T*lambda)
+            FieldOnNodes: dual reaction vector (B^T*lambda)
         )", ( py::arg( "self" ), py::arg( "disp_curr" ) ) )
         .def( "dualDisplacement",
               &DiscreteComputation::dualDisplacement,
@@ -68,40 +72,50 @@ void exportDiscreteComputationToPython() {
             R"(
       Return the Neumann load vector
 
-      Argument:
-      std::vector: vector of times of length 3 (current time, delta_time, parameter)
-      ExternalStateVariablesBuilder: 
+      Arguments:
+            time (list): Vector of times of length 3 (current time, delta_time, parameter)
 
       Returns:
-      FieldOnNodes: Neumann load vector
-        )", ( py::arg( "self" ), py::arg( "time" ), py::arg( "varCom" ) ))
+            FieldOnNodes: Neumann load vector
+        )", ( py::arg( "self" ), py::arg( "time" ) ))
+        .def( "externalStateVariables", &DiscreteComputation::externalStateVariables,
+            R"(
+      Return the external State Variables load vector
+
+      Arguments:
+            time (float): current time
+
+      Returns:
+            FieldOnNodes: external State Variables load vector
+        )", ( py::arg( "self" ), py::arg( "time" )))
         .def( "dirichletBC", &DiscreteComputation::dirichletBC,
            R"(
-      Return the imposed displacement vector  used to remove imposed DDL 
+      Return the imposed displacement vector used to remove imposed DDL
 
-      Argument:
-      double: current time
+      Arguments:
+            float: current time
 
       Returns:
-      FieldOnNodes: imposed displacement vector
+            FieldOnNodes: imposed displacement vector
         )", ( py::arg( "self" ), py::arg( "time" ) ) )
         .def( "incrementalDirichletBC", &DiscreteComputation::incrementalDirichletBC,
            R"(
-      Return the incremental imposed displacement vector used to remove imposed DDL 
-      for incremental resolution
+      Return the incremental imposed displacement vector used to remove imposed DDL
+      for incremental resolution.
 
-      incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imosed
+      incr_disp = dirichletBC(time) - disp, with 0.0 for DDL not imposed
 
-      Argument:
-      double: current time
-      FieldOnNodes: displacement field at current time
+      Arguments:
+            time (float): current time
+            disp (FieldOnNodes): displacement field at current time
 
       Returns:
-      FieldOnNodes: incremental imposed displacement vector
+            FieldOnNodes: incremental imposed displacement vector
         )", ( py::arg( "self" ), py::arg( "time" ), py::arg( "disp" ) ) )
-        .def( "computeElementaryStiffnessMatrix",
-              &DiscreteComputation::computeElementaryStiffnessMatrix )
-        .def( "computeElementaryTangentMatrix", 
+        .def( "elasticStiffnessMatrix",
+              &DiscreteComputation::elasticStiffnessMatrix,
+              computeElasticStiffnessMatrix_overloads() )
+        .def( "computeElementaryTangentMatrix",
                               &DiscreteComputation::computeElementaryTangentMatrix )
         .def( "computeElementaryJacobianMatrix",
               &DiscreteComputation::computeElementaryJacobianMatrix )

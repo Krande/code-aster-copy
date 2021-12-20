@@ -97,7 +97,7 @@ listLoads = study.getListOfLoads()
 study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
-retour = dComputation.neumann([1, 0, 0], None)
+retour = dComputation.neumann([1, 0, 0])
 matr_elem = dComputation.computeMechanicalStiffnessMatrix()
 
 test.assertEqual(matr_elem.getType(), "MATR_ELEM_DEPL_R")
@@ -156,7 +156,7 @@ monSolver.factorize(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
 vcine = dComputation.dirichletBC(0.)
-resu = monSolver.solveWithDirichletBC(matrAsse, vcine, retour)
+resu = monSolver.solveWithDirichletBC(retour, vcine)
 
 y = resu.EXTR_COMP()
 test.assertEqual(len(y.valeurs), 81)
@@ -171,7 +171,7 @@ resu.printMedFile("fort.med")
 # ----------------------
 matrAsse.setValues(idx.tolist(), jdx.tolist(), [10 * v for v in values])
 monSolver.factorize(matrAsse)
-resu = monSolver.solve(matrAsse, retour)
+resu = monSolver.solve(retour)
 resu2 = resu.exportToSimpleFieldOnNodes()
 resu2.updateValuePointers()
 test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289 / 10.)

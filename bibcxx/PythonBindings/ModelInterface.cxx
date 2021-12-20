@@ -98,6 +98,7 @@ Returns:
         .def( "getSplittingMethod", &Model::getSplittingMethod )
         .def( "getGraphPartitioner", &Model::getGraphPartitioner )
         .def( "setSaneModel", &Model::setSaneModel )
+        .def( "xfemPreconditioningEnable", &Model::xfemPreconditioningEnable )
         .def( "setSplittingMethod", split1 )
         .def( "setSplittingMethod", split2 )
         .def( "getFiniteElementDescriptor", &Model::getFiniteElementDescriptor )

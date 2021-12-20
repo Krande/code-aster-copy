@@ -85,7 +85,7 @@ test.assertEqual(numeDDL.getType(), "NUME_DDL_P")
 
 # compute Neumman
 study.setDOFNumbering(numeDDL)
-retour = dComputation.neumann([0,0,0], None)
+retour = dComputation.neumann([0,0,0])
 
 
 matrAsse = code_aster.AssemblyMatrixDisplacementReal()
@@ -99,7 +99,7 @@ test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 #retour = vect_elem.assembleWithLoadFunctions( numeDDL )
 
 monSolver.factorize( matrAsse )
-resu = monSolver.solve( matrAsse, retour )
+resu = monSolver.solve( retour )
     #resu.debugPrint(6)
 
 try:

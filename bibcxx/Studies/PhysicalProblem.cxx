@@ -51,6 +51,8 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
 
     _dofNume->setModel( _model );
     _dofNume->setListOfLoads( _listOfLoads );
+
+    _codedMater->allocate(true);
 };
 
 void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {

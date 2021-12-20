@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ subroutine delete_matrix(matas, typsol)
 #include "asterfort/jeexin.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/amumph.h"
+#include "asterfort/detlsp.h"
 #include "asterfort/apetsc.h"
     integer :: iexi, ibid, iret
     complex(kind=8) :: cbid

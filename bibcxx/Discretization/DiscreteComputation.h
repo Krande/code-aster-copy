@@ -107,14 +107,23 @@ class DiscreteComputation {
      theta
      * @return Vecteur des chargement de Neumann assemblé
      */
-    FieldOnNodesRealPtr neumann( const VectorReal time, ExternalStateVariablesBuilderPtr );
+    FieldOnNodesRealPtr neumann( const VectorReal time );
+
+    /**
+     * @brief Fonction permettant de calculer les vecteurs  pour les
+              chargements de Neumann
+     * @param time Instants de calcul (vecteur de longueur 3 : instant courant, deltat, paramètre
+     theta
+     * @return Vecteur des chargement de Neumann assemblé
+     */
+    FieldOnNodesRealPtr externalStateVariables( const ASTERDOUBLE &time );
 
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires de rigidité
      * @param time Instant de calcul
      * @return Vecteur élémentaire contenant la rigidité mécanique
      */
-    ElementaryMatrixDisplacementRealPtr computeElementaryStiffnessMatrix( ASTERDOUBLE time = 0. );
+    ElementaryMatrixDisplacementRealPtr elasticStiffnessMatrix( ASTERDOUBLE time = 0. );
 
     /**
      * @brief Fonction permettant de calculer les matrices élémentaires pour la matrice tangente

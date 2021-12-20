@@ -1,9 +1,12 @@
+#ifndef CODEDMATERIALINTERFACE_H_
+#define CODEDMATERIALINTERFACE_H_
+
 /**
- * @file AlgorithmException.cxx
- * @brief Implementation de AlgorithmException
+ * @file CODEDMATERIALInterface.h
+ * @brief Fichier entete de la classe CODEDMATERIALInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,6 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Algorithms/AlgorithmException.h"
+#include "astercxx.h"
+#include "Materials/CodedMaterial.h"
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
+void exportCodedMaterialToPython();
+
+#endif /* CODEDMATERIALINTERFACE_H_ */

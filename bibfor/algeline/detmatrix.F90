@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ use elg_data_module
 !
 #include "asterfort/assert.h"
 #include "asterfort/detlsp.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/xfem_precond.h"
     integer :: ier
@@ -47,10 +46,6 @@ use elg_data_module
 !  -- on detruit les eventuels pré-conditinneurs xfem stockés sous forme de matr_asse
     call dismoi('XFEM', matass, 'MATR_ASSE', repk=kxfem)
     if ( kxfem .eq. 'XFEM_PRECOND') call xfem_precond('FIN', matass)
-!
-!  --  on detruit les matr_asse ainsi que les
-!           eventuelles instances mumps et petsc
-    call detrsd('MATR_ASSE', matass)
 !
 !  -- on detruit les eventuelles structures creees pour eliminer les multiplicateurs
 !          de Lagrange

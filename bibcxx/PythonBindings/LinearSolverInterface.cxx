@@ -29,8 +29,8 @@ namespace py = boost::python;
 #include "PythonBindings/LinearSolverInterface.h"
 #include <PythonBindings/factory.h>
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solveWithDirichletBC_overloads, solveWithDirichletBC, 3, 4 )
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solve_overloads, solve, 2, 3 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solveWithDirichletBC_overloads, solveWithDirichletBC, 2, 3 )
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( solve_overloads, solve, 1, 2 )
 
 void exportLinearSolverToPython() {
 
@@ -42,11 +42,14 @@ void exportLinearSolverToPython() {
         .def( "getSolverName", &LinearSolver::getSolverName )
         .def( "supportParallelMesh", &LinearSolver::supportParallelMesh )
         .def( "setKeywords", &LinearSolver::setKeywords )
+        .def( "setCommandName", &LinearSolver::setCommandName )
+        .def( "enableXfem", &LinearSolver::enableXfem )
         .def( "build", &LinearSolver::build )
         .def( "solve", &LinearSolver::solve, solve_overloads() )
         .def( "solveWithDirichletBC", &LinearSolver::solveWithDirichletBC,
               solveWithDirichletBC_overloads() )
-        .def( "factorize", &LinearSolver::factorize );
+        .def( "factorize", &LinearSolver::factorize )
+        .def( "deleteFactorizedMatrix", &LinearSolver::deleteFactorizedMatrix );
 
     py::class_< MultFrontSolver, MultFrontSolverPtr, py::bases< LinearSolver > >( "MultFrontSolver",
                                                                                   py::no_init )

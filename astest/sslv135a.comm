@@ -710,8 +710,7 @@ for i in range(2) :
 # CALCUL AVEC MECA_STATIQUE
 # -------------------------
 
-SOL_L = MECA_STATIQUE ( TITRE      =
-                'TEST TRACTION-COMPRESSION ALTERNEE - PLAN CRITIQUE',
+SOL_L = MECA_STATIQUE (
                         MODELE     =   TROISD,
                         CHAM_MATER =   MAT[0],
                         EXCIT      =_F ( CHARGE       = TR_CS,

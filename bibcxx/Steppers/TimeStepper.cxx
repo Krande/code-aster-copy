@@ -1,9 +1,9 @@
 /**
- * @file StaticMechanicalContext.cxx
- * @brief Implementation de StaticMechanicalAlgorithm
+ * @file TimeStepper.cxx
+ * @brief Implementation de TimeStepper
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,6 +21,25 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Steppers/TimeStepper.h"
+
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Algorithms/StaticMechanicalContext.h"
+bool TimeStepper::setValues( const VectorReal &values ) {
+    _values->clear();
+    _values->reserve( values.size() );
+    AS_ASSERT( _values->updateValuePointer() );
+
+    ASTERINTEGER compteur = 0;
+    ASTERDOUBLE save = 0.;
+    for ( VectorRealCIter tmp = values.begin(); tmp != values.end(); ++tmp ) {
+        _values->push_back( *tmp );
+        const ASTERDOUBLE &curVal = *tmp;
+        if ( compteur != 0 && save >= curVal )
+            throw std::runtime_error( "Time function not strictly increasing" );
+        save = *tmp;
+        ++compteur;
+    }
+
+    return true;
+};

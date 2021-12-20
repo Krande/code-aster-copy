@@ -44,6 +44,7 @@
 #include "PythonBindings/BehaviourDefinitionInterface.h"
 #include "PythonBindings/BehaviourPropertyInterface.h"
 #include "PythonBindings/BucklingModeResultInterface.h"
+#include "PythonBindings/CodedMaterialInterface.h"
 #include "PythonBindings/CombinedFourierResultInterface.h"
 #include "PythonBindings/ConnectionMeshInterface.h"
 #include "PythonBindings/ConstantFieldOnCellsInterface.h"
@@ -99,7 +100,6 @@
 #include "PythonBindings/GridInterface.h"
 #include "PythonBindings/InterspectralMatrixInterface.h"
 #include "PythonBindings/LinearSolverInterface.h"
-#include "PythonBindings/LinearStaticAnalysisInterface.h"
 #include "PythonBindings/ListOfExternalStateVariablesInterface.h"
 #include "PythonBindings/ListOfFloatsInterface.h"
 #include "PythonBindings/ListOfIntegersInterface.h"
@@ -288,7 +288,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportThermalFourierResultToPython();
     exportMultipleElasticResultToPython();
     exportNonLinearResultToPython();
-    exportLinearStaticAnalysisToPython();
     exportPhysicalProblemToPython();
     exportCppToFortranGlossaryToPython();
     exportCyclicSymmetryModeToPython();
@@ -329,5 +328,6 @@ BOOST_PYTHON_MODULE( libaster ) {
     exportDeleteTemporaryObjectsToPython();
     exportMatrixToPetscToPython();
     exportBehaviourPropertyToPython();
+    exportCodedMaterialToPython();
 
 };

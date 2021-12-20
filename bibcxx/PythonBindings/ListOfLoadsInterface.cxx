@@ -36,22 +36,22 @@ void exportListOfLoadsToPython() {
     c1.def( "isEmpty", &ListOfLoads::isEmpty, R"(
             The list of loads is empty or not.
 
-            Return:
-                bool : True if empty
+            Returns:
+                bool: True if empty
         )",
             ( py::arg( "self" ) ) );
     c1.def( "hasDirichletBC", &ListOfLoads::hasDirichletBC, R"(
             Dirichlet BCs have been added or not ?
 
-            Return:
-                bool : True if Dirichlet BCs have been added
+            Returns:
+                bool: True if Dirichlet BCs have been added
         )",
             ( py::arg( "self" ) ) );
     c1.def( "hasExternalLoad", &ListOfLoads::hasExternalLoad, R"(
             External load (= not Dirichlet BCs) have been added or not ?
 
-            Return:
-                bool : True if External load have been added
+            Returns:
+                bool: True if External load have been added
         )",
             ( py::arg( "self" ) ) );
     c1.def( "getDirichletBCs", &ListOfLoads::getDirichletBCs,

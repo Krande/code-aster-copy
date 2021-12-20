@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ subroutine detmat()
 !
 #include "asterfort/assert.h"
 #include "asterfort/detmatrix.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelstc.h"
     integer :: nbmat, i, ier
@@ -46,6 +47,10 @@ subroutine detmat()
 !
 ! -- Detruire matrice
         call detmatrix(matass)
+!  --  on detruit les matr_asse ainsi que les
+!           eventuelles instances mumps et petsc
+        call detrsd('MATR_ASSE', matass)
+!
 !
  10     continue
     end do

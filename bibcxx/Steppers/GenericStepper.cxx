@@ -1,12 +1,9 @@
-#ifndef GENERICCONTEXTUPDATER_H_
-#define GENERICCONTEXTUPDATER_H_
-
 /**
- * @file GenericContextUpdater.h
- * @brief Fichier entete de la classe GenericContextUpdater
+ * @file GenericStepper.cxx
+ * @brief Implementation de GenericStepper
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,14 +21,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Steppers/GenericStepper.h"
+
 /* person_in_charge: nicolas.sellenet at edf.fr */
-
-/**
- * @class GenericContextUpdater
- * @brief Template class of what should be the function which update a context of a algorithm
- * @author Nicolas Sellenet
- */
-template < typename CurrentStepperIter, typename CurrentContext >
-void updateContextFromStepper( const CurrentStepperIter &step, CurrentContext &context );
-
-#endif /* GENERICCONTEXTUPDATER_H_ */

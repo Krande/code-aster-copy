@@ -46,6 +46,10 @@ void exportAssemblyMatrixToPython() {
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixDisplacementReal, std::string >))
 // -------------------------------------------------------------------------------------------------
+        .def( "__init__",
+              py::make_constructor(
+                  &initFactoryPtr< AssemblyMatrixDisplacementReal, PhysicalProblemPtr >))
+// -------------------------------------------------------------------------------------------------
         .def( "addDirichletBC", c1 )
 // -------------------------------------------------------------------------------------------------
         .def( "addDirichletBC", c2 )
@@ -64,7 +68,7 @@ void exportAssemblyMatrixToPython() {
 Return the model.
 
 Returns:
-    ModelPtr: a pointer to the model
+    Model: a pointer to the model
         )",
               ( py::arg( "self" )))
 // -------------------------------------------------------------------------------------------------
@@ -72,7 +76,7 @@ Returns:
 Return the mesh.
 
 Returns:
-    MeshPtr: a pointer to the mesh
+    Mesh: a pointer to the mesh
         )",
               ( py::arg( "self" ) ) )
 // -------------------------------------------------------------------------------------------------
@@ -80,7 +84,7 @@ Returns:
 Return the list of loads.
 
 Returns:
-    ListOfLoadsPtr: a pointer to the list of loads
+    ListOfLoads: a pointer to the list of loads
         )",
               ( py::arg( "self" )))
 // -------------------------------------------------------------------------------------------------
@@ -88,7 +92,7 @@ Returns:
 Set the list of loads.
 
 Arguments:
-    ListOfLoadsPtr: a pointer to the list of loads to set
+    ListOfLoads: a pointer to the list of loads to set
         )",
               ( py::arg( "self" ), py::arg( "load" )))
 // -------------------------------------------------------------------------------------------------
@@ -98,7 +102,7 @@ Arguments:
 Test if the matrix is empty.
 
 Returns:
-    Bool: true if the matrix is empty
+    bool: *True* if the matrix is empty.
         )",
               ( py::arg( "self" )) )
 // -------------------------------------------------------------------------------------------------
@@ -106,7 +110,7 @@ Returns:
 Test if the matrix is factorized.
 
 Returns:
-    Bool: true if the matrix is factorized
+    bool: *True* if the matrix is factorized.
         )",
               ( py::arg( "self" )) )
 // -------------------------------------------------------------------------------------------------
@@ -119,6 +123,7 @@ Returns:
 // -------------------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixDisplacementReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
+
 The new values are in coordinate format (i, j, aij). The matrix  must be stored in CSR format.
 There is no rule for the indices - they can be in arbitrary order and can be repeated. Repeated
 indices are sumed according to an assembly process.
@@ -131,30 +136,29 @@ Arguments:
 // -------------------------------------------------------------------------------------------------
         .def( "hasDirichletEliminationDOFs",
             &AssemblyMatrixDisplacementReal::hasDirichletEliminationDOFs, R"(
-Return True if matrix has some DOFs eliminated by Dirichlet boundaries conditions
+Tell if matrix has some DOFs eliminated by Dirichlet boundaries conditions.
 
-Return:
-    bool: True if matrix has some DOFs eliminated by Dirichlet boundaries conditions else False
+Returns:
+    bool: *True* if matrix has some DOFs eliminated by Dirichlet boundaries conditions else *False*
         )")
 // -------------------------------------------------------------------------------------------------
         .def( "getDirichletBCDOFs",
             &AssemblyMatrixDisplacementReal::getDirichletBCDOFs, R"(
 Return a vector with DOFs eliminated by Dirichlet boundaries conditions (if it exists)
 
-Return:
-    tuple(int): a vector with DOFs eliminated by Dirichlet boundaries conditions
-            size = neq + 1
-
-            tuple(ieq = 0, neq - 1) = 1 then DOF eliminated else 0
-            tuple(neq) = number of DOFs eliminated
+Returns:
+    tuple(int): a vector with DOFs eliminated by Dirichlet boundaries conditions of
+        size = neq + 1,
+        tuple(ieq = 0, neq - 1) = 1 then DOF eliminated else 0,
+        tuple(neq) = number of DOFs eliminated.
         )")
 // -------------------------------------------------------------------------------------------------
         .def( "getLagrangeScaling",
             &AssemblyMatrixDisplacementReal::getLagrangeScaling, R"(
 Return the scaling used for Lagrange multipliers. It returns 1 if no Lagrange.
 
-Return:
-    double: scaling used for Lagrange multipliers. It returns 1 if no Lagrange
+Returns:
+    float: scaling used for Lagrange multipliers. It returns 1 if no Lagrange
     are present.
         )")
 // -------------------------------------------------------------------------------------------------
@@ -170,7 +174,7 @@ Print the matrix in code_aster format (with information on the DOF).
 Print the matrix in the given format format.
 
 Arguments:
-    format (string): 'ASTER' or 'MATLAB'
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::arg( "format" ))  )
@@ -180,8 +184,8 @@ Arguments:
 Print the matrix in the given format format and in the given logical unit.
 
 Arguments:
-    unit (int) : logical unit to print
-    format (string): 'ASTER' or 'MATLAB'
+    unit (int): logical unit to print
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::args( "unit", "format" ))  )
@@ -243,7 +247,7 @@ Print the matrix in code_aster format (with information on the DOF).
 Print the matrix in the given format format.
 
 Arguments:
-    format (string): 'ASTER' or 'MATLAB'
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::arg( "format" ))  )
@@ -253,8 +257,8 @@ Arguments:
 Print the matrix in the given format format and in the given logical unit.
 
 Arguments:
-    unit (int) : logical unit to print
-    format (string): 'ASTER' or 'MATLAB'
+    unit (int): logical unit to print
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::args( "unit", "format" ))  )
@@ -294,7 +298,7 @@ Arguments:
 Return the model.
 
 Returns:
-    ModelPtr: a pointer to the model
+    Model: a pointer to the model
         )",
               ( py::arg( "self" )))
 // -------------------------------------------------------------------------------------------------
@@ -302,7 +306,7 @@ Returns:
 Return the mesh.
 
 Returns:
-    MeshPtr: a pointer to the mesh
+    Mesh: a pointer to the mesh
         )",
               ( py::arg( "self" ) ) )
 // -------------------------------------------------------------------------------------------------
@@ -327,7 +331,7 @@ Print the matrix in code_aster format (with information on the DOF).
 Print the matrix in the given format format.
 
 Arguments:
-    format (string): 'ASTER' or 'MATLAB'
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::arg( "format" ))  )
@@ -337,14 +341,15 @@ Arguments:
 Print the matrix in the given format format and in the given logical unit.
 
 Arguments:
-    unit (int) : logical unit to print
-    format (string): 'ASTER' or 'MATLAB'
+    unit (int): logical unit to print
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::args( "unit", "format" ))  )
 // -------------------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixTemperatureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
+
 The new values are in coordinate format (i, j, aij). The matrix  must be stored in CSR format.
 There is no rule for the indices - they can be in arbitrary order and can be repeated. Repeated
 indices are sumed according to an assembly process.
@@ -403,7 +408,7 @@ Print the matrix in code_aster format (with information on the DOF).
 Print the matrix in the given format format.
 
 Arguments:
-    format (string): 'ASTER' or 'MATLAB'
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::arg( "format" ))  )
@@ -413,8 +418,8 @@ Arguments:
 Print the matrix in the given format format and in the given logical unit.
 
 Arguments:
-    unit (int) : logical unit to print
-    format (string): 'ASTER' or 'MATLAB'
+    unit (int): logical unit to print
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::args( "unit", "format" ))  )
@@ -468,7 +473,7 @@ Print the matrix in code_aster format (with information on the DOF).
 Print the matrix in the given format format.
 
 Arguments:
-    format (string): 'ASTER' or 'MATLAB'
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::arg( "format" ))  )
@@ -478,14 +483,15 @@ Arguments:
 Print the matrix in the given format format and in the given logical unit.
 
 Arguments:
-    unit (int) : logical unit to print
-    format (string): 'ASTER' or 'MATLAB'
+    unit (int): logical unit to print
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::args( "unit", "format" ))  )
 // -------------------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixPressureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
+
 The new values are in coordinate format (i, j, aij). The matrix  must be stored in CSR format.
 There is no rule for the indices - they can be in arbitrary order and can be repeated. Repeated
 indices are sumed according to an assembly process.
@@ -544,7 +550,7 @@ Print the matrix in code_aster format (with information on the DOF).
 Print the matrix in the given format format.
 
 Arguments:
-    format (string): 'ASTER' or 'MATLAB'
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::arg( "format" ))  )
@@ -554,8 +560,8 @@ Arguments:
 Print the matrix in the given format format and in the given logical unit.
 
 Arguments:
-    unit (int) : logical unit to print
-    format (string): 'ASTER' or 'MATLAB'
+    unit (int): logical unit to print
+    format (str): 'ASTER' or 'MATLAB'
 
         )",
               ( py::arg( "self" ), py::args( "unit", "format" ))  )

@@ -30,12 +30,19 @@ namespace py = boost::python;
 void exportExternalStateVariablesBuilderToPython() {
 
     py::class_< ExternalStateVariablesBuilder, ExternalStateVariablesBuilderPtr,
-            py::bases< DataStructure > >( "ExternalStateVariablesBuilder",
-                                                              py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ExternalStateVariablesBuilder >))
+                py::bases< DataStructure > >( "ExternalStateVariablesBuilder", py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< ExternalStateVariablesBuilder > ) )
         .def( "__init__",
               py::make_constructor(
-                  &initFactoryPtr< ExternalStateVariablesBuilder, const ModelPtr&,
-                  const MaterialFieldPtr&, const ElementaryCharacteristicsPtr&,
-                  const CodedMaterialPtr& > ) );
+                  &initFactoryPtr< ExternalStateVariablesBuilder, const ModelPtr &,
+                                   const MaterialFieldPtr &, const ElementaryCharacteristicsPtr &,
+                                   const CodedMaterialPtr & > ) )
+        .def( "hasExternalStateVariables",
+              &ExternalStateVariablesBuilder::hasExternalStateVariables, R"(
+Return True if external state variables are defined
+
+Returns:
+    bool: True if external state variables are defined
+        )",
+              ( py::arg( "self" ) ) );
 };

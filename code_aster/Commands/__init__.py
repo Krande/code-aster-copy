@@ -21,7 +21,7 @@
 :py:mod:`__init__` --- Definition of user's Commands
 ****************************************************
 
-All user's Commands are imported from this module.
+All user's Commands are defined in :py:mod:`code_aster.Commands` package.
 
 For details about the execution of the commands see :ref:`devguide-supervis`.
 
@@ -141,7 +141,6 @@ from .mac_modes import MAC_MODES
 from .macr_elem_dyna import MACR_ELEM_DYNA
 from .macr_elem_stat import MACR_ELEM_STAT
 from .maj_cata import MAJ_CATA
-from .meca_statique import MECA_STATIQUE
 from .mode_iter_cycl import MODE_ITER_CYCL
 from .mode_non_line import MODE_NON_LINE
 from .mode_statique import MODE_STATIQUE

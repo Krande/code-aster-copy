@@ -49,6 +49,7 @@ class LinearSolver : public DataStructure {
     JeveuxVectorLong _integerValues;
     JeveuxVectorChar80 _petscOptions;
 
+    AssemblyMatrixDisplacementRealPtr _matrix;
     AssemblyMatrixDisplacementRealPtr _matrixPrec;
     std::string _commandName;
     bool _xfem;
@@ -75,7 +76,10 @@ class LinearSolver : public DataStructure {
     /**
      * @brief Destructor
      */
-    ~LinearSolver() { Py_XDECREF( _keywords ); };
+    ~LinearSolver() {
+        deleteFactorizedMatrix();
+        Py_XDECREF( _keywords );
+    };
 
     /**
      * @brief Return the solver name.
@@ -107,6 +111,11 @@ class LinearSolver : public DataStructure {
     void setKeywords( PyObject *user_keywords );
 
     /**
+     * @brief Set command name.
+     */
+    void setCommandName( const std::string &commandName ) { _commandName = commandName; };
+
+    /**
      * @brief Returns a dict containing the SOLVEUR keyword.
      * @return PyDict (new reference)
      */
@@ -125,32 +134,31 @@ class LinearSolver : public DataStructure {
     bool factorize( AssemblyMatrixDisplacementRealPtr currentMatrix );
 
     /**
+     * @brief Factorisation d'une matrice
+     */
+    bool deleteFactorizedMatrix();
+
+    /**
      * @brief Inversion du systeme lineaire
-     * @param currentMatrix Matrice assemblee
      * @param dirichletBCField Charge cinématique
      * @param currentRHS Second membre
      * @param result champ aux noeuds résultat (optionnel)
      * @return champ aux noeuds resultat
      */
     FieldOnNodesRealPtr
-    solve( const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-           const FieldOnNodesRealPtr &currentRHS,
-           FieldOnNodesRealPtr result = FieldOnNodesRealPtr( new FieldOnNodesReal() ) ) const;
+    solve( const FieldOnNodesRealPtr currentRHS,
+           FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >() ) const;
 
     /**
      * @brief Inversion du systeme lineaire
-     * @param currentMatrix Matrice assemblee
      * @param dirichletBCField Charge cinématique
      * @param currentRHS Second membre
      * @param result champ aux noeuds résultat (optionnel)
      * @return champ aux noeuds resultat
      */
     FieldOnNodesRealPtr solveWithDirichletBC(
-        const AssemblyMatrixDisplacementRealPtr &currentMatrix,
-        const FieldOnNodesRealPtr &dirichletBCField, const FieldOnNodesRealPtr &currentRHS,
-        FieldOnNodesRealPtr result = FieldOnNodesRealPtr( new FieldOnNodesReal() ) ) const;
-
-    friend class LinearStaticAnalysis;
+        const FieldOnNodesRealPtr currentRHS, const FieldOnNodesRealPtr dirichletBCField,
+        FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >() ) const;
 };
 
 /**

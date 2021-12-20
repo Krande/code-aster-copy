@@ -45,6 +45,7 @@ from .misc import get_shared_tmpdir, shared_tmpdir
 from .mpi_utils import MPI, haveMPI
 from .options import Options
 from .report import CR
+from .statistics_manager import print_stats, profile
 from .strfunc import (center, clean_string, convert, copy_text_to,
                       cut_long_lines, from_unicode, get_encoding,
                       maximize_lines, textbox, to_unicode, ufmt)

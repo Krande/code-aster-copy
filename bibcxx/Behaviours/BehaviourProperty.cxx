@@ -41,18 +41,14 @@ void BehaviourProperty::createObjects() {
 };
 
 /** @brief Constructor */
-BehaviourProperty::BehaviourProperty( )
-    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR"),
-      _initialState( false ), _implex( false ), _verbosity( false ), _model( nullptr ),
-      _materialField( nullptr ), _mesh( nullptr )
-{
-    createObjects();
-};
+BehaviourProperty::BehaviourProperty()
+    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR" ), _initialState( false ),
+      _implex( false ), _verbosity( false ), _model( nullptr ), _materialField( nullptr ),
+      _mesh( nullptr ), _CARCRI( nullptr ), _MULCOM( nullptr ), _COMPOR( nullptr ){};
 
 /** @brief Constructor */
 BehaviourProperty::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
-    : BehaviourProperty()
-{
+    : BehaviourProperty() {
     _model = model;
     _mesh = model->getMesh();
     _materialField = materialField;
@@ -60,6 +56,8 @@ BehaviourProperty::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialF
 
 /** @brief Build objects (maps) */
 bool BehaviourProperty::build() {
+    createObjects();
+
     std::string modelName = getModel()->getName();
     modelName.resize( 8, ' ' );
 
@@ -69,7 +67,7 @@ bool BehaviourProperty::build() {
     std::string comporName = _COMPOR->getName();
     comporName.resize( 19, ' ' );
 
-    std::string base("G");
+    std::string base( "G" );
 
     CALLO_NMDOCC( modelName, materialFieldName, (ASTERLOGICAL *)&_initialState,
                   (ASTERLOGICAL *)&_implex, comporName, base, (ASTERLOGICAL *)&_verbosity );
@@ -78,9 +76,9 @@ bool BehaviourProperty::build() {
 
     CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName(), base );
 
-    AS_ASSERT(_COMPOR->updateValuePointers());
-    AS_ASSERT(_MULCOM->updateValuePointers());
-    AS_ASSERT(_CARCRI->updateValuePointers());
+    AS_ASSERT( _COMPOR->updateValuePointers() );
+    AS_ASSERT( _MULCOM->updateValuePointers() );
+    AS_ASSERT( _CARCRI->updateValuePointers() );
 
     return true;
 };

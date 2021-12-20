@@ -1,6 +1,9 @@
+#ifndef GENERICSTEPPER_H_
+#define GENERICSTEPPER_H_
+
 /**
- * @file TimeStepper.cxx
- * @brief Implementation de TimeStepper
+ * @file GenericStepper.h
+ * @brief Fichier entete de la classe GenericStepper
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
@@ -21,25 +24,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Algorithms/TimeStepper.h"
-
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-bool TimeStepper::setValues( const VectorReal &values ) {
-    _values->clear();
-    _values->reserve( values.size() );
-    AS_ASSERT( _values->updateValuePointer() );
+/**
+ * @class GenericStepper
+ * @brief
+ * @author Nicolas Sellenet
+ */
+class GenericStepper {};
 
-    ASTERINTEGER compteur = 0;
-    ASTERDOUBLE save = 0.;
-    for ( VectorRealCIter tmp = values.begin(); tmp != values.end(); ++tmp ) {
-        _values->push_back( *tmp );
-        const ASTERDOUBLE &curVal = *tmp;
-        if ( compteur != 0 && save >= curVal )
-            throw std::runtime_error( "Time function not strictly increasing" );
-        save = *tmp;
-        ++compteur;
-    }
-
-    return true;
-};
+#endif /* GENERICSTEPPER_H_ */

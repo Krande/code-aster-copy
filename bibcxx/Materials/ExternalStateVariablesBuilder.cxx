@@ -104,5 +104,7 @@ ExternalStateVariablesBuilder::computeExternalStateVariablesLoad( const BaseDOFN
     FieldOnNodesRealPtr toReturn( new FieldOnNodesReal( ( *vectOut )[0].toString() ) );
     toReturn->setDOFNumbering(dofNUM);
     toReturn->build();
+    toReturn->updateValuePointers();
+
     return toReturn;
 };

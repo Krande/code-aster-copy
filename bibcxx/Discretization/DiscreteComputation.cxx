@@ -127,9 +127,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
     return bume;
 };
 
-FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time,
-                                                  ExternalStateVariablesBuilderPtr varCom ) {
-    // auto vect_elem = computeElementaryNeumannVector( time, varCom );
+FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time ) {
 
     if ( time.size() != 3 )
         throw std::runtime_error( "Invalid number of parameter" );
@@ -152,8 +150,12 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time,
     std::string stop( "S" );
     std::string blanc( "        " );
     std::string varCName( blanc );
+    auto varCom = _study->getExternalStateVariables();
     if ( varCom != nullptr )
+    {
+        varCom->build(inst);
         varCName = varCom->getName() + ".TOUT";
+    }
     std::string resultName( vect_elem->getName() );
     std::string materName( curMater->getName() + "                " );
     std::string codmaName( curCodedMater->getName() + "                " );
@@ -226,7 +228,7 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
         }
 
         return boost::make_shared< FieldOnNodesReal >(diri_impo);
-    } 
+    }
 
     FieldOnNodesRealPtr diri_impo = boost::make_shared< FieldOnNodesReal >( dofNume );
     diri_impo->setValues( 0.0 );
@@ -235,8 +237,17 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
     return diri_impo;
 };
 
+FieldOnNodesRealPtr
+DiscreteComputation::externalStateVariables( const ASTERDOUBLE &time )  {
+    auto varCom = _study->getExternalStateVariables();
+
+    varCom->build(time);
+
+    return varCom->computeExternalStateVariablesLoad(_study->getDOFNumbering());
+};
+
 ElementaryMatrixDisplacementRealPtr
-DiscreteComputation::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
+DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     ElementaryMatrixDisplacementRealPtr retour =
         boost::make_shared< ElementaryMatrixDisplacementReal >();
     ModelPtr curModel = _study->getModel();
@@ -245,7 +256,6 @@ DiscreteComputation::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
     retour->setMaterialField( curMater );
     auto compor = curMater->getBehaviourField();
 
-    _study->computeListOfLoads();
     JeveuxVectorChar24 jvListOfLoads = _study->getListOfLoads()->getListVector();
     jvListOfLoads->updateValuePointer();
     ASTERINTEGER nbLoad = jvListOfLoads->size();
@@ -287,13 +297,13 @@ DiscreteComputation::computeElementaryStiffnessMatrix( ASTERDOUBLE time ) {
 // TODO calcul de la matrice tangente pour l'étape de prédiction de la méthode de Newton
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::computeElementaryTangentMatrix( ASTERDOUBLE time ) {
-    return this->computeElementaryStiffnessMatrix( time );
+    return this->elasticStiffnessMatrix( time );
 };
 
 // TODO calcul de la matrice jacobienne pour l'étape de correction de la méthode de Newton
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::computeElementaryJacobianMatrix( ASTERDOUBLE time ) {
-    return this->computeElementaryStiffnessMatrix( time );
+    return this->elasticStiffnessMatrix( time );
 };
 
 SyntaxMapContainer DiscreteComputation::computeMatrixSyntax( const std::string &optionName ) {
