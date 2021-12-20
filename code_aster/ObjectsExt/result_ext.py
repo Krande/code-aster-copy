@@ -57,7 +57,8 @@ class ResultStateBuilder(InternalStateBuilder):
             if result.hasMaterialField(i):
                 self._st["mater"].append(result.getMaterialField(i))
             if result.hasElementaryCharacteristics(i):
-                self._st["cara_elem"].append(result.getElementaryCharacteristics(i))
+                self._st["cara_elem"].append(
+                    result.getElementaryCharacteristics(i))
 
         if len(self._st["rank"]) != len(self._st["model"]):
             logger.debug(
@@ -93,7 +94,8 @@ class ResultStateBuilder(InternalStateBuilder):
             if self._st["mater"]:
                 result.setMaterialField(self._st["mater"][i], rank)
             if len(self._st["cara_elem"]) > 0 and self._st["cara_elem"]:
-                result.setElementaryCharacteristics(self._st["cara_elem"][i], rank)
+                result.setElementaryCharacteristics(
+                    self._st["cara_elem"][i], rank)
         if self._st["model"]:
             result.build()
 
@@ -112,3 +114,46 @@ class ExtendedResult:
 
     def LIST_PARA(self):
         return aster.GetResu(self.getName(), "PARAMETRES")
+
+    def getField(self, name, rank):
+        """Get the specified field. This is an overlay to existing methods
+        for each type of field.
+
+        Arguments:
+            name (str): symbolic name of the field in the result (ex: 'DEPL', 'VITE'...)
+            rank (int): rank to set the field
+
+        Returns:
+            Field***: field to get whit type in (FieldOnNodes***/FieldOnCells***/
+            ConstantFieldOnCell***)
+        """
+
+        names = self.getFieldsOnNodesRealNames()
+        if name in names:
+            return self.getFieldOnNodesReal(name, rank)
+
+        names = self.getFieldsOnNodesComplexNames()
+        if name in names:
+            return self.getFieldOnNodesComplex(name, rank)
+
+        names = self.getFieldsOnCellsRealNames()
+        if name in names:
+            return self.getFieldOnCellsReal(name, rank)
+
+        names = self.getFieldsOnCellsComplexNames()
+        if name in names:
+            return self.getFieldOnCellsComplex(name, rank)
+
+        names = self.getFieldsOnCellsLongNames()
+        if name in names:
+            return self.getFieldOnCellsLong(name, rank)
+
+        names = self.getConstantFieldsOnCellsRealNames()
+        if name in names:
+            return self.getConstantFieldOnCellsReal(name, rank)
+
+        names = self.getConstantFieldsOnCellsChar16Names()
+        if name in names:
+            return self.getConstantFieldOnCellsChar16(name, rank)
+
+        raise KeyError("name of field %s not found" % name)

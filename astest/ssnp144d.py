@@ -54,6 +54,17 @@ except IndexError:
 cohe_elem = UTOT1.getFieldOnCellsReal("COHE_ELEM", 1)
 
 cont_noeu = UTOT1.getFieldOnNodesReal("CONT_NOEU", 1)
+cont_noeu = UTOT1.getField("CONT_NOEU", 1)
+
+try:
+   test = UTOT1.getField("CONT_NOEU", 150)
+except IndexError:
+   pass
+
+try:
+   test = UTOT1.getField("CONT_ELGA", 150)
+except KeyError:
+   pass
 
 compor = UTOT1.getConstantFieldOnCellsChar16("COMPORTEMENT", 1)
 try:
