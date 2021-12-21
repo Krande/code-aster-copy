@@ -186,29 +186,6 @@ void Result::setModel( const ModelPtr &model ) {
     }
 };
 
-BaseDOFNumberingPtr Result::getEmptyDOFNumbering() {
-    std::string resuName( getName() );
-    std::string name( "12345678.00000          " );
-    ASTERINTEGER a = 10, b = 14;
-    CALLO_GNOMSD( resuName, name, &a, &b );
-    DOFNumberingPtr retour( new DOFNumbering( name.substr( 0, 14 ) ) );
-    _listOfDOFNum.push_back( retour );
-    return retour;
-};
-
-#ifdef ASTER_HAVE_MPI
-BaseDOFNumberingPtr Result::getEmptyParallelDOFNumbering() {
-    std::string resuName( getName() );
-    std::string name( "12345678.00000          " );
-    ASTERINTEGER a = 10, b = 14;
-    CALLO_GNOMSD( resuName, name, &a, &b );
-    ParallelDOFNumberingPtr retour =
-        boost::make_shared< ParallelDOFNumbering >( name.substr( 0, 14 ) );
-    _listOfDOFNum.push_back( retour );
-    return retour;
-};
-#endif /* ASTER_HAVE_MPI */
-
 std::vector< ElementaryCharacteristicsPtr > Result::getAllElementaryCharacteristics() const {
     return unique( _mapElemCara );
 };
@@ -806,7 +783,6 @@ bool Result::build() {
                 repk = " ";
                 CALLO_DISMOI( questi, name, typeco, &repi, repk, arret, &ier );
                 const std::string scalaire( trim( repk.toString() ) );
-                std::cout << "CHAM: " << resu << ", ." << scalaire << "." << rank << std::endl;
 
                 if ( resu == "NOEU" ) {
                     if ( scalaire == "R" ) {

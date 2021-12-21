@@ -117,8 +117,7 @@ class Result : public DataStructure, public ListOfTables {
     /** @brief Liste des cartes K16 */
     mapStrMoCFCR _dictOfMapOfConstantFieldOnCellsReal;
     mapStrMoCFCK16 _dictOfMapOfConstantFieldOnCellsChar16;
-    /** @brief Liste des NUME_DDL */
-    std::vector< BaseDOFNumberingPtr > _listOfDOFNum;
+
     /** @brief List of ElementaryCharacteristicsPtr */
     mapRankCaraElem _mapElemCara;
     /** @brief List of ListOfLoadsPtr */
@@ -240,28 +239,6 @@ class Result : public DataStructure, public ListOfTables {
      * @param ModelPtr
      */
     void setModel( const ModelPtr & );
-
-    /**
-     * @brief Obtenir un DOFNumbering à remplir
-     * @return DOFNumbering à remplir
-     */
-    BaseDOFNumberingPtr getEmptyDOFNumbering();
-
-/**
- * @brief Obtenir un DOFNumbering à remplir
- * @return DOFNumbering à remplir
- */
-#ifdef ASTER_HAVE_MPI
-    BaseDOFNumberingPtr getEmptyParallelDOFNumbering();
-#endif /* ASTER_HAVE_MPI */
-
-    /**
-     * @brief Obtenir le dernier DOFNumbering
-     * @return Dernier DOFNumbering
-     */
-    BaseDOFNumberingPtr getLastDOFNumbering() const {
-        return _listOfDOFNum[_listOfDOFNum.size() - 1];
-    };
 
     /**
      * @brief Add elementary characteristics to container
