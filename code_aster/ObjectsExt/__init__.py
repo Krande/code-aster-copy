@@ -58,7 +58,14 @@ from .generalizedassemblyvector_ext import (
     GeneralizedAssemblyVectorReal,
 )
 from .generalizedmodel_ext import GeneralizedModel
-from .linearsolver_ext import GcpcSolver, LdltSolver, MultFrontSolver, MumpsSolver, PetscSolver
+from .linearsolver_ext import (
+    GcpcSolver,
+    LdltSolver,
+    MultFrontSolver,
+    MumpsSolver,
+    PetscSolver,
+    LinearSolver,
+)
 from .listoffloats_ext import ListOfFloats
 from .listofintegers_ext import ListOfIntegers
 from .material_ext import Material

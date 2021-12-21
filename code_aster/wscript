@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,22 +17,26 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import optparse
 import os
 import os.path as osp
 import re
-import shutil
+from itertools import chain
 from pprint import pformat
 from subprocess import PIPE, Popen
-from time import strftime
+from time import localtime, strftime
 
-from waflib import Configure, Context, Errors, Logs
+from waflib import Configure, Errors, Logs
 
 
 def options(self):
     group = self.get_option_group("code_aster options")
-    group.add_option('--without-hg', dest='without_hg',
+    group.add_option('--without-repo', dest='without_repo',
                      default=False, action='store_true',
                      help='build without the source repository')
+    group.add_option('--without-hg', dest='without_repo',
+                     action='store_true',
+                     help=optparse.SUPPRESS_HELP)
 
 def configure(self):
     self.check_version()
@@ -127,39 +131,38 @@ MAXLEVEL = 25
 DEFAULT_PKGINFO = [(0, 0, 1), "n/a", "n/a", strftime("%d/%m/%Y"), "n/a", 1,
                    ["no source repository"]]
 
-def get_revision_info_cmd(self, from_rev=None, rev="."):
-    """Return details about changes on `rev` or the current revision
-    between last official tagged revision"""
-    def exec_cmd(cmd):
-        # avoid conflict between hg and currently used python version
-        env = dict([(k, v) for k, v in os.environ.items()
-                    if not k.startswith('PYTHON')])
-        out = Popen(cmd, stdout=PIPE, env=env).communicate()[0]
-        return out.decode().strip()
+def _exec_cmd(cmd):
+    # avoid conflict between hg and currently used python version
+    env = dict([(k, v) for k, v in os.environ.items()
+                if not k.startswith('PYTHON')])
+    out = Popen(cmd, stdout=PIPE, env=env).communicate()[0]
+    return out.decode().strip()
 
-    error_msg = ("Use --without-hg option if you didn't download the "
-                 "hg repository or create manually a file named "
-                 "`code_aster/pkginfo.py` with the necessary informations "
-                 "about the version. Example:\n"
-                 f"pkginfo = {DEFAULT_PKGINFO}")
-    # mercurial needed
+ERROR_MSG = ("Use --without-repo option if you didn't download the "
+             "hg repository or create manually a file named "
+             "`code_aster/pkginfo.py` with the necessary informations "
+             "about the version. Example:\n"
+             "pkginfo = {}".format(DEFAULT_PKGINFO))
+
+def get_revision_info_hg(self, from_rev=None, rev="."):
+    """Return details about changes on `rev` or the current revision
+    from last official tagged revision"""
     try:
         self.find_program("hg")
     except Errors.WafError:
-        raise Errors.ConfigurationError("'hg' not found\n" + error_msg)
+        raise Errors.ConfigurationError("'hg' not found\n" + ERROR_MSG)
 
-
+    rev = rev or "."
     if not from_rev:
         from_rev = "({0})~{1}".format(rev, MAXLEVEL)
     ancestors = "({0})::({1})".format(from_rev, rev)
-    BR = ['default'] + ['v%d' % i for i in range(10, 20)]
-    loc = exec_cmd(["hg", "status", "-namrdu"]).split()
-    logs = exec_cmd(["hg", "log", "-r", ancestors,
+    loc = _exec_cmd(["hg", "status", "-namrdu"]).split()
+    logs = _exec_cmd(["hg", "log", "-r", ancestors,
                      "--template", "{rev}:{node}:{tags}:{branch}:"
                                    "{date|shortdate}:{files}\n"]).splitlines()
     if not logs:
         raise ValueError("empty revs range: {0}\n".format(ancestors)
-                         + error_msg)
+                         + ERROR_MSG)
     last = logs[-1].split(":")
     # print "\n".join(logs)
     _revn, revid, _tag, branch, date, _files = last
@@ -167,6 +170,7 @@ def get_revision_info_cmd(self, from_rev=None, rev="."):
     date = '/'.join([d, m, Y])
     brs = [i.split(":")[3] for i in logs]
     # search official branch
+    BR = ['default'] + ['v%d' % i for i in range(10, 30)]
     frbr = "?"
     while brs:
         br_i = brs.pop()
@@ -187,19 +191,67 @@ def get_revision_info_cmd(self, from_rev=None, rev="."):
         chg += 1
     return [vers, revid, branch, date, frbr, chg, loc]
 
-def get_revision_info(self, from_rev=None, rev="."):
+def get_revision_info_git(self, from_rev=None, rev="HEAD"):
+    """Return details about changes on `rev` or the current revision
+    from last official tagged revision"""
+    def _getbr(refs):
+        brs = [i.replace("HEAD ->", "").strip() for i in refs.split(", ") if "tag:" not in i]
+        return brs
+    def _gettag(refs):
+        tags = [i.split()[1] for i in refs.split(", ") if "tag:" in i]
+        return tags
+
+    try:
+        self.find_program("git")
+    except Errors.WafError:
+        raise Errors.ConfigurationError("'git' not found\n" + ERROR_MSG)
+
+    rev = "HEAD"
+    if not from_rev:
+        from_rev = "{0}~{1}".format(rev, MAXLEVEL)
+    ancestors = "{0}..{1}".format(from_rev, rev)
+    lines = _exec_cmd(["git", "status", "--porcelain=v1"]).splitlines()
+    loc = [i.split()[1] for i in lines]
+    logs = _exec_cmd(["git", "log", ancestors,
+                      "--format=%H@%at@%D"]).splitlines()
+    if not logs:
+        raise ValueError("empty revs range: {0}\n".format(ancestors)
+                         + ERROR_MSG)
+    revid, tdate, refs = logs[0].split("@")
+    date = strftime("%d/%m/%Y", localtime(int(tdate)))
+    refs = refs.split(", ")
+    brs = [_getbr(info.split("@")[2]) for info in logs]
+    brs = list(chain.from_iterable(brs))
+    branch = "?" if not brs else brs[0]
+    # search for official branch
+    BR = ['main'] + ['v%d' % i for i in range(10, 30)]
+    frbr = "?"
+    while brs:
+        br_i = brs.pop()
+        if br_i in BR:
+            frbr = br_i
+            break
+    # search for last tag
+    vers = "?"
+    chg = 0
+    for info in logs:
+        refs = info.split("@")[-1]
+        tags = _gettag(refs)
+        if tags:
+            vers = version2tuple(tags[0])[:3]
+            break
+        chg += 1
+    return [vers, revid, branch, date, frbr, chg, loc]
+
+def get_revision_info(self):
     """Return details about changes on `rev` or the current revision
     between last official tagged revision"""
-    if self.options.without_hg:
+    if self.options.without_repo:
         return DEFAULT_PKGINFO
+    # check repository type
+    getinfo = get_revision_info_git if osp.isdir(".git") else get_revision_info_hg
     # quick search on last revisions
-    infos = get_revision_info_cmd(self, from_rev, rev)
-    if infos[0] == "?":
-        try:
-            infos = get_revision_info_cmd(self, "testing or stable", rev)
-        except ValueError:
-            Logs.pprint("YELLOW", "'testing/stable' not found, search in all ancestors...", sep="")
-            infos = get_revision_info_cmd(self, "0", rev)
+    infos = getinfo(self, from_rev=None)
     return infos
 
 def version2tuple(vers_string):

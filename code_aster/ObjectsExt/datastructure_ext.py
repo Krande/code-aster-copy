@@ -93,9 +93,7 @@ class ExtendedDataStructure:
             cata_sdj = getattr(self, "cata_sdj", None)
             if not cata_sdj:
                 cata_sdj = DICT_SDJ.get(self.__class__.__name__)
-            assert (
-                cata_sdj
-            ), "The attribute 'cata_sdj' must be defined in " "the class {}".format(
+            assert cata_sdj, "The attribute 'cata_sdj' must be defined in " "the class {}".format(
                 self.__class__.__name__
             )
             if self.ptr_class_sdj is None:
@@ -134,7 +132,6 @@ DICT_SDJ = {
     "Crack": "SD.sd_fond_fissure.sd_fond_fissure",
     "HarmoGeneralizedResult": "SD.sd_dyna_gene.sd_dyna_gene",
     "MeshesMapping": "SD.sd_corresp_2_mailla.sd_corresp_2_mailla",
-
     "AcousticModeResult": "SD.sd_dyna_phys.sd_dyna_phys",
     "BehaviourDefinition": "SD.sd_compor.sd_compor",
     "BucklingModeResult": "SD.sd_dyna_phys.sd_dyna_phys",
@@ -146,7 +143,7 @@ DICT_SDJ = {
     "ElementaryVectorTemperatureReal": "SD.sd_vect_elem.sd_vect_elem",
     "FiberGeometry": "SD.sd_gfibre.sd_gfibre",
     "FieldOnNodesComplex": "SD.sd_champ.sd_cham_no_class",
-    "FieldOnNodesDescription" : "SD.sd_prof_chno.sd_prof_chno",
+    "FieldOnNodesDescription": "SD.sd_prof_chno.sd_prof_chno",
     "FiniteElementDescriptor": "SD.sd_ligrel.sd_ligrel",
     "FluidStructureInteraction": "SD.sd_type_flui_stru.sd_type_flui_stru",
     "FluidStructureModalBasis": "SD.sd_melasflu.sd_melasflu",

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# just call 'make configure'
+
+set_prefix() {
+    local this=$(readlink -n -f "$1")
+    prefix=$(dirname "${this}")
+}
+
+set_prefix "${0}"
+
+(cd ${prefix} ; make configure "${@}")
+exit $?

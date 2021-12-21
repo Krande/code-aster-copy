@@ -91,17 +91,14 @@ class DataStructure {
     /**
      * @brief Move assignment
      */
-    DataStructure& operator=( DataStructure && );
+    DataStructure &operator=( DataStructure && );
 
     /**
      * @brief Destructeur
      */
     ~DataStructure();
 
-    inline long id()
-    {
-        return long(this);
-    };
+    inline long id() { return long( this ); };
 
     /**
      * @brief Function to add a datastructure as a dependency
