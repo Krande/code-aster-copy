@@ -39,8 +39,6 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE time ) {
-    ElementaryVectorDisplacementRealPtr vect_elem =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
 
     std::string modelName = ljust( _study->getModel()->getName(), 24 );
 
@@ -51,13 +49,27 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE time )
     std::string nameInfc = ljust( jvInfo->getName(), 24 );
 
     std::string typres( "R" );
-    std::string resultName( vect_elem->getName() );
 
-    // CORICH appel getres
-    CommandSyntax cmdSt( "MECA_STATIQUE" );
-    cmdSt.setResult( resultName, "AUCUN" );
+    // CORICH appel getres (use only result name and not command name)
+    CommandSyntax cmdSt( "GENERIC" );
+    ElementaryVectorPtr vect_elem;
 
-    CALLO_VEDIME( modelName, nameLcha, nameInfc, &time, typres, resultName );
+    if ( _study->getModel()->isMechanical() ) {
+        vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::string resultName( vect_elem->getName() );
+        cmdSt.setResult( resultName, "AUCUN" );
+
+        CALLO_VEDIME( modelName, nameLcha, nameInfc, &time, typres, resultName );
+    } else if ( _study->getModel()->isThermal() ) {
+        vect_elem = boost::make_shared< ElementaryVectorTemperatureReal >();
+        std::string resultName( vect_elem->getName() );
+        cmdSt.setResult( resultName, "AUCUN" );
+
+        AS_ABORT( "Not implemented for thermic" );
+        // call VEDITH
+    } else {
+        AS_ABORT( "Unknown physics" );
+    }
 
     vect_elem->isEmpty( false );
     vect_elem->setListOfLoads( _study->getListOfLoads() );
@@ -67,9 +79,6 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE time )
 };
 
 FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) {
-
-    ElementaryVectorDisplacementRealPtr vect_elem =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
 
     std::string modelName = ljust( _study->getModel()->getName(), 24 );
     std::string materName = ljust( _study->getMaterialField()->getName(), 24 );
@@ -83,12 +92,25 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
     auto listOfLoads = _study->getListOfLoads();
     std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
 
-    std::string resultName( vect_elem->getName() );
     const std::string base( "G" );
 
     std::string lagrName = lagr_curr->getName();
+    ElementaryVectorPtr vect_elem;
 
-    CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, resultName );
+    if ( _study->getModel()->isMechanical() ) {
+        vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::string resultName( vect_elem->getName() );
+
+        CALLO_VEBTLA( base, modelName, materName, caraName, lagrName, listLoadsName, resultName );
+    } else if ( _study->getModel()->isThermal() ) {
+        vect_elem = boost::make_shared< ElementaryVectorTemperatureReal >();
+        std::string resultName( vect_elem->getName() );
+
+        AS_ABORT( "Not implemented for thermic" );
+        // call ????
+    } else {
+        AS_ABORT( "Unknown physics" );
+    }
 
     vect_elem->isEmpty( false );
     vect_elem->setListOfLoads( listOfLoads );
@@ -100,20 +122,31 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
 FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr disp_curr,
                                                            ASTERDOUBLE scaling ) {
 
-    ElementaryVectorDisplacementRealPtr vect_elem =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
-
     std::string modelName = _study->getModel()->getName();
     std::string dispName = disp_curr->getName();
 
     auto listOfLoads = _study->getListOfLoads();
     std::string listLoadsName = ljust( listOfLoads->getName(), 19 );
 
-    std::string resultName( vect_elem->getName() );
     const std::string base( "G" );
     const ASTERDOUBLE const_scaling = scaling;
+    ElementaryVectorPtr vect_elem;
 
-    CALLO_VEBUME( modelName, dispName, listLoadsName, resultName, &const_scaling, base );
+    if ( _study->getModel()->isMechanical() ) {
+        vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::string resultName( vect_elem->getName() );
+
+        CALLO_VEBUME( modelName, dispName, listLoadsName, resultName, &const_scaling, base );
+    } else if ( _study->getModel()->isThermal() ) {
+        vect_elem = boost::make_shared< ElementaryVectorTemperatureReal >();
+        std::string resultName( vect_elem->getName() );
+
+        AS_ABORT( "Not implemented for thermic" );
+        // call VETHBU
+
+    } else {
+        AS_ABORT( "Unknown physics" );
+    }
 
     vect_elem->isEmpty( false );
 
@@ -132,8 +165,6 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time ) {
     if ( time.size() != 3 )
         throw std::runtime_error( "Invalid number of parameter" );
 
-    ElementaryVectorDisplacementRealPtr vect_elem =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
     const auto &curCodedMater = _study->getCodedMaterial()->getCodedMaterialField();
     const auto &curMater = _study->getCodedMaterial()->getMaterialField();
 
@@ -151,14 +182,12 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time ) {
     std::string blanc( "        " );
     std::string varCName( blanc );
     auto varCom = _study->getExternalStateVariables();
-    if ( varCom != nullptr )
-    {
-        varCom->build(inst);
+    if ( varCom != nullptr ) {
+        varCom->build( inst );
         varCName = varCom->getName() + ".TOUT";
     }
-    std::string resultName( vect_elem->getName() );
-    std::string materName( curMater->getName() + "                " );
-    std::string codmaName( curCodedMater->getName() + "                " );
+    std::string materName = ljust( curMater->getName(), 24 );
+    std::string codmaName = ljust( curCodedMater->getName(), 24 );
 
     std::string caraName( blanc );
     const auto &caraElem = _study->getElementaryCharacteristics();
@@ -166,11 +195,26 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time ) {
         caraName = caraElem->getName();
 
     // CORICH appel getres
-    CommandSyntax cmdSt( "MECA_STATIQUE" );
-    cmdSt.setResult( resultName, "AUCUN" );
+    CommandSyntax cmdSt( "GENERIC" );
+    ElementaryVectorPtr vect_elem;
 
-    CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &inst, caraName, materName, codmaName,
-                       vect_elem->getName(), varCName );
+    if ( curModel->isMechanical() ) {
+        vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::string resultName( vect_elem->getName() );
+
+        cmdSt.setResult( resultName, "AUCUN" );
+
+        CALLO_VECHME_WRAP( stop, modelName, nameLcha, nameInfc, &inst, caraName, materName,
+                           codmaName, vect_elem->getName(), varCName );
+    } else if ( curModel->isThermal() ) {
+        vect_elem = boost::make_shared< ElementaryVectorTemperatureReal >();
+        std::string resultName( vect_elem->getName() );
+
+        AS_ABORT( "Not implemented for thermic" );
+        // call VECHTH
+    } else {
+        AS_ABORT( "Unknown physics" );
+    }
 
     vect_elem->isEmpty( false );
     vect_elem->setListOfLoads( _study->getListOfLoads() );
@@ -187,7 +231,6 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
     const auto &listOfFunctions = _listOfLoad->getListOfFunctions();
     if ( _listOfLoad->isEmpty() )
         _listOfLoad->build( _study->getModel() );
-    //         throw std::runtime_error( "ListOfLoads is empty" );
 
     FieldOnNodesRealPtr retour = boost::make_shared< FieldOnNodesReal >();
     std::string resuName = retour->getName();
@@ -201,6 +244,7 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
     funcLoadName.resize( 24, ' ' );
     std::string base( "G" );
 
+    // Generic for mechanics and thermics
     CALLO_ASCAVC_WRAP( lLoadName, infLoadName, funcLoadName, dofNumName, &time, resuName, base );
 
     retour->setDOFNumbering( _study->getDOFNumbering() );
@@ -216,7 +260,7 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
 
     if ( dofNume->hasDirichletBC() ) {
         auto diri_curr = dirichletBC( time );
-        auto diri_impo = *(diri_curr) - *(disp_curr);
+        auto diri_impo = *( diri_curr ) - *( disp_curr );
 
         // Set to zero terms not imposed
         auto eliminatedDofs = dofNume->getDirichletBCDOFs();
@@ -227,7 +271,7 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
                 diri_impo[ieq] = 0.0;
         }
 
-        return boost::make_shared< FieldOnNodesReal >(diri_impo);
+        return boost::make_shared< FieldOnNodesReal >( diri_impo );
     }
 
     FieldOnNodesRealPtr diri_impo = boost::make_shared< FieldOnNodesReal >( dofNume );
@@ -237,13 +281,12 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
     return diri_impo;
 };
 
-FieldOnNodesRealPtr
-DiscreteComputation::externalStateVariables( const ASTERDOUBLE &time )  {
+FieldOnNodesRealPtr DiscreteComputation::externalStateVariables( const ASTERDOUBLE &time ) {
     auto varCom = _study->getExternalStateVariables();
 
-    varCom->build(time);
+    varCom->build( time );
 
-    return varCom->computeExternalStateVariablesLoad(_study->getDOFNumbering());
+    return varCom->computeExternalStateVariablesLoad( _study->getDOFNumbering() );
 };
 
 ElementaryMatrixDisplacementRealPtr
