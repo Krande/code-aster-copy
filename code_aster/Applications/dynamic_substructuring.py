@@ -574,13 +574,13 @@ class Structure(WithEmbeddedObjects):
             lag = np.array(numb.getRowsAssociatedToLagrangeMultipliers()) - 1
 
             modes = sub.modes
-            em = [modes.getFieldOnNodesReal('DEPL', r).getValues() for r in modes.getRanks()]
+            em = [modes.getField('DEPL', r).getValues() for r in modes.getRanks()]
             decalage += len(em)
             em = np.vstack(em).T
             em[lag, :] = 0.  # mise a zero des Lagrange
 
             imodes = sub.iModes
-            im = [imodes.getFieldOnNodesReal('DEPL', r).getValues() for r in imodes.getRanks()]
+            im = [imodes.getField('DEPL', r).getValues() for r in imodes.getRanks()]
             lIndexOfInterfModes.append(np.arange(len(im)) + decalage)
             lNumberOfInterfModes.append(len(im))
             decalage += len(im)
@@ -711,11 +711,11 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
         # function to retrieve left and right modes from a modal result
 
         def getLeftAndRightModes(_res, _idx, _imode, _dof, _lFreq):
-            vectot = _res.getFieldOnNodesReal("DEPL", _imode).EXTR_COMP().valeurs
+            vectot = _res.getField("DEPL", _imode).EXTR_COMP().valeurs
             v0_right = (
                 np.concatenate(
                     [
-                        _res.getFieldOnNodesReal("DEPL", _imode).EXTR_COMP(d).valeurs
+                        _res.getField("DEPL", _imode).EXTR_COMP(d).valeurs
                         for d in _dof
                     ]
                 )
@@ -728,9 +728,9 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
                     [
                         rhof
                         * (2 * np.pi * _lFreq[_idx]) ** 2
-                        * _res.getFieldOnNodesReal("DEPL", _imode).EXTR_COMP(d).valeurs
+                        * _res.getField("DEPL", _imode).EXTR_COMP(d).valeurs
                         if d in ["DX", "DY", "DZ"]
-                        else _res.getFieldOnNodesReal("DEPL", _imode).EXTR_COMP(d).valeurs
+                        else _res.getField("DEPL", _imode).EXTR_COMP(d).valeurs
                         for d in _dof
                     ]
                 )
@@ -746,7 +746,7 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
                         if d in ["DX", "DY", "DZ"]
                         else vectot[id]
                         for id, d in enumerate(
-                            _res.getFieldOnNodesReal("DEPL", _imode).EXTR_COMP(topo=1).comp
+                            _res.getField("DEPL", _imode).EXTR_COMP(topo=1).comp
                         )
                     ]
                 )
