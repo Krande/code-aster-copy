@@ -6,7 +6,7 @@
  * @brief Fichier entete de la class CapyConvertibleValue
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,6 +27,7 @@
 #include <type_traits>
 #include <typeinfo>
 #include <map>
+#include <stdexcept>
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"

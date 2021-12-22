@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ MAIN = "      program main\n      end program main\n"
 @Configure.conf
 def check_fortran_compiler_flags(self):
     if 'gfortran' in self.env.FC_NAME.lower():
-        if self.env.DEST_CPU == 'x86_64':
+        if "64" in self.env.DEST_CPU:
             flags = ['-fdefault-%s-%i' % (name, 8)
                       for name in ('double', 'integer', 'real')]
             self.check_fortran_compiler_options(flags)
@@ -80,7 +80,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options('-ffree-line-length-none')
     if 'ifort' in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(['-fpe0', '-traceback'])
-        if self.env.DEST_CPU == 'x86_64':
+        if "64" in self.env.DEST_CPU:
             self.check_fortran_compiler_options(['-i8', '-r8'])
         self.check_fortran_compiler_options(['-nogen-interfaces', '-xCORE-AVX2'])
         # all Intel specific features must use:

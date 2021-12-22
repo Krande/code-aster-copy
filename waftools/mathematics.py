@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ def detect_mkl(self):
     if os.environ.get('MKLROOT') is None:
         return False
     self.start_msg('Detecting MKL libraries')
-    suffix = '_lp64' if self.env.DEST_CPU.endswith('64') else ''
+    suffix = '_lp64' if "64" in self.env.DEST_CPU else ''
     scalapack  = ''
     blacs = []
     thread = 'mkl_sequential'
