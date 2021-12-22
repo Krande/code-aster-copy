@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -37,6 +37,10 @@ def options(self):
                      help='Build a parallel version supporting OpenMP')
     group.add_option('--disable-openmp', dest='openmp', action='store_false',
                      help='Disable OpenMP')
+    group.add_option('--enable-proc-status', dest='procstatus', action='store_true',
+                     help='force control of used memory with VmSize')
+    group.add_option('--disable-proc-status', dest='procstatus', action='store_false',
+                     help='disable control of used memory with VmSize')
 
 def configure(self):
     opts = self.options
@@ -49,7 +53,7 @@ def configure(self):
     self.check_compilers_version()
     self.check_fortran_verbose_flag()
     self.check_openmp()
-    # self.check_vmsize() differs after mpiexec checking
+    # self.check_vmsize() is executed after mpiexec checking
 
 ###############################################################################
 
@@ -170,9 +174,27 @@ def check_sizeof_mpi_int(self):
 
 @Configure.conf
 def check_vmsize(self):
-    """Check for VmSize 'bug' with MPI."""
-    is_ok = not self.get_define('ASTER_HAVE_MPI')
-    if not is_ok:
+    """Check for VmSize 'bug' with MPI or not."""
+    opts = self.options
+    if opts.procstatus is None:
+        flag = self.get_define("ASTER_ENABLE_PROC_STATUS")
+    else:
+        flag = int(opts.procstatus)
+    if flag is not None:
+        self.start_msg("Check measure of VmSize using /proc")
+        if flag not in (0, 1, "0", "1"):
+            raise Errors.ConfigurationError(
+                "unexpected value: ASTER_ENABLE_PROC_STATUS=%s" % flag)
+        flag = int(flag)
+        if flag:
+            self.end_msg("ok (ASTER_ENABLE_PROC_STATUS=%s)" % flag)
+        else:
+            self.end_msg("disabled (ASTER_ENABLE_PROC_STATUS=%s)" % flag, "YELLOW")
+    elif not self.get_define('ASTER_HAVE_MPI'):
+        self.start_msg("Check measure of VmSize using /proc")
+        flag = 1
+        self.end_msg("default (use /proc/PID/status)")
+    else:
         self.start_msg("Checking measure of VmSize during MPI_Init")
         try:
             prg = osp.join(self.bldnode.abspath(),
@@ -189,9 +211,11 @@ def check_vmsize(self):
                          "during the calculation)", 'YELLOW')
         else:
             self.end_msg("ok (%s)" % size)
-            is_ok = True
-    if is_ok:
+            flag = 1
+    if flag:
         self.define('ASTER_ENABLE_PROC_STATUS', 1)
+    else:
+        self.undefine('ASTER_ENABLE_PROC_STATUS')
 
 
 fragment_failure_vmsize = r"""
