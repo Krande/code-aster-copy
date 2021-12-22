@@ -247,13 +247,23 @@ class ModalCalculationSimult(ExecuteCommand):
         matrRigi = keywords.get("MATR_RIGI")
         if matrRigi is not None:
             if isinstance(self._result, GeneralizedModeResult):
-                self._result.setGeneralizedDOFNumbering(matrRigi.getGeneralizedDOFNumbering())
+                nume_ddl_gene = matrRigi.getGeneralizedDOFNumbering()
+                self._result.setGeneralizedDOFNumbering(nume_ddl_gene)
+                basis = nume_ddl_gene.getModalBasis()
+                if basis is not None:
+                    mesh = basis.getMesh()
+                    if mesh is not None:
+                        self._result.setMesh(mesh)
             else:
                 self._result.setDOFNumbering(matrRigi.getDOFNumbering())
             self._result.setStiffnessMatrix(matrRigi)
         matrAmor = keywords.get("MATR_AMOR")
         if matrAmor is not None:
             self._result.setDampingMatrix(matrAmor)
+
+        if keywords.get("MATR_A") is not None and self._result.getMesh() is None:
+            self._result.setMesh(keywords["MATR_A"].getMesh())
+
         self._result.build()
 
 

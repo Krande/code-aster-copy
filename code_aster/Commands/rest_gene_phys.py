@@ -66,17 +66,30 @@ class RestGenePhys(ExecuteCommand):
                     self._result.build()
             else:
                 geneDofNum = resu_gene.getGeneralizedDOFNumbering()
+                mesh = None
                 if geneDofNum is not None:
                     basis = geneDofNum.getModalBasis()
                     if basis is not None:
                         dofNum = basis.getDOFNumbering()
+                        if mesh is None:
+                            mesh = basis.getMesh()
                         if dofNum is not None:
                             modele = dofNum.getModel()
                             if modele is not None:
                                 self._result.appendModelOnAllRanks(modele)
                                 self._result.build()
+                            elif mesh is None:
+                                mesh = dofNum.getMesh()
+
+                if mesh is None:
+                    if "MODE_MECA" in keywords:
+                        mesh = keywords["MODE_MECA"].getMesh()
+
+                if mesh is not None:
+                    self._result.setMesh(mesh)
 
         elif isinstance(resu_gene, GeneralizedModeResult):
+            self._result.setMesh(resu_gene.getMesh())
             matrRigi = resu_gene.getStiffnessMatrix()
             if matrRigi is not None:
                 modalBasis = matrRigi.getModalBasis()

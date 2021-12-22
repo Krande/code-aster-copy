@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -56,6 +56,10 @@ class ProjMesuModal(ExecuteCommand):
         """
         base = keywords["MODELE_CALCUL"]["BASE"]
         if isinstance(self._result, TransientGeneralizedResult) or \
-           isinstance(self._result, HarmoGeneralizedResult)  :
+           isinstance(self._result, HarmoGeneralizedResult):
             self._result.setDOFNumbering(base.getDOFNumbering())
+        else:
+            self._result.setDOFNumbering(base.getDOFNumbering())
+            self._result.setMesh(base.getMesh())
+
 PROJ_MESU_MODAL = ProjMesuModal.run

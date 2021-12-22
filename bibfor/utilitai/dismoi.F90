@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,6 +182,7 @@ subroutine dismoi(questi, nomob, typeco, repi, repk,&
 !
 !   -- on ne doit pas sortir de dismoi si ier1/=0 et arret='F'
     if (ier1 .ne. 0 .and. arret2 .eq. 'F') then
+        print*, questi, nomob, typeco
         ASSERT(.false.)
     endif
 !

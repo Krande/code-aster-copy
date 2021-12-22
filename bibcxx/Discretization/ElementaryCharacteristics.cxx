@@ -45,3 +45,15 @@ ElementaryCharacteristics::ElementaryCharacteristics( const std::string name,
       _localBasis( new ConstantFieldOnCellsReal( getName() + ".CARORIEN", _mesh ) ),
       _beamCharacteristics( new ConstantFieldOnCellsReal( getName() + ".CARPOUFL", _mesh ) ),
       _isEmpty( true ){};
+
+ModelPtr ElementaryCharacteristics::getModel() const {
+    if ( !_model )
+        throw std::runtime_error( "Model is empty" );
+    return _model;
+};
+
+BaseMeshPtr ElementaryCharacteristics::getMesh() const {
+    AS_ASSERT( _mesh );
+
+    return _mesh;
+};

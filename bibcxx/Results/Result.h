@@ -122,6 +122,8 @@ class Result : public DataStructure, public ListOfTables {
     /** @brief Object to correctly manage fields and field descriptions */
     FieldBuilder _fieldBuidler;
 
+    void _checkMesh( const BaseMeshPtr mesh) const;
+
   public:
     /**
      * @typedef ResultPtr
@@ -197,7 +199,7 @@ class Result : public DataStructure, public ListOfTables {
     /**
      * @brief Set model
      */
-    void setMesh( const BaseMeshPtr &mesh ) { _mesh = mesh; };
+    void setMesh( const BaseMeshPtr &mesh );
 
     /**
      * @brief Add time value for one rank

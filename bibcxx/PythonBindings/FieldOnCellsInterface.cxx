@@ -44,6 +44,12 @@ void exportFieldOnCellsToPython() {
                   Model: Model Object
                   )",
               ( py::arg( "self" ) ) )
+        .def( "getMesh", &FieldOnCellsReal::getMesh,  R"(
+                  Return the Mesh associated with the FieldOnCellsReal object
+                  Returns:
+                  BaseMesh: Mesh object
+                  )",
+              ( py::arg( "self" ) ) )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build )

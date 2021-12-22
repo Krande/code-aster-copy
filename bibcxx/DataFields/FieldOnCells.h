@@ -130,6 +130,13 @@ template < class ValueType > class FieldOnCells : public DataField {
     };
 
     /**
+     * @brief Get the mesh
+     */
+    BaseMeshPtr getMesh() const {
+        return _model->getMesh();
+    };
+
+    /**
      * @brief Set the description of finite elements
      * @param curDesc object FiniteElementDescriptorPtr
      */

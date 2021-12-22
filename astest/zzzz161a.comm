@@ -230,14 +230,6 @@ IMPR_RESU(UNITE=82, FORMAT='GMSH',
 DEFI_FICHIER(UNITE=82, ACTION='LIBERER')
 
 
-TEST_FICHIER(FICHIER="./fort.82",
-             NB_VALE_I=152,
-             VALE_CALC_I=197,
-             NB_VALE=998,
-             VALE_CALC=4.3251124143e+03,
-             VALE_CALC_K="e0ad81052757bf3a90e0c246ba5ed8e7",
-)
-
 #
 # 7. Test de non-regression
 #

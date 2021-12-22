@@ -21,6 +21,7 @@
 
 from ..Objects import EmpiricalModeResult
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 
 
 class ReducedBaseDefinition(ExecuteCommand):
@@ -52,8 +53,14 @@ class ReducedBaseDefinition(ExecuteCommand):
                 model = self._result.getModel()
             elif keywords.get("RESULTAT"):
                 model = keywords["RESULTAT"].getModel()
+            elif keywords.get("BASE"):
+                model = keywords["BASE"].getModel()
         if model:
             self._result.appendModelOnAllRanks(model)
+        else:
+            matr_asse = keywords.get("MATR_ASSE")
+            if matr_asse is not None:
+                self._result.setMesh(force_list(matr_asse)[0]["MATRICE"].getMesh())
         self._result.build()
 
 DEFI_BASE_REDUITE = ReducedBaseDefinition.run

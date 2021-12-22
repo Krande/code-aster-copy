@@ -147,6 +147,12 @@ def calc_modes_ops(self, TYPE_RESU, OPTION, AMELIORATION, INFO, **args):
     if matrRigi is not None:
         if isinstance(modes, GeneralizedModeResult):
             modes.setGeneralizedDOFNumbering(matrRigi.getGeneralizedDOFNumbering())
+            if matrRigi is not None:
+                modalBasis = matrRigi.getModalBasis()
+                if modalBasis is not None:
+                    mesh = modalBasis.getMesh()
+                    if mesh is not None:
+                        modes.setMesh(mesh)
         elif isinstance(modes, ModeResult):
             try:
                 model = matrRigi.getModel()

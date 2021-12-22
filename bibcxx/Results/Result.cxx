@@ -34,6 +34,25 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
+
+
+void Result::_checkMesh( const BaseMeshPtr mesh ) const
+{
+    if ( !mesh )
+        raiseAsterError( "ValueError: Mesh is empty" );
+
+    if ( _mesh ){
+        if( _mesh->getName() != mesh->getName() )
+            raiseAsterError( "Incompatible meshes" );
+    }
+}
+
+void Result::setMesh( const BaseMeshPtr &mesh )
+{
+    _checkMesh(mesh);
+    _mesh = mesh;
+};
+
 void
 Result::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
                                                         int rank ) {
@@ -45,6 +64,7 @@ Result::addElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara,
     ASTERINTEGER rang = rank;
     std::string type( "CARAELEM" );
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, cara->getName(), type );
+    setMesh(cara->getMesh());
 };
 
 void Result::addListOfLoads( const ListOfLoadsPtr &load,
@@ -65,6 +85,7 @@ void Result::addMaterialField( const MaterialFieldPtr &mater,
     ASTERINTEGER rang = rank;
     std::string type( "CHAMPMAT" );
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, mater->getName(), type );
+    setMesh( mater->getMesh() );
 };
 
 void Result::addModel( const ModelPtr &model,
@@ -79,6 +100,7 @@ void Result::addModel( const ModelPtr &model,
     CALLO_RSADPA_ZK8_WRAP( getName(), &rang, model->getName(), type );
     const auto fed = model->getFiniteElementDescriptor();
     _fieldBuidler.addFiniteElementDescriptor( fed );
+    setMesh(model->getMesh());
 };
 
 void Result::addTimeValue( ASTERDOUBLE value, int rank ) {

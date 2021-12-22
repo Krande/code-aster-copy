@@ -277,7 +277,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return New field
      */
     friend FieldOnNodes< ValueType > operator*( const ASTERDOUBLE &scal,
-                                                     FieldOnNodes< ValueType > rhs) {
+                                                FieldOnNodes< ValueType > &rhs ) {
         return rhs * scal;
     };
 
@@ -344,8 +344,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Set DOFNumering
      */
     void setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
-        if ( _dofNum )
-            throw std::runtime_error( "DOFNumbering already set" );
+        if ( !dofNum )
+            throw std::runtime_error( "Empty DOFNumbering" );
+        if ( _dofNum && dofNum->getName() != _dofNum->getName() )
+            throw std::runtime_error( "DOFNumbering inconsistents" );
         _dofNum = dofNum;
         _dofDescription = dofNum->getDescription();
         if ( _mesh != nullptr ) {
@@ -387,8 +389,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param desc object FieldOnNodesDescriptionPtr
      */
     void setDescription( const FieldOnNodesDescriptionPtr &desc ) {
-        if ( _dofDescription )
-            throw std::runtime_error( "FieldOnNodesDescription already set" );
+        if ( !desc )
+            throw std::runtime_error( "Empty FieldOnNodesDescription" );
+        if ( _dofDescription && _dofDescription->getName() != desc->getName() )
+            throw std::runtime_error( "FieldOnNodesDescription inconsistents" );
         _dofDescription = desc;
     };
 
@@ -397,8 +401,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param mesh object BaseMeshPtr
      */
     void setMesh( const BaseMeshPtr &mesh ) {
-        if ( _mesh )
-            throw std::runtime_error( "Mesh already set" );
+        if ( !mesh )
+            throw std::runtime_error( "Empty Mesh" );
+
+        if ( _mesh && mesh->getName() != _mesh->getName() )
+            throw std::runtime_error( "Meshes inconsistents" );
         _mesh = mesh;
         if ( _dofNum != nullptr ) {
             const auto name1 = _mesh->getName();

@@ -101,11 +101,12 @@ class ElementaryCharacteristics : public DataStructure {
     /**
      * @brief Get the model
      */
-    const ModelPtr &getModel() const {
-        if ( _model->isEmpty() )
-            throw std::runtime_error( "Model is empty" );
-        return _model;
-    };
+    ModelPtr getModel() const;
+
+    /**
+     * @brief Get the model
+     */
+    BaseMeshPtr getMesh() const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est vide (non relu par exemple)
