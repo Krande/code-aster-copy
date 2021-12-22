@@ -156,7 +156,7 @@ monSolver.factorize(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 
 vcine = dComputation.dirichletBC(0.)
-resu = monSolver.solveWithDirichletBC(retour, vcine)
+resu = monSolver.solve(retour, vcine)
 
 y = resu.EXTR_COMP()
 test.assertEqual(len(y.valeurs), 81)

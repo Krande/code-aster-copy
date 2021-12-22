@@ -31,7 +31,7 @@
 
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
-#include "LinearAlgebra/AssemblyMatrix.h"
+#include "LinearAlgebra/AssemblyMatrixVariant.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
 #include "astercxx.h"
@@ -49,11 +49,16 @@ class LinearSolver : public DataStructure {
     JeveuxVectorLong _integerValues;
     JeveuxVectorChar80 _petscOptions;
 
-    AssemblyMatrixDisplacementRealPtr _matrix;
-    AssemblyMatrixDisplacementRealPtr _matrixPrec;
+    AssemblyMatrixVariantPtr _matrix;
+    AssemblyMatrixVariantPtr _matrixPrec;
     std::string _commandName;
     bool _xfem;
     PyObject *_keywords = NULL;
+
+    bool _factorize();
+
+    void _solve( const std::string &rhsName, const std::string &diriName,
+                 const std::string &resultName ) const;
 
   public:
     /**
@@ -130,8 +135,12 @@ class LinearSolver : public DataStructure {
     /**
      * @brief Factorisation d'une matrice
      * @param currentMatrix Matrice assemblee
+     * @return bool True if ok
      */
-    bool factorize( AssemblyMatrixDisplacementRealPtr currentMatrix );
+    bool factorize( const AssemblyMatrixDisplacementRealPtr currentMatrix );
+    bool factorize( const AssemblyMatrixDisplacementComplexPtr currentMatrix );
+    bool factorize( const AssemblyMatrixTemperatureRealPtr currentMatrix );
+    bool factorize( const AssemblyMatrixPressureRealPtr currentMatrix );
 
     /**
      * @brief Factorisation d'une matrice
@@ -140,25 +149,23 @@ class LinearSolver : public DataStructure {
 
     /**
      * @brief Inversion du systeme lineaire
-     * @param dirichletBCField Charge cinématique
      * @param currentRHS Second membre
-     * @param result champ aux noeuds résultat (optionnel)
+     * @param dirichletBCField Charge cinématique
      * @return champ aux noeuds resultat
      */
-    FieldOnNodesRealPtr
-    solve( const FieldOnNodesRealPtr currentRHS,
-           FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >() ) const;
+    FieldOnNodesRealPtr solve( const FieldOnNodesRealPtr currentRHS,
+                               const FieldOnNodesRealPtr dirichletBCField ) const;
 
-    /**
-     * @brief Inversion du systeme lineaire
-     * @param dirichletBCField Charge cinématique
-     * @param currentRHS Second membre
-     * @param result champ aux noeuds résultat (optionnel)
-     * @return champ aux noeuds resultat
-     */
-    FieldOnNodesRealPtr solveWithDirichletBC(
-        const FieldOnNodesRealPtr currentRHS, const FieldOnNodesRealPtr dirichletBCField,
-        FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >() ) const;
+    FieldOnNodesRealPtr solve( const FieldOnNodesRealPtr currentRHS ) const {
+        return solve( currentRHS, nullptr );
+    };
+
+    FieldOnNodesComplexPtr solve( const FieldOnNodesComplexPtr currentRHS,
+                                  const FieldOnNodesComplexPtr dirichletBCField ) const;
+
+    FieldOnNodesComplexPtr solve( const FieldOnNodesComplexPtr currentRHS ) const {
+        return solve( currentRHS, nullptr );
+    };
 };
 
 /**

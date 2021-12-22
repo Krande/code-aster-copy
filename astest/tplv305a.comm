@@ -21,6 +21,8 @@
 # MAILLES : QUAD4(AXIS)
 #
 
+import code_aster
+
 DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET') )
 
 #
@@ -111,7 +113,7 @@ VCTER1=CALC_VECT_ELEM(  OPTION='CHAR_THER',
                              CHARGE=CHTH1
                           )
 
-NUDL1=NUME_DDL(   MATR_RIGI=MTRE1) 
+NUDL1=NUME_DDL(   MATR_RIGI=MTRE1)
 
 MTRA1=ASSE_MATRICE(   MATR_ELEM=MTRE1,
                            NUME_DDL=NUDL1
@@ -121,11 +123,23 @@ VCTA1=ASSE_VECTEUR(   VECT_ELEM=VCTER1,
                            NUME_DDL=NUDL1
                         )
 
-MTRA1=FACTORISER( reuse=MTRA1,  MATR_ASSE=MTRA1, METHODE='LDLT')
+linear_solver = code_aster.LinearSolver.factory({'METHODE':'LDLT',
+                   'NPREC':8,
+                   'RENUM':'RCMK',
+                   'STOP_SINGULIER':'OUI', 'NMAX_ITER':0,
+                 'POSTTRAITEMENTS':'AUTO',
+                 'RESI_RELA':1e-06,
+                 'ALGORITHME':'FGMRES',})
 
-TMOD1=RESOUDRE(   MATR=MTRA1,
-                        CHAM_NO=VCTA1
-                     )
+linear_solver.factorize(MTRA1)
+
+TMOD1 = linear_solver.solve(VCTA1)
+
+# MTRA1=FACTORISER( reuse=MTRA1,  MATR_ASSE=MTRA1, METHODE='LDLT')
+
+# TMOD1=RESOUDRE(   MATR=MTRA1,
+#                         CHAM_NO=VCTA1
+#                      )
 
 #
 # ANALYSE DES RESULTATS ------------------------------------------------

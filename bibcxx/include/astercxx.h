@@ -37,6 +37,7 @@
 #include <complex>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/variant.hpp>
 
 typedef bool ASTERBOOL;
 typedef std::complex< ASTERDOUBLE > ASTERCOMPLEX;

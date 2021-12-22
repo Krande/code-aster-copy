@@ -92,7 +92,7 @@ test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
 monSolver.factorize(matrAsse)
 
 vcine = CALC_CHAR_CINE(NUME_DDL=numeDDL, CHAR_CINE=charCine, )
-resu = monSolver.solveWithDirichletBC(retour, vcine)
+resu = monSolver.solve(retour, vcine)
 
 TEST_RESU(
     CHAM_NO=_F(

@@ -26,8 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <list>
-#include <stdexcept>
 
 #include "astercxx.h"
 #include "aster_fort_calcul.h"
@@ -53,8 +51,6 @@
 #include "Modeling/Model.h"
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
-
-class LinearSolver;
 
 /**
  * @class AssemblyMatrix
@@ -114,8 +110,6 @@ class AssemblyMatrix : public DataStructure {
     /** @brief Solver name (MUMPS or PETSc) */
     std::string _solverName;
 
-    friend class LinearSolver;
-
   public:
     /**
      * @typedef AssemblyMatrixPtr
@@ -142,9 +136,9 @@ class AssemblyMatrix : public DataStructure {
      * @brief Destructeur
      */
     ~AssemblyMatrix() {
-#ifdef ASTER_DEBUG_CXX
-        std::cout << "DEBUG: AssemblyMatrix.destr: " << this->getName() << std::endl;
-#endif
+// #ifdef ASTER_DEBUG_CXX
+//         std::cout << "DEBUG: AssemblyMatrix.destr: " << this->getName() << std::endl;
+// #endif
         // two temporary objects to delete
         CALLO_JEDETR( getName() + ".&INT" );
         CALLO_JEDETR( getName() + ".&IN2" );
@@ -296,6 +290,8 @@ class AssemblyMatrix : public DataStructure {
      * @return true si factorisée
      */
     bool isFactorized() const { return _isFactorized; };
+
+    void isFactorized( const bool& facto) { _isFactorized = facto; };
 
     /**
      * @brief Methode permettant de definir la numerotation

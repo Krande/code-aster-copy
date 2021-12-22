@@ -34,12 +34,12 @@ LinearSolver::LinearSolver( const std::string name )
       _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
       _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
-      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ), _matrix( nullptr ),
-      _matrixPrec(
-          new AssemblyMatrixDisplacementReal( ResultNaming::getNewResultName() + ".PREC" ) ),
-      _commandName( "SOLVEUR" ), _xfem( false ), _keywords( NULL ){
+      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ),
+      _matrix( boost::make_shared< AssemblyMatrixVariant >() ),
+      _matrixPrec( boost::make_shared< AssemblyMatrixVariant >() ), _commandName( "SOLVEUR" ),
+      _xfem( false ), _keywords( NULL ){
 
-                                                 };
+                      };
 
 void LinearSolver::setKeywords( PyObject *user_keywords ) {
     _isEmpty = true;
@@ -93,7 +93,7 @@ bool LinearSolver::build() {
 
 bool LinearSolver::deleteFactorizedMatrix() {
 
-    if ( _matrix && _matrix->isFactorized() && get_sh_jeveux_status() == 1 ) {
+    if ( _matrix->hasMatrix() && _matrix->isFactorized() && get_sh_jeveux_status() == 1 ) {
         CALLO_DETMATRIX( _matrix->getName() );
         _matrix->deleteFactorizedMatrix();
     }
@@ -101,18 +101,33 @@ bool LinearSolver::deleteFactorizedMatrix() {
     return true;
 };
 
-bool LinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatrix ) {
+bool LinearSolver::_factorize() {
     if ( _isEmpty )
         build();
-
-    deleteFactorizedMatrix();
-    _matrix = currentMatrix;
 
     const std::string solverName( getName() + "           " );
     std::string base( "G" );
     ASTERINTEGER cret = 0, npvneg = 0, istop = -9999;
+
+    // create precond
+    if ( _matrix->holds_alternative< AssemblyMatrixDisplacementRealPtr >() ) {
+        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixDisplacementReal >(
+            ResultNaming::getNewResultName() + ".PREC" ) );
+    } else if ( _matrix->holds_alternative< AssemblyMatrixDisplacementComplexPtr >() ) {
+        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixDisplacementComplex >(
+            ResultNaming::getNewResultName() + ".PREC" ) );
+    } else if ( _matrix->holds_alternative< AssemblyMatrixTemperatureRealPtr >() ) {
+        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixTemperatureReal >(
+            ResultNaming::getNewResultName() + ".PREC" ) );
+    } else if ( _matrix->holds_alternative< AssemblyMatrixPressureRealPtr >() ) {
+        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixPressureReal >(
+            ResultNaming::getNewResultName() + ".PREC" ) );
+    } else {
+        raiseAsterError( "Unexpected matrix type" );
+    }
+
     const std::string matpre( _matrixPrec->getName() );
-    const std::string matass = _matrix->getName();
+    const std::string matass( _matrix->getName() );
 
     // Definition du bout de fichier de commande pour SOLVEUR
     CommandSyntax cmdSt( _commandName );
@@ -123,22 +138,66 @@ bool LinearSolver::factorize( AssemblyMatrixDisplacementRealPtr currentMatrix ) 
 
     CALLO_MATRIX_FACTOR( solverName, base, &cret, _matrixPrec->getName(), matass, &npvneg, &istop );
 
-    _matrix->_isFactorized = true;
+    _matrix->isFactorized( true );
     _matrix->setSolverName( getSolverName() );
 
     Py_DECREF( dict );
     return true;
 };
 
+bool LinearSolver::factorize( const AssemblyMatrixDisplacementRealPtr currentMatrix ) {
+
+    deleteFactorizedMatrix();
+    ( *_matrix ) = currentMatrix;
+
+    return _factorize();
+};
+
+bool LinearSolver::factorize( const AssemblyMatrixDisplacementComplexPtr currentMatrix ) {
+
+    deleteFactorizedMatrix();
+    ( *_matrix ) = currentMatrix;
+
+    return _factorize();
+};
+
+bool LinearSolver::factorize( const AssemblyMatrixTemperatureRealPtr currentMatrix ) {
+
+    deleteFactorizedMatrix();
+    ( *_matrix ) = currentMatrix;
+
+    return _factorize();
+};
+
+bool LinearSolver::factorize( const AssemblyMatrixPressureRealPtr currentMatrix ) {
+
+    deleteFactorizedMatrix();
+    ( *_matrix ) = currentMatrix;
+
+    return _factorize();
+};
+
+void LinearSolver::_solve( const std::string &rhsName, const std::string &diriName,
+                           const std::string &resultName ) const {
+    std::string blanc( " " );
+    ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
+    ASTERDOUBLE rdummy = 0., cdummy = 0.;
+    bool prepos( true );
+    std::string base( JeveuxMemoryTypesNames[Permanent] );
+
+    CALLO_RESOUD( _matrix->getName(), _matrixPrec->getName(), getName(), diriName, &nsecm, rhsName,
+                  resultName, base, &rdummy, &cdummy, blanc, (ASTERLOGICAL *)&prepos, &istop,
+                  &iret );
+}
+
 FieldOnNodesRealPtr LinearSolver::solve( const FieldOnNodesRealPtr currentRHS,
-                                         FieldOnNodesRealPtr result ) const {
+                                         const FieldOnNodesRealPtr dirichletBCField ) const {
 
     if ( !_matrix ) {
-        throw std::runtime_error( "Matrix must be factored first" );
+        raiseAsterError( "Matrix must be factored first" );
     }
 
-    if ( result->getName() == "" )
-        result = boost::make_shared< FieldOnNodesReal >();
+    auto result = boost::make_shared< FieldOnNodesReal >();
 
     try {
         if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering() ) {
@@ -147,32 +206,24 @@ FieldOnNodesRealPtr LinearSolver::solve( const FieldOnNodesRealPtr currentRHS,
     } catch ( ... ) {
     }
 
-    std::string blanc( " " );
-    ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
-    ASTERDOUBLE rdummy = 0., cdummy = 0.;
-    bool prepos( true );
-    std::string base( JeveuxMemoryTypesNames[Permanent] );
+    std::string diriName( " " );
+    if ( dirichletBCField )
+        diriName = dirichletBCField->getName();
 
-    CALLO_RESOUD( _matrix->getName(), _matrixPrec->getName(), getName(), blanc, &nsecm,
-                  currentRHS->getName(), result->getName(), base, &rdummy, &cdummy, blanc,
-                  (ASTERLOGICAL *)&prepos, &istop, &iret );
+    _solve( currentRHS->getName(), diriName, result->getName() );
 
-    _matrix->setSolverName( getSolverName() );
-
+    result->build();
     return result;
 };
 
-FieldOnNodesRealPtr LinearSolver::solveWithDirichletBC( const FieldOnNodesRealPtr currentRHS,
-                                                        const FieldOnNodesRealPtr dirichletBCField,
-
-                                                        FieldOnNodesRealPtr result ) const {
+FieldOnNodesComplexPtr LinearSolver::solve( const FieldOnNodesComplexPtr currentRHS,
+                                            const FieldOnNodesComplexPtr dirichletBCField ) const {
 
     if ( !_matrix ) {
-        throw std::runtime_error( "Matrix must be factored first" );
+        raiseAsterError( "Matrix must be factored first" );
     }
 
-    if ( result->getName().empty() )
-        result = boost::make_shared< FieldOnNodesReal >();
+    auto result = boost::make_shared< FieldOnNodesComplex >();
 
     try {
         if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering() ) {
@@ -181,17 +232,12 @@ FieldOnNodesRealPtr LinearSolver::solveWithDirichletBC( const FieldOnNodesRealPt
     } catch ( ... ) {
     }
 
-    std::string blanc( " " );
-    ASTERINTEGER nsecm = 0, istop = 0, iret = 0;
-    ASTERDOUBLE rdummy = 0., cdummy = 0.;
-    bool prepos( true );
-    std::string base( JeveuxMemoryTypesNames[Permanent] );
+    std::string diriName( " " );
+    if ( dirichletBCField )
+        diriName = dirichletBCField->getName();
 
-    CALLO_RESOUD( _matrix->getName(), _matrixPrec->getName(), getName(),
-                  dirichletBCField->getName(), &nsecm, currentRHS->getName(), result->getName(),
-                  base, &rdummy, &cdummy, blanc, (ASTERLOGICAL *)&prepos, &istop, &iret );
+    _solve( currentRHS->getName(), diriName, result->getName() );
 
-    _matrix->setSolverName( getSolverName() );
-
+    result->build();
     return result;
 };

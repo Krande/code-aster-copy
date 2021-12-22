@@ -239,7 +239,7 @@ def meca_statique_ops(self, **args):
 
         # solve linear system
         diriBCs = disc_comp.dirichletBC(phys_state.time)
-        phys_state.displ = linear_solver.solveWithDirichletBC(rhs, diriBCs)
+        phys_state.displ = linear_solver.solve(rhs, diriBCs)
 
         # store rank
         storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state)
