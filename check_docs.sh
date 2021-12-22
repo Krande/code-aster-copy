@@ -48,6 +48,13 @@ check_docs_main()
         shift
     done
 
+    if [ -d .git ]; then
+        getstatus="git status --porcelain"
+    elif [ -d .hg ]; then
+        getstatus="hg status -ardm"
+    fi
+    [ -z "${getstatus}" ] && echo "not a repository" && exit 1
+
     local suffix=""
     if [ ${variant} = "debug" ]; then
         suffix="_debug"
@@ -76,9 +83,9 @@ check_docs_main()
         iret=$?
         [ ${iret} -ne 0 ] && return 1
 
-        if [ `hg status -ardm | wc -l` != 0 ]; then
+        if [ $(${getstatus} | wc -l) != 0 ]; then
             printf "\nChanges must be committed:\n"
-            hg status
+            ${getstatus}
             return 1
         fi
 
