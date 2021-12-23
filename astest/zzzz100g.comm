@@ -284,23 +284,22 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC= 1.498236241959E+10  ,
 # -------------- FONCTION 3D------------
 Lcz = 0.1*Lcx
 Lcy = 1.5 * Lcx
-E_vari3 = DEFI_PROP_ALEA (
+E_vari3d = DEFI_PROP_ALEA (
             INIT_ALEA       = pseed,
             MEDIANE         = Am_E,
             COEF_VARI       =  cov_E,
-            LONG_CORR_X     = Lcx,
-            LONG_CORR_Y     = Lcy,
-            LONG_CORR_Z     = Lcz,
-            X_MINI     = xmin,
-            X_MAXI     = xmax,
+            LONG_CORR_X     = 0.3,
+            LONG_CORR_Y     = 0.6,
+            LONG_CORR_Z     = 0.2,
+            X_MINI     = 0.0,
+            X_MAXI     = 1.0,
             NB_TERM_X  = 60,
-            Y_MINI     = ymin,
-            Y_MAXI     = ymax ,
+            Y_MINI     = 0.0,
+            Y_MAXI     = 1.0 ,
             NB_TERM_Y  = 50,
             Z_MINI     = 0.0,
-            Z_MAXI     = 50. ,
+            Z_MAXI     = 1. ,
             NB_TERM_Z  = 30,
-
 )
 
 E_vari3_1 = DEFI_PROP_ALEA (
@@ -343,9 +342,42 @@ E_vari3_2 = DEFI_PROP_ALEA (
 
 )
 
+e0 = E_vari3d(0.0, 0.0, 0.0)
+e1 = E_vari3d(0.5, 0.0, 0.0)
+e2 = E_vari3d(0.75, 0.0, 0.0)
+r1 = E_vari3_1(0.0, 0.0, 15.0)
+r2 = E_vari3_2(0.0, 0.0, 15.0)
+
+F_Emodul = CREA_TABLE(LISTE=(
+                 _F(LISTE_R= (e0,e1,e2, r1,r2) , PARA='Modulus'),
+                 _F(LISTE_K = ('E1', 'E2', 'E3' , 'R1', 'R2') ,PARA='NOEUD') ,),
+);
+
+TEST_TABLE ( TABLE = F_Emodul , NOM_PARA = 'Modulus',
+             FILTRE = ( _F(NOM_PARA = 'NOEUD', VALE_K = 'E1'),),
+             VALE_CALC = 17135742878.86007)
+
+TEST_TABLE ( TABLE = F_Emodul , NOM_PARA = 'Modulus',
+             FILTRE = ( _F(NOM_PARA = 'NOEUD', VALE_K = 'E2'),),
+             VALE_CALC = 20588359826.35014)
+
+
+TEST_TABLE ( TABLE = F_Emodul , NOM_PARA = 'Modulus',
+             FILTRE = ( _F(NOM_PARA = 'NOEUD', VALE_K = 'E3'),),
+             VALE_CALC = 14649365172.430305)
+
+TEST_TABLE ( TABLE = F_Emodul , NOM_PARA = 'Modulus',
+             FILTRE = ( _F(NOM_PARA = 'NOEUD', VALE_K = 'R1'),),
+             VALE_CALC = 19915474789.396393 )
+
+
+TEST_TABLE ( TABLE = F_Emodul , NOM_PARA = 'Modulus',
+             FILTRE = ( _F(NOM_PARA = 'NOEUD', VALE_K = 'R2'),),
+             VALE_CALC = 19674773374.33565)
+
 
 # ======================================================================
-# Exemple de visualisation du champ
+# Exemple de visualisation du champ 2D
 # ======================================================================
 E_vari = DEFI_PROP_ALEA (
             INIT_ALEA       = pseed,

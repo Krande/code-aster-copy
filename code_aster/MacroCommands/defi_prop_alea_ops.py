@@ -68,6 +68,7 @@ def evaluate_KL2D(X1, X2, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
         U1 = np.array(U1).reshape((nb1, 1))
         U2 = np.array(U2).reshape((1, nb2))
         KL_terms = (U1 * U2).ravel()
+
         rand = np.random.normal(0., 1., len(KL_terms))
         if Ux[2][0] != 'All':         
             KL_terms = np.array(KL_terms)[Ux[2]]
@@ -89,9 +90,12 @@ def evaluate_KL3D(X1, X2, X3, DIM, RANGE, XLISTE, Ux, beta, mediane, pseed ):
         U1 = [np.interp(x1, XLISTE[0], term)  for term in Ux[0]]
         U2 = [np.interp(x2, XLISTE[1], term)  for term in Ux[1]]
         U3 = [np.interp(x3, XLISTE[2], term)  for term in Ux[2]]
+
         U1 = np.array(U1).reshape((nb1, 1, 1))
         U2 = np.array(U2).reshape((1, nb2, 1))
         U3 = np.array(U3).reshape((1, 1, nb3))
+        KL_terms = (U1 * U2 * U3).ravel()
+
         if Ux[3][0] != 'All':         
             KL_terms = np.array(KL_terms)[Ux[3]]
 
@@ -414,23 +418,15 @@ class Generator3(Generator):
         ind = np.flip(np.argsort(eig123),0)
         eig123 = np.flip(np.sort(eig123),0)
 
-        print('squared sorted summed eigs')
-        print(np.cumsum(eig123))
 
         if self.precision :
             ind_cut = np.searchsorted(np.cumsum(eig123), self.precision * np.sum(eig123), side='right')
             cutindlist = ind[:ind_cut]
-            print('precision')
-            print(ind, ind_cut, cutindlist)
         elif self.nbtot :
             cutindlist = ind[:self.nbtot]
-            print('nbtot')
-            print(cutindlist, self.nbtot)
 
         print('TOTAL NUMBER OF RETAINED EIGENVALUES:', len(cutindlist))
         self.KL_terms = cutindlist
-
-
 
 
     def run(self):
@@ -445,3 +441,4 @@ class Generator3(Generator):
                 self.Ux1, self.Ux2, self.Ux3, self.KL_terms),
             mediane=self.mediane, beta=self.beta, seed=self.seed)
         return formule_out
+
