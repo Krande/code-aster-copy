@@ -35,8 +35,6 @@ out = 'build'
 import os
 import os.path as osp
 import sys
-from functools import partial
-from itertools import chain
 
 from waflib import Build, Configure, Logs, Utils
 from waflib.Tools.c_config import DEFKEYS

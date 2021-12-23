@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ import os
 import os.path as osp
 import re
 
-from waflib import Build, Configure, Logs, TaskGen, Utils
+from waflib import Configure, Logs, TaskGen, Utils
 from waflib.Context import Context
-from waflib.Task import CRASHED, MISSING, Task
+from waflib.Task import CRASHED, Task
 from waflib.Tools import c, ccroot, cxx, fc
 
 
@@ -146,6 +146,63 @@ def format_error(self):
 fcprogram.format_error = format_error
 cprogram.format_error = format_error
 cxxprogram.format_error = format_error
+
+# limit install lines
+fun_orig = Logs.info
+
+
+class CustomInfo:
+    """Wrapper around `Logs.info` to minimize the number of printed lines
+    during installation of Python, header and test files.
+    Prints only one line for (directory, extension).
+    """
+
+    def __init__(self, prefix):
+        self._dirs = set()
+        self._lock = Utils.threading.Lock()
+        self.prefix = prefix
+        self.grouped = (
+            "share/aster/tests_data", "share/aster/tests",
+            "share/locale/aster", "lib/aster/code_aster", "lib/aster/run_aster"
+        )
+
+    def __call__(self, *args, **kwargs):
+        group = False
+        if len(args) == 6 and ("+ install" in args[0] or "- install" in args[0]):
+            group = True
+        if not group:
+            fun_orig(*args, **kwargs)
+            return
+
+        dst = args[3]
+        dirn = osp.dirname(dst)
+        ext = osp.splitext(dst)[-1]
+        key = dirn, ext
+        grouped, grp = self._grouped(dirn)
+        if grouped:
+            key = grp
+            ext = ""
+        self._lock.acquire()
+        show = key not in self._dirs
+        self._dirs.add(key)
+        self._lock.release()
+        if show:
+            args = list(args)
+            args[3] = osp.join(grp, "*" + ext)
+            args[5] = osp.dirname(args[5])
+            args[0] = args[0].replace(' (from %s)', '')
+            args.pop()
+            fun_orig(*args, **kwargs)
+
+    def _grouped(self, dirn):
+        for i in self.grouped:
+            if i in dirn:
+                return True, osp.join(self.prefix, i)
+        return False, dirn
+
+def build(self):
+    if Logs.verbose < 1:
+        Logs.info = CustomInfo(self.env.PREFIX)
 
 
 # support for the "dynamic_source" attribute

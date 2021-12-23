@@ -3,6 +3,7 @@
 #:Targets:
 #:  configure       Configure the project: 'waf configure'
 #:  default         Default task, depending on DEFAULT environment variable: 'safe' or 'fast'
+#:  install         Alias for 'default'
 #:  bootstrap       Run 'configure', 'safe' and 'doc'.
 #:  all             Run 'bootstrap' for 'std' and 'mpi' variants.
 #:
@@ -69,7 +70,7 @@ DEFAULT ?= safe
 SHELL = /bin/bash
 
 .PHONY: help default configure bootstrap all install-tests test check clean_doc distclean
-.PHONY: safe fast dbg_safe dbg doc
+.PHONY: safe fast dbg_safe dbg doc install
 
 default: $(DEFAULT)
 bootstrap: configure safe doc
@@ -80,6 +81,8 @@ all:
 
 configure:
 	./waf_$(BUILD) configure $(OPTS)
+
+install: default
 
 safe:
 	./waf_$(BUILD) install $(OPTS) --safe -j $$(nproc)
