@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,12 +19,13 @@
 
 import code_aster
 from code_aster.Commands import DEFI_GROUP
+from code_aster.Commands import LIRE_MAILLAGE
 
 code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-mesh = code_aster.Mesh.buildCube()
+mesh = LIRE_MAILLAGE(UNITE=20,FORMAT='MED',)
 
 mesh = DEFI_GROUP(reuse=mesh,
                   MAILLAGE=mesh,
@@ -37,7 +38,7 @@ gnodes = mesh.getGroupsOfNodes()
 
 gnodes_ref = ['N2', 'N3', 'N4', 'N6', 'N5', 'N7', 'N1', 'N8', 'TOP', 'BOTTOM']
 
-test.assertSequenceEqual(gnodes_ref, gnodes)
+test.assertSequenceEqual( sorted(gnodes_ref), sorted(gnodes) )
 
 gcells = mesh.getGroupsOfCells()
 

@@ -6,3 +6,4 @@ P mpi_nbnoeud 1
 P testlist submit ci verification sequential
 
 F comm mesh001e.py D 1
+F mmed mesh001e.mmed D 20
