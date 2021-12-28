@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-
-# person_in_charge: philippe.de-bonnieres at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 #......................................................................
@@ -40,10 +38,14 @@ COELGA_M1 = CALC_CHAM_ELEM(MODELE=MO,
 COELGA_TOUT = CALC_CHAM_ELEM(MODELE=MO,
                              OPTION='COOR_ELGA')
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=178600.0,
-                            NU=0.3,
+E = 178600.0
+NU = 0.3
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=NU,
                             RHO=0.0,
                             ALPHA=0.0),
+                    THER=_F(LAMBDA=1.0,
+                            RHO_CP=2.0),
                     LEMAITRE=_F(N=11.0,
                                 UN_SUR_K=0.00032840723,
                                 UN_SUR_M=0.178571429),
@@ -107,7 +109,7 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MO,
 
 L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=(_F(JUSQU_A=1.,
-                                      NOMBRE=1)))
+                                      NOMBRE=2)))
 
 U2=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CM,
@@ -124,29 +126,69 @@ U2=STAT_NON_LINE(MODELE=MO,
                  CONVERGENCE=_F(RESI_GLOB_RELA=1.0e-01,
                                 ITER_GLOB_MAXI=500))
 
+LAME_1 = FORMULE (NOM_PARA = ('E', 'NU'), VALE = 'E*NU/((1+NU)*(1-2*NU))')
+LAME_2 = FORMULE (NOM_PARA = ('E', 'NU'), VALE = 'E/(2*(1+NU))')
 
 U2 = CALC_CHAMP(reuse=U2,
                 RESULTAT=U2,
+                GROUP_MA='M1',
                 DEFORMATION=('EPSP_ELNO'),
-                PROPRIETES=('MATE_ELGA', 'MATE_ELEM'))
+                PROPRIETES=('MATE_ELGA', 'MATE_ELEM'),
+                CHAM_UTIL=_F(FORMULE=(LAME_1, LAME_2),
+                             NOM_CHAM='MATE_ELGA',
+                             NUME_CHAM_RESU=1))
 
 CH_MATE_ELGA = CREA_CHAMP(RESULTAT=U2,
                           TYPE_CHAM='ELGA_MATE_R',
                           OPERATION='EXTR',
                           NOM_CHAM='MATE_ELGA',
-                          NUME_ORDRE=1)
+                          NUME_ORDRE=2)
+
+MATE_INTE = POST_ELEM(RESULTAT=U2,
+                      MODELE=MO,
+                      INTEGRALE=_F(TOUT='OUI',
+                                   NOM_CMP=('E', 'NU', 'RHO', 'ALPHA', 'LAMBDA', 'RHO_CP'),
+                                   NOM_CHAM='MATE_ELGA',
+                                   TYPE_MAILLE ='2D'))
+
+LAME_INTE = POST_ELEM(RESULTAT=U2,
+                      MODELE=MO,
+                      INTEGRALE=_F(TOUT='OUI',
+                                   NOM_CMP=('X1', 'X2'),
+                                   NOM_CHAM='UT01_ELGA',
+                                   TYPE_MAILLE ='2D'))
 
 CH_MATE_ELEM = CREA_CHAMP(RESULTAT=U2,
                           TYPE_CHAM='ELEM_MATE_R',
                           OPERATION='EXTR',
                           NOM_CHAM='MATE_ELEM',
-                          NUME_ORDRE=1)
+                          NUME_ORDRE=2)
 
 IMPR_RESU(FORMAT="MED",
           RESU=(
               _F(CHAM_GD=COELGA_TOUT),
               _F(CHAM_GD=COELGA_M1)
           ))
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           VALE_CALC=103038.46153846153,
+           VALE_REFE=LAME_1(E, NU),
+           NOM_PARA='MOYE_X1',
+           TABLE=LAME_INTE,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='INST',
+                     VALE=0.5))
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           VALE_CALC=178600.0,
+           VALE_REFE=E,
+           NOM_PARA='MOYE_E',
+           TABLE=MATE_INTE,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     NOM_PARA='INST',
+                     VALE=0.5))
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CH_MATE_ELEM,
                         NOM_CMP='E',
@@ -157,14 +199,23 @@ TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CH_MATE_ELEM,
                         NOM_CMP='E',
                         GROUP_MA = 'M1',
                         POINT=1,
-                        VALE_CALC=178600.0)),
+                        VALE_CALC=178600.0),
+                     _F(CHAM_GD=CH_MATE_ELEM,
+                        NOM_CMP='LAMBDA',
+                        GROUP_MA = 'M1',
+                        POINT=1,
+                        VALE_CALC=1.0),
+                     _F(CHAM_GD=CH_MATE_ELGA,
+                        NOM_CMP='RHO_CP',
+                        GROUP_MA = 'M1',
+                        POINT=1,
+                        VALE_CALC=2.0)),
           RESU = (_F(RESULTAT = U2,
                      NOM_CHAM ='EPSP_ELNO',
                      NOM_CMP ='EPXX',
-                     NUME_ORDRE = 1,
+                     NUME_ORDRE = 2,
                      GROUP_MA = 'M1',
                      GROUP_NO = 'N2',
                      VALE_CALC = 5.25592366205E-4)))
 
 FIN()
-

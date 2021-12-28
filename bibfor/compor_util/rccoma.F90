@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
 ! Out mater_keyword : keyword factor linked to type of material parameter
 ! Out icodre        : 0 everything is OK
 !                     1 no mater_keyword found
-!                     2 several DIFFERTENT mater_keyword found
+!                     2 several DIFFERENT mater_keyword found
 !
 ! --------------------------------------------------------------------------------------------------
 !

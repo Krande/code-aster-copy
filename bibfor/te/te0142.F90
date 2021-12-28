@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,21 +29,28 @@ implicit none
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rccoma.h"
+
 !
     character(len=16) :: option, nomte
 !
-    integer :: nbcomp
-    parameter (nbcomp=3)
+    integer, parameter :: ncmp_el = 4
+    integer, parameter :: ncmp_th = 2
+    integer, parameter :: ncmptot = ncmp_el + ncmp_th
+    integer, parameter :: sdim = 3
+
     integer :: igeom, i, j, nbpar, ipar
-    integer :: ndim, npg1, kpg, spt
+    integer :: ndim, npg1, kpg, spt, iret
     integer :: imate, ival, ivf, idecpg, idecno
-    integer :: mater, nnos, nno, indir(3)
-    real(kind=8) :: valres(nbcomp)
-    integer :: icodre(nbcomp), ndim2
+    integer :: mater, nnos, nno, indir(sdim)
+    real(kind=8) :: valres_el(ncmp_el), valres_th(ncmp_th)
+    integer :: icodre_el(ncmp_el), icodre_th(ncmp_th), ndim2
     character(len=8) :: fami, poum, novrc
-    character(len=16) :: nomres(nbcomp)
-    character(len=8) :: nompar(3),nompar0(3)
-    real(kind=8) :: xyzgau(3), xyzgau0(3)
+    character(len=16) :: nomres_el(ncmp_el), nomres_th(ncmp_th)
+    character(len=8) :: nompar(sdim),nompar0(sdim)
+    real(kind=8) :: xyzgau(sdim), xyzgau0(sdim)
+    character(len=32) :: phenom_el, phenom_th, valk(2)
+
     aster_logical::lfound
 !     ------------------------------------------------------------------
 !
@@ -61,21 +68,45 @@ implicit none
     else
         ndim2 = ndim
     endif
-    
+
     call jevech('PMATERC', 'L', imate)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERR', 'E', ival)
 !
     mater=zi(imate)
-    nomres(1)='E'
-    nomres(2)='NU'
-    nomres(3) = 'RHO'
+    nomres_el(1)='E'
+    nomres_el(2)='NU'
+    nomres_el(3)='RHO'
+    nomres_el(4)='ALPHA'
+    valres_el(:) = 0.d0
+
+    nomres_th(1)='LAMBDA'
+    nomres_th(2)='RHO_CP'
+    valres_th(:) = 0.d0
+
     spt=1
     poum='+'
 !
     nompar0(1) = 'X'
     nompar0(2) = 'Y'
     nompar0(3) = 'Z'
+!
+
+    call rccoma(mater, 'ELAS', 0, phenom_el, iret)
+    ASSERT((iret .eq. 0) .or. (iret .eq. 1))
+    valk(1) = 'ELAS'
+    valk(2) = ' '
+    if (ALL(valk .ne. phenom_el)) then
+       phenom_th = 'ELAS'
+    endif
+
+    call rccoma(mater, 'THER', 0, phenom_th, iret)
+    ASSERT((iret .eq. 0) .or. (iret .eq. 1))
+    valk(1) = 'THER'
+    valk(2) = 'THER_NL'
+    if (ALL(valk .ne. phenom_th)) then
+       phenom_th = 'THER'
+    endif
 
 !   check if X, Y or Z are present in the command variables and store indirection in indir
     nbpar = 0
@@ -112,13 +143,23 @@ implicit none
         do i=1,nbpar
             xyzgau(i) = xyzgau0(indir(i))
         enddo
-                
+
         call rcvalb(fami, kpg, spt, poum, mater,&
-                    ' ', 'ELAS', nbpar, nompar, xyzgau,&
-                    3, nomres, valres, icodre, 1)
-        zr(ival-1+(kpg-1)*nbcomp+1) = valres(1)
-        zr(ival-1+(kpg-1)*nbcomp+2) = valres(2)
-        zr(ival-1+(kpg-1)*nbcomp+3) = valres(3)
+                    ' ', phenom_el, nbpar, nompar, xyzgau,&
+                    ncmp_el, nomres_el, valres_el, icodre_el, 0, 'NON')
+
+        do i = 1, ncmp_el
+           zr(ival-1+(kpg-1)*ncmptot+i) = valres_el(i)
+        enddo
+
+        call rcvalb(fami, kpg, spt, poum, mater,&
+                    ' ', phenom_th, nbpar, nompar, xyzgau,&
+                    ncmp_th, nomres_th, valres_th, icodre_th, 0, 'NON')
+
+        do i = 1, ncmp_th
+           zr(ival-1+(kpg-1)*ncmptot+ncmp_el+i) = valres_th(i)
+        enddo
+
     enddo
 !
 end subroutine

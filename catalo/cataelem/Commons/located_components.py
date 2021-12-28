@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -472,7 +472,7 @@ EDCEL_I = LocatedComponents(phys=PHY.DCEL_I, type='ELEM',
                             components=('NPG_DYN', 'NCMP_DYN',))
 
 EEMATE_R = LocatedComponents(phys=PHY.MATE_R, type='ELEM',
-                             components=('E','NU','RHO',))
+                             components=('E', 'NU', 'RHO', 'ALPHA', 'LAMBDA', 'RHO_CP'))
 
 EENECNO = LocatedComponents(phys=PHY.ENER_R, type='ELEM',
                             components=('TOTALE', 'DX', 'DY', 'DZ', 'DRX',
@@ -488,7 +488,7 @@ EERREURT = LocatedComponents(phys=PHY.ERRE_R, type='ELEM',
                              'TERMF2', 'TERMF1', 'TERMEC', 'TERME2', 'TERME1',))
 
 EGMATE_R = LocatedComponents(phys=PHY.MATE_R, type='ELGA', location='RIGI',
-                             components=('E','NU','RHO',))
+                             components=('E', 'NU', 'RHO', 'ALPHA', 'LAMBDA', 'RHO_CP'))
 
 ETHETA = LocatedComponents(phys=PHY.THET_R, type='ELNO',
                             components=('MODULE', "DIR_X", "DIR_Y", "DIR_Z", "ABSC_CUR", "LONG"))

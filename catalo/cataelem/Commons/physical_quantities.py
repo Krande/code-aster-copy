@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -2056,11 +2056,17 @@ MATE_R   = PhysicalQuantity(type='R',
        'E',
        'NU',
        'RHO',
+       'ALPHA',
+       'LAMBDA',
+       'RHO_CP',
     ),
     comment="""  MATE_R Type:R Paramètres matériaux
-       E   : module d'Young
-       NU  : Coef. de Poisson
-       RHO : Masse volumique
+       E      : Module de Young
+       NU     : Coefficient de Poisson
+       RHO    : Masse volumique
+       ALPHA  : Coef. de dilatation
+       LAMBDA : Conductivité thermique isotrope
+       RHO_CP : Chaleur volumique à pression constante
 """)
 
 
