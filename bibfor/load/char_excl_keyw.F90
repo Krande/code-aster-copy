@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,24 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_suffix)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
-!
-    character(len=16), intent(in) :: keywordfact
-    character(len=24), intent(in) :: keywordexcl
-    integer, intent(out) :: n_keyexcl
-    integer, intent(in), optional :: n_suffix
-    character(len=8), optional, intent(in) :: list_suffix(*)
+character(len=16), intent(in) :: keywordfact
+character(len=24), intent(in) :: keywordexcl
+integer, intent(out) :: n_keyexcl
+integer, intent(in), optional :: n_suffix
+character(len=8), optional, intent(in) :: list_suffix(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,38 +66,26 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+    n_keyexcl = 1
+
 ! - Global affectation keywords - Count
-!
-    n_keyexcl = 0
-    if (getexm(keywordfact,'TOUT') .eq. 1) then
-        n_keyexcl = n_keyexcl + 1
-    endif
-!
-! - Global affectation keywords - Count
-!
     if (present(n_suffix)) then
         ASSERT(present(list_suffix))
         do i_suffix = 1, n_suffix
             suffix = list_suffix(i_suffix)
             do i_keyw = 1, n_keyexcl_affe
                 keyword = excl_affe(i_keyw)(1:leng_affe(i_keyw))//suffix
-                if (getexm(keywordfact,keyword) .eq. 1) then
-                    n_keyexcl = n_keyexcl + 1
-                endif
+                n_keyexcl = n_keyexcl + 1
             end do
         end do
     else
         do i_keyw = 1, n_keyexcl_affe
             keyword = excl_affe(i_keyw)
-            if (getexm(keywordfact,keyword) .eq. 1) then
-                n_keyexcl = n_keyexcl + 1
-            endif
+            n_keyexcl = n_keyexcl + 1
         end do
     endif
-!
+
 ! - Other keywords - Count
-!
     if (keywordfact .eq. 'FACE_IMPO') then
         n_keyexcl = n_keyexcl + 2
     else if (keywordfact.eq.'ARETE_IMPO') then
@@ -117,11 +103,10 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
     else if (keywordfact.eq.'LIAISON_SOLIDE') then
         n_keyexcl = n_keyexcl + 3
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
-!
+
 ! - Create excluded keyword object
-!
     if (n_keyexcl .ne. 0) then
 !
 ! ----- Allocate keyword object
@@ -130,18 +115,13 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
 ! ----- Global affectation keywords - Affect
 !
-        n_keyexcl = 0
-        if (getexm(keywordfact,'TOUT') .eq. 1) then
-            n_keyexcl = n_keyexcl + 1
-            p_keywordexcl(n_keyexcl) = 'TOUT'
-        endif
+        n_keyexcl = 1
+        p_keywordexcl(n_keyexcl) = 'TOUT'
         if (.not.present(n_suffix)) then
             do i_keyw = 1, n_keyexcl_affe
                 keyword = excl_affe(i_keyw)
-                if (getexm(keywordfact,keyword) .eq. 1) then
-                    n_keyexcl = n_keyexcl + 1
-                    p_keywordexcl(n_keyexcl) = keyword
-                endif
+                n_keyexcl = n_keyexcl + 1
+                p_keywordexcl(n_keyexcl) = keyword
             end do
         else
             ASSERT(present(list_suffix))
@@ -149,10 +129,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
                 suffix = list_suffix(i_suffix)
                 do i_keyw = 1, n_keyexcl_affe
                     keyword = excl_affe(i_keyw)(1:leng_affe(i_keyw))//suffix
-                    if (getexm(keywordfact,keyword) .eq. 1) then
-                        n_keyexcl = n_keyexcl + 1
-                        p_keywordexcl(n_keyexcl) = keyword
-                    endif
+                    n_keyexcl = n_keyexcl + 1
+                    p_keywordexcl(n_keyexcl) = keyword
                 end do
             end do
         endif
@@ -196,7 +174,7 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
             p_keywordexcl(n_keyexcl) = 'DIST_MIN'
             n_keyexcl = n_keyexcl + 1
         else
-            ASSERT(.false.)
+            ASSERT(ASTER_FALSE)
         endif
     endif
 !

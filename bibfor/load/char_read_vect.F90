@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,20 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 !
-    implicit none
+implicit none
 !
-#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 !
-!
-    character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    character(len=*), intent(in) :: keyword_z
-    real(kind=8), intent(out) :: vect_r(3)
+character(len=16), intent(in) :: keywordfact
+integer, intent(in) :: iocc
+character(len=*), intent(in) :: keyword_z
+real(kind=8), intent(out) :: vect_r(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,25 +43,19 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  val_nb, ibid
+    integer :: val_nb
     character(len=16) :: keyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
     keyword = keyword_z
-    vect_r(1) = 0.d0
-    vect_r(2) = 0.d0
-    vect_r(3) = 0.d0
-!
-    if (getexm(keywordfact,keyword) .eq. 0) goto 99
+    vect_r = 0.d0
 !
     call getvr8(keywordfact, keyword, iocc=iocc, nbval=0, nbret=val_nb)
     val_nb = -val_nb
-    if (val_nb .eq. 0) goto 99
-    ASSERT(val_nb.le.3)
-    call getvr8(keywordfact, keyword, iocc=iocc, nbval=val_nb, vect=vect_r,&
-                nbret=ibid)
-!
-99  continue
+    if (val_nb .ne. 0) then
+        ASSERT(val_nb .le. 3)
+        call getvr8(keywordfact, keyword, iocc=iocc, nbval=val_nb, vect=vect_r)
+    endif
 !
 end subroutine

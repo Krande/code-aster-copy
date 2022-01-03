@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
-    implicit none
-! person_in_charge: jacques.pellet at edf.fr
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -46,14 +47,13 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 #include "asterfort/jexatr.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/agdual.h"
-#include "asterc/getexm.h"
 !
-    character(len=*), intent(in) :: lisrez
-    character(len=*), intent(in) :: chargz
-    character(len=*), intent(in) :: type_liai
-    character(len=*), intent(in), optional :: elim
-    aster_logical   , intent(in), optional :: detr_lisrez
-    aster_logical   , intent(in), optional :: l_preallocz
+character(len=*), intent(in) :: lisrez
+character(len=*), intent(in) :: chargz
+character(len=*), intent(in) :: type_liai
+character(len=*), intent(in), optional :: elim
+aster_logical   , intent(in), optional :: detr_lisrez
+aster_logical   , intent(in), optional :: l_preallocz
 !
 ! -------------------------------------------------------
 !  affectation de l'objet de type  liste_rela et de nom
@@ -75,11 +75,6 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 ! -----------------------------------------------------------
 !  (f) elim  : /'OUI' : on veut eliminer les doublons
 !              /'NON' : on ne veut pas eliminer les doublons
-!  Remarque : l'elimination (ou non) peut etre demandee par
-!             l'utilisateur via le mot clé ELIM_DOUBLON.
-!  S'il y a un conflit entre la volonte de l'utilisateur et
-!  celle du developpeur (via l'argument elim), on donne raison
-!  au developpeur !
 ! -----------------------------------------------------------
 !  (f) detr_lisrez : .true. : on detruit la sd liste de relation
 ! -----------------------------------------------------------
@@ -100,7 +95,7 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     character(len=19) :: ligrmo, ligrch
     integer :: ntypel(nmocl)
     real(kind=8) :: beta
-    integer :: i, icmp, iddl, idecal, ifm, igrel,gd1,gd2
+    integer :: i, icmp, iddl, idecal, ifm, igrel,gd1,gd2, nbRet
     integer :: in, indsur, inema, inema0, ino, inom, ipntrl, irela
     integer :: iret, j,     jprnm, jrlbe, jrlco
     integer :: jrlcof, jrldd,  jrlno, idnoeu,   jrlpo
@@ -138,12 +133,13 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
     call dismoi('TYPE_CHARGE', charge, 'CHARGE', repk=typcha)
 !
     l_lag1=.false.
-    if (getexm(' ' ,'DOUBLE_LAGRANGE').eq.1) then
-        call getvtx(' ', 'DOUBLE_LAGRANGE', scal=klag2)
-        if( klag2.eq.'NON' ) then
+    call getvtx(' ', 'DOUBLE_LAGRANGE', scal=klag2, nbret=nbRet)
+    if (nbRet .ne. 0) then
+        if ( klag2.eq.'NON' ) then
             l_lag1=.true.
         endif
     endif
+    
     if (typcha(1:4) .eq. 'MECA') then
         ligrch=charge//'.CHME.LIGRE'
         nomgd='DEPL_R'
@@ -179,17 +175,15 @@ subroutine aflrch(lisrez, chargz, type_liai, elim, detr_lisrez, l_preallocz)
 !   -- par ordre de numero de noeud croissant
 !   -- et suppression des relations redondantes en
 !   -- appliquant le principe de surcharge
-    if (getexm(' ' ,'ELIM_DOUBLON').eq.1) then
-        call getvtx(' ', 'ELIM_DOUBLON', scal=kelim)
-    else
-        kelim='OUI'
-    endif
+
+    kelim='OUI'
     if (present(elim)) then
         ASSERT(elim.eq.'OUI'.or.elim.eq.'NON')
-        ! c'est elim le plus fort :
         kelim=elim
     endif
-    if (kelim.eq.'OUI') call ordlrl(charge, lisrel, nomgd)
+    if (kelim.eq.'OUI') then
+        call ordlrl(charge, lisrel, nomgd)
+    endif
 !
     detr_lisrel = .true.
     if (present(detr_lisrez)) then

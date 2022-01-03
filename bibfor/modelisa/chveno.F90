@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine chveno(fonree, noma, nomo)
-    implicit none
+!
+subroutine chveno(valeType, meshZ, modelZ)
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/chbord.h"
@@ -45,8 +46,8 @@ subroutine chveno(fonree, noma, nomo)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=4) :: fonree
-    character(len=*) :: noma, nomo
+character(len=4), intent(in) :: valeType
+character(len=*), intent(in) :: meshZ, modelZ
 !
 !      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
 !                                      ET AFFE_CHAR_MECA_F
@@ -61,7 +62,7 @@ subroutine chveno(fonree, noma, nomo)
     integer :: nbt
     parameter    (nbt = 5 )
     integer :: ier, iret, zero
-    integer :: imfac, nbmfac, n, ndim, ndim1, vali
+    integer :: imfac, nbmfac, n, geomDime, ndim1, vali
     integer :: iocc, nocc, ic, nbmc, iobj, nbobj, ima, impb, nbmail
     integer :: numail, numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
     integer :: jcoor, jtyma, jgro, jmab, jpri, jbor
@@ -69,7 +70,7 @@ subroutine chveno(fonree, noma, nomo)
     integer :: norien, norie1, norie2, jlima, nbmamo
     real(kind=8) :: dnor
     aster_logical :: reorie, mcfl(nbt)
-    character(len=8) :: mot, nomma, nommo, typel, algo
+    character(len=8) :: mot, mesh, model, typel, algo
     character(len=16) :: mcft(nbt), motfac, valmc(4), typmc(4)
     character(len=19) :: limamo
     character(len=24) :: grmama, mailma, nogr, nomail
@@ -94,53 +95,48 @@ subroutine chveno(fonree, noma, nomo)
 !     NOMBRE DE MOTS-CLES FACTEUR A VERIFIER
     nbmfac = nbt
 !
-    nomma = noma
-    nommo = nomo
-    grmama = nomma//'.GROUPEMA'
-    mailma = nomma//'.NOMMAI'
+    mesh = meshZ
+    model = modelZ
+    grmama = mesh//'.GROUPEMA'
+    mailma = mesh//'.NOMMAI'
     limamo = '&&CHVENO.MAIL_MODEL'
 !
     call getvtx(' ', 'VERI_NORM', scal=mot, nbret=n)
     if (mot .eq. 'NON') nbmfac = 0
 !
-    ndim = 0
-    call dismoi('DIM_GEOM', nomo, 'MODELE', repi=ndim)
+    geomDime = 0
+    call dismoi('DIM_GEOM', modelZ, 'MODELE', repi=geomDime)
 !
-    call jeexin(nomma//'.TYPMAIL        ', iret)
+    call jeexin(mesh//'.TYPMAIL        ', iret)
     if (iret .ne. 0) then
-        call jeveuo(nomma//'.TYPMAIL        ', 'L', jtyma)
+        call jeveuo(mesh//'.TYPMAIL        ', 'L', jtyma)
     endif
-    call jeveuo(nomma//'.COORDO    .VALE', 'L', jcoor)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', jcoor)
 !
     do imfac = 1, nbmfac
         motfac = mcft(imfac)
-!
-!       CAS OU UN MOT CLE N'EXISTE QUE POUR CERTAINS CATALOGUES
-!       (PAR EXEMPLE EFFE_FOND)
-        if (getexm(motfac,' ') .eq. 0) goto 100
-!
         call getfac(motfac, nocc)
         do iocc = 1, nocc
 !         POUR CERTAINS MOTS-CLES, IL NE FAUT TESTER QUE
 !         POUR CERTAINS CHARGEMENTS
             if (motfac .eq. 'FACE_IMPO') then
-                ipres = utmotp(fonree,motfac,iocc,'PRES')
-                idnor = utmotp(fonree,motfac,iocc,'DNOR')
-                idtan = utmotp(fonree,motfac,iocc,'DTAN')
+                ipres = utmotp(valeType,motfac,iocc,'PRES')
+                idnor = utmotp(valeType,motfac,iocc,'DNOR')
+                idtan = utmotp(valeType,motfac,iocc,'DTAN')
                 if (ipres .eq. 0 .and. idnor .eq. 0 .and. idtan .eq. 0) goto 200
                 if (idnor .ne. 0) then
-                    if (fonree .eq. 'REEL') then
+                    if (valeType .eq. 'REEL') then
                         call getvr8(motfac, 'DNOR', iocc=iocc, scal=dnor, nbret=n)
                         if (abs(dnor) .le. r8prem()) goto 200
                     endif
                 endif
             else if (motfac.eq.'FORCE_COQUE') then
-                ipres = utmotp(fonree,motfac,iocc,'PRES')
-                if1 = utmotp(fonree,motfac,iocc,'F1  ')
-                if2 = utmotp(fonree,motfac,iocc,'F2  ')
-                if3 = utmotp(fonree,motfac,iocc,'F3  ')
-                imf1 = utmotp(fonree,motfac,iocc,'MF1 ')
-                imf2 = utmotp(fonree,motfac,iocc,'MF2 ')
+                ipres = utmotp(valeType,motfac,iocc,'PRES')
+                if1 = utmotp(valeType,motfac,iocc,'F1  ')
+                if2 = utmotp(valeType,motfac,iocc,'F2  ')
+                if3 = utmotp(valeType,motfac,iocc,'F3  ')
+                imf1 = utmotp(valeType,motfac,iocc,'MF1 ')
+                imf2 = utmotp(valeType,motfac,iocc,'MF2 ')
                 if (ipres .eq. 0 .and. if1 .eq. 0 .and. if2 .eq. 0 .and. if3 .eq. 0 .and. imf1&
                     .eq. 0 .and. imf2 .eq. 0) goto 200
             endif
@@ -171,7 +167,7 @@ subroutine chveno(fonree, noma, nomo)
 !
                 nbobj = -nbobj
                 AS_ALLOCATE(vk24=objet, size=nbobj)
-                call getvem(noma, typmc(ic), motfac, valmc(ic), iocc,&
+                call getvem(meshZ, typmc(ic), motfac, valmc(ic), iocc,&
                             nbobj, objet, nbobj)
                 if (typmc(ic) .eq. 'GROUP_MA') then
                     do iobj = 1, nbobj
@@ -191,8 +187,8 @@ subroutine chveno(fonree, noma, nomo)
 !
 ! ---               NUMERO DE LA MAILLE
 !                   ------------------
-                                call jenonu(jexnom(nomma//'.NOMMAI', nomail), numa)
-                                call jeveuo(nomma//'.TYPMAIL', 'L', idtyma)
+                                call jenonu(jexnom(mesh//'.NOMMAI', nomail), numa)
+                                call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)
                                 nutyma = zi(idtyma+numa-1)
 !
 ! ---               TYPE DE LA MAILLE :
@@ -209,7 +205,7 @@ subroutine chveno(fonree, noma, nomo)
 !                   --------------------
                                 else if (typel(1:3) .eq. 'SEG') then
                                     ndim1 = 2
-                                    if (ndim .ne. ndim1) then
+                                    if (geomDime .ne. ndim1) then
 !                       ON SAUTE
                                         goto 211
                                     endif
@@ -228,10 +224,10 @@ subroutine chveno(fonree, noma, nomo)
                         if (mcfl(ic) .and. (nbmail.gt.0)) then
 !
                             call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbmail, jmab)
-                            call chbord(nomo, nbmail, zi(jgro), zi( jmab), nbmapr,&
+                            call chbord(modelZ, nbmail, zi(jgro), zi( jmab), nbmapr,&
                                         nbmabo)
                             if (nbmapr .eq. nbmail .and. nbmabo .eq. 0) then
-                                call ornorm(nomma, zi(jgro), nbmail, reorie, norie1)
+                                call ornorm(mesh, zi(jgro), nbmail, reorie, norie1)
                                 elseif ( (nbmapr.eq.0 .and.&
                             nbmabo.eq.nbmail) .or. (motfac .eq.&
                             'ZONE') ) then
@@ -239,10 +235,10 @@ subroutine chveno(fonree, noma, nomo)
                                     nbmamo = 0
                                     jlima = 1
                                 else
-                                    call utmamo(nommo, nbmamo, limamo)
+                                    call utmamo(model, nbmamo, limamo)
                                     call jeveuo(limamo, 'L', jlima)
                                 endif
-                                call orilma(nomma, ndim, zi(jgro), nbmail, norie1,&
+                                call orilma(mesh, geomDime, zi(jgro), nbmail, norie1,&
                                             ntrait, reorie, nbmamo, zi(jlima ))
                                 if ((algo.eq.'LAC' ).and.(ntrait .ne. 0)) then
                                     call utmess('A', 'CONTACT2_20')
@@ -250,7 +246,7 @@ subroutine chveno(fonree, noma, nomo)
                                 call jedetr(limamo)
                                 elseif ( nbmapr.eq.0 .and. nbmabo.eq.0 )&
                             then
-                                call ornorm(nomma, zi(jgro), nbmail, reorie, norie1)
+                                call ornorm(mesh, zi(jgro), nbmail, reorie, norie1)
                             else
                                 call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, jpri)
                                 call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, jbor)
@@ -265,15 +261,15 @@ subroutine chveno(fonree, noma, nomo)
                                         zi(jbor+nbmabo-1) = zi(jgro+ impb-1)
                                     endif
                                 end do
-                                call ornorm(nomma, zi(jpri), nbmapr, reorie, norie1)
-                                call orilma(nomma, ndim, zi(jbor), nbmabo, norie1,&
+                                call ornorm(mesh, zi(jpri), nbmapr, reorie, norie1)
+                                call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1,&
                                             ntrait, reorie, 0, [0])
                                 call jedetr('&&CHVENO.PRIN')
                                 call jedetr('&&CHVENO.BORD')
                             endif
                             call jedetr('&&CHVENO.MAILLE_BORD')
                         else
-                            call ornorm(nomma, zi(jgro), nbmail, reorie, norie2)
+                            call ornorm(mesh, zi(jgro), nbmail, reorie, norie2)
                         endif
                         norien = norie1 + norie2
                         if (norien .ne. 0) then
@@ -290,10 +286,10 @@ subroutine chveno(fonree, noma, nomo)
                     AS_ALLOCATE(vi=nume_maille, size=nbobj)
                     do iobj = 1, nbobj
                         nomail = objet(iobj)
-                        call jenonu(jexnom(nomma//'.NOMMAI', nomail), numa)
+                        call jenonu(jexnom(mesh//'.NOMMAI', nomail), numa)
                         nume_maille(iobj) = numa
                         if (motfac .eq. 'ZONE') then
-                            call jeveuo(nomma//'.TYPMAIL', 'L', idtyma)
+                            call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)
                             nutyma = zi(idtyma+numa-1)
                             call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), typel)
 !
@@ -307,7 +303,7 @@ subroutine chveno(fonree, noma, nomo)
 !                 --------------------
                             else if (typel(1:3) .eq. 'SEG') then
                                 ndim1 = 2
-                                if (ndim .ne. ndim1) then
+                                if (geomDime .ne. ndim1) then
 !                     ON SAUTE
                                     goto 211
                                 endif
@@ -319,24 +315,24 @@ subroutine chveno(fonree, noma, nomo)
                     norie2 = 0
                     if (mcfl(ic)) then
                         call wkvect('&&CHVENO.MAILLE_BORD', 'V V I', nbobj, jmab)
-                        call chbord(nomo, nbobj, nume_maille, zi(jmab), nbmapr,&
+                        call chbord(modelZ, nbobj, nume_maille, zi(jmab), nbmapr,&
                                     nbmabo)
                         if (nbmapr .eq. nbobj .and. nbmabo .eq. 0) then
-                            call ornorm(nomma, nume_maille, nbobj, reorie, norie1)
+                            call ornorm(mesh, nume_maille, nbobj, reorie, norie1)
                             elseif ( (nbmapr.eq.0 .and. nbmabo.eq.nbobj)&
                         .or. (motfac .eq. 'ZONE') ) then
                             if (motfac .eq. 'ZONE') then
                                 nbmamo = 0
                                 jlima = 1
                             else
-                                call utmamo(nommo, nbmamo, limamo)
+                                call utmamo(model, nbmamo, limamo)
                                 call jeveuo(limamo, 'L', jlima)
                             endif
-                            call orilma(nomma, ndim, nume_maille, nbobj, norie1,&
+                            call orilma(mesh, geomDime, nume_maille, nbobj, norie1,&
                                         ntrait, reorie, nbmamo, zi( jlima))
                             call jedetr(limamo)
                         else if (nbmapr.eq.0 .and. nbmabo.eq.0) then
-                            call ornorm(nomma, nume_maille, nbobj, reorie, norie1)
+                            call ornorm(mesh, nume_maille, nbobj, reorie, norie1)
                         else
                             call wkvect('&&CHVENO.PRIN', 'V V I', nbmapr, jpri)
                             call wkvect('&&CHVENO.BORD', 'V V I', nbmabo, jbor)
@@ -351,15 +347,15 @@ subroutine chveno(fonree, noma, nomo)
                                     zi(jbor+nbmabo-1) = nume_maille(impb)
                                 endif
                             end do
-                            call ornorm(nomma, zi(jpri), nbmapr, reorie, norie1)
-                            call orilma(nomma, ndim, zi(jbor), nbmabo, norie1,&
+                            call ornorm(mesh, zi(jpri), nbmapr, reorie, norie1)
+                            call orilma(mesh, geomDime, zi(jbor), nbmabo, norie1,&
                                         ntrait, reorie, 0, [0])
                             call jedetr('&&CHVENO.PRIN')
                             call jedetr('&&CHVENO.BORD')
                         endif
                         call jedetr('&&CHVENO.MAILLE_BORD')
                     else
-                        call ornorm(nomma, nume_maille, nbobj, reorie, norie2)
+                        call ornorm(mesh, nume_maille, nbobj, reorie, norie2)
                     endif
                     norien = norie1 + norie2
                     if (norien .ne. 0) then
@@ -375,7 +371,6 @@ subroutine chveno(fonree, noma, nomo)
             end do
 200         continue
         end do
-100     continue
     end do
 !
     if (ier .ne. 0) then

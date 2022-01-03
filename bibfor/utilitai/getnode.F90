@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
                    nb_node, model, suffix, elem_excl)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -32,17 +31,15 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: mesh
-    character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    character(len=1), intent(in) :: stop_void
-    integer, intent(out) :: nb_node
-    character(len=24), intent(in) :: list_node
-    character(len=8), intent(in), optional :: model
-    character(len=*), intent(in), optional :: suffix
-    aster_logical, intent(in), optional :: elem_excl
+character(len=8), intent(in) :: mesh
+character(len=16), intent(in) :: keywordfact
+integer, intent(in) :: iocc
+character(len=1), intent(in) :: stop_void
+integer, intent(out) :: nb_node
+character(len=24), intent(in) :: list_node
+character(len=8), intent(in), optional :: model
+character(len=*), intent(in), optional :: suffix
+aster_logical, intent(in), optional :: elem_excl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,9 +95,8 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
     list_lect = '&&LIST_LECT'
     list_excl = '&&LIST_EXCL'
     nb_node = 0
@@ -118,41 +114,30 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
     if (present(elem_excl)) then
         l_read_elem = .not.elem_excl
     endif
-!
+
 ! - Read nodes
-!
     nb_mocl = 0
     if (l_read_elem) then
         keyword = 'GROUP_MA'//suffix_name
-        if (getexm(keywordfact,keyword) .eq. 1) then
-            nb_mocl = nb_mocl + 1
-            moclm(nb_mocl) = keyword
-            typmcl(nb_mocl) = 'GROUP_MA'
-        endif
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl) = keyword
+        typmcl(nb_mocl) = 'GROUP_MA'
         keyword = 'MAILLE'//suffix_name
-        if (getexm(keywordfact,keyword) .eq. 1) then
-            nb_mocl = nb_mocl + 1
-            moclm(nb_mocl) = keyword
-            typmcl(nb_mocl) = 'MAILLE'
-        endif
-    endif
-    if (getexm(keywordfact,'TOUT') .eq. 1) then
         nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = 'TOUT'
-        typmcl(nb_mocl) = 'TOUT'
+        moclm(nb_mocl) = keyword
+        typmcl(nb_mocl) = 'MAILLE'
     endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = 'TOUT'
+    typmcl(nb_mocl) = 'TOUT'
     keyword = 'GROUP_NO'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'GROUP_NO'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'GROUP_NO'
     keyword = 'NOEUD'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'NOEUD'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'NOEUD'
     if (nb_mocl .ne. 0) then
         call reliem(model_name, mesh, 'NU_NOEUD', keywordfact, iocc,&
                     nb_mocl, moclm, typmcl, list_lect, nb_lect)
@@ -163,30 +148,22 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node,&
     nb_mocl = 0
     if (l_read_elem) then
         keyword = 'SANS_GROUP_MA'//suffix_name
-        if (getexm(keywordfact,keyword) .eq. 1) then
-            nb_mocl = nb_mocl + 1
-            moclm(nb_mocl) = keyword
-            typmcl(nb_mocl) = 'GROUP_MA'
-        endif
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl) = keyword
+        typmcl(nb_mocl) = 'GROUP_MA'
         keyword = 'SANS_MAILLE'//suffix_name
-        if (getexm(keywordfact,keyword) .eq. 1) then
-            nb_mocl = nb_mocl + 1
-            moclm(nb_mocl) = keyword
-            typmcl(nb_mocl) = 'MAILLE'
-        endif
+        nb_mocl = nb_mocl + 1
+        moclm(nb_mocl) = keyword
+        typmcl(nb_mocl) = 'MAILLE'
     endif
     keyword = 'SANS_GROUP_NO'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'GROUP_NO'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'GROUP_NO'
     keyword = 'SANS_NOEUD'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'NOEUD'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'NOEUD'
     if (nb_mocl .ne. 0) then
         call reliem(' ', mesh, 'NU_NOEUD', keywordfact, iocc,&
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)

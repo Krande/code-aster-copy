@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
                    nb_elem, suffix     , model, l_keep_propz, l_allz)
 !
-    implicit none
+implicit none
 !
-#include "asterc/getexm.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/isParallelMesh.h"
@@ -33,17 +32,16 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-!
-    character(len=8), intent(in) :: mesh
-    character(len=*), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    character(len=1), intent(in) :: stop_void
-    integer, intent(out) :: nb_elem
-    character(len=24), intent(in) :: list_elem
-    character(len=8), intent(in), optional :: model
-    character(len=*), intent(in), optional :: suffix
-    aster_logical, optional, intent(in) :: l_keep_propz
-    aster_logical, optional, intent(in) :: l_allz
+character(len=8), intent(in) :: mesh
+character(len=*), intent(in) :: keywordfact
+integer, intent(in) :: iocc
+character(len=1), intent(in) :: stop_void
+integer, intent(out) :: nb_elem
+character(len=24), intent(in) :: list_elem
+character(len=8), intent(in), optional :: model
+character(len=*), intent(in), optional :: suffix
+aster_logical, optional, intent(in) :: l_keep_propz
+aster_logical, optional, intent(in) :: l_allz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,9 +99,8 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
     list_lect   = '&&LIST_LECT'
     list_excl   = '&&LIST_EXCL'
     nb_elem     = 0
@@ -131,23 +128,17 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 ! - Read elements
 !
     nb_mocl = 0
-    if (getexm(keywordfact,'TOUT') .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = 'TOUT'
-        typmcl(nb_mocl) = 'TOUT'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = 'TOUT'
+    typmcl(nb_mocl) = 'TOUT'
     keyword = 'GROUP_MA'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'GROUP_MA'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'GROUP_MA'
     keyword = 'MAILLE'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'MAILLE'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'MAILLE'
     if (nb_mocl .ne. 0) then
         call reliem(model_name, mesh, 'NU_MAILLE', keywordfact, iocc,&
                     nb_mocl, moclm, typmcl, list_lect, nb_lect, l_keep_prop, l_all)
@@ -157,22 +148,17 @@ subroutine getelem(mesh   , keywordfact, iocc , stop_void, list_elem,&
 !
     nb_mocl = 0
     keyword = 'SANS_GROUP_MA'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'GROUP_MA'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'GROUP_MA'
     keyword = 'SANS_MAILLE'//suffix_name
-    if (getexm(keywordfact,keyword) .eq. 1) then
-        nb_mocl = nb_mocl + 1
-        moclm(nb_mocl) = keyword
-        typmcl(nb_mocl) = 'MAILLE'
-    endif
+    nb_mocl = nb_mocl + 1
+    moclm(nb_mocl) = keyword
+    typmcl(nb_mocl) = 'MAILLE'
     if (nb_mocl .ne. 0) then
         call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                     nb_mocl, moclm, typmcl, list_excl, nb_excl)
     endif
-
 !
 ! - Access to list of elements
 !

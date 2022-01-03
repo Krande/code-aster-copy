@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine char_read_tran(keywordfact , iocc      , ndim,&
                           l_tran_     , tran_     ,&
                           l_cent_     , cent_     ,&
@@ -24,22 +24,20 @@ subroutine char_read_tran(keywordfact , iocc      , ndim,&
 implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getexm.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
 !
-!
-    character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    integer, intent(in) :: ndim
-    aster_logical, optional, intent(out) :: l_tran_
-    real(kind=8), optional, intent(out) :: tran_(3)
-    aster_logical, optional, intent(out) :: l_cent_
-    real(kind=8), optional, intent(out) :: cent_(3)
-    aster_logical, optional, intent(out) :: l_angl_naut_
-    real(kind=8), optional, intent(out) :: angl_naut_(3)
+character(len=16), intent(in) :: keywordfact
+integer, intent(in) :: iocc
+integer, intent(in) :: ndim
+aster_logical, optional, intent(out) :: l_tran_
+real(kind=8), optional, intent(out) :: tran_(3)
+aster_logical, optional, intent(out) :: l_cent_
+real(kind=8), optional, intent(out) :: cent_(3)
+aster_logical, optional, intent(out) :: l_angl_naut_
+real(kind=8), optional, intent(out) :: angl_naut_(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,9 +66,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_tran         = .false.
-    l_angl_naut    = .false.
-    l_cent         = .false.
+    l_tran         = ASTER_FALSE
+    l_angl_naut    = ASTER_FALSE
+    l_cent         = ASTER_FALSE
     tran(1:3)      = 0.d0
     cent(1:3)      = 0.d0
     angl_naut(1:3) = 0.d0
@@ -79,58 +77,49 @@ implicit none
     else
         nangmx = 1
     endif
-!
+
 ! - Translation
-!
-    if (getexm(keywordfact,'TRAN') .eq. 1) then
-        call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=0, nbret=ntran)
-        ntran = -ntran
-        if (ntran .ne. 0) then
-            l_tran = .true.
-            if (ntran .ne. ndim) then
-                vali(1) = ndim
-                vali(2) = ndim
-                call utmess('F', 'CHARGES2_42', sk='TRAN', ni=2, vali=vali)
-            endif
-            call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=ntran, vect=tran)
+    call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=0, nbret=ntran)
+    ntran = -ntran
+    if (ntran .ne. 0) then
+        l_tran = ASTER_TRUE
+        if (ntran .ne. ndim) then
+            vali(1) = ndim
+            vali(2) = ndim
+            call utmess('F', 'CHARGES2_42', sk='TRAN', ni=2, vali=vali)
         endif
+        call getvr8(keywordfact, 'TRAN', iocc=iocc, nbval=ntran, vect=tran)
     endif
-!
+
 ! - Rotation
-!
-    if (getexm(keywordfact,'CENTRE') .eq. 1) then
-        call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=0, nbret=ncent)
-        ncent = -ncent
-        if (ncent .ne. 0) then
-            l_cent = .true.
-            if (ncent .ne. ndim) then
-                vali(1) = ndim
-                vali(2) = ndim
-                call utmess('F', 'CHARGES2_42', sk='CENTRE', ni=2, vali=vali)
-            endif
-            call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=ncent, vect=cent)
+    call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=0, nbret=ncent)
+    ncent = -ncent
+    if (ncent .ne. 0) then
+        l_cent = ASTER_TRUE
+        if (ncent .ne. ndim) then
+            vali(1) = ndim
+            vali(2) = ndim
+            call utmess('F', 'CHARGES2_42', sk='CENTRE', ni=2, vali=vali)
         endif
+        call getvr8(keywordfact, 'CENTRE', iocc=iocc, nbval=ncent, vect=cent)
     endif
 !
-    if (getexm(keywordfact,'ANGL_NAUT') .eq. 1) then
-        call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangl)
-        nangl = -nangl
-        if (nangl .ne. 0) then
-            l_angl_naut = .true.
-            if (nangl .ne. nangmx) then
-                vali(1) = nangmx
-                vali(2) = ndim
-                call utmess('F', 'CHARGES2_42', sk='ANGL_NAUT', ni=2, vali=vali)
-            endif
-            call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=nangmx, vect=angl_naut)
-            do i = 1, 3
-                angl_naut(i) = angl_naut(i)*r8dgrd()
-            end do
+    call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=0, nbret=nangl)
+    nangl = -nangl
+    if (nangl .ne. 0) then
+        l_angl_naut = .true.
+        if (nangl .ne. nangmx) then
+            vali(1) = nangmx
+            vali(2) = ndim
+            call utmess('F', 'CHARGES2_42', sk='ANGL_NAUT', ni=2, vali=vali)
         endif
+        call getvr8(keywordfact, 'ANGL_NAUT', iocc=iocc, nbval=nangmx, vect=angl_naut)
+        do i = 1, 3
+            angl_naut(i) = angl_naut(i)*r8dgrd()
+        end do
     endif
-!
+
 ! - Copy output
-!
     if (present(l_tran_)) then
         l_tran_    = l_tran
         tran_(1:3) = tran(1:3)
