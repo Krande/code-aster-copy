@@ -15,57 +15,47 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cm2027(main, maout, nbma, lima, prefix, ndinit)
+!
+subroutine cmraff(mesh_in, mesh_out, level, info)
 !
 use crea_maillage_module
 !
-    implicit none
+implicit none
+!
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer :: ndinit, nbma, lima(nbma)
-    character(len=8) :: main, maout, prefix
+character(len=8), intent(in) :: mesh_in, mesh_out
+integer, intent(in) :: level, info
 !
 ! ----------------------------------------------------------------------
-!         TRANSFORMATION DES MAILLES HEXA20 HEXA27
+!         RAFFINEMENT UNIFORME DES MAILLES
 ! ----------------------------------------------------------------------
-! IN        MAIN   K8  NOM DU MAILLAGE INITIAL
-! IN/JXOUT  MAOUT  K8  NOM DU MAILLAGE TRANSFORME
-! IN        NBMA    I  NOMBRE DE MAILLES A TRAITER
-! IN        LIMA    I  NUMERO ET TYPE DES MAILLES A TRAITER
-! IN        PREFIX K8  PREFIXE DU NOM DES NOEUDS CREES (EX: N, NO, ...)
-! IN        NDINIT  I  NUMERO INITIAL DES NOEUDS CREES
+! IN        mesh_in   K8  NOM DU MAILLAGE INITIAL
+! IN/JXOUT  mesh_out  K8  NOM DU MAILLAGE TRANSFORME
 ! ----------------------------------------------------------------------
 !
+type(Mmesh) :: mesh_raff
 !
-    type(Mmesh) :: mesh_conv
-    character(len=8) :: conv_type(2)
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
 ! - Create new mesh
 !
-    call mesh_conv%init(main)
+    call mesh_raff%init(mesh_in, info)
 !
-! - Add conversion
+! - Refine
 !
-    conv_type = ["QUAD8", "QUAD9"]
-    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
-    conv_type = ["HEXA20", "HEXA27"]
-    call mesh_conv%converter%add_conversion(conv_type(1), conv_type(2))
-!
-! - Convert cells
-!
-    call mesh_conv%convert_cells(nbma, lima, prefix, ndinit)
+    call mesh_raff%refine(level)
 !
 ! - Copy mesh
 !
-    call mesh_conv%copy_mesh(maout)
+    call mesh_raff%copy_mesh(mesh_out)
 !
 ! - Cleaning
 !
-    call mesh_conv%clean()
+    call mesh_raff%clean()
 !
     call jedema()
 end subroutine

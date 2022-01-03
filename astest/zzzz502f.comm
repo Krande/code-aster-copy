@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',), )
 
-pMesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+pMesh0 = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", PARTITIONNEUR="PTSCOTCH", INFO_MED=1)
+
+pMesh1 = CREA_MAILLAGE(MAILLAGE=pMesh0, QUAD_LINE=_F(TOUT="OUI"))
+
+pMesh = CREA_MAILLAGE(MAILLAGE=pMesh1, LINE_QUAD=_F(TOUT="OUI"))
 
 
 model = AFFE_MODELE(MAILLAGE=pMesh,
@@ -45,7 +49,7 @@ LINSTC=DEFI_LIST_REEL(VALE=(0., 1.0,),)
 RESU=STAT_NON_LINE(MODELE=model,
                       CHAM_MATER=MATE,
                       EXCIT=_F(CHARGE=CHAR),
-                      SOLVEUR = _F(METHODE='MUMPS',),
+                      SOLVEUR=_F(METHODE="PETSC", PRE_COND="ML", RESI_RELA=1e-10, ),
                       INCREMENT=_F(LIST_INST=LINSTC,),
                      )
 

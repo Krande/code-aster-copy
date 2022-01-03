@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,19 @@ implicit none
 !
 private
 !
+#include "asterc/asmpi_comm.h"
+#include "asterc/asmpi_recv_i.h"
+#include "asterc/asmpi_recv_r.h"
+#include "asterc/asmpi_send_i.h"
+#include "asterc/asmpi_send_r.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_comm_vect.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/codlet.h"
-#include "asterfort/cpclma.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jeccta.h"
@@ -56,9 +62,7 @@ private
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! HHO - generic
-!
-! Module to create a mesh for HHO
+! Module to create or modify a mesh.
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,8 +88,12 @@ private
         integer :: type = 0
         integer :: dim = 0
         integer :: id = 0
+        integer :: ss_id = 0
         integer :: nodes(27) = 0
+        integer :: child(10) = 0
+        integer :: nb_child = 0
         character(len=8) :: name = ' '
+        aster_logical :: keep = ASTER_TRUE
     end type
 !
     type Mvolume
@@ -107,7 +115,6 @@ private
         integer :: type = 0
         integer :: nodes(4) = 0
         integer :: nnos_sort(2) = 0
-!        integer :: nb_faces = 0, faces(10) = 0, max_faces = 10
     end type
 !
     type Mnode
@@ -116,6 +123,7 @@ private
         aster_logical :: keep = ASTER_FALSE
         aster_logical :: orphelan = ASTER_FALSE
         character(len=8) :: name = ' '
+        integer :: owner = -1
 ! used to improve search of edges and faces
 ! it could be improved a lot to decrease memory consumption
         integer :: max_faces = 0, nb_faces = 0
@@ -126,7 +134,7 @@ private
 !
     type Mmesh
         integer :: nb_nodes = 0, nb_edges = 0, nb_faces = 0, nb_volumes = 0, nb_cells = 0
-        integer :: nb_total_nodes = 0
+        integer :: nb_total_nodes = 0, nb_total_cells = 0
         integer :: max_nodes = 0, max_edges = 0, max_faces = 0, max_volumes = 0, max_cells = 0
         integer :: dim_mesh = 0
 !
@@ -137,39 +145,50 @@ private
         type(Mcell), allocatable :: cells(:)
         type(Mconverter) :: converter
 !
+        integer :: nb_level = 0
+!
         character(len=8) :: mesh_in = ' '
         character(len=19) :: connex_in = ' '
 !
         character(len=8)  :: node_prefix = 'N'
         integer :: node_index = 1
 !
+        character(len=8)  :: cell_prefix = 'M'
+        integer :: cell_index = 1
+!
         integer, pointer :: v_typema(:) => null()
         aster_logical :: debug = ASTER_FALSE
+        aster_logical :: isHPC
         integer :: info = 0
 ! ----- member functions
         contains
-        procedure, public, pass :: init => init_mesh
-        procedure, public, pass :: clean => clean_mesh
-        procedure, public, pass :: copy_mesh
-        procedure, public, pass :: convert_cells
         procedure, public, pass :: add_cell
         procedure, public, pass :: check_mesh
+        procedure, public, pass :: clean => clean_mesh
+        procedure, public, pass :: convert_cells
+        procedure, public, pass :: copy_mesh
         procedure, public, pass :: create_joints
-        procedure, private, pass :: add_volume
-        procedure, private, pass :: add_face
+        procedure, public, pass :: init => init_mesh
+        procedure, public, pass :: refine
         procedure, private, pass :: add_edge
+        procedure, private, pass :: add_face
         procedure, private, pass :: add_node
         procedure, private, pass :: add_point1
+        procedure, private, pass :: add_volume
+        procedure, private, pass :: barycenter
+        procedure, private, pass :: convert_edge
+        procedure, private, pass :: convert_face
+        procedure, private, pass :: convert_volume
+        procedure, private, pass :: copy_group_ma
+        procedure, private, pass :: copy_group_no
         procedure, private, pass :: find_edge
         procedure, private, pass :: find_face
-        procedure, private, pass :: convert_volume
-        procedure, private, pass :: convert_face
-        procedure, private, pass :: convert_edge
-        procedure, private, pass :: barycenter
-        procedure, private, pass :: update_nodes
-        procedure, private, pass :: copy_group_no
         procedure, private, pass :: increase_memory
         procedure, private, pass :: numbering_nodes
+        procedure, private, pass :: owner_cell
+        procedure, private, pass :: refine_cell
+        procedure, private, pass :: sub_cells
+        procedure, private, pass :: update
     end type
 !
 !===================================================================================================
@@ -177,7 +196,7 @@ private
 !===================================================================================================
 !
     public :: Medge, Mface, Mcell, Mmesh, Mconverter
-    private :: circ_perm, numbering_edge, numbering_face
+    private :: circ_perm, numbering_edge, numbering_face, dividing_cell
 contains
 !
 !===================================================================================================
@@ -464,13 +483,14 @@ contains
 ! The idea is to read a given mesh (mesh_in). Internally, all the cells are stored with all nodes
 ! possibles for a cell. The internal cells stored are POI1, SEG3, SEG4, TRIA7, QUAD9,
 ! TETRA15, HEXA27, PENTA21 and PYRAM19
-! For an other cell type is only necessary to know which are the nodes to use
+! For an other cell type is only necessary to know which nodes to use
 ! --------------------------------------------------------------------------------------------------
             integer, pointer :: v_mesh_dime(:) => null()
+            integer, pointer :: v_noex(:) => null()
             real(kind=8), pointer :: v_coor(:) => null()
             character(len=8) :: name
             integer :: nb_elem_mesh, nb_node_mesh, i_node
-            integer :: i_cell, nno, node_id
+            integer :: i_cell, nno, node_id, owner
             real(kind=8):: start, end
 !
             call jemarq()
@@ -484,6 +504,8 @@ contains
                 print*, "Creating mesh..."
                 call cpu_time(start)
             end if
+!
+            this%isHPC = isParallelMesh(mesh_in)
 !
             call jeveuo(mesh_in//'.DIME', 'L', vi = v_mesh_dime)
             this%dim_mesh = v_mesh_dime(6)
@@ -506,13 +528,20 @@ contains
 !
             call jeveuo(mesh_in//'.TYPMAIL', 'L', vi=this%v_typema)
             call jeveuo(mesh_in// '.COORDO    .VALE', 'L', vr = v_coor)
+            if(this%isHPC) then
+                call jeveuo(mesh_in// '.NOEX', 'L', vi = v_noex)
+            endif
 !
 ! --- Fill mesh
 !
             this%nb_total_nodes = this%nb_nodes
+            owner = 0
             do i_node = 1, nb_node_mesh
                 call jenuno(jexnum(mesh_in//'.NOMNOE', i_node), name)
-                node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), name)
+                if(this%isHPC) then
+                    owner = v_noex(i_node)
+                endif
+                node_id = this%add_node(v_coor(3*(i_node-1)+1:3*(i_node-1)+3), owner, name)
                 ASSERT(i_node == node_id)
                 this%nodes(node_id)%orphelan = ASTER_TRUE
                 this%nodes(node_id)%max_faces = 30
@@ -526,6 +555,7 @@ contains
             end do
 !
 ! --- Search orphelan nodes - to keep at the end
+            this%nb_total_cells = this%nb_cells
             do i_cell = 1, this%nb_cells
                 nno = this%converter%nno(this%cells(i_cell)%type)
                 do i_node = 1, nno
@@ -859,6 +889,107 @@ contains
 !
 ! ==================================================================================================
 !
+    subroutine dividing_cell(cell_type, nb_sub, sub_type, sub_loc)
+!
+        implicit none
+!
+        integer, intent(in) :: cell_type
+        integer, intent(out) :: nb_sub, sub_type(8), sub_loc(8,8)
+! --------------------------------------------------------------------------------------------------
+! Get subdivision of a cell (node connectivity)
+!
+! --------------------------------------------------------------------------------------------------
+        nb_sub = 0
+        sub_type = 0
+        sub_loc = 0
+!
+        if(cell_type == MT_SEG2 .or. cell_type == MT_SEG3) then
+            nb_sub = 2
+            sub_type(1:nb_sub) = MT_SEG2
+            sub_loc(1:2,1) = [1,3]
+            sub_loc(1:2,2) = [2,3]
+        elseif(cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
+            nb_sub = 4
+            sub_type(1:nb_sub) = MT_QUAD4
+            sub_loc(1:4,1) = [1,5,9,8]
+            sub_loc(1:4,2) = [2,6,9,5]
+            sub_loc(1:4,3) = [3,7,9,6]
+            sub_loc(1:4,4) = [4,8,9,7]
+        elseif(cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
+            nb_sub = 4
+            sub_type(1:nb_sub) = MT_TRIA3
+            sub_loc(1:3,1) = [1,4,6]
+            sub_loc(1:3,2) = [2,5,4]
+            sub_loc(1:3,3) = [3,6,5]
+            sub_loc(1:3,4) = [4,5,6]
+        elseif(cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
+            nb_sub = 8
+            sub_type(1:nb_sub) = MT_HEXA8
+            sub_loc(1:8,1) = [1,9,21,12,13,22,27,25]
+            sub_loc(1:8,2) = [2,10,21,9,14,23,27,22]
+            sub_loc(1:8,3) = [3,11,21,10,15,24,27,23]
+            sub_loc(1:8,4) = [4,12,21,11,16,25,27,24]
+            sub_loc(1:8,5) = [13,22,27,25,5,17,26,20]
+            sub_loc(1:8,6) = [14,23,27,22,6,18,26,17]
+            sub_loc(1:8,7) = [15,24,27,23,7,19,26,18]
+            sub_loc(1:8,8) = [16,25,27,24,8,20,26,19]
+        elseif(cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
+                cell_type == MT_TETRA15) then
+            nb_sub = 8
+            sub_type(1:nb_sub) = MT_TETRA4
+            sub_loc(1:4,1) = [1,5,7,8]
+            sub_loc(1:4,2) = [2,6,5,9]
+            sub_loc(1:4,3) = [3,10,7,6]
+            sub_loc(1:4,4) = [4,8,10,9]
+            sub_loc(1:4,5) = [5,6,7,9]
+            sub_loc(1:4,6) = [6,9,10,7]
+            sub_loc(1:4,7) = [8,9,5,7]
+            sub_loc(1:4,8) = [8,10,9,7]
+        elseif(cell_type == MT_PENTA6 .or. cell_type == MT_PENTA15 .or. cell_type == MT_PENTA18 &
+                .or. cell_type == MT_PENTA21) then
+            nb_sub = 8
+            sub_type(1:nb_sub) = MT_PENTA6
+            sub_loc(1:6,1) = [1,7,9,10,16,18]
+            sub_loc(1:6,2) = [7,2,8,16,11,17]
+            sub_loc(1:6,3) = [9,7,8,18,16,17]
+            sub_loc(1:6,4) = [9,8,3,18,17,12]
+            sub_loc(1:6,5) = [10,16,18,4,13,15]
+            sub_loc(1:6,6) = [16,11,17,13,5,14]
+            sub_loc(1:6,7) = [18,16,17,15,13,14]
+            sub_loc(1:6,8) = [18,17,12,15,14,6]
+        elseif(cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
+                cell_type == MT_PYRAM19) then
+            ASSERT(ASTER_FALSE)
+        else
+            ASSERT(ASTER_FALSE)
+        end if
+
+    end subroutine
+!
+! ==================================================================================================
+!
+    function owner_cell(this, nb_nodes, nodes)
+!
+        implicit none
+!
+        class(Mmesh), intent(in) :: this
+        integer, intent(in) :: nb_nodes
+        integer, intent(in) :: nodes(:)
+        integer :: owner_cell
+! -----------------------------------------------------------------------------------
+! Add special treatment
+        integer :: i_node
+!
+        owner_cell = this%nodes(nodes(1))%owner
+!
+        do i_node = 2, nb_nodes
+            owner_cell = min(owner_cell, this%nodes(nodes(i_node))%owner)
+        end do
+!
+    end function
+!
+! ==================================================================================================
+!
     subroutine add_cell(this, cell_id)
 !
         implicit none
@@ -869,8 +1000,9 @@ contains
             integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index
             integer, pointer :: v_connex(:) => null()
 !
-            ASSERT(this%nb_cells < this%max_cells)
+            ASSERT(this%nb_total_cells < this%max_cells)
             this%nb_cells = this%nb_cells + 1
+            this%nb_total_cells = this%nb_total_cells + 1
             cell_type = this%converter%map_type(this%v_typema(cell_id))
             cell_dim = this%converter%dim(cell_type)
 !
@@ -879,7 +1011,7 @@ contains
             cell_nodes(1:nb_nodes) = v_connex(1:nb_nodes)
 !
             if(this%debug) then
-                print*, "Cell ", this%nb_cells, ": ", cell_type, &
+                print*, "Cell ", this%nb_total_cells, ": ", cell_type, &
                 this%converter%name(cell_type), cell_dim
             end if
 !
@@ -895,11 +1027,13 @@ contains
                 ASSERT(ASTER_FALSE)
             end if
 !
-            this%cells(this%nb_cells)%type = cell_type
-            this%cells(this%nb_cells)%dim = cell_dim
-            this%cells(this%nb_cells)%id = cell_index
-            this%cells(this%nb_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
-            call jenuno(jexnum(this%mesh_in//'.NOMMAI', cell_id), this%cells(this%nb_cells)%name)
+            this%cells(this%nb_total_cells)%type = cell_type
+            this%cells(this%nb_total_cells)%dim = cell_dim
+            this%cells(this%nb_total_cells)%id = this%nb_total_cells
+            this%cells(this%nb_total_cells)%ss_id = cell_index
+            this%cells(this%nb_total_cells)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
+            call jenuno(jexnum(this%mesh_in//'.NOMMAI', cell_id), &
+                this%cells(this%nb_total_cells)%name)
 !
     end subroutine
 !
@@ -960,6 +1094,7 @@ contains
                 print*, "- Find: ", find
                 print*, "- Type: ", this%converter%name(this%volumes(volume_id)%type), &
                                     "(",this%volumes(volume_id)%type, ")"
+                print*, "- Owner: ", this%owner_cell(nno, this%volumes(volume_id)%nodes)
                 print*, "- Nodes: ", this%volumes(volume_id)%nodes
                 print*, "- Edges: ", this%volumes(volume_id)%edges
                 print*, "- Faces: ", this%volumes(volume_id)%faces
@@ -1017,14 +1152,19 @@ contains
                 end do
 !
                 if(this%nodes(nnos_sort(1))%nb_faces >= this%nodes(nnos_sort(1))%max_faces) then
-                    old_size = this%nodes(nnos_sort(1))%max_faces
-                    allocate(new_faces(old_size))
-                    new_faces(1:old_size) = this%nodes(nnos_sort(1))%faces(1:old_size)
-                    deallocate(this%nodes(nnos_sort(1))%faces)
-                    allocate(this%nodes(nnos_sort(1))%faces(2*old_size))
-                    this%nodes(nnos_sort(1))%faces(1:old_size) = new_faces(1:old_size)
-                    deallocate(new_faces)
-                    this%nodes(nnos_sort(1))%max_faces = 2 * old_size
+                    if(this%nodes(nnos_sort(1))%max_faces > 0) then
+                        old_size = this%nodes(nnos_sort(1))%max_faces
+                        allocate(new_faces(old_size))
+                        new_faces(1:old_size) = this%nodes(nnos_sort(1))%faces(1:old_size)
+                        deallocate(this%nodes(nnos_sort(1))%faces)
+                        allocate(this%nodes(nnos_sort(1))%faces(2*old_size))
+                        this%nodes(nnos_sort(1))%faces(1:old_size) = new_faces(1:old_size)
+                        deallocate(new_faces)
+                        this%nodes(nnos_sort(1))%max_faces = 2 * old_size
+                    else
+                        this%nodes(nnos_sort(1))%max_faces = 30
+                        allocate(this%nodes(nnos_sort(1))%faces(30))
+                    end if
                 end if
                 this%nodes(nnos_sort(1))%nb_faces = this%nodes(nnos_sort(1))%nb_faces + 1
                 this%nodes(nnos_sort(1))%faces(this%nodes(nnos_sort(1))%nb_faces) = face_id
@@ -1037,6 +1177,7 @@ contains
                 print*, "- Find: ", find
                 print*, "- Type: ", this%converter%name(this%faces(face_id)%type), &
                                     "(",this%faces(face_id)%type, ")"
+                print*, "- Owner: ", this%owner_cell(nno, this%faces(face_id)%nodes)
                 print*, "- Nodes: ", this%faces(face_id)%nodes
                 print*, "- NNOS: ", this%faces(face_id)%nnos_sort
                 print*, "- Edges: ", this%faces(face_id)%edges
@@ -1078,14 +1219,19 @@ contains
                 this%edges(edge_id)%nnos_sort = nnos_sort
 !
                 if(this%nodes(nnos_sort(1))%nb_edges >= this%nodes(nnos_sort(1))%max_edges) then
-                    old_size = this%nodes(nnos_sort(1))%max_edges
-                    allocate(new_edges(old_size))
-                    new_edges(1:old_size) = this%nodes(nnos_sort(1))%edges(1:old_size)
-                    deallocate(this%nodes(nnos_sort(1))%edges)
-                    allocate(this%nodes(nnos_sort(1))%edges(2*old_size))
-                    this%nodes(nnos_sort(1))%edges(1:old_size) = new_edges(1:old_size)
-                    deallocate(new_edges)
-                    this%nodes(nnos_sort(1))%max_edges = 2 * old_size
+                    if(this%nodes(nnos_sort(1))%max_edges > 0) then
+                        old_size = this%nodes(nnos_sort(1))%max_edges
+                        allocate(new_edges(old_size))
+                        new_edges(1:old_size) = this%nodes(nnos_sort(1))%edges(1:old_size)
+                        deallocate(this%nodes(nnos_sort(1))%edges)
+                        allocate(this%nodes(nnos_sort(1))%edges(2*old_size))
+                        this%nodes(nnos_sort(1))%edges(1:old_size) = new_edges(1:old_size)
+                        deallocate(new_edges)
+                        this%nodes(nnos_sort(1))%max_edges = 2 * old_size
+                    else
+                        this%nodes(nnos_sort(1))%max_edges = 30
+                        allocate(this%nodes(nnos_sort(1))%edges(30))
+                    end if
                 end if
                 this%nodes(nnos_sort(1))%nb_edges = this%nodes(nnos_sort(1))%nb_edges + 1
                 this%nodes(nnos_sort(1))%edges(this%nodes(nnos_sort(1))%nb_edges) = edge_id
@@ -1098,6 +1244,7 @@ contains
                 print*, "- Find: ", find
                 print*, "- Type: ", this%converter%name(this%edges(edge_id)%type), &
                                     "(",this%edges(edge_id)%type, ")"
+                print*, "- Owner: ", this%owner_cell(3, this%edges(edge_id)%nodes)
                 print*, "- Nodes: ", this%edges(edge_id)%nodes
                 print*, "- NNOS: ", this%edges(edge_id)%nnos_sort
             end if
@@ -1130,12 +1277,13 @@ contains
 !
 ! ==================================================================================================
 !
-    function add_node(this, coor, name) result(node_id)
+    function add_node(this, coor, owner, name) result(node_id)
 !
         implicit none
 !
             class(Mmesh), intent(inout) :: this
             real(kind=8), intent(in) :: coor(3)
+            integer, intent(in) :: owner
             character(len=8), intent(in), optional :: name
             integer :: node_id
 ! ----------------------------------------------------------------------
@@ -1150,6 +1298,7 @@ contains
             this%nodes(node_id)%id = node_id
             this%nodes(node_id)%keep = ASTER_TRUE
             this%nodes(node_id)%coor(1:3) = coor
+            this%nodes(node_id)%owner = owner
             if(present(name)) then
                 this%nodes(node_id)%name = name
             else
@@ -1164,22 +1313,33 @@ contains
 !
         implicit none
 !
-            class(Mmesh), intent(in) :: this
+            class(Mmesh), intent(inout) :: this
             character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
             character(len=24) :: nommai, nomnoe, cooval, coodsc, cooref, grpnoe
             character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
+            character(len=32) :: name
             character(len=4) :: dimesp
-            integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret
+            integer :: i_node, nno, i_cell, ntgeo, nbnoma, node_id, iret, nb_no_loc
+            integer :: rank, nbproc, i_proc, deca, cell_id
+            mpi_int :: mrank, msize
             real(kind=8):: start, end
             real(kind=8), pointer :: v_coor(:) => null()
             integer, pointer :: v_int(:) => null()
             integer, pointer :: v_connex(:) => null()
+            integer, pointer :: v_noex(:) => null()
+            integer, pointer :: v_maex(:) => null()
+            integer, pointer :: v_nuloc(:) => null()
+            integer, pointer :: v_nulogl(:) => null()
             character(len=24), pointer :: v_k24(:) => null()
 !
             call jemarq()
 !
             call this%check_mesh()
+!
+            call asmpi_info(rank = mrank, size = msize)
+            rank = to_aster_int(mrank)
+            nbproc = to_aster_int(msize)
 !
             if(this%info >= 2) then
                 print*, "Copying mesh..."
@@ -1197,9 +1357,10 @@ contains
             call jeecra(nomnoe, 'NOMMAX', this%nb_nodes)
             do i_node = 1 , this%nb_total_nodes
                 if(this%nodes(i_node)%keep) then
-                    call jeexin(jexnom(nomnoe, this%nodes(i_node)%name), iret)
+                    name = jexnom(nomnoe, this%nodes(i_node)%name)
+                    call jeexin(name, iret)
                     if( iret == 0) then
-                        call jecroc(jexnom(nomnoe, this%nodes(i_node)%name))
+                        call jecroc(name)
                     else
                         call utmess('F', 'MESH2_3', sk=this%nodes(i_node)%name)
                     end if
@@ -1207,16 +1368,47 @@ contains
             end do
 ! ------ Copy coordinates
             call wkvect(cooval, 'G V R', this%nb_nodes*3, vr=v_coor)
+            if(this%isHPC) then
+                call wkvect(mesh_out//'.NOEX', 'G V I', this%nb_nodes, vi=v_noex)
+            end if
             call codent(this%dim_mesh, 'G', dimesp)
             call jeecra(cooval, 'DOCU', cval=dimesp)
             node_id = 0
+            nb_no_loc = 0
             do i_node = 1, this%nb_total_nodes
                 if(this%nodes(i_node)%keep) then
                     node_id = node_id + 1
                     ASSERT(node_id == this%nodes(i_node)%id)
                     v_coor(3*(node_id-1)+1:3*(node_id-1)+3) = this%nodes(i_node)%coor(1:3)
+                    if(this%isHPC) then
+                        v_noex(node_id) = this%nodes(i_node)%owner
+                        if(v_noex(node_id) == rank) then
+                            nb_no_loc = nb_no_loc + 1
+                        end if
+                    endif
                 end if
             end do
+            ASSERT(node_id == this%nb_nodes)
+! ------ Create Global numbering
+            if(this%isHPC) then
+                call wkvect('&&CREAMA.NOLOC', 'V V I', nbproc, vi=v_nuloc)
+                v_nuloc(rank+1) = nb_no_loc
+                call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc, vi=v_nuloc)
+                deca = 0
+                do i_proc = 1, rank
+                    deca = deca + v_nuloc(i_proc)
+                end do
+!
+                call wkvect(mesh_out//'.NULOGL', 'G V I', this%nb_nodes, vi=v_nulogl)
+                v_nulogl = -1
+                do i_node = 1, this%nb_nodes
+                    if(v_noex(i_node) == rank) then
+                        v_nulogl(i_node) = deca
+                        deca = deca + 1
+                    end if
+                end do
+                call jedetr('&&CREAMA.NOLOC')
+            end if
 ! ------ Type of GEOM_R field
             call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
             call wkvect(coodsc, 'G V I', 3, vi=v_int)
@@ -1233,40 +1425,53 @@ contains
 ! ------ Set names
             call jecreo(nommai, 'G N K8')
             call jeecra(nommai, 'NOMMAX', this%nb_cells)
-            do i_cell = 1, this%nb_cells
-                call jeexin(jexnom(nommai, this%cells(i_cell)%name), iret)
-                if( iret == 0) then
-                    call jecroc(jexnom(nommai, this%cells(i_cell)%name))
-                else
-                    call utmess('F', 'MESH2_2', sk=this%cells(i_cell)%name)
+            do i_cell = 1, this%nb_total_cells
+                if(this%cells(i_cell)%keep) then
+                    name = jexnom(nommai, this%cells(i_cell)%name)
+                    call jeexin(name, iret)
+                    if( iret == 0) then
+                        call jecroc(name)
+                    else
+                        call utmess('F', 'MESH2_2', sk=this%cells(i_cell)%name)
+                    end if
                 end if
             end do
 ! ------ Count total number of nodes (repeated)
             nbnoma = 0
-            do i_cell = 1, this%nb_cells
-                nbnoma = nbnoma + this%converter%nno(this%cells(i_cell)%type)
+            do i_cell = 1, this%nb_total_cells
+                if(this%cells(i_cell)%keep) then
+                    nbnoma = nbnoma + this%converter%nno(this%cells(i_cell)%type)
+                end if
             end do
 ! ------ Create connectivity
             call wkvect(typmai, 'G V I', this%nb_cells, vi=v_int)
             call jecrec(connex, 'G V I', 'NU', 'CONTIG', 'VARIABLE', this%nb_cells)
             call jeecra(connex, 'LONT', nbnoma)
+            if(this%isHPC) then
+                call wkvect(mesh_out//'.MAEX', 'G V I', this%nb_cells, vi=v_maex)
+            end if
 !
-            do i_cell = 1, this%nb_cells
-                v_int(i_cell) = this%converter%cata_type(this%cells(i_cell)%type)
-                nno = this%converter%nno(this%cells(i_cell)%type)
-                call jeecra(jexnum(connex, i_cell), 'LONMAX', nno)
-                call jeveuo(jexnum(connex, i_cell), 'E', vi=v_connex)
-                do i_node = 1, nno
-                    v_connex(i_node) = this%nodes(this%cells(i_cell)%nodes(i_node))%id
-                end do
+            do i_cell = 1, this%nb_total_cells
+                if(this%cells(i_cell)%keep) then
+                    cell_id = this%cells(i_cell)%id
+                    v_int(cell_id) = this%converter%cata_type(this%cells(i_cell)%type)
+                    nno = this%converter%nno(this%cells(i_cell)%type)
+                    call jeecra(jexnum(connex, cell_id), 'LONMAX', nno)
+                    call jeecra(jexnum(connex, cell_id), 'LONUTI', nno)
+                    call jeveuo(jexnum(connex, cell_id), 'E', vi=v_connex)
+                    do i_node = 1, nno
+                        v_connex(i_node) = this%nodes(this%cells(i_cell)%nodes(i_node))%id
+                    end do
+                    if(this%isHPC) then
+                        v_maex(cell_id) = this%owner_cell(nno, this%cells(i_cell)%nodes)
+                    end if
+                end if
             end do
-!
-            call jeccta(connex)
 !
 ! --- Create groups
 !
             call this%copy_group_no(grpnoe, gpptnn)
-            call cpclma(this%mesh_in, mesh_out, 'GROUPEMA', 'G')
+            call this%copy_group_ma(grpmai, gpptnm)
 !
 ! --- Create .DIME
 !
@@ -1274,6 +1479,10 @@ contains
             v_int(1)= this%nb_nodes
             v_int(3)= this%nb_cells
             v_int(6)= this%dim_mesh
+!
+! --- Create joint for ParallelMesh
+!
+            call this%create_joints(mesh_out)
 !
             if(this%info >= 2) then
                 call cpu_time(end)
@@ -1315,7 +1524,7 @@ contains
                 cell_id = list_cells(i_cell)
                 cell_dim = this%cells(cell_id)%dim
                 cell_type = this%cells(cell_id)%type
-                object_id = this%cells(cell_id)%id
+                object_id = this%cells(cell_id)%ss_id
 !
                 if(this%debug) then
                     print*, "Convert ", cell_id, ": ", this%cells(cell_id)%type, &
@@ -1350,7 +1559,7 @@ contains
                 end if
             end do
 ! --- Keep only necessary nodes
-            call this%update_nodes()
+            call this%update()
 !
             if(this%info >= 2) then
                 call cpu_time(end)
@@ -1371,7 +1580,7 @@ contains
             integer :: volu_type, volu_type_end
             integer :: nno, nno_end, node_id, i_face, i_node, face_type, face_nno
             integer :: nb_edges, edge_type(12), edge_loc(3,12), face_id
-            integer :: nb_faces, faces_type(6), face_loc(9,6), i_edge
+            integer :: nb_faces, faces_type(6), face_loc(9,6), i_edge, owner
 !
             volu_type = this%volumes(volu_id)%type
             nno = this%converter%nno(volu_type)
@@ -1407,7 +1616,9 @@ contains
                                     this%faces(face_id)%nodes(face_nno)
                 end do
 ! --- Add node at barycenter
-                node_id = this%add_node(this%barycenter(nno_end-1, this%volumes(volu_id)%nodes))
+                owner = this%owner_cell(nno_end-1, this%volumes(volu_id)%nodes)
+                node_id = this%add_node(this%barycenter(nno_end-1, this%volumes(volu_id)%nodes), &
+                                        owner)
                 this%volumes(volu_id)%nodes(nno_end) = node_id
             else
                 ASSERT(volu_type == volu_type_end)
@@ -1430,7 +1641,7 @@ contains
             class(Mmesh), intent(inout) :: this
             integer, intent(in) :: face_id
 ! ------------------------------------------------------------------
-            integer :: face_type, face_type_end
+            integer :: face_type, face_type_end, owner
             integer :: nno, nno_end, node_id, i_edge, i_node
 !
             face_type = this%faces(face_id)%type
@@ -1454,7 +1665,9 @@ contains
                     end do
                 end if
 ! --- Add node at the barycenter
-                node_id = this%add_node(this%barycenter(nno_end-1, this%faces(face_id)%nodes))
+                owner = this%owner_cell(nno_end-1, this%faces(face_id)%nodes)
+                node_id = this%add_node(this%barycenter(nno_end-1, this%faces(face_id)%nodes), &
+                                        owner)
                 this%faces(face_id)%nodes(nno_end) = node_id
             else
                 ASSERT(face_type == face_type_end)
@@ -1477,7 +1690,7 @@ contains
             class(Mmesh), intent(inout) :: this
             integer, intent(in) :: edge_id
 ! ------------------------------------------------------------------
-            integer :: edge_type, edge_type_end
+            integer :: edge_type, edge_type_end, owner
             integer :: nno, nno_end, node_id, i_node
 !
             edge_type = this%edges(edge_id)%type
@@ -1493,13 +1706,14 @@ contains
 !
             if(nno_end > nno) then
                 if(edge_type_end == MT_SEG3) then
-                    node_id = this%add_node(this%barycenter(2, this%edges(edge_id)%nodes))
+                    owner = this%owner_cell(2, this%edges(edge_id)%nodes)
+                    node_id = this%add_node(this%barycenter(2, this%edges(edge_id)%nodes), owner)
                     this%edges(edge_id)%nodes(3) = node_id
                 else
                     ASSERT(ASTER_FALSE)
-                    node_id = this%add_node([0.d0, 0.d0, 0.d0])
+                    node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
                     this%edges(edge_id)%nodes(3) = node_id
-                    node_id = this%add_node([0.d0, 0.d0, 0.d0]  )
+                    node_id = this%add_node([0.d0, 0.d0, 0.d0], -1)
                     this%edges(edge_id)%nodes(4) = node_id
                 end if
             else
@@ -1535,32 +1749,58 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine update_nodes(this)
+    subroutine update(this)
 !
         implicit none
 !
             class(Mmesh), intent(inout) :: this
 ! -----------------------------------------------------------------------
-            integer :: i_node, i_cell, nno, node_id
+            integer :: i_node, i_cell, nno, node_id, rank
+            mpi_int :: mrank, msize
+            aster_logical :: keep
             character(len=8) :: nume
+!
+            call asmpi_info(rank = mrank, size = msize)
+            rank = to_aster_int(mrank)
 !
             do i_node = 1, this%nb_total_nodes
                 this%nodes(i_node)%keep = ASTER_FALSE
             end do
 !
-! --- Keep only nodes of cells
-            do i_cell = 1, this%nb_cells
-                nno = this%converter%nno(this%cells(i_cell)%type)
+! --- Do not keep cells with no-owner nodes
+            if(this%isHPC) then
+                do i_cell = 1, this%nb_total_cells
+                    if(this%cells(i_cell)%keep) then
+                        nno = this%converter%nno(this%cells(i_cell)%type)
 !
-                if(this%debug) then
-                    print*, "Cell: ", i_cell, this%cells(i_cell)%type, nno, &
-                    this%cells(i_cell)%nodes(1:nno)
-                end if
-!
-                do i_node = 1, nno
-                    node_id = this%cells(i_cell)%nodes(i_node)
-                    this%nodes(node_id)%keep = ASTER_TRUE
+                        keep = ASTER_FALSE
+                        do i_node = 1, nno
+                            node_id = this%cells(i_cell)%nodes(i_node)
+                            if(this%nodes(node_id)%owner == rank) then
+                                keep = ASTER_TRUE
+                                exit
+                            end if
+                        end do
+                        this%cells(i_cell)%keep = keep
+                    end if
                 end do
+            end if
+!
+! --- Keep only nodes of cells
+            do i_cell = 1, this%nb_total_cells
+                if(this%cells(i_cell)%keep) then
+                    nno = this%converter%nno(this%cells(i_cell)%type)
+!
+                    if(this%debug) then
+                        print*, "Cell: ", i_cell, this%cells(i_cell)%type, nno, &
+                        this%cells(i_cell)%nodes(1:nno)
+                    end if
+!
+                    do i_node = 1, nno
+                        node_id = this%cells(i_cell)%nodes(i_node)
+                        this%nodes(node_id)%keep = ASTER_TRUE
+                    end do
+                end if
             end do
 !
 ! --- Keep initial orphelan nodes
@@ -1588,15 +1828,32 @@ contains
                 end if
             end do
 !
+! --- Renumbering
+            this%nb_cells = 0
+            do i_cell = 1, this%nb_total_cells
+                if(this%cells(i_cell)%keep) then
+                    this%nb_cells = this%nb_cells + 1
+                    this%cells(i_cell)%id = this%nb_cells
+                end if
+            end do
+!
             if(this%debug) then
                 print*, "Update nodes: ", this%nb_nodes, this%nb_total_nodes
                 do i_node = 1, this%nb_total_nodes
                     if(this%nodes(i_node)%keep) then
-                        print*, "Node: ", i_node, this%nodes(i_node)%id, this%nodes(i_node)%coor
+                        print*, "Node: ", i_node, this%nodes(i_node)%id, this%nodes(i_node)%owner, &
+                            this%nodes(i_node)%coor
+                    end if
+                end do
+                print*, "Update cells: ", this%nb_cells, this%nb_total_cells
+                do i_cell = 1, this%nb_total_cells
+                    if(this%cells(i_cell)%keep) then
+                        print*, "Cell: ", i_cell, this%cells(i_cell)%id, this%cells(i_cell)%type
                     end if
                 end do
             end if
             ASSERT(this%nb_nodes <= this%nb_total_nodes)
+            ASSERT(this%nb_nodes > 0)
     end subroutine
 !
 ! ==================================================================================================
@@ -1613,11 +1870,14 @@ contains
             integer :: nb_faces, faces_type(6), faces_loc(9,6)
 !
 ! --- Check Nodes
-            do i_cell = 1, this%nb_cells
-                nno = this%converter%nno(this%cells(i_cell)%type)
-                do i_node = 1, nno
-                    ASSERT(this%nodes(this%cells(i_cell)%nodes(i_node))%keep)
-                end do
+            do i_cell = 1, this%nb_total_cells
+                if(this%cells(i_cell)%keep) then
+                    nno = this%converter%nno(this%cells(i_cell)%type)
+                    do i_node = 1, nno
+                        ASSERT(this%nodes(this%cells(i_cell)%nodes(i_node))%keep)
+                        ASSERT(this%nodes(this%cells(i_cell)%nodes(i_node))%owner >= 0)
+                    end do
+                end if
             end do
 !
 ! --- Check Edges
@@ -1672,6 +1932,173 @@ contains
                     ASSERT(nno1 >= nno2)
                 end do
             end do
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine refine_cell(this, cell_id)
+!
+        implicit none
+!
+            class(Mmesh), intent(inout) :: this
+            integer, intent(in) :: cell_id
+!
+            integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, cell_type_sub
+            integer :: nb_sub, sub_type(8), sub_loc(8,8), i_sub, i_node, obj, cell_id_sub
+            integer :: nodes_loc(27), nno
+            character(len=8) :: nume
+!
+            cell_dim = this%cells(cell_id)%dim
+            cell_type = this%cells(cell_id)%type
+            obj = this%cells(cell_id)%ss_id
+
+! --- compute sub-division
+            call dividing_cell(cell_type, nb_sub, sub_type, sub_loc)
+!
+            this%nb_cells = this%nb_cells - 1
+            this%cells(cell_id)%keep = ASTER_FALSE
+            if(this%nb_total_cells + nb_sub >= this%max_cells) then
+                call this%increase_memory("CELLS   ", 2*this%max_cells)
+            end if
+
+            if(this%debug) then
+                print*, "Refine ", cell_id, ": ", cell_type, &
+                        this%converter%name(cell_type), cell_dim
+            end if
+!
+            do i_sub = 1, nb_sub
+                cell_type_sub = sub_type(i_sub)
+                nb_nodes = this%converter%nno(cell_type_sub)
+                cell_nodes = 0
+!
+                if(cell_dim == 3) then
+                    do i_node = 1, nb_nodes
+                        cell_nodes(i_node) = this%volumes(obj)%nodes(sub_loc(i_node, i_sub))
+                    end do
+                    cell_index = this%add_volume(cell_type_sub, cell_nodes)
+                elseif(cell_dim == 2) then
+                    do i_node = 1, nb_nodes
+                        cell_nodes(i_node) = this%faces(obj)%nodes(sub_loc(i_node, i_sub))
+                    end do
+                    cell_index = this%add_face(cell_type_sub, cell_nodes)
+                elseif(cell_dim == 1) then
+                    do i_node = 1, nb_nodes
+                        cell_nodes(i_node) = this%edges(obj)%nodes(sub_loc(i_node, i_sub))
+                    end do
+                    cell_index = this%add_edge(cell_type_sub, cell_nodes)
+                else
+                    ASSERT(ASTER_FALSE)
+                end if
+!
+                this%nb_total_cells = this%nb_total_cells + 1
+                this%nb_cells = this%nb_cells + 1
+                cell_id_sub = this%nb_total_cells
+                this%cells(cell_id_sub)%type = cell_type_sub
+                this%cells(cell_id_sub)%dim = cell_dim
+                this%cells(cell_id_sub)%id = cell_id_sub
+                this%cells(cell_id_sub)%ss_id = cell_index
+                this%cells(cell_id_sub)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
+                call codlet(this%cell_index, 'G', nume)
+                this%cells(cell_id_sub)%name = trim(this%cell_prefix)//trim(nume)
+                this%cell_index = this%cell_index + 1
+!
+                this%cells(cell_id)%child(i_sub) = cell_id_sub
+                this%cells(cell_id)%nb_child = this%cells(cell_id)%nb_child + 1
+!
+! --- Il faut convertir comme le type de depart et pas lineaire
+                if(cell_type_sub .ne. cell_type) then
+                    this%cells(cell_id_sub)%type = cell_type
+                    nno = this%converter%nno(this%cells(cell_id_sub)%type)
+                    call this%numbering_nodes(this%cells(cell_id_sub)%type, nodes_loc)
+                    this%cells(cell_id_sub)%nodes = 0
+                    if(cell_dim == 3) then
+                        do i_node = 1, nno
+                            this%cells(cell_id_sub)%nodes(i_node) = &
+                                this%volumes(cell_index)%nodes(nodes_loc(i_node))
+                        end do
+                    elseif(cell_dim == 2) then
+                        do i_node = 1, nno
+                            this%cells(cell_id_sub)%nodes(i_node) = &
+                                this%faces(cell_index)%nodes(nodes_loc(i_node))
+                        end do
+                    elseif(cell_dim == 1) then
+                        do i_node = 1, nno
+                            this%cells(cell_id_sub)%nodes(i_node) = &
+                                this%edges(cell_index)%nodes(nodes_loc(i_node))
+                        end do
+                    elseif(cell_dim == 0) then
+                        ASSERT(ASTER_FALSE)
+                    else
+                        ASSERT(ASTER_FALSE)
+                    end if
+                end if
+            end do
+!
+!
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine refine(this, level)
+!
+        implicit none
+!
+            class(Mmesh), intent(inout) :: this
+            integer, intent(in) :: level
+! -----------------------------------------------------------------------
+            integer :: i_cell, nb_cells_ref, i_level
+            real(kind=8) :: start, end
+!
+            this%node_index = this%nb_total_nodes
+            this%cell_index = this%nb_total_cells
+! --- Refine cells
+            this%nb_level = level
+            if(this%info >= 2) then
+                print*, "Refining mesh..."
+                call cpu_time(start)
+            end if
+            do i_level = 1, level
+                if(this%info >= 2) then
+                    print*, "- Level ", i_level
+                end if
+                nb_cells_ref = this%nb_total_cells
+                do i_cell = 1, nb_cells_ref
+                    if(this%cells(i_cell)%keep .and. this%cells(i_cell)%dim > 0) then
+                        call this%refine_cell(i_cell)
+                    end if
+                end do
+            end do
+!
+            call this%update()
+            if(this%info >= 2) then
+                call cpu_time(end)
+                print*, "... in ", end-start, " seconds."
+            end if
+    end subroutine
+!
+! ==================================================================================================
+!
+    subroutine sub_cells(this, cell_id, nb_cells, cells)
+!
+        implicit none
+!
+            class(Mmesh), intent(inout) :: this
+            integer, intent(inout) :: nb_cells, cell_id
+            integer, allocatable :: cells(:)
+! -----------------------------------------------------------------------
+            integer :: i_cell
+!
+            if(this%cells(cell_id)%keep) then
+                nb_cells = nb_cells + 1
+                ASSERT(nb_cells <= size(cells))
+                ASSERT(this%cells(cell_id)%nb_child == 0)
+                cells(nb_cells) = this%cells(cell_id)%id
+            else
+                do i_cell = 1, this%cells(cell_id)%nb_child
+                    call this%sub_cells(this%cells(cell_id)%child(i_cell), nb_cells, cells)
+                end do
+            end if
+
     end subroutine
 !
 ! ==================================================================================================
@@ -1754,7 +2181,92 @@ contains
 !
     end subroutine
 !
-    !
+! ==================================================================================================
+!
+    subroutine copy_group_ma(this, grpmai, gpptnm)
+!
+        implicit none
+!
+            class(Mmesh), intent(inout) :: this
+            character(len=24), intent(in) :: grpmai, gpptnm
+! -----------------------------------------------------------------------
+            integer :: i_cell, nb_cells_in, nb_cells_out, codret, nb_grma_out
+            integer :: i_group, cell_id, nb_grma_in
+            integer :: nb_cells
+            character(len=24) :: grma_in, nomgrp
+            integer, pointer :: cells_in(:) => null()
+            integer, pointer :: grma_out(:) => null()
+            integer, pointer :: cells_out(:) => null()
+            integer, allocatable :: cells(:)
+!
+            call jemarq()
+            ! call cpclma(this%mesh_in, mesh_out, 'GROUPEMA', 'G')
+!
+            grma_in = this%mesh_in//'.GROUPEMA'
+!
+            call jedetr(grpmai)
+            call jedetr(gpptnm)
+            call jeexin(grma_in, codret)
+            if (codret .eq. 0) goto 999
+
+            call jelira(grma_in, 'NOMUTI', nb_grma_in)
+            AS_ALLOCATE(vi=grma_out, size=nb_grma_in)
+            allocate(cells(8**this%nb_level))
+            grma_out(:) = 0
+            nb_grma_out = 0
+!
+! --- Find groups
+            do i_group = 1, nb_grma_in
+                call jeveuo(jexnum(grma_in, i_group), 'L', vi=cells_in)
+                call jelira(jexnum(grma_in, i_group), 'LONUTI', nb_cells_in)
+                do i_cell = 1, nb_cells_in
+                    cell_id = cells_in(i_cell)
+                    nb_cells = 0
+                    call this%sub_cells(cell_id, nb_cells, cells)
+                    grma_out(i_group) = grma_out(i_group) + nb_cells
+                end do
+                if(grma_out(i_group) > 0) then
+                    nb_grma_out = nb_grma_out + 1
+                end if
+            end do
+!
+! --- Create groups
+            if(nb_grma_out > 0) then
+                call jecreo(gpptnm, 'G N K24')
+                call jeecra(gpptnm, 'NOMMAX', nb_grma_out)
+                call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_grma_out)
+!
+                do i_group = 1, nb_grma_in
+                    if(grma_out(i_group) > 0) then
+                        call jenuno(jexnum(grma_in, i_group), nomgrp)
+                        call jecroc(jexnom(grpmai, nomgrp))
+                        call jeveuo(jexnum(grma_in, i_group), 'L', vi=cells_in)
+                        call jelira(jexnum(grma_in, i_group), 'LONUTI', nb_cells_in)
+                        call jeecra(jexnom(grpmai, nomgrp), 'LONMAX', grma_out(i_group))
+                        call jeecra(jexnom(grpmai, nomgrp), 'LONUTI', grma_out(i_group))
+                        call jeveuo(jexnom(grpmai, nomgrp), 'E', vi=cells_out)
+                        nb_cells_out = 1
+                        do i_cell = 1, nb_cells_in
+                            cell_id = cells_in(i_cell)
+                            nb_cells = 0
+                            call this%sub_cells(cell_id, nb_cells, cells)
+                            cells_out(nb_cells_out:nb_cells_out+nb_cells) = cells(1:nb_cells)
+                            nb_cells_out = nb_cells_out+nb_cells
+                        end do
+                    end if
+                end do
+            end if
+!
+            AS_DEALLOCATE(vi=grma_out)
+            deallocate(cells)
+!
+999 continue
+!
+            call jedema()
+!
+    end subroutine
+!
+!
 ! ==================================================================================================
 !
     subroutine increase_memory(this, object, new_size)
@@ -1832,17 +2344,223 @@ contains
             class(Mmesh), intent(in) :: this
             character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
+            character(len=8) :: chnbjo
+            character(len=24) :: nojoin
+            integer, pointer :: v_rnode(:) => null()
+            integer, pointer :: v_noex(:) => null()
+            integer, pointer :: v_nojoin(:) => null()
+            integer, pointer :: v_joint(:) => null()
+            integer, pointer :: v_snume(:) => null()
+            integer, pointer :: v_rnume(:) => null()
+            integer, pointer :: v_nkeep(:) => null()
+            integer, pointer :: v_nulogl(:) => null()
+            aster_logical, pointer :: v_keep(:) => null()
+            real(kind=8), pointer :: v_send(:) => null()
+            real(kind=8), pointer :: v_recv(:) => null()
+            mpi_int :: msize, mrank, count, id, tag, mpicou
+            integer :: nbproc, rank, ind, nb_send, nb_recv, i_proc, i_join
+            integer :: n_coor, i_node, nb_nodes_keep, i_node_r, node_id, j_node
+            integer :: i_cell, nno, i_comm
+            real(kind=8) :: coor(3), coor_diff(3), tole_comp
+            real(kind=8), parameter :: tole = 1.d-15
+            aster_logical :: find, keep, comm(4)
 !
         if(isParallelMesh(mesh_out)) then
-            ASSERT(ASTER_FALSE)
-! --- TO DO
+            call jemarq()
+            call asmpi_comm('GET', mpicou)
+            call asmpi_info(rank = mrank, size = msize)
+            rank = to_aster_int(mrank)
+            nbproc = to_aster_int(msize)
 !
-            ASSERT(this%nb_nodes > 0)
-! --- 1: Create new global numbering .NULOGL
+! --- 1: On commence par compter le nombre de noeuds que l'on doit recevoir
 !
-! --- 2: To known who is the own the nodes .NOEX
+            call jeveuo(mesh_out // ".NOEX", 'L', vi=v_noex)
+            call jeveuo(mesh_out // ".NULOGL", 'L', vi=v_nulogl)
+
+            call wkvect("&&CREAMA.RNODE", 'V V I', nbproc*nbproc, vi=v_rnode)
+            do i_node = 1, this%nb_nodes
+                ind = rank*nbproc + v_noex(i_node) + 1
+                v_rnode(ind) = v_rnode(ind) + 1
+            end do
+            v_rnode(rank*nbproc + rank+1) = 0
+            call asmpi_comm_vect('MPI_SUM', 'I', nbval=nbproc*nbproc, vi=v_rnode)
+
+! --- On compte combien on doit recevoir et envoyer
+            nb_send = 0
+            nb_recv = 0
+            do i_proc = 0, nbproc-1
+                if(v_rnode(rank*nbproc + i_proc+1) > 0) then
+                    nb_recv = nb_recv + 1
+                end if
+                if(v_rnode(i_proc*nbproc + rank+1) > 0) then
+                    nb_send = nb_send + 1
+                end if
+            end do
+! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
+            call wkvect('&&CREAMA.NKEEP', 'V V L', this%nb_total_nodes, vl=v_keep)
+            do i_cell = 1, this%nb_total_cells
+                if(.not.this%cells(i_cell)%keep) cycle
+                keep = ASTER_FALSE
+                nno = this%converter%nno(this%cells(i_cell)%type)
+                do i_node = 1, nno
+                    if(v_noex(this%nodes(this%cells(i_cell)%nodes(i_node))%id) .ne. rank) then
+                        keep = ASTER_TRUE
+                        exit
+                    end if
+                end do
+                if(keep) then
+                    do i_node = 1, nno
+                        if(v_noex(this%nodes(this%cells(i_cell)%nodes(i_node))%id) == rank) then
+                            v_keep(this%cells(i_cell)%nodes(i_node)) = ASTER_TRUE
+                        end if
+                    end do
+                end if
+            end do
+            nb_nodes_keep = 0
+            do i_node = 1, this%nb_total_nodes
+                if(v_keep(i_node)) then
+                    nb_nodes_keep = nb_nodes_keep + 1
+                end if
+            end do
+            if(nb_nodes_keep == 0) go to 999
 !
-! --- 3: Create joint between subdomains .DOMJOINT
+            call wkvect('&&CREAMA.NRESTRICT', 'V V I', nb_nodes_keep, vi=v_nkeep)
+            nb_nodes_keep = 0
+            do i_node = 1, this%nb_total_nodes
+                if(v_keep(i_node)) then
+                    nb_nodes_keep = nb_nodes_keep + 1
+                    v_nkeep(nb_nodes_keep) = i_node
+                end if
+            end do
+! --- On regarde que les noeuds ne sont pas confondu.
+            do i_node = 1, nb_nodes_keep
+                tole_comp = max(tole, tole*norm2(this%nodes(v_nkeep(i_node))%coor))
+                do j_node = 1, nb_nodes_keep
+                    if( i_node .ne. j_node) then
+                        coor_diff = abs(this%nodes(v_nkeep(i_node))%coor - &
+                                        this%nodes(v_nkeep(j_node))%coor)
+                        if(maxval(coor_diff) < tole_comp) then
+                            !! Verif pas de noeud double
+                            ASSERT(ASTER_FALSE)
+                        end if
+                    end if
+                end do
+            end do
+            call jedetr('&&CREAMA.NKEEP')
+! --- On crée les joints
+            call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv+nb_send, vi=v_joint)
+            i_join = 0
+            do i_proc = 0, nbproc-1
+                call codent(i_proc, 'G', chnbjo)
+                !! Pour savoir dans quel ordre faire les comm (E,R,E,R)
+                comm = ASTER_FALSE
+                if(i_proc < rank) then
+                    comm(1) = ASTER_TRUE
+                    comm(4) = ASTER_TRUE
+                else
+                    comm(2) = ASTER_TRUE
+                    comm(3) = ASTER_TRUE
+                endif
+                !! Les joints sont souvent par deux
+                do i_comm = 1, 2
+                    if(comm(2*(i_comm-1)+1)) then
+                        !! on envoie les noeuds non-proprio pour avoir la correspondance
+                        if(v_rnode(rank*nbproc + i_proc+1) > 0) then
+                            nojoin = mesh_out//'.R'//chnbjo
+                            n_coor = v_rnode(rank*nbproc + i_proc+1)
+                            call wkvect("&&CREAMA.RCOOR", 'V V R', 4*n_coor, vr=v_send)
+                            ind = 0
+                            do i_node = 1, this%nb_total_nodes
+                                if(this%nodes(i_node)%keep) then
+                                    if(v_noex(this%nodes(i_node)%id) == i_proc) then
+                                        v_send(ind+1) = real(this%nodes(i_node)%id, kind=8)
+                                        v_send(ind+2:ind+4) = this%nodes(i_node)%coor(1:3)
+                                        ind = ind + 4
+                                    end if
+                                end if
+                            end do
+                            ASSERT(ind == 4*n_coor)
+                            count = to_mpi_int(4*n_coor)
+                            id = to_mpi_int(i_proc)
+                            tag = to_mpi_int(rank*nbproc + i_proc+1)
+                            call asmpi_send_r(v_send, count, id, tag, mpicou)
+                            ! On recoit la correcpondance
+                            call wkvect("&&CREAMA.RNUME", 'V V I', 2*n_coor, vi=v_rnume)
+                            count = to_mpi_int(2*n_coor)
+                            id = to_mpi_int(i_proc)
+                            tag = to_mpi_int(rank*nbproc + i_proc+1)
+                            call asmpi_recv_i(v_rnume, count, id, tag, mpicou)
+                            ! On crée le joint
+                            call wkvect(nojoin, 'G V I', 2*n_coor, vi=v_nojoin)
+                            i_join = i_join + 1
+                            v_joint(i_join) = i_proc
+                            do i_node = 1, n_coor
+                                v_nojoin(2*(i_node-1)+1) =int( v_send(4*(i_node-1)+1))
+                                v_nojoin(2*(i_node-1)+2) = v_rnume(2*(i_node-1)+1)
+                                ASSERT(v_nulogl(v_nojoin(2*(i_node-1)+1)) == -1)
+                                v_nulogl(v_nojoin(2*(i_node-1)+1)) = v_rnume(2*(i_node-1)+2)
+                            end do
+                            call jedetr("&&CREAMA.RCOOR")
+                            call jedetr("&&CREAMA.RNUME")
+                        end if
+                    end if
+                    if(comm(2*(i_comm-1)+2)) then
+                        !! on recoit les noeuds non-proprio d'un autre pour trouver
+                        !! la correspondance
+                        if(v_rnode(i_proc*nbproc + rank+1) > 0) then
+                            nojoin = mesh_out//'.E'//chnbjo
+                            n_coor = v_rnode(i_proc*nbproc + rank+1)
+                            call wkvect(nojoin, 'G V I', 2*n_coor, vi=v_nojoin)
+                            i_join = i_join + 1
+                            v_joint(i_join) = i_proc
+                            call wkvect("&&CREAMA.ECOOR", 'V V R', 4*n_coor, vr=v_recv)
+                            call wkvect("&&CREAMA.ENUME", 'V V I', 2*n_coor, vi=v_snume)
+                            count = to_mpi_int(4*n_coor)
+                            id = to_mpi_int(i_proc)
+                            tag = to_mpi_int(i_proc*nbproc + rank+1)
+                            call asmpi_recv_r(v_recv, count, id, tag, mpicou)
+                            !! On cherche les noeuds avec les coor - c'est pas génial mais pas mieux
+                            !! pour le moment - on a vérifié avant que pas de noeuds doubles
+                            do i_node_r = 1, n_coor
+                                find = ASTER_FALSE
+                                coor = v_recv(4*(i_node_r-1)+2:4*(i_node_r-1)+4)
+                                node_id = 0
+                                tole_comp = max(tole, tole*norm2(coor))
+                                do i_node = 1, nb_nodes_keep
+                                    ASSERT(this%nodes(v_nkeep(i_node))%keep)
+                                    coor_diff = abs(coor-this%nodes(v_nkeep(i_node))%coor)
+                                    if(maxval(coor_diff) < tole_comp) then
+                                        find = ASTER_TRUE
+                                        node_id = this%nodes(v_nkeep(i_node))%id
+                                        exit
+                                    end if
+                                end do
+                                ASSERT(find)
+                                v_nojoin(2*(i_node_r-1)+1) = node_id
+                                v_nojoin(2*(i_node_r-1)+2) = int(v_recv(4*(i_node_r-1)+1))
+                                v_snume(2*(i_node_r-1)+1) = node_id
+                                v_snume(2*(i_node_r-1)+2) = v_nulogl(node_id)
+                            end do
+                            !! On envoie la correcpondance pour le voisin
+                            count = to_mpi_int(2*n_coor)
+                            id = to_mpi_int(i_proc)
+                            tag = to_mpi_int(i_proc*nbproc + rank+1)
+                            call asmpi_send_i(v_snume, count, id, tag, mpicou)
+                            call jedetr("&&CREAMA.ECOOR")
+                            call jedetr("&&CREAMA.ENUME")
+                        end if
+                    end if
+                end do
+            end do
+            call jedetr('&&CREAMA.NRESTRICT')
+!
+999 continue
+!
+! --- verify
+            do i_node = 1, this%nb_nodes
+                ASSERT(v_nulogl(i_node) >= 0)
+            end do
+            call jedema()
         end if
     end subroutine
 !

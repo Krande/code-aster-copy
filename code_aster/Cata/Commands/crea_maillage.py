@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,17 +23,29 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 
-CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
+
+def cream_prod(self, **args):
+    if args.get('__all__'):
+        return (maillage_sdaster, maillage_p)
+
+    if "MAILLAGE" in args:
+        if args["MAILLAGE"].getType() == "maillage_p":
+            return maillage_p
+
+    return maillage_sdaster
+
+
+CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=cream_prod,
             reentrant='n',fr=tr("Crée un maillage à partir d'un maillage existant"),
          regles=(UN_PARMI('COQU_VOLU', 'CREA_FISS', 'CREA_MAILLE', 'CREA_POI1',
                          'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
                         'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18','GEOM_FIBRE',
-                        'DECOUPE_LAC', "MODI_HHO", "COQUE_SOLIDE"),),
+                        'DECOUPE_LAC', "MODI_HHO", "COQUE_SOLIDE", "RAFFINEMENT"),),
 
 
 
          # le MAILLAGE est inutile si ECLA_PG et GEOM_FIBRE
-         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),
+         MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster, maillage_p) ),
          GEOM_FIBRE           = SIMP(statut='f',max=1,typ=gfibre_sdaster),
 
          CREA_POI1       =FACT(statut='f',max='**',fr=tr("Création de mailles de type POI1 à partir de noeuds"),
@@ -90,6 +102,10 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
              PREF_MAILLE     =SIMP(statut='f',typ='TXM',defaut="MS" ),
              PREF_NUME       =SIMP(statut='f',typ='I',defaut= 1 ),
            ),
+         ),
+         RAFFINEMENT     =FACT(statut='f',fr=tr("Raffinement uniforme du maillage"),
+            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",), defaut="OUI", ),
+            NIVEAU          =SIMP(statut='f',typ='I', defaut=1, )
          ),
          CREA_FISS = FACT(statut='f',max='**',fr=tr("Creation d'une fissure potentielle avec elts de joint ou elts à disc"),
            NOM             =SIMP(statut='o',typ='TXM'),

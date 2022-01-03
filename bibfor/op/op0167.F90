@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ implicit none
 #include "asterfort/cmhho.h"
 #include "asterfort/cmcovo.h"
 #include "asterfort/cmcrea.h"
+#include "asterfort/cmraff.h"
 #include "asterfort/cmlqlq.h"
 #include "asterfort/cmmoma.h"
 #include "asterfort/cmqlql.h"
@@ -109,7 +110,7 @@ implicit none
     integer :: jvConnexIn, jvConnexOut, jvGeofi
     integer :: connexLength, cellShift, listCreaLength
     integer :: cellNumeIn, cellNumeOut, cellTypeIn, cellTypeToModify
-    integer :: nodeNumeIn, nodeNumeOut
+    integer :: nodeNumeIn, nodeNumeOut, level
     integer :: iCell, iNode, iCellModi, iGrCell, iGrNode
     integer :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
@@ -123,12 +124,12 @@ implicit none
     integer :: nbField
     integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
     integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
-    integer :: iOccQuadTria, iad
+    integer :: iOccQuadTria, iad, nbOccRaff
     integer :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO, nbOccCoqueSolide
     aster_logical :: lpb
     character(len=8) :: cellNameIn, cellNameOut, nodeNameIn, nodeNameOut
     aster_logical :: lPrefCellName, lPrefCellNume, lPrefNodeName, lPrefNodeNume
-    integer :: prefCellNume, prefNodeNume, prefNume
+    integer :: prefCellNume, prefNodeNume, prefNume, info
     character(len=8) :: prefCellName, prefNodeName
     integer, pointer :: modiCellNume(:) => null(), modiCellType(:) => null()
     integer, pointer :: listCellNume(:) => null(), listNodeNume(:) => null()
@@ -182,6 +183,7 @@ implicit none
     call getfac('LINE_QUAD', nbOccLineQuad)
     call getfac('QUAD_LINE', nbOccQuadLine)
     call getfac('MODI_MAILLE', nbOccModiMaille)
+    call getfac('RAFFINEMENT', nbOccRaff)
     call getfac('COQU_VOLU', nbOccCoquVolu)
     call getfac('RESTREINT', nbOccRestreint)
     call getfac('REPERE', nbOccRepere)
@@ -190,15 +192,13 @@ implicit none
     call getfac('CREA_POI1', nbOccCreaPoi1)
     call getfac('MODI_HHO', nbOccModiHHO)
     call getfac('COQUE_SOLIDE', nbOccCoqueSolide)
+    call getvis(' ', 'INFO', scal=info)
 !
 ! - Main datastructure
 !
     call getres(meshOut, kbi1, kbi2)
     call getvid(' ', 'MAILLAGE', scal = meshIn, nbret = nbMeshIn)
     if (nbMeshIn .ne. 0) then
-        if (isParallelMesh(meshIn)) then
-            call utmess('F', 'MESH1_22')
-        end if
         call jeveuo(meshIn//'.DIME', 'L', vi = meshDimeIn)
         nbNodeIn   = meshDimeIn(1)
         nbCellIn   = meshDimeIn(3)
@@ -265,6 +265,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (nbOccCreaFiss .ne. 0) then
+        if (isParallelMesh(meshIn)) then
+            call utmess('F', 'MESH1_22')
+        end if
         call cmcrea(meshIn, meshOut, nbOccCreaFiss)
         goto 350
     endif
@@ -369,7 +372,7 @@ implicit none
 ! ----- Create mesh to convert
         call meshSolidShell%init(meshIn)
 
-! ----- Add conversions 
+! ----- Add conversions
         convType = ["HEXA8", "HEXA9"]
         call meshSolidShell%converter%add_conversion(convType(1), convType(2))
         convType = ["PENTA6", "PENTA7"]
@@ -391,7 +394,6 @@ implicit none
 
 ! ----- Copy mesh
         call meshSolidShell%copy_mesh(meshOut)
-        call meshSolidShell%create_joints(meshOut)
         call meshSolidShell%clean()
 
         goto 350
@@ -454,11 +456,40 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+!   For "RAFFINEMENT"
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (nbOccRaff .gt. 0) then
+        ASSERT(nbOccRaff .eq. 1)
+        call jeexin(meshIn//'.NOMACR', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_7')
+        endif
+        call jeexin(meshIn//'.ABSC_CURV', iret)
+        if (iret .ne. 0) then
+            call utmess('F', 'MESH1_8')
+        endif
+        keywfact = 'RAFFINEMENT'
+        call getelem(meshIn, keywfact, 1, 'F', jvCellNume, nbCell)
+        if (nbCell .ne. nbCellIn) then
+            call utmess('F', 'MESH1_4', sk=keywfact)
+        endif
+        call getvis(keywfact, 'NIVEAU', iocc=1, scal=level)
+        call cmraff(meshIn, meshOut, level, info)
+        goto 350
+    endif
+!
+! --------------------------------------------------------------------------------------------------
+!
 !   For "MODI_MAILLE", OPTION "QUAD_TRIA3"
 !
 ! --------------------------------------------------------------------------------------------------
 !
     if (nbOccModiMaille .gt. 0) then
+        if (isParallelMesh(meshIn)) then
+            call utmess('F', 'MESH1_22')
+        end if
         keywfact = 'MODI_MAILLE'
         iqtr = 0
         do iocc = 1, nbOccModiMaille
@@ -496,6 +527,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (nbOccCoquVolu .ne. 0) then
+        if (isParallelMesh(meshIn)) then
+            call utmess('F', 'MESH1_22')
+        end if
         ASSERT(nbOccCoquVolu .eq. 1)
         keywfact = 'COQU_VOLU'
         call getvr8(keywfact, 'EPAIS', iocc=1, scal=epais)
@@ -521,6 +555,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (nbOccRestreint .ne. 0) then
+        if (isParallelMesh(meshIn)) then
+            call utmess('F', 'MESH1_22')
+        end if
         call rdtmai(meshIn, meshOut, 'G', meshOut//'.CRNO', meshOut// '.CRMA', 'G', 0, [0])
         call chckma(meshOut, 1.0d-03)
         goto 350
@@ -624,6 +661,9 @@ implicit none
 !
     nbCellCrea = 0
     if (nbOccCreaMaille .ne. 0) then
+        if (isParallelMesh(meshIn)) then
+            call utmess('F', 'MESH1_22')
+        end if
         keywfact = 'CREA_MAILLE'
         call wkvect(crgrnu, 'V V I', nbCellIn, vi = creaCellNume)
         call wkvect(crgrno, 'V V K8', nbCellIn, vk8 = creaCellName)
@@ -668,7 +708,7 @@ implicit none
 ! ------------- A new cell
                 nbCellCrea = nbCellCrea + 1
 
-! ------------- Extend size of objects 
+! ------------- Extend size of objects
                 if (nbCellCrea .gt. listCreaLength) then
                     call juveca(crgrno, 2*nbCellCrea)
                     call juveca(crgrnu, 2*nbCellCrea)

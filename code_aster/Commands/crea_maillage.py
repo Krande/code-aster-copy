@@ -33,7 +33,11 @@ class MeshCreator(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = Mesh()
+
+        if "MAILLAGE" in keywords:
+            self._result = type(keywords["MAILLAGE"])()
+        else:
+            self._result = Mesh()
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -46,6 +50,15 @@ class MeshCreator(ExecuteCommand):
             self._result._updateGlobalGroupOfNodes()
 
         self._result.build()
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MAILLAGE")
 
 
 CREA_MAILLAGE = MeshCreator.run
