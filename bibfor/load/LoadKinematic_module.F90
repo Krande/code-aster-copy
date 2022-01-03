@@ -96,11 +96,12 @@ subroutine kineLoadGlueMeshMeca(loadNameZ, modelZ, valeTypeZ, lVerbose, listLine
     character(len=16), parameter :: corre3 = '&&CALIRC.LISV1'
     integer :: geomDime, meshNbNode
     integer :: iOcc, nocc
-    aster_logical :: useNormal, lElimMult, lApplyRota, lMastTransf, lSlavTransf
+    aster_logical :: useNormal, lElimMult, lApplyRota, lMastTransf, lSlavTransf, useDisp
     real(kind=8) :: rotaMatr(3, 3)
     aster_logical :: lDistMaxi
     real(kind=8) :: distMaxi, distAlarm, thickness
     integer :: nbCellMast, nbNodeSlav, nbCellSlav
+    character(len=8), pointer :: dofName(:) => null()
     integer, pointer :: cellMast(:) => null()
     integer, pointer :: nodeSlav(:) => null(), cellSlav(:) => null()
     integer, pointer :: nodeElim(:) => null(), nodeSkinToBody(:) => null()
@@ -140,7 +141,8 @@ subroutine kineLoadGlueMeshMeca(loadNameZ, modelZ, valeTypeZ, lVerbose, listLine
                                       lMastTransf, mastTransf,&
                                       lSlavTransf, slavTransf,&
                                       lDistMaxi, distMaxi, distAlarm,&
-                                      chnorm, thickness)
+                                      chnorm, thickness,&
+                                      useDisp, dofName)
 
 ! ----- Get list of master cells
         call kineLoadGetMasterCells(modelZ, mesh,&
@@ -229,6 +231,7 @@ subroutine kineLoadGlueMeshMeca(loadNameZ, modelZ, valeTypeZ, lVerbose, listLine
 
 ! ----- Apply linear relations
         call kineLoadGlueMeshMecaLine(linkType, mesh, geomDime,&
+                                      useDisp, dofName,&
                                       lApplyRota, rotaMatr,&
                                       useNormal, normSlav, nodeSkinToBody,&
                                       corres, corre1, corre2, corre3,&
@@ -244,6 +247,7 @@ subroutine kineLoadGlueMeshMeca(loadNameZ, modelZ, valeTypeZ, lVerbose, listLine
         call jedetr(nodeSlavJv)
         call jedetr(corre3)
         AS_DEALLOCATE(vi=nodeSkinToBody)
+        AS_DEALLOCATE(vk8=dofName)
     end do
 
 ! - Clean
@@ -376,6 +380,8 @@ end subroutine
 ! Out distAlarm        : value to emit an alarm of distance for projection
 ! Out chnorm           : field of normals for COQUE_MASSIF
 ! Out thickness        : thickness of shells for COQUE_MASSIF
+! Out useDisp          : flag to use only "pure" displacement dof DX/DY/DZ/DRX/DRY/DRZ
+! Ptr dofName          : name of dof to link
 !
 ! --------------------------------------------------------------------------------------------------
 subroutine kineLoadGlueMeshMecaPara(factorKeywordZ, iOcc, geomDime,&
@@ -383,7 +389,8 @@ subroutine kineLoadGlueMeshMecaPara(factorKeywordZ, iOcc, geomDime,&
                                     lMastTransf, mastTransf,&
                                     lSlavTransf, slavTransf,&
                                     lDistMaxi, distMaxi, distAlarm,&
-                                    chnorm, thickness)
+                                    chnorm, thickness,&
+                                    useDisp, dofName)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
     character(len=*), intent(in) :: factorKeywordZ
@@ -396,18 +403,41 @@ subroutine kineLoadGlueMeshMecaPara(factorKeywordZ, iOcc, geomDime,&
     real(kind=8), intent(out) :: distMaxi, distAlarm
     character(len=8), intent(out) :: chnorm
     real(kind=8), intent(out) :: thickness
+    aster_logical, intent(out) :: useDisp
+    character(len=8), pointer :: dofName(:)
 ! - Local
-    character(len=8) :: dofSlav, answer
-    integer :: nbRet
+    character(len=8) :: answer
+    integer :: nbRet, nbDof, iDof
 !   ------------------------------------------------------------------------------------------------
 !
     call getvtx(factorKeywordZ, 'TYPE_RACCORD', iocc=iocc, scal=linkType, nbret=nbRet)
     if (geomDime .eq. 2) then
         ASSERT(linkType .eq. 'MASSIF')
     endif
+
+    useDisp = ASTER_FALSE
     useNormal = ASTER_FALSE
-    call getvtx(factorKeywordZ, 'DDL_ESCL', iocc=iocc, scal=dofSlav, nbret=nbRet)
-    useNormal = nbRet .gt. 0
+    call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=0, nbret=nbDof)
+    nbDof = -nbDof
+    if (nbDof .eq. 0) then
+        useDisp = ASTER_TRUE
+        useNormal = ASTER_FALSE
+    else
+        AS_ALLOCATE(vk8 = dofName, size = nbDof)
+        call getvtx(factorKeywordZ, 'DDL', iocc=iocc, nbval=nbDof, vect=dofName)
+        if (nbDof .eq. 1) then
+            if (dofName(1) .eq. 'DNOR') then
+                useNormal = ASTER_TRUE
+            endif
+        else
+            do iDof = 1, nbDof
+                if (dofName(iDof) .eq. 'DNOR') then
+                    call utmess('F', 'CHARGES7_2')
+                endif
+            end do
+        endif
+    endif
+
     call getvtx(factorKeywordZ, 'ELIM_MULT', iocc=iocc, scal=answer, nbret=nbRet)
     lElimMult = answer .eq. 'OUI'
     distMaxi = 0.d0
@@ -718,6 +748,8 @@ end subroutine
 ! In  linkType         : type of link (MASSIF, COQUE, COQUE_MASSIF, MASSIF_COQUE)
 ! In  mesh             : mesh
 ! In  geomDime         : geometric dimension (2 or 3)
+! In  useDisp          : flag to use only "pure" displacement dof DX/DY/DZ/DRX/DRY/DRZ
+! Ptr dofName          : name of dof to link
 ! In  lApplyRota       : flag when rotation is applied
 ! In  rotaMatr         : rotation matrix
 ! In  useNormal        : flag to link with normal to slave side
@@ -731,6 +763,7 @@ end subroutine
 !
 ! --------------------------------------------------------------------------------------------------
 subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
+                                    useDisp, dofName,&
                                     lApplyRota, rotaMatr,&
                                     useNormal, normSlav, nodeSkinToBody,&
                                     corres, corre1, corre2, corre3,&
@@ -740,6 +773,8 @@ subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
     character(len=16), intent(in) :: linkType
     character(len=*), intent(in) :: meshZ
     integer, intent(in) :: geomDime
+    aster_logical, intent(in) :: useDisp
+    character(len=8), pointer :: dofName(:)
     aster_logical, intent(in) :: lApplyRota
     real(kind=8), intent(in) :: rotaMatr(3, 3)
     aster_logical, intent(in) :: useNormal
@@ -750,15 +785,14 @@ subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
 ! - Local
     integer, parameter :: nbPairMaxi = 3, nbDofMaxi = 4
     character(len=8) :: mesh
-    aster_logical :: useDisp
-    integer :: nbDofSlav, nbDofMast, nbEqua
+    integer :: nbDofSlav, nbDofMast, nbEqua, iDof, nbDof
     character(len=8), dimension(nbPairMaxi, nbDofMaxi) :: dofLinkName
+
 !   ------------------------------------------------------------------------------------------------
 !
     mesh = meshZ
 
 ! - Create list of equations
-    useDisp = ASTER_TRUE
     if (linkType .eq. 'MASSIF') then
         if (useNormal) then
             nbDofSlav = 1
@@ -799,7 +833,14 @@ subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
                 endif
             endif
         else
-            ASSERT(ASTER_FALSE)
+            nbDof = size(dofName)
+            nbDofMast = 1
+            nbDofSlav = 1
+            nbEqua = nbDof
+            do iDof = 1, nbDof
+                dofLinkName(iDof, 1) = dofName(iDof)
+                dofLinkName(iDof, 2) = dofName(iDof)
+            end do
         endif
     endif
 

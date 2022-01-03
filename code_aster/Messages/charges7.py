@@ -23,6 +23,8 @@ cata_msg = {
 
     1 : _("""La relation linéaire destinée à éliminer un des noeuds esclaves est une tautologie car la maille maître en vis à vis de ce noeud possède ce même noeud dans sa connectivité. On ne l'écrit donc pas."""),
 
+    2 : _("""La composante normale (DNOR) doit être la seule des composantes de la liste."""),
+
     3 : _("""On ne trouve pas de noeud assez près du noeud %(k1)s."""),
 
     4 : _("""Un des éléments esclave n'est pas du bon type.

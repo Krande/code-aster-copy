@@ -412,11 +412,11 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 
               b_MASSIF     =BLOC ( condition = """equal_to("TYPE_RACCORD", 'MASSIF')""",
                  regles=( PRESENT_PRESENT('DDL_MAIT','DDL_ESCL'),),
-                 DDL_MAIT  =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True),max='**'),
-                 DDL_ESCL  =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True),max='**'),
-              TRAN            =SIMP(statut='f',typ='R',max=3 ),
-              ANGL_NAUT       =SIMP(statut='f',typ='R',max=3 ),
-              CENTRE          =SIMP(statut='f',typ='R',max=3 ),
+                 
+                TRAN        =SIMP(statut='f',typ='R',max=3 ),
+                ANGL_NAUT   =SIMP(statut='f',typ='R',max=3 ),
+                CENTRE      =SIMP(statut='f',typ='R',max=3 ),
+                DDL         =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True),max='**'),
               ),
               
               b_COQUE_MASSIF =BLOC ( condition = """equal_to("TYPE_RACCORD", 'COQUE_MASSIF')""",

@@ -1,0 +1,182 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+
+mesh = LIRE_MAILLAGE(UNITE=20, FORMAT="MED", INFO=2)
+meshColle = LIRE_MAILLAGE(UNITE=30, FORMAT="MED", INFO=2)
+
+mesh = MODI_MAILLAGE(reuse=mesh,
+                     MAILLAGE=mesh,
+                     ORIE_NORM_COQUE=(_F(GROUP_MA=('IFS1', ),
+                                         NOEUD=('N2', ),
+                                         VECT_NORM=(1.0, 0.0, 0.0)),
+                                      _F(GROUP_MA=('IFS2', ),
+                                         NOEUD=('N14', ),
+                                         VECT_NORM=(1.0, 0.0, 0.0))
+                                      ),
+                     )
+                     
+meshColle = MODI_MAILLAGE(reuse=meshColle,
+                         MAILLAGE=meshColle,
+                         ORIE_NORM_COQUE=(_F(GROUP_MA=('IFS1', ),
+                                             NOEUD=('N2', ),
+                                             VECT_NORM=(1.0, 0.0, 0.0)),
+                                          _F(GROUP_MA=('IFS2', ),
+                                             NOEUD=('N14', ),
+                                             VECT_NORM=(1.0, 0.0, 0.0))
+                                          ),
+                         )
+
+
+model = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Sol1', 'Sol2',),
+                             MODELISATION='3D',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('Flu1', 'Flu2',),
+                             MODELISATION='3D_FLUIDE',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('IFS1', 'IFS2'),
+                             MODELISATION='FLUI_STRU',
+                             PHENOMENE='MECANIQUE')),
+                    MAILLAGE=mesh, INFO=2)
+
+
+modelColle = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Sol1', 'Sol2',),
+                             MODELISATION='3D',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('Flu1', 'Flu2',),
+                             MODELISATION='3D_FLUIDE',
+                             PHENOMENE='MECANIQUE'),
+                          _F(FORMULATION='U_P',
+                             GROUP_MA=('IFS1', 'IFS2'),
+                             MODELISATION='FLUI_STRU',
+                             PHENOMENE='MECANIQUE')),
+                    MAILLAGE=meshColle, INFO=2)
+
+scaling = 1.e6
+acier = DEFI_MATERIAU(ELAS=_F(COEF_AMOR=1.0,
+                              E=197000000000.0/scaling,
+                              NU=0.3,
+                              RHO=7800.0/scaling,
+                              ))
+
+eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0,
+                              RHO=732.0/scaling))
+
+fieldmat = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Sol1',  'Sol2'),
+                                  MATER=(acier, )),
+                               _F(GROUP_MA=('Flu1', 'Flu2', 'IFS1', 'IFS2'),
+                                  MATER=(eau, ))),
+                         MODELE=model)
+
+fieldmatColle = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Sol1',  'Sol2'),
+                                  MATER=(acier, )),
+                               _F(GROUP_MA=('Flu1', 'Flu2', 'IFS1', 'IFS2'),
+                                  MATER=(eau, ))),
+                         MODELE=modelColle)
+
+
+load = AFFE_CHAR_MECA(INFO=1,
+                      LIAISON_MAIL=_F(GROUP_MA_MAIT=('Sol1', ),
+                                      GROUP_MA_ESCL=('S21', ),
+                                      DDL=('DX', 'DY', 'DZ'),
+                                      ),
+                      MODELE=model)
+
+load8 = AFFE_CHAR_MECA(INFO=1,
+                      LIAISON_MAIL=_F(GROUP_MA_MAIT=('Flu1', ),
+                                      GROUP_MA_ESCL=('F21', ),
+                                      DDL=('PRES'),
+                                      ),
+                      MODELE=model)
+
+ASSEMBLAGE(CHAM_MATER=fieldmat,
+           CHARGE=(load, load8),
+           MATR_ASSE=(_F(MATRICE=CO('mass'),
+                         OPTION='MASS_MECA'),
+                      _F(MATRICE=CO('rigi'),
+                         MODE_FOURIER=0,
+                         OPTION='RIGI_MECA')),
+           MODELE=model,
+           NUME_DDL=CO('NUMEDDL'))
+
+modes = CALC_MODES(CALC_FREQ=_F(FREQ=3.0,
+                                NMAX_FREQ=8,
+                                NMAX_ITER_SHIFT=3,
+                                PREC_SHIFT=0.05,
+                                SEUIL_FREQ=0.01),
+                   MATR_MASS=mass,
+                   MATR_RIGI=rigi,
+                   OPTION='CENTRE',
+                   VERI_MODE=_F(PREC_SHIFT=0.005,
+                                SEUIL=1e-06,
+                                STOP_ERREUR='NON',
+                                STURM='OUI'))
+
+
+
+ASSEMBLAGE(CHAM_MATER=fieldmatColle,
+           MATR_ASSE=(_F(MATRICE=CO('massC'),
+                         OPTION='MASS_MECA'),
+                      _F(MATRICE=CO('rigiC'),
+                         OPTION='RIGI_MECA')),
+           MODELE=modelColle,
+           NUME_DDL=CO('NUMEDDLCOLLE'))
+
+modesColle = CALC_MODES(CALC_FREQ=_F(FREQ=3.0,
+                                NMAX_FREQ=8,
+                                NMAX_ITER_SHIFT=3,
+                                PREC_SHIFT=0.05,
+                                SEUIL_FREQ=0.01),
+                   MATR_MASS=massC,
+                   MATR_RIGI=rigiC,
+                   OPTION='CENTRE',
+                   VERI_MODE=_F(PREC_SHIFT=0.005,
+                                SEUIL=1e-06,
+                                STOP_ERREUR='NON',
+                                STURM='OUI'))
+
+# Reference: maillge collé (non_régression)
+freq1Refe = 9.34491E+01
+freq2Refe = 5.41082E+02
+
+TEST_RESU(RESU=_F(RESULTAT=modesColle, NUME_MODE=7, PARA='FREQ', VALE_CALC=freq1Refe, ))
+TEST_RESU(RESU=_F(RESULTAT=modesColle, NUME_MODE=8, PARA='FREQ', VALE_CALC=freq2Refe, ))
+
+TEST_RESU(RESU=_F(RESULTAT=modes, 
+                  NUME_MODE=7, 
+                  PARA='FREQ', 
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=freq1Refe, 
+                  VALE_CALC=93.449056119954,
+                  PRECISION=1.E-6))
+
+TEST_RESU(RESU=_F(RESULTAT=modes, 
+                  NUME_MODE=8, 
+                  PARA='FREQ', 
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_REFE=freq2Refe, 
+                  VALE_CALC=541.0818885140138,
+                  PRECISION=1.E-6))
+
+FIN()

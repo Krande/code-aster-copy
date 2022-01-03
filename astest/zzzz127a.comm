@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,16 +124,15 @@ CH22=AFFE_CHAR_MECA(  MODELE=MO,
                              TRAN = ( 5., 10.,),
                              CENTRE = (10., 0.,),
                              ANGL_NAUT = 180.,
-                             DDL_MAIT = 'DNOR',#ELIM_MULT='NON',
-                             DDL_ESCL = 'DNOR'),
+                             DDL = 'DNOR'),
                          _F( GROUP_MA_MAIT = ('Q1','Q2',),
                              GROUP_MA_ESCL = 'S1',
                              DISTANCE_MAX = 1.E-6 ,
                              TRAN = ( 5., 10.,),
                              CENTRE = (10., 0.,),
                              ANGL_NAUT = 180.,
-                             DDL_MAIT = 'DNOR',ELIM_MULT='NON',
-                             DDL_ESCL = 'DNOR') ) )
+                             DDL = 'DNOR',
+                             ELIM_MULT='NON',) ) )
 
 MEST22=MECA_STATIQUE(    MODELE=MO,    CHAM_MATER=CHMAT,EXCIT=(
                 _F( CHARGE = CH0), _F( CHARGE = CH22)) )
