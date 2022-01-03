@@ -21,10 +21,17 @@ from ..Utilities import _
 
 cata_msg = {
 
+    1 : _("""La relation linéaire destinée à éliminer un des noeuds esclaves est une tautologie car la maille maître en vis à vis de ce noeud possède ce même noeud dans sa connectivité. On ne l'écrit donc pas."""),
+
     3 : _("""On ne trouve pas de noeud assez près du noeud %(k1)s."""),
 
     4 : _("""Un des éléments esclave n'est pas du bon type.
  Pour le calcul de la normale, il faut que les éléments soient de la bonne dimension: des segments en 2D ou des faces en 3D."""),
+
+    6 : _(""" Le modèle contient un mélange d'éléments 2D (vivant dans le plan Oxy) et 3D.
+ Il n'est pas possible de réaliser une liaison dans cette configuration."""),
+
+    7 : _("""Les erreurs d'appariement précédentes sont fatales."""),
 
     9 : _("""Il est interdit d'avoir deux mailles de type POI1 simultanément sur les deux surfaces en vis-à-vis."""),
 

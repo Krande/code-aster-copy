@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ character(len=4), intent(in) :: valeType
     character(len=4), parameter :: phenomS = 'MECA'
     character(len=16), parameter :: command = 'AFFE_CHAR_MECA'
     character(len=16), parameter :: keywFactEnforceDOF = 'DDL_IMPO'
-    integer :: dimeModel, iret
+    integer :: geomDime, iret
     character(len=3) :: answer
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
@@ -106,9 +106,9 @@ character(len=4), intent(in) :: valeType
 !
 
 ! - Mesh, Ligrel for model, dimension of model
-    call cagene(load, command, modelLigrel, mesh, dimeModel)
+    call cagene(load, command, modelLigrel, mesh, geomDime)
     model = modelLigrel(1:8)
-    if (dimeModel .gt. 3) then
+    if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
 
@@ -154,7 +154,7 @@ character(len=4), intent(in) :: valeType
         call cbvite(phenom, load, mesh, valeType)
 
 ! ----- ONDE_PLANE
-        call cbondp(load, mesh, dimeModel, valeType)
+        call cbondp(load, mesh, geomDime, valeType)
 
 ! ----- FLUX_THM_REP
         call cafthm(load, mesh, modelLigrel, valeType)
@@ -176,7 +176,7 @@ character(len=4), intent(in) :: valeType
     if (valeType .eq. 'REEL') then
 
 ! ----- PRES_REP/FORCE_TUYAU
-        call cbpres(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbpres(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- PRE_EPSI
         call cbchei(load, mesh, modelLigrel, valeType)
@@ -185,7 +185,7 @@ character(len=4), intent(in) :: valeType
         call cbsint(load, mesh, modelLigrel, valeType)
 
 ! ----- EFFE_FOND
-        call cafond(load, modelLigrel, mesh, dimeModel, valeType)
+        call cafond(load, modelLigrel, mesh, geomDime, valeType)
 
 ! ----- EVOL_CHAR
         call cbprca(phenom, load)
@@ -209,17 +209,17 @@ character(len=4), intent(in) :: valeType
         call cafono(load, loadLigrel, mesh, modelLigrel, valeType)
 
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-        call char_crea_neum(load, modelLigrel, mesh, dimeModel, valeType)
+        call char_crea_neum(load, modelLigrel, mesh, geomDime, valeType)
 
     else if (valeType .eq. 'COMP') then
 
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-        call char_crea_neum(load, modelLigrel, mesh, dimeModel, valeType)
+        call char_crea_neum(load, modelLigrel, mesh, geomDime, valeType)
 
     else if (valeType .eq. 'FONC') then
 
 ! ----- PRES_REP/FORCE_TUYAU
-        call cbpres(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbpres(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- PRE_EPSI
         call cbchei(load, mesh, modelLigrel, valeType)
@@ -228,13 +228,13 @@ character(len=4), intent(in) :: valeType
         call cbsint(load, mesh, modelLigrel, valeType)
 
 ! ----- EFFE_FOND
-        call cafond(load, modelLigrel, mesh, dimeModel, valeType)
+        call cafond(load, modelLigrel, mesh, geomDime, valeType)
 
 ! ----- FORCE_NODALE
         call cafono(load, loadLigrel, mesh, modelLigrel, valeType)
 
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-        call char_crea_neum(load, modelLigrel, mesh, dimeModel, valeType)
+        call char_crea_neum(load, modelLigrel, mesh, geomDime, valeType)
 
     else
         ASSERT(ASTER_FALSE)
@@ -265,7 +265,7 @@ character(len=4), intent(in) :: valeType
         call caliai(valeType, load, phenomS)
 
 ! ----- LIAISON_MAIL
-        call calirc(phenom, load, mesh)
+        call calirc(phenom, load, modelLigrel)
 
 ! ----- LIAISON_PROJ
         call calipj(load)

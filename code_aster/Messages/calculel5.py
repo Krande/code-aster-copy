@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -168,13 +168,6 @@ Risques et conseils :
     projetés (ou "liés" quand on utilise le mot clé LIAISON_MAIL).
   * Le mot clé DISTANCE_ALARME permet d'éviter cette alarme.
 
-"""),
-
-    49 : _("""
- LIAISON_MAIL :
- La relation linéaire destinée à éliminer le noeud esclave %(k1)s est une tautologie
- car la maille maître en vis à vis de ce noeud possède ce même noeud dans sa connectivité.
- On ne l'écrit donc pas.
 """),
 
     52 : _("""

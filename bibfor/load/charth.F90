@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,7 +69,7 @@ character(len=4), intent(in) :: valeType
     character(len=4), parameter :: phenomS = 'THER'
     character(len=16), parameter :: command = 'AFFE_CHAR_THER'
     character(len=16), parameter :: keywFactEnforceDOF = 'TEMP_IMPO'
-    integer :: dimeModel, iret
+    integer :: geomDime, iret
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
     character(len=19) :: loadLigrel, modelLigrel
@@ -79,9 +79,9 @@ character(len=4), intent(in) :: valeType
 !
 
 ! - Mesh, Ligrel for model, dimension of model
-    call cagene(load, command, modelLigrel, mesh, dimeModel)
+    call cagene(load, command, modelLigrel, mesh, geomDime)
     model = modelLigrel(1:8)
-    if (dimeModel .gt. 3) then
+    if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
 
@@ -92,16 +92,16 @@ character(len=4), intent(in) :: valeType
     if (valeType .eq. 'REEL') then
 
 ! ----- SOURCE
-        call cbsour(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbsour(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- SOUR_NL
-        call cbsonl(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbsonl(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- CONVECTION
         call cbconv(load)
 
 ! ----- FLUX_REP
-        call cbflux(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbflux(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- FLUX_NL
         call cbflnl(load, mesh, modelLigrel, valeType)
@@ -110,10 +110,10 @@ character(len=4), intent(in) :: valeType
         call cbrayo(load, mesh, modelLigrel, valeType)
 
 ! ----- ECHANGE
-        call cbecha(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbecha(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- ECHANGE_PAROI
-        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, dimeModel)
+        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, geomDime)
 
 ! ----- EVOL_CHAR
         call cbprca(phenom, load)
@@ -137,21 +137,21 @@ character(len=4), intent(in) :: valeType
         call calich(load, phenomS)
 
 ! ----- LIAISON_MAIL
-        call calirc(phenom, load, mesh)
+        call calirc(phenom, load, modelLigrel)
 
     else if (valeType .eq. 'FONC') then
 
 ! ----- SOURCE
-        call cbsour(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbsour(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- SOUR_NL
-        call cbsonl(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbsonl(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- CONVECTION
         call cbconv(load)
 
 ! ----- FLUX_REP
-        call cbflux(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbflux(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- FLUX_NL
         call cbflnl(load, mesh, modelLigrel, valeType)
@@ -160,10 +160,10 @@ character(len=4), intent(in) :: valeType
         call cbrayo(load, mesh, modelLigrel, valeType)
 
 ! ----- ECHANGE
-        call cbecha(load, mesh, modelLigrel, dimeModel, valeType)
+        call cbecha(load, mesh, modelLigrel, geomDime, valeType)
 
 ! ----- ECHANGE_PAROI
-        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, dimeModel)
+        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, geomDime)
 
 ! ----- GRADIENT INITIAL
         call cbgrai(load, mesh, modelLigrel, valeType)

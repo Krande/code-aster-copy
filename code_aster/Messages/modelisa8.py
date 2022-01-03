@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -166,13 +166,6 @@ cata_msg = {
  le nombre de ddls figurant dans  la liaison n'est pas égal au nombre de noeuds :
    %(i1)d
    %(i2)d
-"""),
-
-    48 : _("""
-Erreur utilisateur pour LIAISON_MAIL :
-   Il n'y a aucun noeud esclave à lier pour l'occurrence %(i1)d du mot clé LIAISON_MAIL.
-   Peut-être que tous les noeuds esclaves ont déjà été éliminés dans des occurrences
-   précédentes.
 """),
 
     49 : _("""
