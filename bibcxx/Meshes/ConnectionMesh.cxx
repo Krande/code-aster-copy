@@ -556,6 +556,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     }
 
     /* Add cells */
+    AS_ASSERT(totalNumberOfCells > 0);
     _cellsLocalNumbering->allocate( totalNumberOfCells );
     _cellsOwner->allocate( totalNumberOfCells );
     _nameOfCells->allocate( totalNumberOfCells );

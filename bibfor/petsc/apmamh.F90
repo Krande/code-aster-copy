@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,9 +67,7 @@ use petsc_data_module
     integer :: jcolg, iligg, jnugll, nucmp2, procol, jprddl
     integer :: jnequ, nloc, nglo, jdeeq, prolig, rang, ibid
     integer :: jterm, jcolg4(1), iterm
-    integer :: jrefn, jmlogl, iret, step_dbg
-    character(len=8) :: noma
-    character(len=24) :: nonulg
+    integer :: iret, step_dbg
     mpi_int :: mrank, msize
 !
     character(len=19) :: nomat, nosolv
@@ -128,10 +126,6 @@ use petsc_data_module
     nstep = nstep + 1
     if (ldebug) then
         print*, "DEBUG IN APMAMH"
-        call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-        noma = zk24(jrefn)
-        nonulg = noma//'.NULOGL'
-        call jeveuo(nonulg, 'L', jmlogl)
         call jeexin(nonu//'.NUME.NULS', iret)
         if(iret == 0) then
             call crnustd(nonu)

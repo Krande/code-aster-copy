@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,6 @@ subroutine crnlgn(numddl)
     integer, pointer :: v_mult1(:) => null()
     integer, pointer :: v_mult2(:) => null()
     integer, pointer :: v_mdlag(:) => null()
-    integer, pointer :: v_nulg(:) => null()
 !
     character(len=4) :: chnbjo
     character(len=8) :: k8bid, noma
@@ -91,7 +90,6 @@ subroutine crnlgn(numddl)
     noma = zk24(jrefn)
 !
     call jeveuo(noma//'.DIME', 'L', dime)
-    call jeveuo(noma//'.NULOGL', 'L', vi=v_nulg)
 
 !   !!! VERIFIER QU'IL N'Y A PAS DE MACRO-ELTS
 !   CALCUL DU NOMBRE D'ENTIERS CODES A PARTIR DE LONMAX

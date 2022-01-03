@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,15 +51,14 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: jnequ, jnequl, jnugll, jprddl, jdeeq, iret
-    integer :: nloc, nglo, jrefn, jmlogl, ndprop
+    integer :: jnequ, jnequl, jnugll, jprddl, iret
+    integer :: nloc, nglo, ndprop
     integer :: bs, jcoll, jvaleu, iterm, nuno, nucmp, step
     integer, pointer :: v_nuls(:) => null()
     integer, pointer :: v_deeg(:) => null()
 
     mpi_int :: mpicomm
 !
-    character(len=8) :: mesh
     character(len=14) :: nonu
 
     aster_logical :: dbg
@@ -91,10 +90,6 @@ use petsc_data_module
     call jeveuo(nonu//'.NUME.NULG', 'L', jnugll)
     call jeveuo(nonu//'.NUME.PDDL', 'L', jprddl)
     if(dbg) then
-        call jeveuo(nonu//'.NUME.DEEQ', 'L', jdeeq)
-        call jeveuo(nonu//'.NUME.REFN', 'L', jrefn)
-        mesh = zk24(jrefn)(1:8)
-        call jeveuo(mesh//'.NULOGL', 'L', jmlogl)
         call jeexin(nonu//'.NUME.NULS', iret)
         if(iret == 0) then
             call crnustd(nonu)
