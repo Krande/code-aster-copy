@@ -1,0 +1,34 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+!
+interface
+    subroutine pj3dcoSupInf(modelZ, meshNbNode,&
+                            nbCellMast, cellMast,&
+                            nbNodeSlav, nodeSlav, geomSlavJv,&
+                            corre1, corre2, corre3,&
+                            chnormZ, thickness)
+        character(len=*), intent(in) :: modelZ
+        integer, intent(in):: meshNbNode
+        integer, intent(in) :: nbCellMast, cellMast(nbCellMast)
+        integer, intent(in) :: nbNodeSlav, nodeSlav(nbNodeSlav)
+        character(len=24), intent(in) :: geomSlavJv
+        character(len=16), intent(in) :: corre1, corre2, corre3
+        character(len=*), intent(in) :: chnormZ
+        real(kind=8), intent(in) :: thickness
+    end subroutine pj3dcoSupInf
+end interface 

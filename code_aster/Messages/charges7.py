@@ -21,6 +21,8 @@ from ..Utilities import _
 
 cata_msg = {
 
+    3 : _("""On ne trouve pas de noeud assez près du noeud %(k1)s."""),
+
     4 : _("""Un des éléments esclave n'est pas du bon type.
  Pour le calcul de la normale, il faut que les éléments soient de la bonne dimension: des segments en 2D ou des faces en 3D."""),
 
@@ -30,5 +32,13 @@ cata_msg = {
    Peut-être que tous les noeuds esclaves ont déjà été éliminés dans des occurrences précédentes."""),
 
    49 : _(""" Pour le calcul de la normale sur le côté esclave, il faut donner des éléments de facette."""),
+
+   77 : _("""Il y a un conflit dans les vis-à-vis des noeuds. Un noeud est apparié deux fois.
+ Conseils :
+   - Si la distance entre les deux surfaces à apparier est grande devant leurs dimensions, précisez l'isométrie qui permet de les superposer par l'intermédiaire des mots-clés CENTRE, ANGL_NAUT et TRAN.
+   - Si les maillages sont incompatibles, utilisez plutôt le chargement LIAISON_MAIL.
+"""),
+
+   88 : _("""Il y a un conflit dans les vis-à-vis des noeuds. Certains noeuds ne sont pas appariés."""),
 
 }
