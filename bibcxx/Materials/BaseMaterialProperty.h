@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe BaseMaterialProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -421,7 +421,7 @@ class GenericMaterialProperty {
         throw std::runtime_error( nameOfProperty + " is not a table value" );
     };
 
-    ASTERDOUBLE hasValueReal( std::string nameOfProperty )
+    bool hasValueReal( std::string nameOfProperty )
     {
         auto curIter = _mapOfRealMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfRealMaterialProperties.end() )
