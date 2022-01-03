@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -124,8 +124,7 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            regles=(UN_PARMI('GROUP_NO','NOEUD', ),),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            NOEUD           =SIMP(statut='c',typ=no  ,max='**'),
-           DDL             =SIMP(statut='f',typ='TXM',max='**',
-                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","H1") ),
+           DDL             =SIMP(statut='f',typ='TXM',max='**',into=C_NOM_DDL_INTO('THERMIQUE') ),
            COEF_MULT       =SIMP(statut='o',typ='R',max='**'),
            COEF_IMPO       =SIMP(statut='o',typ='R' ),
          ),
@@ -152,16 +151,14 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            NOEUD_2         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           DDL_1           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","H1") ),
+           DDL_1           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP", into=C_NOM_DDL_INTO('THERMIQUE') ),
            COEF_MULT_1     =SIMP(statut='o',typ='R',max='**'),
-           DDL_2           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","H1") ),
+           DDL_2           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP", into=C_NOM_DDL_INTO('THERMIQUE') ),
            COEF_MULT_2     =SIMP(statut='o',typ='R',max='**'),
            COEF_IMPO       =SIMP(statut='o',typ='R' ),
-           TRAN            =SIMP(statut='f',typ='R',max='**'),
-           ANGL_NAUT       =SIMP(statut='f',typ='R',max='**'),
-           CENTRE          =SIMP(statut='f',typ='R',max='**'),
+           TRAN            =SIMP(statut='f',typ='R',min=3,max=3),
+           ANGL_NAUT       =SIMP(statut='f',typ='R',min=3,max=3),
+           CENTRE          =SIMP(statut='f',typ='R',min=3,max=3),
          ),
 
          LIAISON_MAIL    =FACT(statut='f',max='**',
@@ -211,12 +208,11 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
            NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-           DDL             =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP") ),
+           DDL             =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP", into=C_NOM_DDL_INTO('THERMIQUE') ),
          ),
 
          LIAISON_CHAMNO  =FACT(statut='f',max=1,
-           CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),# CO()# "il faut definir une structure de donnee generique chamno"
+           CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
            COEF_IMPO       =SIMP(statut='o',typ='R' ),
          ),
 

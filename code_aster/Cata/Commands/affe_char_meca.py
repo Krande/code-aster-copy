@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ from ..Commons import *
 from ..Language.DataStructure import *
 from ..Language.Syntax import *
 from ..Language.SyntaxUtils import deprecate, force_list
-
 
 def compat_syntax(keywords):
     """Replace LIAISON='ENCASTRE' by BLOCAGE.
@@ -234,8 +233,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              SANS_MAILLE     =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
-
-
              DX              =SIMP(statut='f',typ='R' ),
              DY              =SIMP(statut='f',typ='R' ),
              DZ              =SIMP(statut='f',typ='R' ),
@@ -249,7 +246,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              GROUP_MA_REPE   =SIMP(statut='f',typ=grma,),
              MAILLE_REPE     =SIMP(statut='c',typ=ma,),
                             ),
-
 
 
            FACE_IMPO       =FACT(statut='f',max='**',
@@ -328,7 +324,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              regles=(UN_PARMI('GROUP_NO','NOEUD'),),
              GROUP_NO        =SIMP(statut='f',typ=grno ,max='**'),
              NOEUD           =SIMP(statut='c',typ=no   ,max='**'),
-             DDL             =SIMP(statut='o',typ='TXM',max='**'),
+             DDL             =SIMP(statut='o',typ='TXM', into=C_NOM_DDL_INTO('MECANIQUE'), max='**'),
              COEF_MULT       =SIMP(statut='o',typ='R'  ,max='**'),
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
            ),
@@ -380,9 +376,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 
              SANS_NOEUD      =SIMP(statut='c',typ=no   ,validators=NoRepeat(),max='**'),
              SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-             DDL_1           =SIMP(statut='o',typ='TXM',max='**'),
+             DDL_1           =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True), max='**'),
              COEF_MULT_1     =SIMP(statut='o',typ='R'  ,max='**'),
-             DDL_2           =SIMP(statut='o',typ='TXM',max='**'),
+             DDL_2           =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True), max='**'),
              COEF_MULT_2     =SIMP(statut='o',typ='R'  ,max='**'),
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
              TRAN            =SIMP(statut='f',typ='R',max=3),
@@ -416,12 +412,13 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 
               b_MASSIF     =BLOC ( condition = """equal_to("TYPE_RACCORD", 'MASSIF')""",
                  regles=( PRESENT_PRESENT('DDL_MAIT','DDL_ESCL'),),
+                 DDL_MAIT  =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True),max='**'),
+                 DDL_ESCL  =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True),max='**'),
               TRAN            =SIMP(statut='f',typ='R',max=3 ),
               ANGL_NAUT       =SIMP(statut='f',typ='R',max=3 ),
               CENTRE          =SIMP(statut='f',typ='R',max=3 ),
-              DDL_MAIT        =SIMP(statut='f',typ='TXM',into=("DNOR",) ),
-              DDL_ESCL        =SIMP(statut='f',typ='TXM',into=("DNOR",) ),
               ),
+              
               b_COQUE_MASSIF =BLOC ( condition = """equal_to("TYPE_RACCORD", 'COQUE_MASSIF')""",
                  EPAIS           =SIMP(statut='o',typ='R'),
                  CHAM_NORMALE    =SIMP(statut='o',typ=cham_no_sdaster),
@@ -432,7 +429,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
            LIAISON_PROJ     =FACT(statut='f',max=1,
              fr="Définit des relations linéaires issues de PROJ_CHAMP entre les DDLs d'un même modèle",
              MATR_PROJECTION =SIMP(statut='o',typ=corresp_2_mailla),
-             DDL             =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=('DX','DY','DZ','DRX','DRY','DRZ'),min=1,max=6),
+             DDL             =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_DDL_INTO('MECANIQUE',select_dof='DEPL') ,min=1,max=6),
              TYPE            =SIMP(statut='f',typ='TXM',into=('IDENTITE','EXCENTREMENT',),defaut='IDENTITE',),
            ),
 
@@ -559,13 +556,12 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
 
-             DDL             =SIMP(statut='o',typ='TXM',max='**'),
+             DDL             =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE'), max='**'),
            ),
 
          LIAISON_CHAMNO  =FACT(statut='f',max=1,
              fr=tr("Définit une relation linéaire entre tous les DDLs présents dans un concept CHAM_NO"),
-#  type de cham_no_sdaster CO()
-             CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster), #CO()
+             CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
            ),
 
@@ -587,8 +583,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna),
              TYPE_LIAISON    =SIMP(statut='f',typ='TXM',defaut="RIGIDE",into=("RIGIDE","SOUPLE") ),
            ),
-
-#         SIMP(statut='f',typ='TXM',defaut="NON" ),
 
          VECT_ASSE       =SIMP(statut='f',typ=cham_no_sdaster ),
 #
@@ -659,7 +653,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
 
          PRE_SIGM   =FACT(statut='f',max=1,
              fr=tr("Applique des contraintes volumiques (2D ou 3D) à un domaine volumique"),
-             #INST            =SIMP(statut='f',typ='R' ),
              SIGM            =SIMP(statut='o',typ=(cham_elem,carte_sdaster)),
            ),
 

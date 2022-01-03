@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ AFFE_CHAR_MECA_C=OPER(nom="AFFE_CHAR_MECA_C",op=   7,sd_prod=char_meca,
            regles=(UN_PARMI('GROUP_NO','NOEUD', ),),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            NOEUD           =SIMP(statut='c',typ=no  ,max='**'),
-           DDL             =SIMP(statut='o',typ='TXM',max='**'),
+           DDL             =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE'),max='**'),
            COEF_MULT       =SIMP(statut='o',typ='R'  ,max='**'),
            COEF_IMPO       =SIMP(statut='o',typ='C' ),
          ),

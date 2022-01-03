@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -47,3 +47,4 @@ from .c_suivi_ddl import C_SUIVI_DDL
 from .c_test_reference import C_TEST_REFERENCE
 from .c_type_cham_into import C_TYPE_CHAM_INTO
 from .c_affe_varc import C_AFFE_VARC
+from .c_nom_ddl_into import C_NOM_DDL_INTO

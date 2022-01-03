@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -164,7 +164,7 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
            regles=(UN_PARMI('GROUP_NO','NOEUD'),),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            NOEUD           =SIMP(statut='c',typ=no  ,max='**'),
-           DDL             =SIMP(statut='f',typ='TXM',max='**',into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","H1") ),
+           DDL             =SIMP(statut='f',typ='TXM',max='**',into=C_NOM_DDL_INTO('THERMIQUE')),
            COEF_MULT       =SIMP(statut='o',typ='R',max='**'),
            COEF_IMPO       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
@@ -191,11 +191,9 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
            NOEUD_2         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           DDL_1           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","H1") ),
+           DDL_1           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",into=C_NOM_DDL_INTO('THERMIQUE') ),
            COEF_MULT_1     =SIMP(statut='o',typ='R',max='**'),
-           DDL_2           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",
-                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","H1") ),
+           DDL_2           =SIMP(statut='f',typ='TXM',max='**',defaut="TEMP",into=C_NOM_DDL_INTO('THERMIQUE') ),
            COEF_MULT_2     =SIMP(statut='o',typ='R',max='**'),
            COEF_IMPO       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            TRAN            =SIMP(statut='f',typ='R',max='**'),
@@ -209,8 +207,7 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
            NOEUD           =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-           DDL             =SIMP(statut='f',typ='TXM',defaut="TEMP",
-                                 into=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP") ),
+           DDL             =SIMP(statut='f',typ='TXM',defaut="TEMP",into=C_NOM_DDL_INTO('THERMIQUE'), max='**'),
          ),
 
          CONVECTION      =FACT(statut='f',

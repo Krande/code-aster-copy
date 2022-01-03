@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            regles=(UN_PARMI('GROUP_NO','NOEUD'),UN_PARMI('COEF_MULT','COEF_MULT_FONC'),),
            GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
            NOEUD           =SIMP(statut='c',typ=no  ,max='**'),
-           DDL             =SIMP(statut='o',typ='TXM',max='**'),
+           DDL             =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE'),max='**'),
            COEF_MULT       =SIMP(statut='f',typ='R',max='**'),
            COEF_MULT_FONC  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
            COEF_IMPO       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
@@ -181,9 +181,9 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            NOEUD_2         =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
            SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           DDL_1           =SIMP(statut='o',typ='TXM',max='**'),
+           DDL_1           =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True), max='**'),
            COEF_MULT_1     =SIMP(statut='o',typ='R',max='**'),
-           DDL_2           =SIMP(statut='o',typ='TXM',max='**'),
+           DDL_2           =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE', with_dnor = True), max='**'),
            COEF_MULT_2     =SIMP(statut='o',typ='R',max='**'),
            COEF_IMPO       =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            TRAN            =SIMP(statut='f',typ='R',max=3),
@@ -202,7 +202,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
              SANS_MAILLE     =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
              SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              SANS_NOEUD      =SIMP(statut='c',typ=no  ,validators=NoRepeat(),max='**'),
-             DDL             =SIMP(statut='o',typ='TXM',max='**'),
+             DDL             =SIMP(statut='o',typ='TXM',into=C_NOM_DDL_INTO('MECANIQUE'),max='**'),
          ),
 
          FORCE_NODALE    =FACT(statut='f',max='**',
