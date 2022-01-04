@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -111,7 +111,7 @@ DYNA=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
                         INFO=2,
                         )
 
-DEPL = DYNA.getFieldOnNodesReal("DEPL", 2)
+DEPL = DYNA.getFieldOnNodesReal("DEPL", 3)
 DEPL.setMesh(MA)
 
 # sequantial comparaison
