@@ -3,7 +3,7 @@
  * @brief Initialisation des renumeroteurs autorises pour les solvers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -35,8 +35,8 @@ LinearSolver::LinearSolver( const std::string name )
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
       _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
       _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ),
-      _matrix( boost::make_shared< AssemblyMatrixVariant >() ),
-      _matrixPrec( boost::make_shared< AssemblyMatrixVariant >() ), _commandName( "SOLVEUR" ),
+      _matrix( nullptr ),
+      _matrixPrec( nullptr ), _commandName( "SOLVEUR" ),
       _xfem( false ), _keywords( NULL ){
 
                       };
@@ -93,7 +93,7 @@ bool LinearSolver::build() {
 
 bool LinearSolver::deleteFactorizedMatrix() {
 
-    if ( _matrix->hasMatrix() && _matrix->isFactorized() && get_sh_jeveux_status() == 1 ) {
+    if ( _matrix && _matrix->isFactorized() && get_sh_jeveux_status() == 1 ) {
         CALLO_DETMATRIX( _matrix->getName() );
         _matrix->deleteFactorizedMatrix();
     }
@@ -101,7 +101,12 @@ bool LinearSolver::deleteFactorizedMatrix() {
     return true;
 };
 
-bool LinearSolver::_factorize() {
+
+bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
+
+    deleteFactorizedMatrix();
+    _matrix = currentMatrix;
+
     if ( _isEmpty )
         build();
 
@@ -109,22 +114,7 @@ bool LinearSolver::_factorize() {
     std::string base( "G" );
     ASTERINTEGER cret = 0, npvneg = 0, istop = -9999;
 
-    // create precond
-    if ( _matrix->holds_alternative< AssemblyMatrixDisplacementRealPtr >() ) {
-        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixDisplacementReal >(
-            ResultNaming::getNewResultName() + ".PREC" ) );
-    } else if ( _matrix->holds_alternative< AssemblyMatrixDisplacementComplexPtr >() ) {
-        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixDisplacementComplex >(
-            ResultNaming::getNewResultName() + ".PREC" ) );
-    } else if ( _matrix->holds_alternative< AssemblyMatrixTemperatureRealPtr >() ) {
-        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixTemperatureReal >(
-            ResultNaming::getNewResultName() + ".PREC" ) );
-    } else if ( _matrix->holds_alternative< AssemblyMatrixPressureRealPtr >() ) {
-        _matrixPrec->setMatrix( boost::make_shared< AssemblyMatrixPressureReal >(
-            ResultNaming::getNewResultName() + ".PREC" ) );
-    } else {
-        raiseAsterError( "Unexpected matrix type" );
-    }
+    _matrixPrec = _matrix->getEmptyMatrix(ResultNaming::getNewResultName() + ".PREC" ) ;
 
     const std::string matpre( _matrixPrec->getName() );
     const std::string matass( _matrix->getName() );
@@ -145,37 +135,6 @@ bool LinearSolver::_factorize() {
     return true;
 };
 
-bool LinearSolver::factorize( const AssemblyMatrixDisplacementRealPtr currentMatrix ) {
-
-    deleteFactorizedMatrix();
-    ( *_matrix ) = currentMatrix;
-
-    return _factorize();
-};
-
-bool LinearSolver::factorize( const AssemblyMatrixDisplacementComplexPtr currentMatrix ) {
-
-    deleteFactorizedMatrix();
-    ( *_matrix ) = currentMatrix;
-
-    return _factorize();
-};
-
-bool LinearSolver::factorize( const AssemblyMatrixTemperatureRealPtr currentMatrix ) {
-
-    deleteFactorizedMatrix();
-    ( *_matrix ) = currentMatrix;
-
-    return _factorize();
-};
-
-bool LinearSolver::factorize( const AssemblyMatrixPressureRealPtr currentMatrix ) {
-
-    deleteFactorizedMatrix();
-    ( *_matrix ) = currentMatrix;
-
-    return _factorize();
-};
 
 void LinearSolver::_solve( const std::string &rhsName, const std::string &diriName,
                            const std::string &resultName ) const {

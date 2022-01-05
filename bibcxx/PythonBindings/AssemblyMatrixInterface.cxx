@@ -3,7 +3,7 @@
  * @brief Interface python de AssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,14 +30,8 @@ namespace py = boost::python;
 
 void exportAssemblyMatrixToPython() {
 
-    void ( AssemblyMatrixDisplacementReal::*c1 )( const DirichletBCPtr &currentLoad ) =
-        &AssemblyMatrixDisplacementReal::addLoad;
-    void ( AssemblyMatrixDisplacementReal::*c2 )( const DirichletBCPtr &currentLoad,
-                                                  const FunctionPtr &func ) =
-        &AssemblyMatrixDisplacementReal::addLoad;
-
     py::class_< AssemblyMatrixDisplacementReal, AssemblyMatrixDisplacementRealPtr,
-                py::bases< DataStructure > >( "AssemblyMatrixDisplacementReal", py::no_init )
+                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixDisplacementReal", py::no_init )
         // -----------------------------------------------------------------------------------------
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< AssemblyMatrixDisplacementReal > ) )
@@ -49,87 +43,16 @@ void exportAssemblyMatrixToPython() {
               py::make_constructor(
                   &initFactoryPtr< AssemblyMatrixDisplacementReal, PhysicalProblemPtr > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c1 )
-        // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c2 )
-        // -----------------------------------------------------------------------------------------
         .def( "appendElementaryMatrix", &AssemblyMatrixDisplacementReal::appendElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "build", &AssemblyMatrixDisplacementReal::build )
         // -----------------------------------------------------------------------------------------
-        .def( "getDOFNumbering", &AssemblyMatrixDisplacementReal::getDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "getModel", &AssemblyMatrixDisplacementReal::getModel, R"(
-Return the model.
-
-Returns:
-    Model: a pointer to the model
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "getMesh", &AssemblyMatrixDisplacementReal::getMesh, R"(
-Return the mesh.
-
-Returns:
-    Mesh: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "getListOfLoads", &AssemblyMatrixDisplacementReal::getListOfLoads, R"(
-Return the list of loads.
-
-Returns:
-    ListOfLoads: a pointer to the list of loads
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "setListOfLoads", &AssemblyMatrixDisplacementReal::setListOfLoads, R"(
-Set the list of loads.
-
-Arguments:
-    ListOfLoads: a pointer to the list of loads to set
-        )",
-              ( py::arg( "self" ), py::arg( "load" ) ) )
-        // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixDisplacementReal::getMaterialField )
-        // -----------------------------------------------------------------------------------------
-        .def( "isEmpty", &AssemblyMatrixDisplacementReal::isEmpty, R"(
-Test if the matrix is empty.
-
-Returns:
-    bool: *True* if the matrix is empty.
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "isFactorized",
-              static_cast< bool ( AssemblyMatrixDisplacementReal::* )() const >(
-                  &AssemblyMatrixDisplacementReal::isFactorized ),
-              R"(
-Test if the matrix is factorized.
-
-Returns:
-    bool: *True* if the matrix is factorized.
-        )",
-              ( py::arg( "self" ) ) )
-        .def( "isFactorized",
-              static_cast< void ( AssemblyMatrixDisplacementReal::* )( const bool & ) >(
-                  &AssemblyMatrixDisplacementReal::isFactorized ),
-              R"(
-Tell if the matrix is factorized.
-
-Arguments:
-    bool: *True* if the matrix is factorized.
-        )",
-              ( py::arg( "self" ), py::arg( "facto" ) ) )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixDisplacementReal::getNumberOfElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "setDOFNumbering", &AssemblyMatrixDisplacementReal::setDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "setSolverName", &AssemblyMatrixDisplacementReal::setSolverName )
         // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixDisplacementReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
@@ -142,78 +65,11 @@ Arguments:
     idx (list[int]): List of the row indices.
     jdx (list[int]): List of the column indices.
     values (list[float]): List of the values.
-        )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "hasDirichletEliminationDOFs",
-              &AssemblyMatrixDisplacementReal::hasDirichletEliminationDOFs, R"(
-Tell if matrix has some DOFs eliminated by Dirichlet boundaries conditions.
-
-Returns:
-    bool: *True* if matrix has some DOFs eliminated by Dirichlet boundaries conditions else *False*
-        )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "getDirichletBCDOFs", &AssemblyMatrixDisplacementReal::getDirichletBCDOFs, R"(
-Return a vector with DOFs eliminated by Dirichlet boundaries conditions (if it exists)
-
-Returns:
-    tuple(int): a vector with DOFs eliminated by Dirichlet boundaries conditions of
-        size = neq + 1,
-        tuple(ieq = 0, neq - 1) = 1 then DOF eliminated else 0,
-        tuple(neq) = number of DOFs eliminated.
-        )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "getLagrangeScaling", &AssemblyMatrixDisplacementReal::getLagrangeScaling, R"(
-Return the scaling used for Lagrange multipliers. It returns 1 if no Lagrange.
-
-Returns:
-    float: scaling used for Lagrange multipliers. It returns 1 if no Lagrange
-    are present.
-        )" )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixDisplacementReal::* )() const >(
-                  &AssemblyMatrixDisplacementReal::print ),
-              R"(
-Print the matrix in code_aster format (with information on the DOF).
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixDisplacementReal::* )( const std::string ) const >(
-                  &AssemblyMatrixDisplacementReal::print ),
-              R"(
-Print the matrix in the given format format.
-
-Arguments:
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::arg( "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixDisplacementReal::* )( const ASTERINTEGER,
-                                                                       const std::string ) const >(
-                  &AssemblyMatrixDisplacementReal::print ),
-              R"(
-Print the matrix in the given format format and in the given logical unit.
-
-Arguments:
-    unit (int): logical unit to print
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::args( "unit", "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "transpose", &AssemblyMatrixDisplacementReal::transpose );
-
-    void ( AssemblyMatrixDisplacementComplex::*c3 )( const DirichletBCPtr &currentLoad ) =
-        &AssemblyMatrixDisplacementComplex::addLoad;
-    void ( AssemblyMatrixDisplacementComplex::*c4 )( const DirichletBCPtr &currentLoad,
-                                                     const FunctionPtr &func ) =
-        &AssemblyMatrixDisplacementComplex::addLoad;
+        )" );
 
     py::class_< AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementComplexPtr,
-                py::bases< DataStructure > >( "AssemblyMatrixDisplacementComplex", py::no_init )
+                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixDisplacementComplex",
+                                                   py::no_init )
         // -----------------------------------------------------------------------------------------
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< AssemblyMatrixDisplacementComplex > ) )
@@ -221,149 +77,38 @@ Arguments:
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixDisplacementComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c3 )
-        // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c4 )
-        // -----------------------------------------------------------------------------------------
         .def( "appendElementaryMatrix", &AssemblyMatrixDisplacementComplex::appendElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "clearElementaryMatrix", &AssemblyMatrixDisplacementComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
         .def( "build", &AssemblyMatrixDisplacementComplex::build )
         // -----------------------------------------------------------------------------------------
-        .def( "getDOFNumbering", &AssemblyMatrixDisplacementComplex::getDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "transpose", &AssemblyMatrixDisplacementComplex::transpose )
-        // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixDisplacementComplex::transposeConjugate )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixDisplacementComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
-              &AssemblyMatrixDisplacementComplex::getNumberOfElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "setDOFNumbering", &AssemblyMatrixDisplacementComplex::setDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixDisplacementComplex::* )() const >(
-                  &AssemblyMatrixDisplacementComplex::print ),
-              R"(
-Print the matrix in code_aster format (with information on the DOF).
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def(
-            "print",
-            static_cast< void ( AssemblyMatrixDisplacementComplex::* )( const std::string ) const >(
-                &AssemblyMatrixDisplacementComplex::print ),
-            R"(
-Print the matrix in the given format format.
-
-Arguments:
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-            ( py::arg( "self" ), py::arg( "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixDisplacementComplex::* )(
-                  const ASTERINTEGER, const std::string ) const >(
-                  &AssemblyMatrixDisplacementComplex::print ),
-              R"(
-Print the matrix in the given format format and in the given logical unit.
-
-Arguments:
-    unit (int): logical unit to print
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::args( "unit", "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "setSolverName", &AssemblyMatrixDisplacementComplex::setSolverName );
+              &AssemblyMatrixDisplacementComplex::getNumberOfElementaryMatrix );
     // -----------------------------------------------------------------------------------------
 
-    void ( AssemblyMatrixTemperatureReal::*c5 )( const DirichletBCPtr &currentLoad ) =
-        &AssemblyMatrixTemperatureReal::addLoad;
-    void ( AssemblyMatrixTemperatureReal::*c6 )( const DirichletBCPtr &currentLoad,
-                                                 const FunctionPtr &func ) =
-        &AssemblyMatrixTemperatureReal::addLoad;
-
     py::class_< AssemblyMatrixTemperatureReal, AssemblyMatrixTemperatureRealPtr,
-                py::bases< DataStructure > >( "AssemblyMatrixTemperatureReal", py::no_init )
+                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixTemperatureReal", py::no_init )
         // -----------------------------------------------------------------------------------------
         .def( "__init__", py::make_constructor( &initFactoryPtr< AssemblyMatrixTemperatureReal > ) )
         // -----------------------------------------------------------------------------------------
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixTemperatureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c5 )
-        // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c6 )
-        // -----------------------------------------------------------------------------------------
         .def( "appendElementaryMatrix", &AssemblyMatrixTemperatureReal::appendElementaryMatrix )
         // -----------------------------------------------------------------------------------------
+        .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureReal::clearElementaryMatrix )
+        // -----------------------------------------------------------------------------------------
         .def( "build", &AssemblyMatrixTemperatureReal::build )
-        // -----------------------------------------------------------------------------------------
-        .def( "getDOFNumbering", &AssemblyMatrixTemperatureReal::getDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "getModel", &AssemblyMatrixTemperatureReal::getModel, R"(
-Return the model.
-
-Returns:
-    Model: a pointer to the model
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "getMesh", &AssemblyMatrixTemperatureReal::getMesh, R"(
-Return the mesh.
-
-Returns:
-    Mesh: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) ) )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixTemperatureReal::getNumberOfElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "setDOFNumbering", &AssemblyMatrixTemperatureReal::setDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "setSolverName", &AssemblyMatrixTemperatureReal::setSolverName )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixTemperatureReal::* )() const >(
-                  &AssemblyMatrixTemperatureReal::print ),
-              R"(
-Print the matrix in code_aster format (with information on the DOF).
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixTemperatureReal::* )( const std::string ) const >(
-                  &AssemblyMatrixTemperatureReal::print ),
-              R"(
-Print the matrix in the given format format.
-
-Arguments:
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::arg( "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixTemperatureReal::* )( const ASTERINTEGER,
-                                                                      const std::string ) const >(
-                  &AssemblyMatrixTemperatureReal::print ),
-              R"(
-Print the matrix in the given format format and in the given logical unit.
-
-Arguments:
-    unit (int): logical unit to print
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::args( "unit", "format" ) ) )
         // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixTemperatureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
@@ -379,14 +124,8 @@ Arguments:
         )" );
     // -----------------------------------------------------------------------------------------
 
-    void ( AssemblyMatrixTemperatureComplex::*c7 )( const DirichletBCPtr &currentLoad ) =
-        &AssemblyMatrixTemperatureComplex::addLoad;
-    void ( AssemblyMatrixTemperatureComplex::*c8 )( const DirichletBCPtr &currentLoad,
-                                                    const FunctionPtr &func ) =
-        &AssemblyMatrixTemperatureComplex::addLoad;
-
     py::class_< AssemblyMatrixTemperatureComplex, AssemblyMatrixTemperatureComplexPtr,
-                py::bases< DataStructure > >( "AssemblyMatrixTemperatureComplex", py::no_init )
+                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixTemperatureComplex", py::no_init )
         // -----------------------------------------------------------------------------------------
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< AssemblyMatrixTemperatureComplex > ) )
@@ -394,126 +133,37 @@ Arguments:
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixTemperatureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c7 )
-        // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c8 )
-        // -----------------------------------------------------------------------------------------
         .def( "appendElementaryMatrix", &AssemblyMatrixTemperatureComplex::appendElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixTemperatureComplex::build )
+        .def( "clearElementaryMatrix", &AssemblyMatrixTemperatureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "getDOFNumbering", &AssemblyMatrixTemperatureComplex::getDOFNumbering )
+        .def( "build", &AssemblyMatrixTemperatureComplex::build )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixTemperatureComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixTemperatureComplex::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "setDOFNumbering", &AssemblyMatrixTemperatureComplex::setDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixTemperatureComplex::* )() const >(
-                  &AssemblyMatrixTemperatureComplex::print ),
-              R"(
-Print the matrix in code_aster format (with information on the DOF).
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def(
-            "print",
-            static_cast< void ( AssemblyMatrixTemperatureComplex::* )( const std::string ) const >(
-                &AssemblyMatrixTemperatureComplex::print ),
-            R"(
-Print the matrix in the given format format.
-
-Arguments:
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-            ( py::arg( "self" ), py::arg( "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixTemperatureComplex::* )(
-                  const ASTERINTEGER, const std::string ) const >(
-                  &AssemblyMatrixTemperatureComplex::print ),
-              R"(
-Print the matrix in the given format format and in the given logical unit.
-
-Arguments:
-    unit (int): logical unit to print
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::args( "unit", "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "setSolverName", &AssemblyMatrixTemperatureComplex::setSolverName );
-
-    void ( AssemblyMatrixPressureReal::*c9 )( const DirichletBCPtr &currentLoad ) =
-        &AssemblyMatrixPressureReal::addLoad;
-    void ( AssemblyMatrixPressureReal::*c10 )( const DirichletBCPtr &currentLoad,
-                                               const FunctionPtr &func ) =
-        &AssemblyMatrixPressureReal::addLoad;
+        .def( "transposeConjugate", &AssemblyMatrixTemperatureComplex::transposeConjugate );
 
     py::class_< AssemblyMatrixPressureReal, AssemblyMatrixPressureRealPtr,
-                py::bases< DataStructure > >( "AssemblyMatrixPressureReal", py::no_init )
+                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixPressureReal", py::no_init )
         // -----------------------------------------------------------------------------------------
         .def( "__init__", py::make_constructor( &initFactoryPtr< AssemblyMatrixPressureReal > ) )
         // -----------------------------------------------------------------------------------------
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< AssemblyMatrixPressureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c9 )
-        // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c10 )
-        // -----------------------------------------------------------------------------------------
         .def( "appendElementaryMatrix", &AssemblyMatrixPressureReal::appendElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixPressureReal::build )
+        .def( "clearElementaryMatrix", &AssemblyMatrixPressureReal::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "getDOFNumbering", &AssemblyMatrixPressureReal::getDOFNumbering )
+        .def( "build", &AssemblyMatrixPressureReal::build )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixPressureReal::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixPressureReal::getNumberOfElementaryMatrix )
-        // -----------------------------------------------------------------------------------------
-        .def( "setDOFNumbering", &AssemblyMatrixPressureReal::setDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "setSolverName", &AssemblyMatrixPressureReal::setSolverName )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixPressureReal::* )() const >(
-                  &AssemblyMatrixPressureReal::print ),
-              R"(
-Print the matrix in code_aster format (with information on the DOF).
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixPressureReal::* )( const std::string ) const >(
-                  &AssemblyMatrixPressureReal::print ),
-              R"(
-Print the matrix in the given format format.
-
-Arguments:
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::arg( "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixPressureReal::* )( const ASTERINTEGER,
-                                                                   const std::string ) const >(
-                  &AssemblyMatrixPressureReal::print ),
-              R"(
-Print the matrix in the given format format and in the given logical unit.
-
-Arguments:
-    unit (int): logical unit to print
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::args( "unit", "format" ) ) )
         // -----------------------------------------------------------------------------------------
         .def( "setValues", &AssemblyMatrixPressureReal::setValues, R"(
 Erase the assembly matrix and set new values in it.
@@ -529,71 +179,24 @@ Arguments:
         )" );
     // -----------------------------------------------------------------------------------------
 
-    void ( AssemblyMatrixPressureComplex::*c11 )( const DirichletBCPtr &currentLoad ) =
-        &AssemblyMatrixPressureComplex::addLoad;
-    void ( AssemblyMatrixPressureComplex::*c12 )( const DirichletBCPtr &currentLoad,
-                                                  const FunctionPtr &func ) =
-        &AssemblyMatrixPressureComplex::addLoad;
-
     py::class_< AssemblyMatrixPressureComplex, AssemblyMatrixPressureComplexPtr,
-                py::bases< DataStructure > >( "AssemblyMatrixPressureComplex", py::no_init )
+                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixPressureComplex", py::no_init )
         // -----------------------------------------------------------------------------------------
         .def( "__init__", py::make_constructor( &initFactoryPtr< AssemblyMatrixPressureComplex > ) )
         // -----------------------------------------------------------------------------------------
         .def( "__init__", py::make_constructor(
                               &initFactoryPtr< AssemblyMatrixPressureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c11 )
-        // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c12 )
-        // -----------------------------------------------------------------------------------------
         .def( "appendElementaryMatrix", &AssemblyMatrixPressureComplex::appendElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "build", &AssemblyMatrixPressureComplex::build )
+        .def( "clearElementaryMatrix", &AssemblyMatrixPressureComplex::clearElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "getDOFNumbering", &AssemblyMatrixPressureComplex::getDOFNumbering )
+        .def( "build", &AssemblyMatrixPressureComplex::build )
         // -----------------------------------------------------------------------------------------
         .def( "getMaterialField", &AssemblyMatrixPressureComplex::getMaterialField )
         // -----------------------------------------------------------------------------------------
         .def( "getNumberOfElementaryMatrix",
               &AssemblyMatrixPressureComplex::getNumberOfElementaryMatrix )
         // -----------------------------------------------------------------------------------------
-        .def( "setDOFNumbering", &AssemblyMatrixPressureComplex::setDOFNumbering )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixPressureComplex::* )() const >(
-                  &AssemblyMatrixPressureComplex::print ),
-              R"(
-Print the matrix in code_aster format (with information on the DOF).
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixPressureComplex::* )( const std::string ) const >(
-                  &AssemblyMatrixPressureComplex::print ),
-              R"(
-Print the matrix in the given format format.
-
-Arguments:
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::arg( "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( AssemblyMatrixPressureComplex::* )( const ASTERINTEGER,
-                                                                      const std::string ) const >(
-                  &AssemblyMatrixPressureComplex::print ),
-              R"(
-Print the matrix in the given format format and in the given logical unit.
-
-Arguments:
-    unit (int): logical unit to print
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::args( "unit", "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "setSolverName", &AssemblyMatrixPressureComplex::setSolverName );
-    // -----------------------------------------------------------------------------------------
+        .def( "transposeConjugate", &AssemblyMatrixPressureComplex::transposeConjugate );
 };

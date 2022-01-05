@@ -75,8 +75,6 @@ charCine2 = code_aster.MechanicalDirichletBC(monModel)
 charCine2.addBCOnNodes(code_aster.PhysicalQuantityComponent.Dz, 1., "COTE_H")
 charCine2.build()
 
-monSolver = code_aster.PetscSolver( RENUM="SANS", PRE_COND="SOR" )
-
 resu = MECA_STATIQUE(MODELE=monModel, CHAM_MATER=affectMat,
   EXCIT=(_F(CHARGE=charCine), _F(CHARGE=charCine2)),
   SOLVEUR = _F(METHODE="PETSC", RENUM="SANS", PRE_COND="SOR"))

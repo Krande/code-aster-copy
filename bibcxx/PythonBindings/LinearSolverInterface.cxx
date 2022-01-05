@@ -31,13 +31,6 @@ namespace py = boost::python;
 
 void exportLinearSolverToPython() {
 
-    bool ( LinearSolver::*c1 )( const AssemblyMatrixDisplacementRealPtr ) =
-        &LinearSolver::factorize;
-    bool ( LinearSolver::*c2 )( const AssemblyMatrixDisplacementComplexPtr ) =
-        &LinearSolver::factorize;
-    bool ( LinearSolver::*c3 )( const AssemblyMatrixTemperatureRealPtr ) = &LinearSolver::factorize;
-    bool ( LinearSolver::*c4 )( const AssemblyMatrixPressureRealPtr ) = &LinearSolver::factorize;
-
     FieldOnNodesRealPtr ( LinearSolver::*c5 )( const FieldOnNodesRealPtr currentRHS ) const =
         &LinearSolver::solve;
     FieldOnNodesComplexPtr ( LinearSolver::*c6 )( const FieldOnNodesComplexPtr currentRHS ) const =
@@ -56,19 +49,44 @@ void exportLinearSolverToPython() {
         // .def( "__init__", py::make_constructor( &initFactoryPtr< LinearSolver, std::string >
         // ) )
         .def( "getSolverName", &LinearSolver::getSolverName )
-        .def( "supportParallelMesh", &LinearSolver::supportParallelMesh )
+        .def( "supportParallelMesh", &LinearSolver::supportParallelMesh, R"(
+tell if the solver is enable in HPC
+
+Returns:
+     bool: True if the solver support ParallelMesh, else False
+        )",
+              ( py::arg( "self" ) )  )
         .def( "setKeywords", &LinearSolver::setKeywords )
         .def( "setCommandName", &LinearSolver::setCommandName )
         .def( "enableXfem", &LinearSolver::enableXfem )
-        .def( "build", &LinearSolver::build )
+        .def( "build", &LinearSolver::build, R"(
+build internal objects of the solver
+
+Returns:
+     bool: True if the building is a success, else False
+        )",
+              ( py::arg( "self" ) ) )
         .def( "solve", c5 )
         .def( "solve", c6 )
         .def( "solve", c7 )
         .def( "solve", c8 )
-        .def( "factorize", c1 )
-        .def( "factorize", c2 )
-        .def( "factorize", c3 )
-        .def( "factorize", c4 )
+        .def( "factorize", &LinearSolver::factorize, R"(
+Factorize the matrix.
+
+Arguments:
+    matrix [BaseAssemblyMatrix] : matrix to factorize
+
+Returns:
+    bool: True if factorization is a success, else False
+        )",
+              ( py::arg( "self" ), py::arg( "matrix" ) ) )
+        .def( "getMatrix", &LinearSolver::getMatrix, R"(
+return the factorized matrix
+
+Returns:
+    BaseAssemblyMatrix: factorized matrix
+        )",
+              ( py::arg( "self" ) ) )
         .def( "deleteFactorizedMatrix", &LinearSolver::deleteFactorizedMatrix );
 
     py::class_< MultFrontSolver, MultFrontSolverPtr, py::bases< LinearSolver > >( "MultFrontSolver",

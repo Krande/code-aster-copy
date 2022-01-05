@@ -152,8 +152,11 @@ else:
     v.pushFormat(petsc4py.PETSc.Viewer.Format.ASCII_MATLAB)
     A.view(v)
 
-monSolver.factorize(matrAsse)
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
+monSolver.factorize(matrAsse)
+matrfact = monSolver.getMatrix()
+test.assertEqual(matrfact.getType(), "MATR_ASSE_DEPL_R")
+test.assertTrue(isinstance( matrfact, code_aster.AssemblyMatrixDisplacementReal))
 
 vcine = dComputation.dirichletBC(0.)
 resu = monSolver.solve(retour, vcine)

@@ -82,7 +82,7 @@ def check_bibcxx_depends(self):
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
     # this option is compiler independent (ifort & g++)
-    self.check_cxx(cxxflags='-std=c++11', uselib_store='CXX', mandatory=False)
+    self.check_cxx(cxxflags='-std=c++17', uselib_store='CXX', mandatory=False)
 
 @Configure.conf
 def check_optimization_cxxflags(self):

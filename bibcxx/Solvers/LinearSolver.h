@@ -31,7 +31,7 @@
 
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
-#include "LinearAlgebra/AssemblyMatrixVariant.h"
+#include "LinearAlgebra/BaseAssemblyMatrix.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
 #include "astercxx.h"
@@ -49,13 +49,11 @@ class LinearSolver : public DataStructure {
     JeveuxVectorLong _integerValues;
     JeveuxVectorChar80 _petscOptions;
 
-    AssemblyMatrixVariantPtr _matrix;
-    AssemblyMatrixVariantPtr _matrixPrec;
+    BaseAssemblyMatrixPtr _matrix;
+    BaseAssemblyMatrixPtr _matrixPrec;
     std::string _commandName;
     bool _xfem;
     PyObject *_keywords = NULL;
-
-    bool _factorize();
 
     void _solve( const std::string &rhsName, const std::string &diriName,
                  const std::string &resultName ) const;
@@ -137,15 +135,17 @@ class LinearSolver : public DataStructure {
      * @param currentMatrix Matrice assemblee
      * @return bool True if ok
      */
-    bool factorize( const AssemblyMatrixDisplacementRealPtr currentMatrix );
-    bool factorize( const AssemblyMatrixDisplacementComplexPtr currentMatrix );
-    bool factorize( const AssemblyMatrixTemperatureRealPtr currentMatrix );
-    bool factorize( const AssemblyMatrixPressureRealPtr currentMatrix );
+    bool factorize( const BaseAssemblyMatrixPtr currentMatrix );
 
     /**
      * @brief Factorisation d'une matrice
      */
     bool deleteFactorizedMatrix();
+
+    /**
+     * @brief Get factorized matrix
+     */
+    BaseAssemblyMatrixPtr getMatrix() const { return _matrix; };
 
     /**
      * @brief Inversion du systeme lineaire

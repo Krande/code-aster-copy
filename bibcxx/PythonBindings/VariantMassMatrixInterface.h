@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe VairantStiffmessMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,32 +24,29 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "astercxx.h"
-#include "LinearAlgebra/AssemblyMatrixVariant.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
-#include <boost/variant.hpp>
+#include "LinearAlgebra/AssemblyMatrix.h"
+#include "astercxx.h"
 #include <boost/python.hpp>
+#include <boost/variant.hpp>
 
 namespace py = boost::python;
 
-typedef AssemblyMatrixVariant::MatrixVariant MatrixVariant;
+typedef boost::variant< AssemblyMatrixDisplacementRealPtr, AssemblyMatrixDisplacementComplexPtr,
+                        AssemblyMatrixTemperatureRealPtr, AssemblyMatrixPressureRealPtr >
+    MatrixVariant;
 
-struct variant_to_object : boost::static_visitor< PyObject * >
-{
-    static result_type convert( MatrixVariant const &v )
-    {
+struct variant_to_object : boost::static_visitor< PyObject * > {
+    static result_type convert( MatrixVariant const &v ) {
         return apply_visitor( variant_to_object(), v );
     };
 
-    template < typename T > result_type operator()( T const &t ) const
-    {
+    template < typename T > result_type operator()( T const &t ) const {
         return py::incref( py::object( t ).ptr() );
     };
 };
 
-template< typename ObjectPointer >
-MatrixVariant getMassMatrix( ObjectPointer self )
-{
+template < typename ObjectPointer > MatrixVariant getMassMatrix( ObjectPointer self ) {
     auto mat1 = self->getDisplacementRealMassMatrix();
     if ( mat1 != nullptr )
         return MatrixVariant( mat1 );
