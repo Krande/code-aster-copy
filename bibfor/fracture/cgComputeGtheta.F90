@@ -38,6 +38,7 @@ use calcG_type
 #include "asterfort/getvid.h"
 #include "asterfort/glegen.h"
 #include "asterfort/gsyste.h"
+#include "asterfort/hatSmooth.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -516,6 +517,16 @@ use calcG_type
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g1th, g1s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g2th, g2s)
             call gsyste(cgTheta%matrix, cgTheta%nb_theta_field, cgTheta%nnof, g3th, g3s)
+!
+            if (cgTheta%milieu .and. cgTheta%nb_point_fond.eq.0 .and. cgTheta%nnof/2-1.gt.0) then
+                call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, gs)
+                call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k1s)
+                call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k2s)
+                call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, k3s)
+                call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, g1s)
+                call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, g2s)
+                call hatSmooth(cgTheta%nnof, cgTheta%nnof/2+1, v_basf, g3s)
+            endif
 !
             call cpu_time(finish0)
             cgStat%cgCmpGtheta_sys = cgStat%cgCmpGtheta_sys + finish0 - start0

@@ -22,8 +22,6 @@ DEBUT(CODE=_F(
               ),
       DEBUG=_F(SDVERI='OUI'))
 
-from sslv154a import lissGchap, lissGbar
-
 # MODELISATION A : FEM, MAILLAGE QUADRATIQUE
 
 # parametres utiles
@@ -189,19 +187,6 @@ CG2=CALC_TABLE(TABLE=CG2,
                       )
               )
 
-CG2=CALC_TABLE(TABLE=CG2,
-              reuse=CG2,
-              ACTION=(_F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'G_CHAP',VALE_COLONNE =  lissGchap(CG2)),
-                      _F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'G_BAR', VALE_COLONNE =  lissGbar(CG2)),
-                      _F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'K1_CHAP',VALE_COLONNE = lissGchap(CG2, val='K1')),
-                      _F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'K1_BAR', VALE_COLONNE = lissGbar(CG2,  val='K1')),
-                      _F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'K2_CHAP',VALE_COLONNE = lissGchap(CG2, val='K2')),
-                      _F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'K2_BAR', VALE_COLONNE = lissGbar(CG2,  val='K2')),
-                      _F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'K3_CHAP',VALE_COLONNE = lissGchap(CG2, val='K3')),
-                      _F(OPERATION = 'AJOUT_COLONNE',NOM_PARA = 'K3_BAR', VALE_COLONNE = lissGbar(CG2,  val='K3')),
-                      )
-              )
-
 PK=CALC_TABLE(TABLE=PK,
               reuse=PK,
               ACTION=(_F(OPERATION='OPER',FORMULE=ANGLE,NOM_PARA='ANGLE'),
@@ -279,10 +264,10 @@ TEST_TABLE(CRITERE='RELATIF',
 # test de G chapeau au bord (angle = 0 avec + ou -0.5 degre)
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.035,
-           VALE_CALC=7.0765188963262124,
+           PRECISION=0.001,
+           VALE_CALC=6.902131836878503,
            VALE_REFE=GREF(0),
-           NOM_PARA='G_CHAP',
+           NOM_PARA='G',
            TABLE=CG2,
            FILTRE=_F(CRITERE='ABSOLU',
                      PRECISION=0.5,
@@ -296,35 +281,7 @@ TEST_TABLE(CRITERE='RELATIF',
            PRECISION=0.01,
            VALE_CALC=5.697168958806117,
            VALE_REFE=GREF(90),
-           NOM_PARA='G_CHAP',
-           TABLE=CG2,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     PRECISION=0.5,
-                     NOM_PARA='ANGLE',
-                     VALE=90.0,),
-           )
-
-# test de G bar au bord (angle = 90 avec + ou -0.5 degre)
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.015,
-           VALE_CALC=6.9602608566943385 ,
-           VALE_REFE=GREF(0),
-           NOM_PARA='G_BAR',
-           TABLE=CG2,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     PRECISION=0.5,
-                     NOM_PARA='ANGLE',
-                     VALE=0.0,),
-           )
-
-# test de G bar au milieu du fond (angle = 90 avec + ou -0.5 degre)
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.005,
-           VALE_CALC=5.70847762457612,
-           VALE_REFE=GREF(90),
-           NOM_PARA='G_BAR',
+           NOM_PARA='G',
            TABLE=CG2,
            FILTRE=_F(CRITERE='ABSOLU',
                      PRECISION=0.5,
@@ -335,10 +292,10 @@ TEST_TABLE(CRITERE='RELATIF',
 # test de K1 chapeau au bord (angle = 0 avec + ou -0.5 degre)
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
-           PRECISION=0.06,
-           VALE_CALC=837931.5456786454,
+           PRECISION=0.045,
+           VALE_CALC=829567.262256227,
            VALE_REFE=K1REF(0),
-           NOM_PARA='K1_CHAP',
+           NOM_PARA='K1',
            TABLE=CG2,
            FILTRE=_F(CRITERE='ABSOLU',
                      PRECISION=0.5,
@@ -352,35 +309,7 @@ TEST_TABLE(CRITERE='RELATIF',
            PRECISION=0.055,
            VALE_CALC=835494.0976993412,
            VALE_REFE=K1REF(90),
-           NOM_PARA='K1_CHAP',
-           TABLE=CG2,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     PRECISION=0.5,
-                     NOM_PARA='ANGLE',
-                     VALE=90.0,),
-           )
-
-# test de K1 bar au bord (angle = 0 avec + ou -0.5 degre)
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           VALE_CALC=832355.3567303622,
-           VALE_REFE=K1REF(0),
-           NOM_PARA='K1_BAR',
-           TABLE=CG2,
-           FILTRE=_F(CRITERE='ABSOLU',
-                     PRECISION=0.5,
-                     NOM_PARA='ANGLE',
-                     VALE=0.0,),
-           )
-
-# test de K1 bar au milieu du fond (angle = 90 avec + ou -0.5 degre)
-TEST_TABLE(CRITERE='RELATIF',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.05,
-           VALE_CALC=834080.22336927,
-           VALE_REFE=K1REF(90),
-           NOM_PARA='K1_BAR',
+           NOM_PARA='K1',
            TABLE=CG2,
            FILTRE=_F(CRITERE='ABSOLU',
                      PRECISION=0.5,
@@ -453,11 +382,7 @@ C_G_CG=RECU_FONCTION(TABLE=CG,
 
 C_G_CGC=RECU_FONCTION(TABLE=CG2,
                      PARA_X='ANGLE',
-                     PARA_Y='G_CHAP',)
-
-C_G_CGB=RECU_FONCTION(TABLE=CG2,
-                     PARA_X='ANGLE',
-                     PARA_Y='G_BAR',)
+                     PARA_Y='G',)
 
 C_G_PK=RECU_FONCTION(TABLE=PK,
                      PARA_X='ANGLE',
@@ -478,10 +403,10 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='G CALC_G CHAP',
                          MARQUEUR=0,
                          COULEUR=3),
-                      _F(FONCTION=C_G_CGB,
-                         LEGENDE='G CALC_G BAR',
-                         MARQUEUR=0,
-                         COULEUR=4),
+                      #_F(FONCTION=C_G_CGB,
+                      #   LEGENDE='G CALC_G BAR',
+                      #   MARQUEUR=0,
+                      #   COULEUR=4),
                       _F(FONCTION=C_G_PK,
                          LEGENDE='G POST_K1_K2_K3',
                          MARQUEUR=0,
@@ -507,11 +432,7 @@ C_K1_CG=RECU_FONCTION(TABLE=CG,
 
 C_K1_CGC=RECU_FONCTION(TABLE=CG2,
                       PARA_X='ANGLE',
-                      PARA_Y='K1_CHAP',)
-
-C_K1_CGB=RECU_FONCTION(TABLE=CG2,
-                      PARA_X='ANGLE',
-                      PARA_Y='K1_BAR',)
+                      PARA_Y='K1',)
 
 C_K1_PK=RECU_FONCTION(TABLE=PK,
                       PARA_X='ANGLE',
@@ -532,10 +453,10 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='K1 CALC_G CHAP',
                          MARQUEUR=0,
                          COULEUR=3),
-                      _F(FONCTION=C_K1_CGB,
-                         LEGENDE='K1 CALC_G BAR',
-                         MARQUEUR=0,
-                         COULEUR=4),
+                      #_F(FONCTION=C_K1_CGB,
+                      #   LEGENDE='K1 CALC_G BAR',
+                      #   MARQUEUR=0,
+                      #   COULEUR=4),
                       _F(FONCTION=C_K1_PK,
                          LEGENDE='K1 POST_K1_K2_K3',
                          MARQUEUR=0,
@@ -560,11 +481,7 @@ C_K2_CG=RECU_FONCTION(TABLE=CG,
 
 C_K2_CGC=RECU_FONCTION(TABLE=CG2,
                       PARA_X='ANGLE',
-                      PARA_Y='K2_CHAP',)
-
-C_K2_CGB=RECU_FONCTION(TABLE=CG2,
-                      PARA_X='ANGLE',
-                      PARA_Y='K2_BAR',)
+                      PARA_Y='K2',)
 
 C_K2_PK=RECU_FONCTION(TABLE=PK,
                       PARA_X='ANGLE',
@@ -585,10 +502,6 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='K2 CALC_G CHAP',
                          MARQUEUR=0,
                          COULEUR=3),
-                      _F(FONCTION=C_K2_CGB,
-                         LEGENDE='K2 CALC_G BAR',
-                         MARQUEUR=0,
-                         COULEUR=4),
                       _F(FONCTION=C_K2_PK,
                          LEGENDE='K2 POST_K1_K2_K3',
                          MARQUEUR=0,
@@ -613,11 +526,7 @@ C_K3_CG=RECU_FONCTION(TABLE=CG,
 
 C_K3_CGC=RECU_FONCTION(TABLE=CG2,
                       PARA_X='ANGLE',
-                      PARA_Y='K3_CHAP',)
-
-C_K3_CGB=RECU_FONCTION(TABLE=CG2,
-                      PARA_X='ANGLE',
-                      PARA_Y='K3_BAR',)
+                      PARA_Y='K3',)
 
 C_K3_PK=RECU_FONCTION(TABLE=PK,
                       PARA_X='ANGLE',
@@ -638,10 +547,6 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='K3 CALC_G CHAP',
                          MARQUEUR=0,
                          COULEUR=3),
-                      _F(FONCTION=C_K3_CGB,
-                         LEGENDE='K3 CALC_G BAR',
-                         MARQUEUR=0,
-                         COULEUR=4),
                       _F(FONCTION=C_K3_PK,
                          LEGENDE='K3 POST_K1_K2_K3',
                          MARQUEUR=0,
