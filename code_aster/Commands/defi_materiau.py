@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -141,9 +141,11 @@ class MaterialDefinition(ExecuteCommand):
         """
         objects = {}
         for materName, skws in keywords.items():
+            if materName == "INFO":
+                continue
             asterNewName = ""
-            if materName[-2:] == "FO":
-                asterNewName = materName[:-3]
+            if materName.endswith("_FO"):
+                asterNewName = materName.replace("_FO", "")
             mater = MaterialProperty(materName, asterNewName)
             # to build Traction function later
             if materName in ("TRACTION", "META_TRACTION"):
