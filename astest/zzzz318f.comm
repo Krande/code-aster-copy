@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -43,6 +43,8 @@ FTEMP = FORMULE(VALE='2.*X +3.*Y +4.*Z +5.*INST',
                 NOM_PARA=['X', 'Y', 'Z', 'INST'],)
 FHYDR = FORMULE(VALE='-2.*X -3.*Y -4.*Z -5.*INST',
                 NOM_PARA=['X', 'Y', 'Z', 'INST'],)
+FHYDRGA = FORMULE(VALE='-2.*X -3.*Y -4.*Z -5',
+                  NOM_PARA=['X', 'Y', 'Z'],)
 
 
 # CONSTRUCTION DES CHAMPS DE GEOMETRIE
@@ -56,6 +58,11 @@ CHXN=CREA_CHAMP(OPERATION='EXTR',
 
 CHXL=CREA_CHAMP(OPERATION='DISC',
                 TYPE_CHAM='ELNO_GEOM_R',
+                MODELE=MOTHER,
+                CHAM_GD=CHXN,)
+
+CHXG=CREA_CHAMP(OPERATION='DISC',
+                TYPE_CHAM='ELGA_GEOM_R',
                 MODELE=MOTHER,
                 CHAM_GD=CHXN,)
 
@@ -81,6 +88,16 @@ HYDR_F=CREA_CHAMP(OPERATION='AFFE',
                           NOM_CMP = ('X1',),
                           VALE_F = (FHYDR,)
                          )
+                )
+
+HYDRGA_F=CREA_CHAMP(OPERATION='AFFE',
+                    TYPE_CHAM='ELGA_NEUT_F',
+                    MODELE=MOTHER,
+                    PROL_ZERO='OUI',
+                    AFFE=_F( TOUT = 'OUI',
+                             NOM_CMP = ('X1',),
+                             VALE_F = (FHYDRGA,)
+                    )
                 )
 
 # CONSTRUCTION DU MODELE MECANIQUE A SOUS-POINTS
@@ -183,6 +200,11 @@ HYDR1=CREA_CHAMP(OPERATION='ASSE',
                             NOM_CMP_RESU = ('HYDR',),
                         )
                 )
+
+HYDR= CREA_CHAMP(OPERATION='EVAL',
+                  TYPE_CHAM='ELGA_NEUT_R',
+                  CHAM_F=HYDRGA_F,
+                  CHAM_PARA=( CHXG ))
 
 
 HYDR_SP=PROJ_CHAMP(PROJECTION='OUI',METHODE='SOUS_POINT',
