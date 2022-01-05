@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,8 +66,8 @@ EFLUXNO  = LocatedComponents(phys=PHY.FLUX_R, type='ELNO',
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y','Z',))
 
-
-
+NGEOMGR = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
+    components=('X','Y','Z',))
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
     components=('X','Y','Z','W',))
@@ -348,9 +348,11 @@ class THER_HEXA20(Element):
         ),
 
         OP.TOU_INI_ELGA(te=99,
-            para_out=((OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG), (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F),
-                     (OP.TOU_INI_ELGA.PNEUT_R, LC.EGNEUT1R), (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR),
-                     ),
+            para_out=((OP.TOU_INI_ELGA.PFLUX_R, EFLUXPG), (OP.TOU_INI_ELGA.PGEOM_R, NGEOMGR),
+                      (OP.TOU_INI_ELGA.PNEUT_F, EGNEUT_F), (OP.TOU_INI_ELGA.PNEUT_R, LC.EGNEUT1R),
+                      (OP.TOU_INI_ELGA.PSOUR_R, ESOURCR), (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
+                      (SP.PTEMP_R, LC.ETEMPPG)
+            ),
         ),
 
         OP.TOU_INI_ELNO(te=99,
