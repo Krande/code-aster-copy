@@ -2,7 +2,7 @@
  * @file ContactParametersInterface.cxx
  * @brief Interface python de ContactParameters
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -164,8 +164,9 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg("coulomb") ) )
         .def( "hasFriction",
-              static_cast< void ( FrictionParameter::* )( const bool & ) >
-                                        ( &FrictionParameter::hasFriction ), R"(
+              static_cast< void ( FrictionParameter::* )( const bool & ) >( 
+                    &FrictionParameter::hasFriction ), 
+              R"(
 Set True if friction is present in at least one contact zone else False
 
 Arguments:
@@ -173,8 +174,9 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg( "friction" ) ) )
         .def( "hasFriction",
-              static_cast< bool ( FrictionParameter::* )() const >
-                               ( &FrictionParameter::hasFriction ), R"(
+              static_cast< bool ( FrictionParameter::* )() const >( 
+                    &FrictionParameter::hasFriction ), 
+              R"(
 Reruen True if friction is present in at least one contact zone else False
 
 Returns:
@@ -213,18 +215,18 @@ Arguments:
     float: pairing distance.
         )",
               ( py::arg( "self" ), py::arg("dist_appa") ) )
-        .def( "getInitState", &PairingParameter::getInitState, R"(
+        .def( "getInitialState", &PairingParameter::getInitialState, R"(
 Return the initial contact state. It is a value of an enum
 
 Returns:
-    InitState: Initial contact state.
+    InitialState: Initial contact state.
         )",
               ( py::arg( "self" ) ) )
-        .def( "setInitState", &PairingParameter::setInitState, R"(
+        .def( "setInitialState", &PairingParameter::setInitialState, R"(
 Set the initial contact state. It is a value of an enum
 
 Arguments:
-    InitState: Initial contact state.
+    InitialState: Initial contact state.
         )",
               ( py::arg( "self" ), py::arg( "cont_init" ) ) )
         .def( "getThreshold", &PairingParameter::getThreshold, R"(
@@ -255,23 +257,24 @@ Arguments:
     ElementaryCharacteristicsPtr: cara_elel pointer.
         )",
               ( py::arg( "self" ), py::arg( "cara" ) ) )
-        .def( "getDistFonction", &PairingParameter::getDistFonction, R"(
-Return the fictive distance fonction. It is a value of a pointer
+        .def( "getDistanceFunction", &PairingParameter::getDistanceFunction, R"(
+Return the fictive distance function. It is a value of a pointer
 
 Returns:
-    GenericLoadFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
+    GenericFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
         )",
               ( py::arg( "self" ) ) )
-        .def( "setDistFonction", &PairingParameter::setDistFonction, R"(
-Set the fictive distance fonction. It is a value of a pointer
+        .def( "setDistanceFunction", &PairingParameter::setDistanceFunction, R"(
+Set the fictive distance function. It is a value of a pointer
 
 Arguments:
-    GenericLoadFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
+    GenericFunction: FunctionPtr/ FormulaPtr/ Function2DPtr.
         )",
               ( py::arg( "self" ), py::arg( "dist_supp" ) ) )
         .def( "hasBeamDistance",
-              static_cast< void ( PairingParameter::* )( const bool & ) >
-                                        ( &PairingParameter::hasBeamDistance ), R"(
+              static_cast< void ( PairingParameter::* )( const bool & ) >( 
+                    &PairingParameter::hasBeamDistance ), 
+                    R"(
 Set True if fictive distance for beam is present else False
 
 Arguments:
@@ -279,8 +282,9 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg( "beam" ) ) )
         .def( "hasBeamDistance",
-              static_cast< bool ( PairingParameter::* )() const >
-                               ( &PairingParameter::hasBeamDistance ), R"(
+              static_cast< bool ( PairingParameter::* )() const >( 
+                    &PairingParameter::hasBeamDistance ), 
+                    R"(
 Reruen True if fictive distance for beam is present else False
 
 Returns:
@@ -288,8 +292,9 @@ Returns:
         )",
               ( py::arg( "self" ) ) )
         .def( "hasShellDistance",
-              static_cast< void ( PairingParameter::* )( const bool & ) >
-                                        ( &PairingParameter::hasShellDistance ), R"(
+              static_cast< void ( PairingParameter::* )( const bool & ) >( 
+                    &PairingParameter::hasShellDistance ), 
+                    R"(
 Set True if fictive distance for shell is present else False
 
 Arguments:
@@ -297,8 +302,9 @@ Arguments:
         )",
               ( py::arg( "self" ), py::arg( "shell" ) ) )
         .def( "hasShellDistance",
-              static_cast< bool ( PairingParameter::* )() const >
-                               ( &PairingParameter::hasShellDistance ), R"(
+              static_cast< bool ( PairingParameter::* )() const >( 
+                    &PairingParameter::hasShellDistance ), 
+                    R"(
 Reruen True if fictive distance for shell is present else False
 
 Returns:

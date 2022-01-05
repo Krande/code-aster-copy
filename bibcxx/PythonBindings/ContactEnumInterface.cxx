@@ -56,8 +56,8 @@ void exportContactEnumToPython() {
     py::enum_< PairingAlgo >( "PairingAlgo" )
         .value( "Mortar", PairingAlgo::Mortar );
 
-    py::enum_< InitState >( "InitState" )
-        .value( "Interpenetre", InitState::Interpenetre )
-        .value( "Oui", InitState::Oui )
-        .value( "Non", InitState::Non );
+    py::enum_< InitialState >( "InitialState" )
+        .value( "Interpenetrated", InitialState::Interpenetrated )
+        .value( "Yes", InitialState::Yes )
+        .value( "No", InitialState::No );
 };

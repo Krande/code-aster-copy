@@ -704,7 +704,7 @@ bool ConnectionMesh::hasGroupOfNodes( const std::string &name) const {
     return _groupsOfNodes->existsObject( name );
 }
 
-const VectorLong ConnectionMesh::getCells( const std::string name ) const {
+VectorLong ConnectionMesh::getCells( const std::string name ) const {
 
     if ( name.empty())
     {

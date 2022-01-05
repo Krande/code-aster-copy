@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,9 +75,9 @@ DEFICO = DEFI_CONT(MODELE=MODI,
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
                             ALGO_CONT='LAGRANGIEN',
-                            VARIANTE='ROBUSTE',    #VERI_NORM='NON',
+                            VARIANTE='ROBUSTE',
                             CONTACT_INIT='OUI',),
-                         _F(APPARIEMENT='MORTAR',  #VERI_NORM='NON',
+                         _F(APPARIEMENT='MORTAR',
                             GROUP_MA_MAIT='Group_4',
                             GROUP_MA_ESCL='Group_3',
                             VARIANTE = "RAPIDE",
@@ -106,16 +106,9 @@ for i in range(DEFICO.getNumberOfContactZones()):
     test.assertFalse(zone.checkNormals()) 
  
     test.assertEqual(zone.getModel().getName(), MODI.getName())
-    test.assertEqual(zone.getMesh().getName(), Mail.getName())
+    test.assertEqual(zone.getMesh().getName(), Mail.getName()) 
 
-    print('GROUP_MA_ESCL=',zone.getSlaveGroupOfCells())  
-    zone.setSlaveGroupOfCells('Group_0'+str(i+1) )
-    print('GROUP_MA_ESCL=',zone.getSlaveGroupOfCells())  
-    print('GROUP_MA_MAIT=',zone.getMasterGroupOfCells())  
-    zone.setMasterGroupOfCells('Group_0'+str(i+2) )
-    print('GROUP_MA_MAIT=',zone.getMasterGroupOfCells())  
-
-    contParam = zone.getContactParameter()   # setContactParameter ??
+    contParam = zone.getContactParameter()   
     test.assertEqual(contParam.getAlgorithm(), algo_cont[i])
     contParam.setAlgorithm(algo_cont[1-i])
     test.assertEqual(contParam.getAlgorithm(), algo_cont[1-i])
@@ -132,6 +125,10 @@ for i in range(DEFICO.getNumberOfContactZones()):
     contParam.setCoefficient(200.)
     test.assertEqual(contParam.getCoefficient(), 200.)
 
+zone.setSlaveGroupOfCells('Group_4' )
+zone.setMasterGroupOfCells('Group_3')
+test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_4')  
+test.assertEqual(zone.getMasterGroupOfCells(), 'Group_3')  
 
 DEFICO.hasFriction(True)
 test.assertTrue(DEFICO.hasFriction())
@@ -281,8 +278,8 @@ for i in range(DEFICO3.getNumberOfContactZones()):
     pairParam.setPairingDistance(0.1)
     test.assertEqual(pairParam.getPairingDistance(), 0.1) 
 
-    test.assertEqual(pairParam.getInitState(), code_aster.InitState.Interpenetre)
-    pairParam.setInitState(code_aster.InitState.Oui)
+    test.assertEqual(pairParam.getInitialState(), code_aster.InitialState.Interpenetrated)
+    pairParam.setInitialState(code_aster.InitialState.Yes)
 
 
 
@@ -316,16 +313,13 @@ for i in range(DEFICO4.getNumberOfContactZones()):
     test.assertEqual(fricParam.getType(), code_aster.FrictionType.Coulomb)
     test.assertEqual(fricParam.getCoulomb(), 200.)
 
-    pairParam = zone.getPairingParameter()   # setPairingParameter ??
-    # pairParam.setDistFonction( GenericLoadFunction(DN) )
-
-    # tt=pairParam.getDistFonction()
-"""
-    test.assertEqual(pairParam.getDistFonction().getName(), DF1.getName())
-    pairParam.setDistFonction(DN)
-    test.assertEqual(pairParam.getDistFonction().getName(), DN.getName())
-    pairParam.setDistFonction(DFO)
-    test.assertEqual(pairParam.getDistFonction().getName(), DFO.getName())
+    pairParam = zone.getPairingParameter()  
+    pairParam.getDistanceFunction()
+    test.assertEqual(pairParam.getDistanceFunction().getName(), DF1.getName())
+    pairParam.setDistanceFunction(DN)
+    test.assertEqual(pairParam.getDistanceFunction().getName(), DN.getName())
+    pairParam.setDistanceFunction(DFO)
+    test.assertEqual(pairParam.getDistanceFunction().getName(), DFO.getName())
 
     test.assertTrue(pairParam.hasBeamDistance())
     pairParam.hasBeamDistance(False)
@@ -334,6 +328,6 @@ for i in range(DEFICO4.getNumberOfContactZones()):
     test.assertTrue(pairParam.hasShellDistance())
 
     test.assertEqual(pairParam.getElementaryCharacteristics().getName(), CARAMECA.getName())
-"""
+
 
 FIN()

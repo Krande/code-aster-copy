@@ -77,9 +77,7 @@ class ContactNew : public DataStructure {
     ASTERINTEGER getNumberOfContactZones() const { return _zones.size(); }
 
     ContactZonePtr getContactZone( const ASTERINTEGER &zone_id ) const {
-        AS_ASSERT( zone_id >= 0 && zone_id < getNumberOfContactZones() );
-
-        return _zones[zone_id];
+        return _zones.at( zone_id );
     }
 
     std::vector< ContactZonePtr > getContactZones() const { return _zones; }

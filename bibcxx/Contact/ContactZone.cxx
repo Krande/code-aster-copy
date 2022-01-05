@@ -24,39 +24,58 @@
 
 #include "Contact/ContactZone.h"
 #include "Messages/Messages.h"
+#include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
 
 ContactZone::ContactZone( const std::string name, const ModelPtr model )
     : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ),
-      _checkNormal( true ) {
+      _checkNormal( true ), _contParam( boost::make_shared< ContactParameter >() ),
+      _fricParam( boost::make_shared< FrictionParameter >() ),
+      _pairParam( boost::make_shared< PairingParameter >() ) {
     // model has to be mechanics
     if ( !_model->isMechanical() )
         UTMESS( "F", "CONTACT1_2" );
 };
 
 bool ContactZone::build() {
-    const auto mesh = getMesh();
+    auto mesh = getMesh();
 
     // check that there is no nodes in common
-    auto slaveNodes = mesh->getNodesFromCells( getSlaveGroupOfCells() );
-    auto masterNodes = mesh->getNodesFromCells( getMasterGroupOfCells() );
-
-    std::sort( slaveNodes.begin(), slaveNodes.end() );
-    std::sort( masterNodes.begin(), masterNodes.end() );
+    auto slaveNodes_lc = mesh->getNodesFromCells( getSlaveGroupOfCells(), false, true );
+    auto masterNodes_lc = mesh->getNodesFromCells( getMasterGroupOfCells(), false, true );
 
     VectorLong commonNodes;
 
-    std::set_intersection( slaveNodes.begin(), slaveNodes.end(), masterNodes.begin(),
-                           masterNodes.end(), std::back_inserter( commonNodes ) );
+    if ( mesh->isParallel() ) {
+#ifdef ASTER_HAVE_MPI
+        VectorLong slaveNodes_gl;
+        AsterMPI::all_gather( slaveNodes_lc, slaveNodes_gl );
+        commonNodes = set_intersection( slaveNodes_gl, masterNodes_lc );
+#endif
+    } else {
+        commonNodes = set_intersection( slaveNodes_lc, masterNodes_lc );
+    }
 
-    if ( commonNodes.size() > 0 ) {
+    ASTERINTEGER size_inter_gl = commonNodes.size();
+
+    // share error
+#ifdef ASTER_HAVE_MPI
+    if ( mesh->isParallel() ) {
+        ASTERINTEGER size_inter_lc = size_inter_gl;
+        size_inter_gl = 0;
+        AsterMPI::all_reduce( size_inter_lc, size_inter_gl, MPI_SUM );
+    }
+#endif
+
+    if ( size_inter_gl > 0 ) {
         UTMESS( "F", "CONTACT1_1" );
     }
 
     // check mesh orientation (normals)
     if ( checkNormals() ) {
-        std::string slave = ljust( _slave, 24, ' ' );
-        std::string master = ljust( _master, 24, ' ' );
+        std::string slave = ljust( getSlaveGroupOfCells(), 24, ' ' );
+        std::string master = ljust( getMasterGroupOfCells(), 24, ' ' );
         CALL_CHECKNORMALS( _model->getName().c_str(), slave.c_str(), master.c_str() );
     }
+    return true;
 }

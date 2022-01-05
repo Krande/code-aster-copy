@@ -3,7 +3,7 @@
  * @brief Implementation de ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -95,8 +95,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfMechaFuncReal[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfMechaFuncReal[pos].getName();
+            if ( _listOfMechaFuncReal[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfMechaFuncReal[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -104,8 +104,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfMechanicalLoadsFunction ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfMechaFuncFunction[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfMechaFuncFunction[pos].getName();
+            if ( _listOfMechaFuncFunction[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfMechaFuncFunction[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -114,8 +114,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfParallelMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfParaMechaFuncReal[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfParaMechaFuncReal[pos].getName();
+            if ( _listOfParaMechaFuncReal[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfParaMechaFuncReal[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -123,8 +123,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfParallelMechanicalLoadsFunction ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfParaMechaFuncFunction[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfParaMechaFuncFunction[pos].getName();
+            if ( _listOfParaMechaFuncFunction[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfParaMechaFuncFunction[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -134,8 +134,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfDirichletBCs ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfDiriFun[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfDiriFun[pos].getName();
+            if ( _listOfDiriFun[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfDiriFun[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -151,8 +151,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfThermalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfTherFuncReal[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfTherFuncReal[pos].getName();
+            if ( _listOfTherFuncReal[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfTherFuncReal[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -161,8 +161,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfThermalLoadsFunction ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfTherFuncFunction[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfTherFuncFunction[pos].getName();
+            if ( _listOfTherFuncFunction[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfTherFuncFunction[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -171,8 +171,8 @@ bool ListOfLoads::build( ModelPtr model ) {
         for ( const auto &curIter : _listOfDirichletBCs ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
-            if ( _listOfDiriFun[pos].getName() != emptyRealFunction->getName() )
-                dict2.container["FONC_MULT"] = _listOfDiriFun[pos].getName();
+            if ( _listOfDiriFun[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfDiriFun[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }

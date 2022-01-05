@@ -30,9 +30,7 @@
 #include "astercxx.h"
 
 std::string trim( const std::string &str, const std::string &whitespace = " \t" );
-std::string ljust( const std::string &str, const ASTERINTEGER& length,
-                  char fillchar = ' ' );
-
+std::string ljust( const std::string &str, const ASTERINTEGER &length, char fillchar = ' ' );
 
 /**
  * @brief irange Create a vector of integer from begin to end (included).
@@ -51,9 +49,7 @@ char *vectorStringAsFStrArray( const VectorString &vector, const int size );
 
 
 // Set and sort a vector
-template<typename T>
-std::vector<T>
-unique(const std::vector<T>& vec)
+template<typename T> std::vector<T> unique(const std::vector<T>& vec)
 {
     // make unique & sort
     std::set<T> s;
@@ -68,9 +64,7 @@ unique(const std::vector<T>& vec)
 }
 
 // Get unique list of Aster Concept in a map (indexed by rank)
-template<typename T, typename T2>
-std::vector<T>
-unique(const std::map< T2, T >& _map)
+template<typename T, typename T2> std::vector<T> unique(const std::map< T2, T > &_map)
 {
     std::map< std::string, T> unique_map;
     for(auto it : _map)
@@ -80,12 +74,42 @@ unique(const std::map< T2, T >& _map)
 
     std::vector< T > ret;
     ret.reserve(unique_map.size());
-    for(auto it : unique_map)
+    for (auto it : unique_map)
     {
         ret.push_back(it.second);
     }
 
     return ret;
+}
+
+/**
+* @brief Return all elements in common between the two vectors. Be carefull, input vectors are
+* modified inplace since a std::sort operation is performed. So create a copy before
+* if you don't want modifications of your inputs
+*/
+
+template < typename T >
+std::vector< T > set_intersection( std::vector< T >& vec1, std::vector< T >& vec2 ) {
+    std::vector< T > common;
+
+    if ( vec1.empty() || vec2.empty() )
+        return common;
+
+    // // c'est vraiment pas génial mais pas mieux pour le moment
+    // for( auto& elem1 : vec1){
+    //     for( auto& elem2 : vec2){
+    //         if(elem1 == elem2)
+    //             common.push_back(elem1);
+    //     }
+    // }
+
+    std::sort( vec1.begin(), vec1.end() );
+    std::sort( vec2.begin(), vec2.end() );
+
+    std::set_intersection( vec1.begin(), vec1.end(), vec2.begin(), vec2.end(),
+                           std::back_inserter( common ) );
+
+    return common;
 }
 
 #endif /* TOOLS_H_ */

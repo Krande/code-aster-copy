@@ -5,7 +5,7 @@
  * @file ContactZone.h
  * @brief Fichier entete de la class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -141,24 +141,23 @@ typedef boost::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
 class PairingParameter {
   private:
-  /** @brief Pairing algorithm = APPARIEMENT */
+    /** @brief Pairing algorithm = APPARIEMENT */
     PairingAlgo _algo;
-  /** @brief Additional pairing distance = DIST_APPA */
+    /** @brief Additional pairing distance = DIST_APPA */
     ASTERDOUBLE _dist_appa;
-  /** @brief initial contact state = CONTACT_INIT */
-    InitState _cont_init; 
-  /** @brief initial threshold distance = SEUIL_INIT */
+    /** @brief initial contact state = CONTACT_INIT */
+    InitialState _cont_init; 
+    /** @brief initial threshold distance = SEUIL_INIT */
     ASTERDOUBLE _seuil;
-  // DIST_SUPP ?? fonction, formul
-  /** @brief fictive distance fonction = DIST_SUPP */
-    GenericLoadFunction _dist_supp;
-  /** @brief if fictive distance for beam = DIST_POUTRE */
+    /** @brief fictive distance function = DIST_SUPP */
+    GenericFunctionPtr _dist_supp;
+    /** @brief if fictive distance for beam = DIST_POUTRE */
     bool _beam;
-  /** @brief if fictive distance for shell = DIST_COQUE */
+    /** @brief if fictive distance for shell = DIST_COQUE */
     bool _shell;
-  /** @brief structural element characteristics = CARA_ELEM */
+    /** @brief structural element characteristics = CARA_ELEM */
     ElementaryCharacteristicsPtr _cara ;
-  /** @brief structural element characteristics = DIST_SUPP */
+    /** @brief structural element characteristics = DIST_SUPP */
     //
 
   public:
@@ -171,21 +170,20 @@ class PairingParameter {
     /**
      * @brief Constructeur
      */
-     // , _dist_supp(nullptr) ?? initiation ??
     PairingParameter() : _algo(PairingAlgo::Mortar), _dist_appa(-1.0),
-                         _cont_init(InitState::Interpenetre),
-                         _seuil(-1.0), _beam(false), 
+                         _cont_init(InitialState::Interpenetrated),
+                         _seuil(-1.0), _beam(false), _dist_supp(nullptr),
                          _shell(false), _cara(nullptr) {};
 
     PairingAlgo getAlgorithm() const { return _algo; };
 
     ASTERDOUBLE getPairingDistance() const { return _dist_appa; };
 
-    InitState getInitState() const { return _cont_init; };
+    InitialState getInitialState() const { return _cont_init; };
 
     ASTERDOUBLE getThreshold() const { return _seuil; };
 
-    GenericLoadFunction getDistFonction() const { return _dist_supp; };
+    GenericFunctionPtr getDistanceFunction() const { return _dist_supp; };
 
     ElementaryCharacteristicsPtr getElementaryCharacteristics() const { return _cara; };
 
@@ -193,11 +191,11 @@ class PairingParameter {
 
     void setPairingDistance( const ASTERDOUBLE &dist_appa ) { _dist_appa = dist_appa; };
 
-    void setInitState( const InitState &cont_init ) { _cont_init = cont_init; };
+    void setInitialState( const InitialState &cont_init ) { _cont_init = cont_init; };
 
     void setThreshold( const ASTERDOUBLE &seuil ) { _seuil = seuil; };    
     
-    void setDistFonction( const GenericLoadFunction &dist_supp) { _dist_supp = dist_supp; };  
+    void setDistanceFunction( const GenericFunctionPtr &dist_supp) { _dist_supp = dist_supp; };  
 
     void hasBeamDistance( const bool &beam ) { _beam = beam; }
 
@@ -207,8 +205,7 @@ class PairingParameter {
 
     bool hasShellDistance() const { return _shell; }
 
-    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) 
-                                                                { _cara = cara; };
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) { _cara = cara; };
 
 };
 

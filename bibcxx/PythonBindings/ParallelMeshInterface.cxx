@@ -53,22 +53,22 @@ void exportParallelMeshToPython() {
     bool ( ParallelMesh::*c8 )( const std::string&, const bool ) const =
         &ParallelMesh::hasGroupOfNodes;
 
-    const VectorLong ( ParallelMesh::*c9 )(   ) const =
+    VectorLong ( ParallelMesh::*c9 )(   ) const =
         &ParallelMesh::getCells;
-    const VectorLong ( ParallelMesh::*c10 )( const std::string ) const =
+    VectorLong ( ParallelMesh::*c10 )( const std::string ) const =
         &ParallelMesh::getCells;
 
-    const VectorLong ( ParallelMesh::*n1 )(   ) const =
+    VectorLong ( ParallelMesh::*n1 )(   ) const =
         &ParallelMesh::getNodes;
-    const VectorLong ( ParallelMesh::*n2 )( const std::string ) const =
+    VectorLong ( ParallelMesh::*n2 )( const std::string ) const =
         &ParallelMesh::getNodes;
-    const VectorLong ( ParallelMesh::*n3 )( const std::string, const bool  ) const =
+    VectorLong ( ParallelMesh::*n3 )( const std::string, const bool  ) const =
         &ParallelMesh::getNodes;
-    const VectorLong ( ParallelMesh::*n4 )( const std::string, const bool, const bool ) const =
+    VectorLong ( ParallelMesh::*n4 )( const std::string, const bool, const bool ) const =
         &ParallelMesh::getNodes;
-    const VectorLong ( ParallelMesh::*n5 )( const bool  ) const =
+    VectorLong ( ParallelMesh::*n5 )( const bool  ) const =
         &ParallelMesh::getNodes;
-    const VectorLong ( ParallelMesh::*n6 )( const bool, const bool ) const =
+    VectorLong ( ParallelMesh::*n6 )( const bool, const bool ) const =
         &ParallelMesh::getNodes;
 
 

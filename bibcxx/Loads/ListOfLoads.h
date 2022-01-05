@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ListOfLoads
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,34 +37,7 @@
 #include "astercxx.h"
 #include "boost/variant.hpp"
 
-class GenericLoadFunction {
-  private:
-    boost::variant< FunctionPtr, FormulaPtr, Function2DPtr > _generic;
-
-  public:
-    GenericLoadFunction( const FunctionPtr &func ) : _generic( func ){};
-
-    GenericLoadFunction( const FormulaPtr &func ) : _generic( func ){};
-
-    GenericLoadFunction( const Function2DPtr &func ) : _generic( func ){};
-
-    GenericLoadFunction() {};
-
-    std::string getName() const {
-        if ( _generic.type() == typeid( FunctionPtr ) )
-            return boost::get< FunctionPtr >( _generic )->getName();
-        else if ( _generic.type() == typeid( FormulaPtr ) )
-            return boost::get< FormulaPtr >( _generic )->getName();
-        else if ( _generic.type() == typeid( Function2DPtr ) )
-            return boost::get< Function2DPtr >( _generic )->getName();
-        else
-            throw std::runtime_error( "Unknown type" );
-
-        return std::string();
-    };
-};
-
-typedef std::vector< GenericLoadFunction > ListOfLoadFunctions;
+typedef std::vector< GenericFunctionPtr > ListOfLoadFunctions;
 
 /**
  * @class ListOfLoad

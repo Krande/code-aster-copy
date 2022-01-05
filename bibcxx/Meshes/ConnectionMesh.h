@@ -98,9 +98,9 @@ class ConnectionMesh : public BaseMesh {
 
     bool hasGroupOfNodes( const std::string &name) const;
 
-    const VectorLong getCells( const std::string name ) const;
+    VectorLong getCells( const std::string name ) const;
 
-    const VectorLong getCells(  ) const
+    VectorLong getCells(  ) const
     {
         return getCells( std::string() );
     };

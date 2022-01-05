@@ -131,7 +131,7 @@ bool BaseMesh::readMeshFile( const std::string &fileName, const std::string &for
         CALL_EXECOP( &op );
     }
 
-    return update_tables();
+    return build();
 }
 
 bool BaseMesh::readMedFile( const std::string &fileName ) {

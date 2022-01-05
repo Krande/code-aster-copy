@@ -180,6 +180,10 @@ class BaseMesh : public DataStructure, public ListOfTables {
         throw std::runtime_error( "Not allowed" );
     };
 
+    virtual bool hasGroupOfCells( const std::string &name, const bool local ) const {
+        throw std::runtime_error( "Not allowed" );
+    };
+
     /**
      * @brief Teste l'existence d'un groupe de noeuds dans le maillage
      * @return true si le groupe existe
@@ -204,7 +208,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the cells indexes of a group of cells
      * @return VectorLong
      */
-    virtual const VectorLong getCells( const std::string name ) const {
+    virtual VectorLong getCells( const std::string name ) const {
         throw std::runtime_error( "Not allowed" );
     }
 
@@ -212,7 +216,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the nodes indexes of a group of nodes
      * @return VectorLong
      */
-    virtual const VectorLong getNodes( const std::string name ) const {
+    virtual VectorLong getNodes( const std::string name ) const {
         throw std::runtime_error( "Not allowed" );
     }
 
@@ -220,7 +224,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the nodes indexes of a group of cells
      * @return VectorLong
      */
-    virtual const VectorLong getNodesFromCells( const std::string name ) const {
+    virtual VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
+                                            const bool same_rank ) const {
         throw std::runtime_error( "Not allowed" );
     }
 
@@ -228,7 +233,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the nodes indexes of inner nodes
      * @return VectorLong
      */
-    virtual const VectorLong getInnerNodes(  ) const {
+    virtual VectorLong getInnerNodes(  ) const {
         throw std::runtime_error( "Not allowed" );
     }
 
@@ -236,7 +241,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Returns the nodes indexes of outer nodes
      * @return VectorLong
      */
-    virtual const VectorLong getOuterNodes( ) const {
+    virtual VectorLong getOuterNodes( ) const {
         throw std::runtime_error( "Not allowed" );
     }
 

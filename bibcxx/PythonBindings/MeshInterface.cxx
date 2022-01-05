@@ -55,22 +55,22 @@ void exportMeshToPython() {
     bool ( Mesh::*c8 )( const std::string&, const bool ) const =
         &Mesh::hasGroupOfNodes;
 
-    const VectorLong ( Mesh::*c9 )(   ) const =
+    VectorLong ( Mesh::*c9 )(   ) const =
         &Mesh::getCells;
-    const VectorLong ( Mesh::*c10 )( const std::string ) const =
+    VectorLong ( Mesh::*c10 )( const std::string ) const =
         &Mesh::getCells;
 
-    const VectorLong ( Mesh::*n1 )(   ) const =
+    VectorLong ( Mesh::*n1 )(   ) const =
         &Mesh::getNodes;
-    const VectorLong ( Mesh::*n2 )( const std::string ) const =
+    VectorLong ( Mesh::*n2 )( const std::string ) const =
         &Mesh::getNodes;
-    const VectorLong ( Mesh::*n3 )( const std::string, const bool  ) const =
+    VectorLong ( Mesh::*n3 )( const std::string, const bool  ) const =
         &Mesh::getNodes;
-    const VectorLong ( Mesh::*n4 )( const std::string, const bool, const bool ) const =
+    VectorLong ( Mesh::*n4 )( const std::string, const bool, const bool ) const =
         &Mesh::getNodes;
-    const VectorLong ( Mesh::*n5 )( const bool  ) const =
+    VectorLong ( Mesh::*n5 )( const bool  ) const =
         &Mesh::getNodes;
-    const VectorLong ( Mesh::*n6 )( const bool, const bool ) const =
+    VectorLong ( Mesh::*n6 )( const bool, const bool ) const =
         &Mesh::getNodes;
 
 

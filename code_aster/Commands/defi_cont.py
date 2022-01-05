@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,7 +19,7 @@
 
 from ..Objects import ContactNew, ContactZone, ContactParameter, \
     FrictionParameter, PairingParameter, ContactAlgo, ContactType, ContactVariant, \
-    FrictionAlgo, FrictionType, PairingAlgo, InitState
+    FrictionAlgo, FrictionType, PairingAlgo, InitialState
 from ..Supervis import ExecuteCommand
 
 # C'est la nouvelle commande à remplir qui sera en python et c++
@@ -45,11 +45,9 @@ class NewContactAssignment(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-        print("ARGS: ", keywords, flush=True)
+        # print("ARGS: ", keywords, flush=True)
         model = keywords["MODELE"]
         verbosity = keywords["INFO"]
-        threshold = keywords.get("SEUIL_INIT")
-        fict_dist = keywords.get("DIST_SUPP")
         
         # usefull dict
         _algo_cont = {"LAGRANGIEN": ContactAlgo.Lagrangian, "NITSCHE": ContactAlgo.Nitsche,
@@ -63,8 +61,8 @@ class NewContactAssignment(ExecuteCommand):
         _type_frot = {"TRESCA": FrictionType.Tresca, "SANS": FrictionType.Without,
                       "COULOMB": FrictionType.Coulomb, "COLLE": FrictionType.Stick}
         _algo_pair = {"MORTAR": PairingAlgo.Mortar}
-        _init_cont = {"INTERPENETRE": InitState.Interpenetre, "NON": InitState.Non,
-                      "OUI": InitState.Oui}              
+        _init_cont = {"INTERPENETRE": InitialState.Interpenetrated, "NON": InitialState.No,
+                      "OUI": InitialState.Yes}              
 
         # add global informations
         self._result.setVerbosity(verbosity)
@@ -110,16 +108,15 @@ class NewContactAssignment(ExecuteCommand):
             contZone.setPairingParameter(pairParam)
             pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
             pairParam.setPairingDistance(zone["DIST_APPA"]) 
-            pairParam.setInitState(_init_cont[zone["CONTACT_INIT"]])
+            pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
             pairParam.hasBeamDistance(zone["DIST_POUTRE"] == "OUI")
             pairParam.hasShellDistance(zone["DIST_COQUE"] == "OUI")
             if (pairParam.hasBeamDistance() or pairParam.hasShellDistance() ):
                 pairParam.setElementaryCharacteristics(zone["CARA_ELEM"]) 
-            if threshold != None:  
-                pairParam.setThreshold(zone["SEUIL_INIT"])  
-            if fict_dist != None:  
-                pairParam.setDistFonction(zone["DIST_SUPP"])            
-            
+            if ( zone.get("SEUIL_INIT")) != None:  
+                pairParam.setThreshold(zone["SEUIL_INIT"])    
+            if ( zone.get("DIST_SUPP") ) != None:  
+                pairParam.setDistanceFunction(zone["DIST_SUPP"])            
 
             # build then append
             contZone.build()

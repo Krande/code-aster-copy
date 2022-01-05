@@ -3,7 +3,7 @@
  * @brief Interface python de Function2D
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,7 +31,7 @@ namespace py = boost::python;
 
 void exportFunction2DToPython() {
 
-    py::class_< Function2D, Function2D::Function2DPtr, py::bases< DataStructure > >(
+    py::class_< Function2D, Function2D::Function2DPtr, py::bases< GenericFunction > >(
         "Function2D", py::no_init )
         .def( "__init__", py::make_constructor(&initFactoryPtr< Function2D >))
         .def( "__init__", py::make_constructor(&initFactoryPtr< Function2D, std::string >))

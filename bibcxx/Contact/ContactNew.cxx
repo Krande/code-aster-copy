@@ -35,4 +35,5 @@ ContactNew::ContactNew( const std::string name, const ModelPtr model )
 
 bool ContactNew::build() {
     // build FiniteElementDescriptor
+    return true;    
 }

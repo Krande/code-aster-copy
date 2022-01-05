@@ -87,12 +87,9 @@ class Mesh : public BaseMesh {
         return getGroupsOfNodes(false);
     };
 
-    const VectorLong getCells( const std::string name ) const;
+    VectorLong getCells( const std::string name ) const;
 
-    const VectorLong getCells(  ) const
-    {
-        return getCells( std::string() );
-    };
+    VectorLong getCells() const { return getCells( std::string() ); };
 
     /**
      * @brief Return list of nodes
@@ -101,53 +98,51 @@ class Mesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    const VectorLong getNodes( const std::string name, const bool localNumbering,
+    VectorLong getNodes( const std::string name, const bool localNumbering,
                                 const bool same_rank ) const; // 1
 
-    const VectorLong getNodes( const bool localNumbering, const bool same_rank ) const
+    VectorLong getNodes( const bool localNumbering, const bool same_rank ) const
     {
         return getNodes( std::string(), localNumbering, same_rank); // ->1
     };
 
-    const VectorLong getNodes(  ) const
+    VectorLong getNodes(  ) const
     {
         return getNodes ( std::string(), true, true);// ->0
     };
 
-    const VectorLong getNodes( const std::string name ) const
+    VectorLong getNodes( const std::string name ) const
     {
         return getNodes ( name, true, true);// ->0
     };
 
-    const VectorLong getNodes( const std::string name, const bool localNumbering ) const
+    VectorLong getNodes( const std::string name, const bool localNumbering ) const
     {
         return getNodes ( name, localNumbering, true);// ->0
     };
 
-    const VectorLong getNodes( const bool localNumbering) const
+    VectorLong getNodes( const bool localNumbering) const
     {
         return getNodes(std::string(), localNumbering, true); // ->0
     };
 
-    // const VectorLong getNodes( const bool same_rank ) const; //not possible
+    // VectorLong getNodes( const bool same_rank ) const; //not possible
 
-    // const VectorLong getNodes( const std::string name,
+    // VectorLong getNodes( const std::string name,
     //                              const bool same_rank ) const; //not possible
 
     /**
      * @brief Returns the nodes indexes of a group of cells
      * @return VectorLong
      */
-    const VectorLong getNodesFromCells( const std::string name ) const;
+    VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
+                                  const bool same_rank ) const;
 
     /**
      * @brief Get inner nodes
      * @return list of node ids
      */
-    const VectorLong getInnerNodes() const
-    {
-        return this->getNodes( );
-    };
+    VectorLong getInnerNodes() const { return this->getNodes(); };
 
     /**
      * @brief Get inner nodes

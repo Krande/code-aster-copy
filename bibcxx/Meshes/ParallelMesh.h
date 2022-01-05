@@ -124,22 +124,12 @@ class ParallelMesh : public BaseMesh {
         return getGroupsOfNodes(false);
     };
 
-    const VectorLong getCells( const std::string name ) const
-    {
-        return getCells ( name, true);// ->0
-    };
+    VectorLong getCells( const std::string name ) const;
 
-    const VectorLong getCells( const std::string name, const bool localNumbering) const; // 0
-
-    const VectorLong getCells(  ) const
+    VectorLong getCells( ) const
     {
-        return getCells( std::string(), true );
-    };
-
-    const VectorLong getCells( const bool localNumbering) const
-    {
-        return getCells(std::string(), localNumbering); // ->0
-    };
+        return getCells( std::string() );
+    }
 
     /**
      * @brief Return list of nodes
@@ -149,27 +139,27 @@ class ParallelMesh : public BaseMesh {
      * @return list of Nodes
      */
 
-    const VectorLong getNodes( const std::string name, const bool localNumbering,
+    VectorLong getNodes( const std::string name, const bool localNumbering,
                                const bool same_rank) const; // 0
 
-    const VectorLong getNodes( const std::string name, const bool localNumbering) const; // 0
+    VectorLong getNodes( const std::string name, const bool localNumbering) const; // 0
 
-    const VectorLong getNodes(  ) const
+    VectorLong getNodes(  ) const
     {
         return getNodes ( std::string(), true);// ->0
     };
 
-    const VectorLong getNodes( const std::string name ) const
+    VectorLong getNodes( const std::string name ) const
     {
         return getNodes ( name, true);// ->0
     };
 
-    const VectorLong getNodes( const bool localNumbering) const
+    VectorLong getNodes( const bool localNumbering) const
     {
         return getNodes(std::string(), localNumbering); // ->0
     };
 
-    const VectorLong getNodes( const bool localNumbering, const bool same_rank) const
+    VectorLong getNodes( const bool localNumbering, const bool same_rank) const
     {
         return getNodes(std::string(), localNumbering, same_rank); // ->0
     };
@@ -178,7 +168,7 @@ class ParallelMesh : public BaseMesh {
      * @brief Get inner nodes
      * @return list of node ids
      */
-    const VectorLong getInnerNodes() const
+    VectorLong getInnerNodes() const
     {
         return this->getNodes(std::string(), true, true);
     };
@@ -187,7 +177,7 @@ class ParallelMesh : public BaseMesh {
      * @brief Get outer nodes
      * @return list of node ids
      */
-    const VectorLong getOuterNodes() const
+    VectorLong getOuterNodes() const
     {
         return this->getNodes(std::string(), true, false);
     };
@@ -196,7 +186,8 @@ class ParallelMesh : public BaseMesh {
      * @brief Returns the nodes indexes of a group of cells
      * @return VectorLong
      */
-    const VectorLong getNodesFromCells( const std::string name ) const;
+    VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
+                                const bool same_rank ) const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel

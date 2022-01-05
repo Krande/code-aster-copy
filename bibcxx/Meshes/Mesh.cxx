@@ -76,64 +76,65 @@ VectorString Mesh::getGroupsOfNodes(const bool local) const {
     return names;
 }
 
-const VectorLong Mesh::getCells( const std::string name ) const {
+VectorLong Mesh::getCells( const std::string name ) const {
 
-    if ( name.empty())
-    {
-        return irange(long(1), long(getNumberOfCells()));
-    }
-    else if ( !hasGroupOfCells( name ) ) {
+    if ( name.empty() ) {
+        return irange( long( 1 ), long( getNumberOfCells() ) );
+    } else if ( !hasGroupOfCells( name ) ) {
         return VectorLong();
     }
 
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-const VectorLong Mesh::getNodes( const std::string name, const bool localNumbering,
-                                      const bool same_rank) const {
-    if ( name.empty())
-    {
-        return irange(long(1), long(getNumberOfNodes()));
-    }
-    else if ( !hasGroupOfNodes( name ) ) {
+VectorLong Mesh::getNodes( const std::string name, const bool localNumbering,
+                           const bool same_rank ) const {
+    if ( name.empty() ) {
+        return irange( long( 1 ), long( getNumberOfNodes() ) );
+    } else if ( !hasGroupOfNodes( name ) ) {
         return VectorLong();
     }
     return _groupsOfNodes->getObjectFromName( name ).toVector();
 }
 
-const VectorLong Mesh::getNodesFromCells( const std::string name ) const
-{
-    const auto cellsId = getCells(name);
+VectorLong Mesh::getNodesFromCells( const std::string name, const bool localNumbering,
+                                    const bool same_rank ) const {
+    CALL_JEMARQ();
+    const auto cellsId = getCells( name );
 
-    const auto& connecExp = getConnectivityExplorer();
+    if(cellsId.empty())
+        return VectorLong();
+
+    const auto &connecExp = getConnectivityExplorer();
 
     SetLong nodes;
 
-    for(auto& cellId : cellsId)
-    {
+    for ( auto &cellId : cellsId ) {
         const auto cell = connecExp[cellId];
-        for(auto& node : cell)
+        for (auto &node : cell)
             nodes.insert(node);
     }
 
-    return VectorLong(nodes.begin(), nodes.end());
+    CALL_JEDEMA();
+    return VectorLong( nodes.begin(), nodes.end() );
 };
 
-bool Mesh::isQuadratic() const
-{
+bool Mesh::isQuadratic() const {
+    CALL_JEMARQ();
+
     auto cellsType = getMedCellsTypes();
     cellsType->updateValuePointer();
     const auto nb_elem = cellsType->size();
 
-    for(ASTERINTEGER ii = 0; ii < nb_elem; ii++)
-    {
-        const auto cellType = (*cellsType)[ii];
-        if( cellType == 103 || cellType == 104 || cellType == 206 ||
-        cellType == 207 || cellType == 208 || cellType == 209 ||
-        cellType == 310 || cellType == 315 || cellType == 318 ||
-        cellType == 313 || cellType == 320 || cellType == 327 )
+    for ( ASTERINTEGER ii = 0; ii < nb_elem; ii++ ) {
+        const auto cellType = ( *cellsType )[ii];
+        if ( cellType == 103 || cellType == 104 || cellType == 206 || cellType == 207 ||
+             cellType == 208 || cellType == 209 || cellType == 310 || cellType == 315 ||
+             cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 )
             return true;
     }
+
+    CALL_JEDEMA();
 
     return false;
 };

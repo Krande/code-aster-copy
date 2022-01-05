@@ -33,9 +33,9 @@ void exportConnectionMeshToPython() {
 
 #ifdef ASTER_HAVE_MPI
 
-    const VectorLong ( ConnectionMesh::*c1 )(   ) const =
+    VectorLong ( ConnectionMesh::*c1 )(   ) const =
         &ConnectionMesh::getCells;
-    const VectorLong ( ConnectionMesh::*c2 )( const std::string ) const =
+    VectorLong ( ConnectionMesh::*c2 )( const std::string ) const =
         &ConnectionMesh::getCells;
 
     py::class_< ConnectionMesh, ConnectionMesh::ConnectionMeshPtr,
