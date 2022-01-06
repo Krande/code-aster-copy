@@ -77,6 +77,8 @@ class NewContactAssignment(ExecuteCommand):
             contZone.setVerbosity(verbosity)
             contZone.setSlaveGroupOfCells(zone["GROUP_MA_ESCL"])
             contZone.setMasterGroupOfCells(zone["GROUP_MA_MAIT"])
+            if ( zone.get("SANS_GROUP_MA")) != None:  
+                contZone.setExcludedSlaveGroupOfCells(zone["SANS_GROUP_MA"])    
 
             # contact parameters
             contParam = ContactParameter()

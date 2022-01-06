@@ -5,7 +5,7 @@
  * @file ContactZone.h
  * @brief Fichier entete de la class ContactZone
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -47,6 +47,8 @@ class ContactZone : public DataStructure {
     std::string _slave;
     /** @brief Master side */
     std::string _master;
+    /** @brief excluded elements of slave side for LAGRANGIEN */
+    VectorString _excluded_slave;
     /** @brief  Check direction of normal */
     bool _checkNormal;
 
@@ -100,6 +102,10 @@ class ContactZone : public DataStructure {
     void setMasterGroupOfCells( const std::string &master ) { _master = master; };
 
     std::string getMasterGroupOfCells() const { return _master; };
+
+    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave ) { _excluded_slave = excluded_slave; };
+
+    VectorString getExcludedSlaveGroupOfCells() const { return _excluded_slave; };
 
     void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
 

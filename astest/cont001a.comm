@@ -74,6 +74,7 @@ DEFICO = DEFI_CONT(MODELE=MODI,
                    ZONE=(_F(APPARIEMENT='MORTAR',
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
+                            SANS_GROUP_MA='Group_0',
                             ALGO_CONT='LAGRANGIEN',
                             VARIANTE='ROBUSTE',
                             CONTACT_INIT='OUI',),
@@ -129,6 +130,10 @@ zone.setSlaveGroupOfCells('Group_4' )
 zone.setMasterGroupOfCells('Group_3')
 test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_4')  
 test.assertEqual(zone.getMasterGroupOfCells(), 'Group_3')  
+
+zone1 = DEFICO.getContactZone(0)
+print(zone1.getExcludedSlaveGroupOfCells())
+test.assertEqual(zone1.getExcludedSlaveGroupOfCells(), ['Group_0'])  
 
 DEFICO.hasFriction(True)
 test.assertTrue(DEFICO.hasFriction())
