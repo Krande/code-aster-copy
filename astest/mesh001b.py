@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -174,6 +174,8 @@ test.assertSequenceEqual(sorted(mesh.getNodes("Beton", False)),
     sorted(inter(mesh.getNodes("Beton", False), mesh.getNodes(False) )))
 test.assertSequenceEqual(sorted(mesh.getNodes("Beton", False)),
     sorted(inter(mesh.getNodes("Beton", False), allNodes )))
+
+new_mesh = mesh.refine(2)
 
 test.printSummary()
 

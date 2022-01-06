@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@
 
 import aster
 
-from ..Commands import MACR_ADAP_MAIL
-from ..MacroCommands.macr_adap_mail_ops import HOMARD_INFOS
+from ..Commands import CREA_MAILLAGE
 from ..Objects import Mesh
 from ..Supervis import CO
 from ..Utilities import injector
 from ..Utilities.MedUtils.MEDConverter import convertMesh2MedCoupling
 from . import mesh_builder
+
 
 @injector(Mesh)
 class ExtendedMesh:
@@ -58,7 +58,8 @@ class ExtendedMesh:
         dic_gpma = self.sdj.GROUPEMA.get()
         if dic_gpma is None:
             return []
-        dimama = [catama[ltyma[ma - 1].ljust(24)][0] for ma in self.sdj.TYPMAIL.get()]
+        dimama = [catama[ltyma[ma - 1].ljust(24)][0]
+                  for ma in self.sdj.TYPMAIL.get()]
         ngpma = []
         for grp in list(dic_gpma.keys()):
             dim = max([dimama[ma - 1] for ma in dic_gpma[grp]])
@@ -74,16 +75,11 @@ class ExtendedMesh:
         Returns:
             Mesh: the refined mesh.
         """
-        newMesh = self
-        for _ in range(ntimes):
-            HOMARD_INFOS.new()
-            resu = MACR_ADAP_MAIL(__use_namedtuple__=True,
-                                  ADAPTATION='RAFFINEMENT_UNIFORME',
-                                  MAILLAGE_N=newMesh,
-                                  MAILLAGE_NP1=CO('newMesh'))
-            HOMARD_INFOS.pop()
-            newMesh = resu.newMesh
-        return newMesh
+
+        new_mesh = CREA_MAILLAGE(MAILLAGE=self,
+                                 RAFFINEMENT=_F(TOUT="OUI",
+                                                NIVEAU=ntimes))
+        return new_mesh
 
     def createMedCouplingMesh(self):
         """Returns the MEDCoupling unstructured mesh associated to the current mesh.

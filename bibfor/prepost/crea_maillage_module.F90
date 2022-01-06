@@ -514,11 +514,11 @@ contains
             this%mesh_in = mesh_in
             this%connex_in = mesh_in//'.CONNEX'
 !
-            this%max_cells = nb_elem_mesh
-            this%max_volumes = nb_elem_mesh
-            this%max_faces = 6*nb_elem_mesh
-            this%max_edges = 12*nb_elem_mesh
-            this%max_nodes = 4*nb_node_mesh
+            this%max_cells = max(1, nb_elem_mesh)
+            this%max_volumes = max(1, nb_elem_mesh)
+            this%max_faces = max(1, 6*nb_elem_mesh)
+            this%max_edges = max(1, 12*nb_elem_mesh)
+            this%max_nodes = max(1, 4*nb_node_mesh)
 !
             allocate(this%cells(this%max_cells))
             allocate(this%volumes(this%max_volumes))
@@ -889,12 +889,12 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine dividing_cell(cell_type, nb_sub, sub_type, sub_loc)
+    subroutine dividing_cell(cell_type, nb_sub, sub_type, sub_loc, conv_type)
 !
         implicit none
 !
         integer, intent(in) :: cell_type
-        integer, intent(out) :: nb_sub, sub_type(8), sub_loc(8,8)
+        integer, intent(out) :: nb_sub, sub_type(10), sub_loc(10,10), conv_type(10)
 ! --------------------------------------------------------------------------------------------------
 ! Get subdivision of a cell (node connectivity)
 !
@@ -906,11 +906,13 @@ contains
         if(cell_type == MT_SEG2 .or. cell_type == MT_SEG3) then
             nb_sub = 2
             sub_type(1:nb_sub) = MT_SEG2
+            conv_type(1:nb_sub) = cell_type
             sub_loc(1:2,1) = [1,3]
             sub_loc(1:2,2) = [2,3]
         elseif(cell_type == MT_QUAD4 .or. cell_type == MT_QUAD8 .or. cell_type == MT_QUAD9) then
             nb_sub = 4
             sub_type(1:nb_sub) = MT_QUAD4
+            conv_type(1:nb_sub) = cell_type
             sub_loc(1:4,1) = [1,5,9,8]
             sub_loc(1:4,2) = [2,6,9,5]
             sub_loc(1:4,3) = [3,7,9,6]
@@ -918,6 +920,7 @@ contains
         elseif(cell_type == MT_TRIA3 .or. cell_type == MT_TRIA6 .or. cell_type == MT_TRIA7) then
             nb_sub = 4
             sub_type(1:nb_sub) = MT_TRIA3
+            conv_type(1:nb_sub) = cell_type
             sub_loc(1:3,1) = [1,4,6]
             sub_loc(1:3,2) = [2,5,4]
             sub_loc(1:3,3) = [3,6,5]
@@ -925,6 +928,7 @@ contains
         elseif(cell_type == MT_HEXA8 .or. cell_type == MT_HEXA20 .or. cell_type == MT_HEXA27) then
             nb_sub = 8
             sub_type(1:nb_sub) = MT_HEXA8
+            conv_type(1:nb_sub) = cell_type
             sub_loc(1:8,1) = [1,9,21,12,13,22,27,25]
             sub_loc(1:8,2) = [2,10,21,9,14,23,27,22]
             sub_loc(1:8,3) = [3,11,21,10,15,24,27,23]
@@ -936,6 +940,7 @@ contains
         elseif(cell_type == MT_TETRA4 .or. cell_type == MT_TETRA10 .or. &
                 cell_type == MT_TETRA15) then
             nb_sub = 8
+            conv_type(1:nb_sub) = cell_type
             sub_type(1:nb_sub) = MT_TETRA4
             sub_loc(1:4,1) = [1,5,7,8]
             sub_loc(1:4,2) = [2,6,5,9]
@@ -949,6 +954,7 @@ contains
                 .or. cell_type == MT_PENTA21) then
             nb_sub = 8
             sub_type(1:nb_sub) = MT_PENTA6
+            conv_type(1:nb_sub) = cell_type
             sub_loc(1:6,1) = [1,7,9,10,16,18]
             sub_loc(1:6,2) = [7,2,8,16,11,17]
             sub_loc(1:6,3) = [9,7,8,18,16,17]
@@ -959,7 +965,28 @@ contains
             sub_loc(1:6,8) = [18,17,12,15,14,6]
         elseif(cell_type == MT_PYRAM5 .or. cell_type == MT_PYRAM13 .or. &
                 cell_type == MT_PYRAM19) then
-            ASSERT(ASTER_FALSE)
+            nb_sub = 10
+            sub_type(1:6) = MT_PYRAM5
+            conv_type(1:6) = cell_type
+            sub_loc(1:5,1) = [1,6,14,9,10]
+            sub_loc(1:5,2) = [6,2,7,14,11]
+            sub_loc(1:5,3) = [3,8,14,7,12]
+            sub_loc(1:5,4) = [4,9,14,8,13]
+            sub_loc(1:5,5) = [10,11,12,13,5]
+            sub_loc(1:5,6) = [13,12,11,10,14]
+            sub_type(7:10) = MT_TETRA4
+            sub_loc(1:4,7) = [6,10,11,14]
+            sub_loc(1:4,8) = [7,11,12,14]
+            sub_loc(1:4,9) = [8,12,13,14]
+            sub_loc(1:4,10) = [9,13,10,14]
+            select case (cell_type)
+                case (MT_PYRAM5)
+                    conv_type(7:10) = MT_TETRA4
+                case (MT_PYRAM13)
+                    conv_type(7:10) = MT_TETRA10
+                case (MT_PYRAM19)
+                    conv_type(7:10) = MT_TETRA15
+            end select
         else
             ASSERT(ASTER_FALSE)
         end if
@@ -1944,8 +1971,8 @@ contains
             integer, intent(in) :: cell_id
 !
             integer :: cell_type, cell_dim, cell_nodes(27), nb_nodes, cell_index, cell_type_sub
-            integer :: nb_sub, sub_type(8), sub_loc(8,8), i_sub, i_node, obj, cell_id_sub
-            integer :: nodes_loc(27), nno
+            integer :: nb_sub, sub_type(10), sub_loc(10,10), i_sub, i_node, obj, cell_id_sub
+            integer :: nodes_loc(27), nno, conv_type(10)
             character(len=8) :: nume
 !
             cell_dim = this%cells(cell_id)%dim
@@ -1953,12 +1980,13 @@ contains
             obj = this%cells(cell_id)%ss_id
 
 ! --- compute sub-division
-            call dividing_cell(cell_type, nb_sub, sub_type, sub_loc)
+            call dividing_cell(cell_type, nb_sub, sub_type, sub_loc, conv_type)
 !
             this%nb_cells = this%nb_cells - 1
             this%cells(cell_id)%keep = ASTER_FALSE
-            if(this%nb_total_cells + nb_sub >= this%max_cells) then
-                call this%increase_memory("CELLS   ", 2*this%max_cells)
+            if((this%nb_total_cells + nb_sub) >= this%max_cells) then
+                call this%increase_memory("CELLS   ", &
+                                            max(2*this%max_cells, this%nb_total_cells + nb_sub))
             end if
 
             if(this%debug) then
@@ -1991,13 +2019,12 @@ contains
                 end if
 !
                 this%nb_total_cells = this%nb_total_cells + 1
+                ASSERT(this%nb_total_cells <= this%max_cells)
                 this%nb_cells = this%nb_cells + 1
                 cell_id_sub = this%nb_total_cells
-                this%cells(cell_id_sub)%type = cell_type_sub
                 this%cells(cell_id_sub)%dim = cell_dim
                 this%cells(cell_id_sub)%id = cell_id_sub
                 this%cells(cell_id_sub)%ss_id = cell_index
-                this%cells(cell_id_sub)%nodes(1:nb_nodes) = cell_nodes(1:nb_nodes)
                 call codlet(this%cell_index, 'G', nume)
                 this%cells(cell_id_sub)%name = trim(this%cell_prefix)//trim(nume)
                 this%cell_index = this%cell_index + 1
@@ -2006,34 +2033,29 @@ contains
                 this%cells(cell_id)%nb_child = this%cells(cell_id)%nb_child + 1
 !
 ! --- Il faut convertir comme le type de depart et pas lineaire
-                if(cell_type_sub .ne. cell_type) then
-                    this%cells(cell_id_sub)%type = cell_type
-                    nno = this%converter%nno(this%cells(cell_id_sub)%type)
-                    call this%numbering_nodes(this%cells(cell_id_sub)%type, nodes_loc)
-                    this%cells(cell_id_sub)%nodes = 0
-                    if(cell_dim == 3) then
-                        do i_node = 1, nno
-                            this%cells(cell_id_sub)%nodes(i_node) = &
-                                this%volumes(cell_index)%nodes(nodes_loc(i_node))
-                        end do
-                    elseif(cell_dim == 2) then
-                        do i_node = 1, nno
-                            this%cells(cell_id_sub)%nodes(i_node) = &
-                                this%faces(cell_index)%nodes(nodes_loc(i_node))
-                        end do
-                    elseif(cell_dim == 1) then
-                        do i_node = 1, nno
-                            this%cells(cell_id_sub)%nodes(i_node) = &
-                                this%edges(cell_index)%nodes(nodes_loc(i_node))
-                        end do
-                    elseif(cell_dim == 0) then
-                        ASSERT(ASTER_FALSE)
-                    else
-                        ASSERT(ASTER_FALSE)
-                    end if
+                this%cells(cell_id_sub)%type = conv_type(i_sub)
+                nno = this%converter%nno(this%cells(cell_id_sub)%type)
+                call this%numbering_nodes(this%cells(cell_id_sub)%type, nodes_loc)
+                this%cells(cell_id_sub)%nodes = 0
+                if(cell_dim == 3) then
+                    do i_node = 1, nno
+                        this%cells(cell_id_sub)%nodes(i_node) = &
+                            this%volumes(cell_index)%nodes(nodes_loc(i_node))
+                    end do
+                elseif(cell_dim == 2) then
+                    do i_node = 1, nno
+                        this%cells(cell_id_sub)%nodes(i_node) = &
+                            this%faces(cell_index)%nodes(nodes_loc(i_node))
+                    end do
+                elseif(cell_dim == 1) then
+                    do i_node = 1, nno
+                        this%cells(cell_id_sub)%nodes(i_node) = &
+                            this%edges(cell_index)%nodes(nodes_loc(i_node))
+                    end do
+                else
+                    ASSERT(ASTER_FALSE)
                 end if
             end do
-!
 !
     end subroutine
 !
@@ -2200,7 +2222,6 @@ contains
             integer, allocatable :: cells(:)
 !
             call jemarq()
-            ! call cpclma(this%mesh_in, mesh_out, 'GROUPEMA', 'G')
 !
             grma_in = this%mesh_in//'.GROUPEMA'
 !
@@ -2361,11 +2382,16 @@ contains
             integer :: nbproc, rank, ind, nb_send, nb_recv, i_proc, i_join
             integer :: n_coor, i_node, nb_nodes_keep, i_node_r, node_id, j_node
             integer :: i_cell, nno, i_comm
-            real(kind=8) :: coor(3), coor_diff(3), tole_comp
+            real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
             real(kind=8), parameter :: tole = 1.d-15
             aster_logical :: find, keep, comm(4)
 !
         if(isParallelMesh(mesh_out)) then
+            if(this%info >= 2) then
+                print*, "Create joints..."
+                call cpu_time(start)
+            end if
+
             call jemarq()
             call asmpi_comm('GET', mpicou)
             call asmpi_info(rank = mrank, size = msize)
@@ -2560,6 +2586,12 @@ contains
             do i_node = 1, this%nb_nodes
                 ASSERT(v_nulogl(i_node) >= 0)
             end do
+!
+            if(this%info >= 2) then
+                call cpu_time(end)
+                print*, "... in ", end-start, " seconds."
+            end if
+!
             call jedema()
         end if
     end subroutine

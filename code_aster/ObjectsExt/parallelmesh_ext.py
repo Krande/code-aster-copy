@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@
 """
 from collections import Counter
 
+from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
 from ..Objects import ConnectionMesh, Mesh, ParallelMesh
 from ..Objects.Serialization import InternalStateBuilder
@@ -135,6 +136,18 @@ class ExtendedParallelMesh:
             return False
 
         return True
+
+    def refine(self, ntimes=1):
+        """Refine the mesh uniformly. Each edge is split in two.
+
+        Arguments:
+            ntimes [int] : the number of times the mesh is to be refined.
+
+        Returns:
+            ParallelMesh: the refined mesh.
+        """
+
+        return CREA_MAILLAGE(MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes))
 
 @injector(ConnectionMesh)
 class ExtendedConnectionMesh:
