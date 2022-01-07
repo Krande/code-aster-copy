@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 #
 # TRIAX AVEC VISC_MAXWELL et COUPLAGE HYDRAULIQUE  CONFINEMENT DE 0.5 MPa
-# Parametres de viscosite infinis = elasticite
+# Parametres de viscosite infinis = elasticite et chargement thermique
 # ======================================================================
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 #
@@ -146,7 +146,7 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                              _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,), 
                              _F(CHARGE = TEMP_LATE,), 
                              _F(CHARGE = DEP_SYM,), 
-                             _F(CHARGE = P0,)),
+                             ),
                  COMPORTEMENT=_F(RELATION = 'KIT_THM',
                                  RELATION_KIT = ('ELAS','LIQU_SATU','HYDR_UTIL',),
                            ),
@@ -162,7 +162,7 @@ TEST_RESU(RESU=_F(INST=7000.,
                   NOM_CHAM='DEPL',
                   GROUP_NO='NO8',
                   NOM_CMP='DX',
-                  VALE_CALC=-0.0011888718241397415,
+                  VALE_CALC=9.498224476009494E-05,
                   ),
           )
 
@@ -171,7 +171,7 @@ TEST_RESU(RESU=_F(INST=7000.,
                   NOM_CHAM='SIGM_NOEU',
                   GROUP_NO='NO8',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-499980.14081968076 ,
+                  VALE_CALC=23413.535226913322 ,
                   ),
           )
 #***********************************************************************
@@ -183,7 +183,7 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                              _F(CHARGE = PR_V,FONC_MULT = EVOL_HYD,), 
                              _F(CHARGE = TEMP_LATE,), 
                              _F(CHARGE = DEP_SYM,), 
-                             _F(CHARGE = P0,)),
+                             ),
                  COMPORTEMENT=_F(RELATION = 'KIT_THM',
                                  RELATION_KIT = ('VISC_MAXWELL','LIQU_SATU','HYDR_UTIL',),
                            ),
@@ -199,7 +199,7 @@ TEST_RESU(RESU=_F(INST=7000.,
                   NOM_CHAM='DEPL',
                   GROUP_NO='NO8',
                   NOM_CMP='DX',
-                  VALE_CALC=-0.0011888718241397415,
+                  VALE_CALC=9.498289089864059E-05,
                   ),
           )
 
@@ -208,7 +208,7 @@ TEST_RESU(RESU=_F(INST=7000.,
                   NOM_CHAM='SIGM_NOEU',
                   GROUP_NO='NO8',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-499980.14081968076 ,
+                  VALE_CALC=23413.876432204954 ,
                   ),
           )
 

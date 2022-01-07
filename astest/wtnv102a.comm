@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,8 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                              _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
                              _F(CHARGE = DEP_V,FONC_MULT = EVOL_DEV,), 
                              _F(CHARGE = DEP_SYM,), 
-                             _F(CHARGE = P0,)),
+                            # _F(CHARGE = P0,)
+                            ),
                  COMPORTEMENT=_F(RELATION = 'KIT_HM',
                                  RELATION_KIT = ('VISC_MAXWELL','LIQU_SATU','HYDR_UTIL',),
                            ),ETAT_INIT=_F(EVOL_NOLI = U1,),
@@ -207,7 +208,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='DEPL',
                   GROUP_NO='NO8',
                   NOM_CMP='DX',
-                  VALE_CALC=0.028132483195051163,
+                  VALE_CALC=0.028132778785587287,
                   ),
           )
 
@@ -216,7 +217,7 @@ TEST_RESU(RESU=_F(INST=1.3000E4,
                   NOM_CHAM='SIGM_NOEU',
                   GROUP_NO='NO8',
                   NOM_CMP='SIZZ',
-                  VALE_CALC=-500238.49999999907,
+                  VALE_CALC=-500159.3474235638,
                   ),
           )
 
