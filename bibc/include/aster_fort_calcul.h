@@ -83,9 +83,9 @@ void DEFSSSSSSPPPP( COMPSTRESSFIELD, compstressfield, const char *, STRING_SIZE,
 #define CALLO_CONLAG( a, b ) CALLOP( CONLAG, conlag, a, b )
 void DEFSP( CONLAG, conlag, const char *, STRING_SIZE, ASTERDOUBLE * );
 
-#define CALLO_CORICH( a, b, c, d ) CALLOOPP( CORICH, corich, a, b, c, d )
-void DEFSSPP( CORICH, corich, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *,
-              ASTERINTEGER * );
+#define CALLO_CORICHWRITE( a, b ) CALLOP( CORICHWRITE, corichwrite, a, b)
+void DEFSP( CORICHWRITE, corichwrite, 
+            const char *, STRING_SIZE, ASTERINTEGER *);
 
 #define CALLO_CRESOL_WRAP( a, b, c ) CALLOOO( CRESOL_WRAP, cresol_wrap, a, b, c )
 void DEFSSS( CRESOL_WRAP, cresol_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,

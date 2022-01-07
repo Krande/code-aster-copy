@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -80,20 +80,13 @@ class ElementaryVector : public DataStructure {
           _description( JeveuxVectorChar24( getName() + ".RERR" ) ),
           _listOfElementaryTerms( JeveuxVectorChar24( getName() + ".RELR" ) ), _isEmpty( true ),
           _listOfLoads( new ListOfLoads( ) ),
-          _corichRept( NamesMapChar24( "&&CORICH." + getName8() + ".REPT" ) ){};
+          _corichRept( NamesMapChar24( "&&CORICH.REPT" ) ){};
 
     /**
      * @brief Constructeur
      */
     ElementaryVector( )
         : ElementaryVector( ResultNaming::getNewResultName() ){};
-
-    /* FIXME: temporay for _corich .REPT initialiezation! */
-    const std::string getName8() const {
-        std::string name8 = getName();
-        name8.resize( 8, ' ' );
-        return name8;
-    };
 
     /**
      * @brief Function d'ajout d'un chargement

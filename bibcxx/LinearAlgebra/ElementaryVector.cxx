@@ -16,33 +16,8 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-/**
- * @file ElementaryVector.cxx
- * @brief Implementation de ElementaryVector
- * @author Nicolas Sellenet
- * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
- *
- *   This file is part of Code_Aster.
- *
- *   Code_Aster is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
- *
- *   Code_Aster is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU GeneralF Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include <stdexcept>
-
 #include "astercxx.h"
-
 #include "aster_fort_calcul.h"
 #include "LinearAlgebra/ElementaryVector.h"
 #include "Supervis/CommandSyntax.h"
@@ -97,27 +72,16 @@ ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
     std::string name( " " );
     name.resize( 24, ' ' );
 
-    /* Le bloc qui suit sert à appeler CORICH car ASASVE et ASCOVA attendent un objet
-       qui est construit par CORICH (tableau de correspondance resuelem <-> charge) */
-    // Il n'est pas nécessaire de faire le ménage c'est ASCOVA qui s'en occupe
     _listOfLoads->build();
-    CommandSyntax cmdSt( "ASSE_VECT_ELEM" );
-    cmdSt.setResult( getName(), getType() );
-    SyntaxMapContainer dict;
-    dict.container["OPTION"] = "CHAR_MECA";
-    cmdSt.define( dict );
     if ( !_corichRept->exists() ) {
         _listOfElementaryTerms->updateValuePointer();
         auto size = _listOfElementaryTerms->size();
-        std::string detr( "E" );
         for ( ASTERINTEGER i = 1; i <= size; ++i ) {
             std::string vectElem( ( *_listOfElementaryTerms )[i - 1].toString() );
             vectElem.resize( 24, ' ' );
-            ASTERINTEGER in;
-            CALLO_CORICH( detr, vectElem, &i, &in );
+            CALLO_CORICHWRITE(vectElem, &i);
         }
     }
-    /**/
 
     std::string typres( "R" );
     CALLO_ASASVE( getName(), dofNume->getName(), typres, name );
