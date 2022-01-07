@@ -101,6 +101,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.BaseAssemblyMatrix` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.BaseAssemblyMatrix
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.BaseDOFNumbering` object
 ================================================================================
 
@@ -420,6 +429,15 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.FieldOnCellsComplex
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.FieldOnCellsLong` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.FieldOnCellsLong
    :show-inheritance:
    :members:
 

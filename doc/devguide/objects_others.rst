@@ -176,15 +176,6 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.LinearStaticAnalysis` object
-********************************************************************************
-
-.. autoclass:: code_aster.Objects.LinearStaticAnalysis
-   :show-inheritance:
-   :members:
-
-
-********************************************************************************
 :py:class:`~code_aster.Objects.ListOfExternalStateVariables` object
 ********************************************************************************
 

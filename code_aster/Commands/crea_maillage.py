@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import Mesh
+from ..Objects import Mesh, ParallelMesh
 from ..Supervis import ExecuteCommand
 
 
