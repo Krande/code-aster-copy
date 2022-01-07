@@ -27,6 +27,7 @@ from ..Objects import (
     ParallelMechanicalLoadReal,
     NonLinearResult,
 )
+from ..Messages import UTMESS
 from ..Utilities import print_stats
 from .NonLinearSolver import NonLinearSolver, TimeStepper
 
@@ -37,6 +38,8 @@ def meca_non_line_ops(self, **args):
     Arguments:
         **args (dict): User's keywords.
     """
+
+    UTMESS('A', 'QUALITY1_2')
 
     args = _F(args)
 
