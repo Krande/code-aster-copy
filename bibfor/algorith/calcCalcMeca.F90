@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,8 @@ subroutine calcCalcMeca(nb_option      , list_option,&
                         hval_incr      , hval_algo  ,&
                         vediri         , vefnod     ,&
                         vevarc_prev    , vevarc_curr,&
-                        nb_obje_maxi   , obje_name  , obje_sdname, nb_obje)
+                        nb_obje_maxi   , obje_name  , obje_sdname, nb_obje,&
+                        l_pred)
 !
 use NonLin_Datastructure_type
 use HHO_type
@@ -64,6 +65,7 @@ integer, intent(in) :: nb_obje_maxi
 character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
 character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
 integer, intent(out) ::  nb_obje
+aster_logical, intent(in) :: l_pred
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -186,14 +188,19 @@ integer, intent(out) ::  nb_obje
 !
     option = ' '
     if (l_matr) then
-        option = 'FULL_MECA'
+        if (l_pred) then
+            option = 'RIGI_MECA_TANG'
+            l_nonl=ASTER_FALSE
+        else
+            option = 'FULL_MECA'
+        endif
     else
         option = 'RAPH_MECA'
     endif
 !
 ! - Physical dof computation
 !
-    if (l_nonl) then
+    if (l_nonl .or. l_matr) then
         iter_newt = 1
         call merimo(base           ,&
                     l_xfem         , l_macr_elem, l_hho    ,&
@@ -216,7 +223,7 @@ integer, intent(out) ::  nb_obje
 !
     if (l_forc_noda) then
         option    = 'FORC_NODA'
-        if (.not. l_nonl) then
+        if (.not. l_nonl .and. .not. l_matr) then
             ! calcul avec sigma init (sans integration de comportement)
             call copisd('CHAMP_GD', 'V', sigm_prev, sigm_curr)
             call vefnme(option            , model    , ds_material%mateco, cara_elem,&
@@ -278,11 +285,17 @@ integer, intent(out) ::  nb_obje
         ASSERT(nb_obje.le.nb_obje_maxi)
         obje_name(nb_obje)   = 'CODE_RETOUR_INTE'
         obje_sdname(nb_obje) = ds_constitutive%comp_error
-        if (l_matr) then
+    endif
+    if (l_matr) then
+        nb_obje = nb_obje + 1
+        ASSERT(nb_obje.le.nb_obje_maxi)
+        obje_name(nb_obje)   = 'MATR_TANG_ELEM'
+        obje_sdname(nb_obje) = ds_system%merigi
+        if (l_pred) then
             nb_obje = nb_obje + 1
             ASSERT(nb_obje.le.nb_obje_maxi)
-            obje_name(nb_obje)   = 'MATR_TANG_ELEM'
-            obje_sdname(nb_obje) = ds_system%merigi
+            obje_name(nb_obje)   = 'CODE_RETOUR_INTE'
+            obje_sdname(nb_obje) = ds_constitutive%comp_error
         endif
     endif
     if (l_forc_noda) then

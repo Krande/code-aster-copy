@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,8 @@ interface
                             hval_incr      , hval_algo  ,&
                             vediri         , vefnod     ,&
                             vevarc_prev    , vevarc_curr,&
-                            nb_obje_maxi   , obje_name  , obje_sdname, nb_obje)
+                            nb_obje_maxi   , obje_name  , obje_sdname, nb_obje,&
+                            l_pred)
         use NonLin_Datastructure_type
         integer, intent(in) :: nb_option
         character(len=16), intent(in) :: list_option(:)
@@ -43,5 +44,6 @@ interface
         character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
         character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
         integer, intent(out) ::  nb_obje
+        aster_logical, intent(in) :: l_pred
     end subroutine calcCalcMeca
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine calcGetData(table_new, table_old  ,&
                            nb_option, list_option,&
                            nume_inst, list_inst  ,&
-                           phenom)
+                           phenom, l_pred)
         character(len=8), intent(out) :: table_new
         character(len=8), intent(out) :: table_old
         integer, intent(out) :: nb_option
@@ -30,5 +30,6 @@ interface
         integer, intent(out) :: nume_inst
         character(len=19), intent(out) :: list_inst
         character(len=16), intent(out) :: phenom
+        aster_logical, intent(out) :: l_pred
     end subroutine calcGetData
 end interface

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -239,10 +239,10 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
         if COMMAND == 'CALC_PRECONT':
             stcom = 'o'
 
-        # if COMMAND == "CALCUL":
-        #     opts["COMPOR"] = SIMP(statut='c',typ=carte_sdaster,max=1)
-        #     opts["CARCRI"] = SIMP(statut='c',typ=carte_sdaster,max=1)
-        #     opts["MULT_COMP"] = SIMP(statut='c',typ=carte_sdaster,max=1)
+        if COMMAND == "CALCUL":
+            opts["COMPOR"] = SIMP(statut='c',typ=carte_sdaster,max=1)
+            opts["CARCRI"] = SIMP(statut='c',typ=carte_sdaster,max=1)
+            opts["MULT_COMP"] = SIMP(statut='c',typ=carte_sdaster,max=1)
 
 
         mcfact =   FACT(statut=stcom,min=1,max='**',

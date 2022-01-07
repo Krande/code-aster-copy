@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,6 +52,8 @@ CALCUL=OPER(nom="CALCUL",op=26,sd_prod=table_container,
          VARI            =SIMP(statut='f',typ=cham_elem),
          SCHEMA_THM      =C_SCHEMA_THM(),
          COMPORTEMENT    =C_COMPORTEMENT('CALCUL'),
+         b_OPT_MATR_TANG_ELEM  = BLOC( condition = """'MATR_TANG_ELEM' in value("OPTION")""",
+         PHASE           =SIMP(statut='f',typ='TXM',into=("PREDICTION","CORRECTION"),defaut="CORRECTION",),),
     ),
     b_thermique     =BLOC( condition = """equal_to("PHENOMENE", 'THERMIQUE')""",
         OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',

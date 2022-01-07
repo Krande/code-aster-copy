@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,8 @@ implicit none
     character(len=24) :: time
     type(NL_DS_Material) :: ds_material
     type(NL_DS_System) :: ds_system
-!
+    aster_logical :: l_pred
+
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -84,7 +85,7 @@ implicit none
     call calcGetData(table_new, table_old  ,&
                      nb_option, list_option,&
                      nume_inst, list_inst  ,&
-                     phenom)
+                     phenom, l_pred)
     if (phenom .eq. 'MECANIQUE') then
         call calcGetDataMeca(list_load      , model         , mate     , mateco   , cara_elem,&
                              disp_prev      , disp_cumu_inst, vari_prev, sigm_prev,&
@@ -140,7 +141,8 @@ implicit none
                           hval_incr      , hval_algo  ,&
                           vediri         , vefnod     ,&
                           vevarc_prev    , vevarc_curr,&
-                          nb_obje_maxi   , obje_name  , obje_sdname, nb_obje)
+                          nb_obje_maxi   , obje_name  , obje_sdname, nb_obje,&
+                          l_pred)
     elseif (phenom .eq. 'THERMIQUE') then
         call calcCalcTher(nb_option    , list_option   , &
                           list_load    , model         , mate       , mateco, cara_elem,&

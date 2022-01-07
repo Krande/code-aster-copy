@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 subroutine calcGetData(table_new, table_old  ,&
                        nb_option, list_option,&
                        nume_inst, list_inst  ,&
-                       phenom)
+                       phenom, l_pred)
 !
 implicit none
 !
@@ -40,6 +40,7 @@ character(len=16), intent(out) :: list_option(:)
 integer, intent(out) :: nume_inst
 character(len=19), intent(out) :: list_inst
 character(len=16), intent(out) :: phenom
+aster_logical, intent(out) :: l_pred
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,6 +61,7 @@ character(len=16), intent(out) :: phenom
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: k24dummy
+    character(len=16) :: pred
     integer :: nocc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -91,6 +93,14 @@ character(len=16), intent(out) :: phenom
 ! - Options
 !
     call getvtx(' ', 'OPTION', nbval=6, vect=list_option, nbret=nb_option)
+
+    call getvtx(' ', 'PHASE', scal = pred, nbret=nocc)
+
+    if (nocc .eq. 1 .and. pred .eq. 'PREDICTION') then
+        l_pred=ASTER_TRUE
+    else
+        l_pred=ASTER_FALSE
+    endif
 !
 ! - Phenomen
 !
