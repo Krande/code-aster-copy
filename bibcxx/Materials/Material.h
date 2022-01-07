@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Material
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -128,7 +128,7 @@ class Material: public DataStructure
          */
         int getNumberOfListOfPropertiesReal( int position )
         {
-            if( position >= int(_vectorOfUserValuesReal.size()) )
+            if( position <0 || position >= int(_vectorOfUserValuesReal.size()) )
                 throw std::runtime_error("Out of bound");
             return _vectorOfUserValuesReal[ position ].size();
         };
@@ -139,7 +139,7 @@ class Material: public DataStructure
          */
         int getNumberOfListOfPropertiesFunction( int position )
         {
-            if( position >= int(_vectorOfUserFunctionValues.size()) )
+            if( position <0 || position >= int(_vectorOfUserFunctionValues.size()) )
                 throw std::runtime_error("Out of bound");
             return _vectorOfUserFunctionValues[ position ].size();
         };
