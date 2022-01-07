@@ -127,7 +127,7 @@ def check_aster_version(self):
     return get_revision_info(self)
 
 
-MAXLEVEL = 25
+MAXLEVEL = 100
 DEFAULT_PKGINFO = [(0, 0, 1), "n/a", "n/a", strftime("%d/%m/%Y"), "n/a", 1,
                    ["no source repository"]]
 
