@@ -1782,9 +1782,9 @@ contains
 !
             class(Mmesh), intent(inout) :: this
 ! -----------------------------------------------------------------------
-            integer :: i_node, i_cell, nno, node_id, rank
+            integer :: i_node, i_cell, nno, node_id, rank, len_max
             mpi_int :: mrank, msize
-            aster_logical :: keep
+            aster_logical :: keep, cod
             character(len=8) :: nume
 !
             call asmpi_info(rank = mrank, size = msize)
@@ -1839,12 +1839,14 @@ contains
 !
 ! --- Renumbering and rename
             this%nb_nodes = 0
+            len_max = 10**(8-len_trim(this%node_prefix))
+            cod = this%nb_total_nodes .ge. len_max
             do i_node = 1, this%nb_total_nodes
                 if(this%nodes(i_node)%keep) then
                     this%nb_nodes = this%nb_nodes + 1
                     this%nodes(i_node)%id = this%nb_nodes
                     if(this%nodes(i_node)%name == "XXXXXXXX") then
-                        if(this%node_index .ge. 10000000) then
+                        if(cod) then
                             call codlet(this%node_index, 'G', nume)
                         else
                             call codent(this%node_index, 'G', nume)
@@ -2423,6 +2425,8 @@ contains
                 end if
             end do
 ! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
+! --- Pour accélerer encore, il faudrait splitter par sous-domaine
+! pour avoir une liste plus petite à chaque fois
             call wkvect('&&CREAMA.NKEEP', 'V V L', this%nb_total_nodes, vl=v_keep)
             do i_cell = 1, this%nb_total_cells
                 if(.not.this%cells(i_cell)%keep) cycle
@@ -2451,6 +2455,9 @@ contains
             if(nb_nodes_keep == 0) go to 999
 !
             call wkvect('&&CREAMA.NRESTRICT', 'V V I', nb_nodes_keep, vi=v_nkeep)
+            if(this%info >= 2) then
+                print*, "-Nombre de noeuds candidats: ", nb_nodes_keep
+            end if
             nb_nodes_keep = 0
             do i_node = 1, this%nb_total_nodes
                 if(v_keep(i_node)) then
@@ -2458,21 +2465,20 @@ contains
                     v_nkeep(nb_nodes_keep) = i_node
                 end if
             end do
+            ASSERT(nb_nodes_keep <= this%nb_total_nodes)
 ! --- On regarde que les noeuds ne sont pas confondu.
+            v_keep(1:nb_nodes_keep) = ASTER_TRUE
             do i_node = 1, nb_nodes_keep
                 tole_comp = max(tole, tole*norm2(this%nodes(v_nkeep(i_node))%coor))
-                do j_node = 1, nb_nodes_keep
-                    if( i_node .ne. j_node) then
-                        coor_diff = abs(this%nodes(v_nkeep(i_node))%coor - &
-                                        this%nodes(v_nkeep(j_node))%coor)
-                        if(maxval(coor_diff) < tole_comp) then
-                            !! Verif pas de noeud double
-                            ASSERT(ASTER_FALSE)
-                        end if
+                do j_node = i_node + 1, nb_nodes_keep
+                    coor_diff = abs(this%nodes(v_nkeep(i_node))%coor - &
+                                    this%nodes(v_nkeep(j_node))%coor)
+                    if(maxval(coor_diff) < tole_comp) then
+                        !! Verif pas de noeud double
+                        ASSERT(ASTER_FALSE)
                     end if
                 end do
             end do
-            call jedetr('&&CREAMA.NKEEP')
 ! --- On crée les joints
             call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv+nb_send, vi=v_joint)
             i_join = 0
@@ -2547,6 +2553,11 @@ contains
                             call asmpi_recv_r(v_recv, count, id, tag, mpicou)
                             !! On cherche les noeuds avec les coor - c'est pas génial mais pas mieux
                             !! pour le moment - on a vérifié avant que pas de noeuds doubles
+                            if(this%info >= 2) then
+                                print*, "-Domaine: ", i_proc, &
+                                    ", nombre de noeuds à trouver: ", n_coor
+                            end if
+                            v_keep(1:nb_nodes_keep) = ASTER_TRUE
                             do i_node_r = 1, n_coor
                                 find = ASTER_FALSE
                                 coor = v_recv(4*(i_node_r-1)+2:4*(i_node_r-1)+4)
@@ -2554,11 +2565,14 @@ contains
                                 tole_comp = max(tole, tole*norm2(coor))
                                 do i_node = 1, nb_nodes_keep
                                     ASSERT(this%nodes(v_nkeep(i_node))%keep)
-                                    coor_diff = abs(coor-this%nodes(v_nkeep(i_node))%coor)
-                                    if(maxval(coor_diff) < tole_comp) then
-                                        find = ASTER_TRUE
-                                        node_id = this%nodes(v_nkeep(i_node))%id
-                                        exit
+                                    if(v_keep(i_node)) then
+                                        coor_diff = abs(coor-this%nodes(v_nkeep(i_node))%coor)
+                                        if(maxval(coor_diff) < tole_comp) then
+                                            find = ASTER_TRUE
+                                            node_id = this%nodes(v_nkeep(i_node))%id
+                                            v_keep(i_node) = ASTER_FALSE
+                                            exit
+                                        end if
                                     end if
                                 end do
                                 ASSERT(find)
@@ -2579,6 +2593,8 @@ contains
                 end do
             end do
             call jedetr('&&CREAMA.NRESTRICT')
+            call jedetr('&&CREAMA.NKEEP')
+            call jedetr("&&CREAMA.RNODE")
 !
 999 continue
 !
