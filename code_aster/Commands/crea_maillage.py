@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -41,6 +41,10 @@ class MeshCreator(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
+        if isinstance(self._result, ParallelMesh):
+            self._result._updateGlobalGroupOfCells()
+            self._result._updateGlobalGroupOfNodes()
+
         self._result.build()
 
 

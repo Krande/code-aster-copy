@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,11 +56,9 @@ subroutine copich(base, ch1z, ch2z)
     character(len=4) :: docu
     character(len=8) :: nomu
     character(len=16) :: concep, cmd
-    character(len=19) :: prno, prno2, prno3, ch1, ch2, ligr, ligr2
+    character(len=19) :: prno, prno2, ch1, ch2, ligr, ligr2
     character(len=24) :: noojb
     integer :: iret1, iret2
-    integer :: nuprf
-    aster_logical :: leco
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -92,29 +90,20 @@ subroutine copich(base, ch1z, ch2z)
 !       --------------------------------------------------------------
         if (base .eq. 'G') then
             call getres(nomu, concep, cmd)
+            ! nomu peut être vide si appel depuis le c++
+            if(nomu == ' ') then
+                nomu = ch2(1:8)
+            end if
             call dismoi('PROF_CHNO', ch2, 'CHAM_NO', repk=prno)
 !         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE PROF_CHNO (' '):
             if (prno .ne. ' ') then
                 if (prno(1:8) .ne. nomu) then
                     noojb='12345678.PRCHN00000.PRNO'
-                    call gnomsd(' ', noojb, 15, 19)
+                    call gnomsd(nomu, noojb, 15, 19)
                     prno2=noojb(1:19)
-!             -- POUR ECONOMISER LES PROF_CHNO, ON REGARDE SI
-!                LE PRECEDENT NE CONVIENDRAIT PAS :
-                    leco=.false.
-                    read (noojb(15:19),'(I5)') nuprf
-                    if (nuprf .gt. 0) then
-                        prno3=noojb(1:19)
-                        call codent(nuprf-1, 'D0', prno3(15:19))
-                        if (idensd('PROF_CHNO',prno,prno3)) leco= .true.
-                    endif
                     call jeveuo(ch2//'.REFE', 'E', vk24=refe)
-                    if (leco) then
-                        refe(2)=prno3
-                    else
-                        call copisd('PROF_CHNO', base, prno, prno2)
-                        refe(2)=prno2
-                    endif
+                    call copisd('PROF_CHNO', base, prno, prno2)
+                    refe(2)=prno2
                 endif
             endif
         endif

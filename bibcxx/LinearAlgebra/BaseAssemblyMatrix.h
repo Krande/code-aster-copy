@@ -262,8 +262,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @todo delete this function and the attribute _solverName
      */
     bool deleteFactorizedMatrix( void ) {
-        if ( _description->exists() && ( _solverName == "MUMPS" || _solverName == "PETSC" ) &&
-             get_sh_jeveux_status() == 1 ) {
+        if ( _description->exists()  && get_sh_jeveux_status() == 1 ) {
             CALLO_DELETE_MATRIX( getName(), _solverName );
         }
 

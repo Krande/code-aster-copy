@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxBidirectionnalMap
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -155,6 +155,18 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
         CALLO_JELIRA( _name, param, &vectSize, dummy );
         return vectSize;
     };
+
+    bool operator==( NamesMapClass< ValueType > &toCompare ) {
+        if ( this->size() != toCompare.size() )
+            return false;
+
+        const auto size = toCompare.size();
+        for ( ASTERINTEGER i = 1; i <= size; ++i ) {
+            if ( this->getStringFromIndex( i ) != toCompare.getStringFromIndex(i) )
+                return false;
+        }
+        return true;
+    };
 };
 
 /**
@@ -180,6 +192,9 @@ template < class ValueType > class NamesMap {
     };
 
     const NamesMapPtr &operator->( void ) const { return _namesMapPtr; };
+
+    NamesMapClass< ValueType > &operator*( void ) const { return *_namesMapPtr; };
+
 
     bool isEmpty() const {
         if ( _namesMapPtr.use_count() == 0 )

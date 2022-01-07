@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 
 subroutine detrsd(typesd, nomsd)
 !
+use elg_data_module
 !
 implicit none
 !
@@ -382,7 +383,7 @@ implicit none
             call jeveuo(matas//'.REFA', 'L', vk24=refa)
             if (refa(19) .ne. ' ') then
                 matas2=refa(19)(1:19)
-                call jeexin(matas2, iexi2)
+                call jeexin(matas2//".REFA", iexi2)
                 if (iexi2 .gt. 0) then
                     call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solveu2, arret='C',&
                         ier=iret)
@@ -390,6 +391,7 @@ implicit none
                         call detlsp(matas2, solveu2)
                     endif
                     call detrs2('MATR_ASSE', matas2)
+                    call elg_gest_data('EFFACE', ' ', matas2, ' ')
                  endif
 !       -- DESTRUCTION DE L'EVENTUELLE MATRICE PRE CONDITIONNEUR XFEM :
 !            if (refa(18) .ne. ' ' .or. refa(16) .ne. ' ') then

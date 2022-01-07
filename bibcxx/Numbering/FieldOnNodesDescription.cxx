@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,21 +28,48 @@ FieldOnNodesDescription::FieldOnNodesDescription( const std::string name )
       _namesOfGroupOfCells( getName() + ".LILI" ), _indexationVector( getName() + ".NUEQ" ),
       _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
 
-
-
-ASTERINTEGER FieldOnNodesDescription::getNumberOfDofs() const
-{
+ASTERINTEGER FieldOnNodesDescription::getNumberOfDofs() const {
     return _nodeAndComponentsNumberFromDOF->size() / 2;
 };
 
-VectorLong FieldOnNodesDescription::getNodesFromDOF() const
-{
+VectorLong FieldOnNodesDescription::getNodesFromDOF() const {
     const bool retour = _nodeAndComponentsNumberFromDOF->updateValuePointer();
     const ASTERINTEGER nb_eq = this->getNumberOfDofs();
 
-    VectorLong nodes(nb_eq);
-    for(int i_eq = 0; i_eq < nb_eq; i_eq++)
-        nodes[i_eq] = (*_nodeAndComponentsNumberFromDOF)[2 * i_eq];
+    VectorLong nodes( nb_eq );
+    for ( int i_eq = 0; i_eq < nb_eq; i_eq++ )
+        nodes[i_eq] = ( *_nodeAndComponentsNumberFromDOF )[2 * i_eq];
 
     return nodes;
 }
+
+/**
+ * @brief Mise a jour des pointeurs Jeveux
+ * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
+ */
+bool FieldOnNodesDescription::updateValuePointers() {
+    bool retour = _componentsOnNodes->build();
+    retour = ( retour && _indexationVector->updateValuePointer() );
+    retour = ( retour && _nodeAndComponentsNumberFromDOF->updateValuePointer() );
+    return retour;
+};
+
+bool FieldOnNodesDescription::operator==( FieldOnNodesDescription &toCompare ) {
+    CALL_JEMARQ();
+    bool ret = false;
+
+    // TO FIX
+    //if ( ( *_componentsOnNodes ) == ( *toCompare._componentsOnNodes ) ) {
+        if ( ( *_indexationVector ) == ( *toCompare._indexationVector ) ) {
+            if ( ( *_nodeAndComponentsNumberFromDOF ) ==
+                 ( *toCompare._nodeAndComponentsNumberFromDOF ) ) {
+                if ( ( *_namesOfGroupOfCells ) == ( *toCompare._namesOfGroupOfCells ) ) {
+                    ret = true;
+                }
+            }
+        }
+    // }
+    CALL_JEDEMA();
+
+    return ret;
+};

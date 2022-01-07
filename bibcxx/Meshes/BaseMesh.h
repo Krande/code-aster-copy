@@ -302,6 +302,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
 
     bool build()
     {
+        _groupsOfNodes->build();
+        _groupsOfCells->build();
         return update_tables();
     }
 };

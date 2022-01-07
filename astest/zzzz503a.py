@@ -153,10 +153,15 @@ else:
     A.view(v)
 
 test.assertEqual(matrAsse.getType(), "MATR_ASSE_DEPL_R")
+test.assertTrue(isinstance( matrAsse, code_aster.AssemblyMatrixDisplacementReal))
 monSolver.factorize(matrAsse)
 matrfact = monSolver.getMatrix()
+test.assertTrue( matrAsse == matrfact)
 test.assertEqual(matrfact.getType(), "MATR_ASSE_DEPL_R")
 test.assertTrue(isinstance( matrfact, code_aster.AssemblyMatrixDisplacementReal))
+precond = monSolver.getPrecondMatrix()
+test.assertEqual(precond.getType(), "MATR_ASSE_DEPL_R")
+test.assertTrue(isinstance( precond, code_aster.AssemblyMatrixDisplacementReal))
 
 vcine = dComputation.dirichletBC(0.)
 resu = monSolver.solve(retour, vcine)

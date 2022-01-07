@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,6 +70,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Surcharge de l'operateur =
      */
     JeveuxVectorClass &operator=( JeveuxVectorClass< ValueType > &toCopy ) {
+        CALL_JEMARQ();
         if ( this->size() != 0 )
             this->deallocate();
         const auto size = toCopy.size();
@@ -86,6 +87,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             if ( docu != "" )
                 this->setInformationParameter( docu );
         }
+        CALL_JEDEMA();
+
         return *this;
     };
 
@@ -93,6 +96,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Surcharge de l'operateur =
      */
     JeveuxVectorClass &operator=( const std::vector< ValueType > &toCopy ) {
+        CALL_JEMARQ();
+
         if ( this->size() != 0 )
             this->deallocate();
         const ASTERINTEGER size = toCopy.size();
@@ -101,36 +106,60 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             for ( ASTERINTEGER i = 0; i < size; ++i )
                 this->operator[]( i ) = toCopy[i];
         }
+        CALL_JEDEMA();
+
         return *this;
     };
 
     /**
      * @brief Surcharge de l'operateur =
      */
-    JeveuxVectorClass &operator==( JeveuxVectorClass< ValueType > &toCompare ) {
-        toCompare.updateValuePointer();
-        if ( this->size() != toCompare->size() )
+    bool operator==( JeveuxVectorClass< ValueType > &toCompare ) {
+        if ( this->size() != toCompare.size() )
             return false;
+        CALL_JEMARQ();
+        bool ret = true;
 
-        const auto size = toCompare->size();
-        for ( ASTERINTEGER i = 0; i < size; ++i )
-            if ( this->operator[]( i ) != toCompare[i] )
-                return false;
-        return true;
+        if(!toCompare.updateValuePointer())
+            return false;
+        if(!this->updateValuePointer())
+            return false;
+        const auto size = toCompare.size();
+        for ( ASTERINTEGER i = 0; i < size; ++i ) {
+            if ( this->operator[]( i ) != toCompare[i] ) {
+                ret = false;
+                break;
+            }
+        }
+
+        CALL_JEDEMA();
+
+        return ret;
     };
 
     /**
      * @brief Surcharge de l'operateur ==
      */
-    JeveuxVectorClass &operator==( const std::vector< ValueType > &toCompare ) {
+    bool operator==( const std::vector< ValueType > &toCompare ) {
         if ( this->size() != toCompare.size() )
             return false;
 
+        CALL_JEMARQ();
+        bool ret = true;
+        if(!this->updateValuePointer())
+            return false;
+
         const ASTERINTEGER size = toCompare.size();
-        for ( ASTERINTEGER i = 0; i < size; ++i )
-            if ( this->operator[]( i ) != toCompare[i] )
-                return false;
-        return true;
+        for ( ASTERINTEGER i = 0; i < size; ++i ) {
+            if ( this->operator[]( i ) != toCompare[i] ) {
+                ret = false;
+                break;
+            }
+        }
+
+        CALL_JEDEMA();
+
+        return ret;
     };
 
     /**
@@ -302,6 +331,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
     /** @brief Convert to std::vector */
     std::vector< ValueType > toVector() {
+        CALL_JEMARQ();
         std::vector< ValueType > toReturn;
         bool ret = updateValuePointer();
 
@@ -312,6 +342,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             for ( ASTERINTEGER i = 0; i < size; ++i )
                 toReturn.push_back( _valuePtr[i] );
         }
+        CALL_JEDEMA();
 
         return toReturn;
     };

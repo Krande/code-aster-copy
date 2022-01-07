@@ -28,7 +28,6 @@
 #include "Meshes/Mesh.h"
 #include "Utilities/Tools.h"
 
-
 bool Mesh::readAsterFile( const std::string &fileName ) {
     readMeshFile( fileName, "ASTER" );
     return true;
@@ -58,7 +57,7 @@ bool Mesh::hasGroupOfNodes( const std::string &name, const bool local ) const {
     return _groupsOfNodes->existsObject( name );
 }
 
-VectorString Mesh::getGroupsOfCells(const bool local) const {
+VectorString Mesh::getGroupsOfCells( const bool local ) const {
     ASTERINTEGER size = _nameOfGrpCells->size();
     VectorString names;
     for ( int i = 0; i < size; i++ ) {
@@ -67,7 +66,7 @@ VectorString Mesh::getGroupsOfCells(const bool local) const {
     return names;
 }
 
-VectorString Mesh::getGroupsOfNodes(const bool local) const {
+VectorString Mesh::getGroupsOfNodes( const bool local ) const {
     ASTERINTEGER size = _nameOfGrpNodes->size();
     VectorString names;
     for ( int i = 0; i < size; i++ ) {
@@ -111,8 +110,8 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool localNumb
 
     for ( auto &cellId : cellsId ) {
         const auto cell = connecExp[cellId];
-        for (auto &node : cell)
-            nodes.insert(node);
+        for ( auto &node : cell )
+            auto ret = nodes.insert( node );
     }
 
     CALL_JEDEMA();

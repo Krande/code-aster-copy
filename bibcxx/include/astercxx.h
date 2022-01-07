@@ -51,6 +51,7 @@ typedef std::vector< std::string > VectorString;
 
 typedef std::set< ASTERINTEGER4 > SetInt;
 typedef std::set< ASTERINTEGER > SetLong;
+typedef std::set< std::string > SetString;
 
 #define AS_ABORT(message) \
             DEBUG_LOC; std::cout << message << std::endl; \

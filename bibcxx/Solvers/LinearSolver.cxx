@@ -34,12 +34,10 @@ LinearSolver::LinearSolver( const std::string name )
       _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
       _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
-      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ),
-      _matrix( nullptr ),
-      _matrixPrec( nullptr ), _commandName( "SOLVEUR" ),
-      _xfem( false ), _keywords( NULL ){
+      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ), _matrix( nullptr ),
+      _matrixPrec( nullptr ), _commandName( "SOLVEUR" ), _xfem( false ), _keywords( NULL ){
 
-                      };
+                                                                         };
 
 void LinearSolver::setKeywords( PyObject *user_keywords ) {
     _isEmpty = true;
@@ -94,18 +92,23 @@ bool LinearSolver::build() {
 bool LinearSolver::deleteFactorizedMatrix() {
 
     if ( _matrix && _matrix->isFactorized() && get_sh_jeveux_status() == 1 ) {
-        CALLO_DETMATRIX( _matrix->getName() );
         _matrix->deleteFactorizedMatrix();
+        CALLO_DETMATRIX( _matrix->getName() );
     }
 
     return true;
 };
 
-
 bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
 
     deleteFactorizedMatrix();
     _matrix = currentMatrix;
+
+    if ( _matrix->getMesh()->isParallel() ) {
+        if ( !supportParallelMesh() ) {
+            raiseAsterError( "Solver does not support a parallel mesh" );
+        }
+    }
 
     if ( _isEmpty )
         build();
@@ -114,7 +117,7 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
     std::string base( "G" );
     ASTERINTEGER cret = 0, npvneg = 0, istop = -9999;
 
-    _matrixPrec = _matrix->getEmptyMatrix(ResultNaming::getNewResultName() + ".PREC" ) ;
+    _matrixPrec = _matrix->getEmptyMatrix( ResultNaming::getNewResultName() + ".PREC" );
 
     const std::string matpre( _matrixPrec->getName() );
     const std::string matass( _matrix->getName() );
@@ -134,7 +137,6 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
     Py_DECREF( dict );
     return true;
 };
-
 
 void LinearSolver::_solve( const std::string &rhsName, const std::string &diriName,
                            const std::string &resultName ) const {

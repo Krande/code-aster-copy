@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FieldOnNodesDescription
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,8 +30,8 @@
 
 #include "DataStructures/DataStructure.h"
 #include "DataStructures/DataStructureNaming.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
+#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/NamesMap.h"
 #include "Supervis/ResultNaming.h"
 
@@ -51,8 +51,7 @@ class FieldOnNodesDescription : public DataStructure {
     JeveuxVectorLong _nodeAndComponentsNumberFromDOF;
 
   public:
-
-      /**
+    /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le FieldOnNodesDescription d'une
      * sd_resu)
@@ -62,14 +61,17 @@ class FieldOnNodesDescription : public DataStructure {
     /**
      * @brief Constructeur
      */
-    FieldOnNodesDescription( ) : FieldOnNodesDescription(DataStructureNaming::getNewName()){};
+    FieldOnNodesDescription() : FieldOnNodesDescription( DataStructureNaming::getNewName() ){};
 
     /**
      * @brief Destructor
      */
     ~FieldOnNodesDescription(){};
 
-
+    /**
+     * @brief Surcharge de l'operateur =
+     */
+    bool operator==( FieldOnNodesDescription &toCompare );
 
     /**
      * @brief Returns a vector of information of the numbering
@@ -88,9 +90,13 @@ class FieldOnNodesDescription : public DataStructure {
      */
     ASTERINTEGER getNumberOfDofs() const;
 
-    // friend class BaseDOFNumbering;
+    /**
+     * @brief Mise a jour des pointeurs Jeveux
+     * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
+     */
+    bool updateValuePointers();
 };
-typedef boost::shared_ptr< FieldOnNodesDescription > FieldOnNodesDescriptionPtr;
 
+typedef boost::shared_ptr< FieldOnNodesDescription > FieldOnNodesDescriptionPtr;
 
 #endif /* FIELDONNODESDESCRIPTION_H_ */

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,7 +26,6 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-
 #include "aster_fort_superv.h"
 #include "astercxx.h"
 
@@ -42,7 +41,6 @@
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
-
 
 /**
  * @struct AllowedFieldType
@@ -113,8 +111,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Constructor
 
      */
-    FieldOnNodes( )
-        : FieldOnNodes(DataStructureNaming::getNewName()) {};
+    FieldOnNodes() : FieldOnNodes( DataStructureNaming::getNewName() ){};
 
     /**
      * @brief Copy constructor
@@ -135,9 +132,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Move constructor
      * @param other field to move
      */
-    FieldOnNodes( FieldOnNodes &&other ) : DataField{std::move(other)} {
+    FieldOnNodes( FieldOnNodes &&other ) : DataField{ std::move( other ) } {
         // Pointers to be moved
-        _descriptor  = other._descriptor;
+        _descriptor = other._descriptor;
         _reference = other._reference;
         _valuesList = other._valuesList;
         _title = other._title;
@@ -150,22 +147,22 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Copy constructor
      */
     FieldOnNodes( const FieldOnNodes &toCopy )
-        : FieldOnNodes(DataStructureNaming::getNewName(), toCopy) {};
+        : FieldOnNodes( DataStructureNaming::getNewName(), toCopy ){};
 
     /**
      * @brief Constructor with DOFNumbering
      */
-    FieldOnNodes(const BaseDOFNumberingPtr &dofNum) : FieldOnNodes() {
-      _dofNum = dofNum;
-      _dofDescription = dofNum->getDescription();
-      _mesh = dofNum->getMesh();
+    FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
+        _dofNum = dofNum;
+        _dofDescription = dofNum->getDescription();
+        _mesh = dofNum->getMesh();
 
-      if (!_dofNum)
-        raiseAsterError("DOFNumering is empty");
+        if ( !_dofNum )
+            raiseAsterError( "DOFNumering is empty" );
 
-      const int intType = AllowedFieldType<ValueType>::numTypeJeveux;
-      CALLO_VTCREB_WRAP(getName(), JeveuxMemoryTypesNames[Permanent],
-                        JeveuxTypesNames[intType], _dofNum->getName());
+        const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
+        CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
+                           _dofNum->getName() );
     };
 
     /**
@@ -201,10 +198,19 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Check if fields are OK for +, +=, ...
      * @return true if compatible
      */
-    bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) const {
-        bool similar = ( this->_descriptor->size() == tmp2._descriptor->size() );
+    bool isSimilarTo( const FieldOnNodes< ValueType > &tmp2 ) {
+        CALL_JEMARQ();
+        bool similar = ( ( *_descriptor ) == ( *tmp2._descriptor ) );
         similar = ( similar && ( this->_reference->size() == tmp2._reference->size() ) );
         similar = ( similar && ( this->_valuesList->size() == tmp2._valuesList->size() ) );
+        similar = ( similar && ( _mesh == tmp2._mesh ) );
+        if ( similar ) {
+            _descriptor->updateValuePointer();
+            tmp2._descriptor->updateValuePointer();
+            if ( ( *_descriptor )[1] > 0 || ( *tmp2._descriptor )[1] > 0 )
+                similar = ( similar && ( ( *_dofDescription ) == ( *tmp2._dofDescription ) ) );
+        }
+        CALL_JEDEMA();
         return similar;
     }
 
@@ -215,11 +221,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes< ValueType > &operator+=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
+        CALL_JEMARQ();
         const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = ( *this )[pos] + rhs[pos];
+        CALL_JEDEMA();
         return *this;
     };
 
@@ -231,11 +239,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes< ValueType > &operator-=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
+        CALL_JEMARQ();
         const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = ( *this )[pos] - rhs[pos];
+        CALL_JEDEMA();
         return *this;
     };
 
@@ -244,10 +254,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return Updated field
      */
     FieldOnNodes< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
+        CALL_JEMARQ();
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = ( *this )[pos] * scal;
+        CALL_JEDEMA();
         return *this;
     };
 
@@ -256,6 +268,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return Updated field
      */
     FieldOnNodes< ValueType > operator-() {
+        CALL_JEMARQ();
         bool retour = _valuesList->updateValuePointer();
 
         if ( !retour )
@@ -265,7 +278,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         auto taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             tmp[pos] = -( *this )[pos];
-
+        CALL_JEDEMA();
         return tmp;
     };
 
@@ -281,10 +294,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     friend FieldOnNodes< ValueType > operator*( FieldOnNodes< ValueType > lhs,
                                                 const ASTERDOUBLE &scal ) {
+        CALL_JEMARQ();
         bool retour = lhs.updateValuePointers();
         int taille = lhs._valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             lhs[pos] = lhs[pos] * scal;
+        CALL_JEDEMA();
         return lhs;
     };
 
@@ -383,11 +398,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param value Value to affect
      */
     void setValues( const ValueType &value ) {
+        CALL_JEMARQ();
         bool retour = _valuesList->updateValuePointer();
         const int taille = _valuesList->size();
 
         for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = value;
+        CALL_JEDEMA();
     };
 
     /**
@@ -432,8 +449,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param normType Type of norm ("NORM_1","NORM_2","NORM_INFINITY")
      */
     template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
+    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     norm( const std::string normType ) const {
+        CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
         bool retour = _valuesList->updateValuePointer();
         int taille = _valuesList->size();
@@ -480,7 +498,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
         if ( normType == "NORM_2" )
             norme = std::sqrt( norme );
-
+        CALL_JEDEMA();
         return norme;
     };
 
@@ -489,8 +507,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param tmp object FieldOnNodesDescriptionPtr
      */
     template < class type = ValueType >
-    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE>::type
+    typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     dot( const FieldOnNodesPtr &tmp ) const {
+        CALL_JEMARQ();
         bool retour = tmp->updateValuePointers();
         retour = ( retour && _valuesList->updateValuePointer() );
         const int taille = _valuesList->size();
@@ -522,7 +541,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             AsterMPI::all_reduce( ret2, ret, MPI_SUM );
         }
 #endif
-
+        CALL_JEDEMA();
         return ret;
     }
 
@@ -545,6 +564,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Update field and build FieldOnNodesDescription if necessary
      */
     bool build() {
+        CALL_JEMARQ();
         if ( _dofNum != nullptr ) {
             _dofDescription = _dofNum->getDescription();
             _mesh = _dofNum->getMesh();
@@ -555,6 +575,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             const std::string name2 = trim( ( *_reference )[1].toString() );
             _dofDescription = FONDescP( new FONDesc( name2 ) );
         }
+        CALL_JEDEMA();
         return true;
     };
 

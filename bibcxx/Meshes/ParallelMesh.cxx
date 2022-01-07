@@ -37,8 +37,8 @@ bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
 
     CALLO_LRMJOI_WRAP( getName(), fileName );
 
-    AS_ASSERT(updateGlobalGroupOfNodes());
-    AS_ASSERT(updateGlobalGroupOfCells());
+    AS_ASSERT( updateGlobalGroupOfNodes() );
+    AS_ASSERT( updateGlobalGroupOfCells() );
 
     return ret;
 };
@@ -53,13 +53,13 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     for ( auto &nameOfGrp : allgONNames )
         _setOfAllGON.insert( trim( nameOfGrp.toString() ) );
 
-    if (_globalGroupOfNodes->exists())
+    if ( _globalGroupOfNodes->exists() )
         _globalGroupOfNodes->deallocate();
 
     _globalGroupOfNodes->allocate( _setOfAllGON.size() );
     ASTERINTEGER num = 0;
     for ( auto &nameOfGrp : _setOfAllGON ) {
-        _globalGroupOfNodes->add(num, nameOfGrp);
+        _globalGroupOfNodes->add( num, nameOfGrp );
         ++num;
     }
 
@@ -76,13 +76,13 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
     for ( auto &nameOfGrp : allgOENames )
         _setOfAllGOE.insert( trim( nameOfGrp.toString() ) );
 
-    if (_globalGroupOfCells->exists())
+    if ( _globalGroupOfCells->exists() )
         _globalGroupOfCells->deallocate();
 
     _globalGroupOfCells->allocate( _setOfAllGOE.size() );
     ASTERINTEGER num = 0;
     for ( auto &nameOfGrp : _setOfAllGOE ) {
-        _globalGroupOfCells->add(num, nameOfGrp);
+        _globalGroupOfCells->add( num, nameOfGrp );
         ++num;
     }
 
@@ -91,10 +91,9 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
 
 bool ParallelMesh::hasGroupOfCells( const std::string &name, const bool local ) const {
 
-    if (local)
-    {
+    if ( local ) {
         if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
-                return false;
+            return false;
         }
 
         return _groupsOfCells->existsObject( name );
@@ -106,9 +105,8 @@ bool ParallelMesh::hasGroupOfCells( const std::string &name, const bool local ) 
     return false;
 }
 
-bool ParallelMesh::hasGroupOfNodes( const std::string &name, const bool local) const {
-    if( local)
-    {
+bool ParallelMesh::hasGroupOfNodes( const std::string &name, const bool local ) const {
+    if ( local ) {
         if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
             return false;
         }
@@ -119,13 +117,11 @@ bool ParallelMesh::hasGroupOfNodes( const std::string &name, const bool local) c
     if ( curIter != _setOfAllGON.end() )
         return true;
     return false;
-
 }
 
-VectorString ParallelMesh::getGroupsOfCells(const bool local) const {
+VectorString ParallelMesh::getGroupsOfCells( const bool local ) const {
 
-    if( local )
-    {
+    if ( local ) {
         ASTERINTEGER size = _nameOfGrpCells->size();
         VectorString names;
         for ( int i = 0; i < size; i++ ) {
@@ -134,14 +130,12 @@ VectorString ParallelMesh::getGroupsOfCells(const bool local) const {
         return names;
     }
 
-    return VectorString(_setOfAllGOE.begin(), _setOfAllGOE.end());
-
+    return VectorString( _setOfAllGOE.begin(), _setOfAllGOE.end() );
 }
 
-VectorString ParallelMesh::getGroupsOfNodes(const bool local) const {
+VectorString ParallelMesh::getGroupsOfNodes( const bool local ) const {
 
-    if( local )
-    {
+    if ( local ) {
         ASTERINTEGER size = _nameOfGrpNodes->size();
         VectorString names;
         for ( int i = 0; i < size; i++ ) {
@@ -150,107 +144,90 @@ VectorString ParallelMesh::getGroupsOfNodes(const bool local) const {
         return names;
     }
 
-    return VectorString(_setOfAllGON.begin(), _setOfAllGON.end());
+    return VectorString( _setOfAllGON.begin(), _setOfAllGON.end() );
 }
 
 VectorLong ParallelMesh::getCells( const std::string name ) const {
 
-    if ( name.empty())
-    {
-        return irange(long(1), long(getNumberOfCells()));
-    }
-    else if ( !hasGroupOfCells( name, true ) ) {
+    if ( name.empty() ) {
+        return irange( long( 1 ), long( getNumberOfCells() ) );
+    } else if ( !hasGroupOfCells( name, true ) ) {
         return VectorLong();
     }
 
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-
-
-VectorLong ParallelMesh::getNodes( const std::string name , const bool localNumbering )
-const {
-
+VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering ) const {
+    CALL_JEMARQ();
     VectorLong listOfNodes;
-    if ( name.empty())
-    {
-        listOfNodes = irange(long(1), long(getNumberOfNodes()));
-    }
-    else if ( !hasGroupOfNodes( name, true ) ) {
+    if ( name.empty() ) {
+        listOfNodes = irange( long( 1 ), long( getNumberOfNodes() ) );
+    } else if ( !hasGroupOfNodes( name, true ) ) {
         return VectorLong();
-    }
-    else
-    {
+    } else {
         listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
     }
 
-    if (localNumbering)
+    if ( localNumbering )
         return listOfNodes;
 
     VectorLong newNumbering;
-    newNumbering.reserve(listOfNodes.size());
+    newNumbering.reserve( listOfNodes.size() );
     _globalNumbering->updateValuePointer();
 
-    for (auto &nodeId : listOfNodes)
-        newNumbering.push_back((*_globalNumbering)[nodeId-1]);
+    for ( auto &nodeId : listOfNodes )
+        newNumbering.push_back( ( *_globalNumbering )[nodeId - 1] );
+    CALL_JEDEMA();
 
     return newNumbering;
 }
 
 VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering,
-                                              const bool same_rank ) const {
+                                   const bool same_rank ) const {
 
     CALL_JEMARQ();
     VectorLong listOfNodes;
-    if ( name.empty())
-    {
-        listOfNodes = irange(long(1), long(getNumberOfNodes()));
-    }
-    else if ( !hasGroupOfNodes( name, true ) ) {
+    if ( name.empty() ) {
+        listOfNodes = irange( long( 1 ), long( getNumberOfNodes() ) );
+    } else if ( !hasGroupOfNodes( name, true ) ) {
         return VectorLong();
-    }
-    else
-    {
+    } else {
         listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
     }
 
     const int rank = getMPIRank();
     VectorLong newRank;
-    newRank.reserve(listOfNodes.size());
+    newRank.reserve( listOfNodes.size() );
 
     int size = 0;
     _outerNodes->updateValuePointer();
-    for (int nodeId : listOfNodes)
-    {
-        if (same_rank)
-        {
-            if (rank == (*_outerNodes)[nodeId-1])
-            {
-                newRank.push_back(nodeId);
+    for ( int nodeId : listOfNodes ) {
+        if ( same_rank ) {
+            if ( rank == ( *_outerNodes )[nodeId - 1] ) {
+                newRank.push_back( nodeId );
                 size++;
             }
-        }
-        else
-        {
-            if (rank != (*_outerNodes)[nodeId-1])
-            {
-                newRank.push_back(nodeId);
+        } else {
+            if ( rank != ( *_outerNodes )[nodeId - 1] ) {
+                newRank.push_back( nodeId );
                 size++;
             }
         }
     }
-    newRank.resize(size);
+    newRank.resize( size );
 
-    if (localNumbering)
+    if ( localNumbering )
         return newRank;
 
     VectorLong newNumbering;
-    newNumbering.reserve(newRank.size());
+    newNumbering.reserve( newRank.size() );
     _globalNumbering->updateValuePointer();
-    for (auto &nodeId : newRank)
-        newNumbering.push_back((*_globalNumbering)[nodeId-1]);
+    for ( auto &nodeId : newRank )
+        newNumbering.push_back( ( *_globalNumbering )[nodeId - 1] );
 
     CALL_JEDEMA();
+
     return newNumbering;
 };
 
@@ -266,11 +243,10 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
 
     SetLong nodes;
 
-    for (auto &cellId : cellsId)
-    {
+    for ( auto &cellId : cellsId ) {
         const auto cell = connecExp[cellId];
-        for (auto &node : cell)
-            nodes.insert(node);
+        for ( auto &node : cell )
+            nodes.insert( node );
     }
 
     if ( same_rank ) {

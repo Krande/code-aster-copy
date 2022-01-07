@@ -48,17 +48,33 @@ void exportLinearSolverToPython() {
         // .def( "__init__", py::make_constructor( &initFactoryPtr< LinearSolver > ) )
         // .def( "__init__", py::make_constructor( &initFactoryPtr< LinearSolver, std::string >
         // ) )
-        .def( "getSolverName", &LinearSolver::getSolverName )
+        .def( "getSolverName", &LinearSolver::getSolverName, R"(
+Get the name of the solver used between 'MUMPS', 'PETSC', 'MULT_FRONT' and 'PETSC'
+
+Returns:
+     str: name of the solver used
+        )",
+              ( py::arg( "self" ) ) )
         .def( "supportParallelMesh", &LinearSolver::supportParallelMesh, R"(
 tell if the solver is enable in HPC
 
 Returns:
      bool: True if the solver support ParallelMesh, else False
         )",
-              ( py::arg( "self" ) )  )
+              ( py::arg( "self" ) ) )
         .def( "setKeywords", &LinearSolver::setKeywords )
-        .def( "setCommandName", &LinearSolver::setCommandName )
-        .def( "enableXfem", &LinearSolver::enableXfem )
+        .def( "setCommandName", &LinearSolver::setCommandName, R"(
+Set the name of command where the solver is used internally. The behavior of the solver
+can change between Aster's commds. It will be fixe in the future
+
+Arguments:
+     command [str]: name of the command
+        )",
+              ( py::arg( "self" ), py::arg( "command" ) ) )
+        .def( "enableXfem", &LinearSolver::enableXfem, R"(
+Enable preconditionning for XFEM modeling.
+        )",
+              ( py::arg( "self" ) ) )
         .def( "build", &LinearSolver::build, R"(
 build internal objects of the solver
 
@@ -87,7 +103,21 @@ Returns:
     BaseAssemblyMatrix: factorized matrix
         )",
               ( py::arg( "self" ) ) )
-        .def( "deleteFactorizedMatrix", &LinearSolver::deleteFactorizedMatrix );
+        .def( "getPrecondMatrix", &LinearSolver::getPrecondMatrix, R"(
+return the preconditionning matrix
+
+Returns:
+    BaseAssemblyMatrix: preconditionning matrix
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "deleteFactorizedMatrix", &LinearSolver::deleteFactorizedMatrix, R"(
+delete the factorized matrix and its preconditionner if created.
+This is the case for Mumps and Petsc.
+
+Returns:
+     bool: True if success, else False
+        )",
+              ( py::arg( "self" ) ) );
 
     py::class_< MultFrontSolver, MultFrontSolverPtr, py::bases< LinearSolver > >( "MultFrontSolver",
                                                                                   py::no_init )

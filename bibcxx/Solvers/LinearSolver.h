@@ -148,6 +148,11 @@ class LinearSolver : public DataStructure {
     BaseAssemblyMatrixPtr getMatrix() const { return _matrix; };
 
     /**
+     * @brief Get Preconditionning matrix
+     */
+    BaseAssemblyMatrixPtr getPrecondMatrix() const { return _matrixPrec; };
+
+    /**
      * @brief Inversion du systeme lineaire
      * @param currentRHS Second membre
      * @param dirichletBCField Charge cinématique

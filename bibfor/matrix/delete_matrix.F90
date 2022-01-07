@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,8 @@
 
 subroutine delete_matrix(matas, typsol)
 !
+use elg_data_module
+!
 #include "asterf_types.h"
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -26,16 +28,25 @@ subroutine delete_matrix(matas, typsol)
     character(len=19) :: matas
     character(len=5) :: typsol
 !
-#include "jeveux.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/amumph.h"
-#include "asterfort/detlsp.h"
 #include "asterfort/apetsc.h"
-    integer :: iexi, ibid, iret
+#include "asterfort/detlsp.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/jeveuo.h"
+#include "jeveux.h"
+
+    character(len=19) :: matas2, solveu2
+    integer :: iexi, ibid, iret, iexi2
     complex(kind=8) :: cbid
     aster_logical :: lbid
+    character(len=24), pointer :: refa(:) => null()
+!
     cbid = dcmplx(0.d0, 0.d0)
+
 !
 !----------------------------------------------------------------
 !
@@ -43,8 +54,26 @@ subroutine delete_matrix(matas, typsol)
 !
 !----------------------------------------------------------------
 !
+    call jemarq()
+
     call jeexin(matas//'.REFA', iexi)
     if (iexi .gt. 0) then
+!       -- DESTRUCTION DE L'EVENTUELLE MATRICE RéDUITE (ELIM_LAGR) :
+        call jeveuo(matas//'.REFA', 'L', vk24=refa)
+        if (refa(19) .ne. ' ') then
+            matas2=refa(19)(1:19)
+            call jeexin(matas2//".REFA", iexi2)
+            if (iexi2 .gt. 0) then
+                call dismoi('SOLVEUR', matas2, 'MATR_ASSE', repk=solveu2, arret='C',&
+                        ier=iret)
+                if (iret .eq. 0 ) then
+                    call detlsp(matas2, solveu2)
+                endif
+                call detrsd('MATR_ASSE', matas2)
+                call elg_gest_data('EFFACE', ' ', matas2, ' ')
+            endif
+        endif
+! --- Destruction du solveur
         if (typsol .eq. 'MUMPS') then
             call amumph('DETR_MAT', ' ', matas, [0.d0], [cbid],&
                         ' ', 0, ibid, lbid)
@@ -52,6 +81,9 @@ subroutine delete_matrix(matas, typsol)
             call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
                         0, ibid, iret)
         endif
+
     endif
+    call jedema()
+
 !
 end subroutine

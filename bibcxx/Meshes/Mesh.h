@@ -59,33 +59,25 @@ class Mesh : public BaseMesh {
      */
     Mesh( const std::string name ) : BaseMesh( name, "MAILLAGE" ){};
 
-    bool hasGroupOfCells( const std::string &name, const bool local) const;
+    bool hasGroupOfCells( const std::string &name, const bool local ) const;
 
-    bool hasGroupOfCells( const std::string &name) const
-    {
-        return hasGroupOfCells(name, false);
+    bool hasGroupOfCells( const std::string &name ) const {
+        return hasGroupOfCells( name, false );
     };
 
-    bool hasGroupOfNodes( const std::string &name, const bool local) const;
+    bool hasGroupOfNodes( const std::string &name, const bool local ) const;
 
-    bool hasGroupOfNodes( const std::string &name ) const
-    {
-        return hasGroupOfNodes(name, false);
+    bool hasGroupOfNodes( const std::string &name ) const {
+        return hasGroupOfNodes( name, false );
     };
 
-    VectorString getGroupsOfCells(const bool local) const;
+    VectorString getGroupsOfCells( const bool local ) const;
 
-    VectorString getGroupsOfCells() const
-    {
-        return getGroupsOfCells(false);
-    };
+    VectorString getGroupsOfCells() const { return getGroupsOfCells( false ); };
 
-    VectorString getGroupsOfNodes(const bool local) const;
+    VectorString getGroupsOfNodes( const bool local ) const;
 
-    VectorString getGroupsOfNodes() const
-    {
-        return getGroupsOfNodes(false);
-    };
+    VectorString getGroupsOfNodes() const { return getGroupsOfNodes( false ); };
 
     VectorLong getCells( const std::string name ) const;
 
@@ -99,31 +91,26 @@ class Mesh : public BaseMesh {
      * @return list of Nodes
      */
     VectorLong getNodes( const std::string name, const bool localNumbering,
-                                const bool same_rank ) const; // 1
+                         const bool same_rank ) const; // 1
 
-    VectorLong getNodes( const bool localNumbering, const bool same_rank ) const
-    {
-        return getNodes( std::string(), localNumbering, same_rank); // ->1
+    VectorLong getNodes( const bool localNumbering, const bool same_rank ) const {
+        return getNodes( std::string(), localNumbering, same_rank ); // ->1
     };
 
-    VectorLong getNodes(  ) const
-    {
-        return getNodes ( std::string(), true, true);// ->0
+    VectorLong getNodes() const {
+        return getNodes( std::string(), true, true ); // ->0
     };
 
-    VectorLong getNodes( const std::string name ) const
-    {
-        return getNodes ( name, true, true);// ->0
+    VectorLong getNodes( const std::string name ) const {
+        return getNodes( name, true, true ); // ->0
     };
 
-    VectorLong getNodes( const std::string name, const bool localNumbering ) const
-    {
-        return getNodes ( name, localNumbering, true);// ->0
+    VectorLong getNodes( const std::string name, const bool localNumbering ) const {
+        return getNodes( name, localNumbering, true ); // ->0
     };
 
-    VectorLong getNodes( const bool localNumbering) const
-    {
-        return getNodes(std::string(), localNumbering, true); // ->0
+    VectorLong getNodes( const bool localNumbering ) const {
+        return getNodes( std::string(), localNumbering, true ); // ->0
     };
 
     // VectorLong getNodes( const bool same_rank ) const; //not possible
@@ -148,20 +135,19 @@ class Mesh : public BaseMesh {
      * @brief Get inner nodes
      * @return list of node ids
      */
-    const JeveuxVectorLong getNodesRank() const
-    {
-        return JeveuxVectorLong(getName() + ".NOEX", VectorLong(getNumberOfNodes(), getMPIRank()));
+    const JeveuxVectorLong getNodesRank() const {
+        return JeveuxVectorLong( getName() + ".NOEX",
+                                 VectorLong( getNumberOfNodes(), getMPIRank() ) );
     };
 
     /**
      * @brief Get inner cells
      * @return list of cells ids
      */
-    const JeveuxVectorLong getCellsRank() const
-    {
-        return JeveuxVectorLong(getName() + ".MAEX", VectorLong(getNumberOfCells(), getMPIRank()));
+    const JeveuxVectorLong getCellsRank() const {
+        return JeveuxVectorLong( getName() + ".MAEX",
+                                 VectorLong( getNumberOfCells(), getMPIRank() ) );
     };
-
 
     bool isQuadratic() const;
 

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe JeveuxCollection
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,7 +53,7 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
     /** @brief Nom Jeveux de la collection */
     std::string _collectionName;
     /** @brief Position dans la collection */
-    int _numberInCollection;
+    ASTERINTEGER _numberInCollection;
     /** @brief Nom de l'objet de collection */
     std::string _nameOfObject;
     /** @brief Pointeur vers le vecteur Jeveux */
@@ -66,7 +66,7 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
     /**
      * @brief Allocation
      */
-    bool allocate( int size ) {
+    bool allocate( ASTERINTEGER size ) {
         ASTERINTEGER taille = size, ibid = 0;
 
         std::string nameOfObject( "" );
@@ -97,8 +97,8 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
      * @param number Numero de l'objet dans la collection
      * @param objectName Nom de l'objet de collection
      */
-    JeveuxCollectionObject( const std::string &collectionName, const int &number, bool isNamed,
-                            bool exists )
+    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
+                            bool isNamed, bool exists )
         : _collectionName( collectionName ), _numberInCollection( number ), _nameOfObject( "" ),
           _valuePtr( nullptr ), _size( 0 ), _jeveuxAdress( 0 ) {
         if ( !exists )
@@ -138,7 +138,8 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
      * @param collectionName Nom de collection
      * @param number Numero de l'objet dans la collection
      */
-    JeveuxCollectionObject( const std::string &collectionName, const int &number, const int &size )
+    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
+                            const ASTERINTEGER &size )
         : _collectionName( collectionName ), _numberInCollection( number ), _nameOfObject( "" ),
           _valuePtr( nullptr ), _size( size ), _jeveuxAdress( 0 ) {
         allocate( size );
@@ -150,8 +151,8 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
      * @param number Numero de l'objet dans la collection
      * @param objectName Nom de l'objet de collection
      */
-    JeveuxCollectionObject( const std::string &collectionName, const int &number,
-                            const std::string &objectName, const int &size )
+    JeveuxCollectionObject( const std::string &collectionName, const ASTERINTEGER &number,
+                            const std::string &objectName, const ASTERINTEGER &size )
         : _collectionName( collectionName ), _numberInCollection( number ),
           _nameOfObject( trim( objectName ) ), _valuePtr( nullptr ), _size( size ),
           _jeveuxAdress( 0 ) {
@@ -159,10 +160,10 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
     };
 
     struct const_iterator {
-        int position;
+        ASTERINTEGER position;
         const ValueType &valuePtr;
 
-        inline const_iterator( int memoryPosition, const ValueType &val )
+        inline const_iterator( ASTERINTEGER memoryPosition, const ValueType &val )
             : position( memoryPosition ), valuePtr( val ){};
 
         inline const_iterator( const const_iterator &iter )
@@ -207,7 +208,7 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
      */
     const_iterator end() const { return const_iterator( _size, *_valuePtr ); };
 
-    inline const ValueType &operator[]( int i ) const { return _valuePtr[i]; };
+    inline const ValueType &operator[]( ASTERINTEGER i ) const { return _valuePtr[i]; };
 
     JeveuxChar32 getName() const { return JeveuxChar32( _nameOfObject ); };
 
@@ -231,7 +232,7 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
     void setValues( const std::vector< ValueType > &toCopy ) {
         if ( toCopy.size() != size() )
             throw std::runtime_error( "Sizes do not match" );
-        int pos = 0;
+        ASTERINTEGER pos = 0;
         for ( const auto &val : toCopy ) {
             _valuePtr[pos] = val;
             ++pos;
@@ -246,17 +247,30 @@ template < class ValueType > class JeveuxCollectionObject : private AllowedJeveu
     };
 
     /** @brief Get size of collection object */
-    int size() const { return _size; };
+    ASTERINTEGER size() const { return _size; };
 
     /** @brief Convert to std::vector */
     std::vector< ValueType > toVector() const {
         if ( _valuePtr == nullptr )
             throw std::runtime_error( "Pointer is null" );
         std::vector< ValueType > toReturn;
-        toReturn.reserve(size());
-        for ( int i = 0; i < size(); ++i )
+        toReturn.reserve( size() );
+        for ( ASTERINTEGER i = 0; i < size(); ++i )
             toReturn.push_back( _valuePtr[i] );
         return toReturn;
+    };
+
+    bool operator==( JeveuxCollectionObject< ValueType > &toCompar ) const {
+        if ( this->size() != toCompar.size() )
+            return false;
+
+        auto size = this->size();
+        for ( ASTERINTEGER i = 0; i < size; size++ ) {
+            if ( this->operator[]( i ) != toCompar[i] )
+                return false;
+        }
+
+        return true;
     };
 };
 
@@ -301,7 +315,7 @@ enum JeveuxCollectionObjectSizes { Constant, Variable };
  */
 template < typename T > struct AllowedAccessType; // undefined for bad types!
 
-template <> struct AllowedAccessType< int > { typedef int type; };
+template <> struct AllowedAccessType< ASTERINTEGER > { typedef ASTERINTEGER type; };
 
 template <> struct AllowedAccessType< NamesMapChar24 > { typedef NamesMapChar24 type; };
 
@@ -316,13 +330,13 @@ using IsNotSame = typename std::enable_if< !std::is_same< T, U >::value >::type;
  * @brief Cette classe template permet de definir une collection Jeveux
  * @author Nicolas Sellenet
  */
-template < class ValueType, class AccessType = int >
+template < class ValueType, class AccessType = ASTERINTEGER >
 class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessType< AccessType > {
   private:
     /** @brief Definition d'un objet de collection du type ValueType */
     typedef JeveuxCollectionObject< ValueType > JeveuxCollObjValType;
     /** @brief std::map associant une chaine a un JeveuxCollObjValType */
-    typedef std::map< std::string, int > mapStrInt;
+    typedef std::map< std::string, ASTERINTEGER > mapStrInt;
 
     /** @brief La collection est-elle vide ? */
     bool _isEmpty;
@@ -332,24 +346,24 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     std::vector< JeveuxCollObjValType > _listObjects;
     /** @brief Correspondance nom/numéro */
     mapStrInt _mapNumObject;
-    int _size;
+    ASTERINTEGER _size;
     /**
      * @brief Pointeur vers un NamesMap
-     * @todo int par defaut : pas terrible
+     * @todo ASTERINTEGER par defaut : pas terrible
      */
     AccessType _namesMap;
 
     /**
      * @brief Allocation
      */
-    bool genericAllocation( int size, JeveuxCollectionAccessType access = Named,
+    bool genericAllocation( ASTERINTEGER size, JeveuxCollectionAccessType access = Named,
                             JeveuxCollectionMemoryStorageType storage = Sparse,
                             JeveuxCollectionObjectSizes objectSizes = Variable,
-                            const std::string &name = "", int totalSize = 0 ) {
+                            const std::string &name = "", ASTERINTEGER totalSize = 0 ) {
         ASTERINTEGER taille = size;
         _size = size;
         const std::string strJeveuxBase = "G";
-        const int intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
+        const ASTERINTEGER intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
         std::string carac( strJeveuxBase + " V " + JeveuxTypesNames[intType] );
 
         std::string typeColl1( "NO" );
@@ -385,7 +399,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @brief Constructeur dans le cas où AccessType n'a pas d'importance
      * @param name Chaine representant le nom de la collection
      */
-    template < typename T1 = AccessType, typename = IsSame< T1, int > >
+    template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
     JeveuxCollectionClass( const std::string &name )
         : JeveuxObjectClass( name ), _isNamed( false ), _isEmpty( true ), _namesMap( 0 ) {}
 
@@ -393,17 +407,18 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @brief Constructeur dans le cas où AccessType est un NamesMap
      * @param name Chaine representant le nom de la collection
      */
-    template < typename T1 = AccessType, typename = IsNotSame< T1, int > >
+    template < typename T1 = AccessType, typename = IsNotSame< T1, ASTERINTEGER > >
     JeveuxCollectionClass( const std::string &name, AccessType ptr )
         : JeveuxObjectClass( name ), _isNamed( false ), _isEmpty( true ), _namesMap( ptr ){};
 
     ~JeveuxCollectionClass(){};
 
     struct const_iterator {
-        int position;
+        ASTERINTEGER position;
         const std::vector< JeveuxCollObjValType > &values;
 
-        inline const_iterator( int memoryPosition, const std::vector< JeveuxCollObjValType > &vec )
+        inline const_iterator( ASTERINTEGER memoryPosition,
+                               const std::vector< JeveuxCollObjValType > &vec )
             : position( memoryPosition ), values( vec ){};
 
         inline const_iterator( const const_iterator &iter )
@@ -454,9 +469,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @param access type of access
      * @param objectSizes size of objects (constant or variable)
      */
-    template < typename T1 = AccessType, typename = IsNotSame< T1, int > >
-    typename std::enable_if< !std::is_same< T1, int >::value, bool >::type
-    allocate( int size, JeveuxCollectionObjectSizes objectSizes = Variable ) {
+    template < typename T1 = AccessType, typename = IsNotSame< T1, ASTERINTEGER > >
+    typename std::enable_if< !std::is_same< T1, ASTERINTEGER >::value, bool >::type
+    allocate( ASTERINTEGER size, JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
             _namesMap->allocate( size );
         if ( _namesMap->capacity() != size )
@@ -471,9 +486,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @param totalSize total size of the collection
      * @param objectSizes size of objects (constant or variable)
      */
-    template < typename T1 = AccessType, typename = IsNotSame< T1, int > >
-    typename std::enable_if< !std::is_same< T1, int >::value, bool >::type
-    allocateContiguous( int size, int totalSize,
+    template < typename T1 = AccessType, typename = IsNotSame< T1, ASTERINTEGER > >
+    typename std::enable_if< !std::is_same< T1, ASTERINTEGER >::value, bool >::type
+    allocateContiguous( ASTERINTEGER size, ASTERINTEGER totalSize,
                         JeveuxCollectionObjectSizes objectSizes = Variable ) {
         if ( !_namesMap->exists() )
             _namesMap->allocate( size );
@@ -490,9 +505,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @param access type of access
      * @param objectSizes size of objects (constant or variable)
      */
-    template < typename T1 = AccessType, typename = IsSame< T1, int > >
-    typename std::enable_if< std::is_same< T1, int >::value, bool >::type
-    allocate( int size, JeveuxCollectionAccessType access = Named,
+    template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
+    typename std::enable_if< std::is_same< T1, ASTERINTEGER >::value, bool >::type
+    allocate( ASTERINTEGER size, JeveuxCollectionAccessType access = Named,
               JeveuxCollectionObjectSizes objectSizes = Variable ) {
         return genericAllocation( size, access, Sparse, objectSizes, "" );
     };
@@ -504,9 +519,9 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
      * @param access type of access
      * @param objectSizes size of objects (constant or variable)
      */
-    template < typename T1 = AccessType, typename = IsSame< T1, int > >
-    typename std::enable_if< std::is_same< T1, int >::value, bool >::type
-    allocateContiguous( int size, int totalSize,
+    template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
+    typename std::enable_if< std::is_same< T1, ASTERINTEGER >::value, bool >::type
+    allocateContiguous( ASTERINTEGER size, ASTERINTEGER totalSize,
                         JeveuxCollectionAccessType access = Named,
                         JeveuxCollectionObjectSizes objectSizes = Variable ) {
         return genericAllocation( size, access, Contiguous, objectSizes, "", totalSize );
@@ -515,7 +530,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     /**
      * @brief Allocation of one object by name
      */
-    bool allocateObjectByName( const std::string &name, const int &size ) {
+    bool allocateObjectByName( const std::string &name, const ASTERINTEGER &size ) {
         if ( _listObjects.size() == _size )
             throw std::runtime_error( "Out of collection bounds" );
 
@@ -528,7 +543,7 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
     /**
      * @brief Allocation of one object at the end of a existing collection
      */
-    bool allocateObject( const int &size ) {
+    bool allocateObject( const ASTERINTEGER &size ) {
         if ( _listObjects.size() == _size )
             throw std::runtime_error( "Out of collection bounds" );
 
@@ -573,21 +588,21 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 
     const std::vector< JeveuxCollObjValType > &getVectorOfObjects() const { return _listObjects; };
 
-    const JeveuxCollObjValType &getObject( const int &position ) const {
+    const JeveuxCollObjValType &getObject( const ASTERINTEGER &position ) const {
         if ( _isEmpty )
             throw std::runtime_error( "Collection not built" );
 
-        if ( position > int(_listObjects.size()) || position <= 0 )
+        if ( position > ASTERINTEGER( _listObjects.size() ) || position <= 0 )
             throw std::runtime_error( "Out of collection bounds" );
 
         return _listObjects[position - 1];
     };
 
-    JeveuxCollObjValType &getObject( const int &position ) {
+    JeveuxCollObjValType &getObject( const ASTERINTEGER &position ) {
         if ( _isEmpty )
             throw std::runtime_error( "Collection not built" );
 
-        if ( position > int(_listObjects.size()) || position <= 0 )
+        if ( position > ASTERINTEGER( _listObjects.size() ) || position <= 0 )
             throw std::runtime_error( "Out of collection bounds" );
 
         return _listObjects[position - 1];
@@ -621,12 +636,11 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
         return _listObjects[curIter->second];
     };
 
-    int size() const {
+    ASTERINTEGER size() const {
         if ( _isEmpty )
             return -1;
         return _listObjects.size();
     };
-
 
     /**
      * @brief Surcharge de l'operateur =
@@ -635,10 +649,30 @@ class JeveuxCollectionClass : public JeveuxObjectClass, private AllowedAccessTyp
 
         std::string base( "G" );
         bool dupcol = true;
-        CALLO_JEDUPO(toCopy.getName(), base, getName(), (ASTERLOGICAL *)&dupcol);
-        AS_ASSERT(build());
+        CALLO_JEDUPO( toCopy.getName(), base, getName(), (ASTERLOGICAL *)&dupcol );
+        AS_ASSERT( build() );
 
         return *this;
+    };
+
+    bool operator==( JeveuxCollectionClass< ValueType, AccessType > &toCompar ) {
+        build();
+        toCompar.build();
+
+        if ( this->size() != toCompar.size() )
+            return false;
+
+        auto size = this->size();
+
+        for ( ASTERINTEGER i = 0; i < size; i++ ) {
+            if ( _listObjects[i] == toCompar._listObjects[i] ) {
+
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     };
 };
 
@@ -714,7 +748,7 @@ bool JeveuxCollectionClass< ValueType, AccessType >::existsObject(
 template < class ValueType, class AccessType >
 std::vector< JeveuxChar32 > JeveuxCollectionClass< ValueType, AccessType >::getObjectNames() const {
     std::vector< JeveuxChar32 > toReturn;
-    toReturn.reserve(_listObjects.size());
+    toReturn.reserve( _listObjects.size() );
     for ( auto curObject : _listObjects )
         toReturn.push_back( curObject.getName() );
     return toReturn;
@@ -725,7 +759,7 @@ std::vector< JeveuxChar32 > JeveuxCollectionClass< ValueType, AccessType >::getO
  * @brief Enveloppe d'un pointeur intelligent vers un JeveuxCollectionClass
  * @author Nicolas Sellenet
  */
-template < class ValueType, class AccessType = int > class JeveuxCollection {
+template < class ValueType, class AccessType = ASTERINTEGER > class JeveuxCollection {
   public:
     typedef boost::shared_ptr< JeveuxCollectionClass< ValueType, AccessType > >
         JeveuxCollectionTypePtr;
@@ -738,7 +772,7 @@ template < class ValueType, class AccessType = int > class JeveuxCollection {
      * @brief Constructeur dans le cas où AccessType n'a pas d'importance
      * @param name Chaine representant le nom de la collection
      */
-    template < typename T1 = AccessType, typename = IsSame< T1, int > >
+    template < typename T1 = AccessType, typename = IsSame< T1, ASTERINTEGER > >
     JeveuxCollection( const std::string &nom )
         : _jeveuxCollectionPtr( new JeveuxCollectionClass< ValueType, AccessType >( nom ) ) {}
 
@@ -746,7 +780,7 @@ template < class ValueType, class AccessType = int > class JeveuxCollection {
      * @brief Constructeur dans le cas où AccessType est un NamesMap
      * @param name Chaine representant le nom de la collection
      */
-    template < typename T1 = AccessType, typename = IsNotSame< T1, int > >
+    template < typename T1 = AccessType, typename = IsNotSame< T1, ASTERINTEGER > >
     JeveuxCollection( const std::string &nom, AccessType ptr )
         : _jeveuxCollectionPtr( new JeveuxCollectionClass< ValueType, AccessType >( nom, ptr ) ){};
 
@@ -759,7 +793,7 @@ template < class ValueType, class AccessType = int > class JeveuxCollection {
 
     const JeveuxCollectionTypePtr &operator->() const { return _jeveuxCollectionPtr; };
 
-    JeveuxCollectionClass< ValueType, AccessType > &operator*(void)const {
+    JeveuxCollectionClass< ValueType, AccessType > &operator*( void ) const {
         return *_jeveuxCollectionPtr;
     };
 
