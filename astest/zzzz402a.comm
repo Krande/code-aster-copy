@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -301,8 +301,8 @@ TEST_TABLE(  TABLE=TAB_RESU,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=9.44055232681E-05,
-              VALE_CALC=9.44055232681E-05,
+              VALE_REFE=0.0003539038489101157,
+              VALE_CALC=0.0003539038489101157,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -314,8 +314,8 @@ TEST_TABLE(  TABLE=TAB_RESU,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.000228145272925,
-              VALE_CALC=0.000228145272925,
+              VALE_REFE=0.0019051098891468712,
+              VALE_CALC=0.0019051098891468712,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -336,8 +336,8 @@ TEST_TABLE(  TABLE=TAB_RES2,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=9.44055232681E-05,
-              VALE_CALC=9.44055232681E-05,
+              VALE_REFE=0.0003539038490900916,
+              VALE_CALC=0.0003539038490900916,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -349,8 +349,8 @@ TEST_TABLE(  TABLE=TAB_RES2,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.000228145272925,
-              VALE_CALC=0.000228145272925,
+              VALE_REFE=0.0019051098903609238,
+              VALE_CALC=0.0019051098903609238,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -369,8 +369,8 @@ TEST_TABLE(  TABLE=TAB_RES3,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=9.44055232681E-05,
-              VALE_CALC=9.44055232681E-05,
+              VALE_REFE=0.0003539038490900916,
+              VALE_CALC=0.0003539038490900916,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -382,8 +382,8 @@ TEST_TABLE(  TABLE=TAB_RES3,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.000228145272925,
-              VALE_CALC=0.000228145272925,
+              VALE_REFE=0.0019051098903609238,
+              VALE_CALC=0.0019051098903609238,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
