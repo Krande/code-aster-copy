@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -19,16 +19,19 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 
-from ..Objects import (FullHarmonicResult,
-                       FullTransientResult,
-                       HarmoGeneralizedResult,
-                       TransientGeneralizedResult)
+from ..Objects import (
+    FullHarmonicResult,
+    FullTransientResult,
+    HarmoGeneralizedResult,
+    TransientGeneralizedResult,
+)
 from ..Supervis import ExecuteCommand
 
 
 class FourierTransformation(ExecuteCommand):
     """Command that creates the :class:`~code_aster.Objects.ThermalResult` by assigning
     finite elements on a :class:`~code_aster.Objects.ThermalResult`."""
+
     command_name = "REST_SPEC_TEMP"
 
     def create_result(self, keywords):
@@ -37,7 +40,7 @@ class FourierTransformation(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        input = keywords.get('RESULTAT') or keywords['RESU_GENE']
+        input = keywords.get("RESULTAT") or keywords["RESU_GENE"]
         if isinstance(input, FullHarmonicResult):
             self._result = FullTransientResult()
         elif isinstance(input, FullTransientResult):
@@ -48,6 +51,19 @@ class FourierTransformation(ExecuteCommand):
             self._result = HarmoGeneralizedResult()
         else:
             raise TypeError("unsupported input type: {0}".format(input))
+
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        if keywords.get("RESULTAT"):
+            self._result.setModel(keywords.get("RESULTAT").getModel())
+        else:
+            self._result.setGeneralizedDOFNumbering(
+                keywords["RESU_GENE"].getGeneralizedDOFNumbering()
+            )
 
 
 REST_SPEC_TEMP = FourierTransformation.run

@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist ci verification parallel
 
 F comm sdld21b.comm D 1
+F comm sdld21b.py D 1
 F mail sdld21b.mail D 20

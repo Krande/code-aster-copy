@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -24,8 +24,8 @@ from ..Supervis import ExecuteCommand
 
 
 class CalcForcNonl(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.FullTransientResult`.
-    """
+    """Command that defines :class:`~code_aster.Objects.FullTransientResult`."""
+
     command_name = "CALC_FORC_NONL"
 
     def create_result(self, keywords):
@@ -35,5 +35,14 @@ class CalcForcNonl(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = FullTransientResult()
+
+    def post_exec(self, keywords):
+        """Execute the command.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+        self._result.setModel(keywords["RESULTAT"].getModel())
+
 
 CALC_FORC_NONL = CalcForcNonl.run

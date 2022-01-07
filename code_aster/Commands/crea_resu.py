@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -82,24 +82,28 @@ class ResultCreator(ExecuteCommand):
         """
         fkw = force_list(keywords.get("AFFE", []))
         for occ in fkw:
+            if occ.get("MODELE"):
+                self._result.setModel(occ["MODELE"])
+                break
             chamGd = occ.get("CHAM_GD")
             if chamGd is not None:
-                isFieldOnNodesReal = isinstance(chamGd, FieldOnNodesReal)
-                isFieldOnNodesComplex = isinstance(chamGd, FieldOnNodesComplex)
-                if isFieldOnNodesReal or isFieldOnNodesComplex:
+                if isinstance(chamGd, (FieldOnNodesReal, FieldOnNodesComplex)):
                     mesh = chamGd.getMesh()
                     if mesh is not None:
                         self._result.setMesh(mesh)
                         break
 
+        if keywords.get("MATR_RIGI"):
+            self._result.setModel(keywords["MATR_RIGI"].getModel())
+
         if keywords.get("ECLA_PG"):
-            self._result.setMesh(keywords["ECLA_PG"]["MODELE_INIT"].getMesh())
+            self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])
         if keywords.get("CONV_CHAR"):
-            self._result.setMesh(keywords["CONV_CHAR"]["MATR_RIGI"].getMesh())
+            self._result.setModel(keywords["CONV_CHAR"]["MATR_RIGI"].getModel())
         if keywords.get("CONV_RESU"):
-            self._result.setMesh(keywords["CONV_RESU"]["RESU_INIT"].getMesh())
+            self._result.setModel(keywords["CONV_RESU"]["RESU_INIT"].getModel())
         if keywords.get("KUCV"):
-            self._result.setMesh(keywords["KUCV"]["RESU_INIT"].getMesh())
+            self._result.setModel(keywords["KUCV"]["RESU_INIT"].getModel())
         if keywords.get("PROL_RTZ"):
             self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
 
@@ -117,24 +121,24 @@ class ResultCreator(ExecuteCommand):
             if chamMater is not None:
                 self._result.setMaterialField(chamMater)
 
-            modele = fkw[0].get("MODELE")
+            model = fkw[0].get("MODELE")
             chamGd = fkw[0].get("CHAM_GD")
             result = fkw[0].get("RESULTAT")
 
-            if modele is not None:
-                self._result.setModel(modele)
+            if model is not None:
+                self._result.setModel(model)
             elif result is not None:
-                modele = result.getModel()
-                if modele is not None:
-                    self._result.setModel(modele)
+                model = result.getModel()
+                if model is not None:
+                    self._result.setModel(model)
 
                 mesh = result.getMesh()
                 if mesh is not None:
                     self._result.setMesh(mesh)
             elif chamGd is not None:
                 try:
-                    modele = chamGd.getModel()
-                    self._result.setModel(modele)
+                    model = chamGd.getModel()
+                    self._result.setModel(model)
                 except:
                     pass
                 try:
