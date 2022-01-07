@@ -177,6 +177,16 @@ test.assertSequenceEqual(sorted(mesh.getNodes("Beton", False)),
 
 new_mesh = mesh.refine(2)
 
+# test mesh builder
+test.assertEqual(code_aster.ParallelMesh.buildSquare(refine=4).getNumberOfNodes(),
+                 [116, 123, 126][rank])
+test.assertEqual(code_aster.ParallelMesh.buildCube(refine=4).getNumberOfNodes(),
+                 [1929, 2079, 2189][rank])
+test.assertEqual(code_aster.ParallelMesh.buildDisk(refine=5).getNumberOfNodes(),
+                 [4114, 4421, 4404][rank])
+test.assertEqual(code_aster.ParallelMesh.buildCylinder(refine=3).getNumberOfNodes(),
+                 [5246, 5242, 5625][rank])
+
 test.printSummary()
 
 code_aster.close()

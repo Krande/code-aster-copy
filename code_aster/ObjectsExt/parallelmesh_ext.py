@@ -22,13 +22,15 @@
 :py:class:`ParallelMesh` --- Assignment of parallel mesh
 ************************************************************************
 """
+import os.path as osp
 from collections import Counter
 
 from ..Commands import CREA_MAILLAGE
 from ..Messages import UTMESS
 from ..Objects import ConnectionMesh, Mesh, ParallelMesh
 from ..Objects.Serialization import InternalStateBuilder
-from ..Utilities import MPI, ExecutionParameter, Options, injector, logger
+from ..Utilities import (MPI, ExecutionParameter, Options, injector, logger,
+                         shared_tmpdir)
 
 try:
     from ..Utilities.MedUtils.MEDPartitioner import MEDPartitioner
@@ -147,7 +149,107 @@ class ExtendedParallelMesh:
             ParallelMesh: the refined mesh.
         """
 
-        return CREA_MAILLAGE(MAILLAGE=self, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes))
+        return CREA_MAILLAGE(MAILLAGE=self,
+                             RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes))
+
+    @classmethod
+    def buildSquare(self, lx=1., ly=1., refine=0):
+        """Build the quadrilateral mesh of a square.
+        Arguments:
+            lx [float] : length of the square along the x axis (default 1.).
+            ly [float] : length of the square along the y axis (default 1.).
+            refine [int] : number of mesh refinement iterations (default 0).
+        """
+
+        with shared_tmpdir("buildSquare") as tmpdir:
+            filename = osp.join(tmpdir, "buildSquare.med")
+            # nrefine is added to create a mesh with enougth cells
+            # to be partitioned equally and not generated a too big file
+            nrefine = min(8, refine)
+            if MPI.COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine)
+                mesh.printMedFile(filename)
+            MPI.COMM_WORLD.Barrier()
+
+            # Mesh creation
+            mesh_p = ParallelMesh()
+            mesh_p.readMedFile(filename)
+
+            # Mesh refinement
+            nrefinep = refine-nrefine
+            return CREA_MAILLAGE(MAILLAGE=mesh_p,
+                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep))
+
+
+    @classmethod
+    def buildCube(self, lx=1., ly=1., lz=1., refine=0):
+        """Build the hexaedral mesh of a cube.
+        Arguments:
+            lx [float] : length of the cube along the x axis (default 1.).
+            ly [float] : length of the cube along the y axis (default 1.).
+            lz [float] : length of the cube along the z axis (default 1.).
+            refine [int] : number of mesh refinement iterations (default 0).
+        """
+
+        with shared_tmpdir("buildCube") as tmpdir:
+            filename = osp.join(tmpdir, "buildCube.med")
+            # nrefine is added to create a mesh with enougth cells
+            # to be partitioned equally and not generated a too big file
+            nrefine = min(6, refine)
+            if MPI.COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine)
+                mesh.printMedFile(filename)
+            MPI.COMM_WORLD.Barrier()
+
+            # Mesh creation
+            mesh_p = ParallelMesh()
+            mesh_p.readMedFile(filename)
+
+            # Mesh refinement
+            nrefinep = refine-nrefine
+            return CREA_MAILLAGE(MAILLAGE=mesh_p,
+                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep))
+
+    @classmethod
+    def buildDisk(self, radius=1, refine=0):
+        """Build the quadrilateral mesh of a disk.
+        Arguments:
+            radius [float] : radius of the disk (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+        """
+
+        with shared_tmpdir("buildDisk") as tmpdir:
+            filename = osp.join(tmpdir, "buildDisk.med")
+            if MPI.COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildDisk(radius, refine)
+                mesh.printMedFile(filename)
+            MPI.COMM_WORLD.Barrier()
+
+            # Mesh creation
+            mesh_p = ParallelMesh()
+            mesh_p.readMedFile(filename)
+            return mesh_p
+
+    @classmethod
+    def buildCylinder(self, height=3, radius=1, refine=0):
+        """Build the hexaedral mesh of a cylinder.
+        Arguments:
+            height [float] : height of the cylinder along the z axis (default 0).
+            radius [float] : radius of the cylinder (default 1).
+            refine [int] : number of mesh refinement iterations (default 0).
+        """
+
+        with shared_tmpdir("buildCylinder") as tmpdir:
+            filename = osp.join(tmpdir, "buildCylinder.med")
+            if MPI.COMM_WORLD.Get_rank() == 0:
+                mesh = Mesh.buildCylinder(height, radius, refine)
+                mesh.printMedFile(filename)
+            MPI.COMM_WORLD.Barrier()
+
+            # Mesh creation
+            mesh_p = ParallelMesh()
+            mesh_p.readMedFile(filename)
+            return mesh_p
 
 @injector(ConnectionMesh)
 class ExtendedConnectionMesh:

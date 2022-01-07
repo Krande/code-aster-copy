@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@
 
 The :py:mod:`mesh_builder` helps generate simple meshes (disk, square,
 cylinder, cube). The user can indicate the geometrical sizes of the shape
-and the mesh fineness using the nrefine parameter.
+and the mesh fineness using the refine parameter.
 
 The functions are exposed as class-method in the :py:class:`Mesh` class.
 
 """
 
 
-from ..Commands import MACR_ADAP_MAIL
+from ..Commands import MACR_ADAP_MAIL, CREA_MAILLAGE
 from ..MacroCommands.macr_adap_mail_ops import HOMARD_INFOS
 from ..Objects import Mesh
 from ..Supervis import CO
@@ -39,12 +39,12 @@ import tempfile
 from math import sqrt, cos, sin, pi
 
 
-def buildSquare(cls, lx=1, ly=1, nrefine=3):
+def buildSquare(cls, lx=1, ly=1, refine=0):
     """Build the quadrilateral mesh of a square.
     Arguments:
         lx [float] : length of the square along the x axis (default 1.).
         ly [float] : length of the square along the y axis (default 1.).
-        nrefine [int] : number of mesh refinement iterations (default 3).
+        refine [int] : number of mesh refinement iterations (default 0).
     """
     # Mesh creation
     mesh = cls()
@@ -60,23 +60,14 @@ def buildSquare(cls, lx=1, ly=1, nrefine=3):
         mesh.readAsterFile(f.name)
 
     # Mesh refinement
-    newMesh = mesh
-    for _ in range(nrefine):
-        HOMARD_INFOS.new()
-        resu = MACR_ADAP_MAIL(__use_namedtuple__=True,
-                                ADAPTATION='RAFFINEMENT_UNIFORME',
-                                MAILLAGE_N=newMesh,
-                                MAILLAGE_NP1=CO('newMesh'))
-        HOMARD_INFOS.pop()
-        newMesh = resu.newMesh
-    return newMesh
+    return CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=refine))
 
 
-def buildDisk(cls, radius=1, nrefine=3):
+def buildDisk(cls, radius=1, refine=0):
     """Build the quadrilateral mesh of a disk.
     Arguments:
         radius [float] : radius of the disk (default 1).
-        nrefine [int] : number of mesh refinement iterations (default 3).
+        refine [int] : number of mesh refinement iterations (default 0).
     """
     # Mesh creation
     mesh = cls()
@@ -117,7 +108,7 @@ def buildDisk(cls, radius=1, nrefine=3):
 
     # Mesh refinement
     newMesh = mesh
-    for _ in range(nrefine):
+    for _ in range(refine):
         HOMARD_INFOS.new()
         resu = MACR_ADAP_MAIL(__use_namedtuple__=True,
                                 ADAPTATION='RAFFINEMENT_UNIFORME',
@@ -130,13 +121,13 @@ def buildDisk(cls, radius=1, nrefine=3):
     return newMesh
 
 
-def buildCube(cls, lx=1, ly=1, lz=1, nrefine=3):
+def buildCube(cls, lx=1, ly=1, lz=1, refine=0):
     """Build the hexaedral mesh of a cube.
     Arguments:
         lx [float] : length of the cube along the x axis (default 1.).
         ly [float] : length of the cube along the y axis (default 1.).
         lz [float] : length of the cube along the z axis (default 1.).
-        nrefine [int] : number of mesh refinement iterations (default 3).
+        refine [int] : number of mesh refinement iterations (default 0).
     """
     # Mesh creation
     mesh = cls()
@@ -162,24 +153,15 @@ def buildCube(cls, lx=1, ly=1, lz=1, nrefine=3):
         mesh.readAsterFile(f.name)
 
     # Mesh refinement
-    newMesh = mesh
-    for _ in range(nrefine):
-        HOMARD_INFOS.new()
-        resu = MACR_ADAP_MAIL(__use_namedtuple__=True,
-                                ADAPTATION='RAFFINEMENT_UNIFORME',
-                                MAILLAGE_N=newMesh,
-                                MAILLAGE_NP1=CO('newMesh'))
-        HOMARD_INFOS.pop()
-        newMesh = resu.newMesh
-    return newMesh
+    return CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=refine))
 
 
-def buildCylinder(cls, height=3, radius=1, nrefine=3):
+def buildCylinder(cls, height=3, radius=1, refine=0):
     """Build the hexaedral mesh of a cylinder.
     Arguments:
-        height [float] : height of the cylinder along the z axis (default 3).
+        height [float] : height of the cylinder along the z axis (default 0).
         radius [float] : radius of the cylinder (default 1).
-        nrefine [int] : number of mesh refinement iterations (default 3).
+        refine [int] : number of mesh refinement iterations (default 0).
     """
     # Mesh creation
     mesh = cls()
@@ -237,7 +219,7 @@ def buildCylinder(cls, height=3, radius=1, nrefine=3):
 
     # Mesh refinement
     newMesh = mesh
-    for _ in range(nrefine):
+    for _ in range(refine):
         HOMARD_INFOS.new()
         resu = MACR_ADAP_MAIL(__use_namedtuple__=True,
                               ADAPTATION='RAFFINEMENT_UNIFORME',
