@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,10 +64,8 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     character(len=19) :: resuel, vecele, depmoi
     character(len=24) :: chgeom, chlapl, chgeo2
     character(len=24) :: ligrmo, ligrch, lchin(3), kcmp(2)
-    integer :: ibid, iret, nchar
+    integer :: iret, nchar
     aster_logical :: bidon
-!
-!-----------------------------------------------------------------------
     integer :: icha, ifla, j, jchar, jinf, lonlis
 !-----------------------------------------------------------------------
     call jemarq()
@@ -124,7 +122,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     paout = 'PVECTUR'
 !
     ifla = 0
-    do 30 icha = 1, nchar
+    do icha = 1, nchar
         nomcha = zk24(jchar+icha-1) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         lchin(3) (1:17) = ligrch(1:13)//'.FL1'
@@ -146,7 +144,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
                 endif
                 call gcnco2(newnom)
                 resuel(10:16) = newnom(2:8)
-                call corich('E', resuel, icha, ibid)
+                call corich('E', resuel, ichin_ = icha)
 !
                 call calcul('S', option, ligrmo, 3, lchin,&
                             lpain, 1, resuel, paout, 'V',&
@@ -158,7 +156,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
  10     continue
  20     continue
 !
- 30 end do
+    end do
 !
  40 continue
     vecelz = vecele

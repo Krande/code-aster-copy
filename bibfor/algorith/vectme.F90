@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine vectme(modelz, carelz, mate, mateco, compor, complz,&
 !
     integer :: mxnbin, mxnbou, nbin, nbout
     parameter    (mxnbin=30,mxnbou=2)
-    integer :: ibid, iret, ich
+    integer :: iret, ich
     character(len=8) :: lpain(mxnbin), lpaout(mxnbou), newnom
     character(len=14) :: complu
     character(len=16) :: option
@@ -146,7 +146,7 @@ subroutine vectme(modelz, carelz, mate, mateco, compor, complz,&
     call gcnco2(newnom)
     resuel = '&&VECTME.???????'
     resuel(10:16) = newnom(2:8)
-    call corich('E', resuel, -1, ibid)
+    call corich('E', resuel, ichin_ = -1)
     lpaout(1) = 'PVECTUR'
     lchout(1) = resuel
     lpaout(2) = ' '

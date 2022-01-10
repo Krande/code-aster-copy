@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,7 +73,7 @@ character(len=1), intent(in) :: base
     character(len=16) :: option
     character(len=19) :: resu_elem
     character(len=24) :: ligrmo, chgeom
-    integer :: iret, ibid, load_nume
+    integer :: iret, load_nume
     aster_logical :: load_empty
     integer :: i_load, nb_load
     character(len=24), pointer :: v_load_name(:) => null()
@@ -132,7 +132,7 @@ character(len=1), intent(in) :: base
 ! ------------- Generate new RESU_ELEM name
                 call gcnco2(newnom)
                 resu_elem(10:16) = newnom(2:8)
-                call corich('E', resu_elem, -1, ibid)
+                call corich('E', resu_elem, ichin_ = -1)
                 lchout(1)        = resu_elem
 ! ------------- Compute
                 call calcul('S'  , option, ligrmo, nbin  , lchin,&
@@ -154,7 +154,7 @@ character(len=1), intent(in) :: base
 ! ------------- Generate new RESU_ELEM name
                 call gcnco2(newnom)
                 resu_elem(10:16) = newnom(2:8)
-                call corich('E', resu_elem, -1, ibid)
+                call corich('E', resu_elem, ichin_ = -1)
                 lchout(1) = resu_elem
 ! ------------- Compute
                 call calcul('S', option, ligrmo, nbin, lchin,&
@@ -172,7 +172,7 @@ character(len=1), intent(in) :: base
 ! ------------- Generate new RESU_ELEM name
                 call gcnco2(newnom)
                 resu_elem(10:16) = newnom(2:8)
-                call corich('E', resu_elem, -1, ibid)
+                call corich('E', resu_elem, ichin_ = -1)
                 lchout(1)        = resu_elem
 ! ------------- Compute
                 call calcul('S'  , option, ligrmo, nbin  , lchin,&

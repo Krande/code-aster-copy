@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -100,7 +100,7 @@ character(len=*), intent(inout) :: vecelz(*)
     character(len=19) :: chgeom, chcara(18), vecele, veceli
     character(len=19) :: lchinr(nbin), lchini(nbin)
     character(len=16) :: optio2
-    integer :: ibid, iret, inddec(nbin), iexi, k
+    integer :: iret, inddec(nbin), iexi, k
     real(kind=8) :: instm, instp
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, hea_no
@@ -293,13 +293,13 @@ character(len=*), intent(inout) :: vecelz(*)
     lpaout(1) = 'PVECTUR'
     call gcnco2(newnom)
     lchout(1) = vecele(1:8)//newnom
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
     call gcnco2(newnom)
     ch1(1) = vecele(1:8)//newnom
-    call corich('E', ch1(1), -1, ibid)
+    call corich('E', ch1(1), ichin_ = -1)
     call gcnco2(newnom)
     ch2(1) = veceli(1:8)//newnom
-    call corich('E', ch2(1), -1, ibid)
+    call corich('E', ch2(1), ichin_ = -1)
 !
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !

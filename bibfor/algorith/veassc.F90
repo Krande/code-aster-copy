@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine veassc(lischa, vecele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar, ibid
+    integer :: ichar, nbchar
     character(len=8) :: newnom
     character(len=19) :: chamno, lchout
     character(len=13) :: prefob
@@ -80,7 +80,7 @@ subroutine veassc(lischa, vecele)
 !
 ! --- BOUCLE SUR LES CHARGES
 !
-    do 10 ichar = 1, nbchar
+    do ichar = 1, nbchar
 !
 ! ----- CODE DU GENRE DE LA CHARGE
 !
@@ -102,11 +102,11 @@ subroutine veassc(lischa, vecele)
 !
             call gcnco2(newnom)
             lchout = '&&VEASSE.'//newnom(2:8)
-            call corich('E', lchout, ichar, ibid)
+            call corich('E', lchout, ichin_ = ichar)
             call copisd('CHAMP_GD', 'V', chamno, lchout)
             call reajre(vecele, lchout, 'V')
         endif
- 10 continue
+    end do
 !
  99 continue
 !

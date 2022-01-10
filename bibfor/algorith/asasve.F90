@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec,  ityp, jass, i, ibid, iret, icha
+    integer :: nbvec,  ityp, jass, i, iret, icha
     integer :: n1, jvacha
     aster_logical :: bidon
     character(len=4) :: tych
@@ -125,7 +125,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
     if (bidon) then
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, -2, ibid)
+        call corich('E', chamno, ichin_ = -2)
         call vtcreb(chamno, 'V', typres,&
                     nume_ddlz = numedd)
         zk24(jass-1+1) = chamno
@@ -145,14 +145,12 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
     do i = 1, nbvec
         resuel = relr(i)(1:19)
-!       CALL UTIMS2('ASASVE 1',I,RESUEL,1,' ')
-!
-        call corich('L', resuel, ibid, icha)
+        call corich('L', resuel, ichout_ = icha)
         ASSERT((icha.ne.0).and.(icha.ge.-2))
 !
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, icha, ibid)
+        call corich('E', chamno, ichin_ = icha)
         zk24(jass+i-1) = chamno
 !
 !       -- SI LE RESUELEM EST UN RESUELEM !
@@ -186,7 +184,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !     DESTRUCTION DU VECT_ELEM :
 !     -----------------------------------
     do i = 1, nbvec
-        call corich('S', relr(i) (1:19), ibid, ibid)
+        call corich('S', relr(i))
         call detrsd('CHAMP_GD', relr(i))
     end do
     call jedetr(vecele//'.RELR')

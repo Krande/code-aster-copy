@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,10 +61,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
     character(len=24) :: ligrmo, lchin(7), lchout(4)
     character(len=24) :: chvite, convch, chgeom, chcara(18)
     integer :: iret, jvites
-!
-! DEB ------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    integer :: ibid, icha, ichar, iconv, jchar, jinf, nchar
+    integer :: icha, ichar, iconv, jchar, jinf, nchar
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -126,10 +123,10 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
 !
     call gcnco2(newnom)
     lchout(1) = '&&VETRTH.'//newnom(2:8)
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
     call gcnco2(newnom)
     lchout(3) = '&&VETRTH.'//newnom(2:8)
-    call corich('E', lchout(3), -1, ibid)
+    call corich('E', lchout(3), ichin_ = -1)
     call calcul('S', option, ligrmo, 7, lchin,&
                 lpain, 3, lchout, lpaout, 'V',&
                 'OUI')
@@ -147,7 +144,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
                 option = 'CHAR_THER_FLUTNL'
                 call gcnco2(newnom)
                 lchout(1) = '&&VETRTH.'//newnom(2:8)
-                call corich('E', lchout(1), -1, ibid)
+                call corich('E', lchout(1), ichin_ = -1)
                 call calcul('S', option, ligrmo, 5, lchin,&
                             lpain, 1, lchout, lpaout, 'V',&
                             'OUI')
@@ -166,7 +163,7 @@ subroutine vetrth(modele, charge, infcha, carele, mate,&
                 lchin(4) = zk24(jchar+icha-1) (1:8)//'.CHTH.COEFH'
                 call gcnco2(newnom)
                 lchout(1) = '&&VETRTH.'//newnom(2:8)
-                call corich('E', lchout(1), -1, ibid)
+                call corich('E', lchout(1), ichin_ = -1)
                 call calcul('S', option, ligrmo, 5, lchin,&
                             lpain, 1, lchout, lpaout, 'V',&
                             'OUI')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
     character(len=8) :: nomcha, lpain(3), lpaout(1), newnom
     character(len=16) :: option
     character(len=24) :: ligrch, lchin(3), lchout(1), chgeom, chtime
-    integer :: ibid, iret, nchar, jinf, jchar, icha
+    integer :: iret, nchar, jinf, jchar, icha
     integer :: numdi
     aster_logical :: bidon
     character(len=19) :: lvedip
@@ -103,7 +103,7 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
                 ncmp=1, nomcmp='INST', sr=instap)
     lchin(3) = chtime
 !
-    do 10 icha = 1, nchar
+    do icha = 1, nchar
         nomcha = zk24(jchar+icha-1) (1:8)
         ligrch = nomcha//'.CHME.LIGRE'
         lchin(1) = nomcha//'.CHME.CIMPO.DESC'
@@ -115,20 +115,19 @@ subroutine vedpme(modele, charge, infcha, instap, lvediz)
             option = 'MECA_DDLI_F'
             lpain(1) = 'PDDLIMF'
         else
-            goto 15
+            cycle
         endif
 !
         lchout(1) = '&&VEDPME.???????'
         call gcnco2(newnom)
         lchout(1) (10:16) = newnom(2:8)
-        call corich('E', lchout(1), icha, ibid)
+        call corich('E', lchout(1), ichin_ = icha)
         call calcul('S', option, ligrch, 3, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         call reajre(lvedip, lchout(1), 'V')
- 15     continue
 !
- 10 end do
+    end do
 !
  20 continue
 !

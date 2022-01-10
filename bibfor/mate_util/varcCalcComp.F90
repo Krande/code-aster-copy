@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,6 @@ character(len=*), intent(in) :: vect_elemz
     character(len=8) :: newnom
     character(len=16) :: option
     character(len=19) :: resu_elem, ligrmo
-    integer :: ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,7 +83,7 @@ character(len=*), intent(in) :: vect_elemz
     if (l_temp) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, -1, ibid)
+        call corich('E', resu_elem, ichin_ = -1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_TEMP_R'
         if (nbout .eq. 2) then
@@ -101,7 +100,7 @@ character(len=*), intent(in) :: vect_elemz
     if (l_hydr) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, -1, ibid)
+        call corich('E', resu_elem, ichin_ = -1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_HYDR_R'
         call calcul('C'  , option, ligrmo, nbin  , lchin,&
@@ -115,7 +114,7 @@ character(len=*), intent(in) :: vect_elemz
     if (l_ptot) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, -1, ibid)
+        call corich('E', resu_elem, ichin_ = -1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_PTOT_R'
         call calcul('C'  , option, ligrmo, nbin  , lchin,&
@@ -129,7 +128,7 @@ character(len=*), intent(in) :: vect_elemz
     if (l_sech) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, -1, ibid)
+        call corich('E', resu_elem, ichin_ = -1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_SECH_R'
         call calcul('C'  , option, ligrmo, nbin  , lchin,&
@@ -143,7 +142,7 @@ character(len=*), intent(in) :: vect_elemz
     if (l_epsa) then
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, -1, ibid)
+        call corich('E', resu_elem, ichin_ = -1)
         lchout(1) = resu_elem
         option = 'CHAR_MECA_EPSA_R'
         call calcul('C'  , option, ligrmo, nbin  , lchin,&

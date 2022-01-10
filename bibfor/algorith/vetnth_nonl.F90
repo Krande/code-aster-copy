@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,11 +74,10 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer , parameter :: nbin = 11
-    integer , parameter :: nbout = 2
+    integer , parameter :: nbin = 11, nbout = 2
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=19) :: lchin(nbin), lchout(nbout)
-    integer :: iret, ibid
+    integer :: iret
     character(len=8) :: newnom
     character(len=16) :: option
     character(len=24) :: ligrmo
@@ -172,7 +171,7 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
     lpaout(1) = 'PVECTTI'
     lchout(1) = resu_elem_nl
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
 !
 ! - Generate new RESU_ELEM name
 !
@@ -184,7 +183,7 @@ character(len=24), optional,intent(in) :: hydr_prev_
 !
     lpaout(2) = 'PVECTTR'
     lchout(2) = resu_elem_l
-    call corich('E', lchout(2), -1, ibid)
+    call corich('E', lchout(2), ichin_ = -1)
 !
 ! - Compute
 !

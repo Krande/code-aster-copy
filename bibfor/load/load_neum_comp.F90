@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,8 +79,8 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load
     integer :: nb_type_neum
     parameter (nb_type_neum=19)
 !
-    integer :: iexist, i_type_neum, nb_in_add, ibid
-    character(len=16) :: load_option,typeco
+    integer :: iexist, i_type_neum, nb_in_add
+    character(len=16) :: load_option
     character(len=24) :: load_ligrel
     integer :: nbout, nbin
     character(len=8) :: lpaout, newnom,noma,kret
@@ -111,7 +111,7 @@ subroutine load_neum_comp(stop       , i_load    , load_name , load_nume  , load
             newnom = resu_elem(10:16)
             call gcnco2(newnom)
             resu_elem(10:16) = newnom(2:8)
-            call corich('E', resu_elem, i_load, ibid)
+            call corich('E', resu_elem, ichin_ = i_load)
 !
 ! --------- Number of fields
 !

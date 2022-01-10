@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ implicit none
     integer :: nb_type_neum
     parameter (nb_type_neum=10)
 !
-    integer :: i_type_neum, nb_in_add, ibid
+    integer :: i_type_neum, nb_in_add
     character(len=16) :: load_option
     character(len=24) :: load_ligrel  
     integer :: nbout, nbin
@@ -120,9 +120,9 @@ implicit none
 ! --------- Attach load to RESU_ELEM
 !
             if (present(i_load_)) then
-                call corich('E', resu_elem, i_load_, ibid)
+                call corich('E', resu_elem, ichin_ = i_load_)
             else
-                call corich('E', resu_elem, -1, ibid)
+                call corich('E', resu_elem, ichin_ = -1)
             endif
 !
 ! --------- Number of fields

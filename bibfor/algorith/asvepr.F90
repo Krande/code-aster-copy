@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     if (nbvec .eq. 0) then
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, -2, ibid)
+        call corich('E', chamno, ichin_ = -2)
         call vtcreb(chamno, 'V', typres,&
                     nume_ddlz = numedd)
         zk24(jvacha-1+1) = chamno
@@ -168,8 +168,8 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
 ! ----- ENREGISTREMENT DU NUMERO DE LA CHARGE DANS LE CHAM_NO
 !
-        call corich('L', resuel, ibid, ichar)
-        call corich('E', chamno, ichar, ibid)
+        call corich('L', resuel, ichout_ = ichar)
+        call corich('E', chamno, ichin_ = ichar)
 !
 ! ----- TYPE DU RESU_ELEM
 !
@@ -219,7 +219,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     call jeexin(vecele//'.RELR', iret)
     do ivec = 1, nbvec
         resuel = relr(ivec)
-        call corich('S', resuel, ibid, ibid)
+        call corich('S', resuel)
         call detrsd('CHAMP_GD', resuel)
     end do
     call jedetr(vecele//'.RELR')

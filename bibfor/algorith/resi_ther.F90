@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,6 @@ character(len=1), intent(in) :: base
     character(len=16) :: option
     character(len=24) :: ligrel_model
     character(len=24) :: chgeom, chcara(18)
-    integer :: ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -135,7 +134,7 @@ character(len=1), intent(in) :: base
     lpaout(2) = 'PHYDRPP'
     lchout(2) = hydr_curr(1:19)
 !
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
 !
 ! - Number of fields
 !

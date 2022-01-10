@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ character(len=*), intent(in) :: vect_elemz
     character(len=19) :: vect_elem, resu_elem
     character(len=19) :: chharm, tpsmoi, tpsplu, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18)
-    integer :: ibid, iret, nbin
+    integer :: iret, nbin
     real(kind=8) :: instm, instp
     character(len=19) :: sigm, varc, strx, disp, disp_incr
 !
@@ -214,7 +214,7 @@ character(len=*), intent(in) :: vect_elemz
     lpaout(1) = 'PVECTUR'
     call gcnco2(newnom)
     resu_elem(10:16) = newnom(2:8)
-    call corich('E', resu_elem, -1, ibid)
+    call corich('E', resu_elem, ichin_ = -1)
     lchout(1) = resu_elem
 !
 ! - Computation

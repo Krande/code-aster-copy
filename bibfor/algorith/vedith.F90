@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ implicit none
     character(len=16) :: option
     character(len=19) :: vect_elem
     character(len=24) :: ligrch, lchin(3), resu_elem, chgeom
-    integer :: iaux, iret, nb_load, jinf, jchar, i_load
+    integer :: iret, nb_load, jinf, jchar, i_load
     integer :: numdi
     aster_logical :: bidon
     character(len=24) :: lload_name, lload_info
@@ -124,7 +124,7 @@ implicit none
 !
             call gcnco2(newnom)
             resu_elem(10:16) = newnom(2:8)
-            call corich('E', resu_elem, i_load, iaux)
+            call corich('E', resu_elem, ichin_ = i_load)
 !
             call calcul('S', option, ligrch, 3, lchin,&
                         lpain, 1, resu_elem, paout, 'V',&

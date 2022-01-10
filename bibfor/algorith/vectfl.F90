@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,9 +50,6 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu,&
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
     character(len=24) :: ligrmo, lchin(4), lchout(1), ve2
-    integer :: ibid
-!
-!-----------------------------------------------------------------------
     integer :: jlve
 !-----------------------------------------------------------------------
     call jemarq()
@@ -110,7 +107,7 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu,&
     lpaout(1) = 'PVECTTR'
 !
     lchout(1) = '&&VECTFL.A'
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
     call calcul('S', option, ligrmo, 4, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')

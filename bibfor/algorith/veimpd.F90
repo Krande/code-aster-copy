@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,8 +62,6 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
     parameter    (nbout=1, nbin=4)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-!
-    integer :: ibid
     character(len=19) :: vecele
     character(len=16) :: option
     character(len=24) :: chgeom, ligrmo
@@ -118,7 +116,7 @@ subroutine veimpd(modele, mate, vitini, sddyna, vecelz)
 !
 ! --- CALCUL
 !
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
     call calcul('S', option, ligrmo, nbin, lchin,&
                 lpain, nbout, lchout, lpaout, 'V',&
                 'OUI')

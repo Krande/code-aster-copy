@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,7 +76,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !
 !
     integer :: kk, nbvec, nchar, iret, jvec, jfonct, jcoef, jtype, k
-    integer :: icha, ier, n1, npuis, n2, ibid
+    integer :: icha, ier, n1, npuis, n2
     real(kind=8) :: valres, valre, valim, dgrd, omega, phase
     aster_logical :: fct
     character(len=19) :: chamno
@@ -125,8 +125,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
         do 10 k = 1, nbvec
 !
             chamno = zk24(jvec+k-1) (1:19)
-!         CALL UTIMS2('ASCOVA 1',K,CHAMNO,1,' ')
-            call corich('L', chamno, ibid, icha)
+            call corich('L', chamno, ichout_ = icha)
 !
             ASSERT((icha.ne.0).and.(icha.ge.-2))
 !
@@ -166,7 +165,7 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
             if (npuis .ne. 0) calpha = calpha*omega**npuis
 !
             chamno = zk24(jvec+k-1) (1:19)
-            call corich('L', chamno, ibid, icha)
+            call corich('L', chamno, ichout_ = icha)
 !
             ASSERT((icha.ne.0).and.(icha.ge.-2))
 !
@@ -206,10 +205,10 @@ subroutine ascova(detr, vachar, fomulz, npara, vpara,&
 !     DESTRUCTION DU VACHAR :
 !     -----------------------------------
     if (detr .eq. 'D') then
-        do 30 k = 1, nbvec
-            call corich('S', zk24(jvec+k-1) (1:19), ibid, ibid)
+        do k = 1, nbvec
+            call corich('S', zk24(jvec+k-1))
             call detrsd('CHAMP_GD', zk24(jvec+k-1))
- 30     continue
+        end do
         call jedetr(vachar)
     else if (detr.eq.'G') then
 !       -- EN PRINCIPE UTILISE PAR DYNA_VIBRA//HARM

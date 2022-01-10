@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine fimped(modele, mateco, numedd, neq, vitini,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/reajre.h"
-    integer :: i, ibid,   jvaanc, neq, npain
+    integer :: i, jvaanc, neq, npain
     character(len=8) :: lpain(5), lpaout(1)
     character(len=24) :: modele, mateco, numedd, vitini, veccor
     character(len=24) :: vitent, chinst
@@ -73,7 +73,7 @@ subroutine fimped(modele, mateco, numedd, neq, vitini,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
 !
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
 !
     call reajre(veanec, lchout(1), 'V')
     call asasve(veanec, numedd, 'R', vaanec)

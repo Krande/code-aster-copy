@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ character(len=1), intent(in), optional :: basez
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     integer :: idchar, jinfc, idfomu, nchtot, nchci, ichar, icine, ilchno
-    integer :: ichci, ibid, ifm, niv, neq, ieq, jdlci2,  ieqmul
+    integer :: ichci, ifm, niv, neq, ieq, jdlci2,  ieqmul
     character(len=1) :: base
     character(len=8) :: newnom
     character(len=19) :: charci, chamno, vci2
@@ -133,7 +133,7 @@ character(len=1), intent(in), optional :: basez
     if (nchci .eq. 0) then
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
-        call corich('E', chamno, -2, ibid)
+        call corich('E', chamno, ichin_ = -2)
         call vtcreb(chamno, 'V', 'R',&
                     nume_ddlz = numedd,&
                     nb_equa_outz = neq)
@@ -153,7 +153,7 @@ character(len=1), intent(in), optional :: basez
                 ichci = ichci + 1
                 call gcnco2(newnom)
                 chamno(10:16) = newnom(2:8)
-                call corich('E', chamno, ichar, ibid)
+                call corich('E', chamno, ichin_ = ichar)
                 zk24(ilchno-1+ichci) = chamno
                 if (l_hho) then
                     call calvci(chamno, numedd, 1, charge, inst, &
@@ -177,16 +177,7 @@ character(len=1), intent(in), optional :: basez
             endif
         end do
     endif
-!
-!     -- SI UN DDL A ETE ELIMINE PLUSIEURS FOIS :
-!    if (ieqmul .gt. 0) then
-!        call utmess('A', 'CALCULEL3_37')
-!        call rgndas(numedd, ieqmul, l_print = .true.,&
-!                    type_equaz = tyddl)
-!        ASSERT(tyddl.eq.'A')
-!    endif
-!
-!
+
 !
 !     -- ON COMBINE LES CHAMPS CALCULES :
     call ascova('D', vachci, fomult, 'INST', inst,&

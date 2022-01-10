@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ier, nb_cham, iexist, ibid
+    integer :: ier, nb_cham, iexist
     integer :: load_nume_evol
     character(len=8) :: evol_char, newnom
     character(len=16) :: type_sd, option
@@ -232,7 +232,7 @@ implicit none
         newnom = resu_elem(10:16)
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, i_load, ibid)
+        call corich('E', resu_elem, ichin_ = i_load)
         call copisd('CHAMP_GD', base, load_name_evol, resu_elem)
         call exisd('CHAMP_GD', resu_elem, iexist)
         ASSERT((iexist.gt.0).or.(stop.eq.'C'))

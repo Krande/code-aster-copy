@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -153,7 +153,7 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, nbout, lchout, lpaout, 'V',&
                         'OUI')
-            call corich('E', lchout(1), -1, ibid)
+            call corich('E', lchout(1), ichin_ = -1)
 !
             if (debug) then
                 call dbgcal(option, ifmdbg, nbin, lpain, lchin,&

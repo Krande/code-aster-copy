@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ character(len=*), intent(in) :: vect_elemz
     character(len=8) :: newnom
     character(len=16) :: option
     character(len=19) :: resu_elem, ligrmo
-    integer :: ibid, nb_resu
+    integer :: nb_resu
     character(len=24), pointer :: p_relr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ character(len=*), intent(in) :: vect_elemz
 !
     call gcnco2(newnom)
     resu_elem(10:16) = newnom(2:8)
-    call corich('E', resu_elem, -1, ibid)
+    call corich('E', resu_elem, ichin_ = -1)
     lchout(1) = resu_elem
 
 !

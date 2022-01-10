@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,7 +74,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
     character(len=8) :: lpaout(nbout)
     character(len=19) :: lchout(nbout)
 !
-    integer :: jlisci, ich, ibid, nbin
+    integer :: jlisci, ich, nbin
     integer :: iret
     integer :: indxch
     character(len=16) :: option
@@ -105,7 +105,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
     call codent(ichar, 'D0', newnom(2:8))
 
     lchout(1) = '&&VECHMX.'//newnom(2:8)
-    call corich('E', lchout(1), ichar, ibid)
+    call corich('E', lchout(1), ichin_ = ichar)
 !
 ! --- LISTE DES INDEX DES CHARGES
 !

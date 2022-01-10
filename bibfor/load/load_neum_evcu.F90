@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -115,6 +115,7 @@ implicit none
 !
 ! - Initializations
 !
+    ibid = 0
     field_no_refe  = '&&MNVGME.RESU_PROJE'
     load_name_evol = '&&NMVGME.FNOE_CALC'
     mesh_defo      = '.0000000'
@@ -249,7 +250,7 @@ implicit none
         newnom = resu_elem(10:16)
         call gcnco2(newnom)
         resu_elem(10:16) = newnom(2:8)
-        call corich('E', resu_elem, i_load, ibid)
+        call corich('E', resu_elem, ichin_ = i_load)
 !
 ! ----- Compute 
 !

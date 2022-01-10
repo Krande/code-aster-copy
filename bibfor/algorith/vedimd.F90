@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=19) :: chgeom, chtime
     character(len=19) :: carte
     character(len=8) :: parain, paraou, typech
-    integer :: ibid, iret
+    integer :: iret
     integer :: ichar, nbchar, genrec
     aster_logical :: ldual
     character(len=24) :: nomlis
@@ -179,7 +179,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
             lpaout(1) = paraou
             call gcnco2(newnom)
             lchout(1) = '&&VEDIMD.'//newnom(2:8)
-            call corich('E', lchout(1), ichar, ibid)
+            call corich('E', lchout(1), ichin_ = ichar)
 !
 ! ------- CALCUL
 !

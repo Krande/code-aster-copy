@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
     character(len=16) :: option
     character(len=19) :: vecel, matass
     character(len=24) :: ligrch, chalph
-    integer :: iret, nchar, icha, jchar, jinf, ibid, jdir, ndir
+    integer :: iret, nchar, icha, jchar, jinf, jdir, ndir
 !
 ! ----------------------------------------------------------------------
 !
@@ -111,14 +111,14 @@ subroutine vethbu(modele, matasz, charge, infcha, carele,&
                 lpain(1) = 'PDDLMUR'
                 lchin(1) = nomcha//'.CHTH.CMULT'
                 lpain(2) = 'PDDLIMR'
-                lchin(2) = chtni
+                lchin(2) = chtni(1:19)
                 lpain(3) = 'PALPHAR'
-                lchin(3) = chalph
+                lchin(3) = chalph(1:19)
                 lpaout(1) = 'PVECTTR'
                 lchout(1) = '&&VETHBU.???????'
                 call gcncon('.', newnom)
                 lchout(1) (10:16) = newnom(2:8)
-                call corich('E', lchout(1), -1, ibid)
+                call corich('E', lchout(1), ichin_ = -1)
                 call calcul('S', option, ligrch, nbin, lchin,&
                             lpain, nbout, lchout, lpaout, 'V',&
                             'OUI')

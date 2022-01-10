@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,7 @@ subroutine vecvme(optio2, modelz, carelz, mate, mateco, compor,&
     character(len=24) :: ligrmo, lchin(13), lchout(1)
     character(len=24) :: vechvp, cnchvp, vrcplu, modele, carele
     character(len=19) :: vecel, chvref
-    integer :: i, ibid, iret, jlve,   jtp, jyp, lonch
+    integer :: i, iret, jlve,   jtp, jyp, lonch
     real(kind=8), pointer :: chtp(:) => null()
     real(kind=8), pointer :: chvp(:) => null()
     data cnchvp/' '/
@@ -135,7 +135,7 @@ subroutine vecvme(optio2, modelz, carelz, mate, mateco, compor,&
 !
     call gcnco2(newnom)
     lchout(1) (10:16) = newnom(2:8)
-    call corich('E', lchout(1), -1, ibid)
+    call corich('E', lchout(1), ichin_ = -1)
     call calcul('S', option, ligrmo, 13, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')

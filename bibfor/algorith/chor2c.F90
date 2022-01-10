@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine chor2c(lischa, vecele)
     integer :: jcn
     character(len=24) :: resuel
     character(len=8) :: typech, typsca
-    integer :: iret, ibid, ichar
+    integer :: iret, ichar
     integer :: ivec, nbvec, nbvdim, ivale, nbvale
     character(len=4) :: tyresl
     character(len=1) :: typchn
@@ -98,7 +98,7 @@ subroutine chor2c(lischa, vecele)
 !
 ! ----- RECUPERATION DU NUMERO DE LA CHARGE DU RESU_ELEM
 !
-        call corich('L', resuel, ibid, ichar)
+        call corich('L', resuel, ichout_ = ichar)
         ASSERT((ichar.ne.0).and.(ichar.ge.-2))
 !
 ! ----- TYPE DU CHARGEMENT
