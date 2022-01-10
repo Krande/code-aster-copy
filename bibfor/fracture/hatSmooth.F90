@@ -25,7 +25,7 @@ subroutine hatSmooth(nno, nnos, v_basf, vector)
 !
         integer, intent(in) :: nno, nnos
         real(kind=8), intent(in), pointer, dimension(:) :: v_basf
-        real(kind =8), intent(inout), dimension(nno) :: vector
+        real(kind=8), intent(inout), dimension(nno) :: vector
 ! --------------------------------------------------------------------------------------------------
 !
 !     CALC_G --- Utilities
@@ -34,9 +34,9 @@ subroutine hatSmooth(nno, nnos, v_basf, vector)
 !
 !---------------------------------------------------------------------------------------------------
         !integer :: nnos
-        real(kind =8), dimension(nnos-1) :: le
-        real(kind =8), dimension(nnos-2) :: lg, ld
-        real(kind =8), dimension(nnos) :: smooth
+        real(kind=8), dimension(nnos-1) :: le
+        real(kind=8), dimension(nnos-2) :: lg, ld
+        real(kind=8), dimension(nnos) :: smooth
 !
         le  = abs(v_basf(3:nno:2)-v_basf(1:nno-2:2))
         lg  = 2.*le(1:nnos-2)/(le(1:nnos-2)+le(2:nnos-1))
