@@ -132,9 +132,9 @@ EVOL_HYD=DEFI_FONCTION(NOM_PARA='INST',
 LT1=DEFI_LIST_REEL(   DEBUT=0.,
                            INTERVALLE=(
                                        _F(  JUSQU_A = 10.0,    NOMBRE = 1),
-                                       _F(  JUSQU_A = 600.0,    NOMBRE = 6),
+                                       _F(  JUSQU_A = 1000.0,    NOMBRE = 8),
                                        _F(  JUSQU_A = 3600.0,    NOMBRE = 20),
-                                       _F(  JUSQU_A = 7000.0,   NOMBRE =  34),
+                                       _F(  JUSQU_A = 7000.0,   NOMBRE =  40),
                          ),)
 TEMPS1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LT1),
                         ECHEC=_F(ACTION='DECOUPE',
@@ -154,18 +154,14 @@ U1=STAT_NON_LINE(MODELE=MODELE,
                            ),
                  INCREMENT=_F(LIST_INST = TEMPS1,INST_FIN=7000.),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
-                                  ITER_GLOB_MAXI=11,)
+                                  ITER_GLOB_MAXI=15,)
                )
 
-U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U1)
 
-
-IMPR_RESU(FORMAT="RESULTAT",MODELE=MODELE,
-          RESU=(_F(RESULTAT=U1,INST=(7000.)),
-                   ),);
 
 LT2=DEFI_LIST_REEL(   DEBUT=7000.,
-                         INTERVALLE=(_F(  JUSQU_A = 8000.00,    NOMBRE = 20, ),
+                         INTERVALLE=(_F(  JUSQU_A = 7010.00,    NOMBRE = 5, ),
+                                     _F(  JUSQU_A = 7800.00,    NOMBRE = 15, ),
                                      _F(  JUSQU_A = 9000.00,    NOMBRE = 20, ),
                                      _F(  JUSQU_A =10000.00,    NOMBRE = 20, ),
                                      _F(  JUSQU_A =11000.00,    NOMBRE = 20, ),
@@ -198,6 +194,7 @@ EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
 #***********************************************************************
 #    CALCUL DE LA SOLUTION
 #***********************************************************************
+TFIN=7010.
 U2=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
                              _F(CHARGE = PR_LATE,FONC_MULT = EVOL_HYD,), 
@@ -207,39 +204,27 @@ U2=STAT_NON_LINE(MODELE=MODELE,
                  COMPORTEMENT=_F(RELATION = 'KIT_HM',
                                  RELATION_KIT = ('VISC_MAXWELL_MT','LIQU_SATU','HYDR_UTIL',),
                            ),ETAT_INIT=_F(EVOL_NOLI = U1,),
-                 INCREMENT=_F(LIST_INST = TEMPS2,INST_FIN=8000.),
-                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,ITER_GLOB_MAXI = 10,)
+                 INCREMENT=_F(LIST_INST = TEMPS2,INST_FIN=TFIN),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,ITER_GLOB_MAXI = 15,)
                )
 
 
-U2=CALC_CHAMP(reuse=U2,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'),CONTRAINTE=('SIGM_ELNO'),RESULTAT=U2)
 
 
-U2=CALC_CHAMP(  reuse=U2,
-             RESULTAT=U2,
-             CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU',VARI_INTERNE='VARI_NOEU'
-          )
-
-
-
-
-TEST_RESU(RESU=_F(INST=8000.,
+TEST_RESU(RESU=_F(INST=TFIN,
                   RESULTAT=U2,
                   NOM_CHAM='DEPL',
                   NOEUD='N5',
                   NOM_CMP='DX',
-                  VALE_CALC=-0.10658320000476851,
+                  VALE_CALC=-0.11115699964553602,
                   ),
           )
-
-TEST_RESU(RESU=_F(INST=8000.,
-                  RESULTAT=U2,
-                  NOM_CHAM='SIGM_NOEU',
-                  NOEUD='N5',
-                  NOM_CMP='SIZZ',
-                  VALE_CALC= -577739.3668395254,
-                  ),
-          )
+U2=CALC_CHAMP(reuse=U2,CRITERES=('SIEQ_ELNO'),VARI_INTERNE=('VARI_ELNO'),INST=TFIN,CONTRAINTE=('SIGM_ELNO'),RESULTAT=U2)
+U2=CALC_CHAMP(reuse=U2, RESULTAT=U2,CONTRAINTE='SIGM_NOEU',CRITERES='SIEQ_NOEU',INST=TFIN,VARI_INTERNE='VARI_NOEU' )
+TEST_RESU(RESU=_F(INST=TFIN, RESULTAT=U2,NOM_CHAM='SIGM_NOEU',
+                  NOEUD='N5', NOM_CMP='SIZZ',
+                  VALE_CALC= -496337.739571675,
+                  ),  )
 
 
 FIN();
