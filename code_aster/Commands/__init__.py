@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,6 @@ from .defi_compor import DEFI_COMPOR
 from .defi_composite import DEFI_COMPOSITE
 from .defi_constante import DEFI_CONSTANTE
 from .defi_contact import DEFI_CONTACT
-from .defi_cont import DEFI_CONT
 from .defi_domaine_reduit import DEFI_DOMAINE_REDUIT
 from .defi_fichier import DEFI_FICHIER
 from .defi_fiss_xfem import DEFI_FISS_XFEM

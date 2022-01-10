@@ -59,13 +59,23 @@ test.assertTrue(DEFICO is not None)
 DEFICO2=DEFI_CONT(MODELE=MODI,
                     INFO=2,
                     FROTTEMENT='OUI',
-                    ALGO_RESO_GEOM='POINT_FIXE',
-                    ALGO_RESO_CONT='NEWTON',
-                    ZONE=_F(APPARIEMENT='MORTAR',
+                    LISSAGE = 'NON',
+                    VERI_NORM = 'OUI',
+                    ZONE=_F(ALGO_CONT='NITSCHE', 
+                            VARIRANTE = 'RAPIDE',
+                            SYME = 'OUI',
+                            TYPE_CONT ='BILATERAL',
+                            APPARIEMENT = 'MORTAR',
+                            DIST_APPA = -1,
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
-                            ALGO_CONT='NITSCHE',
-                            LISSAGE='OUI',),)
+                            CONTACT_INIT = 'INTERPENETRE',
+                            ALGO_FROT = 'NITSCHE',
+                            TYPE_FROT ='COULOMB',
+                            COULOMB = 100.,
+                            # DIST_SUPP = 
+                            # COEF_CONT = ,
+                            ),)
 
 
 test.assertTrue(DEFICO2 is not None)
