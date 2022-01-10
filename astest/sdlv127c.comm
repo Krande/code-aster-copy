@@ -21,19 +21,34 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET',))
 
-mail=LIRE_MAILLAGE( );
+mail1=LIRE_MAILLAGE( );
+
+mail=CREA_MAILLAGE(MAILLAGE=mail1,
+                    CREA_POI1 =(
+                                _F(NOM_GROUP_MA = 'PLATE',
+                                   GROUP_MA = ('SUG','SUD',)),  
+                                 ),
+                    );
 
 mail=MODI_MAILLAGE(reuse =mail,
                 MAILLAGE=mail,
                 ORIE_PEAU=_F(GROUP_MA_PEAU=('SULA','SUB'), 
                              GROUP_MA_INTERNE=('VOLTOT', ),),
                 );
+#IMPR_RESU(RESU=_F(MAILLAGE=mail), FORMAT='ASTER', UNITE=8)
 
                                          
 #parametre du sol et determination des parametre du modele d'interaction sol-structure
 Esol = 30000000000;
 Nusol = 0.25;
 Msol = 2450.0;
+
+G=Esol/(2.*(1.+Nusol))
+Vs=(G/Msol)**0.5
+
+E_ed=Esol*(1.-Nusol)/((1.+Nusol)*(1.-2.*Nusol))
+Vp=(E_ed/Msol)**0.5
+
 
 
 #parametres materiaux du modele
@@ -50,19 +65,25 @@ sol=DEFI_MATERIAU(ELAS=_F(E=Esol,
 from math import *
 
 # Coordonnées du point de départ de l'onde.
+#z0=-400.;
 z0=-200. ;
 x0=0;
 
 # Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
 a=21;
+
 a2=radians(a);
 cosa=cos(a2);
 sina=sin(a2);
 
-# Calcul des bons paramètres dist à insérer dans AFFE_CHAR_MECA
+# Calcul des bons paramètres dist à insérer dans le calcul.
 dist=x0*sina+z0*cosa;
 
-# Sollicitation en acceleration (ondelette de Ricker)
+# Longueur du modèle en direction X
+Lt = 400.
+
+# Sollicitation en acceleration
+#INCLUDE(UNITE=38,);
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=0.3, #1,
@@ -104,7 +125,7 @@ acce_0 = DEFI_FONCTION(
 0.066, -0.844327925502015, 
 0.068, -0.929776485888251, 
 0.07, -0.982287250728689, 
-0.072, -1.0, 
+0.072, -1, 
 0.074, -0.982287250728689, 
 0.076, -0.929776485888252, 
 0.078, -0.844327925502016, 
@@ -135,6 +156,19 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=mail,
                              MATER=sol),
                  ),);
 
+MATN=DEFI_MATERIAU( ELAS=_F(  E=0.001E0, NU=Nusol,
+                          RHO=0.0001, AMOR_HYST=0.0,
+                          )
+                    )
+
+CHMATB=AFFE_MATERIAU(MAILLAGE=mail,
+                    AFFE=(_F(TOUT='OUI',
+                            MATER=MATN,),
+                          _F(GROUP_MA=('SUG','SUD'),
+                             MATER=sol,),
+                    ),);
+
+
 # ------------------------------------------------------------
 # Définition des modèles
 # ------------------------------------------------------------
@@ -144,6 +178,9 @@ MODELE=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=(_F(GROUP_MA=('VOLG','VOLD'),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),
+                         _F(GROUP_MA = 'PLATE',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'DIS_T'),
                          _F(GROUP_MA=('SUG','SUD','SUB',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D_ABSO',),
@@ -175,16 +212,59 @@ LIAISON = AFFE_CHAR_MECA(MODELE=MODELE,
                                ),
                           );
 
+ELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                    DISCRET=(
+                             _F(GROUP_MA='PLATE',
+                                    REPERE='GLOBAL',
+                                    CARA='M_T_D_N',
+                                    VALE=(0.E10,)),
+                            ),        
+                    );
+
                 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHMAT,
            CHARGE=LIAISON,
+           CARA_ELEM=ELEM,
            NUME_DDL=CO('NUMEDDL'),
            MATR_ASSE=(_F(MATRICE=CO('RIGI'),
                          OPTION='RIGI_MECA',),
                       _F(MATRICE=CO('MASSE'),
                          OPTION='MASS_MECA',),
                       _F(MATRICE=CO('AMOR'),
+                         OPTION='AMOR_MECA',),),);
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMATB,
+           CHARGE=LIAISON,
+           CARA_ELEM=ELEM,
+           NUME_DDL=CO('NUMEDDLB'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIB'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSEB'),
+                         OPTION='MASS_MECA',),
+                      _F(MATRICE=CO('AMORB'),
+                         OPTION='AMOR_MECA',),),);
+
+ELEM2=AFFE_CARA_ELEM(MODELE=MODELE,
+                    DISCRET=(
+                             _F(GROUP_MA='PLATE',
+                                    REPERE='GLOBAL',
+                                    CARA='M_T_D_N',
+                                    VALE=(1.E13,)),
+                            ),        
+                    );
+
+ASSEMBLAGE(MODELE=MODELE,
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=ELEM2,
+           CHARGE=LIAISON,
+           NUME_DDL=CO('NUMEDDL2'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGI2'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSE2'),
+                         OPTION='MASS_MECA',),
+                      _F(MATRICE=CO('AMOR2'),
                          OPTION='AMOR_MECA',),),);
 
 
@@ -194,27 +274,46 @@ ONDEP=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                      TYPE_ONDE='P',
                                      FONC_SIGNAL=vite_1,
                                      DIST=dist,
-                                     DIST_REFLECHI=0.0,
                                      DEPL_IMPO=depl_1,
                                      GROUP_MA=('SUB','SUD','SUG'),
 
                                      ),
                        );
 
+ONDEP0=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                         ONDE_PLANE=_F(DIRECTION=(sina,0.000,cosa),
+                                     TYPE_ONDE='P',
+                                     FONC_SIGNAL=vite_1,
+                                     DIST=dist,
+                                     DEPL_IMPO=depl_1,
+                                     GROUP_MA=('SUB'),
 
-#Chargement SV incident
+                                     ),
+                       );
+
+
+# onde SV 
 ONDESV=AFFE_CHAR_MECA_F(MODELE=MODELE,
                        ONDE_PLANE=_F(DIRECTION=(sina,0.000,cosa),
                                      TYPE_ONDE='SV',
                                      FONC_SIGNAL=vite_1,
                                      DIST=dist,
-                                     DIST_REFLECHI=0.0,
                                      DEPL_IMPO=depl_1,
                                      GROUP_MA=('SUG','SUD','SUB',),
                                      ),
                      );
 
-# Résultats avec onde P incidente
+ONDESV0=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                       ONDE_PLANE=_F(DIRECTION=(sina,0.000,cosa),
+                                     TYPE_ONDE='SV',
+                                     FONC_SIGNAL=vite_1,
+                                     DIST=dist,
+                                     DEPL_IMPO=depl_1,
+                                     GROUP_MA=('SUB',),
+                                     ),
+                     );
+
+# Résultats sans ondes réfléchies
 ResuP=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  TYPE_CALCUL='TRAN',
                  MODELE=MODELE,
@@ -228,48 +327,156 @@ ResuP=DYNA_VIBRA(BASE_CALCUL='PHYS',
                         _F(CHARGE=ONDEP,),
                        ),);
 
+FX1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-Lt/2.',Lt=Lt)
+FX2 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='X+Lt/2.',Lt=Lt)
+
+FY = FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y');
+FZ = FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z');
+
+XX1=PROJ_CHAMP(RESULTAT=ResuP,METHODE='COLLOCATION',  NOM_CHAM=('DEPL','VITE','ACCE',), #'FORC_NODA'),
+              MODELE_1=MODELE, MODELE_2=MODELE,
+              VIS_A_VIS=(
+                         _F(GROUP_MA_2='SUD',GROUP_MA_1='VOLD', CAS_FIGURE='3D', TRANSF_GEOM_2=(FX1,FY,FZ),),
+                         ),
+              PROL_ZERO='OUI',
+              LIST_INST = LINST,
+              );
+
+XX2=PROJ_CHAMP(RESULTAT=ResuP,METHODE='COLLOCATION',  NOM_CHAM=('DEPL','VITE','ACCE',),#'FORC_NODA'),
+              MODELE_1=MODELE, MODELE_2=MODELE,
+              VIS_A_VIS=(
+                         _F(GROUP_MA_2='SUG',GROUP_MA_1='VOLG', CAS_FIGURE='3D', TRANSF_GEOM_2=(FX2,FY,FZ),),
+                         ),
+              PROL_ZERO='OUI',
+              LIST_INST = LINST,
+              );
+
+EVOCH1A=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='DYNA_TRANS',
+   CONV_RESU=_F(
+   COEF=1.E13, #,
+   NOM_CHAM_INIT='ACCE',
+   RESU_INIT=XX1,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+                ),
+                 );
+EVOCH1=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='EVOL_CHAR', #
+   CONV_RESU=_F(
+   COEF=1.0, #1.E13, #,
+   NOM_CHAM_INIT='DEPL',
+   RESU_INIT=EVOCH1A,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+   GROUP_NO_INTERF = 'SUD',
+   COOR_REFE  = (Lt/2., 0.0, z0),
+   VITE_ONDE = (Vp/sina),
+   DIRECTION = (1.0, 0.0, 0.0),
+                ),
+                 );
+
+EVOLB1=AFFE_CHAR_MECA(MODELE=MODELE, EVOL_CHAR=EVOCH1);
+
+EVOCH2A=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='DYNA_TRANS', #'EVOL_CHAR', #
+   CONV_RESU=_F(
+   COEF=1.E13, #,
+   NOM_CHAM_INIT='ACCE',
+   RESU_INIT=XX2,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+                ),
+                 );
+
+EVOCH2=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='EVOL_CHAR', #
+   CONV_RESU=_F(
+   COEF=1.0, #1.E13, #,
+   NOM_CHAM_INIT='DEPL',
+   RESU_INIT=EVOCH2A,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+   GROUP_NO_INTERF = 'SUG',
+   COOR_REFE  = (Lt/2., 0.0, z0),
+   VITE_ONDE = (Vp/sina),
+   DIRECTION = (1.0, 0.0, 0.0),
+                ),
+                 );
+
+
+EVOLB2=AFFE_CHAR_MECA(MODELE=MODELE, EVOL_CHAR=EVOCH2);
+
+# Résultat avec ondes réfléchies de cisaillement et de compression (selon théorie)
+ResuP0=DYNA_VIBRA(BASE_CALCUL='PHYS',
+                 TYPE_CALCUL='TRAN',
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=ELEM2,
+                 MATR_MASS=MASSE2,
+                 MATR_RIGI=RIGI2,
+                 MATR_AMOR=AMOR2,
+                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                 ARCHIVAGE=_F(LIST_INST=LINST,),
+                 EXCIT=(
+                        _F(CHARGE=ONDEP0,),
+                        _F(CHARGE=EVOLB1,),
+                        _F(CHARGE=EVOLB2,),
+                   ),);
+
+
+
 # On recupère les fonctions de deplacement X et Z aux points de post-traitement
 
 accxc= CALC_FONCTION( COMB=_F( FONCTION = acce_1, COEF = 1.0),
                       LIST_PARA=LINST);
 
 
-azNGHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGH', 
+azNGHP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NGH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNMHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMH',
+azNMHP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NMH',
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNDHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDH', 
+azNDHP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NDH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNGBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGB', 
+azNGBP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NGB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNMBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMB', 
+azNMBP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NMB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNDBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDB', 
+azNDBP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NDB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
@@ -277,42 +484,42 @@ azNDBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDB',
                          NOM_CMP='DZ');
 
 
-axNGHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGH', 
+axNGHP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NGH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNMHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMH',
+axNMHP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NMH',
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNDHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDH', 
+axNDHP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NDH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNGBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGB', 
+axNGBP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NGB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNMBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMB', 
+axNMBP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NMB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNDBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDB', 
+axNDBP = RECU_FONCTION( RESULTAT= ResuP0, GROUP_NO='NDB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
@@ -431,44 +638,44 @@ AP_NDB  = CALC_FONC_INTERP(FONCTION    = APF_NDB   ,
                            )
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=0.99977013806922,
+                      _F(VALE_CALC=0.99144369183902,
                          VALE_REFE=1.0,
-                         PRECISION=2.5E-3,
+                         PRECISION=1.1E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.038,
                          FONCTION=AP_NGB,),
-                      _F(VALE_CALC=0.99881237304717,
+                      _F(VALE_CALC=0.99881237539670,
                          VALE_REFE=1.0,
-                         PRECISION=2.5E-3,
+                         PRECISION=3.0E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.058,
                          FONCTION=AP_NMB,),
-                      _F(VALE_CALC=1.002599246974,
+                      _F(VALE_CALC=0.99881236254586,
                          VALE_REFE=1.0,
-                         PRECISION=4.E-3,
+                         PRECISION=3.E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.076,
                          FONCTION=AP_NDB,),
-                      _F(VALE_CALC=2.033689908895,
+                      _F(VALE_CALC=1.993126492816,
                          VALE_REFE=2.0,
-                         PRECISION=2.E-2,
+                         PRECISION=0.5E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.088,
                          FONCTION=AP_NGH,),
-                      _F(VALE_CALC=1.993126406826,
+                      _F(VALE_CALC=1.966849907512,
                          VALE_REFE=2.0,
-                         PRECISION=4.E-3,
+                         PRECISION=1.8E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.106,
                          FONCTION=AP_NMH,),
-                      _F(VALE_CALC=1.989706283486,
+                      _F(VALE_CALC=1.989474974413,
                          VALE_REFE=2.0,
-                         PRECISION=6.0E-3,
+                         PRECISION=7.0E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.126,
@@ -476,8 +683,6 @@ TEST_FONCTION(VALEUR=(
                       ),
               )
 
-
-# Résultats avec onde S incidente
 ResuS=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  TYPE_CALCUL='TRAN',
                  MODELE=MODELE,
@@ -491,45 +696,146 @@ ResuS=DYNA_VIBRA(BASE_CALCUL='PHYS',
                         _F(CHARGE=ONDESV,),
                        ),);
 
+
+XX1S=PROJ_CHAMP(RESULTAT=ResuS,METHODE='COLLOCATION',  NOM_CHAM=('DEPL','VITE','ACCE',), #'FORC_NODA'),
+              MODELE_1=MODELE, MODELE_2=MODELE,
+              VIS_A_VIS=(
+                         _F(GROUP_MA_2='SUD',GROUP_MA_1='VOLD', CAS_FIGURE='3D', TRANSF_GEOM_2=(FX1,FY,FZ),),
+                         ),
+              PROL_ZERO='OUI',
+              LIST_INST = LINST,
+              );
+
+XX2S=PROJ_CHAMP(RESULTAT=ResuS,METHODE='COLLOCATION',  NOM_CHAM=('DEPL','VITE','ACCE',),#'FORC_NODA'),
+              MODELE_1=MODELE, MODELE_2=MODELE,
+              VIS_A_VIS=(
+                         _F(GROUP_MA_2='SUG',GROUP_MA_1='VOLG', CAS_FIGURE='3D', TRANSF_GEOM_2=(FX2,FY,FZ),),
+                         ),
+              PROL_ZERO='OUI',
+              LIST_INST = LINST,
+              );
+
+EVOCH1AS=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='DYNA_TRANS',
+   CONV_RESU=_F(
+   COEF=1.E13, #,
+   NOM_CHAM_INIT='ACCE',
+   RESU_INIT=XX1S,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+                ),
+                 );
+EVOCH1S=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='EVOL_CHAR', #
+   CONV_RESU=_F(
+   COEF=1.0, #1.E13, #,
+   NOM_CHAM_INIT='DEPL',
+   RESU_INIT=EVOCH1AS,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+   GROUP_NO_INTERF = 'SUD',
+   COOR_REFE  = (Lt/2., 0.0, z0),
+   VITE_ONDE = (Vs/sina),
+   DIRECTION = (1.0, 0.0, 0.0),
+                ),
+                 );
+
+EVOLB1S=AFFE_CHAR_MECA(MODELE=MODELE, EVOL_CHAR=EVOCH1S);
+
+EVOCH2AS=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='DYNA_TRANS', #'EVOL_CHAR', #
+   CONV_RESU=_F(
+   COEF=1.E13, #,
+   NOM_CHAM_INIT='ACCE',
+   RESU_INIT=XX2S,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+                ),
+                 );
+
+EVOCH2S=CREA_RESU (
+   OPERATION='CONV_RESU',
+   TYPE_RESU='EVOL_CHAR', #
+   CONV_RESU=_F(
+   COEF=1.0, #1.E13, #,
+   NOM_CHAM_INIT='DEPL',
+   RESU_INIT=EVOCH2AS,
+   NUME_DDL=NUMEDDL2,
+   PRECISION=1.E-6,CRITERE='RELATIF',
+   LIST_INST=LINST,
+   GROUP_NO_INTERF = 'SUG',
+   COOR_REFE  = (Lt/2., 0.0, z0),
+   VITE_ONDE = (Vs/sina),
+   DIRECTION = (1.0, 0.0, 0.0),
+                ),
+                 );
+
+
+EVOLB2S=AFFE_CHAR_MECA(MODELE=MODELE, EVOL_CHAR=EVOCH2S);
+
+# Résultat avec ondes réfléchies de cisaillement et de compression (selon théorie)
+ResuS0=DYNA_VIBRA(BASE_CALCUL='PHYS',
+                 TYPE_CALCUL='TRAN',
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=ELEM2,
+                 MATR_MASS=MASSE2,
+                 MATR_RIGI=RIGI2,
+                 MATR_AMOR=AMOR2,
+                 SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                 ARCHIVAGE=_F(LIST_INST=LINST,),
+                 EXCIT=(
+                        _F(CHARGE=ONDESV0,),
+                        _F(CHARGE=EVOLB1S,),
+                        _F(CHARGE=EVOLB2S,),
+                 ),);
+
 # On recupère les fonctions de deplacement X et Z aux points de post-traitement
 
 
-azNGHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGH', 
+azNGHS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NGH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNMHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMH',
+azNMHS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NMH',
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNDHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDH', 
+azNDHS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NDH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNGBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGB', 
+azNGBS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NGB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNMBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMB', 
+azNMBS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NMB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DZ');
 
-azNDBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDB', 
+azNDBS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NDB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
@@ -537,42 +843,42 @@ azNDBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDB',
                          NOM_CMP='DZ');
                             
 
-axNGHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGH', 
+axNGHS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NGH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNMHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMH',
+axNMHS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NMH',
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNDHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDH', 
+axNDHS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NDH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNGBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGB', 
+axNGBS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NGB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNMBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMB', 
+axNMBS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NMB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNDBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDB', 
+axNDBS = RECU_FONCTION( RESULTAT= ResuS0, GROUP_NO='NDB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
@@ -692,44 +998,44 @@ AS_NDB  = CALC_FONC_INTERP(FONCTION    = ASF_NDB   ,
                            )
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=-1.009005612806,
+                      _F(VALE_CALC=-0.99779013107278,
                          VALE_REFE=-1.0,
-                         PRECISION=1.E-2,
+                         PRECISION=0.5E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.038,
                          FONCTION=AS_NGB,),
-                      _F(VALE_CALC=-0.99779015325572,
-                         VALE_REFE=-1.0,
-                         PRECISION=3.0E-3,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='RELATIF',
-                         VALE_PARA=0.070,
-                         FONCTION=AS_NMB,),
-                      _F(VALE_CALC=-0.99647088505823,
+                      _F(VALE_CALC=-0.99777206110102,
                          VALE_REFE=-1.0,
                          PRECISION=5.0E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
+                         VALE_PARA=0.070,
+                         FONCTION=AS_NMB,),
+                      _F(VALE_CALC=-0.99585875358266,
+                         VALE_REFE=-1.0,
+                         PRECISION=6.0E-3,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='RELATIF',
                          VALE_PARA=0.104,
                          FONCTION=AS_NDB,),
-                      _F(VALE_CALC=-1.976538204225,
+                      _F(VALE_CALC=-1.956255654791,
                          VALE_REFE=-2.0,
-                         PRECISION=1.3E-2,
+                         PRECISION=2.3E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.124,
                          FONCTION=AS_NGH,),
-                      _F(VALE_CALC=-1.959818667293,
+                      _F(VALE_CALC=-1.958907658081,
                          VALE_REFE=-2.0,
-                         PRECISION=2.1E-2,
+                         PRECISION=2.2E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.156,
                          FONCTION=AS_NMH,),
-                      _F(VALE_CALC=-2.025792007917,
+                      _F(VALE_CALC=-1.956255701609,
                          VALE_REFE=-2.0,
-                         PRECISION=1.4E-2,
+                         PRECISION=2.3E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.188,

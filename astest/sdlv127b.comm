@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,66 +21,25 @@
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET',))
 
-'''
-PRE_GIBI( );
-
-mail=LIRE_MAILLAGE(FORMAT='ASTER');
-
-
-mail=DEFI_GROUP(reuse =mail,
-                MAILLAGE=mail,
-                CREA_GROUP_MA=_F(UNION=('LIG','LID','LIB'),NOM='LITOT'), 
-                );
+mail=LIRE_MAILLAGE( );
 
 mail=MODI_MAILLAGE(reuse =mail,
                 MAILLAGE=mail,
                 ORIE_PEAU=_F(GROUP_MA_PEAU='LITOT',GROUP_MA_INTERNE='SUF'),
                 );
 
-mail=DEFI_GROUP(reuse =mail,
-                MAILLAGE=mail,
-                CREA_GROUP_NO=_F(GROUP_MA=('LIG','LID','LIB','LITOT'),),
-                );
-
-'''
-
-mail=LIRE_MAILLAGE( );
-
                      
-#parametre du sol et determination des parametre du modele d'interaction sol-structure
+#Définition des paramètres du modèle
+
 Esol = 30000000000;
 Nusol = 0.25;
 Msol = 2450.0;
-
-
-#parametres proches de 1 pour le calcul des raideurs et amortisseurs
-alpha = 0.8;
-beta = 1.1;
-
-#distance entre le barrage et le bord de la fondation (en ordre de grandeur)
-rb = 100;
-lcara=((1 + alpha) * 2) * rb
-
-#parametres materiaux du modele
 
 
 sol=DEFI_MATERIAU(ELAS=_F(E=Esol,
                           NU=Nusol,
                             RHO=Msol,
                 ),);
-
-sol2=DEFI_MATERIAU(ELAS=_F(E=Esol    ,
-                          NU=Nusol,
-                          RHO=Msol,
-              LONG_CARA=lcara,
-              COEF_AMOR=beta,
-              ),);
-
-
-# ------------------------------------------------------------
-# Définition des modèles
-# ------------------------------------------------------------
-
 
 # ------------------------------------------------------------
 # Définition des chargements sur les bords
@@ -91,43 +50,18 @@ from math import *
 # Coordonnées du point de départ de l'onde.
 z0=-200.;
 x0=0;
-x01=-1. ;
-x02=-601.;
 
 # Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
 a=21;
-#a=0. ;
 
 a2=radians(a);
 cosa=cos(a2);
 sina=sin(a2);
 
-# Calcul du rapport des célérités des ondes de cisaillement (c2) et de compression (c1).
-Rc1c2=sqrt(2+2*Nusol/(1-2*Nusol));
-
-# Calcul de l'angle réflexion de l'onde SV réfléchie.
-b2=asin(sina/Rc1c2);
-
-cosb2=cos(b2);
-sinb2=sin(b2);
-
-# Coefficients de réflexions (Calcul intégré au script).
-k=1/Rc1c2
-N=(k)**2*sin(2*b2)*sin(2*a2)+cos(2*b2)**2
-
-RA12=(k**2*sin(2*a2)*sin(2*b2)-cos(2*b2)**2)/N
-RA13=2*k*sin(2*a2)*cos(2*b2)/N
-
-# Calcul des bons paramètres dist à insérer dans le calcul.
+# Définition du paramètre dist à inserer dans AFFE_CHAR_MECA
 dist=x0*sina+z0*cosa;
-dist2=x0*sina+(-z0)*(-cosa);
 
-zsv=cosb2*(-z0)/Rc1c2/cosa;
-xsv=(sina/cosa)*(-z0)-sinb2*(-z0)/Rc1c2/cosa;
-
-dist3=xsv*sinb2+zsv*(-cosb2);
-
-# Sollicitation en acceleration
+# Sollicitation en acceleration (ondelette de Ricker)
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=0.3, #1,
@@ -152,7 +86,7 @@ acce_0 = DEFI_FONCTION(
 0.032, 0.809016994374947, 
 0.034, 0.90482705246602, 
 0.036, 0.968583161128631, 
-0.038, 0.998026728428272, 
+0.038, 1.0, 
 0.04, 0.992114701314478, 
 0.042, 0.951056516295154, 
 0.044, 0.876306680043864, 
@@ -169,7 +103,7 @@ acce_0 = DEFI_FONCTION(
 0.066, -0.844327925502015, 
 0.068, -0.929776485888251, 
 0.07, -0.982287250728689, 
-0.072, -1, 
+0.072, -1.0, 
 0.074, -0.982287250728689, 
 0.076, -0.929776485888252, 
 0.078, -0.844327925502016, 
@@ -214,8 +148,6 @@ MODELE=AFFE_MODELE(MAILLAGE=mail,
                 
 ASSEMBLAGE(MODELE=MODELE,
            CHAM_MATER=CHMAT,
-           #CHARGE=LIAISON,
-           #CARA_ELEM=ELEM,
            NUME_DDL=CO('NUMEDDL'),
            MATR_ASSE=(_F(MATRICE=CO('RIGI'),
                          OPTION='RIGI_MECA',),
@@ -224,7 +156,7 @@ ASSEMBLAGE(MODELE=MODELE,
                       _F(MATRICE=CO('AMOR'),
                          OPTION='AMOR_MECA',),),);
 
-#Chargement P incident
+#Chargement Onde P incident
 ONDEP=AFFE_CHAR_MECA_F(MODELE=MODELE,
                          ONDE_PLANE=_F(DIRECTION=(sina,cosa,0.),
                                      TYPE_ONDE='P',
@@ -236,6 +168,7 @@ ONDEP=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                      ),
                        );
 
+#Chargement Onde S incident
 ONDES=AFFE_CHAR_MECA_F(MODELE=MODELE,
                        ONDE_PLANE=_F(DIRECTION=(sina,cosa,0.),
                                      TYPE_ONDE='S',
@@ -247,7 +180,7 @@ ONDES=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                      ),
                      );
 
-# Résultat sans ondes réfléchies
+# Résultat avec Onde P incidente
 ResuP=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  TYPE_CALCUL='TRAN',
                  MODELE=MODELE,
@@ -262,98 +195,255 @@ ResuP=DYNA_VIBRA(BASE_CALCUL='PHYS',
                        ),
                  );
 
+# On recupère les fonctions de deplacement X et Z aux points de post-traitement
+
 accxc= CALC_FONCTION( COMB=_F( FONCTION = acce_1, COEF = 1.0),
                       LIST_PARA=LINST);
 
-ayNGH = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGH', 
+
+ayNGHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DY');
 
-ayNMH = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMH',
+ayNMHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMH',
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DY');
 
-ayNDH = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDH', 
+ayNDHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DY');
 
-ayNGB = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGB', 
+ayNGBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DY');
 
-ayNMB = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMB', 
+ayNMBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DY');
 
-ayNDB = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDB', 
+ayNDBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
-                         NOM_CMP='DY');             
+                         NOM_CMP='DY');
+
+
+axNGHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGH', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DX');
+
+axNMHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMH',
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DX');
+
+axNDHP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDH', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DX');
+
+axNGBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NGB', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DX');
+
+axNMBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NMB', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DX');
+
+axNDBP = RECU_FONCTION( RESULTAT= ResuP, GROUP_NO='NDB', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DX');
+
+# On recompose la composante de l'onde P --> A_p = Ax*sina + Ay*cosa
+
+APF_NGH = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNGHP(INST)*sina+ayNGHP(INST)*cosa',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNGHP   = axNGHP                               ,
+                  ayNGHP   = ayNGHP                               ,
+                  );
+
+AP_NGH  = CALC_FONC_INTERP(FONCTION    = APF_NGH   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+
+APF_NMH = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNMHP(INST)*sina+ayNMHP(INST)*cosa',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNMHP   = axNMHP                               ,
+                  ayNMHP   = ayNMHP                               ,
+                  );
+
+AP_NMH  = CALC_FONC_INTERP(FONCTION    = APF_NMH   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+APF_NDH = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNDHP(INST)*sina+ayNDHP(INST)*cosa',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNDHP   = axNDHP                               ,
+                  ayNDHP   = ayNDHP                               ,
+                  );
+
+AP_NDH  = CALC_FONC_INTERP(FONCTION    = APF_NDH   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+APF_NGB = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNGBP(INST)*sina+ayNGBP(INST)*cosa',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNGBP   = axNGBP                               ,
+                  ayNGBP   = ayNGBP                               ,
+                  );
+
+AP_NGB  = CALC_FONC_INTERP(FONCTION    = APF_NGB   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+
+APF_NMB = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNMBP(INST)*sina+ayNMBP(INST)*cosa',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNMBP   = axNMBP                               ,
+                  ayNMBP   = ayNMBP                               ,
+                  );
+
+AP_NMB  = CALC_FONC_INTERP(FONCTION    = APF_NMB   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+APF_NDB = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNDBP(INST)*sina+ayNDBP(INST)*cosa',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNDBP   = axNDBP                               ,
+                  ayNDBP   = ayNDBP                               ,
+                  );
+
+AP_NDB  = CALC_FONC_INTERP(FONCTION    = APF_NDB   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=0.93204350,
-                         VALE_REFE=0.93358043,
-                         PRECISION=2.0E-3,
+                      _F(VALE_CALC=0.99977013806922,
+                         VALE_REFE=1.0,
+                         PRECISION=2.5E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.038,
-                         FONCTION=ayNGB,),
-                      _F(VALE_CALC=0.93165082,
-                         VALE_REFE=0.93358043,
-                         PRECISION=3.0E-3,
+                         FONCTION=AP_NGB,),
+                      _F(VALE_CALC=0.99881237304717,
+                         VALE_REFE=1.0,
+                         PRECISION=2.5E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.058,
-                         FONCTION=ayNMB,),
-                      _F(VALE_CALC=0.93404739,
-                         VALE_REFE=0.93358043,
-                         PRECISION=1.0E-3,
+                         FONCTION=AP_NMB,),
+                      _F(VALE_CALC=1.002599246974,
+                         VALE_REFE=1.0,
+                         PRECISION=4.E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.076,
-                         FONCTION=ayNDB,),
-                      _F(VALE_CALC=1.8559799,
-                         VALE_REFE=1.8671609,
-                         PRECISION=7.0E-3,
+                         FONCTION=AP_NDB,),
+                      _F(VALE_CALC=2.033689908895,
+                         VALE_REFE=2.0,
+                         PRECISION=2.E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.088,
-                         FONCTION=ayNGH,),
-                      _F(VALE_CALC=1.8248818,
-                         VALE_REFE=1.8671609,
-                         PRECISION=2.4E-2,
+                         FONCTION=AP_NGH,),
+                      _F(VALE_CALC=1.993126406826,
+                         VALE_REFE=2.0,
+                         PRECISION=4.E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.106,
-                         FONCTION=ayNMH,),
-                      _F(VALE_CALC=1.8231952,
-                         VALE_REFE=1.8671609,
-                         PRECISION=2.5E-2,
+                         FONCTION=AP_NMH,),
+                      _F(VALE_CALC=1.989706283486,
+                         VALE_REFE=2.0,
+                         PRECISION=6.0E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.126,
-                         FONCTION=ayNDH,),
+                         FONCTION=AP_NDH,),
                       ),
               )
 
-
+# Résultat avec Onde S incidente
 ResuS=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  TYPE_CALCUL='TRAN',
                  MODELE=MODELE,
@@ -369,93 +459,251 @@ ResuS=DYNA_VIBRA(BASE_CALCUL='PHYS',
                  );
 
 
-axNGH = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGH', 
+# On recupère les fonctions de deplacement X et Z aux points de post-traitement
+
+
+ayNGHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGH', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DY');
+
+ayNMHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMH',
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DY');
+
+ayNDHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDH', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DY');
+
+ayNGBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGB', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DY');
+
+ayNMBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMB', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DY');
+
+ayNDBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDB', 
+                      NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      LIST_INST=LINST,
+                         NOM_CMP='DY');
+                            
+
+axNGHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNMH = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMH',
+axNMHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMH',
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNDH = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDH', 
+axNDHS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDH', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNGB = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGB', 
+axNGBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NGB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNMB = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMB', 
+axNMBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NMB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
 
-axNDB = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDB', 
+axNDBS = RECU_FONCTION( RESULTAT= ResuS, GROUP_NO='NDB', 
                       NOM_CHAM= 'ACCE',
                       INTERPOL='LIN',
                       PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                       LIST_INST=LINST,
                          NOM_CMP='DX');
-             
+                            
+
+# On recompose la composante de l'onde S --> A_s = Ax*cosa - Az*sina
+
+ASF_NGH = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNGHS(INST)*cosa-ayNGHS(INST)*sina',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNGHS   = axNGHS                               ,
+                  ayNGHS   = ayNGHS                               ,
+                  );
+
+AS_NGH  = CALC_FONC_INTERP(FONCTION    = ASF_NGH   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+
+ASF_NMH = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNMHS(INST)*cosa-ayNMHS(INST)*sina',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNMHS   = axNMHS                               ,
+                  ayNMHS   = ayNMHS                               ,
+                  );
+
+AS_NMH  = CALC_FONC_INTERP(FONCTION    = ASF_NMH   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+ASF_NDH = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNDHS(INST)*cosa-ayNDHS(INST)*sina',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNDHS   = axNDHS                               ,
+                  ayNDHS   = ayNDHS                               ,
+                  );
+
+AS_NDH  = CALC_FONC_INTERP(FONCTION    = ASF_NDH   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+ASF_NGB = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNGBS(INST)*cosa-ayNGBS(INST)*sina',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNGBS   = axNGBS                               ,
+                  ayNGBS   = ayNGBS                               ,
+                  );
+
+AS_NGB  = CALC_FONC_INTERP(FONCTION    = ASF_NGB   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+
+ASF_NMB = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNMBS(INST)*cosa-ayNMBS(INST)*sina',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNMBS   = axNMBS                               ,
+                  ayNMBS   = ayNMBS                               ,
+                  );
+
+AS_NMB  = CALC_FONC_INTERP(FONCTION    = ASF_NMB   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
+ASF_NDB = FORMULE(NOM_PARA = 'INST'                               ,
+                  VALE     = 'axNDBS(INST)*cosa-ayNDBS(INST)*sina',
+                  sina     = sina                                 ,
+                  cosa     = cosa                                 ,
+                  axNDBS   = axNDBS                               ,
+                  ayNDBS   = ayNDBS                               ,
+                  );
+
+AS_NDB  = CALC_FONC_INTERP(FONCTION    = ASF_NDB   ,
+                           LIST_PARA   = LINST     ,
+                           NOM_PARA    = 'INST'    ,
+                           NOM_RESU    = 'ACCE'    ,
+                           PROL_GAUCHE = 'CONSTANT',
+                           PROL_DROITE = 'CONSTANT',
+                           INTERPOL    = 'LIN'     ,
+                           )
+
+
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=-0.9397878,
-                         VALE_REFE=-0.93358043,
-                         PRECISION=7.0E-3,
+                      _F(VALE_CALC=-1.009005612806,
+                         VALE_REFE=-1.0,
+                         PRECISION=1.E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.038,
-                         FONCTION=axNGB,),
-                      _F(VALE_CALC=-0.93088869,
-                         VALE_REFE=-0.93358043,
-                         PRECISION=4.0E-3,
+                         FONCTION=AS_NGB,),
+                      _F(VALE_CALC=-0.99779015325572,
+                         VALE_REFE=-1.0,
+                         PRECISION=3.0E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.070,
-                         FONCTION=axNMB,),
-                      _F(VALE_CALC=-0.93014237,
-                         VALE_REFE=-0.93358043,
-                         PRECISION=4.0E-3,
+                         FONCTION=AS_NMB,),
+                      _F(VALE_CALC=-0.99647088505823,
+                         VALE_REFE=-1.0,
+                         PRECISION=5.0E-3,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
                          VALE_PARA=0.104,
-                         FONCTION=axNDB,),
-                      _F(VALE_CALC=-1.8242024,
-                         VALE_REFE=-1.8671609,
-                         PRECISION=2.4E-2,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='RELATIF',
-                         VALE_PARA=0.124,
-                         FONCTION=axNGH,),
-                      _F(VALE_CALC=-1.799163,
-                         VALE_REFE=-1.8671609,
-                         PRECISION=3.7E-2,
-                         REFERENCE='ANALYTIQUE',
-                         CRITERE='RELATIF',
-                         VALE_PARA=0.156,
-                         FONCTION=axNMH,),
-                      _F(VALE_CALC=-1.8446582,
-                         VALE_REFE=-1.8671609,
+                         FONCTION=AS_NDB,),
+                      _F(VALE_CALC=-1.976538204225,
+                         VALE_REFE=-2.0,
                          PRECISION=1.3E-2,
                          REFERENCE='ANALYTIQUE',
                          CRITERE='RELATIF',
+                         VALE_PARA=0.124,
+                         FONCTION=AS_NGH,),
+                      _F(VALE_CALC=-1.959818667293,
+                         VALE_REFE=-2.0,
+                         PRECISION=2.1E-2,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.156,
+                         FONCTION=AS_NMH,),
+                      _F(VALE_CALC=-2.025792007917,
+                         VALE_REFE=-2.0,
+                         PRECISION=1.4E-2,
+                         REFERENCE='ANALYTIQUE',
+                         CRITERE='RELATIF',
                          VALE_PARA=0.188,
-                         FONCTION=axNDH,),
+                         FONCTION=AS_NDH,),
                       ),
               )
 
-FIN();                                    
-
+FIN();
