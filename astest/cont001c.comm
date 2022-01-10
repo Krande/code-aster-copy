@@ -28,7 +28,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 test = code_aster.TestCase()
 
 
-Mail = LIRE_MAILLAGE(UNITE=20,
+Mail = LIRE_MAILLAGE(UNITE=20,PARTITIONNEUR='PTSCOTCH',
                      FORMAT='MED',)
 
 Mail = MODI_MAILLAGE(reuse=Mail,
@@ -75,9 +75,9 @@ DEFICO = DEFI_CONT(MODELE=MODI,
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
                             ALGO_CONT='LAGRANGIEN',
-                            VARIANTE='ROBUSTE',
+                            VARIANTE='ROBUSTE',    #VERI_NORM='NON',
                             CONTACT_INIT='OUI',),
-                         _F(APPARIEMENT='MORTAR',
+                         _F(APPARIEMENT='MORTAR',  #VERI_NORM='NON',
                             GROUP_MA_MAIT='Group_4',
                             GROUP_MA_ESCL='Group_3',
                             VARIANTE = "RAPIDE",

@@ -124,11 +124,21 @@ class ParallelMesh : public BaseMesh {
         return getGroupsOfNodes(false);
     };
 
-    const VectorLong getCells( const std::string name ) const;
+    const VectorLong getCells( const std::string name ) const
+    {
+        return getCells ( name, true);// ->0
+    };
+
+    const VectorLong getCells( const std::string name, const bool localNumbering) const; // 0
 
     const VectorLong getCells(  ) const
     {
-        return getCells( std::string() );
+        return getCells( std::string(), true );
+    };
+
+    const VectorLong getCells( const bool localNumbering) const
+    {
+        return getCells(std::string(), localNumbering); // ->0
     };
 
     /**
@@ -182,6 +192,11 @@ class ParallelMesh : public BaseMesh {
         return this->getNodes(std::string(), true, false);
     };
 
+    /**
+     * @brief Returns the nodes indexes of a group of cells
+     * @return VectorLong
+     */
+    const VectorLong getNodesFromCells( const std::string name ) const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,6 +44,7 @@ subroutine checkNormals(model, slave, master)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/existGrpMa.h"
 !
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: slave, master
@@ -59,12 +60,13 @@ subroutine checkNormals(model, slave, master)
 !
 !-----------------------------------------------------------------------
     integer, parameter :: nbobj = 2
-    integer :: ier
+    integer :: ier, iret
     integer :: ndim, ndim1, vali
     integer :: iobj, ima, nbmail
     integer :: numa, idtyma, nutyma, nbmapr, nbmabo, ntrait
     integer :: jgro, jmab, norien,  jlima, nbmamo
     aster_logical, parameter :: reorie = ASTER_FALSE
+    aster_logical :: l_exi, l_exi_p
     character(len=8) ::  typel, mesh
     character(len=24) :: grmama, mailma, nogr
     character(len=24) :: valk(2)
@@ -78,9 +80,9 @@ subroutine checkNormals(model, slave, master)
     call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
-    grmama = mesh//'.GROUPEMA'
+    grmama = mesh//'.GROUPEMA       '
     mailma = mesh//'.NOMMAI'
-    call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)
+    call jeveuo(mesh//'.TYPMAIL', 'L', idtyma)  
 !
 ! ---     RECUPERATION DE LA DIMENSION DU PROBLEME
 !
@@ -90,6 +92,13 @@ subroutine checkNormals(model, slave, master)
 !
 ! ---   RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 ! ---------------------------------------------
+        ! check si GROUP_MA existe
+        call existGrpMa(mesh, nogr, l_exi, l_exi_p)
+
+        if ((.not. l_exi) .and. (l_exi_p)) then 
+            goto 211
+        endif    
+
         call jelira(jexnom(grmama, nogr), 'LONUTI', nbmail)
         call jeveuo(jexnom(grmama, nogr), 'L', jgro)
 !
