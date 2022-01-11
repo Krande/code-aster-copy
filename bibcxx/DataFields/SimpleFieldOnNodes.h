@@ -26,12 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-
 #include "astercxx.h"
 
-#include "MemoryManager/NumpyAccess.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "MemoryManager/NumpyAccess.h"
 #include "Utilities/Tools.h"
 
 /**
@@ -59,19 +58,21 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     /**
      * Functions to check an out-of-range condition
      */
-    void _checkNodeOOR( const int& ino ) const {
-      int nbNodes = this->getNumberOfNodes();
-      if ( ino < 0 || ino >= nbNodes) {
-        throw std::runtime_error( "Node index '"+std::to_string(ino)+"' is out of range");
-      };
+    void _checkNodeOOR( const int &ino ) const {
+        int nbNodes = this->getNumberOfNodes();
+        if ( ino < 0 || ino >= nbNodes ) {
+            throw std::runtime_error( "Node index " + std::to_string( ino ) +
+                                      " is out of range [0, " + std::to_string( nbNodes - 1 ) +
+                                      "]" );
+        };
     }
 
-    void _checkCmpOOR( const int& icmp ) const {
-      int ncmp = this->getNumberOfComponents();
-      if ( icmp < 0 || icmp >= ncmp ) {
-        throw std::runtime_error( "Component '"+std::to_string(icmp)
-                                  +"' is out of range");
-      }
+    void _checkCmpOOR( const int &icmp ) const {
+        int ncmp = this->getNumberOfComponents();
+        if ( icmp < 0 || icmp >= ncmp ) {
+            throw std::runtime_error( "Component " + std::to_string( icmp ) +
+                                      " is out of range [0, " + std::to_string( ncmp - 1 ) + "]" );
+        }
     }
 
   public:
@@ -91,16 +92,13 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
           _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
           _component( JeveuxVectorChar8( getName() + ".CNSC" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
-          _nbNodes( 0 ), _nbComp( 0 ){};
+          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ), _nbNodes( 0 ), _nbComp( 0 ){};
 
     /**
      * @brief Constructeur
 
      */
-    SimpleFieldOnNodes(  )
-        : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ){};
-
+    SimpleFieldOnNodes() : SimpleFieldOnNodes( DataStructureNaming::getNewName( 19 ) ){};
 
     /**
      * @brief Surcharge de l'operateur []
@@ -112,26 +110,24 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     const ValueType &getValue( int ino, int icmp ) const {
 
 #ifdef ASTER_DEBUG_CXX
-      if ( this->getNumberOfNodes() == 0 || this->getNumberOfComponents() == 0 )
-        throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+        if ( this->getNumberOfNodes() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
 
-      this->_checkNodeOOR(ino);
-      this->_checkCmpOOR(icmp);
-      const long position = ino * this->getNumberOfComponents() + icmp;
-      bool allocated = ( *_allocated )[position];
+        this->_checkNodeOOR( ino );
+        this->_checkCmpOOR( icmp );
+        const long position = ino * this->getNumberOfComponents() + icmp;
+        bool allocated = ( *_allocated )[position];
 
 #ifdef ASTER_DEBUG_CXX
-      if ( !allocated ){
-        std::cout <<
-          "DEBUG: Position ("+std::to_string(ino)
-          +", "+std::to_string(icmp)
-          +") is valid but not allocated!"
-                  << std::endl;
-      };
+        if ( !allocated ) {
+            std::cout << "DEBUG: Position (" + std::to_string( ino ) + ", " +
+                             std::to_string( icmp ) + ") is valid but not allocated!"
+                      << std::endl;
+        };
 #endif
 
-      return ( *_values )[position];
+        return ( *_values )[position];
     };
 
     /**
@@ -152,76 +148,70 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     /**
      * @brief Get values with mask
      */
-    PyObject *getValues( ) {
+    PyObject *getValues() {
 
-      npy_intp dims[2] = {this->getNumberOfNodes(), this->getNumberOfComponents()};
+        npy_intp dims[2] = { this->getNumberOfNodes(), this->getNumberOfComponents() };
 
-      PyObject *values = PyArray_SimpleNewFromData(2, dims,
-                                                   npy_type< ValueType >::value,
-                                                   _values->getDataPtr());
-      PyObject *mask = PyArray_SimpleNewFromData(2, dims, NPY_BOOL, _allocated->getDataPtr());
-      AS_ASSERT( values != NULL );
-      AS_ASSERT( mask != NULL );
+        PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
+                                                      _values->getDataPtr() );
+        PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL, _allocated->getDataPtr() );
+        AS_ASSERT( values != NULL );
+        AS_ASSERT( mask != NULL );
 
-      PyObject *values_copy = PyArray_ZEROS(2, dims, npy_type< ValueType >::value, 0);
-      PyObject *ret = PyArray_PutMask((PyArrayObject*) values_copy, values, mask);
-      AS_ASSERT( values_copy != NULL );
-      AS_ASSERT( ret != NULL );
+        PyObject *values_copy = PyArray_ZEROS( 2, dims, npy_type< ValueType >::value, 0 );
+        PyObject *ret = PyArray_PutMask( (PyArrayObject *)values_copy, values, mask );
+        AS_ASSERT( values_copy != NULL );
+        AS_ASSERT( ret != NULL );
 
-      PyObject *mask_copy = PyArray_NewLikeArray((PyArrayObject *)mask, NPY_ANYORDER, NULL, 0);
-      PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask);
-      AS_ASSERT( mask_copy != NULL );
+        PyObject *mask_copy = PyArray_NewLikeArray( (PyArrayObject *)mask, NPY_ANYORDER, NULL, 0 );
+        PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask );
+        AS_ASSERT( mask_copy != NULL );
 
-      PyArray_ENABLEFLAGS((PyArrayObject*) values_copy, NPY_ARRAY_OWNDATA);
-      PyArray_ENABLEFLAGS((PyArrayObject*) mask_copy, NPY_ARRAY_OWNDATA);
+        PyArray_ENABLEFLAGS( (PyArrayObject *)values_copy, NPY_ARRAY_OWNDATA );
+        PyArray_ENABLEFLAGS( (PyArrayObject *)mask_copy, NPY_ARRAY_OWNDATA );
 
-      Py_XDECREF( values );
-      Py_XDECREF( mask );
-      Py_XDECREF( ret );
+        Py_XDECREF( values );
+        Py_XDECREF( mask );
+        Py_XDECREF( ret );
 
-      PyObject *resu_tuple = PyTuple_New( 2 );
-      PyTuple_SetItem(resu_tuple, 0, values_copy);
-      PyTuple_SetItem(resu_tuple, 1, mask_copy);
+        PyObject *resu_tuple = PyTuple_New( 2 );
+        PyTuple_SetItem( resu_tuple, 0, values_copy );
+        PyTuple_SetItem( resu_tuple, 1, mask_copy );
 
-      return resu_tuple;
-
+        return resu_tuple;
     }
-
 
     /**
      * @brief Get the name of the i-th component
      */
-    std::string getNameOfComponent( const int& i ) const {
+    std::string getNameOfComponent( const int &i ) const {
 
-      if ( i < 0 || i >= _nbComp) {
-        throw std::runtime_error( "Out of range");
-      };
+        if ( i < 0 || i >= _nbComp ) {
+            throw std::runtime_error( "Out of range" );
+        };
 
-      std::string name = trim(( *_component )[i].toString());
-      return name;
+        std::string name = trim( ( *_component )[i].toString() );
+        return name;
     };
-
 
     /**
      * @Brief Get the names of all the components
      */
     VectorString getNameOfComponents() const {
 
-      int size = this->getNumberOfComponents();
-      VectorString names;
-      names.reserve(size);
-      for ( int i = 0 ; i < size; i++ ) {
-        names.push_back(this->getNameOfComponent(i));
-      }
-      return names;
+        int size = this->getNumberOfComponents();
+        VectorString names;
+        names.reserve( size );
+        for ( int i = 0; i < size; i++ ) {
+            names.push_back( this->getNameOfComponent( i ) );
+        }
+        return names;
     }
 
     /**
      * @brief Get physical quantity
      */
-    std::string getPhysicalQuantity() const {
-      return trim(( *_descriptor )[1].toString());
-    }
+    std::string getPhysicalQuantity() const { return trim( ( *_descriptor )[1].toString() ); }
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

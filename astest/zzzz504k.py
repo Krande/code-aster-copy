@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,6 @@ sfon.updateValuePointers()
 resu1 = [0.6980073863837113, 1.0]
 test.assertAlmostEqual(sfon.getValue(1, 0), resu1[rank])
 resu2 = [0.5461603079530792, 0.5461603079530792]
-test.assertAlmostEqual(sfon.getValue(1, 2), resu2[rank])
+test.assertAlmostEqual(sfon.getValue(2, 0), resu2[rank])
 
 FIN()

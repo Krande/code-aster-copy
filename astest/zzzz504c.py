@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -73,8 +73,8 @@ sfon.debugPrint(10+rank)
 sfon.updateValuePointers()
 
 if rank == 0:
-    test.assertAlmostEqual(sfon.getValue(1, 2), 0.4245510586973997)
+    test.assertAlmostEqual(sfon.getValue(2, 0), 0.4245510586973997)
 elif rank == 1:
-    test.assertAlmostEqual(sfon.getValue(1, 2), 0.4245510586973997)
+    test.assertAlmostEqual(sfon.getValue(2, 0), 0.4245510586973997)
 
 FIN()

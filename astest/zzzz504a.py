@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -159,7 +159,7 @@ with shared_tmpdir("zzzz504a_") as tmpdir:
 MyFieldOnNodes = resu.getFieldOnNodesReal("DEPL", 1)
 sfon = MyFieldOnNodes.exportToSimpleFieldOnNodes()
 if parallel:
-    test.assertAlmostEqual(sfon.getValue(1, 2), 0.5175556367605225)
+    test.assertAlmostEqual(sfon.getValue(2, 0), 0.5175556367605225)
 else:
     test.assertAlmostEqual(sfon.getValue(6, 0), 0.0)
 
