@@ -1,9 +1,9 @@
 P time_limit 60
 P memory_limit 1024
 P ncpus 1
-P mpi_nbcpu 4
+P mpi_nbcpu 3
 P mpi_nbnoeud 1
 P testlist ci verification parallel
 
-F comm mknl002a.py D 1
-F mmed mknl002a.mmed D 20
+F comm zzzz506n.py D 1
+F mmed zzzz506k.mmed D 20

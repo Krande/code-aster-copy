@@ -39,12 +39,14 @@ import tempfile
 from math import sqrt, cos, sin, pi
 
 
-def buildSquare(cls, lx=1, ly=1, refine=0):
+def buildSquare(cls, lx=1, ly=1, refine=0, info=1):
     """Build the quadrilateral mesh of a square.
+
     Arguments:
         lx [float] : length of the square along the x axis (default 1.).
         ly [float] : length of the square along the y axis (default 1.).
         refine [int] : number of mesh refinement iterations (default 0).
+        info [int] : verbosity mode (1 or 2). (default 1).
     """
     # Mesh creation
     mesh = cls()
@@ -60,14 +62,16 @@ def buildSquare(cls, lx=1, ly=1, refine=0):
         mesh.readAsterFile(f.name)
 
     # Mesh refinement
-    return CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=refine))
+    return CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=refine), INFO=info)
 
 
-def buildDisk(cls, radius=1, refine=0):
+def buildDisk(cls, radius=1, refine=0, info=1):
     """Build the quadrilateral mesh of a disk.
+
     Arguments:
         radius [float] : radius of the disk (default 1).
         refine [int] : number of mesh refinement iterations (default 0).
+        info [int] : verbosity mode (1 or 2). (default 1).
     """
     # Mesh creation
     mesh = cls()
@@ -121,13 +125,15 @@ def buildDisk(cls, radius=1, refine=0):
     return newMesh
 
 
-def buildCube(cls, lx=1, ly=1, lz=1, refine=0):
+def buildCube(cls, lx=1, ly=1, lz=1, refine=0, info=1):
     """Build the hexaedral mesh of a cube.
+
     Arguments:
         lx [float] : length of the cube along the x axis (default 1.).
         ly [float] : length of the cube along the y axis (default 1.).
         lz [float] : length of the cube along the z axis (default 1.).
         refine [int] : number of mesh refinement iterations (default 0).
+        info [int] : verbosity mode (1 or 2). (default 1).
     """
     # Mesh creation
     mesh = cls()
@@ -153,15 +159,17 @@ def buildCube(cls, lx=1, ly=1, lz=1, refine=0):
         mesh.readAsterFile(f.name)
 
     # Mesh refinement
-    return CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=refine))
+    return CREA_MAILLAGE(MAILLAGE=mesh, RAFFINEMENT=_F(TOUT="OUI", NIVEAU=refine), INFO=info)
 
 
-def buildCylinder(cls, height=3, radius=1, refine=0):
+def buildCylinder(cls, height=3, radius=1, refine=0, info=1):
     """Build the hexaedral mesh of a cylinder.
+
     Arguments:
         height [float] : height of the cylinder along the z axis (default 0).
         radius [float] : radius of the cylinder (default 1).
         refine [int] : number of mesh refinement iterations (default 0).
+        info [int] : verbosity mode (1 or 2). (default 1).
     """
     # Mesh creation
     mesh = cls()

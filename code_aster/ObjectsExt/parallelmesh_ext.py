@@ -139,26 +139,30 @@ class ExtendedParallelMesh:
 
         return True
 
-    def refine(self, ntimes=1):
+    def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.
 
         Arguments:
             ntimes [int] : the number of times the mesh is to be refined.
+            info [int] : verbosity mode (1 or 2). Default 1.
 
         Returns:
             ParallelMesh: the refined mesh.
         """
 
         return CREA_MAILLAGE(MAILLAGE=self,
-                             RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes))
+                             RAFFINEMENT=_F(TOUT="OUI", NIVEAU=ntimes),
+                             INFO=info)
 
     @classmethod
-    def buildSquare(self, lx=1., ly=1., refine=0):
+    def buildSquare(self, lx=1., ly=1., refine=0, info=1):
         """Build the quadrilateral mesh of a square.
+
         Arguments:
             lx [float] : length of the square along the x axis (default 1.).
             ly [float] : length of the square along the y axis (default 1.).
             refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (1 or 2). (default 1).
         """
 
         with shared_tmpdir("buildSquare") as tmpdir:
@@ -167,28 +171,31 @@ class ExtendedParallelMesh:
             # to be partitioned equally and not generated a too big file
             nrefine = min(9, refine)
             if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine)
+                mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
             MPI.COMM_WORLD.Barrier()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename)
+            mesh_p.readMedFile(filename, verbose=info-1)
 
             # Mesh refinement
             nrefinep = refine-nrefine
             return CREA_MAILLAGE(MAILLAGE=mesh_p,
-                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep))
+                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep),
+                                INFO=info)
 
 
     @classmethod
-    def buildCube(self, lx=1., ly=1., lz=1., refine=0):
+    def buildCube(self, lx=1., ly=1., lz=1., refine=0, info=1):
         """Build the hexaedral mesh of a cube.
+
         Arguments:
             lx [float] : length of the cube along the x axis (default 1.).
             ly [float] : length of the cube along the y axis (default 1.).
             lz [float] : length of the cube along the z axis (default 1.).
             refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (1 or 2). (default 1).
         """
 
         with shared_tmpdir("buildCube") as tmpdir:
@@ -200,58 +207,63 @@ class ExtendedParallelMesh:
                 min_level = 7
             nrefine = min(min_level, refine)
             if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine)
+                mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine, info=info)
                 mesh.printMedFile(filename)
             MPI.COMM_WORLD.Barrier()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename)
+            mesh_p.readMedFile(filename, verbose=info-1)
 
             # Mesh refinement
             nrefinep = refine-nrefine
             return CREA_MAILLAGE(MAILLAGE=mesh_p,
-                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep))
+                                RAFFINEMENT=_F(TOUT="OUI", NIVEAU=nrefinep),
+                                INFO=info)
 
     @classmethod
-    def buildDisk(self, radius=1, refine=0):
+    def buildDisk(self, radius=1, refine=0, info=1):
         """Build the quadrilateral mesh of a disk.
+
         Arguments:
             radius [float] : radius of the disk (default 1).
             refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (1 or 2). (default 1).
         """
 
         with shared_tmpdir("buildDisk") as tmpdir:
             filename = osp.join(tmpdir, "buildDisk.med")
             if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildDisk(radius, refine)
+                mesh = Mesh.buildDisk(radius, refine, info)
                 mesh.printMedFile(filename)
             MPI.COMM_WORLD.Barrier()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename)
+            mesh_p.readMedFile(filename, verbose=info-1)
             return mesh_p
 
     @classmethod
-    def buildCylinder(self, height=3, radius=1, refine=0):
+    def buildCylinder(self, height=3, radius=1, refine=0, info=1):
         """Build the hexaedral mesh of a cylinder.
+
         Arguments:
             height [float] : height of the cylinder along the z axis (default 0).
             radius [float] : radius of the cylinder (default 1).
             refine [int] : number of mesh refinement iterations (default 0).
+            info [int] : verbosity mode (1 or 2). (default 1).
         """
 
         with shared_tmpdir("buildCylinder") as tmpdir:
             filename = osp.join(tmpdir, "buildCylinder.med")
             if MPI.COMM_WORLD.Get_rank() == 0:
-                mesh = Mesh.buildCylinder(height, radius, refine)
+                mesh = Mesh.buildCylinder(height, radius, refine, info)
                 mesh.printMedFile(filename)
             MPI.COMM_WORLD.Barrier()
 
             # Mesh creation
             mesh_p = ParallelMesh()
-            mesh_p.readMedFile(filename)
+            mesh_p.readMedFile(filename, verbose=info-1)
             return mesh_p
 
 @injector(ConnectionMesh)

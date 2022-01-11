@@ -66,11 +66,12 @@ class ExtendedMesh:
             ngpma.append((grp.strip(), len(dic_gpma[grp]), dim))
         return ngpma
 
-    def refine(self, ntimes=1):
+    def refine(self, ntimes=1, info=1):
         """Refine the mesh uniformly. Each edge is split in two.
 
         Arguments:
             ntimes [int] : the number of times the mesh is to be refined.
+            info [int] : verbosity mode (1 or 2). Default 1.
 
         Returns:
             Mesh: the refined mesh.
@@ -78,7 +79,8 @@ class ExtendedMesh:
 
         new_mesh = CREA_MAILLAGE(MAILLAGE=self,
                                  RAFFINEMENT=_F(TOUT="OUI",
-                                                NIVEAU=ntimes))
+                                                NIVEAU=ntimes),
+                                 INFO=info,)
         return new_mesh
 
     def createMedCouplingMesh(self):
