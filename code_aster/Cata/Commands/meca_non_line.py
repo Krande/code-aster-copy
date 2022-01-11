@@ -37,8 +37,6 @@ MECA_NON_LINE = MACRO(nom="MECA_NON_LINE",
                       # -------------------------------------------------------------------
                       CHAM_MATER=SIMP(statut='o', typ=cham_mater),
                       # -------------------------------------------------------------------
-                      CARA_ELEM=SIMP(statut='f', typ=cara_elem),
-                      # -------------------------------------------------------------------
                       EXCIT=FACT(statut='f', max='**',
                                  CHARGE=SIMP(statut='o', typ=(
                                      char_meca, char_cine_meca)),

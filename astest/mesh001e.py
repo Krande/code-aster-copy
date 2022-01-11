@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,17 +33,18 @@ mesh = DEFI_GROUP(reuse=mesh,
                       _F(NOM='TEST', INTERSEC=('TOP', 'BOTTOM'))
                   ))
 
-gnodes = mesh.getGroupsOfNodes()
+gnodes = sorted(mesh.getGroupsOfNodes())
 
-gnodes_ref = ['N2', 'N3', 'N4', 'N6', 'N5', 'N7', 'N1', 'N8', 'TOP', 'BOTTOM']
+gnodes_ref = sorted(['N2', 'N3', 'N4', 'N6', 'N5',
+                    'N7', 'N1', 'N8', 'TOP', 'BOTTOM'])
 
 test.assertSequenceEqual(gnodes_ref, gnodes)
 
-gcells = mesh.getGroupsOfCells()
+gcells = sorted(mesh.getGroupsOfCells())
 
-gcells_ref = ['S13', 'S21', 'S51', 'S26', 'S24', 'S37', 'S34', 'S84', 'S75',
-              'S56', 'S68', 'S78', 'BACK', 'BOTTOM', 'RIGHT', 'FRONT', 'LEFT',
-              'TOP', 'VOLUME']
+gcells_ref = sorted(['S13', 'S21', 'S51', 'S26', 'S24', 'S37', 'S34', 'S84', 'S75',
+                     'S56', 'S68', 'S78', 'BACK', 'BOTTOM', 'RIGHT', 'FRONT', 'LEFT',
+                     'TOP', 'VOLUME'])
 
 test.assertSequenceEqual(gcells_ref, gcells)
 
