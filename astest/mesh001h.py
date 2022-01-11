@@ -18,7 +18,7 @@
 # --------------------------------------------------------------------
 
 import code_aster
-from code_aster.Commands import LIRE_MAILLAGE, CREA_MAILLAGE, FIN
+from code_aster.Commands import LIRE_MAILLAGE, CREA_MAILLAGE, FIN, IMPR_RESU
 
 code_aster.init("--test")
 

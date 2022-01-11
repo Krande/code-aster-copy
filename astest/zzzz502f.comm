@@ -49,7 +49,7 @@ LINSTC=DEFI_LIST_REEL(VALE=(0., 1.0,),)
 RESU=STAT_NON_LINE(MODELE=model,
                       CHAM_MATER=MATE,
                       EXCIT=_F(CHARGE=CHAR),
-                      SOLVEUR=_F(METHODE="PETSC", PRE_COND="ML", RESI_RELA=1e-10, ),
+                      SOLVEUR=_F(METHODE="PETSC", PRE_COND="ML", RESI_RELA=1e-12, ),
                       INCREMENT=_F(LIST_INST=LINSTC,),
                      )
 
@@ -62,7 +62,7 @@ TEST_RESU(
             PRECISION=0.00001,
             REFERENCE='ANALYTIQUE',
             RESULTAT=RESU,
-            ORDRE_GRANDEUR=1e-6,
+            ORDRE_GRANDEUR=1e-4,
             CRITERE='ABSOLU',
             VALE_CALC=2.6988334396258498E-17,
             VALE_REFE=0.0,
@@ -90,7 +90,7 @@ TEST_RESU(
             PRECISION=0.00001,
             REFERENCE='ANALYTIQUE',
             RESULTAT=RESU,
-            ORDRE_GRANDEUR=1e-6,
+            ORDRE_GRANDEUR=1e-4,
             CRITERE='ABSOLU',
             VALE_CALC=2.6988334396258498E-17,
             VALE_REFE=0.0,

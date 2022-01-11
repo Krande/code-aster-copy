@@ -165,7 +165,7 @@ class ExtendedParallelMesh:
             filename = osp.join(tmpdir, "buildSquare.med")
             # nrefine is added to create a mesh with enougth cells
             # to be partitioned equally and not generated a too big file
-            nrefine = min(8, refine)
+            nrefine = min(9, refine)
             if MPI.COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildSquare(lx=lx, ly=ly, refine=nrefine)
                 mesh.printMedFile(filename)
@@ -195,7 +195,10 @@ class ExtendedParallelMesh:
             filename = osp.join(tmpdir, "buildCube.med")
             # nrefine is added to create a mesh with enougth cells
             # to be partitioned equally and not generated a too big file
-            nrefine = min(6, refine)
+            min_level = 6
+            if MPI.COMM_WORLD.Get_size() > 512:
+                min_level = 7
+            nrefine = min(min_level, refine)
             if MPI.COMM_WORLD.Get_rank() == 0:
                 mesh = Mesh.buildCube(lx=lx, ly=ly, lz=lz, refine=nrefine)
                 mesh.printMedFile(filename)
