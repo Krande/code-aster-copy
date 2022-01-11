@@ -281,16 +281,6 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
                          ['CIRCLE', 'SURFACE'])
 test.assertEqual(code_aster.Mesh.buildDisk(refine=2).getNumberOfNodes(), 209)
 
-
-builder = code_aster.Mesh.buildCube(refine=6)
-builder.printMedFile('/home/C00976/tmp/cube6.med')
-
-builder = code_aster.Mesh.buildCube(refine=7)
-builder.printMedFile('/home/C00976/tmp/cube7.med')
-
-builder = code_aster.Mesh.buildCube(refine=8)
-builder.printMedFile('/home/C00976/tmp/cube8.med')
-
 test.printSummary()
 
 code_aster.close()
