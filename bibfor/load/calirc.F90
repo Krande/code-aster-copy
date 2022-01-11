@@ -60,7 +60,9 @@ character(len=*), intent(in) :: phenomZ, modelLigrelZ
 !
     call infniv(ifm, niv)
     lVerbose = (niv .ge. 2)
-    call dismoi('NOM_MODELE', modelLigrelZ, 'LIGREL', repk = model)
+    ! Quick temporary fix for #31692
+    ! call dismoi('NOM_MODELE', modelLigrelZ, 'LIGREL', repk = model)
+    model = modelLigrelZ(1:8)
     call getfac(factorKeyword, nbOcc)
     if (nbOcc .ne. 0) then
         if (phenomZ .eq. 'MECANIQUE') then
