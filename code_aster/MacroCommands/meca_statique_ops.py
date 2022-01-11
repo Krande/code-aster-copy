@@ -232,14 +232,14 @@ def meca_statique_ops(self, **args):
         # compute matrix and factorize it
         if not isConst or isFirst:
             matrix = _computeMatrix(disc_comp, matrix, phys_state.time)
-            linear_solver.factorize(matrix)
+            profile(linear_solver.factorize)(matrix)
 
         # compute rhs
         rhs = _computeRhs(disc_comp, phys_state.time)
 
         # solve linear system
-        diriBCs = disc_comp.dirichletBC(phys_state.time)
-        phys_state.displ = linear_solver.solve(rhs, diriBCs)
+        diriBCs = profile(disc_comp.dirichletBC)(phys_state.time)
+        phys_state.displ = profile(linear_solver.solve)(rhs, diriBCs)
 
         # store rank
         storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state)
