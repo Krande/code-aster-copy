@@ -18,16 +18,9 @@
 
 !
 !
-#include "asterf_types.h"
 interface
-    subroutine asmpi_sendrecv_i(buffer_send, count_send, recipient, tag_send, &
-                                buffer_recv, count_recv, sender   , tag_recv, &
-                                comm)
-        integer, intent(in) :: buffer_send(*)
-        integer, intent(out) :: buffer_recv(*)
-        mpi_int, intent(in) :: count_send, count_recv
-        mpi_int, intent(in) :: recipient, sender
-        mpi_int, intent(in) :: tag_send, tag_recv
-        mpi_int, intent(in) :: comm
-    end subroutine asmpi_sendrecv_i
+    subroutine build_tree_comm(domdist, nbdom, comm, tag)
+        integer, intent(in) :: domdist(*), nbdom
+        integer, intent(out) :: comm(*), tag(*)
+    end subroutine build_tree_comm
 end interface
