@@ -543,6 +543,52 @@ void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *c
 }
 
 /*
+ * Wrappers around MPI_SendRev
+ * Do not check returncode because all errors raise
+ */
+void DEFPPPPPPPPP(ASMPI_SENDRECV_R, asmpi_sendrecv_r,
+              ASTERDOUBLE *buffer_send, ASTERINTEGER4 *count_send,
+              ASTERINTEGER4 *recipient, ASTERINTEGER4 *tag_send,
+              ASTERDOUBLE *buffer_recv, ASTERINTEGER4 *count_recv,
+              ASTERINTEGER4 *sender, ASTERINTEGER4 *tag_recv, MPI_Fint *comm) {
+#ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+    mpicom = MPI_Comm_f2c(*comm);
+    DEBUG_MPI("MPI_SendRecv: send/recv %d double values to proc #%d ...\n",
+            *count_send + *count_recv, *recipient);
+    double start = MPI_Wtime();
+    AS_MPICHECK(MPI_Sendrecv((void *)buffer_send, *count_send, MPI_DOUBLE_PRECISION,
+                       *recipient, *tag_send,
+                       (void *)buffer_recv, *count_recv, MPI_DOUBLE_PRECISION,
+                       *sender, *tag_recv, mpicom, MPI_STATUS_IGNORE));
+    double end = MPI_Wtime();
+    DEBUG_MPI("MPI_Sendrecv: ... in %f sec %s\n", (end-start), " ");
+#endif
+    return;
+}
+
+void DEFPPPPPPPPP(ASMPI_SENDRECV_I, asmpi_sendrecv_i,
+              ASTERINTEGER *buffer_send, ASTERINTEGER4 *count_send,
+              ASTERINTEGER4 *recipient, ASTERINTEGER4 *tag_send,
+              ASTERINTEGER *buffer_recv, ASTERINTEGER4 *count_recv,
+              ASTERINTEGER4 *sender, ASTERINTEGER4 *tag_recv, MPI_Fint *comm) {
+#ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+    mpicom = MPI_Comm_f2c(*comm);
+    DEBUG_MPI("MPI_SendRecv: send/recv %d integer values to proc #%d ...\n",
+            *count_send + *count_recv, *recipient);
+    double start = MPI_Wtime();
+    AS_MPICHECK(MPI_Sendrecv((void *)buffer_send, *count_send, MPI_INTEGER8,
+                       *recipient, *tag_send,
+                       (void *)buffer_recv, *count_recv, MPI_INTEGER8,
+                       *sender, *tag_recv, mpicom, MPI_STATUS_IGNORE));
+    double end = MPI_Wtime();
+    DEBUG_MPI("MPI_Sendrecv: ... in %f sec %s\n", (end-start), " ");
+#endif
+    return;
+}
+
+/*
  * Wrapper around MPI_ISend
  * Do not check returncode because all errors raise
  */

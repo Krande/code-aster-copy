@@ -25,10 +25,8 @@ implicit none
 private
 !
 #include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_recv_i.h"
-#include "asterc/asmpi_recv_r.h"
-#include "asterc/asmpi_send_i.h"
-#include "asterc/asmpi_send_r.h"
+#include "asterc/asmpi_sendrecv_i.h"
+#include "asterc/asmpi_sendrecv_r.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -2382,13 +2380,14 @@ contains
             aster_logical, pointer :: v_keep(:) => null()
             real(kind=8), pointer :: v_send(:) => null()
             real(kind=8), pointer :: v_recv(:) => null()
-            mpi_int :: msize, mrank, count, id, tag, mpicou
+            mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
             integer :: nbproc, rank, ind, nb_send, nb_recv, i_proc, i_join
-            integer :: n_coor, i_node, nb_nodes_keep, i_node_r, node_id, j_node
-            integer :: i_cell, nno, i_comm, nb_cells_keep, owner, cell_id
+            integer :: n_coor_send, n_coor_recv, proc_id
+            integer :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
+            integer :: i_cell, nno, nb_cells_keep, owner, cell_id
             real(kind=8) :: coor(3), coor_diff(3), tole_comp, start, end
             real(kind=8), parameter :: tole = 1.d-15
-            aster_logical :: find, keep, comm(4)
+            aster_logical :: find, keep
 !
         if(isParallelMesh(mesh_out)) then
             if(this%info >= 2) then
@@ -2455,158 +2454,151 @@ contains
             call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv+nb_send, vi=v_joint)
             i_join = 0
             do i_proc = 0, nbproc-1
-                call codent(i_proc, 'G', chnbjo)
-                !! Pour savoir dans quel ordre faire les comm (E,R,E,R)
-                comm = ASTER_FALSE
-                if(i_proc < rank) then
-                    comm(1) = ASTER_TRUE
-                    comm(4) = ASTER_TRUE
-                else
-                    comm(2) = ASTER_TRUE
-                    comm(3) = ASTER_TRUE
-                endif
-                !! Les joints sont souvent par deux
-                do i_comm = 1, 2
-                    if(comm(2*(i_comm-1)+1)) then
-                        !! on envoie les noeuds non-proprio pour avoir la correspondance
-                        if(v_rnode(rank*nbproc + i_proc+1) > 0) then
-                            nojoin = mesh_out//'.R'//chnbjo
-                            n_coor = v_rnode(rank*nbproc + i_proc+1)
-                            call wkvect("&&CREAMA.RCOOR", 'V V R', 4*n_coor, vr=v_send)
-                            ind = 0
-                            do i_node = 1, this%nb_total_nodes
-                                if(this%nodes(i_node)%keep) then
-                                    if(v_noex(this%nodes(i_node)%id) == i_proc) then
-                                        v_send(ind+1) = real(this%nodes(i_node)%id, kind=8)
-                                        v_send(ind+2:ind+4) = this%nodes(i_node)%coor(1:3)
-                                        ind = ind + 4
-                                    end if
-                                end if
-                            end do
-                            ASSERT(ind == 4*n_coor)
-                            count = to_mpi_int(4*n_coor)
-                            id = to_mpi_int(i_proc)
-                            tag = to_mpi_int(rank*nbproc + i_proc+1)
-                            call asmpi_send_r(v_send, count, id, tag, mpicou)
-                            ! On recoit la correcpondance
-                            call wkvect("&&CREAMA.RNUME", 'V V I', 2*n_coor, vi=v_rnume)
-                            count = to_mpi_int(2*n_coor)
-                            id = to_mpi_int(i_proc)
-                            tag = to_mpi_int(rank*nbproc + i_proc+1)
-                            call asmpi_recv_i(v_rnume, count, id, tag, mpicou)
-                            ! On crée le joint
-                            call wkvect(nojoin, 'G V I', 2*n_coor, vi=v_nojoin)
-                            i_join = i_join + 1
-                            v_joint(i_join) = i_proc
-                            do i_node = 1, n_coor
-                                v_nojoin(2*(i_node-1)+1) =int( v_send(4*(i_node-1)+1))
-                                v_nojoin(2*(i_node-1)+2) = v_rnume(2*(i_node-1)+1)
-                                ASSERT(v_nulogl(v_nojoin(2*(i_node-1)+1)) == -1)
-                                v_nulogl(v_nojoin(2*(i_node-1)+1)) = v_rnume(2*(i_node-1)+2)
-                            end do
-                            call jedetr("&&CREAMA.RCOOR")
-                            call jedetr("&&CREAMA.RNUME")
+                proc_id = i_proc
+                if( v_rnode(rank*nbproc + proc_id+1) > 0 ) then
+                    ASSERT(v_rnode(proc_id*nbproc + rank+1) > 0)
+!
+                    call codent(proc_id, 'G', chnbjo)
+!
+                    n_coor_send = v_rnode(rank*nbproc + proc_id+1)
+                    call wkvect("&&CREAMA.SCOOR", 'V V R', 4*n_coor_send, vr=v_send)
+                    n_coor_recv = v_rnode(proc_id*nbproc + rank+1)
+                    call wkvect("&&CREAMA.RCOOR", 'V V R', 4*n_coor_recv, vr=v_recv)
+!
+! --- Prepare data to send (local_id, coor(1:3))
+                    ind = 0
+                    do i_node = 1, this%nb_total_nodes
+                        if(this%nodes(i_node)%keep) then
+                            if(v_noex(this%nodes(i_node)%id) == proc_id) then
+                                v_send(ind+1) = real(this%nodes(i_node)%id, kind=8)
+                                v_send(ind+2:ind+4) = this%nodes(i_node)%coor(1:3)
+                                ind = ind + 4
+                            end if
                         end if
-                    end if
-                    if(comm(2*(i_comm-1)+2)) then
-                        !! on recoit les noeuds non-proprio d'un autre pour trouver
-                        !! la correspondance
-                        if(v_rnode(i_proc*nbproc + rank+1) > 0) then
-                            nojoin = mesh_out//'.E'//chnbjo
-                            n_coor = v_rnode(i_proc*nbproc + rank+1)
-                            call wkvect(nojoin, 'G V I', 2*n_coor, vi=v_nojoin)
-                            i_join = i_join + 1
-                            v_joint(i_join) = i_proc
-                            call wkvect("&&CREAMA.ECOOR", 'V V R', 4*n_coor, vr=v_recv)
-                            call wkvect("&&CREAMA.ENUME", 'V V I', 2*n_coor, vi=v_snume)
-                            count = to_mpi_int(4*n_coor)
-                            id = to_mpi_int(i_proc)
-                            tag = to_mpi_int(i_proc*nbproc + rank+1)
-                            call asmpi_recv_r(v_recv, count, id, tag, mpicou)
-                            !! On cherche les noeuds avec les coor - c'est pas génial mais pas mieux
-                            !! pour le moment - on a vérifié avant que pas de noeuds doubles
-                            ! Pour accélérer la recherche, on garde les noeuds
-                            ! voisins des non-proprio
-                            v_keep = ASTER_FALSE
-                            nb_nodes_keep = 0
-                            do i_cell = 1, nb_cells_keep
-                                cell_id = v_ckeep(i_cell)
-                                keep = ASTER_FALSE
-                                nno = this%converter%nno(this%cells(cell_id)%type)
-                                do i_node = 1, nno
-                                    owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
-                                    if(owner == i_proc) then
-                                        keep = ASTER_TRUE
-                                        exit
-                                    end if
-                                end do
-                                if(keep) then
-                                    do i_node = 1, nno
-                                        node_id = this%cells(cell_id)%nodes(i_node)
-                                        owner = v_noex(this%nodes(node_id)%id)
-                                        if( owner == rank .and. (.not.v_keep(node_id))) then
-                                            v_keep(node_id) = ASTER_TRUE
-                                            nb_nodes_keep = nb_nodes_keep + 1
-                                            v_nkeep(nb_nodes_keep) = node_id
-                                        end if
-                                    end do
+                    end do
+                    ASSERT(ind == 4*n_coor_send)
+!
+! --- Send and Receive data
+                    count_send = to_mpi_int(4*n_coor_send)
+                    count_recv = to_mpi_int(4*n_coor_recv)
+                    id = to_mpi_int(proc_id)
+                    tag = 0
+                    call asmpi_sendrecv_r(v_send, count_send, id, tag, &
+                                          v_recv, count_recv, id, tag, mpicou)
+!
+! --- Research corresponding node
+! --- On cherche les noeuds avec les coor - c'est pas génial mais pas mieux
+! --- Pour accélérer la recherche, on garde les noeuds voisins des non-proprio
+                    v_keep = ASTER_FALSE
+                    nb_nodes_keep = 0
+                    do i_cell = 1, nb_cells_keep
+                        cell_id = v_ckeep(i_cell)
+                        keep = ASTER_FALSE
+                        nno = this%converter%nno(this%cells(cell_id)%type)
+                        do i_node = 1, nno
+                            owner = v_noex(this%nodes(this%cells(cell_id)%nodes(i_node))%id)
+                            if(owner == i_proc) then
+                                keep = ASTER_TRUE
+                                exit
+                            end if
+                        end do
+                        if(keep) then
+                            do i_node = 1, nno
+                                node_id = this%cells(cell_id)%nodes(i_node)
+                                owner = v_noex(this%nodes(node_id)%id)
+                                if( owner == rank .and. (.not.v_keep(node_id))) then
+                                    v_keep(node_id) = ASTER_TRUE
+                                    nb_nodes_keep = nb_nodes_keep + 1
+                                    v_nkeep(nb_nodes_keep) = node_id
                                 end if
                             end do
-                            ASSERT(nb_nodes_keep == n_coor)
-                            if(this%debug) then
-                                !  On regarde que les noeuds ne sont pas confondu.
-                                do i_node = 1, nb_nodes_keep
-                                    tole_comp = max(tole, tole*&
-                                                    norm2(this%nodes(v_nkeep(i_node))%coor))
-                                    do j_node = i_node + 1, nb_nodes_keep
-                                        coor_diff = abs(this%nodes(v_nkeep(i_node))%coor - &
+                        end if
+                    end do
+                    ASSERT(nb_nodes_keep == n_coor_recv)
+!
+                    if(this%debug) then
+                    !  On regarde que les noeuds ne sont pas confondu.
+                        do i_node = 1, nb_nodes_keep
+                            tole_comp = max(tole, tole* norm2(this%nodes(v_nkeep(i_node))%coor))
+                            do j_node = i_node + 1, nb_nodes_keep
+                                coor_diff = abs(this%nodes(v_nkeep(i_node))%coor - &
                                                         this%nodes(v_nkeep(j_node))%coor)
-                                        if(maxval(coor_diff) < tole_comp) then
-                                            !! Verif pas de noeud double
-                                            ASSERT(ASTER_FALSE)
-                                        end if
-                                    end do
-                                end do
-                            end if
-                            if(this%info >= 2) then
-                                print*, "-Domaine: ", i_proc, &
-                                    ", nombre de noeuds à trouver: ", n_coor, &
-                                    " pour ", nb_nodes_keep, " candidats"
-                            end if
-                            v_keep(1:nb_nodes_keep) = ASTER_TRUE
-                            do i_node_r = 1, n_coor
-                                find = ASTER_FALSE
-                                coor = v_recv(4*(i_node_r-1)+2:4*(i_node_r-1)+4)
-                                node_id = 0
-                                tole_comp = max(tole, tole*norm2(coor))
-                                do i_node = 1, nb_nodes_keep
-                                    if(v_keep(i_node)) then
-                                        coor_diff = abs(coor-this%nodes(v_nkeep(i_node))%coor)
-                                        if(maxval(coor_diff) < tole_comp) then
-                                            find = ASTER_TRUE
-                                            node_id = this%nodes(v_nkeep(i_node))%id
-                                            v_keep(i_node) = ASTER_FALSE
-                                            exit
-                                        end if
-                                    end if
-                                end do
-                                ASSERT(find)
-                                v_nojoin(2*(i_node_r-1)+1) = node_id
-                                v_nojoin(2*(i_node_r-1)+2) = int(v_recv(4*(i_node_r-1)+1))
-                                v_snume(2*(i_node_r-1)+1) = node_id
-                                v_snume(2*(i_node_r-1)+2) = v_nulogl(node_id)
+                                if(maxval(coor_diff) < tole_comp) then
+                                    !! Verif pas de noeud double
+                                    ASSERT(ASTER_FALSE)
+                                end if
                             end do
-                            !! On envoie la correcpondance pour le voisin
-                            count = to_mpi_int(2*n_coor)
-                            id = to_mpi_int(i_proc)
-                            tag = to_mpi_int(i_proc*nbproc + rank+1)
-                            call asmpi_send_i(v_snume, count, id, tag, mpicou)
-                            call jedetr("&&CREAMA.ECOOR")
-                            call jedetr("&&CREAMA.ENUME")
-                        end if
+                        end do
                     end if
-                end do
+!
+                    if(this%info >= 2) then
+                        print*, "-Domaine: ", proc_id, &
+                                ", nombre de noeuds à trouver: ", n_coor_recv, &
+                                " pour ", nb_nodes_keep, " candidats"
+                    end if
+!
+! --- Create joint .E
+                    nojoin = mesh_out//'.E'//chnbjo
+                    call wkvect(nojoin, 'G V I', 2*n_coor_recv, vi=v_nojoin)
+                    i_join = i_join + 1
+                    v_joint(i_join) = proc_id
+                    call wkvect("&&CREAMA.SNUME", 'V V I', 2*n_coor_recv, vi=v_snume)
+!
+! --- Search nodes with coordinates
+                    v_keep(1:nb_nodes_keep) = ASTER_TRUE
+                    do i_node_r = 1, n_coor_recv
+                        find = ASTER_FALSE
+                        coor = v_recv(4*(i_node_r-1)+2:4*(i_node_r-1)+4)
+                        node_id = 0
+                        tole_comp = max(tole, tole*norm2(coor))
+                        do i_node = 1, nb_nodes_keep
+                            if(v_keep(i_node)) then
+                                coor_diff = abs(coor-this%nodes(v_nkeep(i_node))%coor)
+                                if(maxval(coor_diff) < tole_comp) then
+                                    find = ASTER_TRUE
+                                    node_id = this%nodes(v_nkeep(i_node))%id
+                                    v_keep(i_node) = ASTER_FALSE
+                                    exit
+                                end if
+                            end if
+                        end do
+                        ASSERT(find)
+                        v_nojoin(2*(i_node_r-1)+1) = node_id
+                        v_nojoin(2*(i_node_r-1)+2) = int(v_recv(4*(i_node_r-1)+1))
+                        v_snume(2*(i_node_r-1)+1) = node_id
+                        v_snume(2*(i_node_r-1)+2) = v_nulogl(node_id)
+                    end do
+!
+! --- Send and recv data
+                    call wkvect("&&CREAMA.RNUME", 'V V I', 2*n_coor_send, vi=v_rnume)
+
+                    count_send = to_mpi_int(2*n_coor_recv)
+                    count_recv = to_mpi_int(2*n_coor_send)
+                    id = to_mpi_int(proc_id)
+                    tag = 0
+                    call asmpi_sendrecv_i(v_snume, count_send, id, tag, &
+                                          v_rnume, count_recv, id, tag, mpicou)
+!
+! --- Create joint .R
+                    nojoin = mesh_out//'.R'//chnbjo
+                    call wkvect(nojoin, 'G V I', 2*n_coor_send, vi=v_nojoin)
+                    i_join = i_join + 1
+                    v_joint(i_join) = proc_id
+!
+                    do i_node = 1, n_coor_send
+                        v_nojoin(2*(i_node-1)+1) = int(v_send(4*(i_node-1)+1))
+                        v_nojoin(2*(i_node-1)+2) = v_rnume(2*(i_node-1)+1)
+                        ASSERT(v_nulogl(v_nojoin(2*(i_node-1)+1)) == -1)
+                        v_nulogl(v_nojoin(2*(i_node-1)+1)) = v_rnume(2*(i_node-1)+2)
+                    end do
+! --- Cleaning
+                    call jedetr("&&CREAMA.SCOOR")
+                    call jedetr("&&CREAMA.SNUME")
+                    call jedetr("&&CREAMA.RCOOR")
+                    call jedetr("&&CREAMA.RNUME")
+                end if
             end do
+! --- Cleaning
             call jedetr('&&CREAMA.NRESTRICT')
             call jedetr('&&CREAMA.NKEEP')
             call jedetr('&&CREAMA.CKEEP')

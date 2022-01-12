@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -578,6 +578,9 @@
 #define DEFPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h)
 #define CALLPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h)
 #define CALLPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h)
+#define DEFPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i)
+#define CALLPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i)
+#define CALLPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i)
 #define DEFPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j)
 #define CALLPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j)
 #define CALLPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j)
