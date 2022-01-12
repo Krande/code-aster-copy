@@ -17,10 +17,11 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from ..Commons import *
-from ..Language.DataStructure import *
-from ..Language.Syntax import *
-
+from ..Cata.Commons import *
+from ..Cata.Language.DataStructure import *
+from ..Cata.Language.Syntax import *
+from ..Supervis import UserMacro
+from .defi_cont_ops import defi_cont_ops
 
 # quelques remarques:
 # - ce catalogue est un exemple de ce à quoi il pourrait ressembler à la fin du chantier en 2024
@@ -30,8 +31,12 @@ from ..Language.Syntax import *
 # - il faut regarder ce que cela donne dans asterStudy
 # - est-ce que l'on veut rajouter des choses qui ne sont possibles actuellement ?
 
-DEFI_CONT=OPER(nom = "DEFI_CONT", op=None, sd_prod   = char_contact, reentrant = 'n',
-                fr = tr("Définit les zones soumises à des conditions de contact avec ou sans frottement"),
+DEFI_CONT_CATA=MACRO(
+        nom="DEFI_CONT",
+        op=OPS("code_aster.MacroCommands.defi_cont_ops.defi_cont_ops"),
+        sd_prod=char_contact,
+        reentrant='n',
+        fr = tr("Définit les zones soumises à des conditions de contact avec ou sans frottement"),
                 #en        = "Allows the definition of contact surfaces",
 
 # ----- PARAMETRES GENERAUX ( NE DEPENDENT PAS DE LA ZONE DE CONTACT)
@@ -192,9 +197,10 @@ DEFI_CONT=OPER(nom = "DEFI_CONT", op=None, sd_prod   = char_contact, reentrant =
 
                 ), # fin ZONE
         ), # fin BLOC
+)
 
-) #fin OPER
 
+DEFI_CONT = UserMacro("DEFI_CONT", DEFI_CONT_CATA, defi_cont_ops)
 
 # Chantier  ADAPTATION à faire (2023)
 

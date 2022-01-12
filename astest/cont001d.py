@@ -20,7 +20,8 @@
 #
 import code_aster
 from code_aster import AsterError
-
+from code_aster.Commands import *
+from code_aster.MacroCommands.defi_cont import DEFI_CONT
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       ERREUR=_F(ERREUR_F='EXCEPTION',),

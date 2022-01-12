@@ -60,7 +60,7 @@ subroutine checkNormals(model, slave, master)
 !
 !-----------------------------------------------------------------------
     integer, parameter :: nbobj = 2
-    integer :: ier, iret
+    integer :: ier
     integer :: ndim, ndim1, vali
     integer :: iobj, ima, nbmail
     integer :: numa, idtyma, nutyma, nbmapr, nbmabo, ntrait

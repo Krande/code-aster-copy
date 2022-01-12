@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -706,6 +706,9 @@ def __fake__():
     UTMESS('I', 'FICHIER_2')      # émis dans ops
     # bibc/supervis/aster_mpi.c
     UTMESS('I', 'APPELMPI_5')
+    # in bibcxx
+    UTMESS('I', 'CONTACT1_1')
+    UTMESS('I', 'CONTACT1_2')
     # utilisé ici
     UTMESS('I', 'CATAMESS_6')
     UTMESS('I', 'CATAMESS_41')
@@ -734,7 +737,7 @@ def __fake__():
     # dans TestResult.py
     UTMESS('I', 'TEST0_12')
     UTMESS('I', 'TEST0_19')
-    # dans fucntion_py.py
+    # dans function_py.py
     UTMESS('I', 'FONCT0_27')
     UTMESS('I', 'FONCT0_28')
     UTMESS('I', 'FONCT0_29')

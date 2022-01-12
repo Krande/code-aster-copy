@@ -103,7 +103,8 @@ class ContactZone : public DataStructure {
 
     std::string getMasterGroupOfCells() const { return _master; };
 
-    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave ) { _excluded_slave = excluded_slave; };
+    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave ) {
+                                       _excluded_slave = excluded_slave; };
 
     VectorString getExcludedSlaveGroupOfCells() const { return _excluded_slave; };
 
