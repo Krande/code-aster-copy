@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -137,6 +137,7 @@ TRAN_LA=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                     MATR_AMOR = AMOR_A,
                     INCREMENT=_F( LIST_INST = L_INST),
                     EXCIT=_F(  VECT_ASSE = MONO_XA,  FONC_MULT = ACCE),
+                    SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE'),
                            )
 
 ACCE0 = DEFI_CONSTANTE(VALE = 1.E-8)

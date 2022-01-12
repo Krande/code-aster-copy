@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -129,7 +129,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
            # 1. Integration schemes
            SCHEMA_TEMPS    =     FACT(statut='d',
                b_gene = BLOC(condition = """equal_to("BASE_CALCUL",'GENE')""",
-               SCHEMA      =         SIMP(statut='f', typ='TXM', defaut="DIFF_CENTRE",
+               SCHEMA      =         SIMP(statut='f', typ='TXM', defaut="RUNGE_KUTTA_32",
                                           into=("NEWMARK", "DIFF_CENTRE",
                                                 "DEVOGE", "ADAPT_ORDRE1", "ADAPT_ORDRE2",
                                                 "RUNGE_KUTTA_32", "RUNGE_KUTTA_54", "ITMI", "TRBDF2"),),
@@ -154,7 +154,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                NMAX_ITER_PAS=            SIMP(statut='f',typ='I',defaut= 16, min=0,),),
                ),
                b_not_gene = BLOC(condition = """not equal_to("BASE_CALCUL",'GENE')""",
-               SCHEMA      =         SIMP(statut='f', typ='TXM', defaut="DIFF_CENTRE",
+               SCHEMA      =         SIMP(statut='f', typ='TXM', defaut="NEWMARK",
                                           into=("NEWMARK", "WILSON", "DIFF_CENTRE",
                                                 "DEVOGE", "ADAPT_ORDRE1", "ADAPT_ORDRE2",
                                                 "RUNGE_KUTTA_32", "RUNGE_KUTTA_54", "ITMI"),),
