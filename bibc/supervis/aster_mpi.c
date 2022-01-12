@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -797,8 +797,8 @@ void DEFPPPPP(ASMPI_ALLREDUCE_I, asmpi_allreduce_i, ASTERINTEGER *sendbuf,
     return;
 }
 
-void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, ASTERDOUBLE *sendbuf,
-              ASTERDOUBLE *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op,
+void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, ASTERINTEGER4 *sendbuf,
+              ASTERINTEGER4 *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op,
               MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;

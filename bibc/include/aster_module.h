@@ -32,11 +32,17 @@
 extern "C" {
 #endif
 
+#ifdef __FILE_NAME__
+#define PATH __FILE_NAME__
+#else
+#define PATH __FILE__
+#endif
+
 extern PyObject *PyInit_aster( void );
 
 extern void PRE_myabort( _IN const char *nomFichier, _IN const int numeroLigne,
                          _IN const char *message );
-#define MYABORT( message ) PRE_myabort( __FILE__, __LINE__, message )
+#define MYABORT( message ) PRE_myabort( PATH, __LINE__, message )
 
 #define CALL_ISJVUP() CALL0( ISJVUP, isjvup )
 extern ASTERINTEGER DEF0( ISJVUP, isjvup );
