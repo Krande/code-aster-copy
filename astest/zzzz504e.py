@@ -72,7 +72,7 @@ sfon.debugPrint(10+rank)
 sfon.updateValuePointers()
 
 if rank == 0:
-    test.assertAlmostEqual(sfon.getValue(1, 2), 0.4245510586973997)
+    test.assertAlmostEqual(sfon.getValue(2, 0), 0.4245510586973997)
 elif rank == 1:
     test.assertAlmostEqual(sfon.getValue(2, 0), 0.4245510586973997)
 
