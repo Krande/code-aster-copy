@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -38,8 +38,14 @@ to debug MPI (add to asterf_debug.h too)
 #define ASTER_DEBUG_MPI
 */
 
+#ifdef __FILE_NAME__
+#define PATH __FILE_NAME__
+#else
+#define PATH __FILE__
+#endif
+
 /*! print the filename and line where the error occurred */
-#define DEBUG_LOC       fprintf(stdout, "DEBUG: %s #%d: ", __FILE__, __LINE__); fflush(stdout);
+#define DEBUG_LOC       fprintf(stdout, "DEBUG: %s #%d: ", PATH, __LINE__); fflush(stdout);
 
 /*! interrupt the execution, return SIGABRT */
 #define INTERRUPT(code) { DEBUG_LOC; fprintf(stdout,"ABORT - exit code %d\n",code); \

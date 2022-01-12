@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,14 @@
 #   define DEBUG_LOC_DEALLOCATE(a, b, c) continue
 #endif
 
+#ifdef __FILE_NAME__
+#define PATH __FILE_NAME__
+#else
+#define PATH __FILE__
+#endif
+
 ! To have a syntax similar to the standard DEALLOCATE
-#define AS_DEALLOCATE(arg) DEBUG_LOC_DEALLOCATE("free ", __FILE__, __LINE__) ; call as_deallocate(arg, strdbg=ASTER_TO_STRING(arg))
+#define AS_DEALLOCATE(arg) DEBUG_LOC_DEALLOCATE("free ", PATH, __LINE__) ; call as_deallocate(arg, strdbg=ASTER_TO_STRING(arg))
 !
 #include "asterf_types.h"
 !

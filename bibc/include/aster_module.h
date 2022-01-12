@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -28,16 +28,22 @@
  *
  */
 
-extern PyObject* PyInit_aster(void);
+#ifdef __FILE_NAME__
+#define PATH __FILE_NAME__
+#else
+#define PATH __FILE__
+#endif
 
-extern void PRE_myabort(_IN const char *nomFichier , _IN const int numeroLigne,
-                        _IN const char *message ) ;
-#define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
+extern PyObject *PyInit_aster( void );
 
-#define CALL_ISJVUP() CALL0(ISJVUP, isjvup)
-extern ASTERINTEGER DEF0(ISJVUP, isjvup);
+extern void PRE_myabort( _IN const char *nomFichier, _IN const int numeroLigne,
+                         _IN const char *message );
+#define MYABORT( message ) PRE_myabort( PATH, __LINE__, message )
 
-extern void CALLP(XFINI,xfini, _IN ASTERINTEGER *);
+#define CALL_ISJVUP() CALL0( ISJVUP, isjvup )
+extern ASTERINTEGER DEF0( ISJVUP, isjvup );
+
+extern void CALLP( XFINI, xfini, _IN ASTERINTEGER * );
 
 /* FIN ASTER_MODULE_H */
 #endif

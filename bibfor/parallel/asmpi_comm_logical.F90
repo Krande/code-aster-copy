@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ implicit none
 !
 #ifdef ASTER_HAVE_MPI
 !
-    integer :: i
+    integer(kind=4) :: i
 !
     if(svl) then
         i = 1
@@ -48,14 +48,14 @@ implicit none
     end if
 !
     if( op == "MPI_LAND" ) then
-        call asmpi_comm_vect('MPI_MIN', 'I', sci=i)
+        call asmpi_comm_vect('MPI_MIN', 'I', sci4=i)
         if(i == 0) then
             svl = ASTER_FALSE
         else
             svl = ASTER_TRUE
         end if
     elseif( op == "MPI_LOR" ) then
-        call asmpi_comm_vect('MPI_MAX', 'I', sci=i)
+        call asmpi_comm_vect('MPI_MAX', 'I', sci4=i)
         if(i == 0) then
             svl = ASTER_FALSE
         else
