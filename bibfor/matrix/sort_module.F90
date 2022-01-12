@@ -1,5 +1,5 @@
 !  --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,10 @@ implicit none
 private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 
-public :: qsort_i4, qsort
+public :: qsort_i4, qsort, sort_i8
 
 interface qsort
 !  Generic function for the default integer size
@@ -237,6 +239,23 @@ subroutine qsort_i8(a,pv)
    endif
    !
  end subroutine qsort_i8
+ !
+ subroutine sort_i8(list, nbElem)
+   ! Dummy arguments
+   integer(kind=8), intent(inout) :: list(*)
+   integer(kind=8), intent(in) :: nbElem
+   ! Local variables
+   integer(kind=8), pointer :: tri(:) => null()
+   !
+   if(nbElem > 0) then
+      AS_ALLOCATE(vi=tri, size=nbElem)
+      tri(1:nbElem) = list(1:nbElem)
+      call qsort(tri)
+      list(1:nbElem) = tri(1:nbElem)
+      AS_DEALLOCATE(vi=tri)
+   end if
+   !
+ end subroutine sort_i8
  !
  recursive subroutine rqsort_i8(A,p,r,pv)
    ! Dummy arguments

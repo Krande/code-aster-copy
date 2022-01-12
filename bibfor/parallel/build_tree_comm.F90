@@ -18,6 +18,8 @@
 
 subroutine build_tree_comm(domdist, nbdom, comm, tag)
 !
+use sort_module
+!
     implicit none
 !
 #include "asterc/asmpi_comm.h"
@@ -66,6 +68,7 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     nbproc = to_aster_int(msize)
 !
     ASSERT(nbdom < 100)
+    nb_comm = 0
 !
     nbdom_inf = 0
     domtmp = -1
@@ -75,6 +78,7 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
             domtmp(nbdom_inf) = domdist(i_dom)
         end if
     end do
+    call sort_i8(domtmp, nbdom_inf)
 ! --- On compte le nombre de sous-domaine
     AS_ALLOCATE(vi=v_nbdist, size=nbproc)
     count_send = to_mpi_int(1)
@@ -88,6 +92,7 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
         v_deca(i_proc+1) = v_deca(i_proc) + v_nbdist(i_proc)
     end do
     nbdist_tot = v_deca(nbproc) + v_nbdist(nbproc)
+    if( nbdist_tot == 0 .or. max_nbdom == 0) go to 999
 !
 ! --- On récupère la liste des sous-domaines
     AS_ALLOCATE(vi=v_send, size=max_nbdom)
@@ -134,7 +139,7 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
                             tag(nb_comm_loc) = nb_comm
                             comm(nb_comm_loc) = dom1
                         end if
-!                        if(rank == 0) print*, dom1, dom2, v_rest(i_proc)
+                        !if(rank == 0) print*, dom1, dom2, v_rest(i_proc)
                         exit
                     end if
                 end do
@@ -148,9 +153,10 @@ subroutine build_tree_comm(domdist, nbdom, comm, tag)
     AS_DEALLOCATE(vi=v_rest)
     AS_DEALLOCATE(vi=v_send)
     AS_DEALLOCATE(vi=v_recv)
+    AS_DEALLOCATE(vi=v_dist)
+999 continue
     AS_DEALLOCATE(vi=v_deca)
     AS_DEALLOCATE(vi=v_nbdist)
-    AS_DEALLOCATE(vi=v_dist)
     call jedema()
 #endif
 !

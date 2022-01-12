@@ -52,6 +52,7 @@ subroutine crnlgc(numddl)
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/create_graph_comm.h"
 #include "jeveux.h"
 !
     character(len=14) :: numddl
@@ -59,8 +60,8 @@ subroutine crnlgc(numddl)
 #ifdef ASTER_HAVE_MPI
 !
     integer :: rang, nbproc, jrefn, nbjoin, iaux, nddll
-    integer :: iproc1, iproc2, posit, nmatch, icmp, ico2, nbcmp
-    integer :: dime, idprn1, idprn2, ntot, num, ili, nunoel
+    integer :: iproc1, iproc2, posit, nb_comm, icmp, ico2, nbcmp
+    integer :: dime, idprn1, idprn2, ntot, ili, nunoel
     integer :: nec, l, numpro, jjoine, jjoinr, nbnoee, jaux, numno1, numno2, iec
     integer :: ncmpmx, iad, jcpnec, jencod, jenvoi1, lgenve1, lgenvr1, poscom, nddld
     integer :: nbddll, jnequ, nddl, jenco2, deccmp, jcpne2
@@ -70,28 +71,21 @@ subroutine crnlgc(numddl)
     integer :: ibid, nddlg, jenvoi2, jrecep2, jjoin, ijoin, numnoe
     integer :: ifm, niv, vali(5), ino, nno, nb_node, nlag
     integer :: lgenve2, lgenvr2, jnujoi1, jnujoi2, iret, iret1, iret2, nlili
-    integer(kind=4) :: un
-    real(kind=8) :: dx, dy, dz
-    integer(kind=4) :: iaux4, num4, numpr4, n4e, n4r
-    mpi_int :: mrank, mnbproc, mpicou
+    mpi_int :: mrank, mnbproc, mpicou, tag4, numpr4, n4e, n4r
     integer, pointer :: v_noex(:) => null()
     integer, pointer :: v_nugll(:) => null()
     integer, pointer :: v_posdd(:) => null()
-    integer, pointer :: v_dojoin(:) => null()
-    integer, pointer :: v_graloc(:) => null()
-    integer, pointer :: v_gracom(:) => null()
-    integer, pointer :: v_mask(:) => null()
-    integer, pointer :: v_tmp(:) => null()
-    integer, pointer :: v_ordjoi(:) => null()
     integer, pointer :: v_nbjo(:) => null()
     integer, pointer :: v_deeq(:) => null()
     integer, pointer :: v_deeg(:) => null()
     integer, pointer :: v_nuls(:) => null()
+    integer, pointer :: v_comm(:) => null()
+    integer, pointer :: v_tag(:) => null()
 !
     character(len=4) :: chnbjo
     character(len=8) :: chnbjo2
     character(len=8) :: mesh, k8bid, nomgdr
-    character(len=19) :: nomlig
+    character(len=19) :: nomlig, comm_name, tag_name
     character(len=24) :: nojoie, nojoir, nonulg, join
 !
 !----------------------------------------------------------------------
@@ -125,63 +119,16 @@ subroutine crnlgc(numddl)
 
     call jeveuo(numddl//'.NUME.NULG', 'E', vi=v_nugll)
     call jeveuo(numddl//'.NUME.PDDL', 'E', vi=v_posdd)
-
-    call wkvect('&&CRNULG.GRAPH_COMM', 'V V I', nbproc*nbproc, vi=v_gracom)
-    call wkvect('&&CRNULG.GRAPH_LOC', 'V V I', nbproc, vi=v_graloc)
 !
-! -- On crée la liste des proc avec lequel rank doit communiquer - 1 si oui
-    nbjoin = 0
-    call jeexin(mesh//'.DOMJOINTS', iret)
-    if (iret > 0) then
-        call jeveuo(mesh//'.DOMJOINTS', 'L', vi=v_dojoin)
-        call jelira(mesh//'.DOMJOINTS', 'LONMAX', nbjoin, k8bid)
-        !   CREATION DU GRAPH LOCAL
-        do iaux = 1, nbjoin
-            v_graloc(v_dojoin(iaux) + 1) = 1
-        end do
-        nbjoin = nbjoin/2
-    end if
-
-!   ON COMMUNIQUE POUR SAVOIR QUI EST EN RELATION AVEC QUI
-    call asmpi_allgather_i(v_graloc, mnbproc, v_gracom, mnbproc, mpicou)
-
-!   RECHERCHE DES COUPLAGES MAXIMAUX
-    call wkvect('&&CRNULG.MASQUE', 'V V I', nbproc*nbproc, vi=v_mask)
-    nmatch = 1
-
-    do iproc1 = 1, nbproc
-        do iproc2 = 1, nbproc
-            posit = (iproc1 - 1)*nbproc + iproc2
-            if (v_gracom(posit) == 1) then
-                v_gracom(posit) = 0
-                v_mask(posit) = nmatch
-                posit = (iproc2 - 1)*nbproc + iproc1
-                v_gracom(posit) = 0
-                v_mask(posit) = nmatch
-                nmatch = nmatch + 1
-            end if
-        end do
-    end do
-
-    call jedetr('&&CRNULG.GRAPH_COMM')
-    call jedetr('&&CRNULG.GRAPH_LOC')
-
-    nmatch = nmatch - 1
-    call wkvect('&&CRNULG.ORDJOI', 'V V I', max(nmatch, 1), vi=v_ordjoi)
-    v_ordjoi(:) = -1
-
-    nbjver = 0
-    do iaux = 0, nbproc - 1
-        num = v_mask(rang*nbproc + iaux + 1)
-        ASSERT(num .le. nmatch)
-        if (num .ne. 0) then
-            v_ordjoi(num) = iaux
-            nbjver = nbjver + 1
-        end if
-    end do
-    ASSERT(nbjver .eq. nbjoin)
-    call wkvect(numddl//'.NUME.NBJO', 'G V I', 1 + nmatch, vi=v_nbjo)
-    v_nbjo(1) = nmatch
+! -- Création du graphe de comm
+    comm_name = '&CRNULG.COMM'
+    tag_name = '&CRNULG.TAG'
+    call create_graph_comm(mesh, nb_comm, comm_name, tag_name)
+    call jeveuo(comm_name, 'L', vi=v_comm)
+    call jeveuo(tag_name, 'L', vi=v_tag)
+!
+    call wkvect(numddl//'.NUME.NBJO', 'G V I', 1 + nb_comm, vi=v_nbjo)
+    v_nbjo(1) = nb_comm
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
 !     !!!! EN CAS DE CONSTRUCTION MULTIPLE DE NUMEDDL
@@ -208,14 +155,12 @@ subroutine crnlgc(numddl)
 !   Il faut maintenant communiquer les numeros partages
 !   NOTE : On pourrait sans doute se passer d'une communication puisque celui qui recoit
 !          sait ce qu'il attend et celui qui envoit pourrait tout envoyer
-    do iaux = 0, nmatch - 1
+    do iaux = 1, nb_comm
 !
 !       RECHERCHE DU JOINT
-        numpro = v_ordjoi(iaux + 1)
-        v_nbjo(iaux + 2) = numpro
+        numpro = v_comm(iaux)
+        v_nbjo(iaux + 1) = numpro
         if (numpro .ne. -1) then
-            ASSERT(iaux+1 == v_mask(rang*nbproc + numpro + 1))
-            num = iaux+1
             call codent(numpro, 'G', chnbjo2)
             nojoie = mesh//'.E'//chnbjo2
             nojoir = mesh//'.R'//chnbjo2
@@ -226,7 +171,7 @@ subroutine crnlgc(numddl)
             nbnoer = nbnoer/2
 !
 !       DES DEUX COTES LES NOEUDS NE SONT PAS DANS LE MEME ORDRE ?
-            num4 = num
+            tag4 = to_mpi_int(v_tag(iaux))
             numpr4 = numpro
             lgenve1 = nbnoee*(1 + nec) + 1
             lgenvr1 = nbnoer*(1 + nec) + 1
@@ -253,11 +198,11 @@ subroutine crnlgc(numddl)
             n4r = lgenvr1
             n4e = lgenve1
             if (rang .lt. numpro) then
-                call asmpi_send_i(zi(jenvoi1), n4r, numpr4, num4, mpicou)
-                call asmpi_recv_i(zi(jrecep1), n4e, numpr4, num4, mpicou)
+                call asmpi_send_i(zi(jenvoi1), n4r, numpr4, tag4, mpicou)
+                call asmpi_recv_i(zi(jrecep1), n4e, numpr4, tag4, mpicou)
             else if (rang .gt. numpro) then
-                call asmpi_recv_i(zi(jrecep1), n4e, numpr4, num4, mpicou)
-                call asmpi_send_i(zi(jenvoi1), n4r, numpr4, num4, mpicou)
+                call asmpi_recv_i(zi(jrecep1), n4e, numpr4, tag4, mpicou)
+                call asmpi_send_i(zi(jenvoi1), n4r, numpr4, tag4, mpicou)
             else
                 ASSERT(.false.)
             end if
@@ -266,8 +211,8 @@ subroutine crnlgc(numddl)
             if (zi(jrecep1) > 0) then
                 call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1), jenvoi2)
                 call wkvect('&&CRNULG.NUM_DDL_GLOB_R', 'V V I', zi(jenvoi1), jrecep2)
-                ASSERT(iaux < 1679616)
-                call codlet(iaux, 'G', chnbjo)
+                ASSERT(numpro < 1679616)
+                call codlet(numpro, 'G', chnbjo)
                 call wkvect(numddl//'.NUMEE'//chnbjo, 'G V I', zi(jrecep1), jnujoi1)
 !
                 nbddl = 0
@@ -303,11 +248,11 @@ subroutine crnlgc(numddl)
                 n4e = nbddl
                 n4r = nb_ddl_envoi
                 if (rang .lt. numpro) then
-                    call asmpi_send_i(zi(jenvoi2), n4e, numpr4, num4, mpicou)
-                    call asmpi_recv_i(zi(jrecep2), n4r, numpr4, num4, mpicou)
+                    call asmpi_send_i(zi(jenvoi2), n4e, numpr4, tag4, mpicou)
+                    call asmpi_recv_i(zi(jrecep2), n4r, numpr4, tag4, mpicou)
                 else if (rang .gt. numpro) then
-                    call asmpi_recv_i(zi(jrecep2), n4r, numpr4, num4, mpicou)
-                    call asmpi_send_i(zi(jenvoi2), n4e, numpr4, num4, mpicou)
+                    call asmpi_recv_i(zi(jrecep2), n4r, numpr4, tag4, mpicou)
+                    call asmpi_send_i(zi(jenvoi2), n4e, numpr4, tag4, mpicou)
                 else
                     ASSERT(.false.)
                 end if
@@ -351,7 +296,7 @@ subroutine crnlgc(numddl)
                 numpro = zi(jjoin + ijoin - 1)
                 if (numpro .ne. -1) then
                     numpr4 = numpro
-                    num4 = ijoin
+                    tag4 = ijoin
                     call codent(numpro, 'G', chnbjo2)
                     nojoie = nomlig//'.E'//chnbjo2
                     nojoir = nomlig//'.R'//chnbjo2
@@ -380,17 +325,17 @@ subroutine crnlgc(numddl)
 
                     if (rang .lt. numpro) then
                         if (iret1 .ne. 0) then
-                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, num4, mpicou)
+                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
                         end if
                         if (iret2 .ne. 0) then
-                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, num4, mpicou)
+                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
                         end if
                     else if (rang .gt. numpro) then
                         if (iret2 .ne. 0) then
-                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, num4, mpicou)
+                            call asmpi_recv_i(zi(jnujoi2), n4r, numpr4, tag4, mpicou)
                         end if
                         if (iret1 .ne. 0) then
-                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, num4, mpicou)
+                            call asmpi_send_i(zi(jnujoi1), n4e, numpr4, tag4, mpicou)
                         end if
                     end if
 
@@ -410,6 +355,8 @@ subroutine crnlgc(numddl)
         end if
     end do
 !
+    call jedetr(comm_name)
+    call jedetr(tag_name)
     call jedetc('V', '&&CRNULG', 1)
 !
 ! --- Vérification de la numérotation
@@ -472,8 +419,6 @@ subroutine crnlgc(numddl)
         flush(130+rang)
         flush(190+rang)
     end if
-!
-    call jedetr('&&CRNULG.ORDJOI')
 !
     call jedema()
 #else

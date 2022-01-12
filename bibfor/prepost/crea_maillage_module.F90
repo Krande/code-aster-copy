@@ -19,6 +19,7 @@
 !
 module crea_maillage_module
 !
+use sort_module
 !
 implicit none
 !
@@ -2418,13 +2419,21 @@ contains
             v_rnode(rank+1) = 0
 ! --- On compte combien on doit recevoir et envoyer
             nb_recv = 0
-            call wkvect('&&CREAMA.PROC', 'V V I', nbproc, vi=v_proc)
+            do i_proc = 0, nbproc-1
+                if(v_rnode(i_proc+1) > 0) then
+                    nb_recv = nb_recv + 1
+                end if
+            end do
+            call wkvect(mesh_out//'.DOMDIS', 'G V I', nb_recv, vi=v_proc)
+            nb_recv = 0
             do i_proc = 0, nbproc-1
                 if(v_rnode(i_proc+1) > 0) then
                     nb_recv = nb_recv + 1
                     v_proc(nb_recv) = i_proc
                 end if
             end do
+            call sort_i8(v_proc, nb_recv)
+!
             call wkvect('&&CREAMA.COMM', 'V V I', nbproc, vi=v_comm)
             call wkvect('&&CREAMA.TAG', 'V V I', nbproc, vi=v_tag)
             call build_tree_comm(v_proc, nb_recv, v_comm, v_tag)

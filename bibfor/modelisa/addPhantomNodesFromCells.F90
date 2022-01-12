@@ -36,6 +36,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/create_graph_comm.h"
 #include "jeveux.h"
 !
 !
@@ -52,13 +53,14 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     character(len=8) :: k8bid
     character(len=8) :: chnbjo
     character(len=24) :: nojoie, nojoir
-    integer :: rang, nbproc, nbjoin, domdis, iret
-    integer :: i_join, nbnoee, nbnoer, i_no, numno
-    mpi_int :: mrank, msize, mpicou, num4, numpr4, n4e, n4r
-    integer, pointer :: v_joint(:) => null()
+    character(len=19) :: tag_name, comm_name
+    integer :: rang, nbproc, nb_comm, domdis, iret
+    integer :: i_comm, nbnoee, nbnoer, i_no, numno
+    mpi_int :: mrank, msize, mpicou, tag4, numpr4, n4e, n4r
+    integer, pointer :: v_comm(:) => null()
+    integer, pointer :: v_tag(:) => null()
     integer, pointer :: v_joine(:) => null()
     integer, pointer :: v_joinr(:) => null()
-    aster_logical, pointer :: v_gcomm(:) => null()
     integer(kind=4), pointer :: v_send(:) => null()
     integer(kind=4), pointer :: v_recv(:) => null()
 !
@@ -71,79 +73,75 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     DEBUG_MPI('addPhantomNodesFromCells', rang, nbproc)
 !
 ! --- Lecture des joints
-    call jeexin(mesh//'.DOMJOINTS', iret)
+    call jeexin(mesh//'.DOMDIS', iret)
     if(iret > 0) then
-        call jeveuo(mesh//'.DOMJOINTS', 'L', vi=v_joint)
-        call jelira(mesh//'.DOMJOINTS', 'LONMAX', nbjoin, k8bid)
+        comm_name = '&&CPYSOL.COMM'
+        tag_name = '&&CPYSOL.TAG'
+        call create_graph_comm(mesh, nb_comm, comm_name, tag_name)
+        call jeveuo(comm_name, 'L', vi=v_comm)
+        call jeveuo(tag_name, 'L', vi=v_tag)
 !
-! --- Creation du graph local
-        call wkvect('&&APNFCS.GRAPH_COMM', 'V V L', nbproc, vl=v_gcomm)
-        v_gcomm(:) = ASTER_FALSE
-!
-        do i_join = 1, nbjoin
-            domdis = v_joint(i_join)
-            if( .not.v_gcomm(domdis+1) ) then
+        do i_comm = 1, nb_comm
+            domdis = v_comm(i_comm)
 ! --- Get JOINT
-                call codent(domdis, 'G', chnbjo)
-                nojoie = mesh//'.E'//chnbjo
-                nojoir = mesh//'.R'//chnbjo
-                call jeveuo(nojoie, 'L', vi=v_joine)
-                call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
-                call jeveuo(nojoir, 'L', vi=v_joinr)
-                call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
-                nbnoee = nbnoee/2
-                nbnoer = nbnoer/2
+            call codent(domdis, 'G', chnbjo)
+            nojoie = mesh//'.E'//chnbjo
+            nojoir = mesh//'.R'//chnbjo
+            call jeveuo(nojoie, 'L', vi=v_joine)
+            call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
+            call jeveuo(nojoir, 'L', vi=v_joinr)
+            call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
+            nbnoee = nbnoee/2
+            nbnoer = nbnoer/2
 !
-                call wkvect('&&APNFCS.NOSEND', 'V V S', nbnoee, vi4=v_send)
-                call wkvect('&&APNFCS.NORECV', 'V V S', nbnoer, vi4=v_recv)
+            call wkvect('&&APNFCS.NOSEND', 'V V S', nbnoee, vi4=v_send)
+            call wkvect('&&APNFCS.NORECV', 'V V S', nbnoer, vi4=v_recv)
 !
 ! --- Get nodes to send
 !
-                do i_no = 1, nbnoee
+            do i_no = 1, nbnoee
 !                    print*, "SENDN: ", i_no, nbnoee, v_joine(2*(i_no-1)+1:2*(i_no-1)+2)
-                    numno = v_joine(2*(i_no-1)+1)
-                    v_send(i_no) = indic_nodes(numno)
-                end do
+                numno = v_joine(2*(i_no-1)+1)
+                v_send(i_no) = indic_nodes(numno)
+            end do
 !
 ! --- Send and Recive
-                n4e = to_mpi_int(nbnoee)
-                n4r = to_mpi_int(nbnoer)
-                num4 = to_mpi_int(max(domdis,rang)*nbproc+min(domdis,rang))
-                numpr4 = to_mpi_int(domdis)
+            n4e = to_mpi_int(nbnoee)
+            n4r = to_mpi_int(nbnoer)
+            tag4 = to_mpi_int(v_tag(i_comm))
+            numpr4 = to_mpi_int(domdis)
 !                print*, "DEB COMM: ", rang, domdis
-                if (rang .lt. domdis) then
+            if (rang .lt. domdis) then
 !                    print*, "SEND: ", rang, " -> ", domdis
-                    call asmpi_send_i4(v_send, n4e, numpr4, num4, mpicou)
+                call asmpi_send_i4(v_send, n4e, numpr4, tag4, mpicou)
 !                    print*, "RECV: ", domdis, " -> ", rang
-                    call asmpi_recv_i4(v_recv, n4r, numpr4, num4, mpicou)
-                else if (rang.gt.domdis) then
+                call asmpi_recv_i4(v_recv, n4r, numpr4, tag4, mpicou)
+            else if (rang.gt.domdis) then
 !                    print*, "RECV: ", domdis, " -> ", rang
-                    call asmpi_recv_i4(v_recv, n4r, numpr4, num4, mpicou)
+                call asmpi_recv_i4(v_recv, n4r, numpr4, tag4, mpicou)
 !                    print*, "SEND: ", rang, " -> ", domdis
-                    call asmpi_send_i4(v_send, n4e, numpr4, num4, mpicou)
-                else
-                    ASSERT(ASTER_FALSE)
-                endif
+                call asmpi_send_i4(v_send, n4e, numpr4, tag4, mpicou)
+            else
+                ASSERT(ASTER_FALSE)
+            endif
 !                print*, "FIN COMM: ", rang, domdis
 !
 ! --- Write nodes to receive
 !
-                do i_no = 1, nbnoer
+            do i_no = 1, nbnoer
 !                    print*, "RECVN: ", i_no, nbnoer, v_joinr(2*(i_no-1)+1:2*(i_no-1)+2)
-                    numno = v_joinr(2*(i_no-1)+1)
-                    indic_nodes(numno) = max(indic_nodes(numno), v_recv(i_no))
-                end do
-!
-                v_gcomm(domdis+1) = ASTER_TRUE
+                numno = v_joinr(2*(i_no-1)+1)
+                indic_nodes(numno) = max(indic_nodes(numno), v_recv(i_no))
+            end do
 !
 ! --- Cleaning
-                call jedetr('&&APNFCS.NOSEND')
-                call jedetr('&&APNFCS.NORECV')
-            end if
+            call jedetr('&&APNFCS.NOSEND')
+            call jedetr('&&APNFCS.NORECV')
         end do
 !
 ! --- Cleaning
-        call jedetr('&&APNFCS.GRAPH_COMM')
+        call jedetr(comm_name)
+        call jedetr(tag_name)
 !
     endif
 !

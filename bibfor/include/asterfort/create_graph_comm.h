@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
+!
 interface
-    subroutine ghost_cells_communication(numddl, rsolu)
-        real(kind=8) :: rsolu(*)
-        character(len=14) :: numddl
-    end subroutine ghost_cells_communication
+    subroutine create_graph_comm(object, nb_comm, comm, tag)
+        character(len=*), intent(in) :: object
+        integer, intent(inout) :: nb_comm
+        character(len=*), intent(in) :: comm, tag
+    end subroutine create_graph_comm
 end interface

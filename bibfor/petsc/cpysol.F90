@@ -43,6 +43,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterfort/mrconl.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/crnustd.h"
+#include "asterfort/create_graph_comm.h"
 #include "jeveux.h"
 !
 #ifdef ASTER_HAVE_PETSC
@@ -56,26 +57,28 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: rang, nbproc, jnbjoi, nbjoin, numpro, jjointr, jjointe, lmat
+    integer :: rang, nbproc, nbjoin, numpro, jjointr, jjointe, lmat
     integer :: lgenvo, lgrecep, jvaleue, jvaleur, iaux, jaux, jnulg
     integer :: jprddl, jnequ, nloc, nlili, ili, iret, jjoin, ijoin
     integer :: numglo, jdeeq, jrefn, jmlogl, nuno1, nucmp1, numloc
     integer :: iret1, iret2, jjoine, nbnoee, idprn1, idprn2, nec, dime
     integer :: nunoel, l, jjoinr, jnujoi1, jnujoi2, nbnoer, nddll, ntot
-    integer :: numnoe, step
+    integer :: numnoe, step, nb_comm
     aster_logical :: ldebug
     integer, pointer :: v_nuls(:) => null()
     integer, pointer :: v_deeg(:) => null()
+    integer, pointer :: v_comm(:) => null()
+    integer, pointer :: v_tag(:) => null()
     integer, save :: nstep = 0
 !
-    mpi_int :: n4r, n4e, iaux4, num4, numpr4
+    mpi_int :: n4r, n4e, iaux4, tag4, numpr4
     mpi_int :: mrank, msize, iermpi, mpicou
 !
     character(len=4) :: chnbjo
     character(len=8) :: chnbjo2
     character(len=8) :: k8bid, noma
-    character(len=19) :: nomlig
-    character(len=24) :: nonbjo, nojoinr, nojoine, nonulg, join
+    character(len=19) :: nomlig, comm_name, tag_name
+    character(len=24) :: nojoinr, nojoine, nonulg, join
 !----------------------------------------------------------------------
     integer :: zzprno
 !
@@ -103,9 +106,11 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     nbproc = to_aster_int(msize)
     DEBUG_MPI('cpysol', rang, nbproc)
 !
-    nonbjo = numddl//'.NUME.NBJO'
-    call jeveuo(nonbjo, 'L', jnbjoi)
-    nbjoin = zi(jnbjoi)
+    comm_name = '&&CPYSOL.COMM'
+    tag_name = '&&CPYSOL.TAG'
+    call create_graph_comm(numddl, nb_comm, comm_name, tag_name)
+    call jeveuo(comm_name, 'L', vi=v_comm)
+    call jeveuo(tag_name, 'L', vi=v_tag)
 !
     call jeveuo(numddl//'.NUME.NULG', 'L', jnulg)
     call jeveuo(numddl//'.NUME.PDDL', 'L', jprddl)
@@ -119,11 +124,11 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
         end if
     end do
 !
-    do iaux = 0, nbjoin - 1
-        numpro = zi(jnbjoi + iaux + 1)
+    do iaux = 1, nb_comm
+        numpro = v_comm(iaux)
         if (numpro .ne. -1) then
-            ASSERT(iaux < 1679616)
-            call codlet(iaux, 'G', chnbjo)
+            ASSERT(numpro < 1679616)
+            call codlet(numpro, 'G', chnbjo)
 !
             nojoinr = numddl//'.NUMER'//chnbjo(1:4)
             nojoine = numddl//'.NUMEE'//chnbjo(1:4)
@@ -146,17 +151,17 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !
                 n4e = lgenvo
                 n4r = lgrecep
-                num4 = iaux
+                tag4 = to_mpi_int(v_tag(iaux))
                 numpr4 = numpro
                 if (rang .lt. numpro) then
-                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, num4, &
+                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, tag4, &
                                       mpicou)
-                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, num4, &
+                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, tag4, &
                                       mpicou)
                 else if (rang .gt. numpro) then
-                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, num4, &
+                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, tag4, &
                                       mpicou)
-                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, num4, &
+                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, tag4, &
                                       mpicou)
                 else
                     ASSERT(.false.)
@@ -200,7 +205,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
                 numpro = zi(jjoin + ijoin - 1)
                 if (numpro .ne. -1) then
                     numpr4 = numpro
-                    num4 = ijoin
+                    tag4 = ijoin
                     call codent(numpro, 'G', chnbjo2)
                     nojoine = nomlig//'.E'//chnbjo2
                     nojoinr = nomlig//'.R'//chnbjo2
@@ -228,17 +233,17 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 
                     if (rang .lt. numpro) then
                         if (iret1 .ne. 0) then
-                            call asmpi_send_r(zr(jnujoi1), n4e, numpr4, num4, mpicou)
+                            call asmpi_send_r(zr(jnujoi1), n4e, numpr4, tag4, mpicou)
                         end if
                         if (iret2 .ne. 0) then
-                            call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, num4, mpicou)
+                            call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, tag4, mpicou)
                         end if
                     else if (rang .gt. numpro) then
                         if (iret2 .ne. 0) then
-                            call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, num4, mpicou)
+                            call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, tag4, mpicou)
                         end if
                         if (iret1 .ne. 0) then
-                            call asmpi_send_r(zr(jnujoi1), n4e, numpr4, num4, mpicou)
+                            call asmpi_send_r(zr(jnujoi1), n4e, numpr4, tag4, mpicou)
                         end if
                     end if
 
@@ -259,6 +264,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 ! -- REMISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
     call jeveuo(nomat//'.&INT', 'L', lmat)
     call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
+!
+    call jedetr(comm_name)
+    call jedetr(tag_name)
 !
 !
 ! -- debug

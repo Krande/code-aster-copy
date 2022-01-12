@@ -28,6 +28,7 @@ subroutine crnustd(numddl)
 #include "asterf.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
+#include "asterfort/create_graph_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -72,7 +73,7 @@ subroutine crnustd(numddl)
     integer :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
     integer :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
     integer :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
-    integer :: nbno_lili_lc, nbno_lili_gl
+    integer :: nbno_lili_lc, nbno_lili_gl, nb_comm
     mpi_int :: mrank, msize, mpicou, nbno4
     mpi_int :: iaux4, num4, numpr4, n4e, n4r
     mpi_int, parameter :: one4 = to_mpi_int(1)
@@ -87,13 +88,14 @@ subroutine crnustd(numddl)
     integer, pointer :: v_nddl(:) => null()
     integer, pointer :: v_gddl(:) => null()
     integer, pointer :: v_tddl(:) => null()
-    integer, pointer :: v_nbjo(:) => null()
     integer, pointer :: v_deeg(:) => null()
     integer, pointer :: v_linulg(:) => null()
+    integer, pointer :: v_comm(:) => null()
+    integer, pointer :: v_tag(:) => null()
 !
     character(len=8) :: chnbjo
     character(len=8) :: k8bid, mesh, nomgdr
-    character(len=19) :: nomlig
+    character(len=19) :: nomlig, tag_name, comm_name
     character(len=24) :: owner, nojoie, nojoir, join, linulg
 !
 !----------------------------------------------------------------------
@@ -140,9 +142,7 @@ subroutine crnustd(numddl)
     call jeveuo(numddl//'.NUME.DEEQ', 'L', vi=v_deeq)
     call jeveuo(numddl//'.NUME.NEQU', 'L', vi=v_nequ)
     call jeveuo(numddl//'.NUME.DELG', 'L', vi=v_delg)
-    call jeveuo(numddl//'.NUME.NBJO', 'L', vi=v_nbjo)
 !
-    nbjoin = v_nbjo(1)
     nbddll = v_nequ(1)
 !
     call wkvect(numddl//'.NUME.DEEG', 'G V I', 2*nbddll, vi=v_deeg)
@@ -232,12 +232,19 @@ subroutine crnustd(numddl)
         endif
     end do
 !
+! -- On crée le graphe de comm
+    comm_name = '&&CRNUSTD.COMM'
+    tag_name = '&&CRNUSTD.TAG'
+    call create_graph_comm(mesh, nb_comm, comm_name, tag_name)
+    call jeveuo(comm_name, 'L', vi=v_comm)
+    call jeveuo(tag_name, 'L', vi=v_tag)
+!
 ! -- On renumerote les noeuds physiques non-proprio
 !    Il faut faire comme dans crnlgc.F90
-        do i_join = 1, nbjoin
+    do i_join = 1, nb_comm
 !
 !       RECHERCHE DU JOINT
-        numpro = v_nbjo(1 + i_join)
+        numpro = v_comm(i_join)
         if (numpro .ne. -1) then
             call codent(numpro, 'G', chnbjo)
             nojoie = mesh//'.E'//chnbjo
@@ -249,7 +256,7 @@ subroutine crnustd(numddl)
             nbnoer = nbnoer/2
 !
 !       DES DEUX COTES LES NOEUDS NE SONT PAS DANS LE MEME ORDRE ?
-            num4 = to_mpi_int(i_join)
+            num4 = to_mpi_int(v_tag(i_join))
             numpr4 = to_mpi_int(numpro)
             lgenve1 = nbnoee*(1 + nec) + 1
             lgenvr1 = nbnoer*(1 + nec) + 1
@@ -489,6 +496,8 @@ subroutine crnustd(numddl)
     call jedetr('&&CRNSTD.NEC2')
     call jedetr('&&CRNSTD.CMP')
     call jedetr('&&CRNSTD.CMP2')
+    call jedetr(comm_name)
+    call jedetr(tag_name)
 !
     call jedema()
 #else

@@ -28,7 +28,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/build_comm_graph.h"
+#include "asterfort/create_graph_comm.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -73,15 +73,18 @@ aster_logical :: par_seqfile
     integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
     integer :: ino, jnoex, jnbno, jnbno1, nbnot, iproc, jno, jma, jnbma, nbmat, jmaex
     integer :: rang, nbproc, ityp, jtyp, jtyp2, iaux, ifm, niv, jtypg
-    integer :: ima, ite04, ite08, itr03, itr04, jgrap, nbjoin, ijoin
+    integer :: ima, ite04, ite08, itr03, itr04, nb_comm, i_comm
     integer :: jjoine, jjoinr, nbnoee, nbnoer, numpro, jenvoi1, jrecep1
-    integer(kind=4) :: num4, numpr4, n4e, n4r
+    integer(kind=4) :: tag4, numpr4, n4e, n4r
     character(len=4) :: chnbjo
     character(len=8) :: nomtyp(MT_NTYMAX), k8bid
+    character(len=19) :: tag_name, comm_name
     character(len=24) :: nojoie, nojoir
     integer, pointer :: connex(:) => null()
     integer, pointer :: point(:) => null()
     integer, pointer :: typma(:) => null()
+    integer, pointer :: v_comm(:) => null()
+    integer, pointer :: v_tag(:) => null()
     real(kind=8), pointer :: coordo(:) => null()
     aster_logical, pointer :: par_seq(:) => null()
     mpi_int :: mrank, msize, world
@@ -161,15 +164,17 @@ aster_logical :: par_seqfile
 !
 ! 4. ==> Construction du graph de communication
 !
-        call build_comm_graph(nomast, nomsd//'.GRAPH', base)
-        call jeveuo(nomsd//'.GRAPH', 'L', jgrap)
+        comm_name = '&&CPYSOL.COMM'
+        tag_name = '&&CPYSOL.TAG'
+        call create_graph_comm(nomast, nb_comm, comm_name, tag_name)
+        call jeveuo(comm_name, 'L', vi=v_comm)
+        call jeveuo(tag_name, 'L', vi=v_tag)
 !
 ! 5. ==> Construction d'une numerotation globale des noeuds :
 !          proc 0 en premier, proc 1 ensuite, etc.
 !
-        nbjoin = zi(jgrap)
-        do ijoin = 1, nbjoin
-            numpro = zi(jgrap+ijoin)
+        do i_comm = 1, nb_comm
+            numpro = v_comm(i_comm)
             if(numpro.ne.-1) then
                 call codent(numpro, 'G', chnbjo)
                 nojoie = nomast//'.E'//chnbjo
@@ -188,14 +193,14 @@ aster_logical :: par_seqfile
                 enddo
                 n4r = to_mpi_int(nbnoer)
                 n4e = to_mpi_int(nbnoee)
-                num4 = to_mpi_int(ijoin)
+                tag4 = to_mpi_int(v_tag(i_comm))
                 numpr4 = to_mpi_int(numpro)
                 if (rang .lt. numpro) then
-                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, num4, world)
-                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, num4, world)
+                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, tag4, world)
+                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, tag4, world)
                 else if (rang.gt.numpro) then
-                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, num4, world)
-                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, num4, world)
+                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, tag4, world)
+                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, tag4, world)
                 endif
 
                 do ino = 0, nbnoer-1
@@ -262,6 +267,8 @@ aster_logical :: par_seqfile
         call jedetr('&&FILTRE.TYPMAILG')
         call jedetr(nomsd//'.NBMA')
         call jedetr(nomsd//'.NBNO1')
+        call jedetr(comm_name)
+        call jedetr(tag_name)
     endif
 !
     if(niv > 1) then

@@ -20,6 +20,8 @@
 !
 subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
+use sort_module
+!
     implicit none
 #include "asterf.h"
 #include "asterf_med.h"
@@ -69,13 +71,14 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
     integer :: rang, nbproc, nbjoin, domdis, nstep, ncorre
     integer :: icor, entlcl, geolcl, entdst, geodst, ncorr2
     integer :: jnlogl, codret, i_join, ino, numno, deca
-    integer :: ima, nbma, node_id, nbnoma, dom1, dom2
+    integer :: ima, nbma, node_id, nbnoma, dom1, dom2, incr
     mpi_int :: mrank, msize
     integer, pointer :: v_noext(:) => null()
     integer, pointer :: v_nojoin(:) => null()
     integer, pointer :: v_joint(:) => null()
     integer, pointer :: v_maex(:) => null()
     integer, pointer :: v_connex(:) => null()
+    integer, pointer :: v_dom(:) => null()
 !
     call jemarq()
 !
@@ -124,10 +127,12 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
 !
         if(nbjoin > 0) then
             call wkvect(mesh//'.DOMJOINTS', 'G V I', nbjoin, vi=v_joint)
+            call wkvect(mesh//'.DOMDIS', 'G V I', nbjoin/2, vi=v_dom)
             v_joint = -1
 !
 ! --- Boucle sur les joints entre les sous-domaines
 !
+            incr = 0
             do i_join = 1, nbjoin
                 call as_msdjni(fid, nomam2, i_join, nomjoi, descri, domdis, &
                             nommad, nstep, ncorre, codret)
@@ -144,6 +149,8 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
                         call codent(domdis, 'G', chnbjo)
                         if ( dom1.eq.rang ) then
                             nojoin = mesh//'.RT'//chnbjo
+                            incr = incr + 1
+                            v_dom(incr) = domdis
                         else
                             nojoin = mesh//'.ET'//chnbjo
                         endif
@@ -170,6 +177,8 @@ subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
                     endif
                 enddo
             enddo
+!
+            call sort_i8(v_dom, nbjoin/2)
 !
 ! --- Maintenant que l'on a toute l'information - il faut nettoyer les joints
 ! --- On fait les COMM pour nettoyer les joints
