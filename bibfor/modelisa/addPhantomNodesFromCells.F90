@@ -22,8 +22,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 !
     implicit none
 #include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_recv_i4.h"
-#include "asterc/asmpi_send_i4.h"
+#include "asterc/asmpi_sendrecv_i4.h"
 #include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
@@ -100,7 +99,6 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 ! --- Get nodes to send
 !
             do i_no = 1, nbnoee
-!                    print*, "SENDN: ", i_no, nbnoee, v_joine(2*(i_no-1)+1:2*(i_no-1)+2)
                 numno = v_joine(2*(i_no-1)+1)
                 v_send(i_no) = indic_nodes(numno)
             end do
@@ -110,26 +108,12 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
             n4r = to_mpi_int(nbnoer)
             tag4 = to_mpi_int(v_tag(i_comm))
             numpr4 = to_mpi_int(domdis)
-!                print*, "DEB COMM: ", rang, domdis
-            if (rang .lt. domdis) then
-!                    print*, "SEND: ", rang, " -> ", domdis
-                call asmpi_send_i4(v_send, n4e, numpr4, tag4, mpicou)
-!                    print*, "RECV: ", domdis, " -> ", rang
-                call asmpi_recv_i4(v_recv, n4r, numpr4, tag4, mpicou)
-            else if (rang.gt.domdis) then
-!                    print*, "RECV: ", domdis, " -> ", rang
-                call asmpi_recv_i4(v_recv, n4r, numpr4, tag4, mpicou)
-!                    print*, "SEND: ", rang, " -> ", domdis
-                call asmpi_send_i4(v_send, n4e, numpr4, tag4, mpicou)
-            else
-                ASSERT(ASTER_FALSE)
-            endif
-!                print*, "FIN COMM: ", rang, domdis
+            call asmpi_sendrecv_i4(v_send, n4e, numpr4, tag4, &
+                                   v_recv, n4r, numpr4, tag4, mpicou)
 !
 ! --- Write nodes to receive
 !
             do i_no = 1, nbnoer
-!                    print*, "RECVN: ", i_no, nbnoer, v_joinr(2*(i_no-1)+1:2*(i_no-1)+2)
                 numno = v_joinr(2*(i_no-1)+1)
                 indic_nodes(numno) = max(indic_nodes(numno), v_recv(i_no))
             end do

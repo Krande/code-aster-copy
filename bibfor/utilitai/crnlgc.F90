@@ -22,6 +22,7 @@ subroutine crnlgc(numddl)
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
+#include "asterc/asmpi_sendrecv_i.h"
 #include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_debug.h"
@@ -195,18 +196,11 @@ subroutine crnlgc(numddl)
                 nb_ddl_envoi = nb_ddl_envoi + zzprno(1, numno1, 2)
             end do
             zi(jenvoi1) = nb_ddl_envoi
-            n4r = lgenvr1
-            n4e = lgenve1
-            if (rang .lt. numpro) then
-                call asmpi_send_i(zi(jenvoi1), n4r, numpr4, tag4, mpicou)
-                call asmpi_recv_i(zi(jrecep1), n4e, numpr4, tag4, mpicou)
-            else if (rang .gt. numpro) then
-                call asmpi_recv_i(zi(jrecep1), n4e, numpr4, tag4, mpicou)
-                call asmpi_send_i(zi(jenvoi1), n4r, numpr4, tag4, mpicou)
-            else
-                ASSERT(.false.)
-            end if
-!
+            n4e = lgenvr1
+            n4r = lgenve1
+            call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
+                                  zi(jrecep1), n4r, numpr4, tag4, mpicou)
+
 !           On continue si le joint à des DDL
             if (zi(jrecep1) > 0) then
                 call wkvect('&&CRNULG.NUM_DDL_GLOB_E', 'V V I', zi(jrecep1), jenvoi2)
@@ -247,15 +241,9 @@ subroutine crnlgc(numddl)
                 ASSERT(zi(jrecep1) .eq. nbddl)
                 n4e = nbddl
                 n4r = nb_ddl_envoi
-                if (rang .lt. numpro) then
-                    call asmpi_send_i(zi(jenvoi2), n4e, numpr4, tag4, mpicou)
-                    call asmpi_recv_i(zi(jrecep2), n4r, numpr4, tag4, mpicou)
-                else if (rang .gt. numpro) then
-                    call asmpi_recv_i(zi(jrecep2), n4r, numpr4, tag4, mpicou)
-                    call asmpi_send_i(zi(jenvoi2), n4e, numpr4, tag4, mpicou)
-                else
-                    ASSERT(.false.)
-                end if
+                call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
+                                      zi(jrecep2), n4r, numpr4, tag4, mpicou)
+
                 call wkvect(numddl//'.NUMER'//chnbjo, 'G V I', nb_ddl_envoi, jnujoi2)
 !
                 curpos = 0

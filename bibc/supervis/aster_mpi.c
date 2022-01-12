@@ -588,6 +588,27 @@ void DEFPPPPPPPPP(ASMPI_SENDRECV_I, asmpi_sendrecv_i,
     return;
 }
 
+void DEFPPPPPPPPP(ASMPI_SENDRECV_I4, asmpi_sendrecv_i4,
+              ASTERINTEGER4 *buffer_send, ASTERINTEGER4 *count_send,
+              ASTERINTEGER4 *recipient, ASTERINTEGER4 *tag_send,
+              ASTERINTEGER4 *buffer_recv, ASTERINTEGER4 *count_recv,
+              ASTERINTEGER4 *sender, ASTERINTEGER4 *tag_recv, MPI_Fint *comm) {
+#ifdef ASTER_HAVE_MPI
+    MPI_Comm mpicom;
+    mpicom = MPI_Comm_f2c(*comm);
+    DEBUG_MPI("MPI_SendRecv: send/recv %d short integer values to proc #%d ...\n",
+            *count_send + *count_recv, *recipient);
+    double start = MPI_Wtime();
+    AS_MPICHECK(MPI_Sendrecv((void *)buffer_send, *count_send, MPI_INTEGER4,
+                       *recipient, *tag_send,
+                       (void *)buffer_recv, *count_recv, MPI_INTEGER4,
+                       *sender, *tag_recv, mpicom, MPI_STATUS_IGNORE));
+    double end = MPI_Wtime();
+    DEBUG_MPI("MPI_Sendrecv: ... in %f sec %s\n", (end-start), " ");
+#endif
+    return;
+}
+
 /*
  * Wrapper around MPI_ISend
  * Do not check returncode because all errors raise

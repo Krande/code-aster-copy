@@ -20,6 +20,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_r.h"
 #include "asterc/asmpi_send_r.h"
+#include "asterc/asmpi_sendrecv_r.h"
 #include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_petsc.h"
@@ -153,19 +154,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
                 n4r = lgrecep
                 tag4 = to_mpi_int(v_tag(iaux))
                 numpr4 = numpro
-                if (rang .lt. numpro) then
-                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, tag4, &
-                                      mpicou)
-                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, tag4, &
-                                      mpicou)
-                else if (rang .gt. numpro) then
-                    call asmpi_recv_r(zr(jvaleur), n4r, numpr4, tag4, &
-                                      mpicou)
-                    call asmpi_send_r(zr(jvaleue), n4e, numpr4, tag4, &
-                                      mpicou)
-                else
-                    ASSERT(.false.)
-                end if
+                call asmpi_sendrecv_r(zr(jvaleue), n4e, numpr4, tag4, &
+                                      zr(jvaleur), n4r, numpr4, tag4, mpicou)
+
                 do jaux = 0, lgrecep - 1
                     numloc = zi(jjointr + jaux)
                     ASSERT(zi(jprddl + numloc - 1) .eq. numpro)

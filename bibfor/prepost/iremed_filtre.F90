@@ -22,8 +22,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
     implicit none
 !
 #include "asterc/asmpi_comm.h"
-#include "asterc/asmpi_recv_i.h"
-#include "asterc/asmpi_send_i.h"
+#include "asterc/asmpi_sendrecv_i.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
@@ -195,13 +194,8 @@ aster_logical :: par_seqfile
                 n4e = to_mpi_int(nbnoee)
                 tag4 = to_mpi_int(v_tag(i_comm))
                 numpr4 = to_mpi_int(numpro)
-                if (rang .lt. numpro) then
-                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, tag4, world)
-                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, tag4, world)
-                else if (rang.gt.numpro) then
-                    call asmpi_recv_i(zi(jrecep1), n4r, numpr4, tag4, world)
-                    call asmpi_send_i(zi(jenvoi1), n4e, numpr4, tag4, world)
-                endif
+                call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
+                                      zi(jrecep1), n4r, numpr4, tag4, world)
 
                 do ino = 0, nbnoer-1
                     if(zi(jrecep1+ino).ne.-1) zi(jno+zi(jjoinr+2*ino)-1) = -zi(jrecep1+ino)
