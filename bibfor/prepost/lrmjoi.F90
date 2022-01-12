@@ -75,7 +75,6 @@ use sort_module
     mpi_int :: mrank, msize
     integer, pointer :: v_noext(:) => null()
     integer, pointer :: v_nojoin(:) => null()
-    integer, pointer :: v_joint(:) => null()
     integer, pointer :: v_maex(:) => null()
     integer, pointer :: v_connex(:) => null()
     integer, pointer :: v_dom(:) => null()
@@ -126,9 +125,7 @@ use sort_module
 !     des comm pour le savoir
 !
         if(nbjoin > 0) then
-            call wkvect(mesh//'.DOMJOINTS', 'G V I', nbjoin, vi=v_joint)
-            call wkvect(mesh//'.DOMDIS', 'G V I', nbjoin/2, vi=v_dom)
-            v_joint = -1
+            call wkvect(mesh//'.DOMJOINTS', 'G V I', nbjoin/2, vi=v_dom)
 !
 ! --- Boucle sur les joints entre les sous-domaines
 !
@@ -172,7 +169,6 @@ use sort_module
                                 deca = deca +2
                             end do
                         end if
-                        v_joint(i_join) = domdis
 !
                     endif
                 enddo
@@ -184,7 +180,6 @@ use sort_module
 ! --- On fait les COMM pour nettoyer les joints
 !
             do i_join = 1, nbjoin
-                if( v_joint(i_join) .ne. -1) then
                     call as_msdjni(fid, nomam2, i_join, nomjoi, descri, domdis, &
                                 nommad, nstep, ncorre, codret)
                     ASSERT(domdis <= nbproc)
@@ -202,7 +197,6 @@ use sort_module
 !
                     call lrm_clean_joint(rang, domdis, nbproc, v_noext, nojoin_old, nojoin_new)
                     call jedetr(nojoin_old)
-                end if
             end do
         else
             call utmess('A', 'MAILLAGE1_5', sk=nomam2)

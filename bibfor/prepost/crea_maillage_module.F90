@@ -2373,7 +2373,6 @@ contains
             integer, pointer :: v_rnode(:) => null()
             integer, pointer :: v_noex(:) => null()
             integer, pointer :: v_nojoin(:) => null()
-            integer, pointer :: v_joint(:) => null()
             integer, pointer :: v_snume(:) => null()
             integer, pointer :: v_rnume(:) => null()
             integer, pointer :: v_nkeep(:) => null()
@@ -2386,7 +2385,7 @@ contains
             real(kind=8), pointer :: v_send(:) => null()
             real(kind=8), pointer :: v_recv(:) => null()
             mpi_int :: msize, mrank, count_send, count_recv, id, tag, mpicou
-            integer :: nbproc, rank, ind, nb_recv, i_proc, i_join, recv(1)
+            integer :: nbproc, rank, ind, nb_recv, i_proc, recv(1)
             integer :: n_coor_send, n_coor_recv, proc_id, i_comm
             integer :: i_node, nb_nodes_keep, i_node_r, node_id, j_node
             integer :: i_cell, nno, nb_cells_keep, owner, cell_id
@@ -2424,7 +2423,7 @@ contains
                     nb_recv = nb_recv + 1
                 end if
             end do
-            call wkvect(mesh_out//'.DOMDIS', 'G V I', nb_recv, vi=v_proc)
+            call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv, vi=v_proc)
             nb_recv = 0
             do i_proc = 0, nbproc-1
                 if(v_rnode(i_proc+1) > 0) then
@@ -2459,8 +2458,6 @@ contains
                 print*, "-Nombre de cells candidates totales: ", nb_cells_keep
             end if
 ! --- On crée les joints
-            call wkvect(mesh_out//'.DOMJOINTS', 'G V I', 2*nb_recv, vi=v_joint)
-            i_join = 0
             do i_comm = 1, nb_recv
                 proc_id = v_comm(i_comm)
                 tag = to_mpi_int(v_tag(i_comm))
@@ -2552,8 +2549,6 @@ contains
 ! --- Create joint .E
                 nojoin = mesh_out//'.E'//chnbjo
                 call wkvect(nojoin, 'G V I', 2*n_coor_recv, vi=v_nojoin)
-                i_join = i_join + 1
-                v_joint(i_join) = proc_id
                 call wkvect("&&CREAMA.SNUME", 'V V I', 2*n_coor_recv, vi=v_snume)
 !
 ! --- Search nodes with coordinates
@@ -2592,8 +2587,6 @@ contains
 ! --- Create joint .R
                 nojoin = mesh_out//'.R'//chnbjo
                 call wkvect(nojoin, 'G V I', 2*n_coor_send, vi=v_nojoin)
-                i_join = i_join + 1
-                v_joint(i_join) = proc_id
 !
                 do i_node = 1, n_coor_send
                     v_nojoin(2*(i_node-1)+1) = int(v_send(4*(i_node-1)+1))

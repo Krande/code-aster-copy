@@ -63,11 +63,11 @@ use sort_module
 !
 ! --- Result depends on type
     if(type == 'MAILLAGE_P') then
-        k24 = object//'.DOMDIS'
+        k24 = object//'.DOMJOINTS'
         call jeexin(k24, iret)
         if( iret > 0 ) then
-            call jelira(object//'.DOMDIS', 'LONMAX', nb_comm, k8bid)
-            call jeveuo(object//'.DOMDIS', 'L', vi=v_domdis)
+            call jelira(object//'.DOMJOINTS', 'LONMAX', nb_comm, k8bid)
+            call jeveuo(object//'.DOMJOINTS', 'L', vi=v_domdis)
         end if
     else
         k24 = object//'.NUME.NBJO'

@@ -72,7 +72,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     DEBUG_MPI('addPhantomNodesFromCells', rang, nbproc)
 !
 ! --- Lecture des joints
-    call jeexin(mesh//'.DOMDIS', iret)
+    call jeexin(mesh//'.DOMJOINTS', iret)
     if(iret > 0) then
         comm_name = '&&CPYSOL.COMM'
         tag_name = '&&CPYSOL.TAG'

@@ -63,7 +63,7 @@ implicit none
     character(len=6), parameter :: nompro = 'IRMHPC'
     integer :: codret, iret
     integer :: jnumno, nbjoin, i_join, nbnoj, jjoinr
-    integer :: ifm, nivinf, domdis, rang, nbproc
+    integer :: ifm, nivinf, domdis, rang, nbproc, i
     integer, pointer :: v_dojoin(:) => null()
     mpi_int :: mrank, msize
 !
@@ -72,8 +72,6 @@ implicit none
     character(len=24) :: nonulg, domjoin, nojoin
     character(len=MED_NAME_SIZE) :: nomjoi
     character(len=MED_COMMENT_SIZE) :: descri
-!
-    aster_logical, pointer :: v_ldomj(:) => null()
 
 !
 !====
@@ -107,8 +105,6 @@ implicit none
     if(iret > 0) then
         call jeveuo(domjoin, 'L', vi=v_dojoin)
         call jelira(domjoin, 'LONMAX', nbjoin, k8bid)
-        call wkvect("&&IRMHPC.DOMJOINTS", 'V V L', nbproc, vl=v_ldomj)
-        v_ldomj(:) = ASTER_FALSE
         descri = "code_aster"
         call codent(rang, 'G', chrang)
         ASSERT(nbjoin <= 9999)
@@ -118,42 +114,42 @@ implicit none
         do i_join = 1, nbjoin
             domdis = v_dojoin(i_join)
             call codent(domdis, 'G', chdomdis)
-            nomjoi = " "
-            nojoin = " "
-            if( .not. v_ldomj(domdis+1) ) then
-                if( rang < domdis) then
-                    nomjoi = chrang // ' ' // chdomdis
-                    nojoin = nomast//'.R'//chdomdis
+            do i = 1, 2
+                nomjoi = " "
+                nojoin = " "
+                if( i == 1 ) then
+                    if( rang < domdis) then
+                        nomjoi = chrang // ' ' // chdomdis
+                        nojoin = nomast//'.R'//chdomdis
+                    else
+                        nomjoi = chdomdis // ' ' // chrang
+                        nojoin = nomast//'.E'//chdomdis
+                    end if
                 else
-                    nomjoi = chdomdis // ' ' // chrang
-                    nojoin = nomast//'.E'//chdomdis
-                end if
-            else
-                if( rang < domdis) then
-                    nomjoi = chdomdis // ' ' // chrang
-                    nojoin = nomast//'.E'//chdomdis
-                else
-                    nomjoi = chrang // ' ' // chdomdis
-                    nojoin = nomast//'.R'//chdomdis
-                end if
-            endif
-            v_ldomj(domdis+1) = ASTER_TRUE
+                    if( rang < domdis) then
+                        nomjoi = chdomdis // ' ' // chrang
+                        nojoin = nomast//'.E'//chdomdis
+                    else
+                        nomjoi = chrang // ' ' // chdomdis
+                        nojoin = nomast//'.R'//chdomdis
+                    end if
+                endif
 !
 ! --- Creation du joint
 !
-            call as_msdjcr(idfimd, nomamd, nomjoi, descri, domdis, nomamd, codret)
-            ASSERT(codret == 0)
+                call as_msdjcr(idfimd, nomamd, nomjoi, descri, domdis, nomamd, codret)
+                ASSERT(codret == 0)
 !
 ! --- Ecriture de la correspondance Noeud, Noeud
 !
-            call jelira(nojoin, 'LONMAX', nbnoj, k8bid)
-            call jeveuo(nojoin, 'L', jjoinr)
+                call jelira(nojoin, 'LONMAX', nbnoj, k8bid)
+                call jeveuo(nojoin, 'L', jjoinr)
 !
-            call as_msdcrw(idfimd, nomamd, nomjoi, MED_NO_DT, MED_NO_IT, MED_NODE, &
-                            MED_NONE, MED_NODE, MED_NONE, nbnoj/2, zi(jjoinr), codret)
-            ASSERT(codret == 0)
+                call as_msdcrw(idfimd, nomamd, nomjoi, MED_NO_DT, MED_NO_IT, MED_NODE, &
+                                MED_NONE, MED_NODE, MED_NONE, nbnoj/2, zi(jjoinr), codret)
+                ASSERT(codret == 0)
+            end do
         end do
-        call jedetr("&&IRMHPC.DOMJOINTS")
     endif
 !
     if (nivinf .gt. 1) then
