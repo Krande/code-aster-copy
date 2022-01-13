@@ -16,10 +16,12 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+#include "asterf_types.h"
 !
 interface
-    subroutine create_graph_comm(object, nb_comm, comm, tag)
+    subroutine create_graph_comm(object, type, nb_comm, comm, tag)
         character(len=*), intent(in) :: object
+        character(len=*), intent(in) :: type
         integer, intent(inout) :: nb_comm
         character(len=*), intent(in) :: comm, tag
     end subroutine create_graph_comm

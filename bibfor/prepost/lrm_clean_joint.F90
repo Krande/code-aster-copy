@@ -86,7 +86,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 ! --- Create COMM_GRAPH
     comm_name = '&&LRMCLEAN.COMM'
     tag_name = '&&LRMCLEAN.TAG'
-    call create_graph_comm(mesh, nb_comm, comm_name, tag_name)
+    call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
 

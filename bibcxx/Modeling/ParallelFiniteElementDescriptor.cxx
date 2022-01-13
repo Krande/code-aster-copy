@@ -24,6 +24,7 @@
 #include "Modeling/ParallelFiniteElementDescriptor.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "aster_fort_utils.h"
+#include "Utilities/Tools.h"
 
 #include <algorithm>
 
@@ -207,7 +208,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
                 joins.push_back(i);
             }
         }
-        *(_joins) = joins;
+        *(_joins) = unique(joins);
 
         // Allocation du .NEMA
         _delayedNumberedConstraintElementsDescriptor->allocateContiguous
@@ -325,7 +326,6 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
             }
         }
     }
-    _commGraph = CommunicationGraphPtr( new CommunicationGraph( getName(), getJoins() ) );
 };
 
 #endif /* ASTER_HAVE_MPI */

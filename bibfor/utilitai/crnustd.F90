@@ -238,7 +238,7 @@ subroutine crnustd(numddl)
 ! -- On crée le graphe de comm
     comm_name = '&&CRNUSTD.COMM'
     tag_name = '&&CRNUSTD.TAG'
-    call create_graph_comm(mesh, nb_comm, comm_name, tag_name)
+    call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
 !
@@ -348,14 +348,14 @@ subroutine crnustd(numddl)
             call jedetr('&&CRNSTD.NOEUD_NEC_R1')
         endif
     end do
+    call jedetr(comm_name)
+    call jedetr(tag_name)
 !
 ! -- On compte les lagranges
     nbddl_lag = 0
     nbddl_lag_gl = 0
     do ili = 2, ntot
         nbno_lili_lc = 0
-        call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
-        if( iret.ne.0 ) then
             call jelira(jexnum(numddl//'.NUME.PRNO', ili), 'LONMAX', lonmax)
             nbno_prno = lonmax/(nec+2)
             call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
@@ -380,7 +380,6 @@ subroutine crnustd(numddl)
                     v_nuls(i_ddl) = nbddl_phys_gl - 1 - v_deeg(2*(i_ddl-1)+1)
                 endif
             enddo
-        endif
 !
 ! -- Nbr de noeud de Lagrange total au ligrel
         nbno_lili_gl = nbno_lili_lc
@@ -404,16 +403,14 @@ subroutine crnustd(numddl)
         call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
         if( iret.ne.0 ) then
             call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
-            join = nomlig//".NBJO"
-            call jeexin(join, iret)
-            if( iret.eq.0 ) cycle
-            call jeveuo(join, 'L', jjoin)
-            call jelira(join, 'LONMAX', nbjoin)
+            call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
+            call jeveuo(comm_name, 'L', vi=v_comm)
+            call jeveuo(tag_name, 'L', vi=v_tag)
             do i_join = 1, nbjoin
-                numpro = zi(jjoin+i_join-1)
+                numpro = v_comm(i_join)
                 if( numpro.ne.-1 ) then
                     numpr4 = to_mpi_int(numpro)
-                    tag4 = to_mpi_int(i_join)
+                    tag4 = to_mpi_int(v_tag(i_join))
                     call codlet(numpro, 'G', chnbjo)
                     nojoie = nomlig//'.E'//chnbjo
                     nojoir = nomlig//'.R'//chnbjo
@@ -468,6 +465,8 @@ subroutine crnustd(numddl)
                     call jedetr('&&CRNSTD.NUM_DDL_GLOB_R')
                 endif
             enddo
+            call jedetr(comm_name)
+            call jedetr(tag_name)
         endif
     enddo
 !
@@ -485,8 +484,6 @@ subroutine crnustd(numddl)
     call jedetr('&&CRNSTD.NEC2')
     call jedetr('&&CRNSTD.CMP')
     call jedetr('&&CRNSTD.CMP2')
-    call jedetr(comm_name)
-    call jedetr(tag_name)
 !
     call jedema()
 #else

@@ -625,6 +625,8 @@ ConnectionMesh::ConnectionMesh( const std::string &name,
     ( *_dimensionInformations )[2] = totalNumberOfCells;
     ( *_dimensionInformations )[5] = mesh->getDimension();
     CALLO_CARGEO( getName() );
+
+    build();
 };
 
 VectorString ConnectionMesh::getGroupsOfCells( ) const {

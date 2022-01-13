@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -32,7 +32,6 @@
 #include "Modeling/Model.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Meshes/ConnectionMesh.h"
-#include "ParallelUtilities/CommunicationGraph.h"
 
 /**
  * @class ParallelFiniteElementDescriptor
@@ -56,8 +55,6 @@ protected:
     JeveuxVectorLong                 _multiplicity;
     /** @brief Number of non local elements in which a given node is located */
     JeveuxVectorLong                 _outerMultiplicity;
-    /** @brief Communication graph */
-    CommunicationGraphPtr            _commGraph;
     /** @brief Global numbering for delayed nodes */
     JeveuxVectorLong                 _globalNumberingVirtualNodes;
 

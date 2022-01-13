@@ -164,9 +164,9 @@ aster_logical :: par_seqfile
 !
 ! 4. ==> Construction du graph de communication
 !
-        comm_name = '&&CPYSOL.COMM'
-        tag_name = '&&CPYSOL.TAG'
-        call create_graph_comm(nomast, nb_comm, comm_name, tag_name)
+        comm_name = '&&IREMED.COMM'
+        tag_name = '&&IREMED.TAG'
+        call create_graph_comm(nomast, "MAILLAGE_P", nb_comm, comm_name, tag_name)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
 !
@@ -175,35 +175,33 @@ aster_logical :: par_seqfile
 !
         do i_comm = 1, nb_comm
             numpro = v_comm(i_comm)
-            if(numpro.ne.-1) then
-                call codlet(numpro, 'G', chnbjo)
-                nojoie = nomast//'.E'//chnbjo
-                nojoir = nomast//'.R'//chnbjo
-                call jeveuo(nojoie, 'L', jjoine)
-                call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
-                call jeveuo(nojoir, 'L', jjoinr)
-                call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
-                nbnoee = nbnoee/2
-                nbnoer = nbnoer/2
-                call wkvect('&&IRMHDF.NOEUD_NEC_E1', 'V V I', nbnoee, jenvoi1)
-                call wkvect('&&IRMHDF.NOEUD_NEC_R1', 'V V I', nbnoer, jrecep1)
+            call codlet(numpro, 'G', chnbjo)
+            nojoie = nomast//'.E'//chnbjo
+            nojoir = nomast//'.R'//chnbjo
+            call jeveuo(nojoie, 'L', jjoine)
+            call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
+            call jeveuo(nojoir, 'L', jjoinr)
+            call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
+            nbnoee = nbnoee/2
+            nbnoer = nbnoer/2
+            call wkvect('&&IRMHDF.NOEUD_NEC_E1', 'V V I', nbnoee, jenvoi1)
+            call wkvect('&&IRMHDF.NOEUD_NEC_R1', 'V V I', nbnoer, jrecep1)
 !
-                do ino = 0, nbnoee-1
-                    zi(jenvoi1+ino) = zi(jno+zi(jjoine+2*ino)-1)
-                enddo
-                n4r = to_mpi_int(nbnoer)
-                n4e = to_mpi_int(nbnoee)
-                tag4 = to_mpi_int(v_tag(i_comm))
-                numpr4 = to_mpi_int(numpro)
-                call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
-                                      zi(jrecep1), n4r, numpr4, tag4, world)
+            do ino = 0, nbnoee-1
+                zi(jenvoi1+ino) = zi(jno+zi(jjoine+2*ino)-1)
+            enddo
+            n4r = to_mpi_int(nbnoer)
+            n4e = to_mpi_int(nbnoee)
+            tag4 = to_mpi_int(v_tag(i_comm))
+            numpr4 = to_mpi_int(numpro)
+            call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
+                                  zi(jrecep1), n4r, numpr4, tag4, world)
 
-                do ino = 0, nbnoer-1
-                    if(zi(jrecep1+ino).ne.-1) zi(jno+zi(jjoinr+2*ino)-1) = -zi(jrecep1+ino)
-                enddo
-                call jedetr('&&IRMHDF.NOEUD_NEC_E1')
-                call jedetr('&&IRMHDF.NOEUD_NEC_R1')
-            endif
+            do ino = 0, nbnoer-1
+                if(zi(jrecep1+ino).ne.-1) zi(jno+zi(jjoinr+2*ino)-1) = -zi(jrecep1+ino)
+            enddo
+            call jedetr('&&IRMHDF.NOEUD_NEC_E1')
+            call jedetr('&&IRMHDF.NOEUD_NEC_R1')
         enddo
 !
         call jeveuo(nomast//'.MAEX', 'L', jmaex)

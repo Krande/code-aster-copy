@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine create_graph_comm(object, nb_comm, comm, tag)
+subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 !
 use sort_module
 !
@@ -25,18 +25,16 @@ use sort_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/build_tree_comm.h"
-#include "asterfort/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "jeveux.h"
 !
     character(len=*), intent(in) :: object
+    character(len=*), intent(in) :: type
     integer, intent(inout) :: nb_comm
     character(len=*), intent(in) :: comm, tag
 !
@@ -47,42 +45,31 @@ use sort_module
 !---------------------------------------------------------------------------------------------------
 !
     character(len=8) :: k8bid
-    character(len=16) :: type
     character(len=24) :: k24
-    integer :: i, iret
+    integer :: iret
     integer, pointer :: v_domdis(:) => null()
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
-    integer, pointer :: v_joint(:) => null()
 !
     call jemarq()
-!
-    call gettco(object, type)
 !
     nb_comm = 0
 !
 ! --- Result depends on type
     if(type == 'MAILLAGE_P') then
         k24 = object//'.DOMJOINTS'
-        call jeexin(k24, iret)
-        if( iret > 0 ) then
-            call jelira(object//'.DOMJOINTS', 'LONMAX', nb_comm, k8bid)
-            call jeveuo(object//'.DOMJOINTS', 'L', vi=v_domdis)
-        end if
+    elseif(type == "NUME_DDL") then
+        k24 = object//'.NUME.DOMJ'
+    elseif(type == "LIGREL") then
+        k24 = object//'.DOMJ'
     else
-        k24 = object//'.NUME.NBJO'
-        call jeexin(k24, iret)
-        if( iret > 0) then
-            type = "NUME_DDL"
-            call jeveuo(k24, 'L', vi=v_joint)
-            nb_comm = v_joint(1)
-            AS_ALLOCATE(vi=v_domdis, size=max(1, nb_comm))
-            do i = 1, nb_comm
-                v_domdis(i) = v_joint(i+1)
-            end do
-        else
-            ASSERT(ASTER_FALSE)
-        end if
+        ASSERT(ASTER_FALSE)
+    end if
+!
+    call jeexin(k24, iret)
+    if( iret > 0 ) then
+        call jelira(k24, 'LONUTI', nb_comm, k8bid)
+        call jeveuo(k24, 'L', vi=v_domdis)
     end if
 !
 ! --- Allocation
@@ -91,10 +78,6 @@ use sort_module
 !
 ! --- Create graph
     call build_tree_comm(v_domdis, nb_comm, v_comm, v_tag)
-!
-    if(type== 'NUME_DDL') then
-        AS_DEALLOCATE(vi=v_domdis)
-    end if
 !
     call jedema()
 !

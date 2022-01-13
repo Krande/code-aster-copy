@@ -76,9 +76,9 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 ! --- Lecture des joints
     call jeexin(mesh//'.DOMJOINTS', iret)
     if(iret > 0) then
-        comm_name = '&&CPYSOL.COMM'
-        tag_name = '&&CPYSOL.TAG'
-        call create_graph_comm(mesh, nb_comm, comm_name, tag_name)
+        comm_name = '&&ADDNODES.COMM'
+        tag_name = '&&ADDNODES.TAG'
+        call create_graph_comm(mesh, "MAILLAGE_P", nb_comm, comm_name, tag_name)
         call jeveuo(comm_name, 'L', vi=v_comm)
         call jeveuo(tag_name, 'L', vi=v_tag)
 !

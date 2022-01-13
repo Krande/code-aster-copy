@@ -58,9 +58,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: rang, nbproc, nbjoin, numpro, jjointr, jjointe, lmat
+    integer :: rang, nbproc, numpro, jjointr, jjointe, lmat
     integer :: lgenvo, lgrecep, jvaleue, jvaleur, iaux, jaux, jnulg
-    integer :: jprddl, jnequ, nloc, nlili, ili, iret, jjoin, ijoin
+    integer :: jprddl, jnequ, nloc, nlili, ili, iret, ijoin
     integer :: numglo, jdeeq, jrefn, jmlogl, nuno1, nucmp1, numloc
     integer :: iret1, iret2, jjoine, nbnoee, idprn1, idprn2, nec, dime
     integer :: nunoel, l, jjoinr, jnujoi1, jnujoi2, nbnoer, nddll, ntot
@@ -109,7 +109,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !
     comm_name = '&&CPYSOL.COMM'
     tag_name = '&&CPYSOL.TAG'
-    call create_graph_comm(numddl, nb_comm, comm_name, tag_name)
+    call create_graph_comm(numddl, "NUME_DDL", nb_comm, comm_name, tag_name)
     call jeveuo(comm_name, 'L', vi=v_comm)
     call jeveuo(tag_name, 'L', vi=v_tag)
 !
@@ -127,46 +127,45 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 !
     do iaux = 1, nb_comm
         numpro = v_comm(iaux)
-        if (numpro .ne. -1) then
-            ASSERT(numpro < 1679616)
-            call codlet(numpro, 'G', chnbjo)
+        call codlet(numpro, 'G', chnbjo)
+        nojoinr = numddl//'.NUMER'//chnbjo
+        nojoine = numddl//'.NUMEE'//chnbjo
+        call jeexin(nojoine, iret1)
+        call jeexin(nojoinr, iret2)
+        if ((iret1 + iret2) .ne. 0) then
+            call jeveuo(nojoinr, 'L', jjointr)
+            call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
+            call jeveuo(nojoine, 'L', jjointe)
+            call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
+            ASSERT(lgenvo .gt. 0 .and. lgrecep .gt. 0)
 !
-            nojoinr = numddl//'.NUMER'//chnbjo
-            nojoine = numddl//'.NUMEE'//chnbjo
-            call jeexin(nojoine, iret1)
-            call jeexin(nojoinr, iret2)
-            if ((iret1 + iret2) .ne. 0) then
-                call jeveuo(nojoinr, 'L', jjointr)
-                call jelira(nojoinr, 'LONMAX', lgrecep, k8bid)
-                call jeveuo(nojoine, 'L', jjointe)
-                call jelira(nojoine, 'LONMAX', lgenvo, k8bid)
-                ASSERT(lgenvo .gt. 0 .and. lgrecep .gt. 0)
+            call wkvect('&&CPYSOL.TMP1E', 'V V R', lgenvo, jvaleue)
+            call wkvect('&&CPYSOL.TMP1R', 'V V R', lgrecep, jvaleur)
+            do jaux = 0, lgenvo - 1
+                numloc = zi(jjointe + jaux)
+                ASSERT(zi(jprddl + numloc - 1) .eq. rang)
+                zr(jvaleue + jaux) = rsolu(numloc)
+            end do
 !
-                call wkvect('&&CPYSOL.TMP1E', 'V V R', lgenvo, jvaleue)
-                call wkvect('&&CPYSOL.TMP1R', 'V V R', lgrecep, jvaleur)
-                do jaux = 0, lgenvo - 1
-                    numloc = zi(jjointe + jaux)
-                    ASSERT(zi(jprddl + numloc - 1) .eq. rang)
-                    zr(jvaleue + jaux) = rsolu(numloc)
-                end do
-!
-                n4e = lgenvo
-                n4r = lgrecep
-                tag4 = to_mpi_int(v_tag(iaux))
-                numpr4 = numpro
-                call asmpi_sendrecv_r(zr(jvaleue), n4e, numpr4, tag4, &
-                                      zr(jvaleur), n4r, numpr4, tag4, mpicou)
+            n4e = lgenvo
+            n4r = lgrecep
+            tag4 = to_mpi_int(v_tag(iaux))
+            numpr4 = numpro
+            call asmpi_sendrecv_r(zr(jvaleue), n4e, numpr4, tag4, &
+                                  zr(jvaleur), n4r, numpr4, tag4, mpicou)
 
-                do jaux = 0, lgrecep - 1
-                    numloc = zi(jjointr + jaux)
-                    ASSERT(zi(jprddl + numloc - 1) .eq. numpro)
-                    rsolu(numloc) = zr(jvaleur + jaux)
-                end do
-                call jedetr('&&CPYSOL.TMP1E')
-                call jedetr('&&CPYSOL.TMP1R')
-            end if
+            do jaux = 0, lgrecep - 1
+                numloc = zi(jjointr + jaux)
+                ASSERT(zi(jprddl + numloc - 1) .eq. numpro)
+                rsolu(numloc) = zr(jvaleur + jaux)
+            end do
+            call jedetr('&&CPYSOL.TMP1E')
+            call jedetr('&&CPYSOL.TMP1R')
         end if
     end do
+!
+    call jedetr(comm_name)
+    call jedetr(tag_name)
 
 !   RECHERCHE DES ADRESSES DU .PRNO DE .NUME
     call jeveuo(numddl//'.NUME.PRNO', 'E', idprn1)
@@ -184,80 +183,72 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     nec = ntot/zi(dime) - 2
     call jelira(numddl//'.NUME.PRNO', 'NMAXOC', nlili, k8bid)
     do ili = 2, nlili
-        call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
-        if (iret .ne. 0) then
-            call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
-            join = nomlig//".NBJO"
-            call jeexin(join, iret)
-            if (iret .eq. 0) cycle
-            call jeveuo(join, 'L', jjoin)
-            call jelira(join, 'LONMAX', nbjoin)
-            do ijoin = 1, nbjoin
-                numpro = zi(jjoin + ijoin - 1)
-                if (numpro .ne. -1) then
-                    numpr4 = numpro
-                    tag4 = ijoin
-                    call codlet(numpro, 'G', chnbjo)
-                    nojoine = nomlig//'.E'//chnbjo
-                    nojoinr = nomlig//'.R'//chnbjo
+        call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
+        call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
+        call jeveuo(comm_name, 'L', vi=v_comm)
+        call jeveuo(tag_name, 'L', vi=v_tag)
+        do ijoin = 1, nb_comm
+            numpro = v_comm(ijoin)
+            numpr4 = to_mpi_int(numpro)
+            tag4 = to_mpi_int(v_tag(ijoin))
+            call codlet(numpro, 'G', chnbjo)
+            nojoine = nomlig//'.E'//chnbjo
+            nojoinr = nomlig//'.R'//chnbjo
 
-                    call jeexin(nojoine, iret1)
-                    if (iret1 .ne. 0) then
-                        call jeveuo(nojoine, 'L', jjoine)
-                        call jelira(nojoine, 'LONMAX', nbnoee, k8bid)
-                        call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V R', nbnoee, jnujoi1)
-                        do jaux = 1, nbnoee
-                            numnoe = -zi(jjoine + jaux - 1)
-                            nddll = zzprno(ili, numnoe, 1)
-                            zr(jnujoi1 + jaux - 1) = rsolu(nddll)
-                        end do
-                        n4e = nbnoee
-                    end if
+            call jeexin(nojoine, iret1)
+            if (iret1 .ne. 0) then
+                call jeveuo(nojoine, 'L', jjoine)
+                call jelira(nojoine, 'LONMAX', nbnoee, k8bid)
+                call wkvect('&&CRNUGL.NUM_DDL_GLOB_E', 'V V R', nbnoee, jnujoi1)
+                do jaux = 1, nbnoee
+                    numnoe = -zi(jjoine + jaux - 1)
+                    nddll = zzprno(ili, numnoe, 1)
+                    zr(jnujoi1 + jaux - 1) = rsolu(nddll)
+                end do
+                n4e = to_mpi_int(nbnoee)
+            end if
 
-                    call jeexin(nojoinr, iret2)
-                    if (iret2 .ne. 0) then
-                        call jeveuo(nojoinr, 'L', jjoinr)
-                        call jelira(nojoinr, 'LONMAX', nbnoer, k8bid)
-                        call wkvect('&&CRNUGL.NUM_DDL_GLOB_R', 'V V R', nbnoer, jnujoi2)
-                        n4r = nbnoer
-                    end if
+            call jeexin(nojoinr, iret2)
+            if (iret2 .ne. 0) then
+                call jeveuo(nojoinr, 'L', jjoinr)
+                call jelira(nojoinr, 'LONMAX', nbnoer, k8bid)
+                call wkvect('&&CRNUGL.NUM_DDL_GLOB_R', 'V V R', nbnoer, jnujoi2)
+                n4r = to_mpi_int(nbnoer)
+            end if
 
-                    if (rang .lt. numpro) then
-                        if (iret1 .ne. 0) then
-                            call asmpi_send_r(zr(jnujoi1), n4e, numpr4, tag4, mpicou)
-                        end if
-                        if (iret2 .ne. 0) then
-                            call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, tag4, mpicou)
-                        end if
-                    else if (rang .gt. numpro) then
-                        if (iret2 .ne. 0) then
-                            call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, tag4, mpicou)
-                        end if
-                        if (iret1 .ne. 0) then
-                            call asmpi_send_r(zr(jnujoi1), n4e, numpr4, tag4, mpicou)
-                        end if
-                    end if
-
-                    if (iret2 .ne. 0) then
-                        do jaux = 1, nbnoer
-                            numnoe = -zi(jjoinr + jaux - 1)
-                            nddll = zzprno(ili, numnoe, 1)
-                            rsolu(nddll) = zr(jnujoi2 + jaux - 1)
-                        end do
-                    end if
-                    call jedetr('&&CRNUGL.NUM_DDL_GLOB_E')
-                    call jedetr('&&CRNUGL.NUM_DDL_GLOB_R')
+            if (rang .lt. numpro) then
+                if (iret1 .ne. 0) then
+                    call asmpi_send_r(zr(jnujoi1), n4e, numpr4, tag4, mpicou)
                 end if
-            end do
-        end if
+                if (iret2 .ne. 0) then
+                    call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, tag4, mpicou)
+                end if
+            else if (rang .gt. numpro) then
+                if (iret2 .ne. 0) then
+                    call asmpi_recv_r(zr(jnujoi2), n4r, numpr4, tag4, mpicou)
+                end if
+                if (iret1 .ne. 0) then
+                    call asmpi_send_r(zr(jnujoi1), n4e, numpr4, tag4, mpicou)
+                end if
+            end if
+
+            if (iret2 .ne. 0) then
+                do jaux = 1, nbnoer
+                    numnoe = -zi(jjoinr + jaux - 1)
+                    nddll = zzprno(ili, numnoe, 1)
+                    rsolu(nddll) = zr(jnujoi2 + jaux - 1)
+                end do
+            end if
+            call jedetr('&&CRNUGL.NUM_DDL_GLOB_E')
+            call jedetr('&&CRNUGL.NUM_DDL_GLOB_R')
+        end do
+        call jedetr(comm_name)
+        call jedetr(tag_name)
     end do
 !
 ! -- REMISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
     call jeveuo(nomat//'.&INT', 'L', lmat)
     call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
-!
-    call jedetr(comm_name)
-    call jedetr(tag_name)
 !
 !
 ! -- debug

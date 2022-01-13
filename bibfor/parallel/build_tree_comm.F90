@@ -68,11 +68,14 @@ use sort_module
     nbproc = to_aster_int(msize)
 !
     ASSERT(nbdom < 100)
+    comm(1:nbdom) = -1
+    tag(1:nbdom) = -1
     nb_comm = 0
 !
     nbdom_inf = 0
     domtmp = -1
     do i_dom = 1, nbdom
+        ASSERT(domdist(i_dom) >= 0)
         if( domdist(i_dom) > rank) then
             nbdom_inf = nbdom_inf + 1
             domtmp(nbdom_inf) = domdist(i_dom)
@@ -158,6 +161,12 @@ use sort_module
     AS_DEALLOCATE(vi=v_deca)
     AS_DEALLOCATE(vi=v_nbdist)
     call jedema()
+#else
+    if(nbdom > 0) then
+        comm(1) = domdist(1)
+        comm(1:nbdom) = -1
+        tag(1:nbdom) = -1
+    end if
 #endif
 !
 end subroutine
