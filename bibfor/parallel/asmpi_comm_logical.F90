@@ -55,9 +55,9 @@ implicit none
         end if
 !
         if( op == "MPI_LAND" ) then
-            call asmpi_comm_vect('MPI_MIN', 'I', sci4=i)
+            call asmpi_comm_vect('MPI_MIN', 'S', sci4=i)
         elseif( op == "MPI_LOR" ) then
-            call asmpi_comm_vect('MPI_MAX', 'I', sci4=i)
+            call asmpi_comm_vect('MPI_MAX', 'S', sci4=i)
         else
             ASSERT(ASTER_FALSE)
         end if
