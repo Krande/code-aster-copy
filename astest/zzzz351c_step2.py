@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ code_aster.init("--test", "--continue")
 
 test = code_aster.TestCase()
 
-test.assertTrue("BLOK" in MAIL.getGroupsOfCells())
-test.assertTrue("VOL" in MAIL.getGroupsOfCells())
+test.assertTrue("BLOK" in MAIL.getGroupsOfCells(), msg="BLOK in groups")
+test.assertTrue("VOL" in MAIL.getGroupsOfCells(), msg="VOL in groups")
 
 support = MODELE.getMesh()
-test.assertTrue("VOL" in support.getGroupsOfCells())
+test.assertTrue("VOL" in support.getGroupsOfCells(), msg="VOL in groups from model")
 del support
 
 asse = ASSEMBLAGE(MODELE=MODELE,
@@ -39,7 +39,13 @@ asse = ASSEMBLAGE(MODELE=MODELE,
                                 OPTION='RIGI_MECA',),
                              _F(MATRICE=CO('M1'),
                                 OPTION='MASS_MECA',),),)
-test.assertIsNone(asse)
+test.assertIsNone(asse, msg="returns nothing")
+
+# check for dependencies
+# expecting only nume_ddl (matr_elem removed by ASSE_MATRICE.add_dependencies)
+deps = K1.getDependencies()
+test.assertEqual(len(deps), 1, msg="K1 dependencies")
+test.assertIn(NUMEDDL, deps, msg="NUMEDDL is a dependency")
 
 # 1. Calcul de reference avec les matrices "completes" :
 #--------------------------------------------------------

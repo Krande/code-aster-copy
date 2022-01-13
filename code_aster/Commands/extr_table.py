@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -113,15 +113,8 @@ class ExtrTable(ExecuteCommand):
             model = [i for i in keywords["TABLE"].getDependencies() if isinstance(i, Model)]
             if model:
                 self._result.setModel(model[0])
-
-        typeResu = keywords["TYPE_RESU"]
-        if typeResu in (
-            "VECT_ELEM_DEPL_R",
-            "VECT_ELEM_TEMP_R",
-            "MATR_ELEM_DEPL_R",
-            "MATR_ELEM_TEMP_R",
-            "CHAM_NO_SDASTER",
-        ):
+        # not available for int/float
+        if hasattr(self._result, "build"):
             self._result.build()
 
     def add_dependencies(self, keywords):

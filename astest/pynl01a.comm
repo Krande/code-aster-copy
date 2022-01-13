@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -183,9 +183,9 @@ VARI=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='VARI_ELGA'),)
 
-test.assertIsNotNone(MATR.getModel())
-test.assertIsNotNone(SIGM.getModel())
-test.assertIsNotNone(VARI.getModel())
+test.assertIsNotNone(MATR.getModel(), msg="MATR")
+test.assertIsNotNone(SIGM.getModel(), msg="SIGM")
+test.assertIsNotNone(VARI.getModel(), msg="VARI")
 
 F_EL=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
                  TABLE=CONT,
@@ -223,9 +223,9 @@ res = CALCUL(__use_namedtuple__=True,
              COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
              INFO=2,);
 
-test.assertIsNotNone(res.MATR_TANG_ELEM.getModel())
-test.assertIsNotNone(res.SIEF_ELGA.getModel())
-test.assertIsNotNone(res.VARI_ELGA.getModel())
+test.assertIsNotNone(res.MATR_TANG_ELEM.getModel(), msg="MATR_TANG_ELEM")
+test.assertIsNotNone(res.SIEF_ELGA.getModel(), msg="SIEF_ELGA")
+test.assertIsNotNone(res.VARI_ELGA.getModel(), msg="VARI_ELGA")
 
 
 FORCAS=ASSE_VECTEUR(VECT_ELEM=FORC,

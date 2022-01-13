@@ -237,7 +237,7 @@ Arguments:
 
 Returns:
     list[int]: Indexes of the nodes of the group with (local or global) indexing
-and a restriction to MPI-rank.
+        and a restriction to MPI-rank.
         )",
               ( py::arg( "self" ), py::args("localNumbering", "same_rank") )
                )

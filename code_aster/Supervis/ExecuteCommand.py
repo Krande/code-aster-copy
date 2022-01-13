@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -758,6 +758,16 @@ class ExecuteMacro(ExecuteCommand):
         if self._add_results:
             for additional in self._add_results.values():
                 self.check_ds_result(additional)
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Macro-commands should not have to add dependencies. This should be done
+        by embedded commands.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
 
     @property
     @deprecated(case=2)
