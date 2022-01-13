@@ -26,11 +26,11 @@
 
 #ifdef ASTER_HAVE_MPI
 
-#include "aster_fort_mesh.h"
 #include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
-
+#include "aster_fort_mesh.h"
+#include "aster_fort_utils.h"
 
 bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
     const bool ret = BaseMesh::readMedFile( fileName );
@@ -274,5 +274,30 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
 
     return VectorLong( nodes.begin(), nodes.end() );
 };
+
+bool ParallelMesh::build(){
+
+    CALL_JEMARQ();
+    _listOfOppositeDomain->updateValuePointer();
+    const auto size = _listOfOppositeDomain->size();
+
+    const std::string cadre("G");
+
+    for(ASTERINTEGER i = 0; i < size; i++ ){
+        auto domdis = (*_listOfOppositeDomain)[i];
+        std::string chdomdis(8, ' ');
+
+        CALLO_CODENT(&domdis, cadre, chdomdis);
+        //std::cout << chdomdis << std::endl;
+        JeveuxVectorLong jointE(getName() + ".E" + chdomdis);
+        JeveuxVectorLong jointR(getName() + ".R" + chdomdis);
+
+        _joints[domdis] = std::make_pair(jointE, jointR);
+    }
+
+    CALL_JEDEMA();
+
+    return BaseMesh::build();
+}
 
 #endif /* ASTER_HAVE_MPI */

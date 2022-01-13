@@ -34,6 +34,16 @@ extern "C" {
 #define CALL_AFFICH( a, b ) CALLOO( AFFICH, affich, a, b )
 extern void DEFSS( AFFICH, affich, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALL_CODENT( a, b, c ) CALLPSS( CODENT, codent, a, b, c )
+#define CALLO_CODENT( a, b, c ) CALLPOO( CODENT, codent, a, b, c )
+extern void DEFPSS( CODENT, codent, ASTERINTEGER *, const char *, STRING_SIZE,
+                  const char *, STRING_SIZE);
+
+#define CALL_CODLET( a, b, c ) CALLPSS( CODLET, codlet, a, b, c )
+#define CALLO_CODLET( a, b, c ) CALLPOO( CODLET, codlet, a, b, c )
+extern void DEFPSS( CODLET, codlet, ASTERINTEGER *, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE);
+
 #define CALL_DISMOI( a, b, c, d, e, f, g ) CALLSSSPSSP( DISMOI, dismoi, a, b, c, d, e, f, g )
 #define CALLO_DISMOI( a, b, c, d, e, f, g ) CALLOOOPOOP( DISMOI, dismoi, a, b, c, d, e, f, g )
 extern void DEFSSSPSSP( DISMOI, dismoi, const char *, STRING_SIZE, const char *, STRING_SIZE,

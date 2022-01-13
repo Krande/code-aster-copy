@@ -61,7 +61,9 @@ class ParallelMesh : public BaseMesh {
     /** @brief Global numbering */
     JeveuxVectorLong _globalNumbering;
     /** @brief List of opposite domain */
-    JeveuxVectorChar24 _listOfOppositeDomain;
+    JeveuxVectorLong _listOfOppositeDomain;
+    /** @brief List of joints */
+    std::map<ASTERINTEGER, std::pair<JeveuxVectorLong, JeveuxVectorLong>> _joints;
 
   public:
     /**
@@ -204,6 +206,8 @@ class ParallelMesh : public BaseMesh {
     bool updateGlobalGroupOfNodes( void );
 
     bool updateGlobalGroupOfCells( void );
+
+    bool build();
 };
 
 /**
