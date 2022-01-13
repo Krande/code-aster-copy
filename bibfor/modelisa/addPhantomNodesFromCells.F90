@@ -27,7 +27,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -36,6 +36,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/create_graph_comm.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
 !
@@ -50,7 +51,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 ! ---------------------------------------------------------------------------------------------
 !
     character(len=8) :: k8bid
-    character(len=8) :: chnbjo
+    character(len=4) :: chnbjo
     character(len=24) :: nojoie, nojoir
     character(len=19) :: tag_name, comm_name
     integer :: rang, nbproc, nb_comm, domdis, iret
@@ -69,6 +70,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('addPhantomNodesFromCells', rang, nbproc)
 !
 ! --- Lecture des joints
@@ -83,7 +85,7 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
         do i_comm = 1, nb_comm
             domdis = v_comm(i_comm)
 ! --- Get JOINT
-            call codent(domdis, 'G', chnbjo)
+            call codlet(domdis, 'G', chnbjo)
             nojoie = mesh//'.E'//chnbjo
             nojoir = mesh//'.R'//chnbjo
             call jeveuo(nojoie, 'L', vi=v_joine)

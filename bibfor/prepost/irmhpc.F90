@@ -39,6 +39,7 @@ implicit none
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -49,6 +50,7 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 #include "jeveux.h"
+#include "MeshTypes_type.h"
 #include "asterf_med.h"
 !
 ! 0.1. ==> ARGUMENTS
@@ -67,6 +69,7 @@ implicit none
     integer, pointer :: v_dojoin(:) => null()
     mpi_int :: mrank, msize
 !
+    character(len=4) :: chnbjo
     character(len=8) :: chrang, chdomdis
     character(len=8) :: k8bid
     character(len=24) :: nonulg, domjoin, nojoin
@@ -88,6 +91,7 @@ implicit none
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    ASSERT(nbproc <= MT_DOMMAX)
 !
 ! -- Impression numerotation globale des noeuds
 !
@@ -114,24 +118,25 @@ implicit none
         do i_join = 1, nbjoin
             domdis = v_dojoin(i_join)
             call codent(domdis, 'G', chdomdis)
+            call codlet(domdis, 'G', chnbjo)
             do i = 1, 2
                 nomjoi = " "
                 nojoin = " "
                 if( i == 1 ) then
                     if( rang < domdis) then
                         nomjoi = chrang // ' ' // chdomdis
-                        nojoin = nomast//'.R'//chdomdis
+                        nojoin = nomast//'.R'//chnbjo
                     else
                         nomjoi = chdomdis // ' ' // chrang
-                        nojoin = nomast//'.E'//chdomdis
+                        nojoin = nomast//'.E'//chnbjo
                     end if
                 else
                     if( rang < domdis) then
                         nomjoi = chdomdis // ' ' // chrang
-                        nojoin = nomast//'.E'//chdomdis
+                        nojoin = nomast//'.E'//chnbjo
                     else
                         nomjoi = chrang // ' ' // chdomdis
-                        nojoin = nomast//'.R'//chdomdis
+                        nojoin = nomast//'.R'//chnbjo
                     end if
                 endif
 !

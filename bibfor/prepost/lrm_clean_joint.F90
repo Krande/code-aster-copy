@@ -37,7 +37,8 @@ subroutine lrm_clean_joint(mesh, v_noex)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/create_graph_comm.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
+#include "MeshTypes_type.h"
 !
     character(len=8) :: mesh
     integer, intent(inout) :: v_noex(*)
@@ -56,7 +57,8 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
 ! ---------------------------------------------------------------------------------------------
 !
-    character(len=8) :: k8bid, chdomdis
+    character(len=4) :: chdomdis
+    character(len=8) :: k8bid
     character(len=19) :: comm_name, tag_name
     character(len=24) :: name_join_e_old, name_join_e_new, name_join_r_old, name_join_r_new
     integer :: rang, domdis, nbproc, i_comm, nb_comm
@@ -78,6 +80,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('lrm_clean_joint', rang, nbproc)
 !
 ! --- Create COMM_GRAPH
@@ -89,7 +92,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 
     do i_comm = 1, nb_comm
         domdis = v_comm(i_comm)
-        call codent(domdis, 'G', chdomdis)
+        call codlet(domdis, 'G', chdomdis)
 !
 ! --- Il faut préparer les noeuds à envoyer et à recevoir
 !

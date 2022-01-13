@@ -275,27 +275,28 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
     return VectorLong( nodes.begin(), nodes.end() );
 };
 
-bool ParallelMesh::build(){
+bool ParallelMesh::build() {
 
-    CALL_JEMARQ();
-    _listOfOppositeDomain->updateValuePointer();
-    const auto size = _listOfOppositeDomain->size();
+    if ( _joints.empty() ) {
+        CALL_JEMARQ();
+        _listOfOppositeDomain->updateValuePointer();
+        const auto size = _listOfOppositeDomain->size();
 
-    const std::string cadre("G");
+        const std::string cadre( "G" );
 
-    for(ASTERINTEGER i = 0; i < size; i++ ){
-        auto domdis = (*_listOfOppositeDomain)[i];
-        std::string chdomdis(8, ' ');
+        for ( ASTERINTEGER i = 0; i < size; i++ ) {
+            auto domdis = ( *_listOfOppositeDomain )[i];
+            std::string chdomdis( 4, ' ' );
 
-        CALLO_CODENT(&domdis, cadre, chdomdis);
-        //std::cout << chdomdis << std::endl;
-        JeveuxVectorLong jointE(getName() + ".E" + chdomdis);
-        JeveuxVectorLong jointR(getName() + ".R" + chdomdis);
+            CALLO_CODLET( &domdis, cadre, chdomdis );
+            JeveuxVectorLong jointE( getName() + ".E" + chdomdis );
+            JeveuxVectorLong jointR( getName() + ".R" + chdomdis );
 
-        _joints[domdis] = std::make_pair(jointE, jointR);
+            _joints[domdis] = std::make_pair( jointE, jointR );
+        }
+
+        CALL_JEDEMA();
     }
-
-    CALL_JEDEMA();
 
     return BaseMesh::build();
 }

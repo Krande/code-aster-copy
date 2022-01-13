@@ -28,7 +28,7 @@ subroutine iremed_filtre(nomast, nomsd, base, par_seqfile)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/create_graph_comm.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -107,6 +107,7 @@ aster_logical :: par_seqfile
         call asmpi_info(rank = mrank, size = msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
+        ASSERT(nbproc <= MT_DOMMAX)
 !
         call wkvect(nomsd//'.NOMA', base//' V K8', 1, jma)
         zk8(jma) = nomast
@@ -175,7 +176,7 @@ aster_logical :: par_seqfile
         do i_comm = 1, nb_comm
             numpro = v_comm(i_comm)
             if(numpro.ne.-1) then
-                call codent(numpro, 'G', chnbjo)
+                call codlet(numpro, 'G', chnbjo)
                 nojoie = nomast//'.E'//chnbjo
                 nojoir = nomast//'.R'//chnbjo
                 call jeveuo(nojoie, 'L', jjoine)

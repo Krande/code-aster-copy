@@ -36,7 +36,7 @@ use sort_module
 #include "asterfort/as_msdszi.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/decode_join.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -51,6 +51,7 @@ use sort_module
 #include "asterfort/mdexma.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "MeshTypes_type.h"
 !
     med_idt, intent(in) :: fid
     integer, intent(in) :: nbnoeu
@@ -62,7 +63,8 @@ use sort_module
 !
 ! ---------------------------------------------------------------------------------------------
 !
-    character(len=8) :: chdomdis, mesh
+    character(len=4) :: chdomdis
+    character(len=8) :: mesh
     character(len=24) :: nonulg, nojoin, connex
     character(len=MED_NAME_SIZE) :: nomjoi, nommad
     character(len=MED_COMMENT_SIZE) :: descri
@@ -83,7 +85,7 @@ use sort_module
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
 !
-    ASSERT(nbproc <= 10d8)
+    ASSERT(nbproc <= MT_DOMMAX)
 !
 ! --- Uniquement pour les ParallelMesh
 !
@@ -141,7 +143,7 @@ use sort_module
                     call decode_join(nomjoi, dom1, dom2)
 !
                     if ( entlcl.eq.MED_NODE.and.geolcl.eq.MED_NONE ) then
-                        call codent(domdis, 'G', chdomdis)
+                        call codlet(domdis, 'G', chdomdis)
                         if ( dom1.eq.rang ) then
                             nojoin = mesh//'.RT'//chdomdis
                             incr = incr + 1

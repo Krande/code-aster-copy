@@ -31,7 +31,7 @@ subroutine crnustd(numddl)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/create_graph_comm.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"
@@ -45,6 +45,7 @@ subroutine crnustd(numddl)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     character(len=14) :: numddl
@@ -94,7 +95,7 @@ subroutine crnustd(numddl)
     integer, pointer :: v_comm(:) => null()
     integer, pointer :: v_tag(:) => null()
 !
-    character(len=8) :: chnbjo
+    character(len=4) :: chnbjo
     character(len=8) :: k8bid, mesh, nomgdr
     character(len=19) :: nomlig, tag_name, comm_name
     character(len=24) :: owner, nojoie, nojoir, join, linulg
@@ -118,6 +119,7 @@ subroutine crnustd(numddl)
     call asmpi_info(rank = mrank, size = msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('crnustd', rang, nbproc)
 !
     call jeveuo(numddl//'.NUME.REFN', 'L', jrefn)
@@ -247,7 +249,7 @@ subroutine crnustd(numddl)
 !       RECHERCHE DU JOINT
         numpro = v_comm(i_join)
         if (numpro .ne. -1) then
-            call codent(numpro, 'G', chnbjo)
+            call codlet(numpro, 'G', chnbjo)
             nojoie = mesh//'.E'//chnbjo
             nojoir = mesh//'.R'//chnbjo
             call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
@@ -412,7 +414,7 @@ subroutine crnustd(numddl)
                 if( numpro.ne.-1 ) then
                     numpr4 = to_mpi_int(numpro)
                     tag4 = to_mpi_int(i_join)
-                    call codent(numpro, 'G', chnbjo)
+                    call codlet(numpro, 'G', chnbjo)
                     nojoie = nomlig//'.E'//chnbjo
                     nojoir = nomlig//'.R'//chnbjo
 

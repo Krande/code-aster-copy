@@ -31,7 +31,6 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codlet.h"
-#include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -45,6 +44,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterfort/wkvect.h"
 #include "asterfort/crnustd.h"
 #include "asterfort/create_graph_comm.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
 #ifdef ASTER_HAVE_PETSC
@@ -76,7 +76,6 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     mpi_int :: mrank, msize, iermpi, mpicou
 !
     character(len=4) :: chnbjo
-    character(len=8) :: chnbjo2
     character(len=8) :: k8bid, noma
     character(len=19) :: nomlig, comm_name, tag_name
     character(len=24) :: nojoinr, nojoine, nonulg, join
@@ -105,6 +104,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
+    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('cpysol', rang, nbproc)
 !
     comm_name = '&&CPYSOL.COMM'
@@ -131,8 +131,8 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
             ASSERT(numpro < 1679616)
             call codlet(numpro, 'G', chnbjo)
 !
-            nojoinr = numddl//'.NUMER'//chnbjo(1:4)
-            nojoine = numddl//'.NUMEE'//chnbjo(1:4)
+            nojoinr = numddl//'.NUMER'//chnbjo
+            nojoine = numddl//'.NUMEE'//chnbjo
             call jeexin(nojoine, iret1)
             call jeexin(nojoinr, iret2)
             if ((iret1 + iret2) .ne. 0) then
@@ -197,9 +197,9 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
                 if (numpro .ne. -1) then
                     numpr4 = numpro
                     tag4 = ijoin
-                    call codent(numpro, 'G', chnbjo2)
-                    nojoine = nomlig//'.E'//chnbjo2
-                    nojoinr = nomlig//'.R'//chnbjo2
+                    call codlet(numpro, 'G', chnbjo)
+                    nojoine = nomlig//'.E'//chnbjo
+                    nojoinr = nomlig//'.R'//chnbjo
 
                     call jeexin(nojoine, iret1)
                     if (iret1 .ne. 0) then

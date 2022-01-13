@@ -31,7 +31,6 @@ subroutine crnlgc(numddl)
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/codlet.h"
 #include "asterfort/crnustd.h"
 #include "asterfort/dismoi.h"
@@ -54,6 +53,7 @@ subroutine crnlgc(numddl)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/create_graph_comm.h"
+#include "MeshTypes_type.h"
 #include "jeveux.h"
 !
     character(len=14) :: numddl
@@ -84,7 +84,6 @@ subroutine crnlgc(numddl)
     integer, pointer :: v_tag(:) => null()
 !
     character(len=4) :: chnbjo
-    character(len=8) :: chnbjo2
     character(len=8) :: mesh, k8bid, nomgdr
     character(len=19) :: nomlig, comm_name, tag_name
     character(len=24) :: nojoie, nojoir, nonulg, join
@@ -111,6 +110,7 @@ subroutine crnlgc(numddl)
     call asmpi_info(rank=mrank, size=mnbproc)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(mnbproc)
+    ASSERT(nbproc <= MT_DOMMAX)
     DEBUG_MPI('crnlgc', rang, nbproc)
 
 !   RECUPERATION DU NOM DU MAILLAGE DANS LE BUT D'OBTENIR LE JOINT
@@ -162,9 +162,9 @@ subroutine crnlgc(numddl)
         numpro = v_comm(iaux)
         v_nbjo(iaux + 1) = numpro
         if (numpro .ne. -1) then
-            call codent(numpro, 'G', chnbjo2)
-            nojoie = mesh//'.E'//chnbjo2
-            nojoir = mesh//'.R'//chnbjo2
+            call codlet(numpro, 'G', chnbjo)
+            nojoie = mesh//'.E'//chnbjo
+            nojoir = mesh//'.R'//chnbjo
             call jelira(nojoie, 'LONMAX', nbnoee, k8bid)
             call jeveuo(nojoir, 'L', jjoinr)
             call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
@@ -285,9 +285,9 @@ subroutine crnlgc(numddl)
                 if (numpro .ne. -1) then
                     numpr4 = numpro
                     tag4 = ijoin
-                    call codent(numpro, 'G', chnbjo2)
-                    nojoie = nomlig//'.E'//chnbjo2
-                    nojoir = nomlig//'.R'//chnbjo2
+                    call codlet(numpro, 'G', chnbjo)
+                    nojoie = nomlig//'.E'//chnbjo
+                    nojoir = nomlig//'.R'//chnbjo
 
                     call jeexin(nojoie, iret1)
                     if (iret1 .ne. 0) then

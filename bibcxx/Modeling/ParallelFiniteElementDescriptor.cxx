@@ -3,7 +3,7 @@
  * @brief Implementation de ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,6 +23,8 @@
 
 #include "Modeling/ParallelFiniteElementDescriptor.h"
 #include "ParallelUtilities/AsterMPI.h"
+#include "aster_fort_utils.h"
+
 #include <algorithm>
 
 #ifdef ASTER_HAVE_MPI
@@ -180,13 +182,18 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
         AS_ASSERT(nbVirtualNodes == count);
 
         // Creation des raccords
+        const std::string cadre("G");
+        AS_ASSERT(nbProcs <= 46656);
         VectorLong joins;
         for( i = 0; i < nbProcs; ++i )
         {
             const auto& taille1 = toSend[i].size();
+            std::string chdomdis(3, ' ');
+            ASTERINTEGER domdis = i;
+            CALLO_CODLET(&domdis, cadre, chdomdis);
             if( taille1 != 0 )
             {
-                auto vec = JeveuxVectorLong( getName() + ".E" + std::to_string( i ) );
+                auto vec = JeveuxVectorLong( getName() + ".E" + chdomdis );
                 _joinToSend.push_back( vec );
                 (*vec) = toSend[i];
                 joins.push_back(i);
@@ -194,7 +201,7 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor
             const auto& taille2 = toReceive[i].size();
             if( taille2 != 0 )
             {
-                auto vec = JeveuxVectorLong( getName() + ".R" + std::to_string( i ) );
+                auto vec = JeveuxVectorLong( getName() + ".R" + chdomdis );
                 _joinToReceive.push_back( vec );
                 (*vec) = toReceive[i];
                 joins.push_back(i);
