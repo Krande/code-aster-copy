@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -117,6 +117,15 @@ class MaterialAssignment(ExecuteCommand):
                 raise TypeError("Unexpected type: {0!r} {1}".format(fkw, type(fkw)))
 
         self._result = MaterialFieldBuilder.build(self._result, externalVarOnMesh)
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # Add no dependencies since everything is done in python
 
     def _addBehaviour(self, fkw):
         kwTout = fkw.get("TOUT")

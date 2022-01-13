@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -45,6 +45,16 @@ class ModelAssignment(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords.
         """
         self._result = Model(keywords["MAILLAGE"])
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # Add no dependencies since everything is mesh is already added
+
 
 
 AFFE_MODELE = ModelAssignment.run
