@@ -76,7 +76,6 @@ implicit none
 !     TRAITEMENT DU MOT CLE-FACTEUR "ENER_POT"
 !     ------------------------------------------------------------------
 !
-!
     integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
     integer :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
     integer :: iocc, jma, icheml, ier
@@ -95,10 +94,6 @@ implicit none
     complex(kind=8) :: c16b
 !
     mpi_int :: mpicow, mrang, mnbproc, mpicou
-! a decommenter si usage du parallelisme en temps (cf. ldist plus bas)
-!    aster_logical :: ldist, lsdpar
-!    integer :: jldist, nbpas, iaux1, jnr, jparti, l, jng, jnm, iauxj, iauxg, iauxm, iaux
-!    character(len=8)   :: sd_partition
     aster_logical :: dbg_ob, lmonit
     integer :: rang, nbproc, k, ntsum, nmsum, nmmax, ngsum, ngmax
     integer :: decalig, decalim, jmntmg, jmigk, jmigi, jmim, niv, ifm, nbgr
@@ -106,8 +101,8 @@ implicit none
     integer :: longt, icoef, mode, nel, idecgr, j, nbmasum, jnp, ind
     real(kind=8) :: retfin, ztot
     character(len=4) :: docu
-    character(len=8)   :: scal
-    character(len=24)  :: k8X, k24X
+    character(len=8)   :: k8X, scal
+    character(len=24)  :: k24X
     character(len=24), pointer :: celk(:) => null()
     integer, pointer :: celd(:) => null()
     real(kind=8), pointer :: celv(:) => null()
@@ -129,8 +124,6 @@ implicit none
     lmonit=.false.
     dbg_ob=.false.
     if (lmonit) call system_clock(ietdeb, ietrat, ietmax)
-! Pour activer le parallelisme en temps (algo mis en commentaires pour tracer)
-!    ldist=.true.
     ntsum=0
     nmsum=0
     ngsum=0
@@ -238,7 +231,7 @@ implicit none
       ngmax=max(ngmax,abs(ng))
       ngsum=ngsum+abs(ng)
     enddo
-!    
+!
     ASSERT((ntsum.ge.0).and.(ngsum.ge.0).and.(nmsum.ge.0))
     ASSERT((ngmax.ge.0).and.(ngmax.le.ngsum))
     ASSERT((nmmax.ge.0).and.(nmmax.le.nmsum))
@@ -267,7 +260,7 @@ implicit none
           if (iret .eq. 0) then
             call utmess('A', 'UTILITAI3_46', sk=nomgrm)
             zk24(jmigk-1+ig+decalig)=k24X
-            zi(jmigi-1+ig+decalig)=-999       
+            zi(jmigi-1+ig+decalig)=-999
             goto 140
           endif
           call jelira(jexnom(mlggma, nomgrm), 'LONUTI', nbma)
@@ -291,7 +284,7 @@ implicit none
         nbma = -nm
         call wkvect('&&PEEPOT_MAILLE', 'V V K8', nbma, jma)
         call getvem(noma, 'MAILLE', option(1:9), 'MAILLE', iocc, nbma, zk8(jma), nm)
-        nbmasum=nbmasum+nbma    
+        nbmasum=nbmasum+nbma
         do im = 1, nbma
           nommai = zk8(jma+im-1)
           call jeexin(jexnom(mlgnma, nommai), iret)
@@ -307,17 +300,15 @@ implicit none
         call jedetr('&&PEEPOT_MAILLE')
         decalim=decalim+nbma
 ! fin if sur nm (liste de mailles)
-      endif      
+      endif
 ! fin boucle sur les iocc
     enddo
 !
-!-----------------------------------------------------------------------------    
+!-----------------------------------------------------------------------------
 ! PREPARATION DE LA DISTRIBUTION DE TACHES MPI VIA
-! FILTRE &PEEPOT_vldist (POUR PARALLELISME EN TEMPS, MIS EN COMMENTAIRE ICI)
 ! FILTRE &PEECA2_vldist (POUR CELUI EN ESPACE-CONNECTIVITE INVERSE DE PEENCA2)
 !-----------------------------------------------------------------------------
-! Recuperation des donnees MPI pour le //isme en temps (mis en commentaire)
-! et le //isme en espace de peenca2 (actif par defaut)
+! Recuperation des donnees MPI pour le //isme en espace de peenca2 (actif par defaut)
     call asmpi_comm('GET_WORLD', mpicow)
     call asmpi_comm('GET', mpicou)
     if (mpicow.ne.mpicou) then
@@ -328,61 +319,6 @@ implicit none
     ASSERT(rang.ge.0)
     nbproc = to_aster_int(mnbproc)
     ASSERT(nbproc.ge.1)
-! Determination du nbre de pas paralleles mpi: nbpas
-!    nbpas=nbordr/nbproc
-!    ASSERT(nbpas.ge.0)
-!    if (dbg_ob) then
-!      write(ifm,*)'< ',rang,'peepot> nbordr/nbproc/nbpas/nbmasum= ',&
-!                   nbordr,nbproc,nbpas,nbmasum
-!    endif
-!    if ((ldist).and.((nbpas.lt.1).or.(nbproc.eq.1))) then
-!      ldist=.False.
-!      call utmess('A', 'PREPOST_15') ! a modifier
-!    endif
-! Filtre MPI type distribution de carte. Le reliquat est fait par tout le monde
-! donc on ne le communique pas: pour les pas de temps de nbpas*proc+1 jusqua nbordr
-!    call wkvect('&&PEEPOT_vldist','V V I',nbordr,jldist)
-!    if (dbg_ob) write(ifm,*)'< ',rang,'peepot> creation objet &&PEEPOT_vldist'
-!    call vecint(nbordr,rang,zi(jldist))
-!    if (ldist) then
-!      iaux1=0
-!      do k=1,nbpas*nbproc
-!        if (iaux1.gt.(nbproc-1)) iaux1=0
-!        zi(jldist+k-1)=iaux1
-!        iaux1=iaux1+1
-!      enddo
-! Buffers pour com MPI (on prend le max des longueurs requises pour tous les cas de figure)
-! par exemple: 3 alors que 2 peuvent suffire si nt=0; ngmax, nmmax
-!      if (ntsum.gt.0) then
-!        call wkvect('&&PEEPOT_nr','V V R',nbproc*3*nbocc,jnr)
-!        call vecini(nbproc*3*nbocc,0.d0,zr(jnr))
-!      endif
-!      if (ngsum.gt.0) then
-!        call wkvect('&&PEEPOT_ng','V V R',nbproc*3*nbocc*ngmax,jng) 
-!        call vecini(nbproc*3*nbocc*ngmax,0.d0,zr(jng))
-!      endif
-!      if (nmsum.gt.0) then
-!        call wkvect('&&PEEPOT_nm','V V R',nbproc*3*nbocc*nmmax,jnm) 
-!        call vecini(nbproc*3*nbocc*nmmax,0.d0,zr(jnm))
-!      endif
-!      if (dbg_ob) write(ifm,*)'< ',rang,'peepot> creation objet &&PEEPOT_nr/ng/nm',ngmax,nmmax
-!    endif
-!    if (dbg_ob) call jeimpo(ifm,'&&PEEPOT_vldist','vldist')
-!
-!-----------------------------------------------------------------------------
-! SI PARALLELISME EN TEMPS ON DEBRANCHE LE PARALLELISME EN ESPACE
-!-----------------------------------------------------------------------------
-!    sd_partition=' '
-!    lsdpar=.False.
-!    if (ldist) then
-!      call jeexin(modele(1:8)//'.PARTIT',iret)
-!      if (iret.ne.0) then
-!        call jeveuo(modele(1:8)//'.PARTIT', 'E', jparti)
-!        sd_partition=zk8(jparti)
-!        zk8(jparti)=' '
-!        lsdpar=.True.
-!      endif
-!    endif
 
 !-----------------------------------------------------------------------------
 ! MUTUALISATION POUR APPEL PEENCA (step 1): OBJET POUR STOCKER LA CONNECTIVITE INVERSE
@@ -393,11 +329,11 @@ implicit none
 ! DE MAILLES ET POUR CHAQUE PAS DE TEMPS
 !-----------------------------------------------------------------------------
     if (nbmasum.gt.0) then
-      call wkvect('&&PEEPOT_peenca','V V I',2*nbmasum,jnp) 
+      call wkvect('&&PEEPOT_peenca','V V I',2*nbmasum,jnp)
       call vecint(2*nbmasum,0,zi(jnp))
       if (dbg_ob) write(ifm,*)'< ',rang,'peepot> creation objet &&PEEPOT_peenca',nbmasum
     endif
-          
+
     if (lmonit) then
       call system_clock(ietfin)
       retfin=real(ietfin-ietdeb)/real(ietrat)
@@ -411,8 +347,6 @@ implicit none
 !
     do iord = 1, nbordr
 
-! Filtre MPI pour la boucle en temps
-!      if (((zi(jldist+iord-1).eq.rang).and.(ldist)).or.(.not.ldist)) then
         if (lmonit) call system_clock(ietdeb, ietrat, ietmax)
         numpas=numpas+1
         numloc=iord-(numpas-1)*nbproc
@@ -569,24 +503,12 @@ implicit none
             varpep(2)=100.d0
             valk(1) = noma
             valk(2) = 'TOUT'
-!            if ((ldist).and.(numpas.le.nbpas)) iaux=jnr+((iocc-1)*nbproc+numloc-1)*3
             if (nr .ne. 0) then
               valer(2) = varpep(1)
               valer(3) = varpep(2)
-!              if ((.not.ldist).or.(numpas.gt.nbpas)) then
-                call tbajli(resu,nbparr,noparr,[numord],valer,[c16b],valk,0)
-!              else
-!                zr(iaux)  =valer(1)
-!                zr(iaux+1)=valer(2)
-!                zr(iaux+2)=valer(3)
-!              endif
+              call tbajli(resu,nbparr,noparr,[numord],valer,[c16b],valk,0)
             else
-!              if ((.not.ldist).or.(numpas.gt.nbpas)) then
-                call tbajli(resu,nbpard,nopard,[numord],varpep,[c16b],valk,0)
-!              else
-!                zr(iaux)  =varpep(1)
-!                zr(iaux+1)=varpep(2)
-!              endif
+              call tbajli(resu,nbpard,nopard,[numord],varpep,[c16b],valk,0)
             endif
           endif
 !
@@ -594,7 +516,6 @@ implicit none
           if (ng .ne. 0) then
             nbgrma = -ng
             valk2(2) = 'GROUP_MA'
-!            if ((ldist).and.(numpas.le.nbpas)) iaux=jng+((iocc-1)*nbproc+numloc-1)*3*ngmax
             do ig = 1, nbgrma
               nomgrm=zk24(jmigk-1+ig+decalig)
               if (nomgrm(1:24).ne.k24X) then
@@ -603,24 +524,12 @@ implicit none
                 call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
                 call peenca2(chelem,nbpaep,varpep,nbma,zi(jad),ligrel2,nbgr,ztot,ind,nbproc,rang)
                 valk2(1) = nomgrm
-!                iauxg=iaux+(ig-1)*3
                 if (nr .ne. 0) then
                   valer(2) = varpep(1)
                   valer(3) = varpep(2)
-!                  if ((.not.ldist).or.(numpas.gt.nbpas)) then
-                    call tbajli(resu, nbparr, noparr, [numord], valer, [c16b], valk2, 0)
-!                  else
-!                    zr(iauxg)  =valer(1)
-!                    zr(iauxg+1)=valer(2)
-!                    zr(iauxg+2)=valer(3)
-!                  endif
+                  call tbajli(resu, nbparr, noparr, [numord], valer, [c16b], valk2, 0)
                 else
-!                  if ((.not.ldist).or.(numpas.gt.nbpas)) then
-                    call tbajli(resu, nbpard, nopard, [numord], varpep, [c16b], valk2, 0)
-!                  else
-!                    zr(iauxg)  =valer(1)
-!                    zr(iauxg+1)=valer(2)
-!                  endif
+                  call tbajli(resu, nbpard, nopard, [numord], varpep, [c16b], valk2, 0)
                 endif
               endif
             enddo
@@ -631,34 +540,21 @@ implicit none
           if (nm .ne. 0) then
             nbma = -nm
             valk(2) = 'MAILLE'
-!            if ((ldist).and.(numpas.le.nbpas)) iaux=jnm+((iocc-1)*nbproc+numloc-1)*3*nmmax
             do im = 1, nbma
               nommai = zk8(jmim-1+im+decalim)
-              if (nommai.ne.k8X) then    
+              if (nommai.ne.k8X) then
                 call jenonu(jexnom(mlgnma, nommai), nume)
                 call peenca2(chelem,nbpaep,varpep,1,[nume],ligrel2,nbgr,ztot,ind,nbproc,rang)
                 valk(1) = nommai
-!                iauxm=iaux+(im-1)*3
                 if (nr .ne. 0) then
                   valer(2) = varpep(1)
                   valer(3) = varpep(2)
-!                  if ((.not.ldist).or.(numpas.gt.nbpas)) then
-                    call tbajli(resu, nbparr, noparr, [numord], valer, [c16b], valk, 0)
-!                  else
-!                    zr(iauxm)  =valer(1)
-!                    zr(iauxm+1)=valer(2)
-!                    zr(iauxm+2)=valer(3)
-!                  endif
+                  call tbajli(resu, nbparr, noparr, [numord], valer, [c16b], valk, 0)
                 else
-!                  if ((.not.ldist).or.(numpas.gt.nbpas)) then
-                    call tbajli(resu, nbpard, nopard, [numord], varpep, [c16b], valk, 0)
-!                  else
-!                    zr(iauxm)  =valer(1)
-!                    zr(iauxm+1)=valer(2)
-!                  endif
+                  call tbajli(resu, nbpard, nopard, [numord], varpep, [c16b], valk, 0)
                 endif
               endif
-            enddo 
+            enddo
             decalim=decalim+nbma
           endif
 !
@@ -673,100 +569,10 @@ implicit none
 !-----------------------------------------------------------------------------
         enddo
 !
-!-----------------------------------------------------------------------------
-! COMMUNICATION MPI SI NECESSAIRE + AJOUT DS TABLE + INITIALISATION DU BUFFER DE COM
-!-----------------------------------------------------------------------------
-!        if ((ldist).and.(numpas.le.nbpas)) then
-!          if (lmonit) call system_clock(ietdeb, ietrat, ietmax)
-!          if (ntsum.gt.0) call asmpi_comm_vect('MPI_SUM','R',nbval=3*nbproc*nbocc,vr=zr(jnr))
-!          if (ngsum.gt.0) call asmpi_comm_vect('MPI_SUM','R',nbval=3*nbproc*nbocc*ngmax,vr=zr(jng))
-!          if (nmsum.gt.0) call asmpi_comm_vect('MPI_SUM','R',nbval=3*nbproc*nbocc*nmmax,vr=zr(jnm))
-!          if (lmonit) then
-!            call system_clock(ietfin)
-!            retfin=real(ietfin-ietdeb)/real(ietrat)
-!            write(ifm,*)'< ',rang,'peepot> temps com MPI iord=',iord,retfin
-!            call system_clock(ietdeb, ietrat, ietmax)
-!          endif
-!          do l=1,nbproc
-!            iauxj=jord+(numpas-1)*nbproc+l-1
-!            decalig=0
-!            decalim=0
-!            do iocc=1,nbocc
-!              nt=zi(jmntmg+3*(iocc-1))
-!              nm=zi(jmntmg+3*(iocc-1)+1)
-!              ng=zi(jmntmg+3*(iocc-1)+2)
-!
-! Com MPI sur 'TOUT'
-!              if (nt .ne. 0) then
-!                iaux=jnr+((iocc-1)*nbproc+l-1)*3
-!                valk(1) = noma
-!                valk(2) = 'TOUT'
-!                if (nr.ne.0) then
-!                  call tbajli(resu,nbparr,noparr,[zi(iauxj)],zr(iaux),[c16b],valk,0)
-!                else
-!                  call tbajli(resu,nbpard,nopard,[zi(iauxj)],zr(iaux),[c16b],valk,0)
-!                endif
-!              endif
-!
-! Com MPI sur GROUP_MA
-!              if (ng.ne.0) then
-!                nbgrma = -ng
-!                iaux=jng+((iocc-1)*nbproc+l-1)*3*ngmax
-!                valk2(2) = 'GROUP_MA'
-!                do ig = 1, nbgrma
-!                  nomgrm=zk24(jmigk-1+ig+decalig)
-!                  if (nomgrm(1:24).ne.k24X) then
-!                    valk2(1) = nomgrm
-!                    iauxg=iaux+(ig-1)*3
-!                    if (nr.ne.0) then
-!                      call tbajli(resu,nbparr,noparr,[zi(iauxj)],zr(iauxg),[c16b],valk2,0)
-!                    else
-!                      call tbajli(resu,nbpard,nopard,[zi(iauxj)],zr(iauxg),[c16b],valk2,0)
-!                    endif
-!                  endif
-!                enddo
-!                decalig=decalig+nbgrma
-!              endif
-!
-! Com MPI sur MA
-!              if (nm.ne.0) then
-!                nbma = -nm
-!                iaux=jnm+((iocc-1)*nbproc+l-1)*3*nmmax
-!                valk(2) = 'MAILLE'
-!                do im = 1, nbma
-!                  nommai = zk8(jmim-1+im+decalim)
-!                  if (nommai.ne.k8X) then
-!                    valk(1) = nommai
-!                    iauxm=iaux+(im-1)*3
-!                    if (nr.ne.0) then
-!                      call tbajli(resu,nbparr,noparr,[zi(iauxj)],zr(iauxm),[c16b],valk,0)
-!                    else
-!                      call tbajli(resu,nbpard,nopard,[zi(iauxj)],zr(iauxm),[c16b],valk,0)
-!                    endif
-!                  endif
-!                enddo
-!                decalim=decalim+nbma
-!              endif
-! Fin des boucles principales: iocc et nbproc
-!            enddo
-!          enddo
-! Init. des buffers de com MPI
-!          if (ntsum.gt.0) call vecini(nbproc*3*nbocc,0.d0,zr(jnr))
-!          if (ngmax.gt.0) call vecini(nbproc*3*nbocc*ngmax,0.d0,zr(jng))
-!          if (nmmax.gt.0) call vecini(nbproc*3*nbocc*nmmax,0.d0,zr(jnm))
-!          if (lmonit) then
-!            call system_clock(ietfin)
-!            retfin=real(ietfin-ietdeb)/real(ietrat)
-!            write(ifm,*)'< ',rang,'peepot> temps com tbajli iord/nbproc/nbocc=',iord,nbproc,&
-!                        nbocc,retfin
-!          endif
-!        endif
         call jedetr('&&PEEPOT.PAR')
         if (icheml .ne. 0) call jedetr(chelem)
  72     continue
         call jedema()
-! Fin du filtre pour parallelisme en temps
-!      endif
 !
 !-----------------------------------------------------------------------------
 ! FIN DE LA BOUCLE PRINCIPALE
@@ -789,17 +595,8 @@ implicit none
       call jedetr('&&PEEPOT_peenca')
       if (dbg_ob) write(ifm,*)'< ',rang,'peepot> creation objet &&PEEPOT_peenca'
     endif
-!    if (ldist) then
-!      if (ntsum.gt.0) call jedetr('&&PEEPOT_nr')
-!      if (nmsum.gt.0) call jedetr('&&PEEPOT_nm')
-!      if (ngsum.gt.0) call jedetr('&&PEEPOT_ng')
-!      if (dbg_ob) write(ifm,*)'< ',rang,'peepot> destruction objet &&PEEPOT_nr/nr/ng'
-! On rebranche le parallelisme en espace
-!      if (lsdpar) zk8(jparti)=sd_partition
-!    endif
-!    call jedetr('&&PEEPOT_vldist')
-!    if (dbg_ob) write(ifm,*)'< ',rang,'peepot> destruction objet &&PEEPOT_vldist'
- 80 continue
+
+    80 continue
     call jedetr(knum)
     call jedetr(kins)
 !
