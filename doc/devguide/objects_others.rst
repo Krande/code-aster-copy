@@ -77,10 +77,10 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.CodedMaterial` object
+:py:class:`~code_aster.Objects.ContactParameter` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.CodedMaterial
+.. autoclass:: code_aster.Objects.ContactParameter
    :show-inheritance:
    :members:
 
@@ -282,11 +282,35 @@ Documentation of all other types.
 :py:class:`~code_aster.Objects.enum` subclasses
 ********************************************************************************
 
+.. autoclass:: code_aster.Objects.ContactAlgo
+   :show-inheritance:
+   :members:
+
+.. autoclass:: code_aster.Objects.ContactType
+   :show-inheritance:
+   :members:
+
+.. autoclass:: code_aster.Objects.ContactVariant
+   :show-inheritance:
+   :members:
+
 .. autoclass:: code_aster.Objects.EntityType
    :show-inheritance:
    :members:
 
+.. autoclass:: code_aster.Objects.FrictionAlgo
+   :show-inheritance:
+   :members:
+
+.. autoclass:: code_aster.Objects.FrictionType
+   :show-inheritance:
+   :members:
+
 .. autoclass:: code_aster.Objects.GraphPartitioner
+   :show-inheritance:
+   :members:
+
+.. autoclass:: code_aster.Objects.InitialState
    :show-inheritance:
    :members:
 
@@ -303,6 +327,10 @@ Documentation of all other types.
    :members:
 
 .. autoclass:: code_aster.Objects.Modelings
+   :show-inheritance:
+   :members:
+
+.. autoclass:: code_aster.Objects.PairingAlgo
    :show-inheritance:
    :members:
 
