@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,8 @@
 !
 !
 interface
-    subroutine lrm_clean_joint(rang, domdis, nbproc, v_noex, name_join_old, name_join_new)
-        integer, intent(in) :: rang, domdis, nbproc
+    subroutine lrm_clean_joint(mesh, v_noex)
+        character(len=8) :: mesh
         integer, intent(inout) :: v_noex(*)
-        character(len=24), intent(in) :: name_join_old, name_join_new
     end subroutine lrm_clean_joint
 end interface

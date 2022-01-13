@@ -18,7 +18,7 @@
 !
 ! person_in_charge: nicolas.pignet at edf.fr
 !
-subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
+subroutine lrmjoi(fid, nommail, nomam2, nbnoeu)
 !
 use sort_module
 !
@@ -54,7 +54,6 @@ use sort_module
 !
     med_idt, intent(in) :: fid
     integer, intent(in) :: nbnoeu
-    character(len=24), intent(in) :: nomnoe
     character(len=*), intent(in) :: nomam2, nommail
 !
 ! ---------------------------------------------------------------------------------------------
@@ -63,9 +62,8 @@ use sort_module
 !
 ! ---------------------------------------------------------------------------------------------
 !
-    character(len=8) :: chnbjo, chdomdis
-    character(len=8) :: mesh
-    character(len=24) :: nonulg, nojoin, nojoin_old, nojoin_new, connex
+    character(len=8) :: chdomdis, mesh
+    character(len=24) :: nonulg, nojoin, connex
     character(len=MED_NAME_SIZE) :: nomjoi, nommad
     character(len=MED_COMMENT_SIZE) :: descri
     integer :: rang, nbproc, nbjoin, domdis, nstep, ncorre
@@ -143,13 +141,13 @@ use sort_module
                     call decode_join(nomjoi, dom1, dom2)
 !
                     if ( entlcl.eq.MED_NODE.and.geolcl.eq.MED_NONE ) then
-                        call codent(domdis, 'G', chnbjo)
+                        call codent(domdis, 'G', chdomdis)
                         if ( dom1.eq.rang ) then
-                            nojoin = mesh//'.RT'//chnbjo
+                            nojoin = mesh//'.RT'//chdomdis
                             incr = incr + 1
                             v_dom(incr) = domdis
                         else
-                            nojoin = mesh//'.ET'//chnbjo
+                            nojoin = mesh//'.ET'//chdomdis
                         endif
 !
 ! --- Récupération de la table de correspondance pour les noeuds partagés par 2 sous-domaines
@@ -176,28 +174,9 @@ use sort_module
 !
             call sort_i8(v_dom, nbjoin/2)
 !
-! --- Maintenant que l'on a toute l'information - il faut nettoyer les joints
-! --- On fait les COMM pour nettoyer les joints
+! --- On nettoie les joints des noeuds en trop
 !
-            do i_join = 1, nbjoin
-                    call as_msdjni(fid, nomam2, i_join, nomjoi, descri, domdis, &
-                                nommad, nstep, ncorre, codret)
-                    ASSERT(domdis <= nbproc)
-                    ASSERT(ncorre == 1)
-                    call decode_join(nomjoi, dom1, dom2)
-!
-                    call codent(domdis, 'G', chdomdis)
-                    if ( dom1.eq.rang ) then
-                        nojoin_old = mesh//".RT"//chdomdis
-                        nojoin_new = mesh//".R"//chdomdis
-                    else
-                        nojoin_old = mesh//".ET"//chdomdis
-                        nojoin_new = mesh//".E"//chdomdis
-                    endif
-!
-                    call lrm_clean_joint(rang, domdis, nbproc, v_noext, nojoin_old, nojoin_new)
-                    call jedetr(nojoin_old)
-            end do
+            call lrm_clean_joint(mesh, v_noext)
         else
             call utmess('A', 'MAILLAGE1_5', sk=nomam2)
         end if

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,9 @@
 !
 !
 interface
-    subroutine lrmjoi(fid, nommail, nomam2, nbnoeu, nomnoe)
+    subroutine lrmjoi(fid, nommail, nomam2, nbnoeu)
         med_idt, intent(in) :: fid
         character(len=*), intent(in) :: nomam2, nommail
         integer, intent(in) :: nbnoeu
-        character(len=24), intent(in) :: nomnoe
     end subroutine lrmjoi
 end interface
