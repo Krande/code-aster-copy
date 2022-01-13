@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,21 @@
 ! --------------------------------------------------------------------
 
 subroutine te0066(option, nomte)
+!
+use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
+!
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -45,15 +50,15 @@ subroutine te0066(option, nomte)
 !.......................................................................
 !
 !
-    character(len=8) :: nompar, fami, poum
+    character(len=8) :: nompar(ca_nbcvrc_+1), fami, poum, novrc
     character(len=16) :: nomres(3)
     character(len=32) :: phenom
     integer :: icodre(3)
-    real(kind=8) :: valpar, lambda(1), poids, epot, valres(3), lambor(3)
+    real(kind=8) :: valpar(ca_nbcvrc_+1), lambda(1), poids, epot, valres(3), lambor(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), flux, fluy, fluz
     real(kind=8) :: angmas(7), point(3), fluglo(3), fluloc(3), p(3, 3)
     integer :: i, ipoids, ivf, idfde, igeom, imate, kpg, spt, ino
-    integer :: ndim, jgano, nno, kp, npg1, iener, itemp, itempe, l
+    integer :: ndim, jgano, nno, kp, npg1, iener, itemp, itempe, l, ipar
     aster_logical :: aniso
 !
 !-----------------------------------------------------------------------
@@ -74,13 +79,21 @@ subroutine te0066(option, nomte)
     call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemp)
     if (itemp .eq. 0) then
         nbpar = 0
-        nompar = ' '
-        valpar = 0.d0
+        nompar(1) = ' '
+        valpar(1) = 0.d0
     else
         nbpar = 1
-        nompar = 'INST'
-        valpar = zr(itemp)
+        nompar(1) = 'INST'
+        valpar(1) = zr(itemp)
     endif
+!
+    do ipar=1, ca_nbcvrc_
+       novrc=zk8(ca_jvcnom_-1+ipar)
+       nbpar = nbpar + 1
+       nompar(nbpar) = novrc
+       call rcvarc(' ', nompar(nbpar), poum, fami, kpg, spt, valpar(nbpar), iret)
+       ASSERT(iret.eq.0)
+    enddo
 !
     call rccoma(zi(imate), 'THER', 1, phenom, iret)
     if (phenom .eq. 'THER') then

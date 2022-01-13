@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -209,10 +209,10 @@ implicit none
         endif
 !
         if (typcha(1:7) .eq. 'CHAM_NO') then
+            call vrcins(modele, mate, cara, inst, chvarc, codret)
+            call vrcref(modele(1:8), mate(1:8), cara(1:8), chvref(1: 19))
             if (nomgd(1:4) .eq. 'DEPL') then
                 optio2 = 'EPOT_ELEM'
-                call vrcins(modele, mate, cara, inst, chvarc, codret)
-                call vrcref(modele(1:8), mate(1:8), cara(1:8), chvref(1: 19))
                 l_temp = ASTER_FALSE
             else if (nomgd(1:4).eq.'TEMP') then
                 optio2 = 'ETHE_ELEM'

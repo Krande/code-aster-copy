@@ -1,0 +1,115 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import code_aster
+from code_aster.Commands import *
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+MA0 = code_aster.Mesh.buildCube()
+
+components = {'DEPL': ['DX', 'DY', 'DZ'],
+              'TEMP': ['TEMP']}
+
+group_ma = {'2D' : 'BOTTOM',
+            '3D' : 'VOLUME'}
+
+models = {'2D' :  {'THERMIQUE' : 'PLAN',
+                   'MECANIQUE' : 'D_PLAN'},
+          '3D' :  {'THERMIQUE' : '3D',
+                   'MECANIQUE' : '3D'}}
+
+vale_varc = 20.0
+vale_field = 50.0
+
+LS_EPOT = {}
+
+for VARFIELD, PHENOM in (('DEPL', 'MECANIQUE'),
+                         ('TEMP', 'THERMIQUE')):
+
+    for MODELISATION in ('2D','3D'):
+        for VARC in ('TEMP', 'IRRA'):
+
+            MA = CREA_MAILLAGE(MAILLAGE=MA0, RESTREINT=_F(GROUP_MA=group_ma[MODELISATION]))
+
+            ZERO = DEFI_CONSTANTE(VALE = 0.0)
+            FCONST = DEFI_FONCTION(NOM_PARA=VARC,
+                                   VALE = (vale_varc, 1),
+                                   PROL_GAUCHE='CONSTANT',
+                                   PROL_DROITE='CONSTANT')
+
+            MATE = DEFI_MATERIAU(ELAS_FO=_F(E=FCONST,
+                                            NU=ZERO,
+                                            ALPHA=ZERO,
+                                            TEMP_DEF_ALPHA=20),
+                                 THER_FO=_F(LAMBDA=FCONST,
+                                            RHO_CP=ZERO))
+
+            MOD = AFFE_MODELE(MAILLAGE=MA,
+                              AFFE=_F(GROUP_MA=group_ma[MODELISATION],
+                                      MODELISATION=models[MODELISATION][PHENOM],
+                                      PHENOMENE=PHENOM))
+
+            FIELDVARC = CREA_CHAMP(TYPE_CHAM = 'NOEU_%s_R'%VARC,
+                                   OPERATION = 'AFFE',
+                                   MODELE=MOD,
+                                   AFFE = _F(GROUP_MA=group_ma[MODELISATION],
+                                             NOM_CMP = VARC,
+                                             VALE = vale_varc))
+
+            FIELD = CREA_CHAMP(TYPE_CHAM = 'NOEU_%s_R'%VARFIELD,
+                               OPERATION = 'AFFE',
+                               MODELE=MOD,
+                               AFFE = _F(GROUP_MA=group_ma[MODELISATION],
+                                         NOM_CMP = components[VARFIELD],
+                                         VALE =  [vale_field]*len(components[VARFIELD])))
+
+            affevarckw = {'TOUT' : 'OUI',
+                          'NOM_VARC' : VARC,
+                          'CHAM_GD' : FIELDVARC}
+
+            if VARC == "TEMP":
+                affevarckw['VALE_REF'] = 20
+
+
+            CHMAT = AFFE_MATERIAU(MODELE=MOD,
+                                  AFFE= _F(GROUP_MA=group_ma[MODELISATION],
+                                           MATER=MATE),
+                                  AFFE_VARC = _F(**affevarckw))
+
+            EPOT = POST_ELEM(CHAM_GD=FIELD,
+                               MODELE=MOD,
+                               CHAM_MATER=CHMAT,
+                               ENER_POT=_F(GROUP_MA=group_ma[MODELISATION]))
+
+            tag = '-'.join((VARFIELD, MODELISATION, VARC))
+            LS_EPOT[tag] = EPOT
+
+for i, (tag, EPOT) in enumerate(LS_EPOT.items()):
+
+    print('TEST_TABLE NR %d : %s'%(i+1, tag))
+    TEST_TABLE(TABLE=EPOT,
+               NOM_PARA='TOTALE',
+               CRITERE='ABSOLU',
+               REFERENCE='ANALYTIQUE',
+               VALE_CALC=0.0,
+               ORDRE_GRANDEUR=1.e-6,
+               VALE_REFE=0.0)
+
+FIN()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,16 +17,21 @@
 ! --------------------------------------------------------------------
 
 subroutine te0220(option, nomte)
+!
+use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
+!
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dfdm2d.h"
+#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
@@ -45,14 +50,14 @@ subroutine te0220(option, nomte)
 !
 !
     integer :: icodre(2), kpg, spt
-    character(len=8) :: nompar, fami, poum
+    character(len=8) :: nompar(ca_nbcvrc_+1), fami, poum, novrc
     character(len=16) :: nomres(2)
     character(len=32) :: phenom
-    real(kind=8) :: valres(2), valpar
+    real(kind=8) :: valres(2), valpar(ca_nbcvrc_+1)
     real(kind=8) :: dfdx(9), dfdy(9), poids, flux, fluy, epot
     real(kind=8) :: angmas(7), rbid(3), fluglo(2), fluloc(2), p(2, 2)
     integer :: ndim, nno, nnos, npg, kp, j, itempe, itemp, iener
-    integer :: ipoids, ivf, idfde, jgano, igeom, imate, iret, nbpar
+    integer :: ipoids, ivf, idfde, jgano, igeom, imate, iret, nbpar, ipar
     aster_logical :: aniso
 !     ------------------------------------------------------------------
 !
@@ -64,21 +69,29 @@ subroutine te0220(option, nomte)
     call jevech('PTEMPER', 'L', itempe)
     call jevech('PENERDR', 'E', iener)
 !
-    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemp)
-    if (itemp .eq. 0) then
-        nbpar = 0
-        nompar = ' '
-        valpar = 0.d0
-    else
-        nbpar = 1
-        nompar = 'INST'
-        valpar = zr(itemp)
-    endif
-!
     fami='FPG1'
     kpg=1
     spt=1
     poum='+'
+    call tecach('ONO', 'PTEMPSR', 'L', iret, iad=itemp)
+    if (itemp .eq. 0) then
+        nbpar = 0
+        nompar(1) = ' '
+        valpar(1) = 0.d0
+    else
+        nbpar = 1
+        nompar(1) = 'INST'
+        valpar(1) = zr(itemp)
+    endif
+!
+    do ipar=1, ca_nbcvrc_
+       novrc=zk8(ca_jvcnom_-1+ipar)
+       nbpar = nbpar + 1
+       nompar(nbpar) = novrc
+       call rcvarc(' ', nompar(nbpar), poum, fami, kpg, spt, valpar(nbpar), iret)
+       ASSERT(iret.eq.0)
+    enddo
+!
     call rccoma(zi(imate), 'THER', 1, phenom, iret)
     if (phenom .eq. 'THER') then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&

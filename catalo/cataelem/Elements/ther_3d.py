@@ -209,6 +209,7 @@ class THER_HEXA20(Element):
         OP.ETHE_ELEM(te=66,
             para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
                      (SP.PMATERC, LC.CMATERC), (SP.PTEMPER, DDL_THER),
+                     (SP.PVARCRR, LC.ZVARCPG),
                      (SP.PTEMPSR, CTEMPSR), (OP.ETHE_ELEM.PVARCPR, LC.ZVARCPG),
                      ),
             para_out=((OP.ETHE_ELEM.PENERDR, EENERR), ),
