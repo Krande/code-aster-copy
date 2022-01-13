@@ -24,7 +24,7 @@ code_aster.init("--test")
 
 test = code_aster.TestCase()
 
-mesh = code_aster.Mesh.buildCube(nrefine=0)
+mesh = code_aster.Mesh.buildCube(refine=0)
 
 trac = DEFI_FONCTION(
     NOM_PARA="EPSI",
