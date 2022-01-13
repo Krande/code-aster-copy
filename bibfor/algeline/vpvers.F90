@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,8 +123,9 @@ subroutine vpvers(eigsol, modes, checksd)
 !
 ! --  METHODE='SORENSEN'
     if (method(1:8) .eq. 'SORENSEN') then
-        if ((abs(alpha).lt.(1.2d0*eps)) .or. (abs(alpha).gt.(0.83d0-eps))) call utmess(&
-                                                                           'E', 'ALGELINE2_64')
+        if ((abs(alpha).lt.(1.2d0*eps)) .or. (abs(alpha).gt.(0.83d0-eps))) then
+            call utmess('E', 'ALGELINE2_64')
+        endif
     endif
 !
 ! --  METHODE='QZ'

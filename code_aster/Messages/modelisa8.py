@@ -204,17 +204,6 @@ Dans le groupe de mailles %(k1)s, il y a %(i1)d mailles mal orientées. Utilisez
 La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.
 """),
 
-
-    68 : _("""
- Certaines mailles constituant le groupe de mailles %(k1)s ne sont pas
- des mailles surfaciques.
- Risques & Conseils :
- Vérifiez la constitution des groupes de mailles renseignées sous le
- mot-clé GROUP_MA_ESCL.
-"""),
-
-
-
     71 : _("""
  matériau non valide matériau :  %(k1)s
 """),

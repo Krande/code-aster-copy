@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,6 @@ subroutine mdveri()
     call getvid(' ', 'MATR_AMOR', scal=amogen, nbret=nagen)
     call getvr8('AMOR_MODAL', 'AMOR_REDUIT', iocc=1, nbval=0, nbret=nared)
 
-!     IF (NAGEN.EQ.0 .AND. NARED.EQ.0 .AND. METHOD(1:4).EQ.'ITMI') THEN
-!        CALL UTMESS('E','ALGORITH5_68')
-!     ENDIF
-!
-!
     call getfac('EXCIT', nbexc)
     kf = 0
     do i = 1, nbexc

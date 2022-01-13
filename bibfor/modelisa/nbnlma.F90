@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,6 @@ character(len=8), intent(out) :: elem_error
                 valk = mk
                 l_error    = ASTER_TRUE
                 elem_error = mk
-                !call utmess('F', 'MODELISA8_68', sk=valk)
                 goto 99
             else
                 nbnm = nbnm + nn
