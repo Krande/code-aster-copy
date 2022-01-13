@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,12 @@ subroutine crcore()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisdg.h"
+#include "asterfort/fointe.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -60,19 +63,24 @@ subroutine crcore()
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "blas/daxpy.h"
 !
     integer :: ibid, ier, icompt, iret, numini, numfin
     integer :: n1, nis, nbinst, nbval, nume, j
     integer :: iad, jinst, jchin, jchout, iddl, icmp, aprno
     integer :: nbv(1), jrefe
-    integer :: jcpt, nbr, ivmx, k, iocc, nboini, inoe, ncmp
+    integer :: jcpt, nbr, ivmx, k, iocc, nboini, inoe, ncmp, nbr0
     integer :: tnum(1)
-    integer :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec
-    integer :: ngn, nbno, ino, in, nbd, jchi2, jchi1, ldgn, jdist
+    integer :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec, iec
+    integer :: ngn, nbno, ino, in, nbd, jchi1, ldgn, jdist
+    integer :: nfx, nfy, nfz, jncmp, tabec(10), ncmpmx, iad2, ncmp0, j2
+    integer :: nfrx, nfry, nfrz
 !
     real(kind=8) :: rbid, tps, prec, coefr
     real(kind=8) :: dist, dire(3), coorre(3), vs, delay, dt, tp2
+    real(kind=8) :: valpar(7)
     complex(kind=8) :: cbid
     aster_logical :: lddlex
 !
@@ -80,16 +88,20 @@ subroutine crcore()
     character(len=4) :: typabs
     character(len=8) :: k8b, resu, criter, resui, matr, nomcmp
     character(len=8) :: modele, materi, carele, blan8, noma
+    character(len=8) :: nompar(7)
     character(len=14) :: numedd
-    character(len=16) :: type, oper
+    character(len=16) :: type, oper, fonx, fony, fonz
+    character(len=16) :: fonrx, fonry, fonrz
     character(len=19) :: nomch, listr8, list_load, resu19, profch
     character(len=19) :: chamno, chamn2, chamn1
     character(len=24) :: linst, nsymb, nsymb0, typres, lcpt, o1, o2
     character(len=24) :: matric(3), nprno
     character(len=24) :: nomgr, magrno, ldist
-!    integer, pointer :: noeud(:) => null()
+    character(len=8) :: nomgd
+    character(len=24), pointer :: refn(:) => null()
     real(kind=8), pointer :: val(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    integer, pointer :: vicmp(:) => null()
 !
     data linst,listr8,lcpt,ldist/'&&CRCORE_LINST','&&CRCORE_LISR8',&
      &     '&&CPT_CRCORE','&&CRCORE_LDIST'/
@@ -222,8 +234,27 @@ subroutine crcore()
     call jeveuo(jexnum(nprno, ibid), 'L', aprno)
     nec = nbec(gd)
     typmat='R'
+    call jeveuo(numedd//'.NUME.REFN', 'L', vk24=refn)
+    nomgd=refn(2)(1:8)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jncmp)
+    ASSERT(nec.le.10)
+    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
+    call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad2)
+!    AS_ALLOCATE(vi=vicmp, size=ncmpmx*nbnoeu)
+    call getvid('CONV_RESU', 'FONC_DX', iocc=iocc, scal=fonx, nbret=nfx)
+    call getvid('CONV_RESU', 'FONC_DY', iocc=iocc, scal=fony, nbret=nfy)
+    call getvid('CONV_RESU', 'FONC_DZ', iocc=iocc, scal=fonz, nbret=nfz)
+    call getvid('CONV_RESU', 'FONC_DRX', iocc=iocc, scal=fonrx, nbret=nfrx)
+    call getvid('CONV_RESU', 'FONC_DRY', iocc=iocc, scal=fonry, nbret=nfry)
+    call getvid('CONV_RESU', 'FONC_DRZ', iocc=iocc, scal=fonrz, nbret=nfrz)
+    if (nfx .ne. 0) then
+       AS_ALLOCATE(vi=vicmp, size=ncmpmx*nbnoeu)
+    endif
     if ( typres(1:10)  .eq. 'DYNA_TRANS') then
        nsymb = 'DEPL'
+       if (nfx .ne. 0) then
+          nsymb = nsymb0
+       endif
     else
        nsymb = 'FORC_NODA'
     endif
@@ -296,6 +327,7 @@ subroutine crcore()
         call jeveuo(nomch//'.VALE', 'E', jchout)
         call rsorac(resui,typabs,ibid,tps,k8b,cbid,prec,criter,tnum,1,nbr)
         numei=tnum(1)
+        nbr0 = nbr
         call rsexch(' ', resui, nsymb0, numei, chamno, iret)
         call vtcopy(chamno, chamn2, ' ', ier)
 
@@ -316,10 +348,6 @@ subroutine crcore()
             inoe = zi(ldgn+ino-1)
             iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 )
             ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
-!            dist = 0.d0
-!            do in = 1, 3
-!              dist = dist + (vale(3*(inoe-1)+in)-coorre(in))*dire(in)
-!            end do
             delay = zr(jdist+ino-1)/vs
             tp2 = tps - dt*int(delay/dt)
             call rsorac(resui,typabs,ibid,tp2,k8b,cbid,prec,criter,tnum,1,nbr)
@@ -330,6 +358,103 @@ subroutine crcore()
                 call jeveuo(chamn1//'.VALE', 'L', jchi1)
                 do icmp = 1, ncmp
                   zr(jchin-1+iddl+icmp-1) = zr(jchi1-1+iddl+icmp-1)
+                end do
+              else
+                do icmp = 1, ncmp
+                  zr(jchin-1+iddl+icmp-1) = 0.d0
+                end do
+              endif
+            endif
+          end do
+        endif
+        if (nfx .ne. 0) then
+          nbr = nbr0
+          if (nbr .ne. 0) then
+            call jeveuo(chamno//'.VALE', 'L', jchi1)
+          endif
+          nompar(1)='DX'
+          nompar(2)='DY'
+          nompar(3)='DZ'
+          nompar(4)='DRX'
+          nompar(5)='DRY'
+          nompar(6)='DRZ'
+          nompar(7)='INST'
+          valpar(7) = tps
+          do inoe = 1, nbnoeu
+            iddl = zi( aprno + (nec+2)*(inoe-1) + 1 - 1 )
+            ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
+            if (j .gt. 1) goto 25
+            do iec = 1, nec
+              tabec(iec)= zi(aprno-1+(inoe-1)*(nec+2)+2+iec )
+            end do
+            ncmp0 = 0
+            do icmp = 1, ncmpmx
+              if (exisdg(tabec,icmp)) then
+                do j2 = 1, ncmp0
+                    if (vicmp(ncmpmx*(inoe-1)+j2) .eq. icmp) goto 20
+                end do
+                ncmp0 = ncmp0 + 1
+                vicmp(ncmpmx*(inoe-1)+ncmp0) = icmp
+              endif
+ 20           continue
+            end do
+ 25         continue
+            if (iddl .ne. 0) then
+              if (nbr .ne. 0) then
+                valpar(1) = zr(jchi1-1+iddl)
+                if (nfy .ne. 0) then
+                  valpar(2) = zr(jchi1-1+iddl+1)
+                else
+                  valpar(2) = 0.d0
+                endif
+                if (nfz .ne. 0) then
+                  valpar(3) = zr(jchi1-1+iddl+2)
+                else
+                  valpar(3) = 0.d0
+                endif
+                if (nfrx .ne. 0) then
+                  valpar(4) = zr(jchi1-1+iddl+3)
+                else
+                  valpar(4) = 0.d0
+                endif
+                if (nfry .ne. 0) then
+                  valpar(5) = zr(jchi1-1+iddl+4)
+                else
+                  valpar(5) = 0.d0
+                endif
+                if (nfrz .ne. 0) then
+                  valpar(6) = zr(jchi1-1+iddl+5)
+                else
+                  valpar(6) = 0.d0
+                endif
+                do icmp = 1, ncmp
+                  zr(jchin-1+iddl+icmp-1) = zr(jchi1-1+iddl+icmp-1)
+                  nomcmp = zk8(iad2-1+vicmp(ncmpmx*(inoe-1)+icmp))
+!  write(6,*) 'icmp nomcmp vicmp =',icmp, nomcmp, vicmp(ncmpmx*(inoe-1)+icmp)
+                  if (vicmp(ncmpmx*(inoe-1)+icmp).eq.1) then 
+                    call fointe('F ', fonx, 7, nompar, valpar, &
+                                 zr(jchin-1+iddl+icmp-1), iret)
+                  endif
+                  if (nfy.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.2) then 
+                    call fointe('F ', fony, 7, nompar, valpar, &
+                                 zr(jchin-1+iddl+icmp-1), iret)
+                  endif
+                  if (nfz.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.3) then 
+                    call fointe('F ', fonz, 7, nompar, valpar, &
+                                 zr(jchin-1+iddl+icmp-1), iret)
+                  endif
+                  if (nfrx.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.4) then 
+                    call fointe('F ', fonrx, 7, nompar, valpar, &
+                                 zr(jchin-1+iddl+icmp-1), iret)
+                  endif
+                  if (nfry.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.5) then 
+                    call fointe('F ', fonry, 7, nompar, valpar, &
+                                 zr(jchin-1+iddl+icmp-1), iret)
+                  endif
+                  if (nfrz.ne.0 .and. vicmp(ncmpmx*(inoe-1)+icmp).eq.6) then 
+                    call fointe('F ', fonrz, 7, nompar, valpar, &
+                                 zr(jchin-1+iddl+icmp-1), iret)
+                  endif
                 end do
               else
                 do icmp = 1, ncmp
@@ -373,6 +498,10 @@ subroutine crcore()
             call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE',&
                             matric, ier)                  
         end if
+    endif
+!    AS_DEALLOCATE(vi=vicmp)
+    if (nfx .ne. 0) then
+       AS_DEALLOCATE(vi=vicmp)
     endif
 !
     call jedema()

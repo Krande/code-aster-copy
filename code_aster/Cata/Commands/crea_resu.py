@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -345,9 +345,10 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,
              RESU_INIT    =SIMP(statut='o',typ=(dyna_trans,evol_char,evol_noli)),
              NOM_CHAM_INIT=SIMP(statut='f',typ='TXM',into=("DEPL","ACCE","FORC_NODA","REAC_NODA") ),
              DDL_EXCLUS   =SIMP(statut='f',typ='TXM',into=('DX','DY','DZ','DRX','DRY','DRZ') ),
-             regles=(UN_PARMI('MATR_RIGI', 'NUME_DDL'),UN_PARMI('INST','LIST_INST'),),
+             regles=(UN_PARMI('MATR_RIGI', 'NUME_DDL'),UN_PARMI('INST','LIST_INST'),PRESENT_ABSENT('GROUP_NO_INTERF','FONC_DX',),),
              MATR_RIGI    =SIMP(statut='f',typ=matr_asse_depl_r,),
              NUME_DDL      =SIMP(statut='f',typ=nume_ddl_sdaster ),
+
              INST          =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
              LIST_INST     =SIMP(statut='f',typ=listr8_sdaster),
              PRECISION     =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
@@ -358,6 +359,14 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,
                  DIRECTION       = SIMP(statut='o', typ='R',min=3, max=3, fr=tr("direction de propagation")  ,),
                  VITE_ONDE       = SIMP(statut='o', typ='R', val_min=0.0, fr=tr("vitesse de propagation dans la direction")  ),
                  COOR_REFE      = SIMP(statut='o', typ='R',min=3, max=3, fr=tr("coord de reference pour les phases") ),
+             ),
+             FONC_DX       =SIMP(statut='f',typ=(nappe_sdaster,formule)),
+             b_fonc_dx     =BLOC(condition="""(exists("FONC_DX"))""",
+                 FONC_DY       =SIMP(statut='f',typ=(nappe_sdaster,formule)),
+                 FONC_DZ       =SIMP(statut='f',typ=(nappe_sdaster,formule)),
+                 FONC_DRX       =SIMP(statut='f',typ=(nappe_sdaster,formule)),
+                 FONC_DRY       =SIMP(statut='f',typ=(nappe_sdaster,formule)),
+                 FONC_DRZ       =SIMP(statut='f',typ=(nappe_sdaster,formule)),
              ),
            ),
          ), # fin bloc b_comb_evol_char
