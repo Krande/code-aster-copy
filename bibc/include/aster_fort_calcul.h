@@ -215,6 +215,14 @@ void DEFSSSSSPS( ALCHML, alchml, const char *, STRING_SIZE, const char *, STRING
 #define CALLO_RSAGSD( a, b ) CALLOP( RSAGSD, rsagsd, a, b)
 void DEFSP( RSAGSD, rsagsd, const char *, STRING_SIZE, ASTERINTEGER *);
 
+#define CALLO_CALCUL( a, b, c, d, e, f, g, h, i, j, k )                                           \
+    CALLSSSPSSPSSSS( CALCUL_CWRAP, calcul_cwrap, a, b, c, d, e, f, g, h, i, j, k )
+void DEFSSSPSSPSSSS( CALCUL_CWRAP, calcul_cwrap, const char *, STRING_SIZE, 
+              const char *, STRING_SIZE, const char *, STRING_SIZE,
+              ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
+              const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif
