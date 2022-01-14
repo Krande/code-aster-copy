@@ -47,17 +47,21 @@
  * @brief Structure template permettant de limiter le type instanciable de JeveuxVector
  * @tparam T Type autorise
  */
-template < typename T > struct AllowedFieldType; // undefined for bad types!
+template < typename T >
+struct AllowedFieldType; // undefined for bad types!
 
-template <> struct AllowedFieldType< ASTERINTEGER > {
+template <>
+struct AllowedFieldType< ASTERINTEGER > {
     static const unsigned short numTypeJeveux = Integer;
 };
 
-template <> struct AllowedFieldType< ASTERDOUBLE > {
+template <>
+struct AllowedFieldType< ASTERDOUBLE > {
     static const unsigned short numTypeJeveux = Real;
 };
 
-template <> struct AllowedFieldType< ASTERCOMPLEX > {
+template <>
+struct AllowedFieldType< ASTERCOMPLEX > {
     static const unsigned short numTypeJeveux = Complex;
 };
 
@@ -86,8 +90,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodesDescriptionPtr _dofDescription;
     /** @brief Support mesh */
     BaseMeshPtr _mesh;
-    /** @brief jeveux vector '.TITR' */
-    JeveuxVectorChar80 _title;
 
   public:
     /**
@@ -101,10 +103,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param name Jeveux name of the field on nodes
      */
     FieldOnNodes( const std::string name )
-        : DataField( name, "CHAM_NO" ), _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
+        : DataField( name, "CHAM_NO" ),
+          _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _dofNum( nullptr ),
-          _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ),
+          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
+          _dofNum( nullptr ),
+          _dofDescription( nullptr ),
           _mesh( nullptr ){};
 
     /**
@@ -132,7 +136,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Move constructor
      * @param other field to move
      */
-    FieldOnNodes( FieldOnNodes &&other ) : DataField{ std::move( other ) } {
+    FieldOnNodes( FieldOnNodes &&other ) : DataField{std::move( other )} {
         // Pointers to be moved
         _descriptor = other._descriptor;
         _reference = other._reference;
@@ -175,9 +179,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Constructeur from a MeshCoordinatesFieldPtr&
      */
     FieldOnNodes( MeshCoordinatesFieldPtr &toCopy )
-        : DataField( "CHAM_NO" ), _descriptor( toCopy->_descriptor ),
-          _reference( toCopy->_reference ), _valuesList( toCopy->_valuesList ), _dofNum( nullptr ),
-          _dofDescription( nullptr ), _title( JeveuxVectorChar80( getName() + ".TITR" ) ),
+        : DataField( "CHAM_NO" ),
+          _descriptor( toCopy->_descriptor ),
+          _reference( toCopy->_reference ),
+          _valuesList( toCopy->_valuesList ),
+          _dofNum( nullptr ),
+          _dofDescription( nullptr ),
           _mesh( nullptr ){};
 
     /**

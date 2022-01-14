@@ -105,6 +105,14 @@ Returns:
     str: Name of the *DataStructure* type.
         )",
             ( py::arg( "self" ) ) )
+        .def( "setTitle", &DataStructure::setTitle,
+        R"(
+Set the tile of the *DataStructure* .
+
+Arguments:
+    title [str]: Title of the *DataStructure*.
+        )",
+            ( py::arg( "self" ), py::arg( "title" ) ) )
         .def( "debugPrint", c1 )
         .def( "debugPrint", c2 )
         .def( "build", &DataStructure::build,

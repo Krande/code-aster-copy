@@ -183,6 +183,9 @@ def meca_statique_ops(self, **args):
     result = args.get("RESULTAT")
     if result is None:
         result = ElasticResult()
+        title = args.get("TITRE")
+        if title is not None:
+            result.setTitle(title)
 
     # Create physical problem
     model = args["MODELE"]

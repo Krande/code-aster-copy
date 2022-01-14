@@ -27,10 +27,6 @@
 
 #ifdef __cplusplus
 
-#include <map>
-#include <stdexcept>
-#include <string>
-
 #include "astercxx.h"
 
 #include "DataStructures/DataStructureNaming.h"
@@ -55,10 +51,12 @@ class DataStructure {
     std::string _user_name;
     /** @brief Object that stores the DataStructure type for jeveux requests */
     JeveuxVectorChar24 _tco;
-    /** @brief Object that stores the title of the DataStructure */
-    JeveuxVectorChar80 _title;
     /** @brief Vector which contains reference to other DataStructure */
     std::vector< DataStructurePtr > _depsVector;
+
+  protected:
+    /** @brief Object that stores the title of the DataStructure */
+    JeveuxVectorChar80 _title;
 
   public:
     /**
@@ -140,6 +138,8 @@ class DataStructure {
     const std::string &getUserName() const { return _user_name; };
 
     void setUserName( const std::string );
+
+    void setTitle( const std::string );
 
     /**
      * @brief Function membre getType

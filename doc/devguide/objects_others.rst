@@ -77,6 +77,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.CodedMaterial` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.CodedMaterial
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ContactParameter` object
 ********************************************************************************
 
@@ -126,6 +135,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ForceReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.FrictionParameter` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.FrictionParameter
    :show-inheritance:
    :members:
 
@@ -229,6 +247,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.NormalSpeedReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.PairingParameter` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PairingParameter
    :show-inheritance:
    :members:
 

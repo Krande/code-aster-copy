@@ -55,6 +55,7 @@ MECA_STATIQUE=MACRO(nom="MECA_STATIQUE",
          SOLVEUR         =C_SOLVEUR('MECA_STATIQUE'),
 #-------------------------------------------------------------------
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
          translation={
             "MECA_STATIQUE": "Static mechanical analysis",
          }

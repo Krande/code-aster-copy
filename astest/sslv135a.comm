@@ -711,6 +711,8 @@ for i in range(2) :
 # -------------------------
 
 SOL_L = MECA_STATIQUE (
+                        TITRE      =
+                'TEST TRACTION-COMPRESSION ALTERNEE - PLAN CRITIQUE',
                         MODELE     =   TROISD,
                         CHAM_MATER =   MAT[0],
                         EXCIT      =_F ( CHARGE       = TR_CS,

@@ -22,40 +22,42 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include "asterc_config.h"
 #include "aster.h"
+#include "asterc_config.h"
 
 #ifdef __cplusplus
 
-#include <stdexcept>
-#include <list>
-#include <vector>
-#include <set>
-#include <string>
-#include <map>
-#include <iostream>
-#include <complex>
-#include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/variant.hpp>
 
-typedef bool ASTERBOOL;
-typedef std::complex< ASTERDOUBLE > ASTERCOMPLEX;
+#include <complex>
+#include <iostream>
+#include <list>
+#include <map>
+#include <set>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
-typedef std::vector< ASTERBOOL > VectorBool;
-typedef std::vector< ASTERINTEGER4 > VectorInt;
-typedef std::vector< ASTERINTEGER > VectorLong;
-typedef std::vector< ASTERDOUBLE > VectorReal;
-typedef std::vector< ASTERCOMPLEX > VectorComplex;
-typedef std::vector< std::string > VectorString;
+using ASTERBOOL = bool;
+using ASTERCOMPLEX = std::complex< ASTERDOUBLE >;
 
-typedef std::set< ASTERINTEGER4 > SetInt;
-typedef std::set< ASTERINTEGER > SetLong;
-typedef std::set< std::string > SetString;
+using VectorBool = std::vector< ASTERBOOL >;
+using VectorInt = std::vector< ASTERINTEGER4 >;
+using VectorLong = std::vector< ASTERINTEGER >;
+using VectorReal = std::vector< ASTERDOUBLE >;
+using VectorComplex = std::vector< ASTERCOMPLEX >;
+using VectorString = std::vector< std::string >;
 
-#define AS_ABORT(message) \
-            DEBUG_LOC; std::cout << message << std::endl; \
-            INTERRUPT(17);
+using SetInt = std::set< ASTERINTEGER4 >;
+using SetLong = std::set< ASTERINTEGER >;
+using SetString = std::set< std::string >;
+
+#define AS_ABORT( message )                                                                        \
+    DEBUG_LOC;                                                                                     \
+    std::cout << message << std::endl;                                                             \
+    INTERRUPT( 17 );
 
 #endif
 
