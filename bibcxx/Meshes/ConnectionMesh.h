@@ -54,8 +54,7 @@ class ConnectionMesh : public BaseMesh {
     /** @brief number of owner proc for each cells */
     JeveuxVectorLong _cellsOwner;
 
-
-    VectorLong getCellsGlobalNumbering( const JeveuxVectorLong& rankOfCells ) const;
+    VectorLong getCellsGlobalNumbering( const JeveuxVectorLong &rankOfCells ) const;
 
   public:
     /**
@@ -68,15 +67,14 @@ class ConnectionMesh : public BaseMesh {
      * @brief Constructeur
      */
     ConnectionMesh( const ParallelMeshPtr &mesh, const VectorString &groupsOfNodes,
-        const VectorString &groupsOfCells )
-        : ConnectionMesh( ResultNaming::getNewResultName(), mesh,
-                            groupsOfNodes, groupsOfCells ){};
+                    const VectorString &groupsOfCells )
+        : ConnectionMesh( ResultNaming::getNewResultName(), mesh, groupsOfNodes, groupsOfCells ){};
 
     /**
      * @brief Constructeur
      */
     ConnectionMesh( const std::string &name, const ParallelMeshPtr &mesh,
-        const VectorString &groupsOfNodes, const VectorString &groupsOfCells );
+                    const VectorString &groupsOfNodes, const VectorString &groupsOfCells );
 
     const JeveuxVectorLong &getNodesGlobalNumbering() const { return _nodesGlobalNumbering; };
 
@@ -90,20 +88,17 @@ class ConnectionMesh : public BaseMesh {
 
     const ParallelMeshPtr &getParallelMesh() const { return _pMesh; };
 
-    VectorString getGroupsOfCells( ) const;
+    VectorString getGroupsOfCells() const;
 
-    VectorString getGroupsOfNodes( ) const;
+    VectorString getGroupsOfNodes() const;
 
-    bool hasGroupOfCells( const std::string &name) const;
+    bool hasGroupOfCells( const std::string &name ) const;
 
-    bool hasGroupOfNodes( const std::string &name) const;
+    bool hasGroupOfNodes( const std::string &name ) const;
 
     VectorLong getCells( const std::string name ) const;
 
-    VectorLong getCells(  ) const
-    {
-        return getCells( std::string() );
-    };
+    VectorLong getCells() const { return getCells( std::string() ); };
 
     /**
      * @brief Fonction permettant de savoir si un maillage est partiel

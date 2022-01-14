@@ -29,60 +29,53 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Modeling/Model.h"
-#include "Modeling/FiniteElementDescriptor.h"
 #include "Meshes/ConnectionMesh.h"
+#include "Modeling/FiniteElementDescriptor.h"
+#include "Modeling/Model.h"
 
 /**
  * @class ParallelFiniteElementDescriptor
  * @brief Classe definissant un ligrel parallèle
  * @author Nicolas Sellenet
  */
-class ParallelFiniteElementDescriptor: public FiniteElementDescriptor
-{
-protected:
+class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
+  protected:
     /** @brief Matching numbering between keeped delayed elements and base elements */
-    VectorLong                       _virtualCellToKeep;
+    VectorLong _virtualCellToKeep;
     /** @brief Join to send */
-    std::vector< JeveuxVectorLong >  _joinToSend;
+    std::vector< JeveuxVectorLong > _joinToSend;
     /** @brief Join to receive */
-    std::vector< JeveuxVectorLong >  _joinToReceive;
+    std::vector< JeveuxVectorLong > _joinToReceive;
     /** @brief All joins */
-    JeveuxVectorLong                 _joins;
+    JeveuxVectorLong _joins;
     /** @brief Delayed nodes owner */
-    JeveuxVectorLong                 _owner;
+    JeveuxVectorLong _owner;
     /** @brief Number of elements in which a given node is located */
-    JeveuxVectorLong                 _multiplicity;
+    JeveuxVectorLong _multiplicity;
     /** @brief Number of non local elements in which a given node is located */
-    JeveuxVectorLong                 _outerMultiplicity;
+    JeveuxVectorLong _outerMultiplicity;
     /** @brief Global numbering for delayed nodes */
-    JeveuxVectorLong                 _globalNumberingVirtualNodes;
+    JeveuxVectorLong _globalNumberingVirtualNodes;
 
-public:
+  public:
     /**
      * @brief Constructeur
      */
-    ParallelFiniteElementDescriptor( const std::string& name,
-                                             const FiniteElementDescriptorPtr& FEDesc,
-                                             const ConnectionMeshPtr& mesh,
-                                             const ModelPtr& model
-                                              );
+    ParallelFiniteElementDescriptor( const std::string &name,
+                                     const FiniteElementDescriptorPtr &FEDesc,
+                                     const ConnectionMeshPtr &mesh, const ModelPtr &model );
 
     /**
      * @brief Get vector of delayed elements keeped from the base FiniteElementDescriptor
      * @return reference on VectorLong
      */
-    const VectorLong& getVirtualCellsToKeep() const
-    {
-        return _virtualCellToKeep;
-    };
+    const VectorLong &getVirtualCellsToKeep() const { return _virtualCellToKeep; };
 
     /**
      * @brief Get vector of joins between subdomains
      * @return reference on VectorLong
      */
-    const JeveuxVectorLong& getJoins() const
-    {
+    const JeveuxVectorLong &getJoins() const {
         _joins->updateValuePointer();
         return _joins;
     };
@@ -91,16 +84,14 @@ public:
      * @typedef ParallelFiniteElementDescriptorPtr
      * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptor
      */
-    typedef boost::shared_ptr< ParallelFiniteElementDescriptor >
-        ParallelFiniteElementDescriptorPtr;
+    typedef boost::shared_ptr< ParallelFiniteElementDescriptor > ParallelFiniteElementDescriptorPtr;
 };
 
 /**
  * @typedef ParallelFiniteElementDescriptorPtr
  * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptor
  */
-typedef boost::shared_ptr< ParallelFiniteElementDescriptor >
-    ParallelFiniteElementDescriptorPtr;
+typedef boost::shared_ptr< ParallelFiniteElementDescriptor > ParallelFiniteElementDescriptorPtr;
 
 #endif /* PARALLELFINITEELEMENTDESCRIPTOR_H_ */
 
