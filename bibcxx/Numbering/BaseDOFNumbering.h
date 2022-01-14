@@ -200,22 +200,25 @@ class BaseDOFNumbering : public DataStructure {
         /** @brief Objet Jeveux '.NUEQ' */
         JeveuxVectorLong _indexationVector;
         /** @brief Objet Jeveux '.NULG' */
-        JeveuxVectorLong _globalToLocal;
+        JeveuxVectorLong _localToGlobal;
         /** @brief Objet Jeveux '.NUGL' */
-        JeveuxVectorLong _LocalToGlobal;
+        JeveuxVectorLong _globalToLocal;
+        /** @brief Objet Jeveux '.PDDL' */
+        JeveuxVectorLong _localToRank;
 
         LocalEquationNumbering( const std::string &DOFNumName )
             : _numberOfEquations( DOFNumName + ".NEQU" ),
               _lagrangianInformations( DOFNumName + ".DELG" ),
               _componentsOnNodes( DOFNumName + ".PRNO" ), _indexationVector( DOFNumName + ".NUEQ" ),
-              _globalToLocal( DOFNumName + ".NULG" ), _LocalToGlobal( DOFNumName + ".NUGL" ){};
+              _localToGlobal( DOFNumName + ".NULG" ), _globalToLocal( DOFNumName + ".NUGL" ),
+              _localToRank( DOFNumName + ".PDDL" ){};
 
         public:
             /**
              * @brief Returns the vector of local to global numbering
              */
             const JeveuxVectorLong getLocalToGlobal() const {
-                return _LocalToGlobal;
+                return _localToGlobal;
             }
             /**
              * @brief Returns the vector of global to local numbering
