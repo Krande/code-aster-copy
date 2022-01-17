@@ -234,13 +234,11 @@ implicit none
             chatmp = '&&OP0195.CHATMP'
             if (nomgd .eq. 'VARI_R') then
                 call varaff(mesh, nomgd, 'V', chatmp)
-                call chpchd(chatmp, tychr, celmod, prol0, 'G',&
-                            chou, model)
+                call chpchd(chatmp, tychr, celmod, prol0, 'G', chou, model)
                 call detrsd('CHAM_ELEM_S', chatmp)
             else
                 call caraff(mesh, nomgd, 'V', chatmp)
-                call chpchd(chatmp, tychr, celmod, prol0, 'G',&
-                            chou, model)
+                call chpchd(chatmp, tychr, celmod, prol0, 'G', chou, model)
                 call detrsd('CARTE', chatmp)
             endif
         endif
@@ -291,8 +289,7 @@ implicit none
                 call utmess('F', 'UTILITAI3_27', nk=2, valk=valk)
             endif
         endif
-        call chpchd(chin, tychr, celmod, prol0, 'G',&
-                    chou)
+        call chpchd(chin, tychr, celmod, prol0, 'G', chou, model)
 !
 !
     else if (opera.eq.'EXTR') then
