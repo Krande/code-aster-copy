@@ -28,7 +28,7 @@
 !
 ! person_in_charge: natacha.bereux at edf.fr
 !
-
+!aslint: disable=C1308
 module sort_module
   !!!!!!!!!!!!!!!!!!!!!!!!
   !!!!!! QUICK SORT !!!!!!
