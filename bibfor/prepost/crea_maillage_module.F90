@@ -2423,7 +2423,9 @@ contains
                     nb_recv = nb_recv + 1
                 end if
             end do
-            call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv, vi=v_proc)
+            if(nb_recv > 0) then
+                call wkvect(mesh_out//'.DOMJOINTS', 'G V I', nb_recv, vi=v_proc)
+            end if
             nb_recv = 0
             do i_proc = 0, nbproc-1
                 if(v_rnode(i_proc+1) > 0) then
