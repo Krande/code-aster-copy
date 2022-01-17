@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,12 +51,12 @@ subroutine rcpare(nommat, pheno, para, icodre)
     icodre = 1
     pheno2=pheno
     nomma2=nommat
-!    
+!
     ncomp = nommat//'.MATERIAU.NOMRC         '
     call jelira(ncomp, 'LONUTI', nbcomp)
     call jeveuo(ncomp, 'L', icomp)
     do i = 1, nbcomp
-       if (pheno2 .eq. zk32(icomp+i-1)) then            
+       if (pheno2 .eq. zk32(icomp+i-1)) then
           call codent(i, 'D0', k6)
           ncomr = nomma2//'.CPT.'//k6//'.VALR        '
           ncomc = nomma2//'.CPT.'//k6//'.VALC        '
@@ -72,6 +72,6 @@ subroutine rcpare(nommat, pheno, para, icodre)
              endif
           end do
        endif
-    end do  
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

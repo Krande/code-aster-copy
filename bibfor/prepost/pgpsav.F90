@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,14 +37,14 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
 !  cvect  [Opt]: Vector to be saved in the case of complex parameters [C8]
 !
 ! 1 - First, we verify that the parameter name is valid
-! 2 - Second, we save the given value/vector in the correct work vector  
+! 2 - Second, we save the given value/vector in the correct work vector
 !     according to the sd_pgp data structure's map
 !
 ! Examples : call pgpsav('&&OP0058','RESU_IN ',1, kscal=resuin)
 !            call pgpsav('&&OP0058','NOM_CMP ',1, iobs=2, kvect=('DX','DY'))
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -105,7 +105,7 @@ subroutine pgpsav(sd_pgp, param, lonvec, iobs, kscal,&
                   'I','K24','R8','R8',&
                   'C8','K24','K24','K24','I'/
 !
-!   parind = -2 : vector global          ; = -1 : scalar global ; 
+!   parind = -2 : vector global          ; = -1 : scalar global ;
 !          =  2 : vector per observation ; =  1 : scalar per observation
     data  parind  / -1, -1, -1, -1, -1,&
                     -1, -1,  1,  1,  2,&

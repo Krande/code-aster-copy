@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,7 +134,7 @@ implicit none
 !
             ligrch = load_name//'.CHTH.LIGREL'
 
-!    
+!
 !  =====================================================================
 !           --  ( CHAR_THER_TEXT_F , ISO_FACE ) SUR LE MODELE
             call exisd('CHAMP_GD', ligrch(1:13)//'.COEFH', iret)

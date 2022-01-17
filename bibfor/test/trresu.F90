@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -208,7 +208,7 @@ integer, intent(in) :: ific, nocc
         nl1 = lxlgut(lign1)
         nl2 = lxlgut(lign2)
         lign1(1:nl1+16)=lign1(1:nl1-1)//' NUME_ORDRE'
-        call codent(numeStore, 'G', chpt)
+        call codent(numeStore, 'G', chpt, ' ')
         lign2(1:nl2+16)=lign2(1:nl2-1)//' '//chpt
         lign1(nl1+17:nl1+17)='.'
         lign2(nl2+17:nl2+17)='.'
@@ -557,7 +557,7 @@ integer, intent(in) :: ific, nocc
                     nl1 = lxlgut(lign1)
                     nl2 = lxlgut(lign2)
                     lign1(1:nl1+16)=lign1(1:nl1-1)//' POINT'
-                    call codent(nupo, 'G', chpt)
+                    call codent(nupo, 'G', chpt, ' ')
                     lign2(1:nl2+16)=lign2(1:nl2-1)//' '//chpt
                     lign1(nl1+17:nl1+17)='.'
                     lign2(nl2+17:nl2+17)='.'
@@ -566,7 +566,7 @@ integer, intent(in) :: ific, nocc
                         nl1 = lxlgut(lign1)
                         nl2 = lxlgut(lign2)
                         lign1(1:nl1+16)=lign1(1:nl1-1)//' SOUS_POINT'
-                        call codent(nusp, 'G', chpt)
+                        call codent(nusp, 'G', chpt, ' ')
                         lign2(1:nl2+16)=lign2(1:nl2-1)//' '//chpt
                         lign1(nl1+17:nl1+17)='.'
                         lign2(nl2+17:nl2+17)='.'

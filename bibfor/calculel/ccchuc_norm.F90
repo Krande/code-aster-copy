@@ -54,7 +54,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 !
 ! CALC_CHAMP - CHAM_UTIL - NORME
 !
-! Compute NORME 
+! Compute NORME
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -98,7 +98,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     nb_coef_user = 0
     coef_user(1) = 0.d0
 !
-! - Compute <CARTE> with informations on Gauss points 
+! - Compute <CARTE> with informations on Gauss points
 !
     call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
     call exisd('CHAMP', chgaus, iexist)
@@ -148,7 +148,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     nopar = nopar2(option,'NEUT_R','OUT')
     call cescel(field_neut_s, modelLigrel, option, nopar, 'OUI',&
                 nncp, 'V', field_neut, 'F', iret)
-    ASSERT(iret.eq.0) 
+    ASSERT(iret.eq.0)
 !
 ! - Change type of field
 !

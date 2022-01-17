@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine load_neum_matr(idx_load    , idx_matr  , load_name , load_nume, load_
 ! --------------------------------------------------------------------------------------------------
 !
 ! Compute Neumann loads
-! 
+!
 ! Elementary (on one load) - Matrix for undead loads
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ subroutine load_neum_matr(idx_load    , idx_matr  , load_name , load_nume, load_
 !
     integer :: i_type_neum, nb_in_add
     character(len=16) :: load_option
-    character(len=24) :: load_ligrel  
+    character(len=24) :: load_ligrel
     integer :: nbout, nbin
     character(len=8) :: lpaout
     character(len=19) :: lchout

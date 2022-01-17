@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,18 +30,18 @@ subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
     character(len=11), intent(out), optional :: k11_ind_nomrc
 ! ----------------------------------------------------------------------
 !     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
-!     D'UN PREMISSE (C'EST L'INDICE DU PREMIER NOM QUI CONTIENT LA CHAINE 
-!     CHERCHEE EST RETOURNE) 
+!     D'UN PREMISSE (C'EST L'INDICE DU PREMIER NOM QUI CONTIENT LA CHAINE
+!     CHERCHEE EST RETOURNE)
 !
 !     ARGUMENTS D'ENTREE:
 !        NOMMAT : NOM DU MATERIAU
-!        PHENO  : NOM DU PHENOMENE EVENTUELLEMENT INCOMPLET 
+!        PHENO  : NOM DU PHENOMENE EVENTUELLEMENT INCOMPLET
 !     ARGUMENTS DE SORTIE:
 !        ICODRE : 0 SI ON A TROUVE, 1 SINON
 !        IARRET : 0 RETOURNE LE CODE RETOUR ICODRE SANS EMISSION DE MESSAGE (PAR DEFAUT)
 !                 1 EMISSION D'UNE ERREUR FATALE
 !        INDI   : INDICE DE PHENO DANS nommat//'.MATERIAU.NOMRC
-!  
+!
 ! DEB ------------------------------------------------------------------
     character(len=32) :: ncomp
     character(len=6) :: k6
@@ -60,12 +60,12 @@ subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
     ncomp = nommat//'.MATERIAU.NOMRC         '
     call jelira(ncomp, 'LONUTI', nbcomp)
     call jeveuo(ncomp, 'L', icomp)
-    do i = 1, nbcomp 
+    do i = 1, nbcomp
         if (pheno .eq. zk32(icomp+i-1)(1:len(pheno))) then
             if (present(k11_ind_nomrc)) then
-               call codent(i,'D0',k6)  
+               call codent(i,'D0',k6)
                k11_ind_nomrc='.CPT.'//k6
-            endif   
+            endif
             icodre = 0
         endif
     end do

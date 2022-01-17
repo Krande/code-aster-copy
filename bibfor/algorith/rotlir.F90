@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
     integer :: ibid, nbno1, llint1, nbeq1, lmod1, numlia, lonmod, i1, j1, k1, l1
     integer :: m1, n1, lindi1, lnoeu1, nbnoe, nbec, ipos1, ipos2, lmain1, nbcmpm
     integer :: leuler, lresmo, codret, lmacr1, nbddl1, imast, ddla1, lact1, iret
-    integer :: lmarot, length, nbcmp, jnocmp, noer 
+    integer :: lmarot, length, nbcmp, jnocmp, noer
     parameter      (nbcmpm=300)
     integer :: deco(nbcmpm)
     real(kind=8) :: euler(3), rota(3, 3), norme, nortot
@@ -327,7 +327,7 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- EXTRACTION ET ROTATION DE LA TRACE DES MODES SUR L'INTERFACE
 !
         call jeveuo(jexnum(bamo1//'           .TACH', 1), 'L', lmod1)
-        
+
 ! -- verification que les prof_chno des modes correspondent bien a celui du nume_ddl
         nook = .false.
         do i1 = 1, nbeq1

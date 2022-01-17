@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ integer, pointer :: cmpVariIndx(:)
 integer, intent(in) :: grelNb
 integer, pointer :: liel(:), lielLen(:)
 character(len=19), intent(in) :: liliName
-integer, pointer :: connex(:), connexLen(:) 
+integer, pointer :: connex(:), connexLen(:)
 aster_logical, intent(in) :: lsup, linf, lmax, lmin
 real(kind=8),  intent(in) :: borsup, borinf
 complex(kind=8), pointer  :: vale(:)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,19 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine codent(entier, cadre, chaine)
+subroutine codent(entier, cadre, chaine, kstop)
     implicit none
 #include "asterf_types.h"
-    integer :: entier
-    character(len=*) :: cadre, chaine
+#include "asterfort/assert.h"
+    integer, intent(in) :: entier
+    character(len=*), intent(in) :: cadre
+    character(len=*), intent(out) :: chaine
+    character(len=*), optional :: kstop
 !
 !     ------------------------------------------------------------------
 !     CODAGE D'UN ENTIER SUR UNE CHAINE DE CARACTERE
 !     ------------------------------------------------------------------
+! IN  KSTOP  : CH(*) : ' '/'F' (VOIR CI-DESSOUS)
 ! IN  ENTIER : IS    : ENTIER A CONVERTIR EN CHAINE
 ! IN  CADRE  : CH(*) : TYPE DE CADRAGE
 !          D     CADRAGE A DROITE
@@ -33,8 +37,10 @@ subroutine codent(entier, cadre, chaine)
 ! OUT CHAINE : CH(*) : CHAINE RECEPTACLE, ON UTILISE TOUTE LA LONGUEUR
 !                      DE LA CHAINE
 !     ------------------------------------------------------------------
-!     REMARQUE : EN CAS D'ERREUR (A LA TRANSCRIPTION OU DANS LE TYPE DE
-!                CADRAGE)   LA CHAINE EST REMPLIE D'ETOILE
+!     REMARQUE :
+!         SI KSTOP=' ' : EN CAS D'ERREUR (A LA TRANSCRIPTION OU DANS LE TYPE DE
+!                        CADRAGE)   LA CHAINE EST REMPLIE D'ETOILE
+!         SI KSTOP='F' : EN CAS D'ERREUR, ON ARRETE LE CODE
 !     ROUTINE(S) UTILISEE(S) :
 !         -
 !     ROUTINE(S) FORTRAN     :
@@ -52,6 +58,12 @@ subroutine codent(entier, cadre, chaine)
 !-----------------------------------------------------------------------
     data        chiffr/'0','1','2','3','4','5','6','7','8','9'/
 !
+!
+    if (present(kstop)) then
+        ASSERT(kstop.eq.' '.or.kstop.eq.'F')
+    else
+        kstop = 'F'
+    end if
 !
     ier = 0
     chaine = ' '
@@ -111,9 +123,13 @@ subroutine codent(entier, cadre, chaine)
 !     SORTIE -----------------------------------------------------------
 99000 continue
     if (ier .ne. 0) then
-        do 9001 i = 1, lg
-            chaine(i:i) = '*'
-9001     continue
+        if (kstop.eq.' ') then
+            do i = 1, lg
+                chaine(i:i) = '*'
+            end do
+        else
+            ASSERT(.false.)
+        endif
     endif
 !
 end subroutine

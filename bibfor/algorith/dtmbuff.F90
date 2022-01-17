@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 !
 !  sd_dtm [Obl]: Name of the dtm data structure requested [K24]
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/crevec.h"
@@ -59,7 +59,7 @@ subroutine dtmbuff(sd_dtm, addrs, level)
     character(len=8)  :: sd_nl
     character(len=24) :: savename
     type(c_ptr) :: pc
-    integer, pointer  :: buffnl(:) => null() 
+    integer, pointer  :: buffnl(:) => null()
 !
 #include "dtminc.h"
 !
@@ -68,14 +68,14 @@ subroutine dtmbuff(sd_dtm, addrs, level)
     nullify(addrs)
 !
 !   Variable lvl defines the maximum buffer level in the case of per occurence items
-    lvl = 1 
+    lvl = 1
     if (present(level)) lvl = level
 !
 !   ====================================================================
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
-    if (nbnoli.gt.0) then  
+    if (nbnoli.gt.0) then
         call dtmget(sd_dtm_, _SD_NONL  , kscal=sd_nl)
         call nlget (sd_nl  , _MAX_LEVEL, iscal=mxlevel)
         call nlbuff(sd_nl  ,  buffnl   , level=mxlevel)
@@ -112,11 +112,11 @@ subroutine dtmbuff(sd_dtm, addrs, level)
                 call jeveut(savename, 'E', addr)
                 call jelira(savename, 'LONMAX', long)
                 addrs(dec+ip) = addr
-                addrs(dec+_DTM_NBPAR+ip) = long            
+                addrs(dec+_DTM_NBPAR+ip) = long
             else if (abs(parind(ip)).eq.1) then
                 call crevec(savename, 'V V '//partyp(ip),1, addr)
                 addrs(dec+ip) = addr
-                addrs(dec+_DTM_NBPAR+ip) = 1            
+                addrs(dec+_DTM_NBPAR+ip) = 1
             end if
 10          continue
         end do

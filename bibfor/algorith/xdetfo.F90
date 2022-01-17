@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -132,9 +132,9 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !   POUR L INSTANT LA DETECTION SE FAIT A PARTIR DU DERNIER NUMERO D ORDRE
 !
     call rs_getlast(resuco, nume_last)
-! 
+!
 ! --- RECUP CHAMP VARIABLES INTERNES COHESIVES
-! 
+!
     call rsexch('F', resuco, 'COHE_ELEM', nume_last, cohee,&
                 iret)
 !
@@ -156,7 +156,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !
     call rs_getfirst(resuco, nume_first)
 !
-!   RECUP DU MATERIAU 
+!   RECUP DU MATERIAU
     call rslesd(resuco, nume_first, materi_ = mater)
 !
 !   RECUP CONTRAINTE CRITIQUE ET TENACITE
@@ -190,7 +190,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 !   REDUCTION CHAMP VARIABLES INTERNES
     call cnsred(cnsco, 0, [0], 1, 'X1',&
                 'V', cnsco)
-!   
+!
 !   ON ENLEVE LES NOEUDS QUI N ONT PAS DE VARIABLE INTERNE
     call jeveuo(cnsco(1:19)//'.CNSD', 'L', jcnsd)
     call jeveuo(cnsco(1:19)//'.CNSL', 'L', jcnsl)

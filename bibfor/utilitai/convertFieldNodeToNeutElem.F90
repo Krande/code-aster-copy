@@ -56,7 +56,7 @@ character(len=8), pointer :: cmpNameNode(:), cmpNameNeut(:)
     character(len=4) :: ki
     character(len=8) :: paraName, physName
     character(len=8), pointer :: cnsc(:) => null()
-    integer :: iCmp, ibid, iret 
+    integer :: iCmp, ibid, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

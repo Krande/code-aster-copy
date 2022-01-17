@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ integer, intent(out) :: codret
 ! In  field_loca       : localization of field
 !                        /'ELNO'/'ELGA'/'ELEM'
 ! In  result           : name of results datastructure
-! In  model            : name of model         
+! In  model            : name of model
 ! Out codret           : error code
 !                        0   - Everything is OK
 !                        400 - error
@@ -110,11 +110,11 @@ integer, intent(out) :: codret
     character(len=19) :: vari_link
     character(len=19), parameter :: vari_redu = '&&IRMETA.VARIREDU'
     integer, pointer :: v_vari_link(:) => null()
-    character(len=16), pointer :: v_vari_redu(:) => null() 
+    character(len=16), pointer :: v_vari_redu(:) => null()
     character(len=19), parameter :: label_med = '&&IRMETA.LABELMED'
     character(len=19), parameter :: label_vxx = '&&IRMETA.LABELVXX'
     character(len=8), pointer :: v_label_vxx(:) => null()
-    character(len=16), pointer :: v_label_med(:) => null() 
+    character(len=16), pointer :: v_label_med(:) => null()
     character(len=64) :: nomres
     real(kind=8), pointer :: v_elnr_cesv(:) => null()
     real(kind=8), pointer :: v_elga_cesv(:) => null()
@@ -155,7 +155,7 @@ integer, intent(out) :: codret
     nb_zone      = v_info(2)
     nb_vari_maxi = v_info(3)
     nt_vari      = v_info(4)
-! 
+!
 ! - Create list of internal variables and link to zone in <CARTE> COMPOR
 !
     call comp_meca_uvar(compor_info, base_name, vari_redu, nb_vari_redu, codret)

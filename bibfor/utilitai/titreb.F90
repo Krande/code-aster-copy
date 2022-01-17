@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -241,7 +241,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
-            call codent(ibid, 'G', cgen(1:16))
+            call codent(ibid, 'G', cgen(1:16), ' ')
             igen = lxlgut(cgen(1:16))
 !
         case (12)
@@ -261,7 +261,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
-            call codent(ibid, 'G', cgen(1:16))
+            call codent(ibid, 'G', cgen(1:16), ' ')
             igen = lxlgut(cgen(1:16))
 !
         case (13)
@@ -300,7 +300,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '.D'
-            call codent(ibid, 'G', cgen(1:1))
+            call codent(ibid, 'G', cgen(1:1), ' ')
             igen = 2
 !
         case (15)
@@ -313,7 +313,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                         ier=ierd)
             if (ierd .ne. 0) goto 900
             cgen = '  '
-            call codent(ibid, 'G', cgen(1:16))
+            call codent(ibid, 'G', cgen(1:16), ' ')
             igen = lxlgut(cgen(1:16))
 !
         case (16)
@@ -347,7 +347,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
             call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
                         para, nbpara)
-            call codent(iordr, 'G', cgen(1:16))
+            call codent(iordr, 'G', cgen(1:16), ' ')
             igen = lxlgut(cgen(1:16))
 !
         case (19)
@@ -401,7 +401,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                     igen = igen+ilg+2
                     if ((ctype(1:1).eq.'I') .and. (.not.lfreq)) then
 !                       --- ENTIER
-                        call codent(zi(iad), 'G', cbid)
+                        call codent(zi(iad), 'G', cbid, ' ')
                         ilg = lxlgut(cbid)
                         cgen(igen+1:igen+ilg) = cbid
                         igen = igen+ilg+1
@@ -429,7 +429,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                     igen = igen+ilg+2
                     if (ctype(1:1) .eq. 'I') then
 !                       --- ENTIER
-                        call codent(zi(iad), 'G', cbid)
+                        call codent(zi(iad), 'G', cbid, ' ')
                         ilg = lxlgut(cbid)
                         cgen(igen+1:igen+ilg) = cbid
                         igen = igen+ilg+1
@@ -494,7 +494,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                     ideb = igen+1
                 else if (cval(1:1).eq.'I') then
                     ibid = zi(jad)
-                    call codent(ibid, 'G', cgen(ideb:))
+                    call codent(ibid, 'G', cgen(ideb:), ' ')
                     igen = lxlgut(cgen)
                     ideb = igen+1
                 else if (cval(1:1).eq.'K') then

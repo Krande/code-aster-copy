@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ aster_logical, intent(out) :: lcqhom
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: codret(1), kpg, spt, iret
-    integer :: jv_mate, jv_cacoqu, jv_pnbsp 
+    integer :: jv_mate, jv_cacoqu, jv_pnbsp
     integer :: i_layer, nb_layer, vali(2)
     real(kind=8) :: thick_lay(1), thick_tot, valr(2), thick
     character(len=2) :: layer_name

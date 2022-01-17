@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 ! IN  : IOCC1  : NUMERO D'OCCURENCE DE LA PREMIERE SITUATION
 ! IN  : IOCC2  : NUMERO D'OCCURENCE DE LA DEUXIEME SITUATION
 ! IN  : NS     : 0 SANS SEISME OU 1 SI SEISME
-! OUT : SN    
+! OUT : SN
 ! OUT : INSTSN : 2 INSTANTS DE SN ET 2 INSTANTS DE SN*
 ! OUT : SNET   : SN*
 ! OUT : SIGMOYPRES : CONTRAINTE MOYENNE DE PRESSION (pour le rochet)
@@ -101,9 +101,9 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 !
 ! TROIS CONTRIBUTIONS POSSIBLES POUR SN
 ! SA  : UNITAIRE
-!       SOUS SITUATION : CHAR_ETAT_A, CHAR_ETAT_B, PRES_A, PRES_B 
+!       SOUS SITUATION : CHAR_ETAT_A, CHAR_ETAT_B, PRES_A, PRES_B
 ! SB  : TRANSITOIRE
-!       SOUS SITUATION : NUME_RESU_THER NUME_RESU_MECA, NUME_RESU_PRES 
+!       SOUS SITUATION : NUME_RESU_THER NUME_RESU_MECA, NUME_RESU_PRES
 ! SC  : INTERPOLATION DES MOMENTS
 !       SOUS SITUATION : TEMP_A, TEMP_B, CHAR_ETAT_A, CHAR_ETAT_B, TABL_TEMP
 !
@@ -221,20 +221,20 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 ! ----  si la situation ne possède aucun transitoire
 ! ----  (ni thermique, ni de pression ni mécanique)
         if (nmecap .ne. 2 .and. npresp .ne. 2 .and. ntherp .ne. 1) then
-            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp) 
+            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp)
             do 86 k = 1, 12
                 if (lieu .eq. 'ORIG') then
                     momcstp(k) = A1p(k)*zr(jtemp)+B1p(k)
                 else
                     momcstp(k) = A1p(k)*zr(jtemp+1)+B1p(k)
                 endif
-86          continue 
+86          continue
             do 87 j = 1, 6
               do 88 k = 1, 12
                 sc(j) = sc(j) + momcstp(k)*zr(jsigu-1+78+6*(k-1)+j)
 88            continue
-87          continue   
-        endif        
+87          continue
+        endif
     endif
 !--------------------------------------------------------------------
 !                  DANS LE CAS D'UNE SITUATION SEULE
@@ -277,7 +277,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                         instp(4) = zr(jtranp+50*(l-1)+1)
                     endif
 68              continue
-67          continue         
+67          continue
             sn = s2pp+trescamax
             snet = s2pp+trescaetmax
             do 64 j = 1,6
@@ -545,17 +545,17 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 ! ----  si la situation ne possède aucun transitoire
 ! ----  (ni thermique, ni de pression ni mécanique)
         if (.not. tranq) then
-            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc2), 'L', jtemp) 
+            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc2), 'L', jtemp)
             do 186 k = 1, 12
                 if (lieu .eq. 'ORIG') then
                     momcstq(k) = A1q(k)*zr(jtemp)+B1q(k)
                 else
                     momcstq(k) = A1q(k)*zr(jtemp+1)+B1q(k)
                 endif
-186          continue   
-        endif        
+186          continue
+        endif
       endif
-!            
+!
 ! --------------------------------------------------------------
 !                          CALCUL DE SN(P,Q)
 ! --------------------------------------------------------------
@@ -576,13 +576,13 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
       if (ze200) then
 ! ----- si on est en ZE200
         call rcZ2s0('SN', map, mbq, presap, presbq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
         call rcZ2s0('SN', map, maq, presap, presaq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
         call rcZ2s0('SN', mbp, maq, presbp, presaq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
         call rcZ2s0('SN', mbp, mbq, presbp, presbq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
 !
         if (tranp) then
           if(tranq) then
@@ -606,7 +606,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                         instp(4) = zr(jtranq+50*(l-1)+1)
                     endif
 168             continue
-167         continue  
+167         continue
 !
             instp(1) = zr(jtranp+50*(inst1-1)+1)
             instp(2) = zr(jtranq+50*(inst2-1)+1)
@@ -616,12 +616,12 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 170         continue
             call rctres(sith, snther)
             call rctres(sipr, snpres)
-!  
+!
           else
             do 267 i = 1, nbinstp
                     do 269 j = 1,6
                         sb(j) = zr(jtranp+50*(i-1)+1+12+j)
-                        sbet(j) = (zr(jtranp+50*(i-1)+1+12+j)-zr(jtranp+50*(i-1)+1+42+j))  
+                        sbet(j) = (zr(jtranp+50*(i-1)+1+12+j)-zr(jtranp+50*(i-1)+1+42+j))
 269                 continue
                     call rctres(sb,tresca)
                     if(tresca .gt. trescamax) then
@@ -643,10 +643,10 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                 sipr(j) = zr(jtranp+50*(inst1-1)+1+30+j)
 270         continue
             call rctres(sith, snther)
-            call rctres(sipr, snpres)            
+            call rctres(sipr, snpres)
 !
           endif
-        else   
+        else
           if(tranq) then
               do 368 l = 1, nbinstq
                   do 369 j = 1,6
@@ -664,7 +664,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                       instp(3) = -1.d0
                       instp(4) = zr(jtranq+50*(l-1)+1)
                   endif
-368           continue 
+368           continue
 !
               instp(1) = -1.d0
               instp(2) = zr(jtranq+50*(inst2-1)+1)
@@ -674,7 +674,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 370           continue
               call rctres(sith, snther)
               call rctres(sipr, snpres)
-!   
+!
           else
               instp(1) = -1.d0
               instp(2) = -1.d0
@@ -696,7 +696,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 ! ------- la deuxième situation a un transitoire
             do 467 i = 1, nbinstp
                 do 468 l = 1, nbinstq
-                  do 469 i0 = 1, 2 
+                  do 469 i0 = 1, 2
                     do 470 j = 1,6
                         sc(j)= 0.d0
                         sb(j) = zr(jtranp+50*(i-1)+1+12+j)- zr(jtranq+50*(l-1)+1+12+j)
@@ -787,7 +787,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
 !
 469               continue
 468             continue
-467         continue    
+467         continue
 !
 !---------- Calcul de snther, snpres et snmec
             do 471 j = 1,6
@@ -808,7 +808,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
           else
 ! ------- la deuxième situation n'a pas de transitoire
             do 567 i = 1, nbinstp
-                  do 569 i0 = 1, 2 
+                  do 569 i0 = 1, 2
                     do 570 j = 1,6
                         sc(j)= 0.d0
                         sb(j) = zr(jtranp+50*(i-1)+1+12+j)- 0.d0
@@ -895,7 +895,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                     if(.not. unitaire) exit
 !
 569               continue
-567         continue  
+567         continue
 !
 !---------- Calcul de snther, snpres et snmec
             do 571 j = 1,6
@@ -912,14 +912,14 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
             endif
             instp(1) = zr(jtranp+50*(inst1-1)+1)
             instp(2) = -1.d0
-!  
+!
           endif
-        else  
+        else
 ! ----- la première situation n'a pas de transitoire
           if(tranq) then
 ! ------- la deuxième situation a un transitoire
               do 668 l = 1, nbinstq
-                  do 669 i0 = 1, 2 
+                  do 669 i0 = 1, 2
                     do 670 j = 1,6
                         sc(j)= 0.d0
                         sb(j) = 0.d0- zr(jtranq+50*(l-1)+1+12+j)
@@ -942,7 +942,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                           stet4(j) = sbet(j)+sc(j)+e0(i0)*sa4(j)
                         endif
 670                 continue
-!        
+!
 !
 !------------------ Calcul du SN sans séisme
                     if (ns .eq. 0) then
@@ -1007,7 +1007,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                     if(.not. unitaire) exit
 !
 669               continue
-668           continue  
+668           continue
 !
 !---------- Calcul de snther, snpres et snmec
               do 671 j = 1,6
@@ -1034,7 +1034,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
               instp(3) = -1.d0
               instp(4) = -1.d0
 ! ------- la deuxième situation n'a pas non plus de transitoire
-              do 769 i0 = 1, 2 
+              do 769 i0 = 1, 2
                   do 770 j = 1,6
                       sc(j)= 0.d0
                       do 783 k = 1, 12
@@ -1048,7 +1048,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                       st3(j) = sc(j)+e0(i0)*sa3(j)
                       st4(j) = sc(j)+e0(i0)*sa4(j)
 770               continue
-!     
+!
 !
 !------------------ Calcul du SN sans et avec séisme
                   if (ns .eq. 0) then
@@ -1070,8 +1070,8 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
                       trescaetmax=tresca
                   endif
 !
-769           continue   
-          endif 
+769           continue
+          endif
         endif
 !
         sn = trescamax
@@ -1094,7 +1094,7 @@ subroutine rc32snb(ze200, lieu, iocc1, iocc2, ns,&
     k1 = zr(jvalin)
     c1 = zr(jvalin+1)
     k2 = zr(jvalin+2)
-    c2 = zr(jvalin+3) 
+    c2 = zr(jvalin+3)
     k3 = zr(jvalin+4)
     c3 = zr(jvalin+5)
 !

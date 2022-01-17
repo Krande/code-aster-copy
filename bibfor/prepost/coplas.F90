@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,7 +86,7 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
     call jelira(nomcmp, 'LONUTI', long)
     do 3 i = 0, long-1
         phenom = zk32(iadr+i)
-        call codent(i+1,'D0',k6) 
+        call codent(i+1,'D0',k6)
         if (phenom .eq. 'ECRO_LINE') then
             valnom = matrev//'.CPT.'//k6
             typnom = valnom//'.VALR'

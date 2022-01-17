@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 
 subroutine pgpche(sd_pgp, iobs)
     implicit none
-! Extract a per-element field from the modal basis, reduced to the 
-! requested elements and field components 
+! Extract a per-element field from the modal basis, reduced to the
+! requested elements and field components
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
@@ -95,7 +95,7 @@ subroutine pgpche(sd_pgp, iobs)
 
 
 !   -1.3- Determine the maximum number of points per element
-!         Allocate and fillup rsup1 : element names, 
+!         Allocate and fillup rsup1 : element names,
 !                             rsup2 : node (ELNO) or pt (ELGA) names
 !                             rcomp : reference component names
 !                             indic : indicator (logical) that a given line is to be
@@ -107,7 +107,7 @@ subroutine pgpche(sd_pgp, iobs)
 !   Transform the elements field to a simple elements field
     call celces(nomcha, 'V', sd_pgp//'.CHAM_EL_S ')
 
-!   Reduce the simple field to the elements and components of interest          
+!   Reduce the simple field to the elements and components of interest
     call cesred(sd_pgp//'.CHAM_EL_S ', nbsupp, lmai, nbcmp, lcmp,&
                 'V', sd_pgp//'.CHAM_EL_SR')
 
@@ -162,7 +162,7 @@ subroutine pgpche(sd_pgp, iobs)
 !         with the correct type (real or complex) and initialize to undef (+ undef j)
     call pgpget(sd_pgp, 'TYP_SCAL' , iobs=iobs, kscal=typsc)
 
-    if (typsc(1:1).eq.'R') then 
+    if (typsc(1:1).eq.'R') then
         AS_ALLOCATE(vr=vectr, size=nbsupp*nbptmx*nbcmp*nbmodes)
         do ibid=1,nbsupp*nbptmx*nbcmp*nbmodes
             vectr(ibid) = undef
@@ -180,7 +180,7 @@ subroutine pgpche(sd_pgp, iobs)
 
 !       Transform the elements field to a simple elements field
         call celces(nomcha, 'V', sd_pgp//'.CHAM_EL_S ')
-!       Reduce the simple field to the elements and components of interest          
+!       Reduce the simple field to the elements and components of interest
         call cesred(sd_pgp//'.CHAM_EL_S ', nbsupp, lmai, nbcmp, lcmp,&
                     'V', sd_pgp//'.CHAM_EL_SR')
 
@@ -198,7 +198,7 @@ subroutine pgpche(sd_pgp, iobs)
                 do ipt = 1, nbpt
                     call cesexi('C',jcsd,jcsl,ima,ipt,1,icmp,iad)
                     if (iad.gt.0) then
-                        if (typsc(1:1).eq.'R') then 
+                        if (typsc(1:1).eq.'R') then
                             vectr(dec1+dec2+dec3+ipt) = zr(jcsv-1+iad)
                         else if (typsc(1:1).eq.'C') then
                             vectc(dec1+dec2+dec3+ipt) = zc(jcsv-1+iad)
@@ -212,7 +212,7 @@ subroutine pgpche(sd_pgp, iobs)
         call detrsd('CHAM_ELEM_S',sd_pgp//'.CHAM_EL_SR')
     end do
 
-    if (typsc(1:1).eq.'R') then 
+    if (typsc(1:1).eq.'R') then
         call pgpsav(sd_pgp, 'VEC_PR_R', nbsupp*nbcmp*nbptmx*nbmodes, &
                     iobs=iobs, rvect=vectr)
         AS_DEALLOCATE(vr=vectr)

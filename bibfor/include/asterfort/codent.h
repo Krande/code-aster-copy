@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,10 @@
 !
 !
 interface
-    subroutine codent(entier, cadre, chaine)
-        integer :: entier
-        character(len=*) :: cadre
-        character(len=*) :: chaine
+    subroutine codent(entier, cadre, chaine, kstop)
+        integer, intent(in) :: entier
+        character(len=*), intent(in) :: cadre
+        character(len=*), intent(out) :: chaine
+        character(len=*), optional :: kstop
     end subroutine codent
 end interface

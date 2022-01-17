@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -80,7 +80,7 @@ subroutine dtmallo(sd_dtm_)
     call dtmget(sd_dtm, _NB_MODES,iscal=nbmode)
     call dtmget(sd_dtm, _RIGI_MAT,kscal=riggen)
     call dtmget(sd_dtm, _MASS_MAT,kscal=masgen)
-    call dtmget(sd_dtm, _NL_TREAT,iscal=nltreat) 
+    call dtmget(sd_dtm, _NL_TREAT,iscal=nltreat)
 
     amogen = ' '
     call dtmget(sd_dtm, _AMOR_MAT,lonvec=iret)
@@ -108,7 +108,7 @@ subroutine dtmallo(sd_dtm_)
             if (iret1.ne.1) dtmin = 1.d-6* dt
             if (iret2.ne.1) dtmax = 1.d6 * dt
             deltadt = abs(dtmax/dtmin - 1)
-            if (deltadt.gt.epsi) then 
+            if (deltadt.gt.epsi) then
                 adapt = 1
                 iarch_sd = 1
             end if
@@ -140,7 +140,7 @@ subroutine dtmallo(sd_dtm_)
                     dt=dt, nbnli=nbnli, checkarg=.false._1,&
                     jordr=jordr, jdisc=jdisc, jptem=jptem, jdepl=jdepl, jvite=jvite,&
                     jacce=jacce, jvint=jvint, sd_nl_=sd_nl)
-    else 
+    else
         call mdallo(nomres(1:8), 'TRAN', nbsauv, sauve='GLOB', method=schema,&
                     base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen,&
                     dt=dt, nbnli=nbnli, checkarg=.false._1,&

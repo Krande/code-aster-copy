@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine intbackup(sd_int_, sd_int_backup_)
 !            call intbackup('&&INTEGR','&&INTBAK')
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/intget.h"
@@ -84,7 +84,7 @@ subroutine intbackup(sd_int_, sd_int_backup_)
                     call jeexin(savejv2, iret2)
                     if (iret2.gt.0) call jedetr(savejv2)
                     call jedupo(savejv1, 'V', savejv2, .false._1)
-                end if        
+                end if
             end do
         else
             savejv1(9:15) = '       '

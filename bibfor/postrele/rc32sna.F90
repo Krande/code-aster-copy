@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 ! IN  : IOCC1  : NUMERO D'OCCURENCE DE LA PREMIERE SITUATION
 ! IN  : IOCC2  : NUMERO D'OCCURENCE DE LA DEUXIEME SITUATION
 ! IN  : NS     : =0 : PAS DE SEISME, =1 : SEISME
-! OUT : SN    
+! OUT : SN
 ! OUT : INSTSN : 2 INSTANTS DE SN ET 2 INSTANTS DE SN*
 ! OUT : SNET   : SN*
 ! OUT : SIGMOYPRES : CONTRAINTE MOYENNE DE PRESSION (pour le rochet)
@@ -104,9 +104,9 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !
 ! TROIS CONTRIBUTIONS POSSIBLES POUR SN
 ! SA  : UNITAIRE
-!       SOUS SITUATION : CHAR_ETAT_A, CHAR_ETAT_B, PRES_A, PRES_B 
+!       SOUS SITUATION : CHAR_ETAT_A, CHAR_ETAT_B, PRES_A, PRES_B
 ! SB  : TRANSITOIRE
-!       SOUS SITUATION : NUME_RESU_THER NUME_RESU_MECA, NUME_RESU_PRES 
+!       SOUS SITUATION : NUME_RESU_THER NUME_RESU_MECA, NUME_RESU_PRES
 ! SC  : INTERPOLATION DES MOMENTS
 !       SOUS SITUATION : TEMP_A, TEMP_B, CHAR_ETAT_A, CHAR_ETAT_B, TABL_TEMP
 !
@@ -189,7 +189,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
         simec1(j) =0.d0
 65  continue
     if (nmecap .eq. 2 .or. npresp .eq. 2 .or. ntherp .eq. 1) then
-        tranp = .true. 
+        tranp = .true.
         call jeveuo(jexnum('&&RC3200.TRANSIT.'//lieu, iocc1), 'L', jtranp)
         do 70 j = 1, 6
             sb(j) = zr(jtranp+18+j-1) -zr(jtranp+12+j-1)
@@ -226,14 +226,14 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !
         if (tranp) then
             tempmin = zr(jtranp+88)
-            tempmax = zr(jtranp+89) 
+            tempmax = zr(jtranp+89)
             do 83 k = 1, 12
                 mominp(k) = A1(k)*tempmin+B1(k)
                 momaxp(k) = A1(k)*tempmax+B1(k)
                 mij(k)=momaxp(k)-mominp(k)
 83          continue
         else
-            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp) 
+            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp)
             do 86 k = 1, 12
                 if (lieu .eq. 'ORIG') then
                     mominp(k) = A1(k)*zr(jtemp)+B1(k)
@@ -243,13 +243,13 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
                     momaxp(k) = A1(k)*zr(jtemp+1)+B1(k)
                 endif
                 mij(k)=mominp(k)
-86          continue 
+86          continue
         endif
         do 87 j = 1, 6
             do 88 k = 1, 12
                 sc(j) = sc(j) + mij(k)*zr(jsigu-1+78+6*(k-1)+j)
 88          continue
-87      continue           
+87      continue
     endif
 !--------------------------------------------------------------------
 !                  DANS LE CAS D'UNE SITUATION SEULE
@@ -264,7 +264,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !
       if (ze200) then
 ! ----- si on est en ZE200
-        call rcZ2s0('SN', map, mbp, presap, presbp, ns, s2pp) 
+        call rcZ2s0('SN', map, mbp, presap, presbp, ns, s2pp)
         call rctres(sb,tresca)
         sn = s2pp+tresca
         call rctres(sbet,tresca)
@@ -326,9 +326,9 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
             sipr1(j) = zr(jtranp+54+j-1)-zr(jtranp+48+j-1)
             simec1(j) = zr(jtranp+66+j-1)-zr(jtranp+60+j-1)
 43      continue
-        call rctres(sith1, snther) 
-        call rctres(sipr1, snpres) 
-        if (ns .eq. 0 .and. .not. ze200) call rctres(simec1, snmec) 
+        call rctres(sith1, snther)
+        call rctres(sipr1, snpres)
+        if (ns .eq. 0 .and. .not. ze200) call rctres(simec1, snmec)
         if (ns .ne. 0 .and. .not. ze200) call rc32s0b(zr(jsnseis), simec1, snmec)
       endif
 !
@@ -474,9 +474,9 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 170        continue
         else
           do 171 j = 1, 6
-            sb1(j) = zr(jtranp+18+j-1) 
+            sb1(j) = zr(jtranp+18+j-1)
             sb2(j) = -zr(jtranp+12+j-1)
-            sbet1(j) = (zr(jtranp+18+j-1)-zr(jtranp+98+j-1)) 
+            sbet1(j) = (zr(jtranp+18+j-1)-zr(jtranp+98+j-1))
             sbet2(j) = -(zr(jtranp+12+j-1)-zr(jtranp+92+j-1))
             sith1(j) = zr(jtranp+42+j-1)
             sith2(j) = -zr(jtranp+36+j-1)
@@ -526,13 +526,13 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !
         if (tranq) then
             tempmin = zr(jtranq+88)
-            tempmax = zr(jtranq+89) 
+            tempmax = zr(jtranq+89)
             do 183 k = 1, 12
                 mominq(k) = A1(k)*tempmin+B1(k)
                 momaxq(k) = A1(k)*tempmax+B1(k)
 183         continue
         else
-            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc2), 'L', jtemp) 
+            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc2), 'L', jtemp)
             do 186 k = 1, 12
                 if (lieu .eq. 'ORIG') then
                     mominq(k) = A1(k)*zr(jtemp)+B1(k)
@@ -541,7 +541,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
                     mominq(k) = A1(k)*zr(jtemp+1)+B1(k)
                     momaxq(k) = A1(k)*zr(jtemp+1)+B1(k)
                 endif
-186         continue 
+186         continue
         endif
       endif
 !
@@ -551,9 +551,9 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
                 sc1(j) = sc1(j) + (momaxp(k)-mominq(k))*zr(jsigu-1+78+6*(k-1)+j)
                 sc2(j) = sc2(j) + (momaxq(k)-mominp(k))*zr(jsigu-1+78+6*(k-1)+j)
 188         continue
-187     continue  
+187     continue
       endif
-!            
+!
 ! --------------------------------------------------------------
 !                          CALCUL DE SN(P,Q)
 ! --------------------------------------------------------------
@@ -567,13 +567,13 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 ! ----- si on est en ZE200
         tresca= -1.d0
         call rcZ2s0('SN', map, mbq, presap, presbq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
         call rcZ2s0('SN', map, maq, presap, presaq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
         call rcZ2s0('SN', mbp, maq, presbp, presaq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
         call rcZ2s0('SN', mbp, mbq, presbp, presbq, ns, s2pp)
-        s2 = max(s2, s2pp) 
+        s2 = max(s2, s2pp)
         call rctres(sb1,tresca1)
         if (tresca1 .gt. tresca) then
             tresca = tresca1
@@ -614,7 +614,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
             stet11(j) = sbet1(j)+sc1(j)+e0(i0)*sa1(j)
             st21(j) = sb2(j)+sc2(j)+e0(i0)*sa1(j)
             stet21(j) = sbet2(j)+sc2(j)+e0(i0)*sa1(j)
-! 
+!
             if(unitaire) then
               st12(j) = sb1(j)+sc1(j)+e0(i0)*sa2(j)
               st13(j) = sb1(j)+sc1(j)+e0(i0)*sa3(j)
@@ -634,7 +634,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !-------- Calcul du SN sans séisme
           if(ns .eq. 0) then
 !
-            call rctres(st11, tresca)          
+            call rctres(st11, tresca)
             if(tresca .gt. sn) then
               sn = tresca
               choix = 1
@@ -695,19 +695,19 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !
 !-------- Calcul du SN avec séisme
           if(ns .ne. 0) then
-            call rc32s0b(zr(jsnseis), st11, tresca)           
+            call rc32s0b(zr(jsnseis), st11, tresca)
             if(tresca .gt. sn) then
               sn = tresca
               choix=1
             endif
-            call rc32s0b(zr(jsnseis), st21, tresca) 
+            call rc32s0b(zr(jsnseis), st21, tresca)
             if(tresca .gt. sn) then
               sn = tresca
               choix=2
             endif
 !
             if(unitaire) then
-              call rc32s0b(zr(jsnseis), st12, tresca) 
+              call rc32s0b(zr(jsnseis), st12, tresca)
               if(tresca .gt. sn) then
                 sn = tresca
                 choix=1
@@ -717,22 +717,22 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
                 sn = tresca
                 choix=1
               endif
-              call rc32s0b(zr(jsnseis), st14, tresca)  
+              call rc32s0b(zr(jsnseis), st14, tresca)
               if(tresca .gt. sn) then
                 sn = tresca
                 choix=1
               endif
-              call rc32s0b(zr(jsnseis), st22, tresca)  
+              call rc32s0b(zr(jsnseis), st22, tresca)
               if(tresca .gt. sn) then
                 sn = tresca
                 choix=2
               endif
-              call rc32s0b(zr(jsnseis), st23, tresca)  
+              call rc32s0b(zr(jsnseis), st23, tresca)
               if(tresca .gt. sn) then
                 sn = tresca
                 choix=2
               endif
-              call rc32s0b(zr(jsnseis), st24, tresca)  
+              call rc32s0b(zr(jsnseis), st24, tresca)
               if(tresca .gt. sn) then
                 sn = tresca
                 choix=2
@@ -757,7 +757,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !-------- Calcul du SN* sans séisme
           if(ns .eq. 0) then
 !
-            call rctres(stet11, tresca)          
+            call rctres(stet11, tresca)
             if(tresca .gt. snet) then
               snet = tresca
               choix = 1
@@ -813,7 +813,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
 !-------- Calcul du SN* avec séisme
           if(ns .ne. 0) then
 !
-            call rc32s0b(zr(jsnseis), stet11, tresca)          
+            call rc32s0b(zr(jsnseis), stet11, tresca)
             if(tresca .gt. snet) then
               snet = tresca
               choix = 1
@@ -881,7 +881,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet,&
     k1 = zr(jvalin)
     c1 = zr(jvalin+1)
     k2 = zr(jvalin+2)
-    c2 = zr(jvalin+3) 
+    c2 = zr(jvalin+3)
     k3 = zr(jvalin+4)
     c3 = zr(jvalin+5)
 !

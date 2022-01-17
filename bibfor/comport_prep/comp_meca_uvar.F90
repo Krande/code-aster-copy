@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ integer, intent(out) :: codret
 !                        200 - External behaviour (MFRONT/UMAT) or multifibers
 !
 ! VARI_REDU is the list of available internal variables on ALL mesh
-! VARI_LINK is a object, by zone in COMPOR CARTE, to make link between internal variable in zone 
+! VARI_LINK is a object, by zone in COMPOR CARTE, to make link between internal variable in zone
 !           with available internal variable
 !
 ! NB: "false" internal variable for elastic behaviour (named 'VIDE') is NOT in the list !
@@ -119,7 +119,7 @@ integer, intent(out) :: codret
 50              continue
                 v_vari_link(i_vari) = i_vari_redu
             end do
-        endif 
+        endif
     end do
 !
 end subroutine

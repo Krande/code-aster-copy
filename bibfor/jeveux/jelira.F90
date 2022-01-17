@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -320,9 +320,9 @@ subroutine jelira(nomlu, catr, ival, cval)
     if (lcol) then
         call jjlide('JELIBE', noml32(1:24), 2)
     endif
-    if ((100*nbluti(ic))/nblmax(ic) .gt. 50 ) then 
+    if ((100*nbluti(ic))/nblmax(ic) .gt. 50 ) then
          call jjagod (ic, 2*nblmax(ic) )
-    endif  
+    endif
     ipgc = ipgcex
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine intbuff(sd_int, addrs, level)
 !
 !  sd_int [Obl]: Name of the int data structure requested [K24]
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/crevec.h"
@@ -62,7 +62,7 @@ subroutine intbuff(sd_int, addrs, level)
     nullify(addrs)
 !
 !   Variable lvl defines the maximum buffer level in the case of per occurence items
-    lvl = 1 
+    lvl = 1
     if (present(level)) lvl = level
 !
 !   ====================================================================
@@ -98,13 +98,13 @@ subroutine intbuff(sd_int, addrs, level)
                 call jeveut(savename, 'E', addr)
                 call jelira(savename, 'LONMAX', long)
                 addrs(dec+ip) = addr
-                addrs(dec+_INT_NBPAR+ip) = long            
+                addrs(dec+_INT_NBPAR+ip) = long
             else if (abs(parind(ip)).eq.1) then
                 call crevec(savename, 'V V '//partyp(ip),1, addr)
                 addrs(dec+ip) = addr
-                addrs(dec+_INT_NBPAR+ip) = 1            
+                addrs(dec+_INT_NBPAR+ip) = 1
             end if
-10          continue            
+10          continue
         end do
     end do
 

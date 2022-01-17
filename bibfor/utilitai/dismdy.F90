@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     REF_INTD_DERN       INTD        DERN   : DERNIERE OCC INTERF_DYNA
 !     REF_INST_PREM       INTS        PREM   : PREMIERE OCC INTERF_STAT
 !     ------------------------------------------------------------------
-!    #123_5678_0123                     '> CALL CODENT(INDI,'D0',INDIK4)
+!    #123_5678_0123                     '> call codent(INDI,'D0',INDIK4)
 !     NOTE : LA QUESTION 'REF_MASS_0001' EQUIVAUT 'REF_MASS_PREM'
 !     ------------------------------------------------------------------
 !
@@ -195,7 +195,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
 !     ------------------------------------------------------------------
 !     --- NUME_DDL D'UN CHAMP DU RESULTAT DYNAMIQUE
 !         QUESTION = NUME_CHAM_[INDICE DU CHAMP]
-!                                 /K8/ --> CALL CODENT(INDI,'D0',INDIK8)
+!                                 /K8/ --> call codent(INDI,'D0',INDIK8)
 !     --- EXEMPLES : 'NUME_CHAM_00000001', 'NUME_CHAM_00003842', ...
     else if (questl(1:9).eq.'NUME_CHAM') then
         call jeveuo(resdyn//'           .INDI', 'L', vi=indi)
@@ -289,7 +289,7 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
                         ier=ir)
             if (ir .eq. 1) then
                 repk = 'RITZ'
-            else 
+            else
                 call rsvpar(resdyn, 1, 'FACT_PARTICI_DX', ibid, r8vide(),&
                             k8bid, l1)
                 call rsvpar(resdyn, 1, 'FACT_PARTICI_DY', ibid, r8vide(),&

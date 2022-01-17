@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
 ! IN  : IOCC1  : NUMERO D'OCCURENCE DE LA PREMIERE SITUATION
 ! IN  : IOCC2  : NUMERO D'OCCURENCE DE LA DEUXIEME SITUATION
 ! IN  : NS     : 0 SANS SEISME OU 1 SI SEISME
-! OUT : SP     : SP1 et SP2 
+! OUT : SP     : SP1 et SP2
 ! OUT : INSTSP : INSTANTS DE SP1 et SP2
 !
     integer :: jinfoi, nmecap, npresp, ntherp, jinfor, numcha, iret
@@ -95,9 +95,9 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
 !
 ! TROIS CONTRIBUTIONS POSSIBLES POUR SP
 ! SA  : UNITAIRE
-!       SOUS SITUATION : CHAR_ETAT_A, CHAR_ETAT_B, PRES_A, PRES_B 
+!       SOUS SITUATION : CHAR_ETAT_A, CHAR_ETAT_B, PRES_A, PRES_B
 ! SB  : TRANSITOIRE
-!       SOUS SITUATION : NUME_RESU_THER NUME_RESU_MECA, NUME_RESU_PRES 
+!       SOUS SITUATION : NUME_RESU_THER NUME_RESU_MECA, NUME_RESU_PRES
 ! SC  : INTERPOLATION DES MOMENTS
 !       SOUS SITUATION : TEMP_A, TEMP_B, CHAR_ETAT_A, CHAR_ETAT_B, TABL_TEMP
 !
@@ -208,20 +208,20 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
 ! ----  si la situation ne possède aucun transitoire
 ! ----  (ni thermique, ni de pression ni mécanique)
         if (nmecap .ne. 2 .and. npresp .ne. 2 .and. ntherp .ne. 1) then
-            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp) 
+            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc1), 'L', jtemp)
             do 86 k = 1, 12
                 if (lieu .eq. 'ORIG') then
                     momcstp(k) = A1p(k)*zr(jtemp)+B1p(k)
                 else
                     momcstp(k) = A1p(k)*zr(jtemp+1)+B1p(k)
                 endif
-86          continue 
+86          continue
             do 87 j = 1, 6
               do 88 k = 1, 12
                 sc(j) = sc(j) + momcstp(k)*zr(jsigu-1+6*(k-1)+j)
 88            continue
-87          continue   
-        endif        
+87          continue
+        endif
     endif
 !--------------------------------------------------------------------
 !                  DANS LE CAS D'UNE SITUATION SEULE
@@ -254,12 +254,12 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                         tmax = max(i,l)
                     endif
 68              continue
-67          continue         
+67          continue
             sp(1) = s2pp+trescamax
             do 64 j = 1,6
                 sbm(j) = zr(jtranp+50*(tmax-1)+1+6+j)- zr(jtranp+50*(tmin-1)+1+6+j)
 64          continue
-            call rctres(sbm, trescamecmax)            
+            call rctres(sbm, trescamecmax)
             spmeca(1) = s2pp+trescamecmax
         else
             sp(1) = s2pp
@@ -337,9 +337,9 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
 !
 !-------- ETAPE 1 : On recalcule le cycle principal pour ne pas le prendre en compte deux fois
 !
-          do 25 k = 1,6 
+          do 25 k = 1,6
               sb01(k) = zr(jtranp+50*(tmin-1)+1+k) - zr(jtranp+50*(tmax-1)+1+k)
-25        continue    
+25        continue
           call rctres(sb01, trescaprin)
 !
 !-------- ETAPE 2 : Sélection des extremas
@@ -355,7 +355,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
               goto 100
           endif
 !
-          do 76 k = 1,6 
+          do 76 k = 1,6
               sb01(k) = zr(jtranp+50*(i-1)+1+k) - zr(jtranp+50*(j-1)+1+k)
               sb02(k) = zr(jtranp+50*(i-1)+1+k) - zr(jtranp+50*(j+1-1)+1+k)
               sb12(k) = zr(jtranp+50*(j-1)+1+k) - zr(jtranp+50*(j+1-1)+1+k)
@@ -377,16 +377,16 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
               i = j
               j = j+1
               goto 1
-          endif     
+          endif
 !
 100 continue
 !
 !-------- on garde le dernier instant comme un extrema
           i = nbinstp
-          do 77 k = 1,6 
+          do 77 k = 1,6
               sb01(k) = zr(jtranp+50*(nbinstp-1)+1+k) - zr(jtranp+50*(vtrav(ntrav)-1)+1+k)
 77        continue
-          call rctres(sb01, tresca01) 
+          call rctres(sb01, tresca01)
           if(tresca01 .gt. 1.0e-12) then
               ntrav= ntrav+1
               vtrav(ntrav) = nbinstp
@@ -402,7 +402,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
               goto 200
           endif
 !
-          do 78 k = 1,6 
+          do 78 k = 1,6
               sb01(k) = zr(jtranp+50*(vtrav(i+1)-1)+1+k) - zr(jtranp+50*(vtrav(i)-1)+1+k)
               sb12(k) = zr(jtranp+50*(vtrav(i+2)-1)+1+k) - zr(jtranp+50*(vtrav(i+1)-1)+1+k)
               sb23(k) = zr(jtranp+50*(vtrav(i+3)-1)+1+k) - zr(jtranp+50*(vtrav(i+2)-1)+1+k)
@@ -445,8 +445,8 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
             ntrav2 = ntrav
             do 5 k = 1, ntrav-1
                 vtrav2(k) = vtrav(k)
-5           continue            
-            do 79 k = 1,6 
+5           continue
+            do 79 k = 1,6
               sb01(k) = zr(jtranp+50*(vtrav(ntrav-1)-1)+1+k) - zr(jtranp+50*(vtrav(ntrav)-1)+1+k)
               sb02(k) = zr(jtranp+50*(vtrav(ntrav-1)-1)+1+k) - zr(jtranp+50*(vtrav(1)-1)+1+k)
               sb12(k) = zr(jtranp+50*(vtrav(ntrav)-1)+1+k) - zr(jtranp+50*(vtrav(1)-1)+1+k)
@@ -457,13 +457,13 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
             call rctres(sb12,tresca12)
 !
             if(tresca01 .lt. tresca02 .and. tresca02 .gt. tresca12) then
-                ntrav2 = ntrav2-1  
+                ntrav2 = ntrav2-1
             else
                 vtrav2(ntrav2) = vtrav(ntrav)
-            endif 
-!             
-!---------- raccordement r1 est-il un extrema ?          
-            do 20 k = 1,6 
+            endif
+!
+!---------- raccordement r1 est-il un extrema ?
+            do 20 k = 1,6
               sb01(k) = zr(jtranp+50*(vtrav2(ntrav2)-1)+1+k) - zr(jtranp+50*(vtrav(1)-1)+1+k)
               sb02(k) = zr(jtranp+50*(vtrav2(ntrav2)-1)+1+k) - zr(jtranp+50*(vtrav(2)-1)+1+k)
               sb12(k) = zr(jtranp+50*(vtrav(1)-1)+1+k) - zr(jtranp+50*(vtrav(2)-1)+1+k)
@@ -476,27 +476,27 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
             if(tresca01 .lt. tresca02 .and. tresca02 .gt. tresca12) then
                 do 21 k = 1, ntrav-1
                   vtrav2(ntrav2+k) = vtrav(k+1)
-21               continue  
+21               continue
                 ntrav2 = ntrav2+ntrav-1
             else if(tresca01 .lt. 1e-12) then
                 do 22 k = 1, ntrav-1
                   vtrav2(ntrav2+k) = vtrav(k+1)
-22               continue  
+22               continue
                 ntrav2 = ntrav2+ntrav-1
             else
                 do 23 k = 1, ntrav
                   vtrav2(ntrav2+k) = vtrav(k)
-23               continue  
+23               continue
                 ntrav2 = ntrav2+ntrav
-            endif   
+            endif
 !---------- on recommence l'extraction des sous cycles une seule fois
             lresi = .true.
             ntrav = ntrav2
             do 24 k = 1, ntrav
                 vtrav(k) = vtrav2(k)
-24          continue  
-            goto 2          
-          endif 
+24          continue
+            goto 2
+          endif
 !
       endif
 !-- FIN DU CALCUL DU SP_SOUS_CYCLE
@@ -630,17 +630,17 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
 ! ----  si la situation ne possède aucun transitoire
 ! ----  (ni thermique, ni de pression ni mécanique)
         if (.not. tranq) then
-            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc2), 'L', jtemp) 
+            call jeveuo(jexnum('&&RC3200.TEMPCST', iocc2), 'L', jtemp)
             do 186 k = 1, 12
                 if (lieu .eq. 'ORIG') then
                     momcstq(k) = A1q(k)*zr(jtemp)+B1q(k)
                 else
                     momcstq(k) = A1q(k)*zr(jtemp+1)+B1q(k)
                 endif
-186          continue   
-        endif        
+186          continue
+        endif
       endif
-!            
+!
 ! --------------------------------------------------------------
 !                          CALCUL DE SP(P,Q)
 ! --------------------------------------------------------------
@@ -695,7 +695,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                         instsp(2) = zr(jtranq+50*(l-1)+1)
                     endif
 168             continue
-167         continue    
+167         continue
           else
             do 267 i = 1, nbinstp
                 do 269 j = 1,6
@@ -711,7 +711,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                 endif
 267         continue
           endif
-        else   
+        else
           if(tranq) then
             do 368 l = 1, nbinstq
                 do 369 j = 1,6
@@ -725,7 +725,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                     instp(2) = l
                     instsp(2) = zr(jtranq+50*(l-1)+1)
                 endif
-368         continue  
+368         continue
           endif
 !
         endif
@@ -741,7 +741,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
 ! ------- la deuxième situation a un transitoire
             do 467 i = 1, nbinstp
                 do 468 l = 1, nbinstq
-                  do 469 i0 = 1, 2 
+                  do 469 i0 = 1, 2
                     do 470 j = 1,6
                         sc(j)= 0.d0
                         sb(j) = zr(jtranp+50*(i-1)+1+j)- zr(jtranq+50*(l-1)+1+j)
@@ -765,7 +765,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                           stm4(j) = sbm(j)+sc(j)+e0(i0)*sa4(j)
                         endif
 470                 continue
-!                    
+!
                     if (ns .eq. 0) call rctres(st1,tresca)
                     if (ns .ne. 0) call rc32s0b(zr(jspseis), st1, tresca)
                     if(tresca .gt. trescamax) then
@@ -815,11 +815,11 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                     if(.not. unitaire) exit
 469               continue
 468             continue
-467         continue    
+467         continue
           else
 ! ------- la deuxième situation n'a pas de transitoire
             do 567 i = 1, nbinstp
-                  do 569 i0 = 1, 2 
+                  do 569 i0 = 1, 2
                     do 570 j = 1,6
                         sc(j)= 0.d0
                         sb(j) = zr(jtranp+50*(i-1)+1+j)- 0.d0
@@ -842,7 +842,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                           stm4(j) = sbm(j)+sc(j)+e0(i0)*sa4(j)
                         endif
 570                 continue
-!                    
+!
                     if (ns .eq. 0) call rctres(st1,tresca)
                     if (ns .ne. 0) call rc32s0b(zr(jspseis), st1, tresca)
                     if(tresca .gt. trescamax) then
@@ -884,14 +884,14 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                     endif
                     if(.not. unitaire) exit
 569               continue
-567         continue    
+567         continue
           endif
-        else  
+        else
 ! ----- la première situation n'a pas de transitoire
           if(tranq) then
 ! ------- la deuxième situation a un transitoire
               do 668 l = 1, nbinstq
-                  do 669 i0 = 1, 2 
+                  do 669 i0 = 1, 2
                     do 670 j = 1,6
                         sc(j)= 0.d0
                         sb(j) = 0.d0- zr(jtranq+50*(l-1)+1+j)
@@ -914,7 +914,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                           stm4(j) = sbm(j)+sc(j)+e0(i0)*sa4(j)
                         endif
 670                 continue
-!                    
+!
                     if (ns .eq. 0) call rctres(st1,tresca)
                     if (ns .ne. 0) call rc32s0b(zr(jspseis), st1, tresca)
                     if(tresca .gt. trescamax) then
@@ -924,7 +924,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                         instp(2) = l
                         instsp(2) = zr(jtranq+50*(l-1)+1)
                     endif
-!             
+!
                     if(unitaire) then
                       if (ns .eq. 0) call rctres(st2,tresca)
                       if (ns .ne. 0) call rc32s0b(zr(jspseis), st2, tresca)
@@ -956,10 +956,10 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                     endif
                     if(.not. unitaire) exit
 669               continue
-668           continue  
+668           continue
           else
 ! ------- la deuxième situation n'a pas non plus de transitoire
-              do 769 i0 = 1, 2 
+              do 769 i0 = 1, 2
                   do 770 j = 1,6
                       sc(j)= 0.d0
                       do 783 k = 1, 12
@@ -973,7 +973,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                       st3(j) = sc(j)+e0(i0)*sa3(j)
                       st4(j) = sc(j)+e0(i0)*sa4(j)
 770               continue
-!                    
+!
                   if (ns .eq. 0) call rctres(st1,tresca)
                   if (ns .ne. 0) call rc32s0b(zr(jspseis), st1, tresca)
                   if(tresca .gt. trescamax) then
@@ -1000,9 +1000,9 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
                   endif
                   if(.not. unitaire) exit
 !
-769           continue  
-          endif 
-        endif 
+769           continue
+          endif
+        endif
 !
         sp(1) = trescamax
         spmeca(1) = trescamecmax
@@ -1103,7 +1103,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
       else
         trescamax= -1.d0
         trescamecmax= 0.d0
-        do 927 i0 = 1, 2 
+        do 927 i0 = 1, 2
           do 928 j = 1,6
             st1(j) = sb(j)+ sc(j)+ e0(i0)*sa1(j)
             stm1(j) = sbm(j)+ sc(j)+ e0(i0)*sa1(j)
@@ -1116,7 +1116,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns,&
               stm4(j) = sbm(j)+ sc(j)+ e0(i0)*sa4(j)
             endif
 928       continue
-!                 
+!
           if (ns .eq. 0) call rctres(st1,tresca)
           if (ns .ne. 0) call rc32s0b(zr(jspseis), st1, tresca)
           if(tresca .gt. trescamax) then

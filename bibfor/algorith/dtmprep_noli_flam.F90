@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     implicit none
 ! dtmprep_noli_flam : prepare the calculations for a localized nonlinearity
-!                     of type : buckling. This routine adds a single  
+!                     of type : buckling. This routine adds a single
 !                     occurence to sd_nl and increments NB_NOLI in sd_dtm
 !
-!             icomp : an integer giving the index of occurence of the 
+!             icomp : an integer giving the index of occurence of the
 !                     nonlinearity to be treated under the factor kw
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !
@@ -133,7 +133,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     sd_dtm = sd_dtm_
     sd_nl  = sd_nl_
 !
-    lnoeu2 = .false.   
+    lnoeu2 = .false.
     one = 1.d0
  !
     motfac = 'COMPORTEMENT'
@@ -143,7 +143,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     call infmaj()
     call infniv(ibid, info)
 !
-!   --- 1 - Basic information about the mesh and numbering 
+!   --- 1 - Basic information about the mesh and numbering
 !
     call dtmget(sd_dtm, _NUM_DDL, kscal=nume)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -210,8 +210,8 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _MESH_2, 1, iocc=i, kscal=mesh2)
     end if
 
-!   --- 2.2 - Check whether a/several previous stop/choc nonlinearity(ies) 
-!             have been defined for the same support node, if yes, remove 
+!   --- 2.2 - Check whether a/several previous stop/choc nonlinearity(ies)
+!             have been defined for the same support node, if yes, remove
 !             these stop/choc nonlinearity(ies)
     call nlget(sd_nl, _NB_CHOC, iscal=nbchoc)
     nbnoli  = mxlevel + 1
@@ -227,12 +227,12 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
                     nbnoli = nbnoli - 1
                     call nlget(sd_nl, 1, iocc=j-cntr, savejv=jvname)
                     call detrsd(' ', jvname(1:15))
-                    if (i.eq.(mxlevel+1)) then 
+                    if (i.eq.(mxlevel+1)) then
                         tomove = i
                         i = j - cntr
-                    else 
-!                       --- In this case, several chocs are detected and 
-!                           are removed, this causes empty entries in the 
+                    else
+!                       --- In this case, several chocs are detected and
+!                           are removed, this causes empty entries in the
 !                           sd_nl that need to be filled up
                         tomove  = mxlevel - cntr
                     end if
@@ -258,7 +258,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
         end do
     end if
 !
-!   --- 3 - Filling up the sd_nl with further information regarding the 
+!   --- 3 - Filling up the sd_nl with further information regarding the
 !           nonlinearity(ies)
 !
     AS_ALLOCATE(vi=ddlcho, size=6)
@@ -337,7 +337,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     call nlsav(sd_nl, _BUCKLING_POST_PALIER_FORCE, 1, iocc=i, rscal=0.d0)
     call getvr8(motfac, 'FNOR_POST_FL', iocc=icomp, scal=fn_postbuck, nbret=n1)
     if (n1.gt.0) call nlsav(sd_nl, _BUCKLING_POST_PALIER_FORCE, 1, iocc=i, rscal=fn_postbuck)
-    
+
     call nlsav(sd_nl, _BUCKLING_DEF, 1, iocc=i, rscal=0.d0)
     call getvr8(motfac, 'ENFO_FL', iocc=icomp, scal=delta_u, nbret=n1)
     if (n1.gt.0) call nlsav(sd_nl, _BUCKLING_DEF, 1, iocc=i, rscal=delta_u)
@@ -353,12 +353,12 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     call getvr8(motfac, 'DEPL_POST_FL', iocc=icomp, nbval=0, nbret=n1)
     call nlinivec(sd_nl, _BUCKLING_DEF_PLA, (-n1+1), iocc=i, vr=def)
     def(1)=def1
-  
+
     if (n1.lt.0) then
-       call getvr8(motfac, 'DEPL_POST_FL', iocc=icomp, nbval=-n1, vect=def(2:(-n1+1))) 
+       call getvr8(motfac, 'DEPL_POST_FL', iocc=icomp, nbval=-n1, vect=def(2:(-n1+1)))
        do j= 1,size(def)-1
           if (def(j).gt.def(j+1)) then
-             call utmess('F', 'ALGORITH5_84') 
+             call utmess('F', 'ALGORITH5_84')
           endif
        enddo
     endif
@@ -371,13 +371,13 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
 
        do j= 1,size(rigi)
           if (def(j).lt.0.d0) then
-             call utmess('F', 'ALGORITH5_40') 
+             call utmess('F', 'ALGORITH5_40')
           endif
        enddo
     endif
 
     if (n2.ne.n1) then
-        call utmess('F', 'ALGORITH5_41') 
+        call utmess('F', 'ALGORITH5_41')
     endif
 
     call nlinivec(sd_nl, _BUCKLING_DEF_TOT, (-n1+1), iocc=i, vr=deft)
@@ -387,13 +387,13 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
 
     do j= 1,size(deft)-1
        if (deft(j).gt.deft(j+1)) then
-          call utmess('F', 'ALGORITH5_85') 
+          call utmess('F', 'ALGORITH5_85')
        endif
     enddo
 
     call getvr8(motfac, 'AMOR_POST_FL', iocc=icomp, nbval=0, nbret=n2)
     if ((n2.ne.n1).and.(n2.lt.0)) then
-        call utmess('F', 'ALGORITH5_41') 
+        call utmess('F', 'ALGORITH5_41')
     endif
 
     if (n2.lt.0) then
@@ -408,13 +408,13 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     else
        amor(1)=damp_normal
     endif
-  
+
     if (n2.lt.0) then
        call getvr8(motfac, 'AMOR_POST_FL', iocc=icomp, nbval=-n2, vect=amor(2:(-n2+1)))
    else
         do j=2,(-n1+1)
             amor(j)=amor(1)
-        enddo  
+        enddo
     endif
 
 
@@ -422,7 +422,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
 
     call getvid(motfac, 'OBSTACLE', iocc=icomp, scal=obst_typ, nbret=n1)
 
-!   --- 3.4 - Obstacle type 
+!   --- 3.4 - Obstacle type
     call tbliva(obst_typ, 1, 'LIEU', [ibid], [r8bid], &
                 [cbid], 'DEFIOBST', kbid, [r8bid], 'TYPE',&
                 k8typ, ibid, r8bid, cbid, refo,&
@@ -444,7 +444,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     endif
 
 !
-!   --- 3.4 - Calculation of geometrical properties : 
+!   --- 3.4 - Calculation of geometrical properties :
 !             play, orientation, local coordinates, distances
     call nlget(sd_nl, _COOR_NO1, iocc=i, vr=coor_no1)
     xjeu = 0.d0
@@ -551,7 +551,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
         defmod1(3*(j-1)+1) = bmodal(ddlcho(1),j)
         defmod1(3*(j-1)+2) = bmodal(ddlcho(2),j)
         defmod1(3*(j-1)+3) = bmodal(ddlcho(3),j)
-        
+
         if (obst_typ(1:2).eq.'BI') then
             defmod2(3*(j-1)+1) = bmodal(ddlcho(4),j)
             defmod2(3*(j-1)+2) = bmodal(ddlcho(5),j)

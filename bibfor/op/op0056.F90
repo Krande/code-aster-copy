@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -223,7 +223,7 @@ subroutine op0056()
                     call utmess('A','MODELISA8_16',sk=nomres(j), si=i)
                 endif
             enddo
-            
+
             el = valres(1)
             et = valres(2)
             nult = valres(3)
@@ -278,11 +278,11 @@ subroutine op0056()
             q13 = c3*s*qll - c*s3*qtt + (c*s3-c3*s)* (qlt+2.d0*glt)
             q23 = c*s3*qll - c3*s*qtt - (c*s3-c3*s)* (qlt+2.d0*glt)
             q33 = c2*s2* (qll+qtt-2.d0*qlt) + (c2-s2)*(c2-s2)*glt
-            
-            
 
-            
-            
+
+
+
+
 !         COEF DE DILATATION THERMIQUE REPERE UTILISATEUR
             d11 = c2*dl + s2*dt
             d22 = s2*dl + c2*dt

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -123,7 +123,7 @@ character(len=19), intent(in) :: matr_elem
 !
     do i_load = 1, nb_load
         load_name = v_load_name(i_load)(1:8)
-        load_nume = v_load_info(i_load+1) 
+        load_nume = v_load_info(i_load+1)
         if (load_nume .ne. 0) then
             ligrch = load_name(1:8)//'.CHME.LIGRE'
             call jeexin(ligrch(1:19)//'.LIEL', iret)

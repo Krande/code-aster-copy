@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 !  rvect  [Opt]: Vector to be extracted in the case of float parameters [R8]
 !
 ! 1 - First, we verify that the parameter name is valid
-! 2 - Second, we extract the value/vector from the correct work vector  
+! 2 - Second, we extract the value/vector from the correct work vector
 !     according to the sd_pgp data structure's map
 !
 ! Examples : call pgpget('&&OP0058','RESU_IN ',kscal=resu)
@@ -46,7 +46,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 !            call pgpget('&&OP0058','NOM_CMP ',iobs=2, kvect=cmp)
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -107,7 +107,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
                   'I','K24','R8','R8',&
                   'C8','K24','K24','K24','I'/
 !
-!   parind = -2 : vector global          ; = -1 : scalar global ; 
+!   parind = -2 : vector global          ; = -1 : scalar global ;
 !          =  2 : vector per observation ; =  1 : scalar per observation
     data  parind  / -1, -1, -1, -1, -1,&
                     -1, -1,  1,  1,  2,&
@@ -191,7 +191,7 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
                         ivect(i) = zi(jvect+i-1)
                     end do
                 end if
-            end if 
+            end if
 !
 !   --- Scalars
         else if (abs(parind(ip)).eq.1) then

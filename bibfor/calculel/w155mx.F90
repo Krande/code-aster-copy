@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -99,7 +99,7 @@ integer, intent(in) :: nbStore, listStore(nbStore)
             call getvtx(' ', 'TOUT', iocc=iocc, scal=cmpName, nbret=n1)
             call getvtx(' ', 'GROUP_MA', iocc=iocc, scal=cmpName, nbret=n2)
             call getvtx(' ', 'MAILLE', iocc=iocc, scal=cmpName, nbret=n3)
-            if ( (n1 .eq. 0) .and. (n2 .eq. 0) .and. (n3 .eq. 0) ) then 
+            if ( (n1 .eq. 0) .and. (n2 .eq. 0) .and. (n3 .eq. 0) ) then
                 ! si pas d'option, on force comme TOUT='OUI'
                 call getelem(mesh, ' ', iocc, 'F', listCell,&
                             nbCell, l_allz=ASTER_TRUE )

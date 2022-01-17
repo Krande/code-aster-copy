@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 subroutine dtmprep_noli_ants(sd_dtm_, sd_nl_, icomp)
     implicit none
 ! dtmprep_noli_ants : prepare the calculations for a localized nonlinearity
-!                     of type : anti sismic device. This routine adds a single  
+!                     of type : anti sismic device. This routine adds a single
 !                     occurence to sd_nl and increments NB_NOLI in sd_dtm
 !
-!             icomp : an integer giving the index of occurence of the 
+!             icomp : an integer giving the index of occurence of the
 !                     nonlinearity to be treated under the factor kw
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !
@@ -61,7 +61,7 @@ subroutine dtmprep_noli_ants(sd_dtm_, sd_nl_, icomp)
     integer          , intent(in) :: icomp
 !
 !   -0.2- Local variables
-    aster_logical     :: lnoeu2 
+    aster_logical     :: lnoeu2
     integer           :: i, n1, ibid, nbants, nbnoli
     integer           :: nbmcl, ier, nbno1, nbno2, ino1
     integer           :: ino2, ind1, ind2, nbmode, info
@@ -106,18 +106,18 @@ subroutine dtmprep_noli_ants(sd_dtm_, sd_nl_, icomp)
     sd_dtm = sd_dtm_
     sd_nl  = sd_nl_
 !
-    lnoeu2 = .false.   
+    lnoeu2 = .false.
     one = 1.d0
  !
     motfac = 'COMPORTEMENT'
     call nlget(sd_nl, _MAX_LEVEL, iscal=mxlevel)
     nbnoli = mxlevel + 1
-    i = mxlevel + 1   
+    i = mxlevel + 1
 !
     call infmaj()
     call infniv(ibid, info)
 !
-!   --- 1 - Basic information about the mesh and numbering 
+!   --- 1 - Basic information about the mesh and numbering
 !
     call dtmget(sd_dtm, _NUM_DDL, kscal=nume)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -158,7 +158,7 @@ subroutine dtmprep_noli_ants(sd_dtm_, sd_nl_, icomp)
                 nbmcl, limocl, tymocl, sd_nl//'.INDI_NO1.TEMP', nbno1)
 !
     if (nbno1.gt.0) then
-        ASSERT(nbno1.eq.1) 
+        ASSERT(nbno1.eq.1)
         call jeveuo(sd_nl//'.INDI_NO1.TEMP','L', vk8=noeud)
         no1_name = noeud(1)
         call nlsav(sd_nl, _NO1_NAME, 1, iocc=i, kscal=no1_name)
@@ -186,7 +186,7 @@ subroutine dtmprep_noli_ants(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _MESH_2, 1, iocc=i, kscal=mesh2)
     end if
 !
-!   --- 3 - Filling up the sd_nl with further information regarding the 
+!   --- 3 - Filling up the sd_nl with further information regarding the
 !           nonlinearity(ies)
 !
     AS_ALLOCATE(vi=ddlcho, size=6)
@@ -237,12 +237,12 @@ subroutine dtmprep_noli_ants(sd_dtm_, sd_nl_, icomp)
 
     call getvr8(motfac, 'DX_MAX ', iocc=icomp, scal=dx_max, nbret=n1)
     call nlsav(sd_nl, _ANTISISMIC_DX_MAX, 1, iocc=i, rscal=dx_max)
-    
+
     obst_typ = 'BI_PLANY'
     call nlsav(sd_nl, _OBST_TYP, 1, iocc=i, kscal=obst_typ)
 
 !
-!   --- 3.4 - Calculation of geometrical properties : 
+!   --- 3.4 - Calculation of geometrical properties :
 !             play, orientation, local coordinates, distances
     call nlget(sd_nl, _COOR_NO1, iocc=i, vr=coor_no1)
     call nlget(sd_nl, _COOR_NO2, iocc=i, vr=coor_no2)
@@ -346,7 +346,7 @@ subroutine dtmprep_noli_ants(sd_dtm_, sd_nl_, icomp)
         defmod1(3*(j-1)+1) = bmodal(ddlcho(1),j)
         defmod1(3*(j-1)+2) = bmodal(ddlcho(2),j)
         defmod1(3*(j-1)+3) = bmodal(ddlcho(3),j)
-        
+
         if (obst_typ(1:2).eq.'BI') then
             defmod2(3*(j-1)+1) = bmodal(ddlcho(4),j)
             defmod2(3*(j-1)+2) = bmodal(ddlcho(5),j)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,7 +83,7 @@ subroutine rc32s0(option, lieu, seis)
 11    continue
       call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
 !
-      if (option .eq. 'SNSN') then 
+      if (option .eq. 'SNSN') then
         do 20 j = 1, 6
           seisfx(j) = 2*ms(1)*zr(jsigu-1+78+j)
           seisfy(j) = 2*ms(2)*zr(jsigu-1+78+1*6+j)
@@ -98,7 +98,7 @@ subroutine rc32s0(option, lieu, seis)
           seismy2(j)= 2*ms(11)*zr(jsigu-1+78+10*6+j)
           seismz2(j)= 2*ms(12)*zr(jsigu-1+78+11*6+j)
 20      continue
-      else if (option .eq. 'SPSP') then 
+      else if (option .eq. 'SPSP') then
         do 25 j = 1, 6
           seisfx(j) = 2*ms(1)*zr(jsigu-1+j)
           seisfy(j) = 2*ms(2)*zr(jsigu-1+6*1+j)
@@ -113,7 +113,7 @@ subroutine rc32s0(option, lieu, seis)
           seismy2(j)= 2*ms(11)*zr(jsigu-1+6*10+j)
           seismz2(j)= 2*ms(12)*zr(jsigu-1+6*11+j)
 25      continue
-      else if (option .eq. 'PMPM') then 
+      else if (option .eq. 'PMPM') then
         do 30 j = 1, 6
           seisfx(j) = 2*ms(1)*zr(jsigu-1+156+j)
           seisfy(j) = 2*ms(2)*zr(jsigu-1+156+6*1+j)
@@ -128,7 +128,7 @@ subroutine rc32s0(option, lieu, seis)
           seismy2(j)= 2*ms(11)*zr(jsigu-1+156+6*10+j)
           seismz2(j)= 2*ms(12)*zr(jsigu-1+156+6*11+j)
 30      continue
-      else if (option .eq. 'PBPB') then 
+      else if (option .eq. 'PBPB') then
         do 35 j = 1, 6
           seisfx(j) = 2*ms(1)*zr(jsigu-1+234+j)
           seisfy(j) = 2*ms(2)*zr(jsigu-1+234+6*1+j)
@@ -236,19 +236,19 @@ subroutine rc32s0(option, lieu, seis)
                     if(i .eq. 6) seismz(j) = 2*contraintes(nbabsc)
                   endif
                 else if (option .eq. 'PMPM') then
-                    if(i .eq. 1) seisfx(j) = 2*momen0 
-                    if(i .eq. 2) seisfy(j) = 2*momen0 
-                    if(i .eq. 3) seisfz(j) = 2*momen0 
-                    if(i .eq. 4) seismx(j) = 2*momen0 
-                    if(i .eq. 5) seismy(j) = 2*momen0 
-                    if(i .eq. 6) seismz(j) = 2*momen0 
+                    if(i .eq. 1) seisfx(j) = 2*momen0
+                    if(i .eq. 2) seisfy(j) = 2*momen0
+                    if(i .eq. 3) seisfz(j) = 2*momen0
+                    if(i .eq. 4) seismx(j) = 2*momen0
+                    if(i .eq. 5) seismy(j) = 2*momen0
+                    if(i .eq. 6) seismz(j) = 2*momen0
                 else if (option .eq. 'PBPB') then
-                    if(i .eq. 1) seisfx(j) = 2*(0.5d0*momen1) 
-                    if(i .eq. 2) seisfy(j) = 2*(0.5d0*momen1)  
-                    if(i .eq. 3) seisfz(j) = 2*(0.5d0*momen1) 
-                    if(i .eq. 4) seismx(j) = 2*(0.5d0*momen1) 
-                    if(i .eq. 5) seismy(j) = 2*(0.5d0*momen1) 
-                    if(i .eq. 6) seismz(j) = 2*(0.5d0*momen1) 
+                    if(i .eq. 1) seisfx(j) = 2*(0.5d0*momen1)
+                    if(i .eq. 2) seisfy(j) = 2*(0.5d0*momen1)
+                    if(i .eq. 3) seisfz(j) = 2*(0.5d0*momen1)
+                    if(i .eq. 4) seismx(j) = 2*(0.5d0*momen1)
+                    if(i .eq. 5) seismy(j) = 2*(0.5d0*momen1)
+                    if(i .eq. 6) seismz(j) = 2*(0.5d0*momen1)
                 endif
  50         continue
  40     continue

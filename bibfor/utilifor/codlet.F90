@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine codlet(entier, cadre, chaine)
+subroutine codlet(entier, cadre, chaine, kstop)
     implicit none
-    integer :: entier
-    character(len=*) :: cadre, chaine
+#include "asterfort/assert.h"
+    integer, intent(in) :: entier
+    character(len=*), intent(in) :: cadre
+    character(len=*), intent(out) :: chaine
+    character(len=*), optional :: kstop
 !
 !   ------------------------------------------------------------------
 !   CODAGE D'UN ENTIER EN BASE 36 DANS UNE CHAINE DE CARACTERE
@@ -53,6 +56,12 @@ subroutine codlet(entier, cadre, chaine)
      &                   'K','L','M','N','O','P','Q','R','S','T',&
      &                   'U','V','W','X','Y','Z'/
 !
+!
+     if (present(kstop)) then
+        ASSERT(kstop.eq.' '.or.kstop.eq.'F')
+    else
+        kstop = 'F'
+    end if
 !
     ier = 0
     chaine = ' '
@@ -99,9 +108,13 @@ subroutine codlet(entier, cadre, chaine)
 !     SORTIE -----------------------------------------------------------
 99000  continue
     if (ier .ne. 0) then
-        do 9001 i = 1, lg
-            chaine(i:i) = '*'
-9001      continue
+        if (kstop.eq.' ') then
+            do i = 1, lg
+                chaine(i:i) = '*'
+            end do
+        else
+            ASSERT(.false.)
+        endif
     endif
 !
 end subroutine

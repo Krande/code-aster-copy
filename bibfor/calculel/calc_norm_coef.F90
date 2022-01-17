@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,16 +59,16 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
 !  <IN>  <nb_cmp_max>       30
 !  <IN>  <nb_cmp_in>        5
 !  <IN>  <nb_coef_user>     0
-!  <IN>  <list_cmp>         SIXX SIYY SIXY TOTO TATA 
+!  <IN>  <list_cmp>         SIXX SIYY SIXY TOTO TATA
 !  <OUT> <chcoef>           <CARTE of [NEUT_R]>
 !                           X1   X2   X3   X4   X5   (...) X30
-!                           1.0  1.0  2.0  0.0  0.0        0.0  
+!                           1.0  1.0  2.0  0.0  0.0        0.0
 !  <OUT> <nb_cmp_act>       3
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model        : name of model
-! In  name_gd      : name of <GRANDEUR> 
+! In  name_gd      : name of <GRANDEUR>
 ! In  nb_cmp_max   : maximum number of components in <GRANDEUR>
 ! In  nb_cmp_in    : number of components in <list_cmp>
 ! In  norm         : type of norm
@@ -76,7 +76,7 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm,&
 !                       'NORM' : norm
 !                       'SQUA' : norm * norm
 ! In  nb_coef_user : number of coefficients provided by user (0 if not provided)
-! In  coef_user    : list of coefficients provided by user 
+! In  coef_user    : list of coefficients provided by user
 ! In  list_cmp     : name of list of components to filter
 ! In  chcoef       : name of <CARTE> contains coefficient for each component
 ! In  chcalc       : name of <CARTE> for type of calc_elem (NORM or SQUA)

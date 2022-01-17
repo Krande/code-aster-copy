@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ implicit none
 !
 ! - Patchs
 !
-    write(ifm,10) 
+    write(ifm,10)
     write(ifm,101) nt_patch
     do i_patch = 1, nt_patch
         patch_indx = i_patch
@@ -135,7 +135,7 @@ implicit none
 !
 ! - Contact zones
 !
-    write(ifm,10) 
+    write(ifm,10)
     write(ifm,100) nb_cont_zone
     do i_cont_zone = 1, nb_cont_zone
 !
@@ -163,7 +163,7 @@ implicit none
 !
 ! ----- Loop on slave elements
 !
-        do i_elem_slav = 1, nb_elem_slav          
+        do i_elem_slav = 1, nb_elem_slav
 !
 ! --------- Get current slave element
 !
@@ -188,7 +188,7 @@ implicit none
             coefint = v_sdappa_coef(patch_nume)
             gap     = v_sdappa_gapi(patch_nume)
             weight  = v_sdappa_poid(patch_nume)
-            
+
             if (isnan(gap)) then
                 write (ifm,120)
             else
@@ -207,7 +207,7 @@ implicit none
     end if
     do i_cont_pair = 1, nb_cont_pair
         elem_slav_nume = v_sdappa_apli(3*(i_cont_pair-1)+1)
-        elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)   
+        elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)
         call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_slav_nume), elem_slav_name)
         call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_mast_nume), elem_mast_name)
         write(ifm, 201) i_cont_pair, elem_slav_name, elem_mast_name

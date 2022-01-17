@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ subroutine asecon(nomsy, neq, mome, resu)
     call rsorac(mome, 'TOUT_ORDRE', ibid, r8b, k8b,&
                 cbid, r8b, k8b, tordr, 1,&
                 nbtrou)
-    iordr=tordr(1)            
+    iordr=tordr(1)
 !
     call rsexch('F', meca, noms2, iordr, moncha,&
                 ier)
@@ -180,7 +180,7 @@ subroutine asecon(nomsy, neq, mome, resu)
                                 call rsorac(stat, 'NOEUD_CMP', ibid, r8b, monacc,&
                                             cbid, r8b, k8b, tordr, 1,&
                                             nbtrou)
-                                iorst=tordr(1) 
+                                iorst=tordr(1)
                                 call rsexch('F', stat, nomsy, iorst, chextr,&
                                             iret)
                                 call jeexin(chextr//'.VALE', ibid)

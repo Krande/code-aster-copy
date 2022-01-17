@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -236,13 +236,13 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
 
 !               Add the identifier .DESC[5] to 1 , i.e. CORR_STAT exists
                 call jeexin(nomres//'           .DESC',iret)
-                if (iret.eq.0) then 
+                if (iret.eq.0) then
                     call wkvect(nomres//'           .DESC', 'G V I', 5, jdesc)
-                else 
+                else
                     call jeveuo(nomres//'           .DESC', 'E', jdesc)
                 end if
                 zi(jdesc+5-1) = 1
-!                
+!
                 call getvid('EXCIT', 'D_FONC_DT', iocc=i, scal=fonvit(i), nbret=n4)
                 fonct = fonvit(i)(1:8)
                 call jeveuo(fonct//'.PROL', 'L', lprol)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,9 +61,9 @@ subroutine rcZ2s0(typ, ma, mb, presa, presb, ns, s2)
     k1 = zr(jvalin)
     c1 = zr(jvalin+1)
     k2 = zr(jvalin+2)
-    c2 = zr(jvalin+3) 
-    rayon = zr(jvalin+6) 
-    ep = zr(jvalin+7) 
+    c2 = zr(jvalin+3)
+    rayon = zr(jvalin+6)
+    ep = zr(jvalin+7)
     inertie = zr(jvalin+8)
     k2tub = zr(jvalin+11)
     c2tub = zr(jvalin+12)
@@ -84,7 +84,7 @@ subroutine rcZ2s0(typ, ma, mb, presa, presb, ns, s2)
        coefm = k2*c2
        coefcor = k2cor*c2cor
        coeftub = k2tub*c2tub
-   endif 
+   endif
 !-----------------------------------------------------
 ! --- CALCUL DE LA PARTIE DUE A LA PRESSION S2P
 !-----------------------------------------------------
@@ -93,7 +93,7 @@ subroutine rcZ2s0(typ, ma, mb, presa, presb, ns, s2)
 !---------------------------------------------------------
 ! --- CALCUL DE LA PARTIE DUE AUX MOMENTS S2M SANS SEISME
 !---------------------------------------------------------
-    do 100 i = 1, 3    
+    do 100 i = 1, 3
         mij(i) = ma(i+3) - mb(i+3)
         racine = racine + mij(i)**2
         mijcor(i) = ma(9+i) - mb(9+i)

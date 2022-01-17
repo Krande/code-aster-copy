@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
 !  rvect   [Opt]: Vector to be extracted in the case of float parameters [R8]
 !
 ! 1 - First, we verify that the parameter name is valid
-! 2 - Second, we extract the value/vector from the correct work vector  
+! 2 - Second, we extract the value/vector from the correct work vector
 !     according to the sd_int_ data structure's map
 !
 ! Examples : call intget('&&OP0074','RESU_IN ',kscal=resu)
@@ -49,7 +49,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
 !            call intget('&&OP0074','NOM_CMP ',iocc=2, kvect=cmp)
 !
 ! ----------------------------------------------------------------------
-! person_in_charge: hassan.berro at edf.fr    
+! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -74,7 +74,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
     integer,          optional, intent(out):: lonvec
     integer,          optional, intent(out):: iscal
     real(kind=8),     optional, intent(out):: rscal
-    complex(kind=8),  optional, intent(out):: cscal   
+    complex(kind=8),  optional, intent(out):: cscal
     character(len=*), optional, intent(out):: kscal
     integer,          optional, intent(out):: ivect(*)
     real(kind=8),     optional, intent(out):: rvect(*)
@@ -96,7 +96,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
     character(len=8) :: sd_int
 
 !   --- For general usage
-    aster_logical     :: output_test 
+    aster_logical     :: output_test
     integer           :: i, addr, jscal, lvec, level, dec
     character(len=6)  :: k_iocc
     character(len=24) :: savename
@@ -125,14 +125,14 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
     end if
 
 !   The parameter to be saved was not found in the predefined list
-    if (ip.gt._INT_NBPAR) then 
+    if (ip.gt._INT_NBPAR) then
         ASSERT(.false.)
     end if
 
     if (present(buffer).and.(.not.present(savejv))) then
 
         dec = 0
-        if (present(iocc)) then 
+        if (present(iocc)) then
             level = size(buffer)/(2*_INT_NBPAR)
             if (iocc.le.level) then
                 dec = (iocc-1)*2*_INT_NBPAR
@@ -185,7 +185,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
                 call c_f_pointer(pc, vk8, [lvec])
             else if (present(vk16)) then
                 call jgetptc(addr, pc, vk16=zk16(1))
-                call c_f_pointer(pc, vk16, [lvec])             
+                call c_f_pointer(pc, vk16, [lvec])
             else if (present(vk24)) then
                 call jgetptc(addr, pc, vk24=zk24(1))
                 call c_f_pointer(pc, vk24, [lvec])
@@ -199,7 +199,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
 
 20  continue
     savename(1:8) = sd_int
-    if (present(iocc)) then 
+    if (present(iocc)) then
 !       The parameter to be extracted is global but an occurence index was given
         ASSERT(parind(ip).gt.0)
         call codent(iocc, 'G', k_iocc)
@@ -229,14 +229,14 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
           call jelira(savename, 'LONMAX', lvec)
         end if
     end if
-    
+
     if (present(lonvec)) lonvec = lvec
 
     if (UN_PARMI4(kscal, iscal, rscal, cscal) .or. &
         UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
         UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
 !   --- Vectors
-        if (abs(parind(ip)).eq.2) then 
+        if (abs(parind(ip)).eq.2) then
 !
             if (UN_PARMI4(kvect, ivect, rvect, cvect) .or. &
                 UN_PARMI3(vk8, vk16, vk24) .or. UN_PARMI3(vi, vr, vc)) then
@@ -291,7 +291,7 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
                         call jeveuo(savename,'E',vk24=vk24)
                     end if
                 end if
-            end if 
+            end if
 !
 !   --- Scalars
         else if (abs(parind(ip)).eq.1) then
@@ -301,17 +301,17 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
             ASSERT(output_test)
 !
             call jeveuo(savename,'L',jscal)
-            if (partyp(ip).eq.'I')  then 
+            if (partyp(ip).eq.'I')  then
                 iscal = zi(jscal)
-            elseif (partyp(ip).eq.'R') then 
+            elseif (partyp(ip).eq.'R') then
                 rscal = zr(jscal)
-            elseif (partyp(ip).eq.'C') then 
+            elseif (partyp(ip).eq.'C') then
                 cscal = zc(jscal)
-            else if (partyp(ip).eq.'K8') then 
+            else if (partyp(ip).eq.'K8') then
                 kscal = zk8(jscal)
-            else if (partyp(ip).eq.'K16') then 
-                kscal = zk16(jscal)     
-            else if (partyp(ip).eq.'K24') then 
+            else if (partyp(ip).eq.'K16') then
+                kscal = zk16(jscal)
+            else if (partyp(ip).eq.'K24') then
                 kscal = zk24(jscal)
             end if
 !
@@ -320,9 +320,9 @@ subroutine intget(sd_int_, ip, iocc, lonvec, savejv,&
 !
 !   jeveux memory address
     if (present(address)) then
-        if (addr.ne.0) then 
+        if (addr.ne.0) then
             address = addr
-        else 
+        else
             call jeveuo(savename,'E', address)
         end if
     end if

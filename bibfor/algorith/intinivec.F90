@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
 !
 ! ----------------------------------------------------------------------
 ! person_in_charge: hassan.berro at edf.fr
-!  
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -83,12 +83,12 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
     sd_int = sd_int_
 
 !   The parameter to be saved was not found in the predefined list
-    if (ip.gt._INT_NBPAR) then 
+    if (ip.gt._INT_NBPAR) then
         ASSERT(.false.)
     end if
 
     savename(1:8) = sd_int
-    if (present(iocc)) then 
+    if (present(iocc)) then
 !       The parameter to be extracted is global but an occurence index was given
         ASSERT(parind(ip).gt.0)
         call codent(iocc, 'G', k_iocc)
@@ -102,7 +102,7 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
     if (iret.ne.0) then
         ! write (*,*) "Careful, using intinivec with a pre-existing vector"
         ! write (*,*) "The original <", params(ip) ,"> vector is deleted"
-        call jelibe(savename)       
+        call jelibe(savename)
         call jedetr(savename)
     end if
 
@@ -112,23 +112,23 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
             do i = 1, lonvec
                 vi(i) = 0
             end do
-        else 
+        else
             call wkvect(savename, 'V V I', lonvec, add)
             do i = 1, lonvec
                 zi(add+i-1) = 0
-            end do            
+            end do
         end if
     else if (partyp(ip).eq.'R') then
         if (present(vr)) then
             call wkvect(savename, 'V V R', lonvec, vr=vr)
             do i = 1, lonvec
                 vr(i) = 0.d0
-            end do            
-        else 
+            end do
+        else
             call wkvect(savename, 'V V R', lonvec, add)
             do i = 1, lonvec
                 zr(add+i-1) = 0.d0
-            end do  
+            end do
         end if
     else if (partyp(ip).eq.'C') then
         if (present(vc)) then
@@ -136,11 +136,11 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
             do i = 1, lonvec
                 vc(i) = dcmplx(0.d0, 0.d0)
             end do
-        else 
+        else
             call wkvect(savename, 'V V C', lonvec, add)
             do i = 1, lonvec
                 zc(add+i-1) = dcmplx(0.d0, 0.d0)
-            end do 
+            end do
         end if
     else if (partyp(ip).eq.'K8') then
         if (present(vk8)) then
@@ -148,7 +148,7 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
             do i = 1, lonvec
                 vk8(i) = ' '
             end do
-        else 
+        else
             call wkvect(savename, 'V V K8', lonvec, add)
             do i = 1, lonvec
                 zk8(add+i-1) = ' '
@@ -160,7 +160,7 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
             do i = 1, lonvec
                 vk16(i) = ' '
             end do
-        else 
+        else
             call wkvect(savename, 'V V K16', lonvec, add)
             do i = 1, lonvec
                 zk16(add+i-1) = ' '
@@ -172,7 +172,7 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
             do i = 1, lonvec
                 vk24(i) = ' '
             end do
-        else 
+        else
             call wkvect(savename, 'V V K24', lonvec, add)
             do i = 1, lonvec
                 zk24(add+i-1) = ' '

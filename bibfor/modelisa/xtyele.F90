@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -512,7 +512,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
         call jedetr(cstn(ifiss))
         do kk = 1, 3
             call jeexin(grp(4*(ifiss-1)+kk), iret)
-            if (iret .ne. 0) call jedetr(grp(4*(ifiss-1)+kk)) 
+            if (iret .ne. 0) call jedetr(grp(4*(ifiss-1)+kk))
         enddo
     end do
 !

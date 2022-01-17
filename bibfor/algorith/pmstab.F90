@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari,&
             vr(2)=vip(i)
             vk8(2)=nomvi(i)
 !            VK8(2)(1:1)='V'
-!            CALL CODENT(I,'G',VK8(2)(2:8))
+!            call codent(I,'G',VK8(2)(2:8))
             call tbajli(table, nbpar, nompar, [0], vr,&
                         [cbid], vk8, 0)
 553      continue
