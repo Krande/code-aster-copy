@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,14 +143,17 @@ Example of ``$HOME/.config/aster/config.json``:
                 "name": "*",
                 "config": {
                     "exectool": {
-                    "valgrind": "valgrind --tool=memcheck --leak-check=full --error-limit=no --track-origins=yes"
+                        "valgrind": "valgrind --tool=memcheck --leak-check=full --error-limit=no --track-origins=yes"
                     }
                 }
             }
         ]
     }
 
-
+This ``valgrind`` is actually defined by default in the configuration file of the
+installed version and it is callable with ``run_aster --valgrind ...`.
+Another one is also defined by default to wrap *gdb* execution:
+``run_aster --gdb ...``.
 """
 
 import json

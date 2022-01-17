@@ -13,7 +13,7 @@
 - *validation*: few testcase files with proprietary datas,
 - *data*: material datas that can not be freely distributed.
 
-Other independant repositories exist:
+Other independent repositories exist:
 
 - [devtools][2]: contains helper scripts.
 - [changelog][3]: publishes the changelog of each incremental version.
@@ -81,7 +81,7 @@ Singularity> ./waf configure install
 Singularity> make bootstrap
 ```
 
-[1]: ../src
-[2]: ../devtools
-[3]: ../changelog
+[1]: ../../../../src
+[2]: ../../../../devtools
+[3]: ../../../../changelog
 [9]: https://www.code-aster.org/

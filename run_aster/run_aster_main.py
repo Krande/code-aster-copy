@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -118,7 +118,7 @@ USAGE = """
 
 EPILOG = """
 The time limit is automatically increased to 24 hours for "interactive" usages
-as '--interactive', '--env', '--no-comm'.
+as '--interactive', '--env', '--no-comm', '--gdb', '--valgrind'.
 """
 
 # for interactive executions (using IPython)
@@ -138,31 +138,25 @@ def parse_args(argv):
     """
     # command arguments parser
     parser = argparse.ArgumentParser(
-        usage=USAGE,
-        epilog=EPILOG,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        usage=USAGE, epilog=EPILOG, formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument(
-        "--version", action="store_true", help="show code_aster version"
-    )
+    parser.add_argument("--version", action="store_true", help="show code_aster version")
     parser.add_argument(
         "-g",
         "--debug",
         action="store_true",
-        help="print debugging information (same as " "DEBUG=1 in environment)",
+        help="print debugging information (same as DEBUG=1 in environment)",
     )
     parser.add_argument(
         "-i",
         "--interactive",
         action="store_true",
-        help="inspect interactively after running script "
-        "instead of calling FIN command",
+        help="inspect interactively after running script instead of calling FIN command",
     )
     parser.add_argument(
         "--env",
         action="store_true",
-        help="do not execute, only prepare the working "
-        "directory ('--wrkdir' is required)",
+        help="do not execute, only prepare the working directory ('--wrkdir' is required)",
     )
     parser.add_argument(
         "-w", "--wrkdir", action="store", help="use this directory as working directory"
@@ -191,9 +185,7 @@ def parse_args(argv):
         "'mpiexec -n N %(prog)s ...'; use '--no-mpi' "
         "to not do it",
     )
-    parser.add_argument(
-        "-t", "--test", action="store_true", help="execution of a testcase"
-    )
+    parser.add_argument("-t", "--test", action="store_true", help="execution of a testcase")
     parser.add_argument(
         "--ctest",
         action="store_true",
@@ -216,8 +208,7 @@ def parse_args(argv):
         type=float,
         action="store",
         default=None,
-        help="override the time limit (may also be changed by "
-        "FACMTPS environment variable)",
+        help="override the time limit (may also be changed by FACMTPS environment variable)",
     )
     parser.add_argument(
         "--memory_limit",
@@ -234,20 +225,29 @@ def parse_args(argv):
         "`code_aster.init()` to copy data files.",
     )
     parser.add_argument(
-        "--exectool",
-        action="store",
-        help="wrap code_aster execution using this tool "
-        "(debugger, valgrind, custom command...)",
+        "--gdb",
+        action="store_const",
+        const="gdb",
+        dest="exectool",
+        help="wrap code_aster execution using share/aster/exectool/gdb_wrapper",
     )
     parser.add_argument(
-        "--debugpy-runner", action="store", type=int, help=argparse.SUPPRESS
+        "--valgrind",
+        action="store_const",
+        const="valgrind",
+        dest="exectool",
+        help="wrap code_aster execution using 'valgrind --tool=memcheck...'",
     )
+    parser.add_argument(
+        "--exectool",
+        action="store",
+        help="wrap code_aster execution using this tool (debugger, valgrind, custom command...)",
+    )
+    parser.add_argument("--debugpy-runner", action="store", type=int, help=argparse.SUPPRESS)
     parser.add_argument(
         "--debugpy-rank", action="store", type=int, default=0, help=argparse.SUPPRESS
     )
-    parser.add_argument(
-        "--status-file", action="store", dest="statusfile", help=argparse.SUPPRESS
-    )
+    parser.add_argument("--status-file", action="store", dest="statusfile", help=argparse.SUPPRESS)
     parser.add_argument(
         "file",
         metavar="FILE",
@@ -290,10 +290,7 @@ def main(argv=None):
 
     direct = args.file and osp.splitext(args.file)[-1] in (".py", ".comm")
     export = Export(
-        args.file if not direct else None,
-        " ",
-        test=args.test or args.ctest,
-        check=False,
+        args.file if not direct else None, " ", test=args.test or args.ctest, check=False
     )
     make_env = args.env or "make_env" in export.get("actions", [])
     need_split = len(export.commfiles) > 1
@@ -303,15 +300,9 @@ def main(argv=None):
             "Let run_aster split the export file or change the export file."
         )
     need_mpiexec = procid < 0 and args.auto_mpiexec
-    logger.debug(
-        "parallel: {0}, procid: {1}".format(CFG.get("parallel", False), procid)
-    )
+    logger.debug("parallel: {0}, procid: {1}".format(CFG.get("parallel", False), procid))
     logger.debug("nbcomm: {0}".format(len(export.commfiles)))
-    if (
-        args.debugpy_runner
-        and procid == args.debugpy_rank
-        and not (need_split or need_mpiexec)
-    ):
+    if args.debugpy_runner and procid == args.debugpy_rank and not (need_split or need_mpiexec):
         debugpy.listen(("localhost", args.debugpy_runner))
         print("Waiting for debugger attach")
         debugpy.wait_for_client()
@@ -335,12 +326,7 @@ def main(argv=None):
         add = {6: "mess", 15: "code"}
         for unit, typ in add.items():
             export.add_file(
-                File(
-                    osp.abspath(basename + "." + typ),
-                    filetype=typ,
-                    unit=unit,
-                    resu=True,
-                )
+                File(osp.abspath(basename + "." + typ), filetype=typ, unit=unit, resu=True)
             )
     if args.mpi_nbcpu:
         export.set("mpi_nbcpu", args.mpi_nbcpu)
@@ -355,7 +341,7 @@ def main(argv=None):
         pass
     if args.interactive:
         export.set("interact", True)
-    if args.interactive or make_env:
+    if args.interactive or make_env or args.exectool in ("valgrind", "gdb"):
         export.set_time_limit(86400.0)
     if args.memory_limit:
         export.set_memory_limit(args.memory_limit)
@@ -370,9 +356,7 @@ def main(argv=None):
     try:
         if need_split or need_mpiexec:
             run_aster = osp.join(RUNASTER_ROOT, "bin", "run_aster")
-            expdir = create_temporary_dir(
-                dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster"
-            )
+            expdir = create_temporary_dir(dir=os.getenv("HOME", "/tmp") + "/.tmp_run_aster")
             statfile = osp.join(expdir, "__status__")
             for exp_i in split_export(export):
                 fexp = osp.join(expdir, "export." + str(exp_i.get("step")))
