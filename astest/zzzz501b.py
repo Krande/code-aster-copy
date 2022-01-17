@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -120,9 +120,9 @@ model = AFFE_MODELE(MAILLAGE=mesh,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D'))
 deps = model.getDependencies()
-test.assertTrue(mesh in deps)
+test.assertFalse(mesh in deps)
 test.assertFalse(same in deps)
-test.assertEqual(len(deps), 1)
+test.assertEqual(len(deps), 0)
 
 model.addDependency(mesh)
 deps = model.getDependencies()
@@ -156,7 +156,11 @@ fieldmat = AFFE_MATERIAU(MAILLAGE=mesh,
                          AFFE=_F(TOUT='OUI',
                                  MATER=material))
 deps = fieldmat.getDependencies()
-test.assertEqual(len(deps), 3)
+test.assertEqual(len(deps), 0)
+fieldmat.addDependency(model)
+deps = fieldmat.getDependencies()
+test.assertEqual(len(deps), 1)
+
 
 test.printSummary()
 
