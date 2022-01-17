@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine caflnl(char, ligrmo, noma)
-    implicit none
+!
+subroutine caflnl(load, mesh, model)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
@@ -30,34 +32,39 @@ subroutine caflnl(char, ligrmo, noma)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
 !
-! BUT : STOCKAGE DES FLUX NON LINEAIRE  DANS UNE CARTE ALLOUEE SUR LE
-!       LIGREL DU MODELE
+character(len=8), intent(in) :: load, mesh, model
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      LIGRMO : NOM DU LIGREL DE MODELE
-!      NOMA   : NOM DU MAILLAGE
-!      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
-!      FONREE : FONC OU REEL
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
+! Loads affectation
+!
+! Treatment of loads 'FLUX_NL'
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load             : load
+! In  model            : model
+! In  mesh             : mesh
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: keywordFact = 'FLUX_NL'
     integer :: nflux, jvalv,  nf, iocc, nbtou, nbma, jma, ncmp, lprol
     character(len=8) :: k8b, typmcl(2)
-    character(len=16) :: motclf, motcle(2)
+    character(len=16) :: motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai, prol, nompar
     character(len=8), pointer :: vncmp(:) => null()
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    motclf = 'FLUX_NL'
-    call getfac(motclf, nflux)
+    call getfac(keywordFact, nflux)
 !
-    carte = char//'.CHTH.FLUNL'
-    call alcart('G', carte, noma, 'FLUN_F')
+    carte = load//'.CHTH.FLUNL'
+    call alcart('G', carte, mesh, 'FLUN_F')
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
 !
@@ -80,30 +87,30 @@ subroutine caflnl(char, ligrmo, noma)
 !
 ! --- STOCKAGE DANS LES CARTES
 !
-    do 10 iocc = 1, nflux
+    do iocc = 1, nflux
 !
-        call getvid(motclf, 'FLUN', iocc=iocc, scal=zk8(jvalv), nbret=nf)
+        call getvid(keywordFact, 'FLUN', iocc=iocc, scal=zk8(jvalv), nbret=nf)
         
         prol = zk8(jvalv)//'           .PROL'
         call jeveuo(prol, 'L', lprol)
         nompar = zk24(lprol+2)
         if (nompar(1:4) .ne.'TEMP') call utmess('F','CHARGES2_3',sk=zk8(jvalv))
 !
-        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
+        call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ncmp)
 !
         else
-            call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
+            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 10
+            if (nbma .eq. 0) cycle
             call jeveuo(mesmai, 'L', jma)
             call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
                         limanu=zi(jma))
             call jedetr(mesmai)
         endif
 !
-10  end do
+    end do
 !
     call jedema()
 !

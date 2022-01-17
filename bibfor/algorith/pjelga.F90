@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -117,7 +117,7 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 !   de Gauss reellement utilises par chaque element, dans le
 !   cas d'un champs ELGA, base sur la famille "XFEM"
     chsnpg = '&&CHPCHD.CHSNPG'
-    call xnpgxx(ligre2, option, nompar, chsnpg, exixfm)
+    call xnpgxx(nomo2, ligre2, option, nompar, chsnpg, exixfm)
 !
     if (exixfm.eq.'OUI') then
 !        si le champ ELGA s'appuie sur la famille "XFEM", on

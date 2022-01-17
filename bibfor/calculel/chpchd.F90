@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine chpchd(chin, type, celmod, prol0, base,&
-                  chou)
+                  chou, model_)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -41,7 +41,8 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 #include "asterfort/xnpgxx.h"
 
     character(len=*) :: chin, chou, base, celmod, type
-! person_in_charge: jacques.pellet at edf.fr
+character(len=8), optional, intent(in) :: model_
+
 ! -----------------------------------------------------------------
 !  BUT : CHANGER LE SUPPORT GEOMETRIQUE D'UN CHAMP
 ! -----------------------------------------------------------------
@@ -89,7 +90,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     integer :: ib, iret, nncp, ibid
     character(len=3) :: prol0, exixfm
-    character(len=8) :: ma, ma2, tychi, nomgd, param, moin
+    character(len=8) :: ma, ma2, tychi, nomgd, param, model
     character(len=16) :: cas, option, nomcmd, kbid
     character(len=19) :: cesmod, ces1, cns1, mnoga, ligrel, ces2, chsnpg
     character(len=24) :: valk(4)
@@ -101,6 +102,11 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
     ces1 = '&&CHPCHD.CES1'
     ces2 = '&&CHPCHD.CES2'
     cns1 = '&&CHPCHD.CNS1'
+
+    model = ' '
+    if (present(model_)) then
+        model = model_
+    endif
 !
 !
 ! 1- CALCUL DE:
@@ -127,12 +133,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
         call dismoi('NOM_PARAM', celmod, 'CHAM_ELEM', repk=param)
         call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma2)
         if (ma .ne. ma2) then
-            call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=moin)
-            valk(1) = chin
-            valk(2) = moin
-            valk(3) = ma
-            valk(4) = ma2
-            call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
+            call utmess('F', 'CALCULEL4_59')
         endif
         call celces(celmod, 'V', cesmod)
     endif
@@ -174,7 +175,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
     nncp = 0
     if (cas .eq. 'NOEU->ELGA') then
 !     ----------------------------------
-        call manopg(ligrel, option, param, mnoga)
+        call manopg(model, ligrel, option, param, mnoga)
 !
         call cnocns(chin, 'V', cns1)
         call cnsces(cns1, 'ELGA', cesmod, mnoga, 'V',&
@@ -186,7 +187,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !       de Gauss reellement utilises par chaque element, dans le
 !       cas d'un champs ELGA, base sur la famille "XFEM"
         chsnpg = '&&CHPCHD.CHSNPG'
-        call xnpgxx(ligrel, option, param, chsnpg, exixfm)
+        call xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 !
         if (exixfm.eq.'OUI') then
 !            si le champ ELGA s'appuie sur la famille "XFEM", on
@@ -204,7 +205,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else if (cas.eq.'ELNO->ELGA') then
 !     ----------------------------------
-        call manopg(ligrel, option, param, mnoga)
+        call manopg(model, ligrel, option, param, mnoga)
 !
         call celces(chin, 'V', ces1)
         call cesces(ces1, 'ELGA', cesmod, mnoga, ' ',&
@@ -277,7 +278,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !           de Gauss reellement utilises par chaque element, dans le
 !           cas d'un champs ELGA, base sur la famille "XFEM"
             chsnpg = '&&CHPCHD.CHSNPG'
-            call xnpgxx(ligrel, option, param, chsnpg, exixfm)
+            call xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 !
             if (exixfm.eq.'OUI') then
 !                si le champ ELGA s'appuie sur la famille "XFEM", on

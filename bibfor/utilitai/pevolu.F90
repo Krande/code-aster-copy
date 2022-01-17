@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -375,7 +375,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
                     call utmess('F', 'UTILITAI3_23', nk=3, valk=valk2)
                 endif
                 cham='&&CHPCHD.CHAM'
-                call chpchd(cham3, 'ELGA', celmod, 'OUI', 'V', cham)
+                call chpchd(cham3, 'ELGA', celmod, 'OUI', 'V', cham, modele)
                 call detrsd('CHAMP', celmod)
                 call detrsd('CHAMP', cham3)
 !

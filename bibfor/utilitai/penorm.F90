@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -471,7 +471,7 @@ subroutine penorm(resu, modele)
                 call utmess('F', 'UTILITAI3_23', nk=3, valk=valk2)
             endif
             call chpchd(cham2, 'ELGA', celmod, 'OUI', 'V',&
-                        cham1)
+                        cham1, modele)
             call detrsd('CHAMP', celmod)
         endif
 !
@@ -488,7 +488,7 @@ subroutine penorm(resu, modele)
 !
 ! ----- Compute <CARTE> with informations on Gauss points
 !
-        call calc_coor_elga(ligrel, chgeom, chgaus)
+        call calc_coor_elga(modele, ligrel, chgeom, chgaus)
 !
 ! ----- Compute Norm_L2 * Norm_L2 by element (integration on finite element)
 !

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine char_crea_neum(load, ligrmo, mesh, ndim, vale_type)
+subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 !
 implicit none
 !
@@ -28,9 +28,9 @@ implicit none
 !
 character(len=8), intent(in) :: load
 character(len=8), intent(in) :: mesh
-integer, intent(in) :: ndim
-character(len=19), intent(in) :: ligrmo
-character(len=4), intent(in) :: vale_type
+integer, intent(in) :: geomDime
+character(len=8), intent(in) :: model
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,9 +42,9 @@ character(len=4), intent(in) :: vale_type
 !
 ! In  mesh      : name of mesh
 ! In  load      : name of load
-! In  ndim      : space dimension
-! In  ligrmo    : list of elements in model
-! In  vale_type : affected value type (real, complex or function)
+! In  geomDime  : space dimension
+! In  model     : name of model
+! In  valeType  : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,7 +74,7 @@ character(len=4), intent(in) :: vale_type
 !
 ! - Some checks: FORCE_FACE and FORCE_POUTRE prohibited en 2D
 !
-    if (ndim .eq. 2) then
+    if (geomDime .eq. 2) then
         if (nbocc(4) .ne. 0) then
             call utmess('F', 'CHARGES2_5', sk=keywordfact(4))
         endif
@@ -89,15 +89,15 @@ character(len=4), intent(in) :: vale_type
         if (nbocc(i) .ne. 0) then
             curr_para = param(i)
 ! --------- FORCE_INTERNE#2D
-            if (keywordfact(i) .eq. 'FORCE_INTERNE' .and. ndim .eq. 2) curr_para = 'F2D2D'
+            if (keywordfact(i) .eq. 'FORCE_INTERNE' .and. geomDime .eq. 2) curr_para = 'F2D2D'
 ! --------- FORCE_INTERNE#3D
-            if (keywordfact(i) .eq. 'FORCE_INTERNE' .and. ndim .eq. 3) curr_para = 'F3D3D'
+            if (keywordfact(i) .eq. 'FORCE_INTERNE' .and. geomDime .eq. 3) curr_para = 'F3D3D'
 ! --------- FORCE_COQUE#2D
-            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. ndim .eq. 2) curr_para = 'FCO2D'
+            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. geomDime .eq. 2) curr_para = 'FCO2D'
 ! --------- FORCE_COQUE#3D
-            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. ndim .eq. 3) curr_para = 'FCO3D'
+            if (keywordfact(i) .eq. 'FORCE_COQUE' .and. geomDime .eq. 3) curr_para = 'FCO3D'
 !
-            call cachre(load, ligrmo, mesh, ndim, vale_type,&
+            call cachre(load, model, mesh, geomDime, valeType,&
                         curr_para, keywordfact(i))
         endif
     end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cbpres(load, mesh, ligrmo, ndim, valeType)
+subroutine cbpres(load, mesh, model, geomDime, valeType)
 !
 implicit none
 !
@@ -25,9 +25,8 @@ implicit none
 #include "asterfort/cafotu.h"
 #include "asterfort/capres.h"
 !
-character(len=8), intent(in)  :: load, mesh
-character(len=19), intent(in) :: ligrmo
-integer, intent(in)           :: ndim
+character(len=8), intent(in)  :: load, mesh, model
+integer, intent(in)           :: geomDime
 character(len=4), intent(in)  :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -38,10 +37,10 @@ character(len=4), intent(in)  :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  load             : name of load
-! In  ligrmo           : model <LIGREL>
-! In  mesh             : name of mesh
-! In  ndim             : dimension of space
+! In  load             : load
+! In  model            : model
+! In  mesh             : mesh
+! In  geomDime         : dimension of space
 ! In  valeType         : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,7 +58,7 @@ character(len=4), intent(in)  :: valeType
     keywordfact = 'PRES_REP'
     call getfac(keywordfact, nbOccPresRep)
     if (nbOccPresRep .ne. 0) then
-        call capres(load, mesh, ligrmo, ndim, valeType, nbOccPresRep)
+        call capres(load, mesh, model, geomDime, valeType, nbOccPresRep)
         mapAlreadyCreated = ASTER_TRUE
     endif
 !
@@ -68,7 +67,7 @@ character(len=4), intent(in)  :: valeType
     keywordfact = 'FORCE_TUYAU'
     call getfac(keywordfact, nbOccForceTuyau)
     if (nbOccForceTuyau .ne. 0) then
-        call cafotu(load, ligrmo, mapAlreadyCreated, mesh, ndim, valeType, nbOccForceTuyau)
+        call cafotu(load, model, mapAlreadyCreated, mesh, geomDime, valeType, nbOccForceTuyau)
     endif
 !
 end subroutine

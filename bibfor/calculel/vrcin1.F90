@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -105,7 +105,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
     character(len=8) :: ma2
     character(len=8) :: nomgd, nomgd2, tych, nomsd
     character(len=16) :: nomsym, optio1
-    character(len=19) :: cart2, chs, cesmod, celmod, ligrmo, mnoga, dceli, ligr1
+    character(len=19) :: cart2, chs, cesmod, celmod, modelLigrel, mnoga, dceli, ligr1
     character(len=19) :: ces1, cns1, nomch, celtmp
     character(len=24) :: valk(3)
     character(len=80) :: k80, k80pre
@@ -129,7 +129,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
-    ligrmo=modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=modelLigrel)
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jeveuo(chmat//'.CVRCGD', 'L', vk8=cvrcgd)
@@ -236,8 +236,8 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
     if (iret .eq. 0) then
         celmod='&&VRCIN1.CELMOD'
         dceli='&&VRCIN1.DCELI'
-        call cesvar(carele, ' ', ligrmo, dceli)
-        call alchml(ligrmo, 'INIT_VARC', nompar, 'V', celmod,&
+        call cesvar(carele, ' ', modelLigrel, dceli)
+        call alchml(modelLigrel, 'INIT_VARC', nompar, 'V', celmod,&
                     iret, dceli)
         ASSERT(iret.eq.0)
         call detrsd('CHAMP', dceli)
@@ -251,7 +251,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 !   ---------------------------
     mnoga = modele//'.VRC.MNOGA'
     call exisd('CHAM_ELEM_S', mnoga, iret)
-    if (iret .eq. 0) call manopg(ligrmo, 'INIT_VARC', 'PVARCPR', mnoga)
+    if (iret .eq. 0) call manopg(modele, modelLigrel, 'INIT_VARC', 'PVARCPR', mnoga)
 
 
     do ichs = 1, nbchs
@@ -341,7 +341,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 !
             celtmp = '&&VRCIN1.CELTMP'
             l_xfem = .false.
-            call xvrcin(ligrmo, nomch, nomevo, nomsym, celtmp, l_xfem)
+            call xvrcin(modelLigrel, nomch, nomevo, nomsym, celtmp, l_xfem)
 !
 !           soit chainage thermo-mecanique avec xfem
 !
@@ -356,10 +356,10 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 !               on verifie que le champ est bien prepare
                 call dismoi('NOM_LIGREL', nomch, 'CHAM_ELEM',&
                             repk=ligr1)
-                if (ligr1 .ne. ligrmo) then
+                if (ligr1 .ne. modelLigrel) then
                     valk(1)=nomch
                     valk(2)=ligr1
-                    valk(3)=ligrmo
+                    valk(3)=modelLigrel
                     call utmess('F', 'CALCULEL4_25', nk=3, valk=valk)
                 endif
 !

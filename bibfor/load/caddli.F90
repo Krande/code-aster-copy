@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
+!
+subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
 implicit none
 !
@@ -55,14 +55,9 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-!
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=16), intent(in) :: keywordfact
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in) :: vale_type
+character(len=16), intent(in) :: keywordfact
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,15 +68,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  keywordfact : factor keyword DDL_IMPO/TEMP_IMPO/PRES_IMPO
-! In  mesh        : name of mesh
-! In  load        : name of load
-! In  ligrmo      : list of elements in model
-! In  vale_type   : affected value type (real, complex or function)
+! In  mesh        : mesh
+! In  load        : load
+! In  model       : model
+! In  valeType    : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n_max_cmp
-    parameter (n_max_cmp=300)
+    integer, parameter :: n_max_cmp = 300
     integer :: cmp_nb
     integer :: cmp_acti(n_max_cmp)
     real(kind=8) :: vale_real(n_max_cmp)
@@ -92,10 +86,10 @@ implicit none
     integer :: iocc, ino, icmp, nume_node
     integer :: jdirec, jprnm, jnom, jcompt
     integer :: nbcmp, nbec, nbnoeu, nddli
-    character(len=8) :: name_node, nomg, model
+    character(len=8) :: name_node, nomg
     character(len=19) :: list_rela
     character(len=4) :: coef_type
-    character(len=19) :: connex_inv
+    character(len=19) :: connex_inv, modelLigrel
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav
     integer :: jnoxfl, jnoxfv
     aster_logical :: lxfem
@@ -131,10 +125,10 @@ implicit none
     typblc(3) = 'TUYAU_FOURIER'
     list_rela = '&&CADDLI.RLLISTE'
 
-
 ! - Model informations
-    model = ligrmo(1:8)
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call jeveuo(modelLigrel//'.PRNM', 'L', jprnm)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
@@ -168,7 +162,6 @@ implicit none
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg), 'LONMAX', nbcmp)
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Local coordinate system (dummy)
 !
@@ -292,7 +285,7 @@ implicit none
                             
                 call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
-                            coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
+                            coef_type, cmp_nb, cmp_name, cmp_acti, valeType,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                             ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
@@ -303,7 +296,7 @@ implicit none
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
                             n_max_cmp, cmp_nb, cmp_name, cmp_acti, vale_real,&
                             vale_func, vale_cplx)
         l_ocmp = cmp_nb.gt.0
@@ -324,7 +317,7 @@ implicit none
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node-1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
-                            coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
+                            coef_type, cmp_nb, cmp_name, cmp_acti, valeType,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                             ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)

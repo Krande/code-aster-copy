@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !     -------------------------------------------------------
     chamg='&&PJMA2P.PGCOOR'
 !
-    call calc_coor_elga(ligrel, chgeom, chamg)
+    call calc_coor_elga(moa2, ligrel, chgeom, chamg)
 !
 !     -- TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
     ces='&&PJMA2P.PGCORS'

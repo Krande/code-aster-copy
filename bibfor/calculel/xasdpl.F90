@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xasdpl(celmod, prol0, chou)
+subroutine xasdpl(model, celmod, prol0, chou)
     implicit none
 
-    character(len=*) :: chou, celmod, prol0
+    character(len=*) :: model, chou, celmod, prol0
 
 !     BUT : A PARTIR DE D'UN CHAM_ELGA CONTENANT UN CHAMP DE DEPLACEMENT
 !           X-FEM DECOMPOSE (DX, HX, E1X, ...), CALCULER UN CHAMP DE
@@ -87,7 +87,7 @@ subroutine xasdpl(celmod, prol0, chou)
     integer :: k, ifiss
     character(len=3) :: exixfm
     character(len=4) :: tychi, phen
-    character(len=8) :: ma, ma2, nomgd, param, mo
+    character(len=8) :: ma, ma2, nomgd, param
     character(len=8) :: noma, chmat, nomfis
     character(len=8), pointer :: typma(:) => null()
     character(len=16) :: option, nomte, enr, typdis
@@ -124,9 +124,8 @@ subroutine xasdpl(celmod, prol0, chou)
 ! ---------------------------------------------------------------
     ASSERT(celmod.ne.' ')
     call dismoi('NOM_LIGREL', celmod, 'CHAM_ELEM', repk=ligrel)
-    call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=mo)
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma2)
-    call dismoi('PHENOMENE', mo, 'MODELE', repk=phen)
+    call dismoi('PHENOMENE', model, 'MODELE', repk=phen)
     l_ther = ASTER_FALSE
     if (phen .eq. 'THERM') then
         l_ther = ASTER_TRUE
@@ -136,7 +135,7 @@ subroutine xasdpl(celmod, prol0, chou)
 !   le champ d'entree et le maillage sur lequel s'appuie le modele
     if (ma .ne. ma2) then
         valk(1) = chin
-        valk(2) = mo
+        valk(2) = model
         valk(3) = ma
         valk(4) = ma2
         call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
@@ -146,18 +145,18 @@ subroutine xasdpl(celmod, prol0, chou)
     call dismoi('DIM_GEOM', ma, 'MAILLAGE', repi=ndim)
 
 !   on verfie que le modele comporte des elements X-FEM
-    call dismoi('NB_FISS_XFEM', mo, 'MODELE', repi=nfismo)
+    call dismoi('NB_FISS_XFEM', model, 'MODELE', repi=nfismo)
 
     if (nfismo.eq.0) call utmess('F', 'XFEM_88')
 !
 !   on verifie que le modele n'est pas HM
-    call exithm(mo, yathm, perman)
+    call exithm(model, yathm, perman)
 
     if (yathm) call utmess('F', 'XFEM_89')
 !
 !   Le modèle comporte-t-il au moins une fissure et pas seulement des interfaces
-    call jeveuo(mo//'.FISS','L',jmofis)
-    call jeveuo(mo//'.NFIS','L',jnfiss)
+    call jeveuo(model//'.FISS','L',jmofis)
+    call jeveuo(model//'.NFIS','L',jnfiss)
     nfiss = zi(jnfiss)
 !
     lfiss=.false.
@@ -211,7 +210,7 @@ subroutine xasdpl(celmod, prol0, chou)
     call cnocns(chin, 'V', cns)
 !   interpolation du champ de deplacement aux points de Gauss
     mnoga = '&&XASDPL.MNOGA'
-    call manopg(ligrel, option, param, mnoga)
+    call manopg(model, ligrel, option, param, mnoga)
     call cnsces(cns, 'ELGA', cesout, mnoga, 'V',&
                 cesdpl)
 
@@ -226,7 +225,7 @@ subroutine xasdpl(celmod, prol0, chou)
 !   calcul du nombre de point de Gauss dans la famille XFEM,
 !   pour chaque element XFEM 
     chsnpg='&&XASDPL.CHSNPG'
-    call xnpgxx(ligrel, option, param, chsnpg, exixfm)
+    call xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 !   
 !   verification paranoiaque
     ASSERT(exixfm.eq.'OUI')
@@ -242,15 +241,15 @@ subroutine xasdpl(celmod, prol0, chou)
     lpain(1) = 'PGEOMER'
     lchin(1) = ma//'.COORDO'
     lpain(2) = 'PPINTTO'
-    lchin(2) = mo//'.TOPOSE.PIN'
+    lchin(2) = model//'.TOPOSE.PIN'
     lpain(3) = 'PCNSETO'
-    lchin(3) = mo//'.TOPOSE.CNS'
+    lchin(3) = model//'.TOPOSE.CNS'
     lpain(4) = 'PHEAVTO'
-    lchin(4) = mo//'.TOPOSE.HEA'
+    lchin(4) = model//'.TOPOSE.HEA'
     lpain(5) = 'PLONCHA'
-    lchin(5) = mo//'.TOPOSE.LON'
+    lchin(5) = model//'.TOPOSE.LON'
     lpain(6) = 'PPMILTO'
-    lchin(6) = mo//'.TOPOSE.PMI'
+    lchin(6) = model//'.TOPOSE.PMI'
     nbin=6
     lpaout(1) = 'PXFGEOM'
     lchout(1) = chxpg
@@ -269,19 +268,19 @@ subroutine xasdpl(celmod, prol0, chou)
     lpain(2) = 'PXFGEOM'
     lchin(2) = chxpg
     lpain(3) = 'PHEAVTO'
-    lchin(3) = mo//'.TOPOSE.HEA'
+    lchin(3) = model//'.TOPOSE.HEA'
     lpain(4) = 'PLONCHA'
-    lchin(4) = mo//'.TOPOSE.LON'
+    lchin(4) = model//'.TOPOSE.LON'
     lpain(5) = 'PBASLOR'
-    lchin(5) = mo//'.BASLOC'
+    lchin(5) = model//'.BASLOC'
     lpain(6) = 'PLSN'
-    lchin(6) = mo//'.LNNO'
+    lchin(6) = model//'.LNNO'
     lpain(7) = 'PLST'
-    lchin(7) = mo//'.LTNO'
+    lchin(7) = model//'.LTNO'
     nbin=7
 !   si le champ TOPOSE.HNO existe dans le modele, on l'ajoute a la liste
 !   des champs IN
-    chhno=mo//'.TOPONO.HNO'
+    chhno=model//'.TOPONO.HNO'
     call exisd('CHAM_ELEM', chhno, iret)
     if (iret.eq.1) then
        lpain(8) = 'PHEA_NO'
@@ -289,7 +288,7 @@ subroutine xasdpl(celmod, prol0, chou)
        nbin=8
     endif
     lpain(9) = 'PSTANO'
-    lchin(9) = mo//'.STNO'
+    lchin(9) = model//'.STNO'
     lpain(10) = 'PMATERC'
     lchin(10) = mate
     lpain(11) = 'PGEOMER'

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,6 @@ implicit none
 #include "asterfort/x195cb.h"
 #include "asterfort/xasdpl.h"
 !
-! person_in_charge: jacques.pellet at edf.fr
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,12 +71,11 @@ implicit none
     integer :: n1, ifm, niv, iret, i11, i12, test, ibid, nocc
     character(len=3) :: prol0
     character(len=4) :: tychr, tych
-    character(len=8) :: kbid, mo, ma, chou, nomgd, nomgd2, carel
+    character(len=8) :: kbid, model, mesh, chou, nomgd, nomgd2, carel
     character(len=8) :: tsca, nogd, nomgd1, nompar, ma2, ta, ma3
     character(len=16) :: tychr1, opera, optio2, typco, option
-    character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
-    character(len=8) :: nu1, nu2
-    character(len=24), pointer :: v_refe(:) => null()
+    character(len=19) :: modelLigrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
+    character(len=8) :: nu1
     character(len=24), pointer :: v_celmod_celk(:) => null()
     aster_logical :: dbg
     character(len=24) :: valk(4)
@@ -109,16 +106,16 @@ implicit none
 !
     call getvtx(' ', 'OPERATION', scal=opera)
 !
-    call getvid(' ', 'MODELE', scal=mo, nbret=n1)
-    if (n1 .eq. 0) mo = ' '
-    call getvid(' ', 'MAILLAGE', scal=ma, nbret=n1)
-    if (n1 .eq. 0) ma = ' '
-    if (mo .ne. ' ') then
-        call dismoi('NOM_MAILLA', mo, 'MODELE', repk=ma2)
-        if ((ma.ne.' ') .and. (ma.ne.ma2)) then
+    call getvid(' ', 'MODELE', scal=model, nbret=n1)
+    if (n1 .eq. 0) model = ' '
+    call getvid(' ', 'MAILLAGE', scal=mesh, nbret=n1)
+    if (n1 .eq. 0) mesh = ' '
+    if (model .ne. ' ') then
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=ma2)
+        if ((mesh.ne.' ') .and. (mesh.ne.ma2)) then
             call utmess('F', 'UTILITAI3_21')
         endif
-        ma = ma2
+        mesh = ma2
     endif
 !
     call getres(chou, typco, kbid)
@@ -144,16 +141,16 @@ implicit none
 !
 ! 2.  CALCUL DE LIGREL,CELMOD  + QUELQUES VERIFICATIONS   :
 !     -------------------------------------------------------------
-    ligrel = ' '
+    modelLigrel = ' '
     celmod = ' '
 !
     if (tychr(1:2) .eq. 'EL') then
         if ((opera.eq.'AFFE') .or. (opera.eq.'ASSE') .or. (opera.eq.'ASSE_DEPL') .or. &
             ( opera.eq.'DISC')) then
-            if (mo .eq. ' ') then
+            if (model .eq. ' ') then
                 call utmess('F', 'UTILITAI3_22')
             endif
-            ligrel = mo//'.MODELE'
+            call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
 !
 !         -- CALCUL D'UN CHAM_ELEM "MODELE" : CELMOD
 !         ---------------------------------------------------
@@ -164,11 +161,11 @@ implicit none
                 if (opera .eq. 'ASSE') then
                     call getvid('ASSE', 'CHAM_GD', iocc=1, scal=chin)
                     call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
-                    if (ma2 .ne. ma) then
+                    if (ma2 .ne. mesh) then
                         valk(1) = chin
-                        valk(2) = mo
+                        valk(2) = model
                         valk(3) = ma2
-                        valk(4) = ma
+                        valk(4) = mesh
                         call utmess('F', 'CALCULEL4_59', nk=4, valk=valk)
                     endif
 !
@@ -184,10 +181,10 @@ implicit none
             endif
             nompar = nopar2(optio2,nomgd,'INOUT')
             celmod = '&&OP0195.CELMOD'
-            call alchml(ligrel, optio2, nompar, 'V', celmod,&
+            call alchml(modelLigrel, optio2, nompar, 'V', celmod,&
                         iret, ' ')
             if (iret .ne. 0) then
-                valk(1)=ligrel
+                valk(1)=modelLigrel
                 valk(2)=nompar
                 valk(3)=optio2
                 call utmess('F', 'UTILITAI3_23', nk=3, valk=valk)
@@ -215,7 +212,7 @@ implicit none
             if (nomgd .ne. 'GEOM_R') then
                 call utmess('F', 'UTILITAI3_25', sk=opera)
             endif
-            call cnonor(mo, nomgd, 'G', chou)
+            call cnonor(model, nomgd, 'G', chou)
 !
         else
             valk(1) = opera
@@ -228,22 +225,22 @@ implicit none
     else if (opera.eq.'AFFE') then
 !     -----------------------------------------
         if (tychr .eq. 'NOEU') then
-            call cnoaff(ma, nomgd, 'G', chou)
+            call cnoaff(mesh, nomgd, 'G', chou)
 !
         else if (tychr.eq.'CART') then
-            call caraff(ma, nomgd, 'G', chou)
+            call caraff(mesh, nomgd, 'G', chou)
 !
         else if (tychr(1:2).eq.'EL') then
             chatmp = '&&OP0195.CHATMP'
             if (nomgd .eq. 'VARI_R') then
-                call varaff(ma, nomgd, 'V', chatmp)
+                call varaff(mesh, nomgd, 'V', chatmp)
                 call chpchd(chatmp, tychr, celmod, prol0, 'G',&
-                            chou)
+                            chou, model)
                 call detrsd('CHAM_ELEM_S', chatmp)
             else
-                call caraff(ma, nomgd, 'V', chatmp)
+                call caraff(mesh, nomgd, 'V', chatmp)
                 call chpchd(chatmp, tychr, celmod, prol0, 'G',&
-                            chou)
+                            chou, model)
                 call detrsd('CARTE', chatmp)
             endif
         endif
@@ -251,7 +248,7 @@ implicit none
 !
     else if (opera.eq.'ASSE') then
 !     -----------------------------------------
-        call chpass(tychr, ma, celmod, nomgd, prol0,&
+        call chpass(tychr, mesh, celmod, nomgd, prol0,&
                     chou)
 !
 !
@@ -267,7 +264,7 @@ implicit none
 !
     else if (opera.eq.'ASSE_DEPL') then
 !     -----------------------------------------
-        call xasdpl(celmod, prol0, chou)
+        call xasdpl(model, celmod, prol0, chou)
 !
 !
     else if (opera(1:3).eq.'R2C') then
@@ -317,11 +314,11 @@ implicit none
         call getvid(' ', 'NUME_DDL', scal=nu1, nbret=i12)
         if (i12 .eq. 1) then
             call dismoi('NOM_MAILLA', nu1, 'NUME_DDL', repk=ma3)
-            if (ma .ne. ' ') then
-                if (ma3.ne.ma) then
+            if (mesh .ne. ' ') then
+                if (ma3.ne.mesh) then
                     valk(1)=nu1
                     valk(2)=ma3
-                    valk(3)=ma
+                    valk(3)=mesh
                     call utmess('F','CALCULEL4_69', nk=3, valk=valk)
                 endif
             endif
@@ -418,11 +415,11 @@ implicit none
 !
 ! 8.  VERIFICATION DE LA COHERENCE DU MAILLAGE SOUS-JACENT :
 ! ---------------------------------------------------------
-    if (ma .ne. ' ') then
+    if (mesh .ne. ' ') then
         call dismoi('NOM_MAILLA', chou, 'CHAMP', repk=ma2)
         valk(1)=ma2
-        valk(2)=ma
-        if (ma .ne. ma2) then
+        valk(2)=mesh
+        if (mesh .ne. ma2) then
             call utmess('F', 'CALCULEL4_78', nk=2, valk=valk)
         endif
     endif

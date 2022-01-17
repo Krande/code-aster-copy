@@ -15,10 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cachre(char, ligrmo, noma, ndim, fonree,&
-                  param, motcl)
-    implicit none
+!
+subroutine cachre(load, model, mesh, geomDime, valeType,&
+                  param, keywordFactZ)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
@@ -38,54 +40,58 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 #include "asterfort/reliem.h"
 #include "asterfort/tecart.h"
 #include "asterfort/vetyma.h"
-    integer :: ndim
-    character(len=4) :: fonree
-    character(len=5) :: param
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo, motcl
 !
-! BUT : STOCKAGE DES CHARGES REPARTIES DANS UNE CARTE ALLOUEE SUR LE
-!       LIGREL DU MODELE
+
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
+character(len=4), intent(in) :: valeType
+character(len=5), intent(in) :: param
+character(len=*), intent(in) :: keywordFactZ
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      LIGRMO : NOM DU LIGREL DE MODELE
-!      NOMA   : NOM DU MAILLAGE
-!      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
-!      FONREE : FONC OU REEL
-!      PARAM  : NOM DU TROISIEME "CHAMP" DE LA CARTE (F3D3D F2D3D ...)
-!      MOTCL  : MOT-CLE FACTEUR
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of loads 'FORCE_CONTOUR' , 'FORCE_INTERNE' , 'FORCE_ARETE'
+!                    'FORCE_FACE'    , 'FORCE_POUTRE'  , 'FORCE_COQUE'
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load             : load
+! In  model            : model
+! In  mesh             : mesh
+! In  geomDime         : dimension of space
+! In  valeType         : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: i, n, nchre, nrep, ncmp, jvalv,  iocc, nfx, nfy, nfz
     integer :: nmx, nmy, nmz, nplan, nmgx, nmgy, nmgz
     real(kind=8) :: fx, fy, fz, mx, my, mz, vpre, mgx, mgy, mgz
     complex(kind=8) :: cfx, cfy, cfz, cmx, cmy, cmz, cvpre
     character(len=8) :: kfx, kfy, kfz, kmx, kmy, kmz, typch, plan
     character(len=8) :: kmgx, kmgy, kmgz
-    character(len=8) :: model
-    character(len=16) :: motclf    
+    character(len=16) :: keywordFact
     character(len=19) :: carte
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
     character(len=8), pointer :: vncmp(:) => null()
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    motclf = motcl
-    call getfac(motclf, nchre)
-
-
-    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
+    keywordFact = keywordFactZ
+    call getfac(keywordFact, nchre)
 !
-    carte = char(1:8)//'.CHME.'//param(1:5)
+    carte = load(1:8)//'.CHME.'//param(1:5)
 !
-    if (fonree .eq. 'REEL') then
-        call alcart('G', carte, noma, 'FORC_R')
-    else if (fonree.eq.'FONC') then
-        call alcart('G', carte, noma, 'FORC_F')
-    else if (fonree.eq.'COMP') then
-        call alcart('G', carte, noma, 'FORC_C')
+    if (valeType .eq. 'REEL') then
+        call alcart('G', carte, mesh, 'FORC_R')
+    else if (valeType.eq.'FONC') then
+        call alcart('G', carte, mesh, 'FORC_F')
+    else if (valeType.eq.'COMP') then
+        call alcart('G', carte, mesh, 'FORC_C')
     else
         ASSERT(.false.)
     endif
@@ -108,15 +114,15 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
     vncmp(10) = 'MGY'
     vncmp(11) = 'MGZ'
 ! 
-    if (fonree(1:4) .eq. 'REEL') then
+    if (valeType(1:4) .eq. 'REEL') then
         do i = 1, 11
             zr(jvalv-1+i) = 0.d0
         enddo
-    else if (fonree(1:4).eq.'COMP') then
+    else if (valeType(1:4).eq.'COMP') then
         do i = 1, 11
             zc(jvalv-1+i) = dcmplx( 0.d0 , 0.d0 )
         enddo
-    else if (fonree.eq.'FONC') then
+    else if (valeType.eq.'FONC') then
         do i = 1, 6
             zk8(jvalv-1+i) = '&FOZERO'
         enddo
@@ -135,39 +141,40 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
     do iocc = 1, nchre
         nrep = 0
         ncmp = 0
-        if (motclf .eq. 'FORCE_POUTRE') then
-            call getvtx(motclf, 'TYPE_CHARGE', iocc=iocc, scal=typch, nbret=n)
+        if (keywordFact .eq. 'FORCE_POUTRE') then
+            call getvtx(keywordFact, 'TYPE_CHARGE', iocc=iocc, scal=typch, nbret=n)
             if (typch .eq. 'VENT') nrep = 2
         endif
-        if (fonree .eq. 'COMP') then
-            call getvc8(motclf, 'FX', iocc=iocc, scal=cfx, nbret=nfx)
-            call getvc8(motclf, 'FY', iocc=iocc, scal=cfy, nbret=nfy)
-            call getvc8(motclf, 'FZ', iocc=iocc, scal=cfz, nbret=nfz)
-            if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_POUTRE' .and. motclf&
-                .ne. 'FORCE_FACE') then
-                call getvc8(motclf, 'MX', iocc=iocc, scal=cmx, nbret=nmx)
-                call getvc8(motclf, 'MY', iocc=iocc, scal=cmy, nbret=nmy)
-                call getvc8(motclf, 'MZ', iocc=iocc, scal=cmz, nbret=nmz)
+        if (valeType .eq. 'COMP') then
+            call getvc8(keywordFact, 'FX', iocc=iocc, scal=cfx, nbret=nfx)
+            call getvc8(keywordFact, 'FY', iocc=iocc, scal=cfy, nbret=nfy)
+            call getvc8(keywordFact, 'FZ', iocc=iocc, scal=cfz, nbret=nfz)
+            if (keywordFact .ne. 'FORCE_INTERNE' .and.&
+                keywordFact .ne. 'FORCE_POUTRE' .and.&
+                keywordFact .ne. 'FORCE_FACE') then
+                call getvc8(keywordFact, 'MX', iocc=iocc, scal=cmx, nbret=nmx)
+                call getvc8(keywordFact, 'MY', iocc=iocc, scal=cmy, nbret=nmy)
+                call getvc8(keywordFact, 'MZ', iocc=iocc, scal=cmz, nbret=nmz)
             else
                 nmx = 0
                 nmy = 0
                 nmz = 0
             endif
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
-                if (motclf .eq. 'FORCE_POUTRE') then
+                if (keywordFact .eq. 'FORCE_POUTRE') then
                     nrep = 1
-                    call getvc8(motclf, 'N', iocc=iocc, scal=cfx, nbret=nfx)
-                    call getvc8(motclf, 'VY', iocc=iocc, scal=cfy, nbret=nfy)
-                    call getvc8(motclf, 'VZ', iocc=iocc, scal=cfz, nbret=nfz)
-                else if (motclf .eq. 'FORCE_COQUE') then
+                    call getvc8(keywordFact, 'N', iocc=iocc, scal=cfx, nbret=nfx)
+                    call getvc8(keywordFact, 'VY', iocc=iocc, scal=cfy, nbret=nfy)
+                    call getvc8(keywordFact, 'VZ', iocc=iocc, scal=cfz, nbret=nfz)
+                else if (keywordFact .eq. 'FORCE_COQUE') then
                     nrep = 1
-                    call getvc8(motclf, 'PRES', iocc=iocc, scal=cvpre, nbret=nfz)
+                    call getvc8(keywordFact, 'PRES', iocc=iocc, scal=cvpre, nbret=nfz)
                     if (nfz .eq. 0) then
-                        call getvc8(motclf, 'F1', iocc=iocc, scal=cfx, nbret=nfx)
-                        call getvc8(motclf, 'F2', iocc=iocc, scal=cfy, nbret=nfy)
-                        call getvc8(motclf, 'F3', iocc=iocc, scal=cfz, nbret=nfz)
-                        call getvc8(motclf, 'MF1', iocc=iocc, scal=cmx, nbret=nmx)
-                        call getvc8(motclf, 'MF2', iocc=iocc, scal=cmy, nbret=nmy)
+                        call getvc8(keywordFact, 'F1', iocc=iocc, scal=cfx, nbret=nfx)
+                        call getvc8(keywordFact, 'F2', iocc=iocc, scal=cfy, nbret=nfy)
+                        call getvc8(keywordFact, 'F3', iocc=iocc, scal=cfz, nbret=nfz)
+                        call getvc8(keywordFact, 'MF1', iocc=iocc, scal=cmx, nbret=nmx)
+                        call getvc8(keywordFact, 'MF2', iocc=iocc, scal=cmy, nbret=nmy)
                         nmz = 0
                     else
                         cfz = -cvpre
@@ -217,47 +224,47 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
                 if (nrep .eq. 1) zc(jvalv-1+ncmp) = 1.d0
                 if (nrep .eq. 2) zc(jvalv-1+ncmp) = 2.d0
             endif
-        else if (fonree.eq.'REEL') then
-            call getvr8(motclf, 'FX', iocc=iocc, scal=fx, nbret=nfx)
-            call getvr8(motclf, 'FY', iocc=iocc, scal=fy, nbret=nfy)
-            call getvr8(motclf, 'FZ', iocc=iocc, scal=fz, nbret=nfz)
-            if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE' &
-                .and. motclf .ne. 'FORCE_CONTOUR') then
-                call getvr8(motclf, 'MX', iocc=iocc, scal=mx, nbret=nmx)
-                call getvr8(motclf, 'MY', iocc=iocc, scal=my, nbret=nmy)
-                call getvr8(motclf, 'MZ', iocc=iocc, scal=mz, nbret=nmz)
+        else if (valeType.eq.'REEL') then
+            call getvr8(keywordFact, 'FX', iocc=iocc, scal=fx, nbret=nfx)
+            call getvr8(keywordFact, 'FY', iocc=iocc, scal=fy, nbret=nfy)
+            call getvr8(keywordFact, 'FZ', iocc=iocc, scal=fz, nbret=nfz)
+            if (keywordFact .ne. 'FORCE_INTERNE' .and. keywordFact .ne. 'FORCE_FACE' &
+                .and. keywordFact .ne. 'FORCE_CONTOUR') then
+                call getvr8(keywordFact, 'MX', iocc=iocc, scal=mx, nbret=nmx)
+                call getvr8(keywordFact, 'MY', iocc=iocc, scal=my, nbret=nmy)
+                call getvr8(keywordFact, 'MZ', iocc=iocc, scal=mz, nbret=nmz)
              else
                nmx = 0
                nmy = 0
                nmz = 0
             endif
-            if (motclf .eq. 'FORCE_POUTRE') then
-               call getvr8(motclf, 'MGX', iocc=iocc, scal=mgx, nbret=nmgx)
-               call getvr8(motclf, 'MGY', iocc=iocc, scal=mgy, nbret=nmgy)
-               call getvr8(motclf, 'MGZ', iocc=iocc, scal=mgz, nbret=nmgz)
+            if (keywordFact .eq. 'FORCE_POUTRE') then
+               call getvr8(keywordFact, 'MGX', iocc=iocc, scal=mgx, nbret=nmgx)
+               call getvr8(keywordFact, 'MGY', iocc=iocc, scal=mgy, nbret=nmgy)
+               call getvr8(keywordFact, 'MGZ', iocc=iocc, scal=mgz, nbret=nmgz)
             else
                nmgx = 0
                nmgy = 0
                nmgz = 0
             endif
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
-                if (motclf .eq. 'FORCE_POUTRE') then
+                if (keywordFact .eq. 'FORCE_POUTRE') then
                     nrep = 1
-                    call getvr8(motclf, 'N', iocc=iocc, scal=fx, nbret=nfx)
-                    call getvr8(motclf, 'VY', iocc=iocc, scal=fy, nbret=nfy)
-                    call getvr8(motclf, 'VZ', iocc=iocc, scal=fz, nbret=nfz)
-                    call getvr8(motclf, 'MT', iocc=iocc, scal=mx, nbret=nmx)
-                    call getvr8(motclf, 'MFY', iocc=iocc, scal=my, nbret=nmy)
-                    call getvr8(motclf, 'MFZ', iocc=iocc, scal=mz, nbret=nmz)
-                else if (motclf .eq. 'FORCE_COQUE') then
+                    call getvr8(keywordFact, 'N', iocc=iocc, scal=fx, nbret=nfx)
+                    call getvr8(keywordFact, 'VY', iocc=iocc, scal=fy, nbret=nfy)
+                    call getvr8(keywordFact, 'VZ', iocc=iocc, scal=fz, nbret=nfz)
+                    call getvr8(keywordFact, 'MT', iocc=iocc, scal=mx, nbret=nmx)
+                    call getvr8(keywordFact, 'MFY', iocc=iocc, scal=my, nbret=nmy)
+                    call getvr8(keywordFact, 'MFZ', iocc=iocc, scal=mz, nbret=nmz)
+                else if (keywordFact .eq. 'FORCE_COQUE') then
                     nrep = 1
-                    call getvr8(motclf, 'PRES', iocc=iocc, scal=vpre, nbret=nfz)
+                    call getvr8(keywordFact, 'PRES', iocc=iocc, scal=vpre, nbret=nfz)
                     if (nfz .eq. 0) then
-                        call getvr8(motclf, 'F1', iocc=iocc, scal=fx, nbret=nfx)
-                        call getvr8(motclf, 'F2', iocc=iocc, scal=fy, nbret=nfy)
-                        call getvr8(motclf, 'F3', iocc=iocc, scal=fz, nbret=nfz)
-                        call getvr8(motclf, 'MF1', iocc=iocc, scal=mx, nbret=nmx)
-                        call getvr8(motclf, 'MF2', iocc=iocc, scal=my, nbret=nmy)
+                        call getvr8(keywordFact, 'F1', iocc=iocc, scal=fx, nbret=nfx)
+                        call getvr8(keywordFact, 'F2', iocc=iocc, scal=fy, nbret=nfy)
+                        call getvr8(keywordFact, 'F3', iocc=iocc, scal=fz, nbret=nfz)
+                        call getvr8(keywordFact, 'MF1', iocc=iocc, scal=mx, nbret=nmx)
+                        call getvr8(keywordFact, 'MF2', iocc=iocc, scal=my, nbret=nmy)
                         nmz = 0
                     else
                         fz = -vpre
@@ -322,46 +329,46 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
                 if (nrep .eq. 2) zr(jvalv-1+ncmp) = 2.d0
             endif
         else
-            call getvid(motclf, 'FX', iocc=iocc, scal=kfx, nbret=nfx)
-            call getvid(motclf, 'FY', iocc=iocc, scal=kfy, nbret=nfy)
-            call getvid(motclf, 'FZ', iocc=iocc, scal=kfz, nbret=nfz)
-            if (motclf .ne. 'FORCE_INTERNE' .and. motclf .ne. 'FORCE_FACE' &
-                .and. motclf .ne. 'FORCE_CONTOUR') then
-                call getvid(motclf, 'MX', iocc=iocc, scal=kmx, nbret=nmx)
-                call getvid(motclf, 'MY', iocc=iocc, scal=kmy, nbret=nmy)
-                call getvid(motclf, 'MZ', iocc=iocc, scal=kmz, nbret=nmz)
+            call getvid(keywordFact, 'FX', iocc=iocc, scal=kfx, nbret=nfx)
+            call getvid(keywordFact, 'FY', iocc=iocc, scal=kfy, nbret=nfy)
+            call getvid(keywordFact, 'FZ', iocc=iocc, scal=kfz, nbret=nfz)
+            if (keywordFact .ne. 'FORCE_INTERNE' .and. keywordFact .ne. 'FORCE_FACE' &
+                .and. keywordFact .ne. 'FORCE_CONTOUR') then
+                call getvid(keywordFact, 'MX', iocc=iocc, scal=kmx, nbret=nmx)
+                call getvid(keywordFact, 'MY', iocc=iocc, scal=kmy, nbret=nmy)
+                call getvid(keywordFact, 'MZ', iocc=iocc, scal=kmz, nbret=nmz)
             else
                nmx = 0
                nmy = 0
                nmz = 0
             endif
-            if (motclf .eq. 'FORCE_POUTRE') then
-               call getvid(motclf, 'MGX', iocc=iocc, scal=kmgx, nbret=nmgx)
-               call getvid(motclf, 'MGY', iocc=iocc, scal=kmgy, nbret=nmgy)
-               call getvid(motclf, 'MGZ', iocc=iocc, scal=kmgz, nbret=nmgz)
+            if (keywordFact .eq. 'FORCE_POUTRE') then
+               call getvid(keywordFact, 'MGX', iocc=iocc, scal=kmgx, nbret=nmgx)
+               call getvid(keywordFact, 'MGY', iocc=iocc, scal=kmgy, nbret=nmgy)
+               call getvid(keywordFact, 'MGZ', iocc=iocc, scal=kmgz, nbret=nmgz)
             else
                nmgx = 0
                nmgy = 0
                nmgz = 0
             endif
             if (nfx+nfy+nfz+nmx+nmy+nmz .eq. 0) then
-                if (motclf .eq. 'FORCE_POUTRE') then
+                if (keywordFact .eq. 'FORCE_POUTRE') then
                     nrep = 1
-                    call getvid(motclf, 'N', iocc=iocc, scal=kfx, nbret=nfx)
-                    call getvid(motclf, 'VY', iocc=iocc, scal=kfy, nbret=nfy)
-                    call getvid(motclf, 'VZ', iocc=iocc, scal=kfz, nbret=nfz)
-                    call getvid(motclf, 'MT', iocc=iocc, scal=kmx, nbret=nmx)
-                    call getvid(motclf, 'MFY', iocc=iocc, scal=kmy, nbret=nmy)
-                    call getvid(motclf, 'MFZ', iocc=iocc, scal=kmz, nbret=nmz)
-                else if (motclf .eq. 'FORCE_COQUE') then
+                    call getvid(keywordFact, 'N', iocc=iocc, scal=kfx, nbret=nfx)
+                    call getvid(keywordFact, 'VY', iocc=iocc, scal=kfy, nbret=nfy)
+                    call getvid(keywordFact, 'VZ', iocc=iocc, scal=kfz, nbret=nfz)
+                    call getvid(keywordFact, 'MT', iocc=iocc, scal=kmx, nbret=nmx)
+                    call getvid(keywordFact, 'MFY', iocc=iocc, scal=kmy, nbret=nmy)
+                    call getvid(keywordFact, 'MFZ', iocc=iocc, scal=kmz, nbret=nmz)
+                else if (keywordFact .eq. 'FORCE_COQUE') then
                     nrep = 1
-                    call getvid(motclf, 'PRES', iocc=iocc, scal=kfz, nbret=nfz)
+                    call getvid(keywordFact, 'PRES', iocc=iocc, scal=kfz, nbret=nfz)
                     if (nfz .eq. 0) then
-                        call getvid(motclf, 'F1', iocc=iocc, scal=kfx, nbret=nfx)
-                        call getvid(motclf, 'F2', iocc=iocc, scal=kfy, nbret=nfy)
-                        call getvid(motclf, 'F3', iocc=iocc, scal=kfz, nbret=nfz)
-                        call getvid(motclf, 'MF1', iocc=iocc, scal=kmx, nbret=nmx)
-                        call getvid(motclf, 'MF2', iocc=iocc, scal=kmy, nbret=nmy)
+                        call getvid(keywordFact, 'F1', iocc=iocc, scal=kfx, nbret=nfx)
+                        call getvid(keywordFact, 'F2', iocc=iocc, scal=kfy, nbret=nfy)
+                        call getvid(keywordFact, 'F3', iocc=iocc, scal=kfz, nbret=nfz)
+                        call getvid(keywordFact, 'MF1', iocc=iocc, scal=kmx, nbret=nmx)
+                        call getvid(keywordFact, 'MF2', iocc=iocc, scal=kmy, nbret=nmy)
                         nmz = 0
                     else
                         nfx = 0
@@ -431,12 +438,12 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
         endif
         if (ncmp .eq. 0) goto 20
 !
-        if (motclf .eq. 'FORCE_COQUE') then
-            call getvtx(motclf, 'PLAN', iocc=iocc, scal=plan, nbret=nplan)
+        if (keywordFact .eq. 'FORCE_COQUE') then
+            call getvtx(keywordFact, 'PLAN', iocc=iocc, scal=plan, nbret=nplan)
             if (nplan .ne. 0) then
                 ncmp = ncmp + 1
                 vncmp(ncmp) = 'PLAN'
-                if (fonree .eq. 'REEL') then
+                if (valeType .eq. 'REEL') then
                     if (plan .eq. 'MAIL') then
                         zr(jvalv-1+ncmp) = dble(0)
                     else if (plan.eq.'INF') then
@@ -446,7 +453,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
                     else if (plan.eq.'MOY') then
                         zr(jvalv-1+ncmp) = dble(2)
                     endif
-                else if (fonree.eq.'FONC') then
+                else if (valeType.eq.'FONC') then
                     zk8(jvalv-1+ncmp) = plan
                 endif
             endif
@@ -454,7 +461,7 @@ subroutine cachre(char, ligrmo, noma, ndim, fonree,&
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(model , noma, ndim, motclf, iocc, 1,&
+        call char_affe_neum(model , mesh, geomDime, keywordFact, iocc, 1,&
                             cartes, ncmps)
 !
 20      continue

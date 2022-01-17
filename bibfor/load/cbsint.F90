@@ -15,60 +15,60 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! Person in charge: mickael.abbas at edf.fr
 !
-subroutine calirc(phenomZ, load, model)
-!
-use LoadKinematic_module
+subroutine cbsint(load, mesh)
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "LoadTypes_type.h"
+#include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/aflrch.h"
+#include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/infniv.h"
+#include "asterfort/getvid.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nocart.h"
 !
-character(len=*), intent(in) :: phenomZ
-character(len=8), intent(in) :: load, model
+character(len=8), intent(in) :: load, mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Loads affectation
 !
-! Keyword = 'LIAISON_MAIL'
+! Treatment of load PRE_SIGM
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  phenom           : phenomenon (MECANIQUE/THERMIQUE/ACOUSTIQUE)
 ! In  load             : load
-! In  model            : model
+! In  mesh             : mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4), parameter :: valeType = 'REEL'
-    character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
-    character(len=19) :: listLineRela
-    integer :: ifm, niv
-    integer :: nbOcc
-    aster_logical :: lVerbose
+    character(len=16), parameter :: keywordFact = 'PRE_SIGM'
+    character(len=5), parameter :: param = 'SIINT'
+    integer :: ibid, nbOcc, ncmp
+    character(len=19) :: carte
+    character(len=24) :: chsig
+    character(len=8), pointer :: valv(:) => null()
+    character(len=8), pointer :: vncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    lVerbose = (niv .ge. 2)
-
-    call getfac(factorKeyword, nbOcc)
+    call jemarq()
+!
+    call getfac(keywordFact, nbOcc)
     if (nbOcc .ne. 0) then
-        if (phenomZ .eq. 'MECANIQUE') then
-            call kineLoadGlueMeshMeca(load, model, valeType, lVerbose, listLineRela)
-        elseif (phenomZ .eq. 'THERMIQUE') then
-            call kineLoadGlueMeshTher(model, valeType, listLineRela)
-        else
-            ASSERT(ASTER_FALSE)
-        endif
-        call aflrch(listLineRela, load, 'LIN', detr_lisrez = ASTER_TRUE)
+        carte = load//'.CHME.'//param
+        call alcart('G', carte, mesh, 'NEUT_K8')
+        call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
+        call jeveuo(carte//'.VALV', 'E', vk8=valv)
+        ncmp = 1
+        vncmp(1) = 'Z1'
+        call getvid(keywordFact, 'SIGM', iocc=1, scal=chsig, nbret=ibid)
+        valv(1) = chsig(1:8)
+        call nocart(carte, 1, ncmp)
     endif
-!
+
+    call jedema()
 end subroutine

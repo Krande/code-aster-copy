@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine caddlp(load, mesh, ligrmo, vale_type)
+subroutine caddlp(load, mesh, model, valeType)
 !
 implicit none
 !
@@ -51,10 +51,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: load
-character(len=8), intent(in) :: mesh
-character(len=19), intent(in) :: ligrmo
-character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,16 +62,14 @@ character(len=4), intent(in) :: vale_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  mesh        : name of mesh
-! In  load        : name of load
-! In  ligrmo      : list of elements nume_node model
-! In  vale_type   : affected value type (real, complex or function)
+! In  mesh        : mesh
+! In  load        : load
+! In  model       : model
+! In  valeType    : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n_max_keyword
-    parameter (n_max_keyword=300)
+    integer, parameter :: n_max_keyword = 300
     integer :: ddlimp(n_max_keyword)
     real(kind=8) :: valimr(n_max_keyword)
     complex(kind=8) :: valimc(n_max_keyword)
@@ -101,9 +97,9 @@ character(len=4), intent(in) :: vale_type
     character(len=24) :: list_node
     integer :: jlino
     integer :: nb_node, geomDime
-    character(len=8) :: model, k8bid, nomg, name_node
+    character(len=8) :: k8bid, nomg, name_node
     character(len=16) :: keywordfact, keyword
-    character(len=19) :: lisrel, k19bid
+    character(len=19) :: lisrel, k19bid, modelLigrel
     character(len=19) :: ncncin
     integer, pointer :: dimension(:) => null()
     integer, pointer :: icompt(:) => null()
@@ -127,12 +123,12 @@ character(len=4), intent(in) :: vale_type
     if (ier .eq. 0) call cncinv(mesh, [ibid], 0, 'V', ncncin)
 !
     coef_type = 'REEL'
-    ASSERT(vale_type .eq. 'REEL')
+    ASSERT(valeType .eq. 'REEL')
 
 ! - Model informations
-    model = ligrmo(1:8)
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call jeveuo(modelLigrel//'.PRNM', 'L', jprnm)
 !
 ! - Create list of excluded keywords for using in load_read_keyw
 !
@@ -176,7 +172,7 @@ character(len=4), intent(in) :: vale_type
 !
 ! --------- Read affected components and their values
 !
-            call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+            call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
                                 n_max_keyword, n_keyword, keywordlist, ddlimp, valimr,&
                                 valimf, valimc)
             ASSERT(n_keyword.le.cmp_nb_glo)
@@ -192,7 +188,7 @@ character(len=4), intent(in) :: vale_type
             call afddli(model, geomDime, nbcmp, zk8(jnom), nume_node, name_node,&
                         zi(jprnm-1+(nume_node-1)*nbec+1), dimension(nume_node),&
                         zr(jdirec+3*(nume_node-1)), coef_type, cmp_nb_glo, cmp_name_glo,&
-                        cmp_acti_glo, vale_type, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,&
+                        cmp_acti_glo, valeType, cmp_valr_glo, cmp_valf_glo, cmp_valc_glo,&
                         icompt, lisrel, .false._1, ibid, ibid,&
                         k19bid, k19bid, k19bid, k19bid, mesh, k19bid)
         enddo

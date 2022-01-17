@@ -17,8 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine calirc(phenomZ, load, modelLigrelZ)
-        character(len=8), intent(in) :: load
-        character(len=*), intent(in) :: phenomZ, modelLigrelZ
+    subroutine calirc(phenomZ, load, model)
+        character(len=*), intent(in) :: phenomZ
+        character(len=8), intent(in) :: load, model
     end subroutine calirc
 end interface

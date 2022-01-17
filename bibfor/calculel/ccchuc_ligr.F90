@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,10 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, ligrel_old,&
+subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, ligrel_old,&
                        ligrel_new)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -32,13 +32,13 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
 #include "asterfort/jedetr.h"
 #include "asterfort/wkvect.h"
 !
-!
-    character(len=24), intent(in) :: list_elem_stor
-    integer, intent(in) :: nb_elem_old
-    character(len=24), intent(in) :: list_elem_new
-    integer, intent(in) :: nb_elem_new
-    character(len=19), intent(in) :: ligrel_old
-    character(len=19), intent(out) :: ligrel_new
+character(len=8), intent(in) :: model
+character(len=24), intent(in) :: list_elem_stor
+integer, intent(in) :: nb_elem_old
+character(len=24), intent(in) :: list_elem_new
+integer, intent(in) :: nb_elem_new
+character(len=19), intent(in) :: ligrel_old
+character(len=19), intent(out) :: ligrel_new
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,6 +48,7 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  model               : model
 ! In  list_elem_stor      : object to store list of elements
 ! In  nb_elem_old    : initial number of elements
 ! In  nb_elem_new    : new number of elements
@@ -61,7 +62,6 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
     integer :: iret, ima
     aster_logical :: same, force_new_ligrel
     character(len=24) :: noojb
-    character(len=8) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,8 +113,6 @@ subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, 
         do ima = 1, nb_elem_new
             zi(jlist-1+ima+1) = zi(jelem-1+ima)
         enddo
-        
-        call dismoi('NOM_MODELE', ligrel_old, 'LIGREL', repk=model)
         call gnomsd(' ', noojb, 14, 19)
         ligrel_new = noojb(1:19)
         call exlim1(zi(jelem), nb_elem_new, model, 'G', ligrel_new)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: sylvie.granet at edf.fr
 !
-subroutine caethm(load, mesh, ligrmo, valeType)
+subroutine caethm(load, mesh, model, valeType)
 !
 implicit none
 !
@@ -37,8 +37,7 @@ implicit none
 #include "asterfort/getelem.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh
-character(len=19), intent(in) :: ligrmo
+character(len=8), intent(in) :: load, mesh, model
 character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +50,7 @@ character(len=4), intent(in) :: valeType
 !
 ! In  load      : load
 ! In  mesh      : mesh
-! In  ligrmo    : model <LIGREL>
+! In  model     : model
 ! In  valeType  : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,7 +60,6 @@ character(len=4), intent(in) :: valeType
     integer :: jnfis, jvalv, jvCell
     integer :: nbCell, nbOcc, nfiss, nech
     integer :: iret, iocc
-    character(len=8) :: model
     character(len=19) :: map(LOAD_MAP_NBMAX)
     integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
@@ -71,8 +69,7 @@ character(len=4), intent(in) :: valeType
 !
 ! - Initializations
 !
-    model = ligrmo(1:8)
-    call exixfe(ligrmo(1:8), iret)
+    call exixfe(model, iret)
     nfiss = 0
     if (iret .ne. 0) then
         call jeveuo(model//'.NFIS', 'L', jnfis)

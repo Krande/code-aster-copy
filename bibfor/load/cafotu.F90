@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cafotu(load, ligrmo, mapAlreadyCreated, mesh, ndim, valeType, nbOcc)
+!
+subroutine cafotu(load, model, mapAlreadyCreated, mesh, geomDime, valeType, nbOcc)
 !
 implicit none
 !
@@ -33,10 +33,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 aster_logical, intent(in) :: mapAlreadyCreated
-character(len=8), intent(in) :: load, mesh
-character(len=19), intent(in) :: ligrmo
+character(len=8), intent(in) :: load, mesh, model
 character(len=4), intent(in) :: valeType
-integer, intent(in) :: nbOcc, ndim
+integer, intent(in) :: nbOcc, geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,18 +46,17 @@ integer, intent(in) :: nbOcc, ndim
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  load             : load
-! In  ligrmo           : list of elements in model
 ! In  mapAlreadyCreated : flag when maps already created
 ! In  mesh             : mesh
-! In  ndim             : space dimension
+! In  model            : model
+! In  geomDime         : space dimension
 ! In  valeType         : affected value type (real, complex or function)
 ! In  nbOcc            : number of factor keywords
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: keywordfact = 'FORCE_TUYAU'
+    character(len=16), parameter :: keywordFact = 'FORCE_TUYAU'
     integer :: jvalv, iocc, nbret
-    character(len=8) :: model
     character(len=19) :: map(LOAD_MAP_NBMAX)
     integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
     aster_logical :: createMap
@@ -73,15 +71,13 @@ integer, intent(in) :: nbOcc, ndim
     if (mapAlreadyCreated) then
         createMap = ASTER_FALSE
     endif
-!
+
 ! - Initializations
-!
-    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
     ASSERT(valeType .eq. 'REEL' .or. valeType .eq. 'FONC')
 !
 ! - Creation and initialization to zero of <CARTE>
 !
-    call char_crea_cart('MECANIQUE', keywordfact, load , mesh, valeType,&
+    call char_crea_cart('MECANIQUE', keywordFact, load , mesh, valeType,&
                         nbMap      , map        , nbCmp, createMap)
     ASSERT(nbMap .eq. 1)
     call jeveuo(map(1)//'.VALV', 'E', jvalv)
@@ -92,14 +88,14 @@ integer, intent(in) :: nbOcc, ndim
 
 ! ----- Get values of load
         if (valeType .eq. 'REEL') then
-            call getvr8(keywordfact, 'PRES', iocc=iocc, scal=zr(jvalv), nbret=nbret)
+            call getvr8(keywordFact, 'PRES', iocc=iocc, scal=zr(jvalv), nbret=nbret)
         else
-            call getvid(keywordfact, 'PRES', iocc=iocc, scal=zk8(jvalv), nbret=nbret)
+            call getvid(keywordFact, 'PRES', iocc=iocc, scal=zk8(jvalv), nbret=nbret)
         endif
 
 ! ----- Affect values of load
-        call char_affe_neum(model      , mesh, ndim,&
-                            keywordfact, iocc,&
+        call char_affe_neum(model      , mesh, geomDime,&
+                            keywordFact, iocc,&
                             nbMap      , map , nbCmp)
 
     end do

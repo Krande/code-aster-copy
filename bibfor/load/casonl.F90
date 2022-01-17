@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine casonl(char, ligrmo, noma, ndim)
 !
-    implicit none
+subroutine casonl(load, mesh, model, geomDime)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
@@ -33,39 +34,40 @@ subroutine casonl(char, ligrmo, noma, ndim)
 #include "asterfort/reliem.h"
 #include "asterfort/vetyma.h"
 !
-    integer :: ndim
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
 !
-! ----------------------------------------------------------------------
-!                   SOURCE THERMIQUE NON LINEAIRE
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-!  STOCKAGE DES SOURCES DANS UNE CARTE ALLOUEE SUR LE LIGREL DU MODELE
-!-----------------------------------------------------------------------
-!      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      LIGRMO : NOM DU LIGREL DE MODELE
-!      NOMA   : NOM DU MAILLAGE
-!      NDIM   : DIMENSION DU PROBLEME (2D/3D) POUR FILTRER LES MAILLES
-!-----------------------------------------------------------------------
+! Loads affectation
+!
+! Treatment of load SOUR_NL
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  mesh             : mesh
+! In  load             : load
+! In  model            : model
+! In  geomDime         : space dimension
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: keywordFact = 'SOUR_NL'
     integer :: nsour, jvalv,  n1, ncmp, iocc
-    character(len=16) :: motclf
     character(len=19) :: carte
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
     character(len=8), pointer :: vncmp(:) => null()
-    character(len=8) :: model
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    motclf = 'SOUR_NL'
     ncmp = 1
-    call getfac(motclf, nsour)
-    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
+    call getfac(keywordFact, nsour)
 !
-    carte = char//'.CHTH.SOUNL'
-    call alcart('G', carte, noma, 'SOUR_F')
+    carte = load//'.CHTH.SOUNL'
+    call alcart('G', carte, mesh, 'SOUR_F')
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
     call jeveuo(carte//'.VALV', 'E', jvalv)
     vncmp(1) = 'SOUR'
@@ -80,11 +82,11 @@ subroutine casonl(char, ligrmo, noma, ndim)
 ! --- STOCKAGE DES FONCTIONS SOURCES DANS LA CARTE
 !
     do iocc = 1, nsour
-        call getvid(motclf, 'SOUR', iocc=iocc, scal=zk8(jvalv), nbret=n1)
+        call getvid(keywordFact, 'SOUR', iocc=iocc, scal=zk8(jvalv), nbret=n1)
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(model , noma, ndim, motclf, iocc, 1,&
+        call char_affe_neum(model , mesh, geomDime, keywordFact, iocc, 1,&
                             cartes, ncmps)
     end do
 !

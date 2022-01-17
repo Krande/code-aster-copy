@@ -15,60 +15,38 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! Person in charge: mickael.abbas at edf.fr
 !
-subroutine calirc(phenomZ, load, model)
-!
-use LoadKinematic_module
+subroutine cbsonl(load, mesh, model, geomDime)
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "LoadTypes_type.h"
 #include "asterc/getfac.h"
-#include "asterfort/aflrch.h"
-#include "asterfort/assert.h"
-#include "asterfort/infniv.h"
+#include "asterfort/casonl.h"
 !
-character(len=*), intent(in) :: phenomZ
-character(len=8), intent(in) :: load, model
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Loads affectation
 !
-! Keyword = 'LIAISON_MAIL'
+! Treatment of load SOUR_NL
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  phenom           : phenomenon (MECANIQUE/THERMIQUE/ACOUSTIQUE)
+! In  mesh             : mesh
 ! In  load             : load
 ! In  model            : model
+! In  geomDime         : space dimension
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=4), parameter :: valeType = 'REEL'
-    character(len=16), parameter :: factorKeyword = 'LIAISON_MAIL'
-    character(len=19) :: listLineRela
-    integer :: ifm, niv
-    integer :: nbOcc
-    aster_logical :: lVerbose
+    character(len=16), parameter :: keywordFact = 'SOUR_NL'
+    integer :: nbfac
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    lVerbose = (niv .ge. 2)
-
-    call getfac(factorKeyword, nbOcc)
-    if (nbOcc .ne. 0) then
-        if (phenomZ .eq. 'MECANIQUE') then
-            call kineLoadGlueMeshMeca(load, model, valeType, lVerbose, listLineRela)
-        elseif (phenomZ .eq. 'THERMIQUE') then
-            call kineLoadGlueMeshTher(model, valeType, listLineRela)
-        else
-            ASSERT(ASTER_FALSE)
-        endif
-        call aflrch(listLineRela, load, 'LIN', detr_lisrez = ASTER_TRUE)
-    endif
+    call getfac(keywordFact, nbfac)
+    if (nbfac .ne. 0) call casonl(load, mesh, model, geomDime)
 !
 end subroutine

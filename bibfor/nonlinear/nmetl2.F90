@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmetl2(i_field, ds_inout)
+! person_in_charge: mickael.abbas at edf.fr
+!
+subroutine nmetl2(model, i_field, ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -35,10 +36,9 @@ implicit none
 #include "asterfort/vtcopy.h"
 #include "asterfort/xetco.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    integer, intent(in) :: i_field
-    type(NL_DS_InOut), intent(inout) :: ds_inout
+integer, intent(in) :: i_field
+character(len=8), intent(in) :: model
+type(NL_DS_InOut), intent(inout) :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,6 +49,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  i_field          : field index
+! In  model            : model
 ! IO  ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -111,7 +112,7 @@ implicit none
             if (field_type.eq.'COHE_ELEM') then
                 call xetco(field_read, field_algo, init_name)
             else
-                call nmetcv(init_name, field_read, field_disc_in, field_read_cv, disc_type)
+                call nmetcv(model, init_name, field_read, field_disc_in, field_read_cv, disc_type)
                 if (disc_type .eq. 'NOEU') then
                     call vtcopy(field_read_cv, field_algo, ' ', iret)
                     if (iret .ne. 0) then

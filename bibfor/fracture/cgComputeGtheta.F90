@@ -34,6 +34,7 @@ use calcG_type
 #include "asterfort/chpchd.h"
 #include "asterfort/chpver.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcharg.h"
 #include "asterfort/getvid.h"
 #include "asterfort/glegen.h"
@@ -72,10 +73,10 @@ use calcG_type
     real(kind=8) :: gth(7), som(7)
     real(kind=8) :: s1, s2, s3, sn2, sn1, sn
     character(len=2)  :: codret
-    character(len=8)  :: k8b, lpain(50), lpaout(1)
+    character(len=8)  :: k8b, lpain(50), lpaout(1), model
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
-    character(len=19) :: chvarc, chvref, chsdeg, ligrmo, chslag
+    character(len=19) :: chvarc, chvref, chsdeg, modelLigrel, chslag
     character(len=24) :: chsigi, celmod, sigelno, chtime, chpuls
     character(len=24) :: chgeom, chsig, chgtheta
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
@@ -135,7 +136,8 @@ use calcG_type
     chgeom = cgStudy%mesh//'.COORDO'
 !
 !   Recuperation du LIGREL
-    ligrmo = cgStudy%model//'.MODELE'
+    model = cgStudy%model(1:8)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
 !
 !   Recuperation du comportement
     if (cgField%l_incr) then
@@ -170,8 +172,8 @@ use calcG_type
 
 !               Traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
-                call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod, iret, ' ')
-                call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V', sigelno)
+                call alchml(modelLigrel, 'CALC_G', 'PSIGINR', 'V', celmod, iret, ' ')
+                call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V', sigelno, model)
                 call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
             endif
         endif
@@ -232,7 +234,7 @@ use calcG_type
 !
 !   Création d'un champ constant par élément : LEGENDRE, LAGRANGE
 !   Récupération du nombre de groupes d'éléments du ligrel
-    call jelira(ligrmo//'.LIEL', 'NMAXOC', nbgrel)
+    call jelira(modelLigrel//'.LIEL', 'NMAXOC', nbgrel)
 !
     if (cgtheta%discretization .eq. 'LEGENDRE') then
 !
@@ -321,7 +323,7 @@ use calcG_type
         endif
 !
         if (opti .eq. 'CALC_G_F' .or. opti .eq. 'CALC_K_G_F') then
-            call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
+            call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R',&
                         ncmp=1, nomcmp='INST', sr=cgStudy%time)
             lpain(nchin+1) = 'PTEMPSR'
             lchin(nchin+1) = chtime
@@ -329,7 +331,7 @@ use calcG_type
         endif
 !
         if (cgStudy%l_modal) then
-            call mecact('V', chpuls, 'MODELE', ligrmo, 'FREQ_R  ',&
+            call mecact('V', chpuls, 'MODELE', modelLigrel, 'FREQ_R  ',&
                         ncmp=1, nomcmp='FREQ   ', sr=cgStudy%pulse)
             nchin = nchin + 1
             lpain(nchin) = 'PPULPRO'
@@ -388,7 +390,7 @@ use calcG_type
 !
 !       Sommation des G élémentaires
         call cpu_time(start0)
-        call calcul('S', opti, ligrmo, nchin, lchin,&
+        call calcul('S', opti, modelLigrel, nchin, lchin,&
                     lpain, 1, lchout, lpaout, 'V', 'OUI')
         call cpu_time(finish0)
         cgStat%cgCmpGtheta_te = cgStat%cgCmpGtheta_te + finish0 - start0

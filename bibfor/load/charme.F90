@@ -24,7 +24,6 @@ implicit none
 #include "asterfort/adalig.h"
 #include "asterfort/assert.h"
 #include "asterfort/caarei.h"
-#include "asterfort/cachre.h"
 #include "asterfort/caddli.h"
 #include "asterfort/caddlp.h"
 #include "asterfort/caethm.h"
@@ -99,15 +98,14 @@ character(len=4), intent(in) :: valeType
     character(len=3) :: answer
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
-    character(len=19) :: loadLigrel, modelLigrel
+    character(len=19) :: loadLigrel
     character(len=8), pointer :: loadLigrelLgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
 
 ! - Mesh, Ligrel for model, dimension of model
-    call cagene(load, command, modelLigrel, mesh, geomDime)
-    model = modelLigrel(1:8)
+    call cagene(load, command, model, mesh, geomDime)
     if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
@@ -123,7 +121,7 @@ character(len=4), intent(in) :: valeType
         call calimc(load)
 
 ! ----- RELA_CINE_BP
-        call caprec(load, mesh, modelLigrel, valeType)
+        call caprec(load, loadLigrel, mesh, model, valeType)
 
 ! ----- IMPE_FACE
         call cbimpe(phenom, load, mesh, valeType)
@@ -135,10 +133,10 @@ character(len=4), intent(in) :: valeType
         call cbonde(load, mesh, valeType)
 
 ! ----- FLUX_THM_REP
-        call cafthm(load, mesh, modelLigrel, valeType)
+        call cafthm(load, mesh, model, valeType)
 
 ! ----- ECHA_THM
-        call caethm(load, mesh, modelLigrel, valeType)
+        call caethm(load, mesh, model, valeType)
 
 ! ----- FORCE_SOL
         call caveis(load)
@@ -157,10 +155,10 @@ character(len=4), intent(in) :: valeType
         call cbondp(load, mesh, geomDime, valeType)
 
 ! ----- FLUX_THM_REP
-        call cafthm(load, mesh, modelLigrel, valeType)
+        call cafthm(load, mesh, model, valeType)
 
 ! ----- ECHA_THM
-        call caethm(load, mesh, modelLigrel, valeType)
+        call caethm(load, mesh, model, valeType)
 
     else
         ASSERT(ASTER_FALSE)
@@ -176,16 +174,16 @@ character(len=4), intent(in) :: valeType
     if (valeType .eq. 'REEL') then
 
 ! ----- PRES_REP/FORCE_TUYAU
-        call cbpres(load, mesh, modelLigrel, geomDime, valeType)
+        call cbpres(load, mesh, model, geomDime, valeType)
 
 ! ----- PRE_EPSI
-        call cbchei(load, mesh, modelLigrel, valeType)
+        call cbchei(load, mesh, model, valeType)
 
 ! ----- PRE_SIGM
-        call cbsint(load, mesh, modelLigrel, valeType)
+        call cbsint(load, mesh)
 
 ! ----- EFFE_FOND
-        call cafond(load, modelLigrel, mesh, geomDime, valeType)
+        call cafond(load, mesh, model, geomDime, valeType)
 
 ! ----- EVOL_CHAR
         call cbprca(phenom, load)
@@ -200,41 +198,41 @@ character(len=4), intent(in) :: valeType
         call cbelec(load, mesh)
 
 ! ----- INTE_ELEC
-        call cblapl(load, modelLigrel, mesh)
+        call cblapl(load, mesh, model)
 
 ! ----- VECT_ASSE
         call caveas(load)
 
 ! ----- FORCE_NODALE
-        call cafono(load, loadLigrel, mesh, modelLigrel, valeType)
+        call cafono(load, loadLigrel, mesh, model, valeType)
 
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-        call char_crea_neum(load, modelLigrel, mesh, geomDime, valeType)
+        call char_crea_neum(load, model, mesh, geomDime, valeType)
 
     else if (valeType .eq. 'COMP') then
 
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-        call char_crea_neum(load, modelLigrel, mesh, geomDime, valeType)
+        call char_crea_neum(load, model, mesh, geomDime, valeType)
 
     else if (valeType .eq. 'FONC') then
 
 ! ----- PRES_REP/FORCE_TUYAU
-        call cbpres(load, mesh, modelLigrel, geomDime, valeType)
+        call cbpres(load, mesh, model, geomDime, valeType)
 
 ! ----- PRE_EPSI
-        call cbchei(load, mesh, modelLigrel, valeType)
+        call cbchei(load, mesh, model, valeType)
 
 ! ----- PRE_SIGM
-        call cbsint(load, mesh, modelLigrel, valeType)
+        call cbsint(load, mesh)
 
 ! ----- EFFE_FOND
-        call cafond(load, modelLigrel, mesh, geomDime, valeType)
+        call cafond(load, mesh, model, geomDime, valeType)
 
 ! ----- FORCE_NODALE
-        call cafono(load, loadLigrel, mesh, modelLigrel, valeType)
+        call cafono(load, loadLigrel, mesh, model, valeType)
 
 ! ----- FORCE_CONTOUR/FORCE_INTERNE/FORCE_ARETE/FORCE_FACE/FORCE_POUTRE/FORCE_COQUE
-        call char_crea_neum(load, modelLigrel, mesh, geomDime, valeType)
+        call char_crea_neum(load, model, mesh, geomDime, valeType)
 
     else
         ASSERT(ASTER_FALSE)
@@ -250,28 +248,28 @@ character(len=4), intent(in) :: valeType
     if (valeType .eq. 'REEL') then
 
 ! ----- DDL_POUTRE
-        call caddlp(load, mesh, modelLigrel, valeType)
+        call caddlp(load, mesh, model, valeType)
 
 ! ----- DDL_IMPO
-        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+        call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
 
 ! ----- ARETE_IMPO
-        call caarei(load, mesh, modelLigrel, valeType)
+        call caarei(load, mesh, model, valeType)
 
 ! ----- FACE_IMPO
-        call cafaci(load, mesh, modelLigrel, valeType)
+        call cafaci(load, mesh, model, valeType)
 
 ! ----- LIAISON_DDL
         call caliai(valeType, load, phenomS)
 
 ! ----- LIAISON_MAIL
-        call calirc(phenom, load, modelLigrel)
+        call calirc(phenom, load, model)
 
 ! ----- LIAISON_PROJ
         call calipj(load)
 
 ! ----- LIAISON_CYCL
-        call calyrc(load, mesh)
+        call calyrc(load, mesh, model, geomDime)
 
 ! ----- LIAISON_ELEM
         call caliel(valeType, load)
@@ -286,7 +284,7 @@ character(len=4), intent(in) :: valeType
         call carbe3(load)
 
 ! ----- LIAISON_OBLIQUE
-        call caliob(load, mesh, modelLigrel, valeType)
+        call caliob(load, mesh, model, valeType)
 
 ! ----- LIAISON_GROUP
         call caliag(valeType, load, phenomS)
@@ -295,15 +293,15 @@ character(len=4), intent(in) :: valeType
         call cagrou(load, mesh, valeType, phenomS)
 
 ! ----- LIAISON_SOLIDE
-        call caliso(load, mesh, modelLigrel, valeType)
+        call caliso(load, mesh, model, valeType)
 
 ! ----- LIAISON_COQUE
-        call calicp(load, mesh, modelLigrel, valeType)
+        call calicp(load, mesh, model, valeType)
 
     else if (valeType .eq. 'COMP') then
 
 ! ----- DDL_IMPO
-        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+        call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
 
 ! ----- LIAISON_DDL
         call caliai(valeType, load, phenomS)
@@ -311,16 +309,16 @@ character(len=4), intent(in) :: valeType
     else if (valeType .eq. 'FONC') then
 
 ! ----- DDL_IMPO
-        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+        call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
 
 ! ----- FACE_IMPO
-        call cafaci(load, mesh, modelLigrel, valeType)
+        call cafaci(load, mesh, model, valeType)
 
 ! ----- LIAISON_DDL
         call caliai(valeType, load, phenomS)
 
 ! ----- LIAISON_OBLIQUE
-        call caliob(load, mesh, modelLigrel, valeType)
+        call caliob(load, mesh, model, valeType)
 
 ! ----- LIAISON_GROUP
         call caliag(valeType, load, phenomS)
@@ -329,7 +327,7 @@ character(len=4), intent(in) :: valeType
         call cagrou(load, mesh, valeType, phenomS)
 
 ! ----- LIAISON_COQUE
-        call calicp(load, mesh, modelLigrel, valeType)
+        call calicp(load, mesh, model, valeType)
 
     else
         ASSERT(ASTER_FALSE)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine cafond(load, ligrmo, mesh, ndim, valeType)
+subroutine cafond(load, mesh, model, geomDime, valeType)
 !
 implicit none
 !
@@ -46,9 +46,8 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
-character(len=8), intent(in) :: load, mesh
-integer, intent(in) :: ndim
-character(len=19), intent(in) :: ligrmo
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
 character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -60,10 +59,10 @@ character(len=4), intent(in) :: valeType
 ! --------------------------------------------------------------------------------------------------
 !
 !
-! In  mesh      : name of mesh
-! In  load      : name of load
-! In  ndim      : space dimension
-! In  ligrmo    : list of elements in model
+! In  mesh      : mesh
+! In  load      : load
+! In  geomDime  : space dimension
+! In  model     : model
 ! In  valeType  : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -99,8 +98,8 @@ character(len=4), intent(in) :: valeType
     call getfac(keywordfact, npres)
     if (npres .eq. 0) goto 99
 
-! - Warning for COQUe_SOLIDE
-    call dismoi('EXI_COQSOL', ligrmo, 'LIGREL', repk = answer)
+! - Warning for COQUE_SOLIDE
+    call dismoi('EXI_COQSOL', model, 'MODELE', repk = answer)
     if (answer .eq. 'OUI') then
         call utmess('F', 'SOLIDSHELL1_5')
     endif
@@ -132,7 +131,7 @@ character(len=4), intent(in) :: valeType
         call jeveuo(listCellSect, 'L', jvCellSect)
 
 ! ----- Create <LIGREL>
-        call exlim1(zi(jvCellSect), nbCellSect, ligrmo, 'V', ligrel)
+        call exlim1(zi(jvCellSect), nbCellSect, model, 'V', ligrel)
 
 ! ----- Get pressure
         call char_read_val(keywordfact, iocc, 'PRES', valeType, val_nb,&
@@ -140,7 +139,7 @@ character(len=4), intent(in) :: valeType
         ASSERT(val_nb .eq. 1)
 
 ! ----- Area of hole
-        call peair1(ligrmo, nbCellHole, zi(jvCellHole), hole_area, r8dummy)
+        call peair1(mesh, nbCellHole, zi(jvCellHole), hole_area, r8dummy)
 
 ! ----- To compute area of material section
         call calcul('S', option, ligrel, nbin, lchin,&
@@ -176,7 +175,7 @@ character(len=4), intent(in) :: valeType
                     limanu=zi(jvCellSect))
 
 ! ----- Check elements
-        call vetyma(mesh, ndim, keywordfact, listCellSect, nbCellSect)
+        call vetyma(mesh, geomDime, keywordfact, listCellSect, nbCellSect)
 !
         call jedetr(listCellHole)
         call jedetr(listCellSect)

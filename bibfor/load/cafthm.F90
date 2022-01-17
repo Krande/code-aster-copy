@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cafthm(char, noma, ligrmo, fonree)
-    implicit none
+! person_in_charge: sylvie.granet at edf.fr
+!
+subroutine cafthm(load, mesh, model, valeType)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -34,51 +36,52 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=19) :: ligrmo
-! ======================================================================
-! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
 !
-! BUT : STOCKAGE DES FLUX THERMO-HYDRAULIQUES DANS UNE CARTE ALLOUEE
-!       SUR LE LIGREL DU MODELE (MODELISATIONS THM)
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      LIGRMO : NOM DU LIGREL DE MODELE
-!      NOMA   : NOM DU MAILLAGE
-!      FONREE : FONC OU REEL
-! ======================================================================
-! ======================================================================
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of load FLUX_THM_REP
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load             : load
+! In  mesh             : mesh
+! In  model            : model
+! In  valeType         : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: keywordFact = 'FLUX_THM_REP'
     integer :: n1, n2, n3, n4, nflux, jvalv,  iocc
     integer :: nbtou, nbma, jma, ncmp
     integer :: iret, nfiss, jnfis
-    character(len=8) :: k8b, mod, typmcl(2)
-    character(len=16) :: motclf, motcle(2), modeli
+    character(len=8) :: k8b, typmcl(2)
+    character(len=16) :: motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai, lismai
     character(len=8), pointer :: vncmp(:) => null()
-! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    motclf = 'FLUX_THM_REP'
-    call getfac(motclf, nflux)
+    call getfac(keywordFact, nflux)
     if (nflux .eq. 0) goto 99
 !
-    mod = ligrmo(1:8)
-    call dismoi('MODELISATION', mod, 'MODELE', repk=modeli)
+    carte = load//'.CHME.FLUX '
 !
-    carte = char//'.CHME.FLUX '
+    call exixfe(model, iret)
 !
-    call exixfe(ligrmo(1:8), iret)
-!
-    if (fonree .eq. 'REEL') then
-       call alcart('G', carte, noma, 'FTHM_R')
-    else if (fonree.eq.'FONC') then
-       call alcart('G', carte, noma, 'FTHM_F')
+    if (valeType .eq. 'REEL') then
+       call alcart('G', carte, mesh, 'FTHM_R')
+    else if (valeType.eq.'FONC') then
+       call alcart('G', carte, mesh, 'FTHM_F')
     else
-       ASSERT(.false.)
+       ASSERT(ASTER_FALSE)
     endif
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
@@ -91,12 +94,12 @@ subroutine cafthm(char, noma, ligrmo, fonree)
     vncmp(2) = 'PFLU2'
     vncmp(3) = 'PTHER'
 !
-    if (fonree .eq. 'FONC') then
+    if (valeType .eq. 'FONC') then
        ncmp = 4
        vncmp(4) = 'PFLUF'
     endif
 !
-    if (fonree .eq. 'REEL') then
+    if (valeType .eq. 'REEL') then
         zr(jvalv) = 0.d0
         zr(jvalv+1) = 0.d0
         zr(jvalv+2) = 0.d0
@@ -118,25 +121,25 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 ! --- STOCKAGE DANS LA CARTE
 !
     do iocc = 1, nflux
-        if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'FLUN_HYDR1', iocc=iocc, scal=zr(jvalv), nbret=n1)
-            call getvr8(motclf, 'FLUN_HYDR2', iocc=iocc, scal=zr(jvalv+1), nbret=n2)
-            call getvr8(motclf, 'FLUN', iocc=iocc, scal=zr(jvalv+2), nbret=n3)
+        if (valeType .eq. 'REEL') then
+            call getvr8(keywordFact, 'FLUN_HYDR1', iocc=iocc, scal=zr(jvalv), nbret=n1)
+            call getvr8(keywordFact, 'FLUN_HYDR2', iocc=iocc, scal=zr(jvalv+1), nbret=n2)
+            call getvr8(keywordFact, 'FLUN', iocc=iocc, scal=zr(jvalv+2), nbret=n3)
         else
-            call getvid(motclf, 'FLUN_HYDR1', iocc=iocc, scal=zk8(jvalv), nbret=n1)
-            call getvid(motclf, 'FLUN_HYDR2', iocc=iocc, scal=zk8(jvalv+1), nbret=n2)
-            call getvid(motclf, 'FLUN', iocc=iocc, scal=zk8(jvalv+2), nbret=n3)
-            call getvid(motclf, 'FLUN_FRAC', iocc=iocc, scal=zk8(jvalv+3), nbret=n4)
+            call getvid(keywordFact, 'FLUN_HYDR1', iocc=iocc, scal=zk8(jvalv), nbret=n1)
+            call getvid(keywordFact, 'FLUN_HYDR2', iocc=iocc, scal=zk8(jvalv+1), nbret=n2)
+            call getvid(keywordFact, 'FLUN', iocc=iocc, scal=zk8(jvalv+2), nbret=n3)
+            call getvid(keywordFact, 'FLUN_FRAC', iocc=iocc, scal=zk8(jvalv+3), nbret=n4)
         endif
 !
 ! --- TEST SUR LES CAL
 !
 !
-        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
+        call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
 !
         nfiss = 0
         if (iret.ne.0) then
-            call jeveuo(mod//'.NFIS', 'L', jnfis)
+            call jeveuo(model//'.NFIS', 'L', jnfis)
             nfiss = zi(jnfis)
         endif
 !
@@ -150,8 +153,8 @@ subroutine cafthm(char, noma, ligrmo, fonree)
                if ((n2.ne.0).and.(n3.ne.0)) call utmess('F', 'XFEM_48')
             endif
 !           LES FLUX DE FLUIDE DANS LES FRACTURES NE SONT AUTORISES QU'EN HM_XFEM
-            if ((fonree.eq.'FONC') .and. (nfiss.eq.0) .and. (n4.ne.0)) call utmess('F', 'XFEM_28')
-            call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
+            if ((valeType.eq.'FONC') .and. (nfiss.eq.0) .and. (n4.ne.0)) call utmess('F', 'XFEM_28')
+            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .ne. 0) then
                 call jeveuo(mesmai, 'L', jma)

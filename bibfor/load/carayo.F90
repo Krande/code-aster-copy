@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,15 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine carayo(char, ligrmo, noma, fonree)
-    implicit none
+!
+subroutine carayo(load, mesh, model, valeType)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
+#include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
@@ -31,39 +34,47 @@ subroutine carayo(char, ligrmo, noma, fonree)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
 !
-! BUT : STOCKAGE DE SIGMA (CONSTANTE DE BOLZMAN), EPSILON (EMISSIVITE)
-!       ET TMP_INF DANS UNE CARTE ALLOUEE SUR LE LIGREL DU MODELE
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      LIGRMO : NOM DU LIGREL DE MODELE
-!      NOMA   : NOM DU MAILLAGE
-!      FONREE : FONC OU REEL
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of load RAYONNEMENT
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  mesh             : mesh
+! In  load             : load
+! In  model            : model
+! In  valeType         : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: keywordFact = 'RAYONNEMENT'
     integer :: nrayo, jvalv,  ncmp, n, iocc, nbtou, nbma, jma
     character(len=8) :: k8b, typmcl(2)
-    character(len=16) :: motclf, motcle(2)
+    character(len=16) :: motcle(2)
     character(len=19) :: carte
     character(len=24) :: mesmai
     character(len=8), pointer :: vncmp(:) => null()
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    motclf = 'RAYONNEMENT'
-    call getfac(motclf, nrayo)
+    call getfac(keywordFact, nrayo)
 !
-    carte = char//'.CHTH.RAYO'
+    carte = load//'.CHTH.RAYO'
 !
-    if (fonree .eq. 'REEL') then
-        call alcart('G', carte, noma, 'RAYO_R')
-    else if (fonree.eq.'FONC') then
-        call alcart('G', carte, noma, 'RAYO_F')
+    if (valeType .eq. 'REEL') then
+        call alcart('G', carte, mesh, 'RAYO_R')
+    else if (valeType.eq.'FONC') then
+        call alcart('G', carte, mesh, 'RAYO_F')
     else
-        call utmess('F', 'MODELISA2_37', sk=fonree)
+        ASSERT(ASTER_FALSE)
     endif
 !
     call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
@@ -75,7 +86,7 @@ subroutine carayo(char, ligrmo, noma, fonree)
     vncmp(1) = 'SIGMA'
     vncmp(2) = 'EPSIL'
     vncmp(3) = 'TPINF'
-    if (fonree .eq. 'REEL') then
+    if (valeType .eq. 'REEL') then
         zr(jvalv-1+1) = 0.d0
         zr(jvalv-1+2) = 0.d0
         zr(jvalv-1+3) = 0.d0
@@ -94,32 +105,32 @@ subroutine carayo(char, ligrmo, noma, fonree)
 !
 ! --- STOCKAGE DANS LA CARTE
 !
-    do 10 iocc = 1, nrayo
-        if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'SIGMA', iocc=iocc, scal=zr(jvalv), nbret=n)
-            call getvr8(motclf, 'EPSILON', iocc=iocc, scal=zr(jvalv+1), nbret=n)
-            call getvr8(motclf, 'TEMP_EXT', iocc=iocc, scal=zr(jvalv+2), nbret=n)
+    do iocc = 1, nrayo
+        if (valeType .eq. 'REEL') then
+            call getvr8(keywordFact, 'SIGMA', iocc=iocc, scal=zr(jvalv), nbret=n)
+            call getvr8(keywordFact, 'EPSILON', iocc=iocc, scal=zr(jvalv+1), nbret=n)
+            call getvr8(keywordFact, 'TEMP_EXT', iocc=iocc, scal=zr(jvalv+2), nbret=n)
         else
-            call getvid(motclf, 'SIGMA', iocc=iocc, scal=zk8(jvalv), nbret=n)
-            call getvid(motclf, 'EPSILON', iocc=iocc, scal=zk8(jvalv+1), nbret=n)
-            call getvid(motclf, 'TEMP_EXT', iocc=iocc, scal=zk8(jvalv+2), nbret=n)
+            call getvid(keywordFact, 'SIGMA', iocc=iocc, scal=zk8(jvalv), nbret=n)
+            call getvid(keywordFact, 'EPSILON', iocc=iocc, scal=zk8(jvalv+1), nbret=n)
+            call getvid(keywordFact, 'TEMP_EXT', iocc=iocc, scal=zk8(jvalv+2), nbret=n)
         endif
 !
-        call getvtx(motclf, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
+        call getvtx(keywordFact, 'TOUT', iocc=iocc, scal=k8b, nbret=nbtou)
         if (nbtou .ne. 0) then
             call nocart(carte, 1, ncmp)
 !
         else
-            call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
+            call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
-            if (nbma .eq. 0) goto 10
+            if (nbma .eq. 0) cycle
             call jeveuo(mesmai, 'L', jma)
             call nocart(carte, 3, ncmp, mode='NUM', nma=nbma,&
                         limanu=zi(jma))
             call jedetr(mesmai)
         endif
 !
-10  end do
+    end do
 !
     call jedema()
 !

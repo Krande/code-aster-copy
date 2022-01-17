@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,11 +58,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     mpi_int :: nb_proc, mpicou
-    integer :: iret, nb_dim
+    integer :: iret, geomDime
     character(len=4) :: vale_type
     character(len=8) :: mesh, model, sdcont
     character(len=16) :: k16dummy, command
-    character(len=19) :: ligrmo, ligret, ligrel, ligrch, partit
+    character(len=19) :: ligret, ligrel, ligrch, partit
     integer :: cont_form, algo_cont
     aster_logical :: lallv
     character(len=24) :: sdcont_defi
@@ -88,8 +88,7 @@ implicit none
     sdcont_defi = sdcont(1:8)//'.CONTACT'
 
 ! - Mesh, Ligrel for model, dimension of model
-    call cagene(sdcont, command, ligrmo, mesh, nb_dim)
-    model = ligrmo(1:8)
+    call cagene(sdcont, command, model, mesh, geomDime)
 
 ! - Forbiden for a ParallelMesh
     ASSERT(.not.isParallelMesh(mesh))
@@ -112,7 +111,7 @@ implicit none
     if (cont_form .eq. 4) then
         call caliun(sdcont, mesh, model)
     else
-        call calico(sdcont, mesh, model, nb_dim, cont_form, ligret)
+        call calico(sdcont, mesh, model, geomDime, cont_form, ligret)
     endif
 
 ! - MPI forbidden for some methods (issue25897)

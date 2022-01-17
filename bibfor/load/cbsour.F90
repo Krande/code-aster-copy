@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,22 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cbsour(char, noma, ligrmo, ndim, fonree)
-    implicit none
+!
+subroutine cbsour(load, mesh, model, geomDime, valeType)
+!
+implicit none
+!
 #include "asterc/getfac.h"
 #include "asterfort/casour.h"
 #include "asterfort/copisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
-    integer :: ndim
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
+!
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
+character(len=4), intent(in) :: valeType
+!
     integer :: nbcalc, icalc, nbfac, isour, iocc
     real(kind=8) :: r8bid
     character(len=8) :: scalc
@@ -35,17 +38,17 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
     character(len=24) :: carte, chsour
 !     ------------------------------------------------------------------
 !
-    carte = char//'.CHTH.SOURE'
+    carte = load//'.CHTH.SOURE'
 !
     motfac = 'SOURCE'
     call getfac(motfac, nbfac)
 !
     nbcalc = 0
-    if (fonree .eq. 'REEL') then
-        do 10 iocc = 1, nbfac
+    if (valeType .eq. 'REEL') then
+        do iocc = 1, nbfac
             call getvid(motfac, 'SOUR_CALCULEE', iocc=iocc, scal=chsour, nbret=icalc)
             nbcalc = nbcalc + icalc
-10      continue
+        end do
         if (nbcalc .gt. 1) then
             call utmess('F', 'MODELISA3_64')
         else if (nbcalc.eq.1) then
@@ -53,13 +56,13 @@ subroutine cbsour(char, noma, ligrmo, ndim, fonree)
         endif
     endif
 !
-    if (fonree .eq. 'REEL') then
+    if (valeType .eq. 'REEL') then
         call getvr8(motfac, 'SOUR', iocc=1, scal=r8bid, nbret=isour)
     else
         call getvid(motfac, 'SOUR', iocc=1, scal=scalc, nbret=isour)
     endif
     if (isour .eq. 1) then
-        call casour(char, ligrmo, noma, ndim, fonree)
+        call casour(load, mesh, model, geomDime, valeType)
     endif
 !
 end subroutine

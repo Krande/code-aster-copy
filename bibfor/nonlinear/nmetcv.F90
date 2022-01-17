@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine nmetcv(field_refe, field_in, field_disc_in, field_out, field_disc_out)
+! person_in_charge: mickael.abbas at edf.fr
+!
+subroutine nmetcv(model, field_refe, field_in, field_disc_in, field_out, field_disc_out)
 !
 implicit none
 !
@@ -24,13 +25,12 @@ implicit none
 #include "asterfort/copisd.h"
 #include "asterfort/utmess.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=24), intent(in) :: field_refe
-    character(len=24), intent(in) :: field_in
-    character(len=24), intent(in) :: field_out
-    character(len=4), intent(in) :: field_disc_in
-    character(len=4), intent(in) :: field_disc_out
+character(len=8), intent(in) :: model
+character(len=24), intent(in) :: field_refe
+character(len=24), intent(in) :: field_in
+character(len=24), intent(in) :: field_out
+character(len=4), intent(in) :: field_disc_in
+character(len=4), intent(in) :: field_disc_out
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,6 +40,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  model           : model
 ! In  field_refe      : name of a reference field to convert ELGA fields
 ! In  field_in        : name of field to convert
 ! In  field_disc_in   : spatial discretization of field to convert
@@ -77,7 +78,7 @@ implicit none
 ! ----- Not good discretization -> convert
 !
         call chpchd(field_in , field_disc_out, field_refe, 'NON', 'V',&
-                    field_out)
+                    field_out, model)
     endif
 !
 end subroutine

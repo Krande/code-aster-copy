@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,19 +55,18 @@ character(len=8), intent(in) :: load
     character(len=16), parameter :: command = 'AFFE_CHAR_ACOU'
     character(len=4), parameter :: valeType = 'COMP', coefType = 'REEL'
     character(len=16), parameter :: keywFactEnforceDOF = 'PRES_IMPO'
-    integer :: dimeModel, iret
+    integer :: geomDime, iret
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
-    character(len=19) :: loadLigrel, modelLigrel
+    character(len=19) :: loadLigrel
     character(len=8), pointer :: loadLigrelLgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
 
 ! - Mesh, Ligrel for model, dimension of model
-    call cagene(load, command, modelLigrel, mesh, dimeModel)
-    model = modelLigrel(1:8)
-    if (dimeModel .gt. 3) then
+    call cagene(load, command, model, mesh, geomDime)
+    if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
 
@@ -82,7 +81,7 @@ character(len=8), intent(in) :: load
     call cbimpe(phenom, load, mesh, valeType)
 
 ! - Kinematic PRES_IMPO
-    call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+    call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
 
 ! - Kinematic LIAISON_UNIF
     call cagrou(load, mesh, coefType, phenomS)

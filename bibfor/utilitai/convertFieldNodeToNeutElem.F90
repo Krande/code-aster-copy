@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine convertFieldNodeToNeutElem(ligrel    , fieldNode  , fieldElemNeut,&
+subroutine convertFieldNodeToNeutElem(model,&
+                                      ligrel    , fieldNode  , fieldElemNeut,&
                                       nbCmpField, cmpNameNode, cmpNameNeut)
 !
 implicit none
@@ -35,6 +36,7 @@ implicit none
 #include "asterfort/nopar2.h"
 #include "asterfort/utmess.h"
 !
+character(len=8), intent(in) :: model
 character(len=*), intent(in) :: ligrel, fieldNode, fieldElemNeut
 integer, intent(out) :: nbCmpField
 character(len=8), pointer :: cmpNameNode(:), cmpNameNeut(:)
@@ -90,7 +92,7 @@ character(len=8), pointer :: cmpNameNode(:), cmpNameNeut(:)
 !
 ! - Change support of field
 !
-    call chpchd(fieldNodeNeut, 'ELGA', fieldElemRefe, 'OUI', 'V', fieldElemNeut)
+    call chpchd(fieldNodeNeut, 'ELGA', fieldElemRefe, 'OUI', 'V', fieldElemNeut, model)
     call detrsd('CHAMP', fieldElemRefe)
     call detrsd('CHAMP', fieldNodeNeut)
 !

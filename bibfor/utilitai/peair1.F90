@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine peair1(modele, nbma, lisma, aire, long)
+subroutine peair1(mesh, nbma, lisma, aire, long)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,11 +37,10 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
     integer :: nbma, lisma(*)
     real(kind=8) :: aire, long
-    character(len=*) :: modele
+    character(len=8), intent(in) :: mesh
 !
 !
 !     CALCUL DE L'AIRE_INTERNE A UN CONTOUR
-!     IN : MODELE : NOM DU MODELE
 !     IN : LISMA (NBMA) : LISTE DES NUMEROS DE MAILLES DU CONTOUR FERME
 !     OUT : AIRE : AIRE DELIMITEE PAR LE CONTOUR
 !     OUT : LONG : LONGUEUR DU CONTOUR
@@ -55,7 +54,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     real(kind=8) :: xx1(3), xx2(3), xx3(3), xn(3), pv(3), xnorm, vn3n2(3)
     real(kind=8) :: vgn2(3)
     real(kind=8) :: x1, y1, z1, x2, y2, z2, xxl
-    character(len=8) :: noma, nomail, typel
+    character(len=8) :: nomail, typel
     character(len=24) :: mlgnma, mlgcnx, mlgcoo
     character(len=24) :: valk(2)
     integer, pointer :: mailles(:) => null()
@@ -63,7 +62,6 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     integer, pointer :: noeud2(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: typmail(:) => null()
-    character(len=8), pointer :: lgrf(:) => null()
 !
     call jemarq()
 !
@@ -73,13 +71,12 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     orig(1) = zero
     orig(2) = zero
     orig(3) = zero
-    call jeveuo(modele(1:8)//'.MODELE    .LGRF', 'L', vk8=lgrf)
-    noma = lgrf(1)
-    mlgnma = noma//'.NOMMAI'
-    mlgcnx = noma//'.CONNEX'
+
+    mlgnma = mesh//'.NOMMAI'
+    mlgcnx = mesh//'.CONNEX'
 !
-    call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
-    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(mesh//'.COORDO    .VALE', 'L', vr=vale)
 !
     AS_ALLOCATE(vi=noeud1, size=nbma*3)
     AS_ALLOCATE(vi=noeud2, size=nbma*3)
@@ -91,7 +88,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
     nbel = 0
     do ima = 1, nbma
         numa = lisma(ima)
-        call jenuno(jexnum(noma//'.NOMMAI', numa), nomail)
+        call jenuno(jexnum(mesh//'.NOMMAI', numa), nomail)
 !
 !        TYPE DE LA MAILLE COURANTE :
 !
@@ -207,7 +204,7 @@ subroutine peair1(modele, nbma, lisma, aire, long)
 !
 !     CALCUL DU CDG APPROXIMATIF
 !
-    mlgcoo = noma//'.COORDO    .VALE'
+    mlgcoo = mesh//'.COORDO    .VALE'
     call jeveuo(mlgcoo, 'L', jdco)
     do ima = 1, nbma
         nj1 = noeud2(3*ima-2)

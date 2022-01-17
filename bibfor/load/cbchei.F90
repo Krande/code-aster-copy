@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cbchei(char, noma, ligrmo, fonree)
-    implicit   none
+!
+subroutine cbchei(load, mesh, model, valeType)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -34,14 +36,29 @@ subroutine cbchei(char, noma, ligrmo, fonree)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
 !
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Loads affectation
+!
+! Treatment of load PRE_EPSI
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  mesh             : mesh
+! In  load             : load
+! In  model            : model
+! In  geomDime         : space dimension
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: keywordFact = 'PRE_EPSI'
     integer :: nbfac, iepsi, ncmp, cret, jcesd, jcesc, nbcmpch, i, j
     character(len=4) :: typch
     character(len=5) :: para
-    character(len=16) :: motfac
     character(len=19) :: carte, chames
     character(len=24) :: chepsi
     aster_logical :: compok
@@ -52,22 +69,21 @@ subroutine cbchei(char, noma, ligrmo, fonree)
     'EPXX', 'EPYY', 'EPZZ' ,'EPXY', 'EPXZ', 'EPYZ',&
     'EPX ', 'KY  ', 'KZ  ', 'EXX ', 'EYY ', 'EXY ', 'KXX ', 'KYY ', 'KXY ',&
     'GAX ', 'GAY '/)
-!     ------------------------------------------------------------------
 !
-    motfac = 'PRE_EPSI'
-    call getfac(motfac, nbfac)
+! --------------------------------------------------------------------------------------------------
+!
+    call getfac(keywordFact, nbfac)
 !
     if (nbfac .ne. 0) then
         para = 'EPSIN'
         
         iepsi = 0
-        if (fonree .eq. 'REEL') then
-            call getvid(motfac, 'EPSI', iocc=1, scal=chepsi, nbret=iepsi)
+        if (valeType .eq. 'REEL') then
+            call getvid(keywordFact, 'EPSI', iocc=1, scal=chepsi, nbret=iepsi)
         endif
         
         if (iepsi .eq. 0) then
-            call cachei(char, ligrmo, noma, fonree, para,&
-                        motfac)
+            call cachei(load, model, mesh, valeType, para, keywordFact)
         else
             if (nbfac.gt.1) call utmess('F', 'CHARGES_5')
             
@@ -106,17 +122,14 @@ subroutine cbchei(char, noma, ligrmo, fonree)
             
             call jedetr(chames)
 !
-            carte = char//'.CHME.'//para
-!
-! ---            MODELE ASSOCIE AU LIGREL DE CHARGE
-!
-            call alcart('G', carte, noma, 'NEUT_K8')
+            carte = load//'.CHME.'//para
+            call alcart('G', carte, mesh, 'NEUT_K8')
             call jeveuo(carte//'.NCMP', 'E', vk8=vncmp)
             call jeveuo(carte//'.VALV', 'E', vk8=valv)
 !
             ncmp = 1
             vncmp(1) = 'Z1'
-            valv(1) = chepsi
+            valv(1) = chepsi(1:8)
             call nocart(carte, 1, ncmp)
         endif
     endif

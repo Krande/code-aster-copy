@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cafaci(load, mesh, ligrmo, vale_type)
+!
+subroutine cafaci(load, mesh, model, valeType)
 !
 implicit none
 !
@@ -50,12 +50,8 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-! person_in_charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,16 +61,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  mesh      : name of mesh
-! In  load      : name of load
-! In  ligrmo    : list of elements in model
-! In  vale_type : affected value type (real, complex or function)
+! In  mesh        : mesh
+! In  load        : load
+! In  model       : model
+! In  valeType    : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n_max_keyword
-    parameter (n_max_keyword=300)
+    integer, parameter :: n_max_keyword = 300
     integer :: nbterm(n_max_keyword)
     real(kind=8) :: vale_real(n_max_keyword)
     complex(kind=8) :: vale_cplx(n_max_keyword)
@@ -96,11 +90,11 @@ implicit none
     integer :: jlino, jlima
     integer :: nb_node, nb_elem
     character(len=4) :: coef_type
-    character(len=8) :: model, nomg
+    character(len=8) :: nomg
     character(len=8) :: name_node, dof_name
     character(len=16) :: keywordfact, keyword
     character(len=19) :: list_rela
-    character(len=19) :: connex_inv
+    character(len=19) :: connex_inv, modelLigrel
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav
     integer :: jnoxfl, jnoxfv
     aster_logical :: lxfem, l_ocmp
@@ -131,14 +125,14 @@ implicit none
     dof_name = 'DEPL'
 
 ! - Model informations
-    model = ligrmo(1:8)
     call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    call jeveuo(modelLigrel//'.PRNM', 'L', jprnm)
 !
 ! - Type of coefficients
 !
     coef_type = 'REEL'
-    if (vale_type .eq. 'COMP') then
+    if (valeType .eq. 'COMP') then
         ASSERT(.false.)
     endif
 !
@@ -186,16 +180,16 @@ implicit none
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
                             n_max_keyword, n_keyword, keywordlist, nbterm, vale_real,&
                             vale_func, vale_cplx)
 !
 ! ----- Detection of DNOR, DTAN and others
 !
-        call char_read_val(keywordfact, iocc, 'DNOR', vale_type, val_nb_dnor,&
+        call char_read_val(keywordfact, iocc, 'DNOR', valeType, val_nb_dnor,&
                            val_r_dnor, val_f_dnor, val_c_dnor, val_t_dnor)
         l_dnor = val_nb_dnor.gt.0
-        call char_read_val(keywordfact, iocc, 'DTAN', vale_type, val_nb_dtan,&
+        call char_read_val(keywordfact, iocc, 'DTAN', valeType, val_nb_dtan,&
                            val_r_dtan, val_f_dtan, val_c_dtan, val_t_dtan)
         l_dtan = val_nb_dtan.gt.0
         l_ocmp = n_keyword.gt.0
@@ -205,7 +199,7 @@ implicit none
         if (geomDime .eq. 3 .and. l_dtan) then
             call utmess('F', 'CHARGES2_63')
         endif
-        if (vale_type .eq. 'FONC') then
+        if (valeType .eq. 'FONC') then
             if (l_dnor .or. l_dtan) then
                 if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
                     call utmess('F', 'CHARGES2_6')
@@ -239,7 +233,7 @@ implicit none
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*nume_node)) then
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dnor,&
-                                    val_c_dnor, val_f_dnor, vale_type, ibid, list_rela,&
+                                    val_c_dnor, val_f_dnor, valeType, ibid, list_rela,&
                                     geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                         goto 105
@@ -249,7 +243,7 @@ implicit none
                 repe_type = geomDime
                 call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [repe_type],&
                             repe_defi, val_nb_dnor, val_r_dnor, val_c_dnor, val_f_dnor,&
-                            coef_type, vale_type, 0.d0, list_rela)
+                            coef_type, valeType, 0.d0, list_rela)
 !
 105             continue
             enddo
@@ -268,7 +262,7 @@ implicit none
                 if (lxfem) then
                     if (zl(jnoxfl-1+2*nume_node)) then
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dtan,&
-                                    val_c_dtan, val_f_dtan, vale_type, ibid, list_rela,&
+                                    val_c_dtan, val_f_dtan, valeType, ibid, list_rela,&
                                     geomDime, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                                     ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                         goto 115
@@ -278,7 +272,7 @@ implicit none
                 repe_type = geomDime
                 call afrela([coef_real_unit], [coef_cplx_unit], dof_name, name_node, [geomDime],&
                             repe_defi, val_nb_dtan, val_r_dtan, val_c_dtan, val_f_dtan,&
-                            coef_type, vale_type, 0.d0, list_rela)
+                            coef_type, valeType, 0.d0, list_rela)
 !
 115             continue
             enddo
@@ -299,7 +293,7 @@ implicit none
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
                 call afddli(model, geomDime, nbcmp, zk8(inom), nume_node, name_node,&
                             zi(jprnm-1+ (nume_node- 1)*nbec+1), 0, zr(jdirec+3*(nume_node-1)),&
-                            coef_type, n_keyword, keywordlist, nbterm, vale_type,&
+                            coef_type, n_keyword, keywordlist, nbterm, valeType,&
                             vale_real, vale_func, vale_cplx, icompt, list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
                             ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine caethm(load, mesh, ligrmo, valeType)
-        character(len=8), intent(in) :: load, mesh
-        character(len=19), intent(in) :: ligrmo
+    subroutine caethm(load, mesh, model, valeType)
+        character(len=8), intent(in) :: load, mesh, model
         character(len=4), intent(in) :: valeType
     end subroutine caethm
 end interface

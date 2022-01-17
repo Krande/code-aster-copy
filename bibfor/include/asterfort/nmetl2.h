@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 20222 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine nmetl2(i_field, ds_inout)
+    subroutine nmetl2(model, i_field, ds_inout)
         use NonLin_Datastructure_type
+        character(len=8), intent(in) :: model
         integer, intent(in) :: i_field
         type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nmetl2

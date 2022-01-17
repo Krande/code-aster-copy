@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine xnpgxx(ligrel, option, param, chsnpg, exixfm)
-! person_in_charge: patrick.massin at edf.fr
+subroutine xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
+
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -43,6 +43,7 @@ subroutine xnpgxx(ligrel, option, param, chsnpg, exixfm)
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
 !
+    character(len=8), intent(in) :: model
     character(len=19) :: ligrel, chsnpg
     character(len=16) :: option
     character(len=8) :: param
@@ -77,10 +78,10 @@ subroutine xnpgxx(ligrel, option, param, chsnpg, exixfm)
     integer :: iopt, iopt1, nute, numc, igr, nbgrel
     integer :: imolo, jmolo, nec, kfpg, kfam
     integer :: igd,  nblfpg,  nbfam, nel, jliel, jfpgl, jcesdlon, jcesllon, jcesd, jcesl
-    integer :: nfiss, ndime, irese, nspg, nse, npg
+    integer :: ndime, irese, nspg, nse, npg
     integer :: ima, iadlon, iad, iel
     integer :: k, nuflpg, nufgpg
-    character(len=8) :: nomgd, elrese(6), elrefe, ma, mo, famil, noma
+    character(len=8) :: nomgd, elrese(6), elrefe, mesh, famil, noma
     character(len=8), pointer :: typma(:) => null()
     character(len=16) :: nofpg, nomte
     character(len=19) :: chslon
@@ -96,14 +97,13 @@ subroutine xnpgxx(ligrel, option, param, chsnpg, exixfm)
 !     ------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
-    call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=mo)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=mesh)
 
     exixfm='NON'
+    
 !   le modele comporte-t-il des elements X-FEM ?
-    call dismoi('NB_FISS_XFEM', mo, 'MODELE', repi=nfiss)
-!   si le modele ne comporte pas d'elements X-FEM, on a fini
-    if (nfiss.eq.0) then
+    call dismoi('EXI_XFEM', ligrel, 'LIGREL', repk=exixfm)
+    if (exixfm.eq.'NON') then
         goto 999
     endif
 
@@ -117,7 +117,7 @@ subroutine xnpgxx(ligrel, option, param, chsnpg, exixfm)
     call jeveuo('&CATA.TE.TYPEMA', 'L', vk8=typma)
 !
 ! -- construction d'un champ simple pour parcourir PLONCHA
-    chlong=mo//'.TOPOSE.LON'
+    chlong=model//'.TOPOSE.LON'
     chslon='&&XNPGSE.CHSLON'
     call celces(chlong, 'V', chslon)
 !
@@ -126,7 +126,7 @@ subroutine xnpgxx(ligrel, option, param, chsnpg, exixfm)
     call jeveuo(chslon//'.CESV', 'L', vi=cesvlon)
 !
 ! -- allocation du CHAM_ELEM_S chsnpg
-    call cescre('V', chsnpg, 'ELEM', ma, 'NEUT_I',&
+    call cescre('V', chsnpg, 'ELEM', mesh, 'NEUT_I',&
                 0, ' ', [-1], [-1], [-1])
 !
     call jeveuo(chsnpg//'.CESD', 'L', jcesd)

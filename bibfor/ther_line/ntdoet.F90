@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -166,7 +166,7 @@ implicit none
 ! ------------- Initial temperature: from field
 !
                 if (l_field_read) then
-                    call nmetl2(i_field, ds_inout)
+                    call nmetl2(model, i_field, ds_inout)
                 endif
 !
 ! ------------- Initial temperature: stationnary computation
@@ -183,7 +183,7 @@ implicit none
                     ds_inout%field(i_field)%init_type = 'VALE'
                 endif
             else
-                call nmetl2(i_field, ds_inout)
+                call nmetl2(model, i_field, ds_inout)
             endif
         endif
 !

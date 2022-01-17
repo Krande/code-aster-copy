@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine cachei(char, ligrmo, noma, fonree, param,&
-                      motcl)
-        character(len=8) :: char
-        character(len=*) :: ligrmo
-        character(len=8) :: noma
-        character(len=4) :: fonree
-        character(len=5) :: param
-        character(len=*) :: motcl
+    subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
+        character(len=8), intent(in) :: load, mesh, model
+        character(len=4), intent(in) :: valeType
+        character(len=5), intent(in) :: param
+        character(len=*), intent(in) :: keywordFactZ
     end subroutine cachei
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -297,6 +297,12 @@ character(len=*) :: questi, repkz, nomobz
 
                     else if (questi .eq. 'EXI_CABLE') then
                         if (lteatt('CABLE', 'OUI', typel=elemTypeName)) then
+                            repk='OUI'
+                            exit
+                         endif
+
+                    else if (questi .eq. 'EXI_XFEM') then
+                        if (lteatt('LXFEM', 'OUI', typel=elemTypeName)) then
                             repk='OUI'
                             exit
                          endif

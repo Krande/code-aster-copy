@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine capres_skin(load, mesh, ligrmo, ndim, valeType, nbOccPresRep)
+subroutine capres_skin(load, mesh, model, geomDime, valeType, nbOccPresRep)
 !
 implicit none
 !
@@ -36,11 +36,10 @@ implicit none
 #include "asterfort/xtmafi.h"
 #include "asterfort/xvelfm.h"
 !
-character(len=8), intent(in)  :: load, mesh
-character(len=19), intent(in) :: ligrmo
-integer, intent(in)           :: ndim
-character(len=4), intent(in)  :: valeType
-integer, intent(in)           :: nbOccPresRep
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
+character(len=4), intent(in) :: valeType
+integer, intent(in) :: nbOccPresRep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,16 +49,16 @@ integer, intent(in)           :: nbOccPresRep
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  load             : name of load
-! In  ligrmo           : model <LIGREL>
-! In  mesh             : name of mesh
-! In  ndim             : dimension of space
+! In  load             : load
+! In  model            : model
+! In  mesh             : mesh
+! In  geomDime         : dimension of space
 ! In  valeType         : affected value type (real, complex or function)
 ! In  nbOccPresRep     : number of occurrences for PRES_REP
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16), parameter :: keywFact = 'PRES_REP'
+    character(len=16), parameter :: keywordFact = 'PRES_REP'
     integer, parameter :: nbCmp = 2
     character(len=8), parameter :: cmpName(nbCmp) = (/'PRES', 'CISA'/)
     character(len=8), pointer :: mapCmpName(:) => null()
@@ -67,7 +66,7 @@ integer, intent(in)           :: nbOccPresRep
     character(len=8), pointer :: mapCmpValeK(:) => null()
     integer :: iocc, nbCisa, nbPres, nbma, jma, nbCrack
     integer, parameter :: nfismx = 100
-    character(len=8) :: fiss(nfismx), model
+    character(len=8) :: fiss(nfismx)
     character(len=19) :: carte
     character(len=24), parameter :: mesmai = '&&CAPRES.MES_MAILLES'
     character(len=24), parameter :: lismai = '&&CAPRES.NUM_MAILLES'
@@ -78,9 +77,6 @@ integer, intent(in)           :: nbOccPresRep
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-
-! - Name of model
-    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
 
 ! - Name of CARTE
     carte = load//'.CHME.PRESS'
@@ -114,23 +110,23 @@ integer, intent(in)           :: nbOccPresRep
 ! - Set values in CARTE
     do iocc = 1, nbOccPresRep
         if (valeType .eq. 'REEL') then
-            call getvr8(keywFact, 'PRES'   , iocc=iocc, scal=mapCmpValeR(1), nbret=nbPres)
-            call getvr8(keywFact, 'CISA_2D', iocc=iocc, scal=mapCmpValeR(2), nbret=nbCisa)
+            call getvr8(keywordFact, 'PRES'   , iocc=iocc, scal=mapCmpValeR(1), nbret=nbPres)
+            call getvr8(keywordFact, 'CISA_2D', iocc=iocc, scal=mapCmpValeR(2), nbret=nbCisa)
         else
-            call getvid(keywFact, 'PRES'   , iocc=iocc, scal=mapCmpValeK(1), nbret=nbPres)
-            call getvid(keywFact, 'CISA_2D', iocc=iocc, scal=mapCmpValeK(2), nbret=nbCisa)
+            call getvid(keywordFact, 'PRES'   , iocc=iocc, scal=mapCmpValeK(1), nbret=nbPres)
+            call getvid(keywordFact, 'CISA_2D', iocc=iocc, scal=mapCmpValeK(2), nbret=nbCisa)
         endif
-        if (nbCisa .ne. 0 .and. ndim .eq. 3) then
+        if (nbCisa .ne. 0 .and. geomDime .eq. 3) then
             call utmess('F', 'CHARGES6_94')
         endif
-        call getvid(keywFact, 'FISSURE', iocc=iocc, nbval=0, nbret=nbCrack)
+        call getvid(keywordFact, 'FISSURE', iocc=iocc, nbval=0, nbret=nbCrack)
         if (nbCrack .ne. 0) then
             nbCrack = -nbCrack
-            call getvid(keywFact, 'FISSURE', iocc=iocc, nbval=nbCrack, vect=fiss)
+            call getvid(keywordFact, 'FISSURE', iocc=iocc, nbval=nbCrack, vect=fiss)
 !           VERIFICATION DE LA COHERENCE ENTRE LES FISSURES ET LE MODELE
-            call xvelfm(nbCrack, fiss, ligrmo(1:8))
+            call xvelfm(nbCrack, fiss, model)
 !           RECUPERATION DES MAILLES PRINCIPALES X-FEM FISSUREES
-            call xtmafi(ndim, fiss, nbCrack, lismai,&
+            call xtmafi(geomDime, fiss, nbCrack, lismai,&
                         mesmai, nbma, model = model)
             call jeveuo(mesmai, 'L', jma)
             call nocart(carte, 3, nbCmp, mode='NOM', nma=nbma,&
@@ -140,8 +136,8 @@ integer, intent(in)           :: nbOccPresRep
         else
             mapListName(1)  = carte
             mapListNbCmp(1) = nbCmp
-            call char_affe_neum(model    , mesh       , ndim,&
-                                keywFact , iocc       ,&
+            call char_affe_neum(model    , mesh       , geomDime,&
+                                keywordFact , iocc       ,&
                                 mapListNb, mapListName, mapListNbCmp)
         endif
     end do

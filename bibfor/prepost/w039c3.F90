@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,7 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
 #include "asterfort/assert.h"
 #include "asterfort/carelo.h"
 #include "asterfort/chpchd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/irceme.h"
@@ -50,7 +51,7 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
     integer :: iret,jaux, nbCmpDyna
     character(len=1), parameter :: nomcmp(3) = ['X' , 'Y' , 'Z']
     character(len=8) :: typech, sdcarm, carele8
-    character(len=19) :: chrel1, chrel2, chrel3, chrelno1, chrelno2, chrelno3, ligrel, celmod
+    character(len=19) :: chrel1, chrel2, chrel3, chrelno1, chrelno2, chrelno3, modelLigrel, celmod
     character(len=19) :: chrmed(3)
     character(len=64) :: nommed(3)
     character(len=85) :: titrz,messk(3)
@@ -86,21 +87,21 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
         chrelno3 = carele8//'.REPLC_3'
 !
 !       Récupération du LIGREL
-        ligrel = modele//'.MODELE'
+        call dismoi('NOM_LIGREL', modele, 'MODELE', repk=modelLigrel)
 !
         celmod = '&&W039C3.CELMOD'
-        call alchml(ligrel, 'TOU_INI_ELNO', 'PGEOM_R', 'V', celmod, iret, ' ')
+        call alchml(modelLigrel, 'TOU_INI_ELNO', 'PGEOM_R', 'V', celmod, iret, ' ')
         if (iret .ne. 0) then
-            messk(1)=ligrel
+            messk(1)=modelLigrel
             messk(2)='PGEOM_R'
             messk(3)='TOU_INI_ELNO'
             call utmess('F', 'UTILITAI3_23', nk=3, valk=messk)
         endif
 !
-        call chpchd(chrel1, 'ELNO', celmod, 'OUI', 'V', chrelno1)
-        call chpchd(chrel2, 'ELNO', celmod, 'OUI', 'V', chrelno2)
+        call chpchd(chrel1, 'ELNO', celmod, 'OUI', 'V', chrelno1, modele)
+        call chpchd(chrel2, 'ELNO', celmod, 'OUI', 'V', chrelno2, modele)
         if ( l3d ) then
-            call chpchd(chrel3, 'ELNO', celmod, 'OUI', 'V', chrelno3)
+            call chpchd(chrel3, 'ELNO', celmod, 'OUI', 'V', chrelno3, modele)
         endif
         call detrsd('CHAMP', celmod)
 !

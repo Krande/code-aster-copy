@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 #include "asterfort/chsut1.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
@@ -69,7 +70,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     integer :: nb_cmp_max
     parameter (nb_cmp_max=30)
     integer :: iexist
-    character(len=19) :: ligrel, celmod
+    character(len=19) :: modelLigrel, celmod
     character(len=19) :: field_in_s, field_neut_s, field_neut, field_neut_mod
     integer ::  jchsc
     integer :: nb_elem, nb_cmp, nb_cmp_act
@@ -86,7 +87,6 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ligrel = model//'.MODELE'
     field_in_s = '&&CCCHUC_NORM.FIELS'
     field_neut_s = '&&CCCHUC_NORM.NEUTS'
     field_neut = '&&CCCHUC_NORM.NEUTR'
@@ -100,10 +100,11 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
 !
 ! - Compute <CARTE> with informations on Gauss points 
 !
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk = modelLigrel)
     call exisd('CHAMP', chgaus, iexist)
     if (iexist .eq. 0) then
         call megeom(model, chgeom)
-        call calc_coor_elga(ligrel, chgeom, chgaus)
+        call calc_coor_elga(model, modelLigrel, chgeom, chgaus)
     endif
 !
 ! - Create <CHAM_ELEM_S> from input field
@@ -145,7 +146,7 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
         ASSERT(.false.)
     endif
     nopar = nopar2(option,'NEUT_R','OUT')
-    call cescel(field_neut_s, ligrel, option, nopar, 'OUI',&
+    call cescel(field_neut_s, modelLigrel, option, nopar, 'OUI',&
                 nncp, 'V', field_neut, 'F', iret)
     ASSERT(iret.eq.0) 
 !
@@ -163,22 +164,22 @@ subroutine ccchuc_norm(norm, model, name_gd, field_in, type_field_in,&
     else
         nopar = 'PCHAMPG'
         celmod = '&&PENORM.CELMOD'
-        call alchml(ligrel, option, nopar, 'V', celmod,&
+        call alchml(modelLigrel, option, nopar, 'V', celmod,&
                     ibid, ' ')
         if (ibid .ne. 0) then
-            valk(1) = ligrel
+            valk(1) = modelLigrel
             valk(2) = nopar
             valk(3) = option
             call utmess('F', 'UTILITAI3_23', nk=3, valk=valk)
         endif
         call chpchd(field_neut, 'ELGA', celmod, 'OUI', 'V',&
-                    field_neut_mod)
+                    field_neut_mod, model)
         call detrsd('CHAMP', celmod)
     endif
 !
 ! - Compute Norm (integration on finite element)
 !
-    call calc_norm_elem(norm, ligrel, chcoef, chgaus, chcalc,&
+    call calc_norm_elem(norm, modelLigrel, chcoef, chgaus, chcalc,&
                         field_neut_mod, field_out)
 !
     call jedetr(chcoef)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,7 +116,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
         call celces(nchelc, 'V', nchesc)
         call dismoi('NOM_OPTION', nchel1, 'CHAM_ELEM', repk=option)
         call dismoi('NOM_PARAM', nchel1, 'CHAM_ELEM', repk=param)
-        call manopg(ligrel, option, param, mnoga)
+        call manopg(moint, ligrel, option, param, mnoga)
 ! INTERPOLER LE CHAM NO SIMPLE SUR LES PDG
         call cnsces(nochns, 'ELGA', nches1, mnoga, 'V',&
                     nches2)

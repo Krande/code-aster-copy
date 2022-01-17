@@ -72,15 +72,14 @@ character(len=4), intent(in) :: valeType
     integer :: geomDime, iret
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
-    character(len=19) :: loadLigrel, modelLigrel
+    character(len=19) :: loadLigrel
     character(len=8), pointer :: loadLigrelLgrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
 
 ! - Mesh, Ligrel for model, dimension of model
-    call cagene(load, command, modelLigrel, mesh, geomDime)
-    model = modelLigrel(1:8)
+    call cagene(load, command, model, mesh, geomDime)
     if (geomDime .gt. 3) then
         call utmess('A', 'CHARGES2_4')
     endif
@@ -92,37 +91,31 @@ character(len=4), intent(in) :: valeType
     if (valeType .eq. 'REEL') then
 
 ! ----- SOURCE
-        call cbsour(load, mesh, modelLigrel, geomDime, valeType)
-
-! ----- SOUR_NL
-        call cbsonl(load, mesh, modelLigrel, geomDime, valeType)
+        call cbsour(load, mesh, model, geomDime, valeType)
 
 ! ----- CONVECTION
         call cbconv(load)
 
 ! ----- FLUX_REP
-        call cbflux(load, mesh, modelLigrel, geomDime, valeType)
-
-! ----- FLUX_NL
-        call cbflnl(load, mesh, modelLigrel, valeType)
+        call cbflux(load, mesh, model, geomDime, valeType)
 
 ! ----- RAYONNEMENT
-        call cbrayo(load, mesh, modelLigrel, valeType)
+        call cbrayo(load, mesh, model, valeType)
 
 ! ----- ECHANGE
-        call cbecha(load, mesh, modelLigrel, geomDime, valeType)
+        call cbecha(load, mesh, model, geomDime, valeType)
 
 ! ----- ECHANGE_PAROI
-        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, geomDime)
+        call caechp(load, loadLigrel, mesh, model, geomDime, valeType)
 
 ! ----- EVOL_CHAR
         call cbprca(phenom, load)
 
 ! ----- GRADIENT INITIAL
-        call cbgrai(load, mesh, modelLigrel, valeType)
+        call cbgrai(load, mesh, model, valeType)
 
 ! ----- TEMP_IMPO
-        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+        call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
 
 ! ----- LIAISON_DDL
         call caliai(valeType, load, phenomS)
@@ -137,39 +130,39 @@ character(len=4), intent(in) :: valeType
         call calich(load, phenomS)
 
 ! ----- LIAISON_MAIL
-        call calirc(phenom, load, modelLigrel)
+        call calirc(phenom, load, model)
 
     else if (valeType .eq. 'FONC') then
 
 ! ----- SOURCE
-        call cbsour(load, mesh, modelLigrel, geomDime, valeType)
+        call cbsour(load, mesh, model, geomDime, valeType)
 
 ! ----- SOUR_NL
-        call cbsonl(load, mesh, modelLigrel, geomDime, valeType)
+        call cbsonl(load, mesh, model, geomDime)
 
 ! ----- CONVECTION
         call cbconv(load)
 
 ! ----- FLUX_REP
-        call cbflux(load, mesh, modelLigrel, geomDime, valeType)
+        call cbflux(load, mesh, model, geomDime, valeType)
 
 ! ----- FLUX_NL
-        call cbflnl(load, mesh, modelLigrel, valeType)
+        call cbflnl(load, mesh, model)
 
 ! ----- RAYONNEMENT
-        call cbrayo(load, mesh, modelLigrel, valeType)
+        call cbrayo(load, mesh, model, valeType)
 
 ! ----- ECHANGE
-        call cbecha(load, mesh, modelLigrel, geomDime, valeType)
+        call cbecha(load, mesh, model, geomDime, valeType)
 
 ! ----- ECHANGE_PAROI
-        call caechp(load, loadLigrel, modelLigrel, mesh, valeType, geomDime)
+        call caechp(load, loadLigrel, mesh, model, geomDime, valeType)
 
 ! ----- GRADIENT INITIAL
-        call cbgrai(load, mesh, modelLigrel, valeType)
+        call cbgrai(load, mesh, model, valeType)
 
 ! ----- TEMP_IMPO
-        call caddli(keywFactEnforceDOF, load, mesh, modelLigrel, valeType)
+        call caddli(keywFactEnforceDOF, load, mesh, model, valeType)
 
 ! ----- LIAISON_DDL
         call caliai(valeType, load, phenomS)

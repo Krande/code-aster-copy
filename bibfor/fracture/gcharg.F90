@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
 #include "asterfort/alchml.h"
 #include "asterfort/chpver.h"
 #include "asterfort/chpchd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/gcchar.h"
 #include "asterfort/gcfonc.h"
 #include "asterfort/gcsele.h"
@@ -86,7 +87,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     integer :: tabaut(znbenc)
 !
     character(len=24) :: k24bid
-    character(len=24) :: oldfon, cepsi, epselno, ligrmo
+    character(len=24) :: oldfon, cepsi, epselno, modelLigrel
     integer :: jfonci
     integer :: ichar, nbchar, ig, iret, inga, occur, ier, i
     character(len=8) :: charge, typech, nomfct, newfct, ng
@@ -137,8 +138,9 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
     lccomb = .false.
     list_option(:) = ' '
     call lisnnb(lischa, nbchar)
+
 !   Recuperation du LIGREL
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=modelLigrel)
 !
 ! - STOCKAGE DES TYPES DE CHARGE (FONCTION OU PAS)
 !
@@ -243,8 +245,8 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
                             ASSERT(occur <= 1)
 !               traitement du champ pour les elements finis classiques
                             call detrsd('CHAMP', cepsi)
-                            call alchml(ligrmo, 'CALC_G', 'PEPSINR', 'V', cepsi, iret, ' ')
-                            call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V', epselno)
+                            call alchml(modelLigrel, 'CALC_G', 'PEPSINR', 'V', cepsi, iret, ' ')
+                            call chpchd(cartei(1:19), 'ELNO', cepsi, 'OUI', 'V', epselno, modele)
                             call chpver('F', epselno(1:19), 'ELNO', 'EPSI_R', iret)
                             cartei(1:19) = epselno(1:19)
                         end if

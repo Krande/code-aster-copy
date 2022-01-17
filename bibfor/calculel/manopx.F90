@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
+subroutine manopx(model, ligrel, option, param, chsgeo, exixfm,&
                   kecono)
 ! person_in_charge: samuel.geniaut at edf.fr
     implicit none
@@ -38,8 +38,10 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 #include "asterfort/modat2.h"
 #include "asterfort/nucalc.h"
 #include "asterfort/typele.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
+character(len=8), intent(in) :: model
     character(len=19) :: ligrel, chsgeo
     character(len=16) :: option
     character(len=8) :: param
@@ -82,7 +84,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     integer :: jecono, imolo, jmolo, nec, kfpg
     integer :: igd,  nblfpg,  nbfam, jfpgl
     integer :: k, nuflpg, nufgpg
-    character(len=8) :: nomgd, elrefe, ma, mo
+    character(len=8) :: nomgd, elrefe, ma
     character(len=16) :: nofpg, nomte
     character(len=19) :: chgeom
     character(len=32) :: noflpg
@@ -92,7 +94,6 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     call jemarq()
 !
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
-    call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=mo)
     call jelira(ligrel//'.LIEL', 'NMAXOC', nbgrel)
 !
     call jeveuo('&CATA.TE.PNLOCFPG', 'L', vk32=pnlocfpg)
@@ -156,6 +157,9 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
   2     continue
     end do
     if (exixfm .eq. 'NON') goto 999
+    if (model .eq. ' ') then
+        call utmess('F', 'CALCULEL2_27')
+    endif
 !
 !
 !     2. CALCUL DE CHSGEO :
@@ -164,15 +168,15 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     lpain(1) = 'PGEOMER'
     lchin(1) = ma//'.COORDO'
     lpain(2) = 'PPINTTO'
-    lchin(2) = mo//'.TOPOSE.PIN'
+    lchin(2) = model//'.TOPOSE.PIN'
     lpain(3) = 'PCNSETO'
-    lchin(3) = mo//'.TOPOSE.CNS'
+    lchin(3) = model//'.TOPOSE.CNS'
     lpain(4) = 'PHEAVTO'
-    lchin(4) = mo//'.TOPOSE.HEA'
+    lchin(4) = model//'.TOPOSE.HEA'
     lpain(5) = 'PLONCHA'
-    lchin(5) = mo//'.TOPOSE.LON'
+    lchin(5) = model//'.TOPOSE.LON'
     lpain(6) = 'PPMILTO'
-    lchin(6) = mo//'.TOPOSE.PMI'
+    lchin(6) = model//'.TOPOSE.PMI'
     lpaout(1) = 'PXFGEOM'
     lchout(1) = chgeom
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine calicp(load, mesh, ligrmo, vale_type)
+!
+subroutine calicp(load, mesh, model, valeType)
 !
 implicit none
 !
@@ -41,36 +41,31 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-! Person in charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Loads affectation
 !
-! Keyword = 'LIAISON_COQUE'
+! Treatment of load LIAISON_COQUE
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  mesh        : name of mesh
-! In  load        : name of load
-! In  ligrmo      : list of elements in model
-! In  vale_type   : affected value type (real, complex or function)
+! In  mesh        : mesh
+! In  load        : load
+! In  model       : model
+! In  valeType    : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: k8dummy, model, nom_noeuds(3)
-    character(len=16) :: keywordfact
-    character(len=19) :: list_rela
+    character(len=16), parameter :: keywordFact = 'LIAISON_COQUE'
+    character(len=8) :: k8dummy, nom_noeuds(3)
+    character(len=19) :: list_rela, modelLigrel
     integer :: iocc, i_error, icoupl
-    integer :: ndim, nliai, nbec
+    integer :: geomDime, nliai, nbec
     character(len=8) :: cmp_name, nomg
-    integer :: jnom, jprnm, nb_cmp
+    integer :: jnom, nb_cmp
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     character(len=8) :: suffix
@@ -84,7 +79,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    keywordfact = 'LIAISON_COQUE'
+!
     call getfac(keywordfact, nliai)
     if (nliai .eq. 0) goto 999
 !
@@ -101,19 +96,16 @@ implicit none
 !
 ! - Type
 !
-    if (vale_type .eq. 'COMP') then
+    if (valeType .eq. 'COMP') then
         ASSERT(.false.)
     endif
-!
-! - Access to model
-!
-    model = ligrmo(1:8)
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+! - Model informations
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
         call utmess('F', 'CHARGES2_6')
     endif
-!
+
 ! - Information about <GRANDEUR>
 !
     nomg = 'DEPL_R'
@@ -184,11 +176,11 @@ implicit none
             nume_node_2 = zi(j_node_o2-1+icoupl)
             zi(j_list_pair-1+1) = nume_node_1
             zi(j_list_pair-1+2) = nume_node_2
-            if (ndim .eq. 2) then
-                call drz12d(mesh, ligrmo, vale_type, 2, list_pair,&
+            if (geomDime .eq. 2) then
+                call drz12d(mesh, modelLigrel, valeType, 2, list_pair,&
                             cmp_index_drz, list_rela, nom_noeuds)
-            else if (ndim .eq. 3) then
-                call drz13d(mesh, ligrmo, vale_type, 2, list_pair,&
+            else if (geomDime .eq. 3) then
+                call drz13d(mesh, modelLigrel, valeType, 2, list_pair,&
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
                             cmp_index_dry, cmp_index_drz, list_rela, nom_noeuds)
             endif

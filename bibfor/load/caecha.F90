@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,13 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine caecha(char, ligrmo, noma, ndim, fonree)
-    implicit none
+subroutine caecha(load, model, mesh, geomDime, valeType)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/char_affe_neum.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -34,49 +35,53 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
 #include "asterfort/reliem.h"
 #include "asterfort/tecart.h"
 #include "asterfort/vetyma.h"
-    integer :: ndim
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
 !
-! BUT : STOCKAGE DE COEF_H ET TEMP_EXT DANS UNE CARTE ALLOUEE SUR LE
-!       LIGREL DU MODELE
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
+character(len=4), intent(in) :: valeType
 !
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      LIGRMO : NOM DU LIGREL DE MODELE
-!      NOMA   : NOM DU MAILLAGE
-!      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
-!      FONREE : FONC OU REEL
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
+! Loads affectation
+!
+! Treatment of loads ECHANGE
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  load             : load
+! In  model            : model
+! In  mesh             : mesh
+! In  geomDime         : dimension of space
+! In  valeType         : affected value type (real, complex or function)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16), parameter :: keywordFact = 'ECHANGE'
     integer :: necha, ncmp, jvalv1, jvalv2,   n, ncmp1, ncmp2, ncmps(2)
     integer :: iocc
     real(kind=8) :: r8b
     character(len=8) :: k8b
-    character(len=16) :: motclf
     character(len=19) :: carte1, carte2, cartes(2)
     character(len=8), pointer :: vncmp1(:) => null()
     character(len=8), pointer :: vncmp2(:) => null()
-    character(len=8) :: model
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
 !
-    motclf = 'ECHANGE'
-    call getfac(motclf, necha)
-    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
+    call getfac(keywordFact, necha)
 !
-    carte1 = char//'.CHTH.COEFH'
-    carte2 = char//'.CHTH.T_EXT'
+    carte1 = load//'.CHTH.COEFH'
+    carte2 = load//'.CHTH.T_EXT'
 !
-    if (fonree .eq. 'REEL') then
-        call alcart('G', carte1, noma, 'COEH_R')
-        call alcart('G', carte2, noma, 'TEMP_R')
-    else if (fonree.eq.'FONC') then
-        call alcart('G', carte1, noma, 'COEH_F')
-        call alcart('G', carte2, noma, 'TEMP_F')
+    if (valeType .eq. 'REEL') then
+        call alcart('G', carte1, mesh, 'COEH_R')
+        call alcart('G', carte2, mesh, 'TEMP_R')
+    else if (valeType.eq.'FONC') then
+        call alcart('G', carte1, mesh, 'COEH_F')
+        call alcart('G', carte2, mesh, 'TEMP_F')
     else
-        ASSERT(.false.)
+        ASSERT(ASTER_FALSE)
     endif
 !
     call jeveuo(carte1//'.NCMP', 'E', vk8=vncmp1)
@@ -93,7 +98,7 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
     vncmp2(1) = 'TEMP'
     vncmp2(2) = 'TEMP_INF'
     vncmp2(3) = 'TEMP_SUP'
-    if (fonree .eq. 'REEL') then
+    if (valeType .eq. 'REEL') then
         zr(jvalv1-1+1) = 0.d0
         zr(jvalv1-1+2) = 0.d0
         zr(jvalv1-1+3) = 0.d0
@@ -116,75 +121,75 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
     do iocc = 1, necha
         ncmp1 = 0
         ncmp2 = 0
-        if (fonree .eq. 'REEL') then
-            call getvr8(motclf, 'COEF_H', iocc=iocc, scal=r8b, nbret=n)
+        if (valeType .eq. 'REEL') then
+            call getvr8(keywordFact, 'COEF_H', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1= ncmp1 + 1
                 vncmp1(ncmp1) = 'H'
                 zr(jvalv1-1+ncmp1) = r8b
             endif
-            call getvr8(motclf, 'COEF_H_INF', iocc=iocc, scal=r8b, nbret=n)
+            call getvr8(keywordFact, 'COEF_H_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 vncmp1(ncmp1) = 'H_INF'
                 zr(jvalv1-1+ncmp1) = r8b
             endif
-            call getvr8(motclf, 'COEF_H_SUP', iocc=iocc, scal=r8b, nbret=n)
+            call getvr8(keywordFact, 'COEF_H_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 vncmp1(ncmp1) = 'H_SUP'
                 zr(jvalv1-1+ncmp1) = r8b
             endif
-            call getvr8(motclf, 'TEMP_EXT', iocc=iocc, scal=r8b, nbret=n)
+            call getvr8(keywordFact, 'TEMP_EXT', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 vncmp2(ncmp2) = 'TEMP'
                 zr(jvalv2-1+ncmp2) = r8b
             endif
-            call getvr8(motclf, 'TEMP_EXT_INF', iocc=iocc, scal=r8b, nbret=n)
+            call getvr8(keywordFact, 'TEMP_EXT_INF', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 vncmp2(ncmp2) = 'TEMP_INF'
                 zr(jvalv2-1+ncmp2) = r8b
             endif
-            call getvr8(motclf, 'TEMP_EXT_SUP', iocc=iocc, scal=r8b, nbret=n)
+            call getvr8(keywordFact, 'TEMP_EXT_SUP', iocc=iocc, scal=r8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 vncmp2(ncmp2) = 'TEMP_SUP'
                 zr(jvalv2-1+ncmp2) = r8b
             endif
         else
-            call getvid(motclf, 'COEF_H', iocc=iocc, scal=k8b, nbret=n)
+            call getvid(keywordFact, 'COEF_H', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 vncmp1(ncmp1) = 'H'
                 zk8(jvalv1-1+ncmp1) = k8b
             endif
-            call getvid(motclf, 'COEF_H_INF', iocc=iocc, scal=k8b, nbret=n)
+            call getvid(keywordFact, 'COEF_H_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 vncmp1(ncmp1) = 'H_INF'
                 zk8(jvalv1-1+ncmp1) = k8b
             endif
-            call getvid(motclf, 'COEF_H_SUP', iocc=iocc, scal=k8b, nbret=n)
+            call getvid(keywordFact, 'COEF_H_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp1 = ncmp1 + 1
                 vncmp1(ncmp1) = 'H_SUP'
                 zk8(jvalv1-1+ncmp1) = k8b
             endif
-            call getvid(motclf, 'TEMP_EXT', iocc=iocc, scal=k8b, nbret=n)
+            call getvid(keywordFact, 'TEMP_EXT', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 vncmp2(ncmp2) = 'TEMP'
                 zk8(jvalv2-1+ncmp2) = k8b
             endif
-            call getvid(motclf, 'TEMP_EXT_INF', iocc=iocc, scal=k8b, nbret=n)
+            call getvid(keywordFact, 'TEMP_EXT_INF', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 vncmp2(ncmp2) = 'TEMP_INF'
                 zk8(jvalv2-1+ncmp2) = k8b
             endif
-            call getvid(motclf, 'TEMP_EXT_SUP', iocc=iocc, scal=k8b, nbret=n)
+            call getvid(keywordFact, 'TEMP_EXT_SUP', iocc=iocc, scal=k8b, nbret=n)
             if (n .eq. 1) then
                 ncmp2 = ncmp2 + 1
                 vncmp2(ncmp2) = 'TEMP_SUP'
@@ -196,7 +201,7 @@ subroutine caecha(char, ligrmo, noma, ndim, fonree)
         cartes(2) = carte2
         ncmps(1) = ncmp1
         ncmps(2) = ncmp2
-        call char_affe_neum(model , noma, ndim, motclf, iocc, 2,&
+        call char_affe_neum(model , mesh, geomDime, keywordFact, iocc, 2,&
                             cartes, ncmps)
 !
     end do

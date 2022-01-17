@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine caechp(char, ligrch, ligrmo, mesh, fonree,&
-                      ndim)
-        character(len=8) :: char
-        character(len=*) :: ligrch
-        character(len=*) :: ligrmo
-        character(len=8) :: mesh
-        character(len=4) :: fonree
-        integer :: ndim
+    subroutine caechp(load, loadLigrel, mesh, model, geomDime, valeType)
+        character(len=8), intent(in) :: load
+        character(len=19), intent(in) :: loadLigrel
+        character(len=8), intent(in) :: mesh, model
+        integer, intent(in) :: geomDime
+        character(len=4), intent(in) :: valeType
     end subroutine caechp
 end interface

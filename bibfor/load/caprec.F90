@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine caprec(load, mesh, ligrmo, vale_type)
+subroutine caprec(load, loadLigrel, mesh, model, valeType)
 !
 implicit none
 !
@@ -65,33 +65,30 @@ implicit none
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 !
-!
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load, mesh, model
+character(len=19), intent(in) :: loadLigrel
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Loads affectation
 !
-! Keyword = 'RELA_CINE_BP'
+! Treatment of load RELA_CINE_BP
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  mesh      : name of mesh
-! In  load      : name of load
-! In  ligrmo    : list of elements in model
-! In  vale_type : affected value type (real, complex or function)
+! In  mesh      : mesh
+! In  load      : load
+! In  model     : model
+! In  valeType  : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywordfact
-    integer :: nliai, ndimmo
+    character(len=16), parameter :: keywordFact = 'RELA_CINE_BP'
+    integer :: nliai, geomDime
     real(kind=8) :: dist_mini, dist
     complex(kind=8) :: cbid
-    character(len=8) :: k8bid, model, answer
+    character(len=8) :: k8bid, answer
     integer :: n1, iocc, iret, ibid
     integer :: nbrela
     character(len=19) :: list_rela, list_rela_tmp, list_rela_old
@@ -110,7 +107,7 @@ implicit none
     character(len=24) :: list_node
     integer :: nb_node, jlino
     character(len=8) :: cabl_prec
-    character(len=19) :: cabl_sigm, ligrch
+    character(len=19) :: cabl_sigm, modelLigrel
     aster_logical :: l_rota_2d, l_rota_3d
     integer :: i_cabl, i_ancr, i_no, nume_node
     integer :: nb_elem
@@ -124,7 +121,6 @@ implicit none
     integer :: nbteli, nbteli_total
     integer :: pass 
     character(len=4) :: typval, typcoe
-    character(len=7) :: typcha
     integer :: nbcmp, numa, iivale, nma, icmp, ima, nbma, nbval
     integer :: jsief, nsief
     integer, pointer :: sigmnuma(:) => null()
@@ -141,8 +137,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    keywordfact = 'RELA_CINE_BP'
-    call getfac(keywordfact, nliai)
+!
+    call getfac(keywordFact, nliai)
     if (nliai .eq. 0) goto 999
 !
 ! - Initializations
@@ -155,23 +151,23 @@ implicit none
     list_rela = '&&CAPREC.LIRELA'
     list_rela_tmp = '&&CAPREC.LIRELA_TMP'
     cabl_sigm = load//'.CHME.SIGIN'
-    model = ligrmo(1:8)
-    
 !
     call wkvect('&&CAPREC.LCES', 'V V K16', nliai, jlces)
     call wkvect('&&CAPREC.LCESL', 'V V L', nliai, jll)
     call wkvect('&&CAPREC.LCESR', 'V V R', nliai, jlr)
     nbchs=0
 !
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndimmo)
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem)
-    if (.not.(ndimmo.eq.2.or.ndimmo.eq.3)) then
+    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
         call utmess('F', 'CHARGES2_6')
     endif
+    call jeveuo(modelLigrel//'.PRNM', 'L', jprnm)
 !
 ! - Initializations of types
 !
-    ASSERT(vale_type.eq.'REEL')
+    ASSERT(valeType.eq.'REEL')
 !
 ! - Minimum distance
 !
@@ -184,7 +180,6 @@ implicit none
     call jelira(jexnom('&CATA.GD.NOMCMP', nomg_depl), 'LONMAX', nb_cmp_depl, k8bid)
     call dismoi('NB_EC', nomg_depl, 'GRANDEUR', repi=nbec_depl)
     ASSERT(nbec_depl.le.10)
-    call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
 !
 ! - Index in DEPL_R <GRANDEUR> for DX, DY, DZ, DRX, DRY, DRZ
 !
@@ -215,14 +210,6 @@ implicit none
     call dismoi('NB_EC', nomg_sief, 'GRANDEUR', repi=nbec_sief)
     ASSERT(nbec_sief.le.10)
 !
-    call dismoi('TYPE_CHARGE', load, 'CHARGE', repk=typcha)
-    if (typcha(1:4) .eq. 'MECA') then
-        ligrch=load//'.CHME.LIGRE'
-    else if (typcha(1:4).eq.'THER') then
-        ligrch=load//'.CHTH.LIGRE'
-    else if (typcha(1:4).eq.'ACOU') then
-        ligrch=load//'.CHAC.LIGRE'
-    endif
 !
 ! - On procède en deux passes : 
 !       - évaluation de la place nécessaire pour les cartes CMULT et CIMPO 
@@ -243,14 +230,14 @@ implicit none
 ! --- CHARGE A SON AFFECTATION PAR LES MAILLES TARDIVES DUES
 ! --- AUX RELATIONS LINEAIRES
 ! --- SI LE LIGREL DE CHARGE N'EXISTE PAS, ON LE CREE
-              call craglc(nbteli_total, ligrch)
+              call craglc(nbteli_total, loadLigrel)
 !
 ! --- VERIFICATION DE L'ADEQUATION DE LA TAILLE DES CARTES
 ! --- .CMULT ET .CIMPO DE LA CHARGE A LEUR AFFECTATION
 ! --- PAR LES MAILLES TARDIVES DUES AUX RELATIONS LINEAIRES
 ! --- SI LES CARTES .CMULT ET .CIMPO N'EXISTENT PAS, ON
 ! --- LES CREE
-              call cragch(nbteli_total, typcoe, typval, ligrch)
+              call cragch(nbteli_total, typcoe, typval, loadLigrel)
           endif
        endif 
 !
@@ -258,19 +245,19 @@ implicit none
 !
 ! ----- Minimum distance
 !
-        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, scal=dist_mini, nbret=n1)
+        call getvr8(keywordFact, 'DIST_MIN', iocc=iocc, scal=dist_mini, nbret=n1)
         if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Options
 !
-        call getvtx(keywordfact, 'SIGM_BPEL', iocc=iocc, scal=answer, nbret=ibid)
+        call getvtx(keywordFact, 'SIGM_BPEL', iocc=iocc, scal=answer, nbret=ibid)
         l_sigm_bpel = (answer.eq.'OUI')
-        call getvtx(keywordfact, 'RELA_CINE', iocc=iocc, scal=answer, nbret=ibid)
+        call getvtx(keywordFact, 'RELA_CINE', iocc=iocc, scal=answer, nbret=ibid)
         l_rela_cine = (answer.eq.'OUI')
 !
         if (l_sigm_bpel .or. l_rela_cine) then
 !
-            call getvid(keywordfact, 'CABLE_BP', iocc=iocc, scal=cabl_prec, nbret=ibid)
+            call getvid(keywordFact, 'CABLE_BP', iocc=iocc, scal=cabl_prec, nbret=ibid)
 !
 ! --------- Linear relations
 !
@@ -353,7 +340,7 @@ implicit none
 !
 ! ----------------------------- Set LIAISON_SOLIDE for ndim =2
 !
-                                if (ndimmo .eq. 2) then
+                                if (geomDime .eq. 2) then
 !
 ! --------------------------------- Is any node has rotation dof ?
 !
@@ -373,16 +360,17 @@ implicit none
 ! --------------------------------- Compute linear relations
 !
                                     if (l_rota_2d) then
-                                        call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
+                                        call drz12d(mesh, modelLigrel, valeType, nb_node, &
+                                                    list_node,&
                                                     cmp_index_drz, list_rela, nom_noeuds_tmp)
                                     else
-                                        call solide_tran('2D',mesh, vale_type, dist_mini, nb_node,&
+                                        call solide_tran('2D',mesh, valeType, dist_mini, nb_node,&
                                                          list_node, list_rela, nom_noeuds_tmp, dim)
                                     endif
 !
 ! ----------------------------- Set LIAISON_SOLIDE for ndim = 3
 !
-                                else if (ndimmo.eq.3) then
+                                else if (geomDime.eq.3) then
 !
 ! --------------------------------- Is any node has rotation dof ?
 !
@@ -412,13 +400,14 @@ implicit none
 ! --------------------------------- Compute linear relations
 !
                                     if (l_rota_3d) then
-                                        call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
+                                        call drz13d(mesh, modelLigrel, valeType, nb_node,&
+                                                    list_node,&
                                                     cmp_index_dx, cmp_index_dy, cmp_index_dz,&
                                                     cmp_index_drx, cmp_index_dry, cmp_index_drz,&
                                                     list_rela, nom_noeuds_tmp)
                                     else
                                         
-                                        call solide_tran('3D',mesh, vale_type, dist_mini, nb_node,&
+                                        call solide_tran('3D',mesh, valeType, dist_mini, nb_node,&
                                                          list_node, list_rela, nom_noeuds_tmp, dim)
                                     endif
                                 else
@@ -487,12 +476,12 @@ implicit none
 !
       do iocc = 1, nliai
 !
-          call getvtx(keywordfact, 'SIGM_BPEL', iocc=iocc, scal=answer, nbret=ibid)
+          call getvtx(keywordFact, 'SIGM_BPEL', iocc=iocc, scal=answer, nbret=ibid)
           l_sigm_bpel = (answer.eq.'OUI')
 !
           if (l_sigm_bpel) then
 !
-              call getvid(keywordfact, 'CABLE_BP', iocc=iocc, scal=cabl_prec, nbret=ibid)
+              call getvid(keywordFact, 'CABLE_BP', iocc=iocc, scal=cabl_prec, nbret=ibid)
 !
 ! --------- Get and combine stresses
 !         

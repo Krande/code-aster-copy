@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
     subroutine chpchd(chin, type, celmod, prol0, base,&
-                      chou)
+                      chou, model_)
         character(len=*) :: chin
         character(len=*) :: type
         character(len=*) :: celmod
         character(len=3) :: prol0
         character(len=*) :: base
         character(len=*) :: chou
+        character(len=8), optional, intent(in) :: model_
     end subroutine chpchd
 end interface

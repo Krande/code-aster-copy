@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,30 +15,26 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cbsonl(char, noma, ligrmo, ndim, fonree)
 !
-    implicit   none
+subroutine cbflux(load, mesh, model, geomDime, valeType)
+!
+implicit none
+!
 #include "asterc/getfac.h"
-#include "asterfort/casonl.h"
-    integer :: ndim
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
-! ----------------------------------------------------------------------
-!                   SOURCE THERMIQUE NON LINEAIRE
+#include "asterfort/caflux.h"
 !
-!  EXISTENCE DU MOT-CLE FACTEUR SOUR_NL
-! ----------------------------------------------------------------------
+integer, intent(in) :: geomDime
+character(len=4), intent(in) :: valeType
+character(len=8), intent(in) :: load, mesh, model
+
+!     ------------------------------------------------------------------
 !
     integer :: nbfac
-    character(len=16) :: motfac
-! ----------------------------------------------------------------------
+    character(len=16), parameter :: motfac = 'FLUX_REP'
+    call getfac(motfac, nbfac)
 !
-    if (fonree .eq. 'FONC') then
-        motfac = 'SOUR_NL'
-        call getfac(motfac, nbfac)
-        if (nbfac .ne. 0) call casonl(char, ligrmo, noma, ndim)
+    if (nbfac .ne. 0) then
+        call caflux(load, model, mesh, geomDime, valeType)
     endif
 !
 end subroutine

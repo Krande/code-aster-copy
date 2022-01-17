@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,15 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine cblapl(load, ligrmo, mesh)
+subroutine cblapl(load, mesh, model)
 !
 implicit none
 !
 #include "asterc/getfac.h"
 #include "asterfort/calapl.h"
 !
-character(len=8), intent(in) :: load, mesh
-character(len=*), intent(in) :: ligrmo
+character(len=8), intent(in) :: load, mesh, model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -36,7 +35,7 @@ character(len=*), intent(in) :: ligrmo
 !
 ! In  load      : load
 ! In  mesh      : mesh
-! In  ligrmo    : model <LIGREL>
+! In  model     : model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +46,7 @@ character(len=*), intent(in) :: ligrmo
 !
     call getfac(keywordfact, nbOcc)
     if (nbOcc .ne. 0) then
-        call calapl(load, ligrmo, mesh, nbOcc)
+        call calapl(load, mesh, model, nbOcc)
     endif
 !
 end subroutine

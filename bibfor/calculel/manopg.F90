@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine manopg(ligrez, optioz, paramz, mnogaz)
+subroutine manopg(model, ligrez, optioz, paramz, mnogaz)
 !
 implicit none
 !
@@ -56,6 +56,7 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
+character(len=8), intent(in) :: model
     character(len=*) :: ligrez, mnogaz, optioz, paramz
 ! ------------------------------------------------------------------
 ! BUT: CREER LE CHAM_ELEM_S MNOGAZ QUI CONTIENDRA LA MATRICE
@@ -147,7 +148,7 @@ implicit none
 !     '.ECONO': V(IGR) = 1 => LE GREL IGR EST STOCKE 'ECONOMIQUE'
     kecono='&&MANOPG.ECONO'
     chsgeo='&&MANOPG.CHSGEO'
-    call manopx(ligrel, option, param, chsgeo, exixfm,&
+    call manopx(model, ligrel, option, param, chsgeo, exixfm,&
                 kecono)
     call jeveuo(kecono, 'L', jecono)
     if (exixfm .eq. 'OUI') then

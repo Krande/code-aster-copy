@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,10 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine capres_skin(load, mesh, ligrmo, ndim, valeType, nbOccPresRep)
-        character(len=8), intent(in)  :: load, mesh
-        character(len=19), intent(in) :: ligrmo
-        integer, intent(in)           :: ndim
-        character(len=4), intent(in)  :: valeType
-        integer, intent(in)           :: nbOccPresRep
+    subroutine capres_skin(load, mesh, model, geomDime, valeType, nbOccPresRep)
+        character(len=8), intent(in) :: load, mesh, model
+        integer, intent(in) :: geomDime
+        character(len=4), intent(in) :: valeType
+        integer, intent(in) :: nbOccPresRep
     end subroutine capres_skin
 end interface

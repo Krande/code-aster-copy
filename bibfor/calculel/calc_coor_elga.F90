@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,17 +16,17 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine calc_coor_elga(ligrel, chgeom, chgaus)
+subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
 !
 implicit none
 !
 #include "asterfort/calcul.h"
 #include "asterfort/dismoi.h"
 !
-!
-    character(len=19), intent(in) :: ligrel
-    character(len=19), intent(in) :: chgeom
-    character(len=19), intent(in) :: chgaus
+character(len=*), intent(in) :: modelZ
+character(len=19), intent(in) :: ligrel
+character(len=19), intent(in) :: chgeom
+character(len=19), intent(in) :: chgaus
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -34,13 +34,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  model      : model
 ! In  ligrel     : list of elements where computing
 ! In  chgeom     : name of <CARTE> for geometry
 ! In  chgaus     : name of <CARTE> with informations on Gauss points 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: lpain(5), lpaout(1), mo
+    character(len=8) :: lpain(5), lpaout(1)
     character(len=16) :: option
     character(len=19) :: lchin(5), lchout(1)
     integer :: nbchin, nfiss
@@ -52,17 +53,16 @@ implicit none
     nbchin    = 1
 !   si le modele comporte des elements X-FEM, on ajoute les
 !   champs ad hoc
-    call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=mo)
-    call dismoi('NB_FISS_XFEM', mo, 'MODELE', repi=nfiss)
+    call dismoi('NB_FISS_XFEM', modelZ, 'MODELE', repi=nfiss)
     if (nfiss.gt.0) then
          lpain(2) = 'PPINTTO'
-         lchin(2) = mo(1:8)//'.TOPOSE.PIN'
+         lchin(2) = modelZ(1:8)//'.TOPOSE.PIN'
          lpain(3) = 'PPMILTO'
-         lchin(3) = mo(1:8)//'.TOPOSE.PMI'
+         lchin(3) = modelZ(1:8)//'.TOPOSE.PMI'
          lpain(4) = 'PCNSETO'
-         lchin(4) = mo(1:8)//'.TOPOSE.CNS'
+         lchin(4) = modelZ(1:8)//'.TOPOSE.CNS'
          lpain(5) = 'PLONCHA'
-         lchin(5) = mo(1:8)//'.TOPOSE.LON'
+         lchin(5) = modelZ(1:8)//'.TOPOSE.LON'
          nbchin   = 5
     endif
 !

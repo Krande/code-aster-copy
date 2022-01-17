@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine caliob(load, mesh, ligrmo, vale_type)
+!
+subroutine caliob(load, mesh, model, valeType)
 !
 implicit none
 !
@@ -48,11 +48,8 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-!
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,16 +59,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  mesh        : name of mesh
-! In  load        : name of load
-! In  ligrmo      : list of elements nume_node model
-! In  vale_type   : affected value type (real, complex or function)
+! In  mesh        : mesh
+! In  load        : load
+! In  model       : model
+! In  valeType    : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n_max_keyword
-    parameter (n_max_keyword=300)
+    integer, parameter :: n_max_keyword = 300
     integer :: ddlimp(n_max_keyword)
     real(kind=8) :: valimr(n_max_keyword)
     complex(kind=8) :: valimc(n_max_keyword)
@@ -81,14 +76,14 @@ implicit none
     character(len=24) :: list_node
     integer :: jlino, nb_node
     integer :: ino
-    integer :: ndim, nbec
+    integer :: geomDime, nbec
     integer :: nliai, nume_node
     integer :: i_angle, i_keyword, iocc, i_direct
     real(kind=8) :: coefr, val_r, direct(3)
     character(len=8) :: ddl, coeff, val_f
     complex(kind=8) :: coefc, val_c
     character(len=4) :: typcoe
-    character(len=8) :: model, nomg
+    character(len=8) :: nomg
     character(len=8) :: name_node
     character(len=16) :: keywordfact, keyword
     integer :: n_keyword
@@ -117,10 +112,9 @@ implicit none
     rdgd = r8dgrd()
 !
     typcoe = 'REEL'
-    if (vale_type .eq. 'COMP') then
+    if (valeType .eq. 'COMP') then
         ASSERT(.false.)
     endif
-    model = ligrmo(1:8)
 !
 ! - Create list of excluded keywords for using in char_read_keyw
 !
@@ -132,9 +126,10 @@ implicit none
     nomg = 'DEPL_R'
     call dismoi('NB_EC', nomg, 'GRANDEUR', repi=nbec)
     ASSERT(nbec.le.10)
-!
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+
+! - Model informations
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
+    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
         call utmess('F', 'CHARGES2_6')
     endif
 !
@@ -163,7 +158,7 @@ implicit none
 !
 ! ----- Read affected components and their values
 !
-        call char_read_keyw(keywordfact, iocc, vale_type, n_keyexcl, keywordexcl,&
+        call char_read_keyw(keywordfact, iocc, valeType, n_keyexcl, keywordexcl,&
                             n_max_keyword, n_keyword, keywordlist, ddlimp, valimr,&
                             valimf, valimc)
 !
@@ -207,9 +202,9 @@ implicit none
             do ino = 1, nb_node
                 nume_node = zi(jlino+ino-1)
                 call jenuno(jexnum(mesh//'.NOMNOE', nume_node), name_node)
-                call afrela([coefr], [coefc], ddl, name_node, [ndim],&
+                call afrela([coefr], [coefc], ddl, name_node, [geomDime],&
                             direct, 1, val_r, val_c, val_f,&
-                            typcoe, vale_type, 0.d0, lisrel)
+                            typcoe, valeType, 0.d0, lisrel)
             enddo
         enddo
 !

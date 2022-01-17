@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -203,7 +203,7 @@ subroutine op0048()
 !
 !   transformation cham_elem (ELNO) -> cham_no : celvrc -> cnovrc
     cnovrc = '&&'//nompro//'.CNOVRC'
-    call chpchd(celvrc, 'NOEU', ' ', 'NON', 'V', cnovrc)
+    call chpchd(celvrc, 'NOEU', ' ', 'NON', 'V', cnovrc, model)
     call detrsd('CHAM_ELEM', celvrc)
 !
 !   transformation cham_no -> cham_no_s : cnovrc -> cnsvrc

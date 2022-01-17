@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -107,8 +107,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !                   DU FOND DE FISSURE (IADFIS DANS OP0100)
 ! ......................................................................
 !
-    integer :: nbmxpa
-    parameter (nbmxpa = 20)
+    integer, parameter :: nbmxpa = 20
 !
     integer :: i, ibid, iadrg, iret, jresu, nchin
     integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga, pbtype
@@ -126,7 +125,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno, stano
     character(len=19) :: pmilto, hea_no
     character(len=19) :: longco, pinter, ainter, cface, baseco
-    character(len=24) :: ligrmo, chgeom, chgthi
+    character(len=24) :: modelLigrel, chgeom, chgthi
     character(len=24) :: chsigi, sigelno, sigseno, celmod
     character(len=24) :: lchin(50), lchout(1), chthet, chtime
     character(len=24) :: objcur, normff, pavolu, papres, pa2d3d
@@ -149,7 +148,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     call megeom(modele, chgeom)
 !
 !   Recuperation du LIGREL
-    ligrmo = modele//'.MODELE'
+    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=modelLigrel)
 
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
@@ -207,10 +206,10 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 
 !               traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
-                call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
+                call alchml(modelLigrel, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
                 call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
-                            sigelno)
+                            sigelno, modele)
                 call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
 
 !               calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM
@@ -372,7 +371,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
         if ((opti.eq.'CALC_G_XFEM_F') .or. (opti.eq.'G_LAGR_F')) then
             chtime = '&&MECAGL.CH_INST_R'
-            call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
+            call mecact('V', chtime, 'MODELE', modelLigrel, 'INST_R',&
                         ncmp=1, nomcmp='INST', sr=time)
             lpain(nchin+1) = 'PTEMPSR'
             lchin(nchin+1) = chtime
@@ -427,7 +426,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             nchin = nchin + 1
         endif
 !
-        call calcul('S', opti, ligrmo, nchin, lchin,&
+        call calcul('S', opti, modelLigrel, nchin, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         call mesomm(chgthi, 1, vr=gthi(1))

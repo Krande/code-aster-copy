@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,15 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
+    subroutine caddli(keywordfact, load, mesh, model, valeType)
         character(len=16), intent(in) :: keywordfact
-        character(len=8), intent(in)  :: load
-        character(len=8), intent(in)  :: mesh
-        character(len=19), intent(in) :: ligrmo
-        character(len=4), intent(in)  :: vale_type
+        character(len=8), intent(in)  :: load, mesh, model
+        character(len=4), intent(in)  :: valeType
     end subroutine caddli
 end interface

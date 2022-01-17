@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine caliso(load, mesh, ligrmo, vale_type)
+!
+subroutine caliso(load, mesh, model, valeType)
 !
 implicit none
 !
@@ -56,37 +56,33 @@ implicit none
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 !
-! person_in_charge: jacques.pellet at edf.fr, mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: load
-    character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: ligrmo
-    character(len=4), intent(in) :: vale_type
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Loads affectation
 !
-! Keyword = 'LIAISON_SOLIDE'
+! Treatment of load LIAISON_SOLIDE
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  mesh        : name of mesh
-! In  load        : name of load
-! In  ligrmo      : list of elements nume_node model
-! In  vale_type   : affected value type (real, complex or function)
+! In  mesh        : mesh
+! In  load        : load
+! In  model       : model
+! In  valeType    : affected value type (real, complex or function)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=16), parameter :: keywordFact = 'LIAISON_SOLIDE'
     integer :: iocc
     integer :: jnom, n1
     integer :: i_no
-    integer :: nb_cmp, nbec, ndim, nbocc
+    integer :: nb_cmp, nbec, geomDime, nbocc
     character(len=24) :: list_node
     integer :: jlino, numnoe
     integer :: nb_node
-    character(len=8) :: nomg, model
+    character(len=8) :: nomg
     real(kind=8) :: dist_mini, dist
     integer :: dim, k
     character(len=1) :: kdim
@@ -95,8 +91,7 @@ implicit none
     integer, pointer :: prnm(:) => null()
     integer, pointer :: prnm1(:) => null()
     character(len=19) :: list_rela
-    character(len=19) :: ligrch
-    character(len=16) :: keywordfact
+    character(len=19) :: modelLigrel
     character(len=24) :: keywordexcl
     integer :: n_keyexcl, nuti
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
@@ -106,8 +101,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    keywordfact = 'LIAISON_SOLIDE'
-    call getfac(keywordfact, nbocc)
+!
+    call getfac(keywordFact, nbocc)
     if (nbocc .eq. 0) goto 999
 !
 ! - Initializations
@@ -116,19 +111,18 @@ implicit none
 !
     l_rota_2d = .false.
     l_rota_3d = .false.
-!
+
 ! - Type
-!
-    ASSERT(vale_type .eq. 'REEL')
-!
-! - Access to model
-!
-    model = ligrmo(1:8)
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
-    call jeveuo(ligrmo//'.PRNM', 'L', vi = prnm)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+    ASSERT(valeType .eq. 'REEL')
+
+! - Model informations
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=modelLigrel)
+    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
         call utmess('F', 'CHARGES2_6')
     endif
+    call jeveuo(modelLigrel//'.PRNM', 'L', vi = prnm)
+
 !
 ! - Minimum distance
 !
@@ -138,7 +132,7 @@ implicit none
 ! - Create list of excluded keywords for using in char_read_keyw
 !
     keywordexcl = '&&CALISO.KEYWORDEXCL'
-    call char_excl_keyw(keywordfact, keywordexcl, n_keyexcl)
+    call char_excl_keyw(keywordFact, keywordexcl, n_keyexcl)
 !
 ! - Information about <GRANDEUR>
 !
@@ -169,8 +163,6 @@ implicit none
     ASSERT(cmp_index_dry.gt.0)
     ASSERT(cmp_index_drz.gt.0)
 !
-    ligrch = load//'.CHME.LIGRE'
-!
 ! - Loop on factor keyword
 !
     do iocc = 1, nbocc
@@ -178,13 +170,13 @@ implicit none
 !
 ! ----- Minimum distance
 !
-        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, scal=dist_mini, nbret=n1)
+        call getvr8(keywordFact, 'DIST_MIN', iocc=iocc, scal=dist_mini, nbret=n1)
         if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Read mesh affectation
 !
         list_node = '&&CALISO.LIST_NODE'
-        call getnode(mesh, keywordfact, iocc, 'F', list_node,nb_node)
+        call getnode(mesh, keywordFact, iocc, 'F', list_node,nb_node)
         call jeveuo(list_node, 'L', jlino)
 !
 ! ----- Only one node: nothing to do
@@ -196,7 +188,7 @@ implicit none
 !
 ! ----- Model: 2D
 !
-        if (ndim .eq. 2) then
+        if (geomDime .eq. 2) then
 !
 ! --------- Is any node has DRZ dof ?
 !
@@ -214,11 +206,11 @@ implicit none
 ! --------- Compute linear relations
 !
             if (l_rota_2d) then
-                call drz12d(mesh, ligrmo, vale_type, nb_node, list_node,&
+                call drz12d(mesh, modelLigrel, valeType, nb_node, list_node,&
                             cmp_index_drz, list_rela, nom_noeuds_tmp)
                 type_rela = "ROTA2D"
             else
-                call solide_tran('2D',mesh, vale_type, dist_mini, nb_node, list_node,&
+                call solide_tran('2D',mesh, valeType, dist_mini, nb_node, list_node,&
                                  list_rela, nom_noeuds_tmp, dim)
                 if (dim.eq.0) then
                     type_rela = "LIN"
@@ -230,7 +222,7 @@ implicit none
 !
 ! ----- Model: 3D
 !
-        else if (ndim.eq.3) then
+        else if (geomDime.eq.3) then
 !
 ! --------- Is any node has rotation dofs ?
 !
@@ -250,12 +242,12 @@ implicit none
 ! --------- Compute linear relations
 !
             if (l_rota_3d) then
-                call drz13d(mesh, ligrmo, vale_type, nb_node, list_node,&
+                call drz13d(mesh, modelLigrel, valeType, nb_node, list_node,&
                             cmp_index_dx, cmp_index_dy, cmp_index_dz, cmp_index_drx,&
                             cmp_index_dry, cmp_index_drz, list_rela, nom_noeuds_tmp)
                 type_rela = "ROTA3D"
             else
-                call solide_tran('3D',mesh, vale_type, dist_mini, nb_node, list_node,&
+                call solide_tran('3D',mesh, valeType, dist_mini, nb_node, list_node,&
                                  list_rela, nom_noeuds_tmp, dim)
                 if (dim.eq.0) then
                     type_rela = "LIN"

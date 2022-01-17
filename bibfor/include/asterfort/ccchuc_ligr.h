@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine ccchuc_ligr(list_elem_stor, nb_elem_old, nb_elem_new, list_elem_new, ligrel_old, &
+    subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old,&
+                           nb_elem_new, list_elem_new, ligrel_old, &
                            ligrel_new)
+        character(len=8), intent(in) :: model
         character(len=24), intent(in) :: list_elem_stor
         integer, intent(in) :: nb_elem_old
         character(len=24), intent(in) :: list_elem_new

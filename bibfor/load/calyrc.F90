@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! Person in charge: mickael.abbas at edf.fr
 !
-subroutine calyrc(load, mesh)
+subroutine calyrc(load, mesh, model, geomDime)
 !
 implicit none
 !
@@ -53,23 +52,25 @@ implicit none
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-character(len=8), intent(in) :: load
-character(len=8), intent(in) :: mesh
+character(len=8), intent(in) :: load, mesh, model
+integer, intent(in) :: geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Loads affectation
 !
-! Keyword = 'LIAISON_CYCL'
+! Treatment of load LIAISON_CYCL
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  load         : name of load
-! In  mesh         : name of mesh
+! In  load             : load
+! In  mesh             : mesh
+! In  model            : model
+! In  geomDime         : space dimension
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: k, kk, nuno1, nuno2, ino1, ino2, ndim, nocc, iocc
+    integer :: k, kk, nuno1, nuno2, ino1, ino2, nocc, iocc
     integer :: nnomx, idmax
     integer :: nbma1, nbma2
     integer :: nbno2, idcal1, idcal2, nul
@@ -82,9 +83,8 @@ character(len=8), intent(in) :: mesh
     real(kind=8) :: r8b
     real(kind=8) :: coef11, coef12, coef3
     complex(kind=8) :: betac
-    character(len=4) :: fonree
+    character(len=4) :: valeType
     character(len=4) :: typcoe, typlia
-    character(len=8) :: model, m8blan
     character(len=8) :: kbeta, nono1, nono2, cmp, ddl2, listyp(11)
     character(len=16) :: motfac, cores1, cores2, tymocl(4), motcle(4)
     character(len=19) :: lisrel
@@ -128,7 +128,7 @@ character(len=8), intent(in) :: mesh
     typlia = 'DEPL'
 !
 !
-    fonree = 'REEL'
+    valeType = 'REEL'
     typcoe = 'REEL'
 !
     lisrel = '&&CALYRC.RLLISTE'
@@ -136,22 +136,19 @@ character(len=8), intent(in) :: mesh
     beta = 0.0d0
     betac = (0.0d0,0.0d0)
     kbeta = ' '
-    m8blan = '        '
     ndim1 = 3
     lreori = .false.
 !
-    call dismoi('NOM_MODELE', load, 'CHARGE', repk=model)
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
-    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
-        call utmess('F', 'MODELISA2_6')
+    if (.not.(geomDime.eq.2.or.geomDime.eq.3)) then
+        call utmess('F', 'CHARGES2_6')
     endif
 !
-    if (ndim .eq. 2) then
+    if (geomDime .eq. 2) then
         nbtyp = 3
         listyp(1) = 'SEG2'
         listyp(2) = 'SEG3'
         listyp(3) = 'SEG4'
-    else if (ndim.eq.3) then
+    else if (geomDime.eq.3) then
         nbtyp = 11
         listyp(1) = 'TRIA3'
         listyp(2) = 'TRIA6'
@@ -243,7 +240,7 @@ character(len=8), intent(in) :: mesh
             call jeveuo('&&CALYRC.LIMANU3', 'L', vi=limanu3)
 !
             norien = 0
-            call orilma(mesh, ndim, limanu3, nbma3, norien,&
+            call orilma(mesh, geomDime, limanu3, nbma3, norien,&
                         ntrait, lreori, 0, [0])
             if (norien .ne. 0) then
                 call utmess('F', 'MODELISA3_19')
@@ -274,7 +271,7 @@ character(len=8), intent(in) :: mesh
                 zi(indire+ln(i)-1) = i
             end do
 !
-            call canort(mesh, nbma3, limanu3, ndim, nbno3,&
+            call canort(mesh, nbma3, limanu3, geomDime, nbno3,&
                         ln, 1)
             call jeveuo('&&CANORT.NORMALE', 'L', vr=normale)
             call jedupo('&&NBNLMA.LN3', 'V', '&&CALYRC.LINONU', .false._1)
@@ -284,7 +281,7 @@ character(len=8), intent(in) :: mesh
 !
 !       1.3 TRANSFORMATION DE LA GEOMETRIE DE GRNO2 :
 !       ------------------------------------------
-        call char_read_tran(motfac, iocc, ndim, l_tran, tran,&
+        call char_read_tran(motfac, iocc, geomDime, l_tran, tran,&
                             l_cent, cent, l_angl_naut, angl_naut)
 !
         geom3 = '&&CALYRC.GEOM_TRANSF'
@@ -295,7 +292,7 @@ character(len=8), intent(in) :: mesh
 !
 !       2. CALCUL DE CORRES :
 !       -------------------
-        if (ndim .eq. 2) then
+        if (geomDime .eq. 2) then
 !        -- 1er groupe esclave / 1er groupe maitre --
             call pj2dco('PARTIE', model, model, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
@@ -306,7 +303,7 @@ character(len=8), intent(in) :: mesh
                             nbno3, zi( iagno3), ' ', geom3, cores2,&
                             .false._1, r8b, 0.d0)
             endif
-        else if (ndim.eq.3) then
+        else if (geomDime.eq.3) then
 !        -- 1er groupe esclave / 1er groupe maitre --
             call pj3dco('PARTIE', model, model, nbma1, limanu1,&
                         nbno3, zi( iagno3), ' ', geom3, cores1,&
@@ -402,19 +399,19 @@ character(len=8), intent(in) :: mesh
 !           -----------------------------------------------------
                     if (dnor) then
                         do ino1 = 1, nno11 + nno12 + 1
-                            dim(ino1) = ndim
+                            dim(ino1) = geomDime
                             nomddl(ino1) = 'DEPL'
-                            do idim = 1, ndim
+                            do idim = 1, geomDime
                                 direct(1+ (ino1-1)*ndim1+idim-1) =&
-                                normale(1+ (zi(indire+ino2-1)-1)*ndim+&
+                                normale(1+ (zi(indire+ino2-1)-1)*geomDime+&
                                 idim-1)
                             end do
                         end do
                         call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                                     direct, nno11+ nno12+1, beta, betac, kbeta,&
-                                    typcoe, fonree, 1.d-6, lisrel)
+                                    typcoe, valeType, 1.d-6, lisrel)
                     else
-                        do k = 1, ndim
+                        do k = 1, geomDime
                             if (k .eq. 1) cmp = 'DX'
                             if (k .eq. 2) cmp = 'DY'
                             if (k .eq. 3) cmp = 'DZ'
@@ -423,7 +420,7 @@ character(len=8), intent(in) :: mesh
                             end do
                             call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                                         direct, nno11+nno12+1, beta, betac, kbeta,&
-                                        typcoe, fonree, 1.d-6, lisrel)
+                                        typcoe, valeType, 1.d-6, lisrel)
                             call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe,&
                                         beta)
                         end do
@@ -451,8 +448,8 @@ character(len=8), intent(in) :: mesh
                     endif
                     if ((nno11.eq.0) .and. (nno12.eq.0)) goto 250
                     do k = 1, idmax
-                        nomnoe(k) = m8blan
-                        nomddl(k) = m8blan
+                        nomnoe(k) = ' '
+                        nomddl(k) = ' '
                         coef(k) = zero
                         dim(k) = 0
                         do kk = 1, 3
@@ -470,7 +467,7 @@ character(len=8), intent(in) :: mesh
                     if (dnor) then
                         ij = 1
                     else
-                        ij = ndim
+                        ij = geomDime
                     endif
 !
                     do ino1 = 1, nno11
@@ -492,49 +489,49 @@ character(len=8), intent(in) :: mesh
 !           -- AFFECTATION DES RELATIONS CONCERNANT LE NOEUD INO2 :
 !           -----------------------------------------------------
                     if (dnor) then
-                        do idim = 1, ndim
-                            do jdim = 1, ndim
+                        do idim = 1, geomDime
+                            do jdim = 1, geomDime
                                 normal(idim) = normal(idim) + mrota( jdim,idim)*normale(1+ (zi(in&
-                                               &dire+ino2- 1)-1)*ndim+jdim-1)
+                                               &dire+ino2- 1)-1)*geomDime+jdim-1)
                             end do
                         end do
                         coef(1) = 1.0d0*coef3
                         nomnoe(1) = nono2
                         nomddl(1) = 'DEPL'
-                        dim(1) = ndim
-                        do idim = 1, ndim
-                            direct(idim) = normale(1+ (zi(indire+ ino2-1)-1 )*ndim+idim-1 )
+                        dim(1) = geomDime
+                        do idim = 1, geomDime
+                            direct(idim) = normale(1+ (zi(indire+ ino2-1)-1 )*geomDime+idim-1 )
                         end do
                         do ino1 = 2, nno11 + 1
-                            dim(ino1) = ndim
+                            dim(ino1) = geomDime
                             nomddl(ino1) = 'DEPL'
-                            do idim = 1, ndim
+                            do idim = 1, geomDime
                                 direct(1+ (ino1-1)*ndim1+idim-1) = - normal( idim)
                             end do
                         end do
                         do ino1 = 2, nno12 + 1
-                            dim(1+nno11+ino1-1) = ndim
+                            dim(1+nno11+ino1-1) = geomDime
                             nomddl(nno11+ino1) = 'DEPL'
-                            do idim = 1, ndim
+                            do idim = 1, geomDime
                                 direct(1+nno11+ (ino1-1)*ndim1+idim-&
                                 1) = -normal(idim)
                             end do
                         end do
                         call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                                     direct, nno11+ nno12+1, beta, betac, kbeta,&
-                                    typcoe, fonree, 1.d-6, lisrel)
+                                    typcoe, valeType, 1.d-6, lisrel)
                     else
-                        do k = 1, ndim
+                        do k = 1, geomDime
                             if (k .eq. 1) cmp = 'DX'
                             if (k .eq. 2) cmp = 'DY'
                             if (k .eq. 3) cmp = 'DZ'
                             do ino1 = 1, nno11
-                                nomddl(1+ndim+ino1-1) = cmp
+                                nomddl(1+geomDime+ino1-1) = cmp
                             end do
                             do ino1 = 1, nno12
-                                nomddl(1+nno11+ndim+ino1-1) = cmp
+                                nomddl(1+nno11+geomDime+ino1-1) = cmp
                             end do
-                            do kk = 1, ndim
+                            do kk = 1, geomDime
                                 if (kk .eq. 1) cmp = 'DX'
                                 if (kk .eq. 2) cmp = 'DY'
                                 if (kk .eq. 3) cmp = 'DZ'
@@ -543,9 +540,9 @@ character(len=8), intent(in) :: mesh
                                 coef(kk) = -mrota(kk,k)*coef3
                             end do
                             call afrela(coef, coemuc, nomddl, nomnoe, dim,&
-                                        direct, nno11+nno12+ndim, beta, betac, kbeta,&
-                                        typcoe, fonree, 1.d-6, lisrel)
-                            call imprel(motfac, nno11+nno12+ndim, coef, nomddl, nomnoe,&
+                                        direct, nno11+nno12+geomDime, beta, betac, kbeta,&
+                                        typcoe, valeType, 1.d-6, lisrel)
+                            call imprel(motfac, nno11+nno12+geomDime, coef, nomddl, nomnoe,&
                                         beta)
                         end do
                     endif
@@ -596,7 +593,7 @@ character(len=8), intent(in) :: mesh
                 end do
                 call afrela(coef, coemuc, nomddl, nomnoe, dim,&
                             direct, nno11+nno12+1, beta, betac, kbeta,&
-                            typcoe, fonree, 1.d-6, lisrel)
+                            typcoe, valeType, 1.d-6, lisrel)
                 call imprel(motfac, nno11+nno12+1, coef, nomddl, nomnoe,&
                             beta)
                 idcal1 = idcal1 + nno11

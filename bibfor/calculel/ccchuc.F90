@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -334,7 +334,8 @@ subroutine ccchuc(sdresu_in, sdresu_out, field_type, nume_field_out, type_comp,&
 ! ------------- Manage <LIGREL> - Create new if necessary
 !
                 if (nb_elem_in > 0) nb_elem = -nb_elem
-                call ccchuc_ligr(list_elem_stor, nb_elem, nb_elem_new, list_elem_new, ligrel_old,&
+                call ccchuc_ligr(model, list_elem_stor, nb_elem,&
+                                 nb_elem_new, list_elem_new, ligrel_old,&
                                  ligrel_new)
             endif
         endif

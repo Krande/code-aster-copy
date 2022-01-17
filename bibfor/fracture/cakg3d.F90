@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -233,7 +233,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
             call alchml(ligrmo, 'CALC_G_XFEM', 'PSIGINR', 'V', celmod,&
                         iret, ' ')
             call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
-                        sigelno)
+                        sigelno, modele)
             call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
 
 !           calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM

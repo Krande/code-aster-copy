@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine casour(char, ligrmo, noma, ndim, fonree)
-    implicit none
+!
+subroutine casour(load, mesh, model, geomDime, valeType)
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
@@ -33,20 +35,14 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
 #include "asterfort/vetyma.h"
-    integer :: ndim
-    character(len=4) :: fonree
-    character(len=8) :: char, noma
-    character(len=*) :: ligrmo
+!
+character(len=8), intent(in) :: load, mesh, model
+character(len=4), intent(in) :: valeType
+integer, intent(in) :: geomDime
+!
 !
 ! BUT : STOCKAGE DES SOURCES DANS UNE CARTE ALLOUEE SUR LE
 !       LIGREL DU MODELE
-!
-! ARGUMENTS D'ENTREE:
-!      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
-!      LIGRMO : NOM DU LIGREL DE MODELE
-!      NOMA   : NOM DU MAILLAGE
-!      NDIM   : DIMENSION DU PROBLEME (2D OU 3D)
-!      FONREE : FONC OU REEL
 !
 !-----------------------------------------------------------------------
     integer :: nsour, jvalv,  n1, ncmp, iocc
@@ -55,20 +51,18 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
     character(len=19) :: cartes(1)
     integer :: ncmps(1)
     character(len=8), pointer :: vncmp(:) => null()
-    character(len=8) :: model
 !     ------------------------------------------------------------------
     call jemarq()
 !
     motclf = 'SOURCE'
     call getfac(motclf, nsour)
-    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
 !
-    carte = char//'.CHTH.SOURE'
+    carte = load//'.CHTH.SOURE'
 !
-    if (fonree .eq. 'REEL') then
-        call alcart('G', carte, noma, 'SOUR_R')
-    else if (fonree.eq.'FONC') then
-        call alcart('G', carte, noma, 'SOUR_F')
+    if (valeType .eq. 'REEL') then
+        call alcart('G', carte, mesh, 'SOUR_R')
+    else if (valeType.eq.'FONC') then
+        call alcart('G', carte, mesh, 'SOUR_F')
     else
         ASSERT(.false.)
     endif
@@ -80,7 +74,7 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 !
     ncmp = 1
     vncmp(1) = 'SOUR'
-    if (fonree .eq. 'REEL') then
+    if (valeType .eq. 'REEL') then
         zr(jvalv) = 0.d0
     else
         zk8(jvalv) = '&FOZERO'
@@ -91,7 +85,7 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 !
     do iocc = 1, nsour
 !
-        if (fonree .eq. 'REEL') then
+        if (valeType .eq. 'REEL') then
             call getvr8(motclf, 'SOUR', iocc=iocc, scal=zr(jvalv), nbret=n1)
         else
             call getvid(motclf, 'SOUR', iocc=iocc, scal=zk8(jvalv), nbret=n1)
@@ -99,7 +93,7 @@ subroutine casour(char, ligrmo, noma, ndim, fonree)
 !
         cartes(1) = carte
         ncmps(1) = ncmp
-        call char_affe_neum(model , noma, ndim, motclf, iocc, 1,&
+        call char_affe_neum(model , mesh, geomDime, motclf, iocc, 1,&
                             cartes, ncmps)
 !
     end do

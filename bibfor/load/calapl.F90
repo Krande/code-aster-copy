@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine calapl(load, ligrmo, mesh, nbOcc)
+subroutine calapl(load, mesh, model, nbOcc)
 !
 implicit none
 !
@@ -38,8 +38,7 @@ implicit none
 #include "asterfort/getelem.h"
 #include "asterfort/wkvect.h"
 !
-character(len=8), intent(in) :: load, mesh
-character(len=*), intent(in) :: ligrmo
+character(len=8), intent(in) :: load, mesh, model
 integer, intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +50,7 @@ integer, intent(in) :: nbOcc
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  load             : load
-! In  ligrmo           : list of elements in model
+! In  model            : model
 ! In  mesh             : mesh
 ! In  nbOcc            : number of factor keywords
 !
@@ -69,7 +68,6 @@ integer, intent(in) :: nbOcc
     character(len=24) :: connex
     character(len=16), pointer :: valv(:) => null()
     character(len=8), pointer :: ncmp(:) => null()
-    character(len=8) :: model
     character(len=8) :: physQuantity(LOAD_MAP_NBMAX), cmpName(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)
     character(len=19) :: map(LOAD_MAP_NBMAX)
     integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
@@ -78,11 +76,9 @@ integer, intent(in) :: nbOcc
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Initializations
-!
     ASSERT(nbOcc .le. 99)
-    call dismoi('NOM_MODELE', ligrmo, 'LIGREL', repk=model)
 !
 ! - Creation and initialization to zero of <CARTE>
 !

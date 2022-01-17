@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,10 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine cagene(load, command, ligrmo, mesh, nb_dim)
+!  Person in charge: mickael.abbas at edf.fr
 !
-    implicit none
+subroutine cagene(load, command, model, mesh, geomDime)
+!
+implicit none
 !
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -28,13 +29,11 @@ subroutine cagene(load, command, ligrmo, mesh, nb_dim)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-!  Person in charge: mickael.abbas at edf.fr
-!
-    character(len=8), intent(in) :: load
-    character(len=16), intent(in) :: command
-    integer, intent(out) :: nb_dim
-    character(len=8), intent(out) :: mesh
-    character(len=19), intent(out) :: ligrmo
+character(len=8), intent(in) :: load
+character(len=16), intent(in) :: command
+integer, intent(out) :: geomDime
+character(len=8), intent(out) :: mesh
+character(len=8), intent(out) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,38 +43,28 @@ subroutine cagene(load, command, ligrmo, mesh, nb_dim)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  load      : name of load
+! In  load      : load
 ! In  command   : command
-! Out mesh      : name of mesh
-! Out ligrmo    : <LIGREL> of model
-! Out nb_dim    : space dimension
+! Out mesh      : mesh
+! Out model     : model
+! Out geomDime  : space dimension
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: model
-    character(len=24) :: nomo, phenomenon, valk(2)
-    character(len=8), pointer :: p_lgrf(:) => null()
-    character(len=8), pointer :: p_nomo(:) => null()
+    character(len=24) :: nomoJv, phenomenon, valk(2)
+    character(len=8), pointer :: nomo(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
+
 ! - Get model
-!
     call getvid(' ', 'MODELE', scal=model)
-!
-! - <LIGREL> of model
-!
-    ligrmo = model//'.MODELE'
-!
+
 ! - Mesh
-!
-    call jeveuo(ligrmo//'.LGRF', 'L', vk8 = p_lgrf)
-    mesh = p_lgrf(1)
-!
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+
 ! - Check model/loading
-!
     call dismoi('PHENOMENE', model, 'MODELE', repk=phenomenon)
     valk(1) = command
     valk(2) = phenomenon
@@ -88,16 +77,14 @@ subroutine cagene(load, command, ligrmo, mesh, nb_dim)
     else if (command .eq. 'AFFE_CHAR_ACOU' .and. phenomenon .ne. 'ACOUSTIQUE') then
         call utmess('F', 'CHARGES2_64', nk=2, valk=valk)
     endif
-!
+
 ! - Dimension of problem
-!
-    call dismoi('DIM_GEOM', model, 'MODELE', repi=nb_dim)
-!
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=geomDime)
+
 ! - Create .NOMO
-!
-    nomo = load(1:8)//'.CH'//phenomenon(1:2)//'.MODEL.NOMO'
-    call wkvect(nomo, 'G V K8', 1, vk8 = p_nomo)
-    p_nomo(1) = model
+    nomoJv = load(1:8)//'.CH'//phenomenon(1:2)//'.MODEL.NOMO'
+    call wkvect(nomoJv, 'G V K8', 1, vk8 = nomo)
+    nomo(1) = model
 !
     call jedema()
 end subroutine
