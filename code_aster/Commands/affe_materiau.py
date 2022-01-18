@@ -125,7 +125,14 @@ class MaterialAssignment(ExecuteCommand):
             keywords (dict): User's keywords.
         """
 
-        # Add no dependencies since everything is done in python
+        # Keep only AFFE_VARC
+        super().add_dependencies(keywords)
+        self.remove_dependencies(keywords, "MAILLAGE")
+        self.remove_dependencies(keywords, "MODELE")
+
+        self.remove_dependencies(keywords, "AFFE", "MATER")
+        self.remove_dependencies(keywords, "AFFE_COMPOR", "COMPOR")
+
 
     def _addBehaviour(self, fkw):
         kwTout = fkw.get("TOUT")
