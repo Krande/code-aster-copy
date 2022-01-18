@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ subroutine pecage(resu, modele, nbocc)
     data typarr/  'K24','K8','R','R','R','R','R','R','R','R','R','R',&
      &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',&
      &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',&
-     &     'R','R','R','K8','K8','K8'/
+     &     'R','R','R','K16','K16','K8'/
 !     ------------------------------------------------------------------
 !
     call jemarq()

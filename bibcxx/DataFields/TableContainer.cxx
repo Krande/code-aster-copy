@@ -185,59 +185,70 @@ TablePtr TableContainer::getTable( const std::string &a ) const {
 };
 
 bool TableContainer::build() {
-
     _parameterDescription->updateValuePointer();
     const int size = _parameterDescription->size() / 4;
     for ( int i = 0; i < size; ++i ) {
-        const auto test = trim( ( *_parameterDescription )[i * 4].toString() );
-        const auto name = trim( ( *_parameterDescription )[i * 4 + 2].toString() );
-        const auto name2 = trim( ( *_parameterDescription )[i * 4 + 3].toString() );
+        const auto para = trim( ( *_parameterDescription )[i * 4].toString() );
         const auto type = trim( ( *_parameterDescription )[i * 4 + 1].toString() );
-        if ( test == "NOM_OBJET" ) {
+        const auto objev = trim( ( *_parameterDescription )[i * 4 + 2].toString() );
+
+#ifdef ASTER_DEBUG_CXX
+        std::cout << "DEBUG descr: para: " << para << " objev: " << objev << " type: " << type
+                  << std::endl;
+#endif
+        if ( para == "NOM_OBJET" ) {
             if ( _objectName.isEmpty() )
-                _objectName = JeveuxVectorChar16( name );
-        } else if ( test == "TYPE_OBJET" ) {
+                _objectName = JeveuxVectorChar16( objev );
+        } else if ( para == "TYPE_OBJET" ) {
             if ( _objectType.isEmpty() )
-                _objectType = JeveuxVectorChar16( name );
-        } else if ( test == "NOM_SD" ) {
+                _objectType = JeveuxVectorChar16( objev );
+        } else if ( para == "NOM_SD" ) {
             if ( type == "K8" ) {
-                if ( _dsName1.isEmpty() )
-                    _dsName1 = JeveuxVectorChar8( name );
+                if ( _dsName8.isEmpty() )
+                    _dsName8 = JeveuxVectorChar8( objev );
             } else {
-                if ( _dsName2.isEmpty() )
-                    _dsName2 = JeveuxVectorChar24( name );
+                if ( _dsName24.isEmpty() )
+                    _dsName24 = JeveuxVectorChar24( objev );
             }
-        } else
-            _others.push_back( JeveuxVectorLong( name ) );
-        _vecOfSizes.push_back( JeveuxVectorLong( name2 ) );
+        }
     }
-    const bool test1 = _dsName1.isEmpty();
-    const bool test2 = _dsName2.isEmpty();
-    const bool test3 = test1 && test2;
-    if ( !test3 && !_objectType.isEmpty() && !_objectName.isEmpty() ) {
+    const bool usek8 = !_dsName8.isEmpty();
+    const bool usek24 = !_dsName24.isEmpty();
+    const bool hasDS = usek8 || usek24;
+    AS_ASSERT( !( usek8 && usek24 ) );
+    if ( hasDS && !_objectType.isEmpty() && !_objectName.isEmpty() ) {
         int usedSize = 0;
-        if ( !test1 ) {
-            _dsName1->updateValuePointer();
-            usedSize = _dsName1->size();
+        if ( usek8 ) {
+            _dsName8->updateValuePointer();
+            usedSize = _dsName8->size();
         } else {
-            _dsName2->updateValuePointer();
-            usedSize = _dsName2->size();
+            _dsName24->updateValuePointer();
+            usedSize = _dsName24->size();
         }
         _objectType->updateValuePointer();
         _objectName->updateValuePointer();
 
         if ( usedSize != _objectType->size() )
-            throw std::runtime_error( "Unconsistent sizes" );
+            throw std::runtime_error( "Unconsistent size for types" );
         if ( usedSize != _objectName->size() )
-            throw std::runtime_error( "Unconsistent sizes" );
+            throw std::runtime_error( "Unconsistent size for names" );
         for ( int i = 0; i < usedSize; ++i ) {
-            const auto type = trim( ( *_objectType )[i].toString() );
+            std::string type = trim( ( *_objectType )[i].toString() );
             std::string sdName( "" );
-            if ( !test1 )
-                sdName = trim( ( *_dsName1 )[i].toString() );
+            if ( usek8 )
+                sdName = trim( ( *_dsName8 )[i].toString() );
             else
-                sdName = trim( ( *_dsName2 )[i].toString() );
+                sdName = trim( ( *_dsName24 )[i].toString() );
             const auto name = trim( ( *_objectName )[i].toString() );
+
+#ifdef ASTER_DEBUG_CXX
+            std::cout << "DEBUG: TableContainer index: " << i << " sdName: " << sdName
+                      << " name:" << name << " type:" << type << std::endl;
+#endif
+            auto pos = type.find("_SDASTER");
+            if ( pos ) {
+                type = type.substr(0, pos);
+            }
             if ( type.empty() && sdName.empty() ) {
                 // pass
             } else if ( type == "MATR_ASSE_GENE_R" ) {
@@ -264,16 +275,16 @@ bool TableContainer::build() {
                     _mapEVTD[name] =
                         boost::make_shared< ElementaryVectorTemperatureReal >( sdName );
                 }
-            } else if ( type == "CHAM_GD_SDASTER" ) {
+            } else if ( type == "CHAM_GD" ) {
                 if ( _mapGDF[name] == nullptr ) {
                     _mapGDF[name] = boost::make_shared< DataField >( sdName, "CHAM_GD" );
                 }
-            } else if ( type == "CHAM_NO_SDASTER" ) {
+            } else if ( type == "CHAM_NO" ) {
                 if ( _mapFOND[name] == nullptr ) {
                     _mapFOND[name] = boost::make_shared< FieldOnNodesReal >( sdName );
                 }
-            // } else if ( type == "CARTE_SDASTER" ) {
-            //     _mapPCFOMD[name] = boost::make_shared< ConstantFieldOnCellsReal >( sdName );
+                // } else if ( type == "CARTE" ) {
+                //     _mapPCFOMD[name] = boost::make_shared< ConstantFieldOnCellsReal >( sdName );
             } else if ( type == "CHAM_ELEM" ) {
                 if ( _mapFOED[name] == nullptr ) {
                     _mapFOED[name] = boost::make_shared< FieldOnCellsReal >( sdName );
@@ -282,11 +293,11 @@ bool TableContainer::build() {
                 if ( _mapMMC[name] == nullptr ) {
                     _mapMMC[name] = boost::make_shared< ModeResult >( sdName );
                 }
-            } else if ( type == "TABLE_SDASTER" ) {
+            } else if ( type == "TABLE" ) {
                 if ( _mapT[name] == nullptr ) {
                     _mapT[name] = boost::make_shared< Table >( sdName );
                 }
-            } else if ( type == "FONCTION_SDASTER" ) {
+            } else if ( type == "FONCTION" ) {
                 if ( _mapF[name] == nullptr ) {
                     _mapF[name] = boost::make_shared< Function >( sdName );
                 }
@@ -294,13 +305,13 @@ bool TableContainer::build() {
                 if ( _mapFC[name] == nullptr ) {
                     _mapFC[name] = boost::make_shared< FunctionComplex >( sdName );
                 }
-            } else if ( type == "NAPPE_SDASTER" ) {
+            } else if ( type == "NAPPE" ) {
                 if ( _mapS[name] == nullptr ) {
                     _mapS[name] = boost::make_shared< Function2D >( sdName );
                 }
-            } else
-                throw std::runtime_error( "Type not implemented '" + type + "' for '" + name +
-                                          "'" );
+            } else {
+                throw std::runtime_error( "Unsupported type '" + type + "' for '" + name + "'" );
+            }
         }
     } else
         return false;

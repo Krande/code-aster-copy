@@ -27,6 +27,23 @@ class TableCreation(ExecuteCommand):
     """Execute legacy operator CREA_TABLE."""
     command_name = "CREA_TABLE"
 
+    def adapt_syntax(self, keywords):
+        """Force required types for TABLE_CONTAINER.
+
+        Arguments:
+            keywords (dict): Keywords arguments of user's keywords, changed
+                in place.
+        """
+        if keywords["TYPE_TABLE"] != "TABLE_CONTAINER" or not keywords.get("LISTE"):
+            return
+        for occ in keywords["LISTE"]:
+            if not occ.get("LISTE_K"):
+                continue
+            if occ["PARA"] in ("NOM_OBJET", "TYPE_OBJET"):
+                occ["TYPE_K"] = "K16"
+            if occ["PARA"] == "NOM_SD" and occ["TYPE_K"] not in ("K8", "K24"):
+                occ["TYPE_K"] = "K24"
+
     def create_result(self, keywords):
         """Create the result.
 

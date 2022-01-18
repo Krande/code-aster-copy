@@ -3,7 +3,7 @@
  * @brief Implementation de DataStructureNaming
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,7 +22,6 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <assert.h>
 #include <string>
 #include <sstream>
 #include "MemoryManager/JeveuxObject.h"

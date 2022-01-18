@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe TableContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,19 +30,19 @@
 
 #include "astercxx.h"
 
-#include "MemoryManager/JeveuxVector.h"
 #include "DataFields/Table.h"
+#include "MemoryManager/JeveuxVector.h"
 
-#include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
-#include "LinearAlgebra/ElementaryMatrix.h"
-#include "LinearAlgebra/ElementaryVector.h"
-#include "DataFields/DataField.h"
-#include "DataFields/FieldOnNodes.h"
 #include "DataFields/ConstantFieldOnCells.h"
+#include "DataFields/DataField.h"
 #include "DataFields/FieldOnCells.h"
-#include "Results/ModeResult.h"
+#include "DataFields/FieldOnNodes.h"
 #include "Functions/Function.h"
 #include "Functions/Function2D.h"
+#include "LinearAlgebra/ElementaryMatrix.h"
+#include "LinearAlgebra/ElementaryVector.h"
+#include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
+#include "Results/ModeResult.h"
 #include "Supervis/ResultNaming.h"
 #include <map>
 
@@ -50,16 +50,12 @@
  * @typedef TableContainer
  * @brief Definition of TableContainer (table_container)
  */
-class TableContainer : public Table
-{
+class TableContainer : public Table {
   private:
     JeveuxVectorChar16 _objectName;
     JeveuxVectorChar16 _objectType;
-    JeveuxVectorChar8  _dsName1;
-    JeveuxVectorChar24 _dsName2;
-    std::vector< JeveuxVectorLong > _vecOfSizes;
-    std::vector< JeveuxVectorLong > _others;
-
+    JeveuxVectorChar8 _dsName8;
+    JeveuxVectorChar24 _dsName24;
 
     std::map< std::string, GeneralizedAssemblyMatrixRealPtr > _mapGAMD;
     std::map< std::string, ElementaryMatrixDisplacementRealPtr > _mapEMDD;
@@ -78,198 +74,193 @@ class TableContainer : public Table
 
   public:
     /**
-    * @typedef TableContainerPtr
-    * @brief Definition of a smart pointer to a TableContainer
-    */
+     * @typedef TableContainerPtr
+     * @brief Definition of a smart pointer to a TableContainer
+     */
     typedef boost::shared_ptr< TableContainer > TableContainerPtr;
 
     /**
-    * @brief Constructeur
-    * @param name Nom Jeveux du champ aux noeuds
-    */
-    TableContainer( const std::string &name ):
-        Table( name, "TABLE_CONTAINER" )
-    {};
+     * @brief Constructeur
+     * @param name Nom Jeveux du champ aux noeuds
+     */
+    TableContainer( const std::string &name ) : Table( name, "TABLE_CONTAINER" ){};
 
     /**
      * @brief Constructeur
      */
-    TableContainer():
-        TableContainer( ResultNaming::getNewResultName() )
-    {};
+    TableContainer() : TableContainer( ResultNaming::getNewResultName() ){};
 
     /**
      * @brief Add ElementaryMatrixDisplacementReal to TableContainer
      * @param name key used to find object
      */
-    void addObject
-        ( const std::string& name, ElementaryMatrixDisplacementRealPtr );
+    void addObject( const std::string &name, ElementaryMatrixDisplacementRealPtr );
 
     /**
      * @brief Add ElementaryMatrixTemperatureReal to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, ElementaryMatrixTemperatureRealPtr );
+    void addObject( const std::string &, ElementaryMatrixTemperatureRealPtr );
 
     /**
      * @brief Add ElementaryVectorDisplacementReal to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, ElementaryVectorDisplacementRealPtr );
+    void addObject( const std::string &, ElementaryVectorDisplacementRealPtr );
 
     /**
      * @brief Add ElementaryVectorTemperatureReal to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, ElementaryVectorTemperatureRealPtr );
+    void addObject( const std::string &, ElementaryVectorTemperatureRealPtr );
 
     /**
      * @brief Add FieldOnCellsReal to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, FieldOnCellsRealPtr );
+    void addObject( const std::string &, FieldOnCellsRealPtr );
 
     /**
      * @brief Add FieldOnNodesReal to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, FieldOnNodesRealPtr );
+    void addObject( const std::string &, FieldOnNodesRealPtr );
 
     /**
      * @brief Add Function to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, FunctionPtr );
+    void addObject( const std::string &, FunctionPtr );
 
     /**
      * @brief Add FunctionComplex to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, FunctionComplexPtr );
+    void addObject( const std::string &, FunctionComplexPtr );
 
     /**
      * @brief Add generalized assembly matrix to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, GeneralizedAssemblyMatrixRealPtr );
+    void addObject( const std::string &, GeneralizedAssemblyMatrixRealPtr );
 
     /**
      * @brief Add DataField to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, DataFieldPtr );
+    void addObject( const std::string &, DataFieldPtr );
 
     /**
      * @brief Add ModeResult to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, ModeResultPtr );
+    void addObject( const std::string &, ModeResultPtr );
 
     /**
      * @brief Add ConstantFieldOnCellsReal to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, ConstantFieldOnCellsRealPtr );
+    void addObject( const std::string &, ConstantFieldOnCellsRealPtr );
 
     /**
      * @brief Add Function2D to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, Function2DPtr );
+    void addObject( const std::string &, Function2DPtr );
 
     /**
      * @brief Add Table to TableContainer
      * @param name key used to find object
      */
-    void addObject( const std::string&, TablePtr );
+    void addObject( const std::string &, TablePtr );
 
     /**
      * @brief Get ElementaryMatrixDisplacementReal stored in TableContainer
      * @param name key used to find object
      */
-    ElementaryMatrixDisplacementRealPtr getElementaryMatrixDisplacementReal
-        ( const std::string& name ) const;
+    ElementaryMatrixDisplacementRealPtr
+    getElementaryMatrixDisplacementReal( const std::string &name ) const;
 
     /**
      * @brief Get ElementaryMatrixTemperatureReal stored in TableContainer
      * @param name key used to find object
      */
-    ElementaryMatrixTemperatureRealPtr getElementaryMatrixTemperatureReal
-        ( const std::string& ) const;
+    ElementaryMatrixTemperatureRealPtr
+    getElementaryMatrixTemperatureReal( const std::string & ) const;
 
     /**
      * @brief Get ElementaryVectorDisplacementReal stored in TableContainer
      * @param name key used to find object
      */
-    ElementaryVectorDisplacementRealPtr getElementaryVectorDisplacementReal
-        ( const std::string& ) const;
+    ElementaryVectorDisplacementRealPtr
+    getElementaryVectorDisplacementReal( const std::string & ) const;
 
     /**
      * @brief Get ElementaryVectorTemperatureReal stored in TableContainer
      * @param name key used to find object
      */
-    ElementaryVectorTemperatureRealPtr getElementaryVectorTemperatureReal
-        ( const std::string& ) const;
+    ElementaryVectorTemperatureRealPtr
+    getElementaryVectorTemperatureReal( const std::string & ) const;
 
     /**
      * @brief Get FieldOnCellsReal stored in TableContainer
      * @param name key used to find object
      */
-    FieldOnCellsRealPtr getFieldOnCellsReal( const std::string& ) const;
+    FieldOnCellsRealPtr getFieldOnCellsReal( const std::string & ) const;
 
     /**
      * @brief Get FieldOnNodesReal stored in TableContainer
      * @param name key used to find object
      */
-    FieldOnNodesRealPtr getFieldOnNodesReal( const std::string& ) const;
+    FieldOnNodesRealPtr getFieldOnNodesReal( const std::string & ) const;
 
     /**
      * @brief Get Function stored in TableContainer
      * @param name key used to find object
      */
-    FunctionPtr getFunction( const std::string& ) const;
+    FunctionPtr getFunction( const std::string & ) const;
 
     /**
      * @brief Get FunctionComplex stored in TableContainer
      * @param name key used to find object
      */
-    FunctionComplexPtr getFunctionComplex( const std::string& ) const;
+    FunctionComplexPtr getFunctionComplex( const std::string & ) const;
 
     /**
      * @brief Get generalized assembly matrix stored in TableContainer
      * @param name key used to find object
      */
-    GeneralizedAssemblyMatrixRealPtr getGeneralizedAssemblyMatrix( const std::string& ) const;
+    GeneralizedAssemblyMatrixRealPtr getGeneralizedAssemblyMatrix( const std::string & ) const;
 
     /**
      * @brief Get DataField stored in TableContainer
      * @param name key used to find object
      */
-    DataFieldPtr getDataField( const std::string& ) const;
+    DataFieldPtr getDataField( const std::string & ) const;
 
     /**
      * @brief Get ModeResult stored in TableContainer
      * @param name key used to find object
      */
-    ModeResultPtr getModeResult( const std::string& ) const;
+    ModeResultPtr getModeResult( const std::string & ) const;
 
     /**
      * @brief Get ConstantFieldOnCellsReal stored in TableContainer
      * @param name key used to find object
      */
-    ConstantFieldOnCellsRealPtr getConstantFieldOnCellsReal( const std::string& ) const;
+    ConstantFieldOnCellsRealPtr getConstantFieldOnCellsReal( const std::string & ) const;
 
     /**
      * @brief Get Function2D stored in TableContainer
      * @param name key used to find object
      */
-    Function2DPtr getFunction2D( const std::string& ) const;
+    Function2DPtr getFunction2D( const std::string & ) const;
 
     /**
      * @brief Get Table stored in TableContainer
      * @param name key used to find object
      */
-    TablePtr getTable( const std::string& ) const;
+    TablePtr getTable( const std::string & ) const;
 
     /**
      * @brief Update the table
