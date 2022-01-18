@@ -63,7 +63,7 @@ use calcG_type
     character(len=16), parameter :: l_obje_name(l_nb_obje) = (/&
         'TABLE_G         ', 'CHAM_THETA      '/)
     character(len=16), parameter :: l_obje_type(l_nb_obje) = (/&
-        'TABLE           ', 'CHAM_NO         '/)
+        'TABLE_SDASTER   ', 'CHAM_NO_SDASTER '/)
 !
     integer :: i_l_obj, i_obj
     character(len=24) :: vk(3)

@@ -19,7 +19,7 @@
 
 # person_in_charge: nicolas.pignet@edf.fr
 
-from ..Objects import Table
+from ..Objects import TableContainer
 from .extr_table import EXTR_TABLE
 from ..Supervis import ExecuteCommand, UserMacro
 from ..Cata.Commands.calc_g import CALC_G as calc_g_cata
@@ -36,7 +36,7 @@ class ComputeG(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        self._result = Table()
+        self._result = TableContainer()
 
 def calc_g_with_co(self, **args):
     """Wrapper around the original CALC_G command to return an additional
@@ -49,13 +49,12 @@ def calc_g_with_co(self, **args):
         Table: Result of the command.
     """
     _result_calc_g = ComputeG.run(**args)
-
+    _result_calc_g.build()
     # Extraction de la table qui contient G
     _table_g = EXTR_TABLE(TYPE_RESU='TABLE_SDASTER',
             TABLE=_result_calc_g, NOM_PARA='NOM_SD',
             FILTRE=_F(NOM_PARA='NOM_OBJET', VALE_K='TABLE_G'),
         )
-
     # On fait quoi de theta ?
     _cham_theta_no = EXTR_TABLE(TYPE_RESU='CHAM_NO_SDASTER',
                 TABLE=_result_calc_g, NOM_PARA='NOM_SD',

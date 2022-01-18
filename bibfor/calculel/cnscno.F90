@@ -165,6 +165,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
         if (base .eq. 'G') then
             noojb='12345678.PRCHN00000.PRNO'
             call gnomsd(' ', noojb, 15, 19)
+            noojb(1:8) = cno(1:8)
             prchno=noojb(1:19)
         else
             call gcncon('.', prchno)
