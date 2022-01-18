@@ -44,16 +44,13 @@ def computation(mesh):
                          AFFE=_F(TOUT='OUI',
                                  MATER=ACIER,),)
 
-    DIRI = AFFE_CHAR_MECA(MODELE=MODE,
-                          DDL_IMPO=(_F(GROUP_MA='L1',
-                                       DX=0, DY=0.0,),
-                                    ),
-                          )
-    DIRI = AFFE_CHAR_CINE(MODELE=MODE,
-                          MECA_IMPO=(_F(GROUP_MA='L1',
-                                        DX=0, DY=0.0,),
-                                     ),
-                          )
+    R = FORMULE(VALE='(X-1.5)*(X-1.5) + (Y-0.5)*(Y-0.5)', NOM_PARA=['X', 'Y'],)
+
+    DIRI = AFFE_CHAR_CINE_F(MODELE=MODE,
+                            MECA_IMPO=(_F(GROUP_MA='L1',
+                                          DX=R, DY=R,),
+                                       ),
+                            )
 
     CHAR = AFFE_CHAR_MECA(MODELE=MODE,
                           PRES_REP=_F(GROUP_MA='L2',
@@ -61,7 +58,6 @@ def computation(mesh):
 
     CHXN = CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
                       NOM_CHAM='GEOMETRIE', MAILLAGE=mesh, INFO=1)
-    R = FORMULE(VALE='(X-1.5)*(X-1.5) + (Y-0.5)*(Y-0.5)', NOM_PARA=['X', 'Y'],)
     TEMP1 = CREA_CHAMP(OPERATION='AFFE',
                        TYPE_CHAM='NOEU_NEUT_F',
                        MAILLAGE=mesh,
@@ -99,12 +95,6 @@ def computation(mesh):
     CHAR = AFFE_CHAR_MECA(MODELE=MODE,
                           VECT_ASSE=MDEP,)
 
-    DIRI = AFFE_CHAR_CINE_F(MODELE=MODE,
-                            MECA_IMPO=(_F(GROUP_MA='L1',
-                                          DX=R, DY=R,),
-                                       ),
-                            )
-
     RESU = MECA_STATIQUE(MODELE=MODE,
                          CHAM_MATER=MATE,
                          OPTION='SANS',
@@ -114,13 +104,14 @@ def computation(mesh):
 
 # test case
 
+
 mesh = LIRE_MAILLAGE(UNITE=20)
-mesh_ref= LIRE_MAILLAGE( UNITE=21)
+mesh_ref = LIRE_MAILLAGE(UNITE=21)
 
 
 mesh_raf = CREA_MAILLAGE(MAILLAGE=mesh,
-                     RAFFINEMENT=_F(TOUT='OUI', NIVEAU=2,),
-                     INFO=1,)
+                         RAFFINEMENT=_F(TOUT='OUI', NIVEAU=2,),
+                         INFO=1,)
 
 resu_ref = computation(mesh_ref)
 resu_raf = computation(mesh_raf)

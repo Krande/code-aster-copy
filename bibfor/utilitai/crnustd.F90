@@ -356,6 +356,8 @@ subroutine crnustd(numddl)
     nbddl_lag_gl = 0
     do ili = 2, ntot
         nbno_lili_lc = 0
+        call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
+        if( iret.ne.0 ) then
             call jelira(jexnum(numddl//'.NUME.PRNO', ili), 'LONMAX', lonmax)
             nbno_prno = lonmax/(nec+2)
             call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
@@ -380,6 +382,7 @@ subroutine crnustd(numddl)
                     v_nuls(i_ddl) = nbddl_phys_gl - 1 - v_deeg(2*(i_ddl-1)+1)
                 endif
             enddo
+        end if
 !
 ! -- Nbr de noeud de Lagrange total au ligrel
         nbno_lili_gl = nbno_lili_lc
@@ -400,8 +403,8 @@ subroutine crnustd(numddl)
 !
 ! -- On complete avec les joins
     do ili = 2, ntot
-        call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
-        if( iret.ne.0 ) then
+        ! call jeexin(jexnum(numddl//'.NUME.PRNO', ili), iret)
+        ! if( iret.ne.0 ) then
             call jenuno(jexnum(numddl//'.NUME.LILI', ili), nomlig)
             call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
             call jeveuo(comm_name, 'L', vi=v_comm)
@@ -467,7 +470,7 @@ subroutine crnustd(numddl)
             enddo
             call jedetr(comm_name)
             call jedetr(tag_name)
-        endif
+        ! endif
     enddo
 !
 ! -- Verif finale
