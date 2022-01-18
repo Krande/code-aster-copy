@@ -42,19 +42,13 @@ void TableContainer::addObject( const std::string &a, ElementaryVectorTemperatur
     _mapEVTD[a] = b;
 };
 
-void TableContainer::addObject( const std::string &a, FieldOnCellsRealPtr b ) {
-    _mapFOED[a] = b;
-};
+void TableContainer::addObject( const std::string &a, FieldOnCellsRealPtr b ) { _mapFOED[a] = b; };
 
-void TableContainer::addObject( const std::string &a, FieldOnNodesRealPtr b ) {
-    _mapFOND[a] = b;
-};
+void TableContainer::addObject( const std::string &a, FieldOnNodesRealPtr b ) { _mapFOND[a] = b; };
 
 void TableContainer::addObject( const std::string &a, FunctionPtr b ) { _mapF[a] = b; };
 
-void TableContainer::addObject( const std::string &a, FunctionComplexPtr b ) {
-    _mapFC[a] = b;
-};
+void TableContainer::addObject( const std::string &a, FunctionComplexPtr b ) { _mapFC[a] = b; };
 
 void TableContainer::addObject( const std::string &a, GeneralizedAssemblyMatrixRealPtr b ) {
     _mapGAMD[a] = b;
@@ -247,53 +241,63 @@ bool TableContainer::build() {
             if ( type.empty() && sdName.empty() ) {
                 // pass
             } else if ( type == "MATR_ASSE_GENE_R" ) {
-                if ( _mapGAMD[name] == nullptr )
-                    _mapGAMD[name] = GeneralizedAssemblyMatrixRealPtr(
-                        new GeneralizedAssemblyMatrixReal( sdName ) );
+                if ( _mapGAMD[name] == nullptr ) {
+                    _mapGAMD[name] = boost::make_shared< GeneralizedAssemblyMatrixReal >( sdName );
+                }
             } else if ( type == "MATR_ELEM_DEPL_R" ) {
-                if ( _mapEMDD[name] == nullptr )
-                    _mapEMDD[name] = ElementaryMatrixDisplacementRealPtr(
-                        new ElementaryMatrixDisplacementReal( sdName ) );
+                if ( _mapEMDD[name] == nullptr ) {
+                    _mapEMDD[name] =
+                        boost::make_shared< ElementaryMatrixDisplacementReal >( sdName );
+                }
             } else if ( type == "MATR_ELEM_TEMP_R" ) {
-                if ( _mapEMTD[name] == nullptr )
-                    _mapEMTD[name] = ElementaryMatrixTemperatureRealPtr(
-                        new ElementaryMatrixTemperatureReal( sdName ) );
+                if ( _mapEMTD[name] == nullptr ) {
+                    _mapEMTD[name] =
+                        boost::make_shared< ElementaryMatrixTemperatureReal >( sdName );
+                }
             } else if ( type == "VECT_ELEM_DEPL_R" ) {
-                if ( _mapEVDD[name] == nullptr )
-                    _mapEVDD[name] = ElementaryVectorDisplacementRealPtr(
-                        new ElementaryVectorDisplacementReal( sdName ) );
+                if ( _mapEVDD[name] == nullptr ) {
+                    _mapEVDD[name] =
+                        boost::make_shared< ElementaryVectorDisplacementReal >( sdName );
+                }
             } else if ( type == "VECT_ELEM_TEMP_R" ) {
-                if ( _mapEVTD[name] == nullptr )
-                    _mapEVTD[name] = ElementaryVectorTemperatureRealPtr(
-                        new ElementaryVectorTemperatureReal( sdName ) );
+                if ( _mapEVTD[name] == nullptr ) {
+                    _mapEVTD[name] =
+                        boost::make_shared< ElementaryVectorTemperatureReal >( sdName );
+                }
             } else if ( type == "CHAM_GD_SDASTER" ) {
-                if ( _mapGDF[name] == nullptr )
-                    _mapGDF[name] = DataFieldPtr( new DataField( sdName, "CHAM_GD" ) );
+                if ( _mapGDF[name] == nullptr ) {
+                    _mapGDF[name] = boost::make_shared< DataField >( sdName, "CHAM_GD" );
+                }
             } else if ( type == "CHAM_NO_SDASTER" ) {
-                if ( _mapFOND[name] == nullptr )
-                    _mapFOND[name] = FieldOnNodesRealPtr( new FieldOnNodesReal( sdName ) );
-            }
-            //             else if( type == "CARTE_SDASTER" )
-            //                 _mapPCFOMD[name] = ConstantFieldOnCellsRealPtr
-            //                                     ( new ConstantFieldOnCellsReal( sdName ) );
-            else if ( type == "CHAM_ELEM" ) {
-                if ( _mapFOED[name] == nullptr )
-                    _mapFOED[name] = FieldOnCellsRealPtr( new FieldOnCellsReal( sdName ) );
+                if ( _mapFOND[name] == nullptr ) {
+                    _mapFOND[name] = boost::make_shared< FieldOnNodesReal >( sdName );
+                }
+            // } else if ( type == "CARTE_SDASTER" ) {
+            //     _mapPCFOMD[name] = boost::make_shared< ConstantFieldOnCellsReal >( sdName );
+            } else if ( type == "CHAM_ELEM" ) {
+                if ( _mapFOED[name] == nullptr ) {
+                    _mapFOED[name] = boost::make_shared< FieldOnCellsReal >( sdName );
+                }
             } else if ( type == "MODE_MECA" ) {
-                if ( _mapMMC[name] == nullptr )
-                    _mapMMC[name] = ModeResultPtr( new ModeResult( sdName ) );
+                if ( _mapMMC[name] == nullptr ) {
+                    _mapMMC[name] = boost::make_shared< ModeResult >( sdName );
+                }
             } else if ( type == "TABLE_SDASTER" ) {
-                if ( _mapT[name] == nullptr )
-                    _mapT[name] = TablePtr( new Table( sdName ) );
+                if ( _mapT[name] == nullptr ) {
+                    _mapT[name] = boost::make_shared< Table >( sdName );
+                }
             } else if ( type == "FONCTION_SDASTER" ) {
-                if ( _mapF[name] == nullptr )
-                    _mapF[name] = FunctionPtr( new Function( sdName ) );
+                if ( _mapF[name] == nullptr ) {
+                    _mapF[name] = boost::make_shared< Function >( sdName );
+                }
             } else if ( type == "FONCTION_C" ) {
-                if ( _mapFC[name] == nullptr )
-                    _mapFC[name] = FunctionComplexPtr( new FunctionComplex( sdName ) );
+                if ( _mapFC[name] == nullptr ) {
+                    _mapFC[name] = boost::make_shared< FunctionComplex >( sdName );
+                }
             } else if ( type == "NAPPE_SDASTER" ) {
-                if ( _mapS[name] == nullptr )
-                    _mapS[name] = Function2DPtr( new Function2D( sdName ) );
+                if ( _mapS[name] == nullptr ) {
+                    _mapS[name] = boost::make_shared< Function2D >( sdName );
+                }
             } else
                 throw std::runtime_error( "Type not implemented '" + type + "' for '" + name +
                                           "'" );

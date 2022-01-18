@@ -2,7 +2,7 @@
 
 > Home page: https://www.code-aster.org/
 >
-> Forge: https://gitlab.com/codeaster-repo/
+> Forge: https://gitlab.com/codeaster/
 >
 > code_aster repositories are moving to Git, the work is in progress...
 

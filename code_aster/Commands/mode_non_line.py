@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ from ..Supervis import ExecuteCommand
 
 
 class ModeNonLine(ExecuteCommand):
-    """Command that defines :class:`~code_aster.Objects.Table`.
-    """
+    """Command that defines :class:`~code_aster.Objects.Table`."""
+
     command_name = "MODE_NON_LINE"
 
     def create_result(self, keywords):
@@ -62,12 +62,12 @@ class ModeNonLine(ExecuteCommand):
                 in place.
         """
         self._result.build()
-        nrow=self._result.get_nrow()
+        nrow = self._result.get_nrow()
         for irow in range(nrow):
-            nom_obj=self._result["NOM_OBJET",irow+1]
-            mode_meca=self._result.getModeResult(nom_obj)
-            mode_meca.setMassMatrix(keywords['MATR_MASS'])
-            mode_meca.setStiffnessMatrix(keywords['MATR_RIGI'])
+            nom_obj = self._result["NOM_OBJET", irow + 1]
+            mode_meca = self._result.getModeResult(nom_obj)
+            mode_meca.setMassMatrix(keywords["MATR_MASS"])
+            mode_meca.setStiffnessMatrix(keywords["MATR_RIGI"])
 
 
 MODE_NON_LINE = ModeNonLine.run

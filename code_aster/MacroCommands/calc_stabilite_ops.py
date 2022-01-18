@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -40,9 +40,9 @@ def calc_stabilite_ops(self, **args):
 
     # On importe les definitions des commandes a utiliser dans la macro
 
-    t_mnl = args['MODE_NON_LINE'].EXTR_TABLE()
+    mnl = args['MODE_NON_LINE']
+    t_mnl = mnl.EXTR_TABLE()
     nbord = len(t_mnl.rows)
-    mnl=args['MODE_NON_LINE']
 
     rows_tab = []
     t_res = Table(rows=rows_tab,
@@ -79,7 +79,7 @@ def calc_stabilite_ops(self, **args):
             kass=__sol_per.getStiffnessMatrix()
             masse=__sol_per.getMassMatrix()
 
-            __choc = EXTR_TABLE(TABLE=args['MODE_NON_LINE'],
+            __choc = EXTR_TABLE(TABLE=mnl,
                      TYPE_RESU= 'TABLE_SDASTER',
                      NOM_PARA= 'CARA_CHOC',
                         **filtre)
@@ -173,6 +173,9 @@ def calc_stabilite_ops(self, **args):
 
     tab = t_res.dict_CREA_TABLE()
     t_resu = CREA_TABLE(TYPE_TABLE='TABLE_CONTAINER', **tab)
+    # the TABLE is declared as reused but this is not supported by table_container objects
+    # since internal objects are "re-assigned" from strings by 'build()'.
+    t_resu.addDependency(mnl)
 
     return t_resu
 
