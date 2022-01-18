@@ -1776,16 +1776,22 @@ contains
 !
 ! ==================================================================================================
 !
-    subroutine update(this)
+    subroutine update(this, rename_nodes_)
 !
         implicit none
 !
             class(Mmesh), intent(inout) :: this
+            aster_logical, intent(in), optional :: rename_nodes_
 ! -----------------------------------------------------------------------
             integer :: i_node, i_cell, nno, node_id, rank, len_max
             mpi_int :: mrank, msize
-            aster_logical :: keep, cod
+            aster_logical :: keep, cod, rename_nodes
             character(len=8) :: nume
+!
+            rename_nodes = ASTER_FALSE
+            if(present(rename_nodes_)) then
+                rename_nodes = rename_nodes_
+            end if
 !
             call asmpi_info(rank = mrank, size = msize)
             rank = to_aster_int(mrank)
@@ -1840,13 +1846,14 @@ contains
 !
 ! --- Renumbering and rename
             this%nb_nodes = 0
-            len_max = 10**(8-len_trim(this%node_prefix))
+            len_max = 10**(8-len_trim(this%node_prefix)) - 1
+            if(rename_nodes) this%node_index = 1
             cod = this%nb_total_nodes .ge. len_max
             do i_node = 1, this%nb_total_nodes
                 if(this%nodes(i_node)%keep) then
                     this%nb_nodes = this%nb_nodes + 1
                     this%nodes(i_node)%id = this%nb_nodes
-                    if(this%nodes(i_node)%name == "XXXXXXXX") then
+                    if(rename_nodes .or. this%nodes(i_node)%name == "XXXXXXXX") then
                         if(cod) then
                             call codlet(this%node_index, 'G', nume)
                         else
@@ -2074,7 +2081,6 @@ contains
             integer :: i_cell, nb_cells_ref, i_level
             real(kind=8) :: start, end
 !
-            this%node_index = this%nb_total_nodes
             this%cell_index = this%nb_total_cells
 ! --- Refine cells
             this%nb_level = level
@@ -2094,7 +2100,7 @@ contains
                 end do
             end do
 !
-            call this%update()
+            call this%update(ASTER_TRUE)
             if(this%info >= 2) then
                 call cpu_time(end)
                 print*, "... in ", end-start, " seconds."
@@ -2368,7 +2374,7 @@ contains
             class(Mmesh), intent(in) :: this
             character(len=8), intent(in) :: mesh_out
 ! ------------------------------------------------------------------
-            character(len=8) :: chnbjo
+            character(len=4) :: chnbjo
             character(len=24) :: nojoin
             integer, pointer :: v_rnode(:) => null()
             integer, pointer :: v_noex(:) => null()
@@ -2465,7 +2471,7 @@ contains
                 tag = to_mpi_int(v_tag(i_comm))
                 id = to_mpi_int(proc_id)
 !
-                call codent(proc_id, 'G', chnbjo)
+                call codlet(proc_id, 'G', chnbjo)
 !
 ! --- Send and Receive size
                 count_send = to_mpi_int(1)

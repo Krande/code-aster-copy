@@ -181,12 +181,12 @@ use petsc_data_module
         if ( procol .eq. rang ) then
             tmp = zi(jnugll)
             call MatSetValue(a, tmp, tmp, zr(jvalm),&
-                             ADD_VALUES, ierr)
+                             INSERT_VALUES, ierr)
         endif
     else
         tmp = zi(jnugll)
         call MatSetValue(a, tmp, tmp, zr(jvalm),&
-                         ADD_VALUES, ierr)
+                         INSERT_VALUES, ierr)
     endif
 !   Writings to get the stiffness matrix wrt nodes and dof numbers
     if (ldebug) then
@@ -319,11 +319,11 @@ use petsc_data_module
 !       Ici zi4(jdxi2) donne le numero de ligne
 !       Donc on donne ici le bloc triangulaire superieur
         call MatSetValues(a, mm, v_dxi2(1:mm), un, [to_petsc_int(jcolg4)],&
-                          zr(jdval2:jdval2+mm), ADD_VALUES, ierr)
+                          zr(jdval2:jdval2+mm), INSERT_VALUES, ierr)
         nn = to_petsc_int(iterm)
 !       on donne ici le bloc triangulaire inferieur
         call MatSetValues(a, un, [to_petsc_int(jcolg4)], nn, v_dxi1(1:nn),&
-                          zr(jdval1:jdval1+nn), ADD_VALUES, ierr)
+                          zr(jdval1:jdval1+nn), INSERT_VALUES, ierr)
         iterm = 0
         jterm = 0
     end do
