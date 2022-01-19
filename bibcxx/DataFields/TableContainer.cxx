@@ -46,6 +46,12 @@ void TableContainer::addObject( const std::string &a, FieldOnCellsRealPtr b ) { 
 
 void TableContainer::addObject( const std::string &a, FieldOnNodesRealPtr b ) { _mapFOND[a] = b; };
 
+void TableContainer::addObject( const std::string &a, MeshPtr b ) { _mapMesh[a] = b; };
+
+#ifdef ASTER_HAVE_MPI
+void TableContainer::addObject( const std::string &a, ParallelMeshPtr b ) { _mapPMesh[a] = b; };
+#endif
+
 void TableContainer::addObject( const std::string &a, FunctionPtr b ) { _mapF[a] = b; };
 
 void TableContainer::addObject( const std::string &a, FunctionComplexPtr b ) { _mapFC[a] = b; };
@@ -117,6 +123,24 @@ FieldOnNodesRealPtr TableContainer::getFieldOnNodesReal( const std::string &a ) 
         return FieldOnNodesRealPtr( nullptr );
     return curIter->second;
 };
+
+MeshPtr TableContainer::getMesh( const std::string &a ) const {
+    const auto aa = trim( a );
+    const auto curIter = _mapMesh.find( aa );
+    if ( curIter == _mapMesh.end() )
+        return MeshPtr( nullptr );
+    return curIter->second;
+};
+
+#ifdef ASTER_HAVE_MPI
+ParallelMeshPtr TableContainer::getParallelMesh( const std::string &a ) const {
+    const auto aa = trim( a );
+    const auto curIter = _mapPMesh.find( aa );
+    if ( curIter == _mapPMesh.end() )
+        return ParallelMeshPtr( nullptr );
+    return curIter->second;
+};
+#endif
 
 FunctionPtr TableContainer::getFunction( const std::string &a ) const {
     const auto aa = trim( a );
@@ -245,9 +269,9 @@ bool TableContainer::build() {
             std::cout << "DEBUG: TableContainer index: " << i << " dsName: " << dsName
                       << " objName: " << name << " objType:" << type << std::endl;
 #endif
-            auto pos = type.find("_SDASTER");
+            auto pos = type.find( "_SDASTER" );
             if ( pos ) {
-                type = type.substr(0, pos);
+                type = type.substr( 0, pos );
             }
             if ( type.empty() || dsName.empty() ) {
                 // pass
@@ -297,6 +321,16 @@ bool TableContainer::build() {
                 if ( _mapT[name] == nullptr ) {
                     _mapT[name] = boost::make_shared< Table >( dsName );
                 }
+            } else if ( type == "MAILLAGE" ) {
+                if ( _mapMesh[name] == nullptr ) {
+                    _mapMesh[name] = boost::make_shared< Mesh >( dsName );
+                }
+#ifdef ASTER_HAVE_MPI
+            } else if ( type == "MAILLAGE_P" ) {
+                if ( _mapPMesh[name] == nullptr ) {
+                    _mapPMesh[name] = boost::make_shared< ParallelMesh >( dsName );
+                }
+#endif
             } else if ( type == "FONCTION" ) {
                 if ( _mapF[name] == nullptr ) {
                     _mapF[name] = boost::make_shared< Function >( dsName );

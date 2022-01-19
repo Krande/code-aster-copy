@@ -26,25 +26,29 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include <map>
 #include <string>
 
 #include "astercxx.h"
-
-#include "DataFields/Table.h"
-#include "MemoryManager/JeveuxVector.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/DataField.h"
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
+#include "DataFields/Table.h"
 #include "Functions/Function.h"
 #include "Functions/Function2D.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/ElementaryVector.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "Meshes/Mesh.h"
 #include "Results/ModeResult.h"
 #include "Supervis/ResultNaming.h"
-#include <map>
+
+#ifdef ASTER_HAVE_MPI
+#include "Meshes/ParallelMesh.h"
+#endif
 
 /**
  * @typedef TableContainer
@@ -67,10 +71,14 @@ class TableContainer : public Table {
     std::map< std::string, ConstantFieldOnCellsRealPtr > _mapPCFOMD;
     std::map< std::string, FieldOnCellsRealPtr > _mapFOED;
     std::map< std::string, ModeResultPtr > _mapMMC;
+    std::map< std::string, MeshPtr > _mapMesh;
     std::map< std::string, TablePtr > _mapT;
     std::map< std::string, FunctionPtr > _mapF;
     std::map< std::string, FunctionComplexPtr > _mapFC;
     std::map< std::string, Function2DPtr > _mapS;
+#ifdef ASTER_HAVE_MPI
+    std::map< std::string, ParallelMeshPtr > _mapPMesh;
+#endif
 
   public:
     /**
@@ -125,6 +133,20 @@ class TableContainer : public Table {
      * @param name key used to find object
      */
     void addObject( const std::string &, FieldOnNodesRealPtr );
+
+    /**
+     * @brief Add Mesh to TableContainer
+     * @param name key used to find object
+     */
+    void addObject( const std::string &, MeshPtr );
+
+#ifdef ASTER_HAVE_MPI
+    /**
+     * @brief Add ParallelMesh to TableContainer
+     * @param name key used to find object
+     */
+    void addObject( const std::string &, ParallelMeshPtr );
+#endif
 
     /**
      * @brief Add Function to TableContainer
@@ -213,6 +235,20 @@ class TableContainer : public Table {
      * @param name key used to find object
      */
     FieldOnNodesRealPtr getFieldOnNodesReal( const std::string & ) const;
+
+    /**
+     * @brief Get mesh stored in TableContainer
+     * @param name key used to find object
+     */
+    MeshPtr getMesh( const std::string & ) const;
+
+#ifdef ASTER_HAVE_MPI
+    /**
+     * @brief Get mesh stored in TableContainer
+     * @param name key used to find object
+     */
+    ParallelMeshPtr getParallelMesh( const std::string & ) const;
+#endif
 
     /**
      * @brief Get Function stored in TableContainer
