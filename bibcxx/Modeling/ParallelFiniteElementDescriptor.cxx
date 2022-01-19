@@ -164,13 +164,14 @@ ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptor(
 
         // Creation des raccords
         const std::string cadre( "G" );
+        const std::string error( "F" );
         AS_ASSERT( nbProcs <= 46656 );
         VectorLong joins;
         for ( i = 0; i < nbProcs; ++i ) {
             const auto &taille1 = toSend[i].size();
             std::string chdomdis( 3, ' ' );
             ASTERINTEGER domdis = i;
-            CALLO_CODLET( &domdis, cadre, chdomdis );
+            CALLO_CODLET_WRAP( &domdis, cadre, chdomdis, error );
             if ( taille1 != 0 ) {
                 auto vec = JeveuxVectorLong( getName() + ".E" + chdomdis );
                 _joinToSend.push_back( vec );

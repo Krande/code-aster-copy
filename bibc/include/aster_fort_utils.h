@@ -39,10 +39,10 @@ extern void DEFSS( AFFICH, affich, const char *, STRING_SIZE, const char *, STRI
 extern void DEFPSS( CODENT, codent, ASTERINTEGER *, const char *, STRING_SIZE,
                   const char *, STRING_SIZE);
 
-#define CALL_CODLET( a, b, c ) CALLPSS( CODLET, codlet, a, b, c )
-#define CALLO_CODLET( a, b, c ) CALLPOO( CODLET, codlet, a, b, c )
-extern void DEFPSS( CODLET, codlet, ASTERINTEGER *, const char *, STRING_SIZE,
-                    const char *, STRING_SIZE);
+#define CALL_CODLET_WRAP( a, b, c, d ) CALLPSSS( CODLET_WRAP, codlet_wrap, a, b, c, d )
+#define CALLO_CODLET_WRAP( a, b, c, d ) CALLPOOO( CODLET_WRAP, codlet_wrap, a, b, c, d )
+extern void DEFPSSS( CODLET_WRAP, codlet_wrap, ASTERINTEGER *, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE, const char *, STRING_SIZE);
 
 #define CALL_DISMOI( a, b, c, d, e, f, g ) CALLSSSPSSP( DISMOI, dismoi, a, b, c, d, e, f, g )
 #define CALLO_DISMOI( a, b, c, d, e, f, g ) CALLOOOPOOP( DISMOI, dismoi, a, b, c, d, e, f, g )

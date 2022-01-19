@@ -283,12 +283,13 @@ bool ParallelMesh::build() {
         const auto size = _listOfOppositeDomain->size();
 
         const std::string cadre( "G" );
+        const std::string error( "F" );
 
         for ( ASTERINTEGER i = 0; i < size; i++ ) {
             auto domdis = ( *_listOfOppositeDomain )[i];
             std::string chdomdis( 4, ' ' );
 
-            CALLO_CODLET( &domdis, cadre, chdomdis );
+            CALLO_CODLET_WRAP( &domdis, cadre, chdomdis, error );
             JeveuxVectorLong jointE( getName() + ".E" + chdomdis );
             JeveuxVectorLong jointR( getName() + ".R" + chdomdis );
 
