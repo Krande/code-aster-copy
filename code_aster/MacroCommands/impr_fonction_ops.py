@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -125,7 +125,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                 obj = dCi[typi]
                 break
         if 'LEGENDE' not in dCi and hasattr(obj, 'getName'):
-            dCi['LEGENDE'] = obj.getName()
+            dCi['LEGENDE'] = obj.userName
         if obj is None:
             UTMESS('S', 'SUPERVIS_56')
 
