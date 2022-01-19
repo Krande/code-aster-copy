@@ -114,7 +114,15 @@ class ExtrTable(ExecuteCommand):
             if model:
                 self._result.setModel(model[0])
         # not available for int/float
-        if hasattr(self._result, "build"):
+        # + not consistent when created by TableContainer::build
+        supported = (
+            "VECT_ELEM_DEPL_R",
+            "VECT_ELEM_TEMP_R",
+            "MATR_ELEM_DEPL_R",
+            "MATR_ELEM_TEMP_R",
+            "CHAM_NO_SDASTER",
+        )
+        if hasattr(self._result, "build") and keywords["TYPE_RESU"] in supported:
             self._result.build()
 
     def add_dependencies(self, keywords):

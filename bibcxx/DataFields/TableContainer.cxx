@@ -234,80 +234,80 @@ bool TableContainer::build() {
             throw std::runtime_error( "Unconsistent size for names" );
         for ( int i = 0; i < usedSize; ++i ) {
             std::string type = trim( ( *_objectType )[i].toString() );
-            std::string sdName( "" );
+            std::string dsName( "" );
             if ( usek8 )
-                sdName = trim( ( *_dsName8 )[i].toString() );
+                dsName = trim( ( *_dsName8 )[i].toString() );
             else
-                sdName = trim( ( *_dsName24 )[i].toString() );
+                dsName = trim( ( *_dsName24 )[i].toString() );
             const auto name = trim( ( *_objectName )[i].toString() );
 
 #ifdef ASTER_DEBUG_CXX
-            std::cout << "DEBUG: TableContainer index: " << i << " sdName: " << sdName
-                      << " name:" << name << " type:" << type << std::endl;
+            std::cout << "DEBUG: TableContainer index: " << i << " dsName: " << dsName
+                      << " objName: " << name << " objType:" << type << std::endl;
 #endif
             auto pos = type.find("_SDASTER");
             if ( pos ) {
                 type = type.substr(0, pos);
             }
-            if ( type.empty() && sdName.empty() ) {
+            if ( type.empty() || dsName.empty() ) {
                 // pass
             } else if ( type == "MATR_ASSE_GENE_R" ) {
                 if ( _mapGAMD[name] == nullptr ) {
-                    _mapGAMD[name] = boost::make_shared< GeneralizedAssemblyMatrixReal >( sdName );
+                    _mapGAMD[name] = boost::make_shared< GeneralizedAssemblyMatrixReal >( dsName );
                 }
             } else if ( type == "MATR_ELEM_DEPL_R" ) {
                 if ( _mapEMDD[name] == nullptr ) {
                     _mapEMDD[name] =
-                        boost::make_shared< ElementaryMatrixDisplacementReal >( sdName );
+                        boost::make_shared< ElementaryMatrixDisplacementReal >( dsName );
                 }
             } else if ( type == "MATR_ELEM_TEMP_R" ) {
                 if ( _mapEMTD[name] == nullptr ) {
                     _mapEMTD[name] =
-                        boost::make_shared< ElementaryMatrixTemperatureReal >( sdName );
+                        boost::make_shared< ElementaryMatrixTemperatureReal >( dsName );
                 }
             } else if ( type == "VECT_ELEM_DEPL_R" ) {
                 if ( _mapEVDD[name] == nullptr ) {
                     _mapEVDD[name] =
-                        boost::make_shared< ElementaryVectorDisplacementReal >( sdName );
+                        boost::make_shared< ElementaryVectorDisplacementReal >( dsName );
                 }
             } else if ( type == "VECT_ELEM_TEMP_R" ) {
                 if ( _mapEVTD[name] == nullptr ) {
                     _mapEVTD[name] =
-                        boost::make_shared< ElementaryVectorTemperatureReal >( sdName );
+                        boost::make_shared< ElementaryVectorTemperatureReal >( dsName );
                 }
             } else if ( type == "CHAM_GD" ) {
                 if ( _mapGDF[name] == nullptr ) {
-                    _mapGDF[name] = boost::make_shared< DataField >( sdName, "CHAM_GD" );
+                    _mapGDF[name] = boost::make_shared< DataField >( dsName, "CHAM_GD" );
                 }
             } else if ( type == "CHAM_NO" ) {
                 if ( _mapFOND[name] == nullptr ) {
-                    _mapFOND[name] = boost::make_shared< FieldOnNodesReal >( sdName );
+                    _mapFOND[name] = boost::make_shared< FieldOnNodesReal >( dsName );
                 }
                 // } else if ( type == "CARTE" ) {
-                //     _mapPCFOMD[name] = boost::make_shared< ConstantFieldOnCellsReal >( sdName );
+                //     _mapPCFOMD[name] = boost::make_shared< ConstantFieldOnCellsReal >( dsName );
             } else if ( type == "CHAM_ELEM" ) {
                 if ( _mapFOED[name] == nullptr ) {
-                    _mapFOED[name] = boost::make_shared< FieldOnCellsReal >( sdName );
+                    _mapFOED[name] = boost::make_shared< FieldOnCellsReal >( dsName );
                 }
             } else if ( type == "MODE_MECA" ) {
                 if ( _mapMMC[name] == nullptr ) {
-                    _mapMMC[name] = boost::make_shared< ModeResult >( sdName );
+                    _mapMMC[name] = boost::make_shared< ModeResult >( dsName );
                 }
             } else if ( type == "TABLE" ) {
                 if ( _mapT[name] == nullptr ) {
-                    _mapT[name] = boost::make_shared< Table >( sdName );
+                    _mapT[name] = boost::make_shared< Table >( dsName );
                 }
             } else if ( type == "FONCTION" ) {
                 if ( _mapF[name] == nullptr ) {
-                    _mapF[name] = boost::make_shared< Function >( sdName );
+                    _mapF[name] = boost::make_shared< Function >( dsName );
                 }
             } else if ( type == "FONCTION_C" ) {
                 if ( _mapFC[name] == nullptr ) {
-                    _mapFC[name] = boost::make_shared< FunctionComplex >( sdName );
+                    _mapFC[name] = boost::make_shared< FunctionComplex >( dsName );
                 }
             } else if ( type == "NAPPE" ) {
                 if ( _mapS[name] == nullptr ) {
-                    _mapS[name] = boost::make_shared< Function2D >( sdName );
+                    _mapS[name] = boost::make_shared< Function2D >( dsName );
                 }
             } else {
                 throw std::runtime_error( "Unsupported type '" + type + "' for '" + name + "'" );
