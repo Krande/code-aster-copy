@@ -89,9 +89,9 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
       if (.not.ldist2) then
 !
 !-----------------------------------------------------------------------------
-!     CALCUL CONNECTIVITE INVERSE (PART I) + ENERGIE (PART II) EN SEQUENTIEL  
+!     CALCUL CONNECTIVITE INVERSE (PART I) + ENERGIE (PART II) EN SEQUENTIEL
 !-----------------------------------------------------------------------------
-!PART I + II      
+!PART I + II
         do 40 im = 1, nbmail
           inum = 0
           numim=nummai(im)
@@ -123,7 +123,7 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
 !
 !-----------------------------------------------------------------------------
 ! PART I: CALCUL CONNECTIVITE INVERSE EN PARALLELE MPI (FILTRE VIA &PEECA2_vldist)
-! PART II: CALCUL ENERGIE EN SEQUENTIEL GRACE A LA PART I  
+! PART II: CALCUL ENERGIE EN SEQUENTIEL GRACE A LA PART I
 !-----------------------------------------------------------------------------
 !PART I
 ! Filtre MPI type distribution de carte. Le reliquat est fait par tout le monde
@@ -163,11 +163,11 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
               endif
             else
               inum = 0
-            endif           
+            endif
             do 242 j = 1, nbgr
               iaux=celd(4+j)+2
               mode=celd(iaux)
-              nel=zi(jnbgr+j-1)       
+              nel=zi(jnbgr+j-1)
               if (mode .eq. 0) then
                 inum = inum + nel + 1
                 goto 242
@@ -179,7 +179,7 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
                   lluck=.false.
                 else
                   lluck=.true.
-                endif 
+                endif
                 zi(jad+2*(ind1-1))=j
                 zi(jad+2*(ind1-1)+1)=k
                 goto 239
@@ -200,9 +200,11 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
         do im = 1, nbmail
           j=zi(jad+2*(ind-1))
           k=zi(jad+2*(ind-1)+1)
-! On teste au cas ou afin de ne pas oublier des mailles. 
+! On teste au cas ou afin de ne pas oublier des mailles.
 ! Visiblement cest acceptee pour cette option (cf. MA99 avec ssla200a)
-!          ASSERT((j.gt.0).and.(k.gt.0))
+          if (j <=0 .or. k<=0) then
+              cycle
+          endif
           ind=ind+1
           iaux=celd(4+j)+2
           mode=celd(iaux)
@@ -229,9 +231,11 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
       do 140 im = 1, nbmail
         j=zi(jad+2*(ind-1))
         k=zi(jad+2*(ind-1)+1)
-! On teste au cas ou afin de ne pas oublier des mailles. 
+! On teste au cas ou afin de ne pas oublier des mailles.
 ! Visiblement cest acceptee pour cette option (cf. MA99 avec ssla200a)
-!       ASSERT((j.gt.0).and.(k.gt.0))
+        if (j <=0 .or. k<=0) then
+            cycle
+        endif
         ind=ind+1
         iaux=celd(4+j)+2
         mode=celd(iaux)
