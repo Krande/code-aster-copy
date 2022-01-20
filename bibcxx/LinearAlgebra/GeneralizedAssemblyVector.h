@@ -35,7 +35,7 @@
 
 /**
  * @class GenericGeneralizedAssemblyVector
- * @brief Cette classe correspond a un matr_asse_gene
+ * @brief Cette classe correspond a un vect_asse_gene
  * @author Nicolas Sellenet
  */
 class GenericGeneralizedAssemblyVector : public DataStructure {
@@ -51,7 +51,7 @@ class GenericGeneralizedAssemblyVector : public DataStructure {
      */
     GenericGeneralizedAssemblyVector( const std::string name )
         : DataStructure( name, 19, "VECT_ASSE_GENE"),
-          _desc( JeveuxVectorLong( getName() + ".DISC" ) ),
+          _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _refe( JeveuxVectorChar24( getName() + ".REFE" ) ){};
 };
 

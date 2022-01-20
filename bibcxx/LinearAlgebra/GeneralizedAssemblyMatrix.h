@@ -54,6 +54,10 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
     ForwardModeResultPtr _mecaModeC;
     /** @brief GeneralizedModeResult */
     ForwardGeneralizedModeResultPtr _geneModeC;
+    /** @brief V K24 '.LIME' */
+    JeveuxVectorChar24 _lime;
+    /** @brief V K24 '.REFA' */
+    JeveuxVectorChar24 _refa;
 
   public:
     /**
@@ -70,6 +74,8 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
         DataStructure( name, 19, "MATR_ASSE_GENE"),
         _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
         _refe( JeveuxVectorChar24( getName() + ".REFE" ) ),
+        _lime( JeveuxVectorChar24( getName() + ".LIME" ) ),
+        _refa( JeveuxVectorChar24( getName() + ".REFA" ) ),
         _dofNum( nullptr ),
         _mecaModeC( nullptr ),
         _geneModeC( nullptr )
@@ -157,6 +163,8 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
   private:
     /** @brief Objet Jeveux '.VALM' */
     JeveuxCollection< ValueType > _valm;
+    /** @brief V Jeveux C or I '.CONL' */
+    JeveuxVector< ValueType > _conl;
 
     /**
      * @brief definir le type
@@ -197,7 +205,8 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
      */
     GeneralizedAssemblyMatrix( const std::string name )
         : GenericGeneralizedAssemblyMatrix( name ),
-          _valm( JeveuxCollection< ValueType >( getName() + ".VALM" ) )
+          _valm( JeveuxCollection< ValueType >( getName() + ".VALM" ) ),
+          _conl( JeveuxVector< ValueType >( getName() + ".CONL" ) )
     {
         GeneralizedAssemblyMatrix< ValueType >::setMatrixType();
     };
