@@ -59,32 +59,40 @@ subroutine pecage(resu, modele, nbocc)
     integer :: np, ifm, niv, iorig, i, icage
     parameter (mxvale=29,nbparr=48)
     real(kind=8) :: valpar(nbparr), r8b, xyp(2), orig(3), zero
-    character(len=3) :: symex, symey, typarr(nbparr)
+    character(len=3) :: symex, symey
     character(len=8) :: k8b, noma, lpain(15), lpaout(5)
     character(len=24) :: valk(3)
-    character(len=16) :: option, noparr(nbparr)
+    character(len=16) :: option
     character(len=19) :: chelem
     character(len=24) :: lchin(15), lchout(1), ligrel, mlggma, mlgnma
     character(len=24) :: chgeom
     complex(kind=8) :: c16b
     aster_logical :: nsymx, nsymy
     real(kind=8), pointer :: trav1(:) => null()
-    ibid = 0
 !     ------------------------------------------------------------------
-    data noparr/'LIEU','ENTITE','A_M','CDG_Y_M','CDG_Z_M','IY_G_M',&
-     &     'IZ_G_M','IYZ_G_M','Y_MAX','Z_MAX','Y_MIN','Z_MIN','R_MAX',&
-     &     'A','CDG_Y','CDG_Z','IY_G','IZ_G','IYZ_G','IY',&
-     &     'IZ','ALPHA','Y_P','Z_P','IY_P','IZ_P','IYZ_P','JX',&
-     &     'AY','AZ','EY','EZ','PCTY','PCTZ','JG','KY','KZ','IYR2_G',&
-     &     'IZR2_G','IYR2','IZR2','IYR2_P','IZR2_P','RY','RZ',&
-     &     'NOM_OBJET', 'TYPE_OBJET', 'NOM_SD'/
-    data typarr/  'K24','K8','R','R','R','R','R','R','R','R','R','R',&
-     &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',&
-     &     'R','R','R','R','R','R','R','R','R','R','R','R','R','R','R',&
-     &     'R','R','R','K16','K16','K8'/
+    character(len=16), parameter :: noparr(nbparr) =&
+        (/'LIEU            ', 'ENTITE          ', 'A_M             ', 'CDG_Y_M         ',&
+          'CDG_Z_M         ', 'IY_G_M          ', 'IZ_G_M          ', 'IYZ_G_M         ',&
+          'Y_MAX           ', 'Z_MAX           ', 'Y_MIN           ', 'Z_MIN           ',&
+          'R_MAX           ', 'A               ', 'CDG_Y           ', 'CDG_Z           ',&
+          'IY_G            ', 'IZ_G            ', 'IYZ_G           ', 'IY              ',&
+          'IZ              ', 'ALPHA           ', 'Y_P             ', 'Z_P             ',&
+          'IY_P            ', 'IZ_P            ', 'IYZ_P           ', 'JX              ',&
+          'AY              ', 'AZ              ', 'EY              ', 'EZ              ',&
+          'PCTY            ', 'PCTZ            ', 'JG              ', 'KY              ',&
+          'KZ              ', 'IYR2_G          ', 'IZR2_G          ', 'IYR2            ',&
+          'IZR2            ', 'IYR2_P          ', 'IZR2_P          ', 'RY              ',&
+          'RZ              ', 'NOM_OBJET       ', 'TYPE_OBJET      ', 'NOM_SD          '/)
+    character(len=3), parameter :: typarr(nbparr) =&
+        (/'K24','K8 ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
+          'R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
+          'R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
+          'R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ','R  ',&
+          'R  ','R  ','R  ','R  ','R  ','K16','K16','K8 '/)
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    ibid = 0
     c16b=(0.d0,0.d0)
     r8b=0.d0
     iorig = 0
@@ -142,7 +150,7 @@ subroutine pecage(resu, modele, nbocc)
     valk(1) = noma
     valk(2) = 'MAILLAGE'
     valk(3) = noma
-    call tbajli(resu, 3, noparr(nbparr-2), [ibid], [r8b],&
+    call tbajli(resu, 3, noparr(nbparr-2:nbparr), [ibid], [r8b],&
                 [c16b], valk, 0)
 !
     AS_ALLOCATE(vr=trav1, size=mxvale)
