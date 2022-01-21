@@ -180,9 +180,9 @@ implicit none
         call gcncon('.', mesh_defo)
         call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh_2)
         call copisd('MAILLAGE', 'V', mesh_2, mesh_defo)
-        call vtgpld('CUMU', mesh_2//'.COORDO', 1.d0, disp_prev, 'V',&
+        call vtgpld('CUMU', 1.d0, mesh_2//'.COORDO', disp_prev, 'V',&
                     mesh_defo//'.COORDO1')
-        call vtgpld('CUMU', mesh_defo//'.COORDO1', 1.d0, disp_cumu_inst, 'V',&
+        call vtgpld('CUMU', 1.d0, mesh_defo//'.COORDO1',  disp_cumu_inst, 'V',&
                     mesh_defo//'.COORDO')
         call detrsd('CHAMP_GD', mesh_defo//'.COORDO1')
 !

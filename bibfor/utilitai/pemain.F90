@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
     lpain(1) = 'PGEOMER'
     if (chdef .ne. ' ') then
         chgeo2 = '&&PEMAIN.CH_GEOMER'
-        call vtgpld('CUMU', chgeom, 1.d0, chdef, 'V',&
+        call vtgpld('CUMU',  1.d0, chgeom, chdef, 'V',&
                     chgeo2)
         lchin(1) = chgeo2
     else

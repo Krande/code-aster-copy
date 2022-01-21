@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,10 +96,10 @@ implicit none
         ASSERT(present(field_update_))
         field_update = field_update_
         if (present(alpha_)) then
-            call vtgpld('CUMU'    , field_in, alpha, field_update, 'V',&
+            call vtgpld('CUMU'    , alpha, field_in,  field_update, 'V',&
                         field_out)
         else
-            call vtgpld('ZERO'    , field_in, alpha, field_update, 'V',&
+            call vtgpld('ZERO'    ,  alpha, field_in, field_update, 'V',&
                         field_out)
         endif
     endif

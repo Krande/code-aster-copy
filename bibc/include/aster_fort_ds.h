@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -153,6 +153,11 @@ void DEFSSP( RSNOCH_FORWARD, rsnoch_forward, const char *, STRING_SIZE, const ch
 
 #define CALLO_RSINFO( a, b ) CALLOP( RSINFO, rsinfo, a, b )
 extern void DEFSP( RSINFO, rsinfo, const char *, STRING_SIZE, ASTERINTEGER * );
+
+#define CALLO_VTGPLD( a, b, c, d, e, f ) CALLOPOOOO( VTGPLD, vtgpld, a, b, c, d, e, f )
+extern void DEFSPSSSS( VTGPLD, vtgpld, const char *, STRING_SIZE, ASTERDOUBLE *, const char *, 
+            STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *, 
+                    STRING_SIZE);
 
 #ifdef __cplusplus
 }

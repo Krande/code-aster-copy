@@ -107,7 +107,7 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
 !     REACTUALISATION DE LA GEOMETRIE SI DEPMOI EXISTE
     if (depmoi .ne. ' ') then
         chgeo2 = '&&VELAME.CH_GEOMER'
-        call vtgpld('CUMU', chgeom, 1.d0, depmoi, 'V',&
+        call vtgpld('CUMU', 1.d0, chgeom,  depmoi, 'V',&
                     chgeo2)
     else
         chgeo2 = chgeom

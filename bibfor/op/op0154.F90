@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -127,7 +127,7 @@ implicit none
             call chpver('F', disp, 'NOEU', 'DEPL_R', ier)
             geomInit = mesh//'.COORDO'
             geomModi = mesh//'.COORD2'
-            call vtgpld('CUMU', geomInit, 1.d0, disp, 'V', geomModi)
+            call vtgpld('CUMU', 1.d0, geomInit,  disp, 'V', geomModi)
             call detrsd('CHAMP_GD', geomInit)
             call copisd('CHAMP_GD', 'G', geomModi, geomInit)
             call detrsd('CHAMP_GD', geomModi)
