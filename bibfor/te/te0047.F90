@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,11 +49,13 @@ use te0047_type
 implicit none
 character(len=*) :: optioz, nomtez
 !
+#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/diarm0.h"
 #include "asterfort/dibili.h"
 #include "asterfort/dis_contact_frot.h"
-#include "asterfort/dicho0.h"
+#include "asterfort/dis_choc_frot.h"
 #include "asterfort/dicora.h"
 #include "asterfort/didashpot.h"
 #include "asterfort/diecci.h"
@@ -80,7 +82,7 @@ character(len=*) :: optioz, nomtez
 !
 ! --------------------------------------------------------------------------------------------------
 !
-integer :: neq, ideplm, ideplp, icompo
+integer :: neq, ideplm, ideplp, icompo, jtempsm, jtempsp
 integer :: ii, jcret, itype, lorien
 integer :: iadzi, iazk24, ibid, infodi, codret
 !
@@ -123,6 +125,9 @@ type(te0047_dscr) :: for_discret
     !     itype = type de l'élément
     call infted(for_discret%nomte, infodi, &
                 for_discret%nbt, for_discret%nno, for_discret%nc, for_discret%ndim, itype)
+    !
+    ASSERT( (for_discret%ndim.eq.2).or.(for_discret%ndim.eq.3) )
+    !
     neq = for_discret%nno*for_discret%nc
     ! récupération des adresses jeveux
     call jevech('PDEPLMR', 'L', ideplm)
@@ -141,10 +146,17 @@ type(te0047_dscr) :: for_discret
     for_discret%type_comp = zk16(icompo-1+INCRELAS)
     !
     ! Select objects to construct from option name
+    !   lVari       : 'RAPH_MECA'  (1:9)'FULL_MECA'
+    !   lSigm       : 'RAPH_MECA'  (1:9)'FULL_MECA'       'RIGI_MECA_TANG'
+    !   lVect       : 'RAPH_MECA'  (1:9)'FULL_MECA'       'RIGI_MECA_TANG'
+    !   lMatr       :              (1:9)'FULL_MECA'  (1:9)'RIGI_MECA'
+    !   lPred       :                                     'RIGI_MECA_TANG'
+    !   lMatrPred   :                                (1:4)'RIGI'
     call behaviourOption(for_discret%option, zk16(icompo), &
                          for_discret%lMatr, for_discret%lVect, &
                          for_discret%lVari, for_discret%lSigm , codret)
-    for_discret%lMatrPred = for_discret%option .eq. 'RIGI_MECA_TANG'
+    for_discret%lMatrPred = for_discret%option(1:4) .eq. 'RIGI'
+    for_discret%lPred     = for_discret%option      .eq. 'RIGI_MECA_TANG'
     !
     if (for_discret%defo_comp .ne. 'PETIT') then
         call utmess('A', 'DISCRETS_18')
@@ -161,7 +173,7 @@ type(te0047_dscr) :: for_discret
     endif
     ! dans les cas *_ELAS, les comportements qui ont une matrice de
     ! décharge sont : elas DIS_GRICRA. pour tous les autres cas : <f>
-    if ((for_discret%option(10:14).eq.'_ELAS') .and. (for_discret%rela_comp.ne.'ELAS') .and.&
+    if ((for_discret%option(10:14).eq.'_ELAS') .and. (for_discret%rela_comp.ne.'ELAS') .and. &
         (for_discret%rela_comp.ne.'DIS_GRICRA')) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
@@ -201,10 +213,16 @@ type(te0047_dscr) :: for_discret
     if (for_discret%ndim .eq. 3) then
         call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugm, for_discret%ulm)
         call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, dug, for_discret%dul)
-    else if (for_discret%ndim.eq.2) then
+    else
         call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugm, for_discret%ulm)
         call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, dug, for_discret%dul)
     endif
+    !
+    ! Temps + et - , calcul de dt
+    call jevech('PINSTMR', 'L', jtempsm)
+    call jevech('PINSTPR', 'L', jtempsp)
+    for_discret%TempsPlus  = zr(jtempsp)
+    for_discret%TempsMoins = zr(jtempsm)
     !
     codret = 0
     if (for_discret%rela_comp .eq. 'ELAS') then
@@ -232,8 +250,8 @@ type(te0047_dscr) :: for_discret
         ! comportement des liaisons grille-crayon combustible
         call digric(for_discret, codret)
     else if (for_discret%rela_comp.eq.'DIS_CHOC') then
-        ! comportement choc sans frottement de coulomb et sans amortissement
-        call dicho0(for_discret, codret)
+        ! comportement choc avec frottement de coulomb et sans amortissement
+        call dis_choc_frot(for_discret, codret)
     else if (for_discret%rela_comp.eq.'DIS_CONTACT') then
         ! comportement choc avec frottement de coulomb avec amortissement
         call dis_contact_frot(for_discret, codret)

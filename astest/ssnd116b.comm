@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -41,6 +41,7 @@ BLOC=AFFE_CHAR_MECA(
     ),
 )
 
+resi_inte_rela=0.2E-08
 # --------------------------------------------------------------------------------------------------
 #
 # Déplacements imposés sur le Noeud 1 : trajet 1
@@ -90,7 +91,7 @@ RESU1=STAT_NON_LINE(
         _F(CHARGE=DEPL1,),
     ),
     COMPORTEMENT=(
-        _F(GROUP_MA='L1',RELATION='DIS_CONTACT',),
+        _F(GROUP_MA='L1',RELATION='DIS_CONTACT',RESI_INTE_RELA=resi_inte_rela,),
     ),
     INCREMENT=_F(LIST_INST=llinst1,),
     NEWTON=_F(REAC_INCR=1, MATRICE='TANGENTE', REAC_ITER=1,),
@@ -158,7 +159,7 @@ RESU2=STAT_NON_LINE(
         _F(CHARGE=DEPL2,),
     ),
     COMPORTEMENT=(
-        _F(GROUP_MA='L1',RELATION='DIS_CONTACT',),
+        _F(GROUP_MA='L1',RELATION='DIS_CONTACT',RESI_INTE_RELA=resi_inte_rela,),
     ),
     INCREMENT=_F(LIST_INST=llinst2,),
     NEWTON=_F(REAC_INCR=1, MATRICE='TANGENTE', REAC_ITER=1,),
@@ -226,7 +227,7 @@ RESU3=STAT_NON_LINE(
         _F(CHARGE=DEPL3,),
     ),
     COMPORTEMENT=(
-        _F(GROUP_MA='L1',RELATION='DIS_CONTACT',),
+        _F(GROUP_MA='L1',RELATION='DIS_CONTACT',RESI_INTE_RELA=resi_inte_rela,),
     ),
     INCREMENT=_F(LIST_INST=llinst3,),
     NEWTON=_F(REAC_INCR=1, MATRICE='TANGENTE', REAC_ITER=1,),
@@ -258,48 +259,50 @@ ResuRefe={
 22 : (  11.0, -2.0E+04, -Seuil2,  -Seuil2  ),
 }
 
+OrdreGd = 500.0
+
 for UnInst, Nrefe, VYrefe, VZrefe in ResuRefe.values():
     # Le Trajet 1
     arg={}
     if (abs(Nrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04,}
-        if (abs(Nrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(Nrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF1,
         NOM_PARA = 'N', FILTRE= _F(NOM_PARA='INST', VALE= UnInst),
         VALE_CALC = Nrefe , REFERENCE ='ANALYTIQUE', VALE_REFE = Nrefe,**arg )
     arg={}
     if (abs(VYrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04,}
-        if (abs(VYrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(VYrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF1,
         NOM_PARA = 'VY', FILTRE= _F(NOM_PARA='INST', VALE= UnInst),
         VALE_CALC = VYrefe , REFERENCE ='ANALYTIQUE', VALE_REFE = VYrefe,**arg)
     arg={}
     if (abs(VZrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04}
-        if (abs(VZrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(VZrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF1,
         NOM_PARA = 'VZ', FILTRE= _F(NOM_PARA='INST', VALE= UnInst),
         VALE_CALC = VZrefe , REFERENCE ='ANALYTIQUE', VALE_REFE = VZrefe,**arg)
     # Le Trajet 3
     arg={}
     if (abs(Nrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04,}
-        if (abs(Nrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(Nrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF3,
         NOM_PARA = 'N', FILTRE= _F(NOM_PARA='INST', VALE= UnInst),
         VALE_CALC = Nrefe , REFERENCE ='ANALYTIQUE', VALE_REFE = Nrefe,**arg )
     arg={}
     if (abs(VYrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04,}
-        if (abs(VYrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(VYrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF3,
         NOM_PARA = 'VY', FILTRE= _F(NOM_PARA='INST', VALE= UnInst),
         VALE_CALC = VYrefe , REFERENCE ='ANALYTIQUE', VALE_REFE = VYrefe,**arg)
     arg={}
     if (abs(VZrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04}
-        if (abs(VZrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(VZrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF3,
         NOM_PARA = 'VZ', FILTRE= _F(NOM_PARA='INST', VALE= UnInst),
         VALE_CALC = VZrefe , REFERENCE ='ANALYTIQUE', VALE_REFE = VZrefe,**arg)
@@ -318,15 +321,15 @@ for Angle in LesAngles:
         UnVZrefe = -1.0E+04*0.30*NU.cos((Angle-drota*0.5)*NU.pi/180.0)
     arg={}
     if (abs(UnVYrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04,}
-        if (abs(UnVYrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(UnVYrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF2,
         NOM_PARA = 'VY', FILTRE= _F(NOM_PARA='INST', VALE= Angle),
         VALE_REFE = UnVYrefe , REFERENCE ='ANALYTIQUE', VALE_CALC = UnVYrefe,**arg)
     arg={}
     if (abs(UnVZrefe)<1e-6):
-        arg={'CRITERE':'ABSOLU', 'PRECISION':1.0E-04,}
-        if (abs(UnVZrefe)<1e-16): arg['ORDRE_GRANDEUR']=100.0
+        arg={'CRITERE':'ABSOLU',}
+        if (abs(UnVZrefe)<1e-16): arg['ORDRE_GRANDEUR']=OrdreGd
     TEST_TABLE(TABLE = TABSIEF2,
         NOM_PARA = 'VZ', FILTRE= _F(NOM_PARA='INST', VALE= Angle),
         VALE_REFE = UnVZrefe , REFERENCE ='ANALYTIQUE', VALE_CALC = UnVZrefe,**arg)

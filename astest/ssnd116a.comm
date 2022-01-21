@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -103,11 +103,11 @@ TEST_RESU(
         _F(RESULTAT=calc, INST    =1.05, NOM_CHAM='DEPL', NOM_CMP ='DY', GROUP_NO='Vertex_2',
            VALE_CALC=0.1333328, REFERENCE='ANALYTIQUE', VALE_REFE=0.1333333, ),
         _F(RESULTAT=calc, INST    =1.50, NOM_CHAM='DEPL', NOM_CMP ='DY', GROUP_NO='Vertex_2',
-           VALE_CALC=1.875, REFERENCE='ANALYTIQUE', VALE_REFE=1.875, ),
+           VALE_CALC=1.8749973, REFERENCE='ANALYTIQUE', VALE_REFE=1.875, ),
         _F(RESULTAT=calc, INST    =1.55, NOM_CHAM='DEPL', NOM_CMP ='DY', GROUP_NO='Vertex_2',
            VALE_CALC=1.7416643, REFERENCE='ANALYTIQUE', VALE_REFE=1.7416666, ),
         _F(RESULTAT=calc, INST    =2.00, NOM_CHAM='DEPL', NOM_CMP ='DY', GROUP_NO='Vertex_2',
-           VALE_CALC=0.1250086, REFERENCE='ANALYTIQUE', VALE_REFE=0.125, ),
+           VALE_CALC=0.1250067, REFERENCE='ANALYTIQUE', VALE_REFE=0.125, ),
      ),
 )
 

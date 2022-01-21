@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,28 +16,13 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
+!
 interface
-    subroutine dichoc(nbt, neq, nno, nc, icodma,&
-                      dul, utl, xg, pgl, klv,&
-                      duly, dvl, dpe, dve, force,&
-                      varmo, varpl, dimele)
-        integer :: neq
-        integer :: nbt
-        integer :: nno
-        integer :: nc
-        integer :: icodma
-        real(kind=8) :: dul(neq)
-        real(kind=8) :: utl(neq)
-        real(kind=8) :: xg(6)
-        real(kind=8) :: pgl(3, 3)
-        real(kind=8) :: klv(nbt)
-        real(kind=8) :: duly
-        real(kind=8) :: dvl(neq)
-        real(kind=8) :: dpe(neq)
-        real(kind=8) :: dve(neq)
-        real(kind=8) :: force(3)
-        real(kind=8) :: varmo(8)
-        real(kind=8) :: varpl(8)
-        integer :: dimele
-    end subroutine dichoc
+    subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
+                             varmo, force, varpl)
+        use te0047_type
+        type(te0047_dscr), intent(in) :: for_discret
+        integer         :: icodma
+        real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
+    end subroutine dis_choc_frot_nosyme
 end interface
