@@ -73,6 +73,30 @@ class MeshCoordinatesField : public DataStructure {
     };
 
     /**
+     * @brief copy constructeur
+     * @param coordField MeshCoordinatesField
+     */
+    MeshCoordinatesField(const MeshCoordinatesField  &coordField ):
+          MeshCoordinatesField(ResultNaming::getNewResultName())
+    {
+          *(_descriptor) = *(coordField._descriptor);
+          *(_reference)  = *(coordField._reference);
+          *(_valuesList) = *(coordField._valuesList);
+    };
+
+
+    /**
+     * @brief Assignement operator
+     * @param coordField MeshCoordinatesField
+     */
+    MeshCoordinatesField& operator=(const MeshCoordinatesField  &coordField ){
+          *(_descriptor) = *(coordField._descriptor);
+          *(_reference)  = *(coordField._reference);
+          *(_valuesList) = *(coordField._valuesList);
+          return *this;
+    };
+
+    /**
      * @brief Get _descriptor
      */
     const JeveuxVectorLong getDescriptor() const { return _descriptor; };
@@ -93,6 +117,13 @@ class MeshCoordinatesField : public DataStructure {
      * @return la valeur du tableau Jeveux a la position i
      */
     ASTERDOUBLE operator[]( int i ) const { return _valuesList->operator[]( i ); };
+
+    /**
+     * @brief duplicate
+     * @return MeshCoordinatesField
+     */
+    MeshCoordinatesField duplicate( ){ return *this; };
+
 
     /**
      * @brief Mise a jour des pointeurs Jeveux

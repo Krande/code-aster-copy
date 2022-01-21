@@ -3,7 +3,7 @@
  * @brief Interface python de MeshCoordinates
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,6 +53,13 @@ Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 
 Returns:
     list[float]: List of coordinates (size = 3 * number of nodes).
+        )",
+            ( py::arg( "self" ) ) )
+        .def( "duplicate", &MeshCoordinatesField::duplicate, R"(
+Return a copy of MeshCoordinatesField object
+
+Returns:
+    MeshCoordinatesField : MeshCoordinatesField object
         )",
             ( py::arg( "self" ) ) );
 };
