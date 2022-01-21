@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -104,7 +104,7 @@ MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
 MASMA=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
                    NUME_DDL=NUM,)
 
-RESULT=CALC_MODES( OPTION='PLUS_PETITE',SOLVEUR=_F(METHODE='MULT_FRONT'),
+RESULT=CALC_MODES( OPTION='PLUS_PETITE',SOLVEUR=_F(METHODE='MULT_FRONT', NPREC=15),
                    MATR_RIGI=MAS_RI_M,
                    MATR_RIGI_GEOM=MAS_RI_G,
                    SOLVEUR_MODAL=_F( METHODE='SORENSEN',
@@ -114,7 +114,7 @@ RESULT=CALC_MODES( OPTION='PLUS_PETITE',SOLVEUR=_F(METHODE='MULT_FRONT'),
                    VERI_MODE=_F( SEUIL=0.0001 ),)
 
 
-MODE=CALC_MODES( MATR_RIGI=MAS_RI_M,SOLVEUR=_F(METHODE='MULT_FRONT'),
+MODE=CALC_MODES( MATR_RIGI=MAS_RI_M,SOLVEUR=_F(METHODE='MULT_FRONT', NPREC=15),
                  MATR_MASS=MASMA,
                  SOLVEUR_MODAL=_F( METHODE='SORENSEN',
                                    NMAX_ITER_SOREN=20 ),
@@ -162,7 +162,7 @@ TEST_RESU(RESU=_F(PARA='CHAR_CRIT',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RES_NORM,
 # de rigidité du problème elastique : la plaque est tres mince.
-                  VALE_CALC=-848468.773446,
+                  VALE_CALC=-848467.2821675014,
                   VALE_REFE=-8.493509396E5,
                   PRECISION=2.E-3,),)
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,7 +126,7 @@ MODES=CALC_MODES( OPTION='CENTRE',
                   VERI_MODE=_F(SEUIL=2e-05,),
                   CALC_FREQ=_F(NMAX_FREQ=2,
                                FREQ=(13.5,), ),
-                 )
+                  SOLVEUR=_F(METHODE='MULT_FRONT'))
 
 TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',

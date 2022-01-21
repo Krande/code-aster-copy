@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -143,15 +143,22 @@ RESUDYN = DYNA_NON_LINE(
 Ldiscrets= ['M305','M311','M315','M317','M306','M310','M316','M320',
             'M307','M309','M313','M319','M308','M312','M314','M318',]
 
-Force1 = -992.026581286
-Force2 = -989.653474473
-Force3 = -997.006971748
-Force4 = -999.453442417
+Force1stat = -992.0269126494252
+Force1dyna = -992.0243881622522
 
-Lforce   = [Force1,Force1,Force1,Force1,Force2,Force2,Force2,Force2,
-            Force3,Force3,Force3,Force3,Force4,Force4,Force4,Force4,]
+Force2stat = Force2dyna = -989.6534492314452
 
-for mm,ff in zip(Ldiscrets,Lforce):
+Force3dyna = -997.0092249261302
+Force3stat = -997.0071767812262
+
+Force4stat = Force4dyna = -999.4534523549171
+
+Lforcedyna   = [Force1dyna,Force1dyna,Force1dyna,Force1dyna,Force2dyna,Force2dyna,Force2dyna,Force2dyna,
+                Force3dyna,Force3dyna,Force3dyna,Force3dyna,Force4dyna,Force4dyna,Force4dyna,Force4dyna,]
+Lforcestat   = [Force1stat,Force1stat,Force1stat,Force1stat,Force2stat,Force2stat,Force2stat,Force2stat,
+                Force3stat,Force3stat,Force3stat,Force3stat,Force4stat,Force4stat,Force4stat,Force4stat,]
+
+for mm,ffdyna,ffstat in zip(Ldiscrets,Lforcedyna,Lforcestat):
     TEST_RESU(
         RESU=(
             # Le jeu, calcul DYNA_NON_LINE
@@ -164,10 +171,10 @@ for mm,ff in zip(Ldiscrets,Lforce):
             # Les efforts, calcul DYNA_NON_LINE
             _F(MAILLE=mm, POINT=1, INST=0.0, RESULTAT=RESUDYN,
                NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ff,),
+               VALE_CALC=ffdyna,),
             _F(MAILLE=mm, POINT=2, INST=0.0, RESULTAT=RESUDYN,
                NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ff,),
+               VALE_CALC=ffdyna,),
             #
             # Le jeu, calcul STAT_NON_LINE
             _F(MAILLE=mm, POINT=1, INST=0.0, REFERENCE='ANALYTIQUE', RESULTAT=RESUSTAT,
@@ -179,10 +186,10 @@ for mm,ff in zip(Ldiscrets,Lforce):
             # Les efforts, calcul STAT_NON_LINE
             _F(MAILLE=mm, POINT=1, INST=0.0, RESULTAT=RESUSTAT,
                NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ff,),
+               VALE_CALC=ffstat,),
             _F(MAILLE=mm, POINT=2, INST=0.0, RESULTAT=RESUSTAT,
                NOM_CHAM='SIEF_ELGA', NOM_CMP='N',
-               VALE_CALC=ff,),
+               VALE_CALC=ffstat,),
         ),
     )
 

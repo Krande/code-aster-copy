@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -186,7 +186,7 @@ RES2 = STAT_NON_LINE(CARA_ELEM=CARA,
                                MATRICE='TANGENTE',
                                MATR_RIGI_SYME='NON',
                                REAC_ITER_ELAS=0,
-                               REAC_ITER=1,),
+                               REAC_ITER=2,),
                      RECH_LINEAIRE=_F(),
                      CONVERGENCE=_F(ARRET='OUI',
                                     ITER_GLOB_MAXI=80,

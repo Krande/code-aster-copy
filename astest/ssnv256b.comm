@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -260,7 +260,7 @@ SXX22 = CREA_TABLE(LISTE = (_F(PARA='SIXX',LISTE_R = SIXX2[k])))
 TEST_TABLE(TABLE = SXX21,
        NOM_PARA = 'SIXX',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 403.5994630935459,
+           VALE_CALC = 403.60352215071157,
            TOLE_MACHINE = 1.e-5,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 4.033388e+02,
