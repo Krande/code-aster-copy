@@ -409,7 +409,7 @@ subroutine crnustd(numddl)
             call create_graph_comm(nomlig, "LIGREL", nb_comm, comm_name, tag_name)
             call jeveuo(comm_name, 'L', vi=v_comm)
             call jeveuo(tag_name, 'L', vi=v_tag)
-            do i_join = 1, nbjoin
+            do i_join = 1, nb_comm
                 numpro = v_comm(i_join)
                 if( numpro.ne.-1 ) then
                     numpr4 = to_mpi_int(numpro)
