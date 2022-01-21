@@ -112,7 +112,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     aster_logical :: lfonc, lxfem
     parameter   (mxstac=1000)
     character(len=2) :: codret
-    character(len=8) :: noma, fond, licmp(6), typmo, fiss, mosain
+    character(len=8) :: noma, fond, licmp(6), is_axi, fiss
     character(len=16) :: option, optio2
     character(len=19) :: ch1d2d, chpres, chrota, chpesa, chvolu, ch2d3d, chepsi
     character(len=19) :: chvref, chvarc
@@ -125,7 +125,6 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=24) :: obj1, obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
     real(kind=8), pointer :: valg(:) => null()
-    character(len=8), pointer :: p_mod_sain(:) => null()
 !
     data chvarc/'&&CAKG2D.CH_VARC_R'/
     data chvref/'&&CAKG2D.CHVREF'/
@@ -248,16 +247,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     ndim = -zi(icoode-1+2)
 !
 !
-!   Recuperation du modele
-    if (lxfem) then
-!       cas X-FEM : MOSAIN = MODELE ISSU DE AFFE_MODELE
-        call jeveuo(modele//'.MODELE_SAIN', 'L', vk8=p_mod_sain)
-        mosain = p_mod_sain(1)
-        call dismoi('MODELISATION', mosain, 'MODELE', repk=typmo)
-    else
-!       cas FEM
-        call dismoi('MODELISATION', modele, 'MODELE', repk=typmo)
-    endif
+!   modele AXIS ?
+    call dismoi('AXIS', modele, 'MODELE', repk=is_axi)
 !
 !   OBJET CONTENANT LES NOEUDS DU FOND DE FISSURE
     if (.not.lxfem) then
@@ -489,7 +480,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         valg(i) = fic(i)
     end do
 !
-    if (typmo(1:4) .eq. 'AXIS') then
+    if (is_axi(1:3) .eq. 'OUI') then
         do i = 1, 5
             valg(i) = valg(i)/rcmp(1)
         end do

@@ -111,9 +111,6 @@ class sd_fiss_xfem(AsBase):
 class sd_modele_xfem(AsBase):
     nomj = SDNom(fin=8)
 
-#   nom du modele sain
-    MODELE_SAIN = AsVK8(lonmax=1,)
-
 # II.1) objets relatifs aux sous-elements
 
     TOPOSE_PIN = sd_cham_elem(SDNom(nomj='.TOPOSE.PIN'))

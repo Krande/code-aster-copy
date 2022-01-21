@@ -80,7 +80,6 @@ subroutine op0113()
     aster_logical :: linter
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
-    character(len=8), pointer :: p_mod_sain(:) => null()
 !
     data motfac /' '/
 !
@@ -103,9 +102,6 @@ subroutine op0113()
     call getvid(motfac, 'MODELE_IN', iocc=1, scal=mod1, nbret=iret)
     ligr1 = mod1//'.MODELE'
     liel1 = ligr1//'.LIEL'
-!
-    call wkvect(modelx//'.MODELE_SAIN', 'G V K8', 1, vk8=p_mod_sain)
-    p_mod_sain(1) = mod1
 !
 ! --- ACCES AU MAILLAGE INITIAL
 !
