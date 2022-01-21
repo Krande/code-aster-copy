@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ module tenseur_dime_module
 
     implicit none
     private
-    public:: rs,kron,voigt,proten,identity
+    public:: rs, kron, voigt, proten, identity, sph_norm, deviator
     
 #include "asterfort/assert.h"
     
     real(kind=8),parameter,dimension(6)::KRONECKER=[1.d0,1.d0,1.d0,0.d0,0.d0,0.d0]
     real(kind=8),parameter,dimension(6)::RACINE_2=[1.d0,1.d0,1.d0,sqrt(2.d0),sqrt(2.d0),sqrt(2.d0)]
-
+    real(kind=8),parameter             ::RAC3 = sqrt(3.d0)
 
 contains
 
@@ -114,6 +114,36 @@ function identity(n) result(idm)
     
 
 
+! =====================================================================
+!  Deviateur d'un tenseur en representation de Voigt
+! =====================================================================
+    
+function deviator(u) result(w)
+    implicit none
+    real(kind=8),dimension(:),intent(in) :: u
+    real(kind=8),dimension(size(u))      :: w
+! ---------------------------------------------------------------------
+    w = u - sum(u(1:3))*kron(size(u))/3.d0
+
+ end function deviator
+    
+    
+    
+! =====================================================================
+!  Partie spherique normee d'un tenseur en representation de Voigt
+! =====================================================================
+    
+function sph_norm(u) result(y)
+    implicit none
+    real(kind=8),dimension(:),intent(in) :: u
+    real(kind=8)                         :: y
+! ---------------------------------------------------------------------
+    y = sum(u(1:3))/RAC3
+
+ end function sph_norm
+    
+    
+    
 ! =====================================================================
 !  Produit tensoriel de deux vecteurs de dimension quelconque
 ! =====================================================================

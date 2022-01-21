@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -686,10 +686,10 @@ integer :: codret
                     ndsde, dsidep, codret)             
     case (77)
         call lc0077(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+                    compor, carcri, instam, instap, neps, &
+                    epsm, deps, nsig, sigm, nvi, vim, &
+                    option, angmas, sigp, vip, typmod, icomp,&
+                    ndsde, dsidep, codret)
     case (78)
         call lc0078(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&

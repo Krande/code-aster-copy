@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,25 +16,64 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
+
 subroutine lc0077(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
-                  nvi, dsidep, codret)
-!
-!
+                    compor, carcri, instam, instap, neps, &
+                    epsm, deps, nsig, sigm, nvi, vim, &
+                    option, angmas, sigp, vip, typmod, icomp,&
+                    ndsde, dsidep, codret) 
+
+
+ 
 ! aslint: disable=W1504,W0104
+    use kichenin_nl_module, only: CONSTITUTIVE_LAW, Init, Integrate 
     implicit none
-#include "asterfort/utmess.h"
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
-    real(kind=8) :: crit(*), angmas(3)
-    real(kind=8) :: instam, instap
-    real(kind=8) :: epsm(6), deps(6)
-    real(kind=8) :: sigm(6), sigp(6)
-    real(kind=8) :: vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6)
-    character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*)
-    character(len=*) :: fami
-    call utmess('F', 'FERMETUR_11')
+#include "asterfort/assert.h"
+#include "asterfort/Behaviour_type.h"
+
+! ----------------------------------------------------------------------
+    integer             :: imate, ndim, kpg, ksp, codret, icomp
+    integer             :: nvi,neps,nsig,ndsde
+    real(kind=8)        :: carcri(*), angmas(*)
+    real(kind=8)        :: instam, instap
+    real(kind=8)        :: epsm(neps), deps(neps)
+    real(kind=8)        :: sigm(nsig), sigp(nsig)
+    real(kind=8)        :: vim(nvi), vip(nvi)
+    real(kind=8)        :: dsidep(nsig,neps)
+    character(len=16)   :: compor(*), option
+    character(len=8)    :: typmod(*)
+    character(len=*)    :: fami
+! ----------------------------------------------------------------------
+    aster_logical :: lMatr, lSigm, lVari
+    integer     :: ndimsi
+    real(kind=8):: eps(2*ndim), sig(2*ndim),dsde(2*ndim,2*ndim),vi(nvi)
+    type(CONSTITUTIVE_LAW):: cl
+! ----------------------------------------------------------------------
+    ASSERT (neps*nsig .eq. ndsde)
+    ASSERT (neps .eq. nsig)
+    ASSERT (neps .ge. 2*ndim)
+! --------------------------------------------------------------------------------------------------
+    
+    ndimsi = 2*ndim
+    eps    = epsm(1:ndimsi) + deps(1:ndimsi)
+
+    lVari = L_VARI(option)
+    lSigm = L_SIGM(option)
+    lMatr = L_MATR(option)
+
+    cl = Init(ndimsi, option, fami, kpg, ksp, imate, nint(carcri(1)), &
+            carcri(3),instap-instam)
+    ASSERT(.not. lMatr .or. cl%rigi)
+    ASSERT(.not. lVari .or. cl%resi)
+
+    call Integrate(cl, eps, vim(1:nvi), sig, vi, dsde)
+
+    codret = cl%exception
+    if (codret.ne.0) goto 999
+
+    if (lSigm) sigp(1:ndimsi) = sig
+    if (lVari) vip(1:nvi) = vi
+    if (lMatr) dsidep(1:ndimsi,1:ndimsi) = dsde
+
+999 continue                      
 end subroutine

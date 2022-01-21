@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -317,6 +317,7 @@ DICT_NOM_VARI = {
     "EPSPZZ": _("déformation plastique composante ZZ"),
     "EPSRN-1": _("déformation du cycle précédent  Pinto-Menegotto"),
     "EPSRN": _("déformation du cycle actuel, Pinto-Menegotto"),
+    "EPSVEQ": _("déformation visqueuse équivalente cumulée"),
     "EPSVOLME" : _("déformations volumiques élastiques mécaniques"),
     "EPSVOLTH" : _("déformations volumiques élastiques thermiques"),
     "EPSVOLVP" : _("déformations volumiques viscoplastiques"),
@@ -326,6 +327,12 @@ DICT_NOM_VARI = {
     "EPT4": _("FLUA_ENDO_PORO deformation plastique de traction "),
     "EPT5": _("FLUA_ENDO_PORO deformation plastique de traction "),
     "EPT6": _("FLUA_ENDO_PORO deformation plastique de traction "),
+    "EPVXX": _("déformation viscoélastique composante XX"),
+    "EPVYY": _("déformation viscoélastique composante YY"),
+    "EPVZZ": _("déformation viscoélastique composante ZZ"),
+    "EPVXY": _("déformation viscoélastique composante XY"),
+    "EPVXZ": _("déformation viscoélastique composante XZ"),
+    "EPVYZ": _("déformation viscoélastique composante YZ"),
     "ERD11": _("déformation déviatorique réversible, composante 11"),
     "ERD12": _("déformation déviatorique réversible, composante 12"),
     "ERD22": _("déformation déviatorique réversible, composante 22"),

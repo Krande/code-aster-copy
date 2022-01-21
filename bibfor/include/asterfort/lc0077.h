@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,31 +21,34 @@
 !
 interface
     subroutine lc0077(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, epsm,&
-                      deps, sigm, vim, option, angmas,&
-                      sigp, vip, typmod, icomp,&
-                      nvi, dsidep, codret)
+                    compor, carcri, instam, instap, neps, &
+                    epsm, deps, nsig, sigm, nvi, &
+                    vim, option, angmas, sigp, vip, &
+                    typmod, icomp, ndsde, dsidep, codret)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim
         integer :: imate
         character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
+        real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: vim(*)
+        integer :: neps
+        real(kind=8) :: epsm(neps)
+        real(kind=8) :: deps(neps)
+        integer :: nsig
+        real(kind=8) :: sigm(nsig)
+        integer :: nvi
+        real(kind=8) :: vim(nvi)
         character(len=16) :: option
-        real(kind=8) :: angmas(3)
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip(*)
+        real(kind=8) :: angmas(*)
+        real(kind=8) :: sigp(nsig)
+        real(kind=8) :: vip(nvi)
         character(len=8) :: typmod(*)
         integer :: icomp
-        integer :: nvi
-        real(kind=8) :: dsidep(6, 6)
+        integer :: ndsde
+        real(kind=8) :: dsidep(nsig,neps)
         integer :: codret
     end subroutine lc0077
 end interface
