@@ -24,8 +24,10 @@
 #include "Numbering/FieldOnNodesDescription.h"
 
 FieldOnNodesDescription::FieldOnNodesDescription( const std::string name )
-    : DataStructure( name, 19, "PROF_CHNO" ), _componentsOnNodes( getName() + ".PRNO" ),
-      _namesOfGroupOfCells( getName() + ".LILI" ), _indexationVector( getName() + ".NUEQ" ),
+    : DataStructure( name, 19, "PROF_CHNO" ),
+      _componentsOnNodes( getName() + ".PRNO" ),
+      _namesOfGroupOfCells( getName() + ".LILI" ),
+      _indexationVector( getName() + ".NUEQ" ),
       _nodeAndComponentsNumberFromDOF( getName() + ".DEEQ" ){};
 
 ASTERINTEGER FieldOnNodesDescription::getNumberOfDofs() const {
@@ -33,7 +35,7 @@ ASTERINTEGER FieldOnNodesDescription::getNumberOfDofs() const {
 };
 
 VectorLong FieldOnNodesDescription::getNodesFromDOF() const {
-    const bool retour = _nodeAndComponentsNumberFromDOF->updateValuePointer();
+    _nodeAndComponentsNumberFromDOF->updateValuePointer();
     const ASTERINTEGER nb_eq = this->getNumberOfDofs();
 
     VectorLong nodes( nb_eq );
@@ -47,11 +49,10 @@ VectorLong FieldOnNodesDescription::getNodesFromDOF() const {
  * @brief Mise a jour des pointeurs Jeveux
  * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
  */
-bool FieldOnNodesDescription::updateValuePointers() {
-    bool retour = _componentsOnNodes->build();
-    retour = ( retour && _indexationVector->updateValuePointer() );
-    retour = ( retour && _nodeAndComponentsNumberFromDOF->updateValuePointer() );
-    return retour;
+void FieldOnNodesDescription::updateValuePointers() {
+    _componentsOnNodes->build();
+    _indexationVector->updateValuePointer();
+    _nodeAndComponentsNumberFromDOF->updateValuePointer();
 };
 
 bool FieldOnNodesDescription::operator==( FieldOnNodesDescription &toCompare ) {
@@ -59,15 +60,15 @@ bool FieldOnNodesDescription::operator==( FieldOnNodesDescription &toCompare ) {
     bool ret = false;
 
     // TO FIX
-    //if ( ( *_componentsOnNodes ) == ( *toCompare._componentsOnNodes ) ) {
-        if ( ( *_indexationVector ) == ( *toCompare._indexationVector ) ) {
-            if ( ( *_nodeAndComponentsNumberFromDOF ) ==
-                 ( *toCompare._nodeAndComponentsNumberFromDOF ) ) {
-                if ( ( *_namesOfGroupOfCells ) == ( *toCompare._namesOfGroupOfCells ) ) {
-                    ret = true;
-                }
+    // if ( ( *_componentsOnNodes ) == ( *toCompare._componentsOnNodes ) ) {
+    if ( ( *_indexationVector ) == ( *toCompare._indexationVector ) ) {
+        if ( ( *_nodeAndComponentsNumberFromDOF ) ==
+             ( *toCompare._nodeAndComponentsNumberFromDOF ) ) {
+            if ( ( *_namesOfGroupOfCells ) == ( *toCompare._namesOfGroupOfCells ) ) {
+                ret = true;
             }
         }
+    }
     // }
     CALL_JEDEMA();
 

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshCoordinatesField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,11 +28,12 @@
 
 #include "astercxx.h"
 
-#include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxVector.h"
 
 /** @brief Forward declaration of FieldOnNodes */
-template < class ValueType > class FieldOnNodes;
+template < class ValueType >
+class FieldOnNodes;
 
 typedef FieldOnNodes< ASTERDOUBLE > FieldOnNodesReal;
 
@@ -97,11 +98,10 @@ class MeshCoordinatesField : public DataStructure {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    bool updateValuePointers() const {
-        bool retour = _descriptor->updateValuePointer();
-        retour = ( retour && _reference->updateValuePointer() );
-        retour = ( retour && _valuesList->updateValuePointer() );
-        return retour;
+    void updateValuePointers() const {
+        _descriptor->updateValuePointer();
+        _reference->updateValuePointer();
+        _valuesList->updateValuePointer();
     };
 };
 

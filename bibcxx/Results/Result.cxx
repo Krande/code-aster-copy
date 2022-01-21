@@ -23,13 +23,14 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Results/Result.h"
+
 #include "aster_fort_ds.h"
 #include "aster_fort_jeveux.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
 
 #include "PythonBindings/LogicalUnitManager.h"
-#include "Results/Result.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
@@ -110,17 +111,17 @@ void Result::setTimeValue( ASTERDOUBLE value, ASTERINTEGER rank ) {
 
 ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
 
-    _serialNumber->updateValuePointer();
-    _rspr->updateValuePointer();
-
     ASTERINTEGER nb_ranks = getNumberOfRanks();
 
     AS_ASSERT( rank <= nb_ranks );
 
+    _serialNumber->updateValuePointer();
+    _rspr->updateValuePointer();
+
     auto &calcParam = _calculationParameter->getVectorOfObjects();
     auto nbParam = calcParam.size();
 
-    for ( int i = 0; i < nbParam; ++i ) {
+    for ( ASTERINTEGER i = 0; i < nbParam; ++i ) {
         const auto item = calcParam[i];
         auto typevar = trim( item[3].toString() );
 
@@ -157,32 +158,38 @@ bool Result::allocate( ASTERINTEGER nbRanks ) {
 };
 
 void Result::setElementaryCharacteristics( const ElementaryCharacteristicsPtr &cara ) {
-    _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = getNumberOfRanks();
-    for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
-        const ASTERINTEGER iordr = ( *_serialNumber )[rank];
-        if ( _mapElemCara.find( iordr ) == _mapElemCara.end() )
-            setElementaryCharacteristics( cara, iordr );
+    if ( nbRanks > 0 ) {
+        _serialNumber->updateValuePointer();
+        for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
+            const ASTERINTEGER iordr = ( *_serialNumber )[rank];
+            if ( _mapElemCara.find( iordr ) == _mapElemCara.end() )
+                setElementaryCharacteristics( cara, iordr );
+        }
     }
 };
 
 void Result::setMaterialField( const MaterialFieldPtr &mater ) {
-    _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = getNumberOfRanks();
-    for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
-        const ASTERINTEGER iordr = ( *_serialNumber )[rank];
-        if ( _mapMaterial.find( iordr ) == _mapMaterial.end() )
-            setMaterialField( mater, iordr );
+    if ( nbRanks > 0 ) {
+        _serialNumber->updateValuePointer();
+        for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
+            const ASTERINTEGER iordr = ( *_serialNumber )[rank];
+            if ( _mapMaterial.find( iordr ) == _mapMaterial.end() )
+                setMaterialField( mater, iordr );
+        }
     }
 };
 
 void Result::setModel( const ModelPtr &model ) {
-    _serialNumber->updateValuePointer();
     ASTERINTEGER nbRanks = getNumberOfRanks();
-    for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
-        const ASTERINTEGER iordr = ( *_serialNumber )[rank];
-        if ( _mapModel.find( iordr ) == _mapModel.end() )
-            setModel( model, iordr );
+    if ( nbRanks > 0 ) {
+        _serialNumber->updateValuePointer();
+        for ( ASTERINTEGER rank = 0; rank < nbRanks; ++rank ) {
+            const ASTERINTEGER iordr = ( *_serialNumber )[rank];
+            if ( _mapModel.find( iordr ) == _mapModel.end() )
+                setModel( model, iordr );
+        }
     }
 };
 
@@ -308,28 +315,34 @@ PyObject *Result::getAccessParameters() const {
 
     PyObject *returnDict = PyDict_New();
     std::string var_name, str_val, typevar, nosuff;
-    int ivar, nmax, index;
+    ASTERINTEGER ivar, nmax, index;
 
     CALL_JEMARQ();
-    AS_ASSERT( _serialNumber->updateValuePointer() );
-    _rspr->updateValuePointer();
-    _rspi->updateValuePointer();
-    _rsp8->updateValuePointer();
-    _rs16->updateValuePointer();
-    _rs24->updateValuePointer();
+    _serialNumber->updateValuePointer();
+    if ( _rspr->exists() )
+        _rspr->updateValuePointer();
+    if ( _rspi->exists() )
+        _rspi->updateValuePointer();
+    if ( _rsp8->exists() )
+        _rsp8->updateValuePointer();
+    if ( _rs16->exists() )
+        _rs16->updateValuePointer();
+    if ( _rs24->exists() )
+        _rs24->updateValuePointer();
+
     AS_ASSERT( _calculationParameter->build() );
 
     ASTERINTEGER nb_ranks = getNumberOfRanks();
 
     var_name = "NUME_ORDRE";
     PyObject *listValues = PyList_New( nb_ranks );
-    for ( int j = 0; j < nb_ranks; ++j ) {
+    for ( ASTERINTEGER j = 0; j < nb_ranks; ++j ) {
         PyList_SetItem( listValues, j, PyLong_FromLong( ( *_serialNumber )[j] ) );
     }
     PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
     Py_DECREF( listValues );
 
-    for ( int i = 0; i < ( _calculationParameter->getVectorOfObjects() ).size(); ++i ) {
+    for ( ASTERINTEGER i = 0; i < ( _calculationParameter->getVectorOfObjects() ).size(); ++i ) {
         const auto item = _calculationParameter->getVectorOfObjects()[i];
         typevar = trim( item[3].toString() );
 
@@ -342,21 +355,21 @@ PyObject *Result::getAccessParameters() const {
             PyObject *listValues = PyList_New( nb_ranks );
 
             if ( nosuff == ".RSPI" ) {
-                for ( int j = 0; j < nb_ranks; ++j ) {
+                for ( ASTERINTEGER j = 0; j < nb_ranks; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
                     PyList_SetItem( listValues, j, PyLong_FromLong( ( *_rspi )[index] ) );
                 }
             }
 
             else if ( nosuff == ".RSPR" ) {
-                for ( int j = 0; j < nb_ranks; ++j ) {
+                for ( ASTERINTEGER j = 0; j < nb_ranks; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
                     PyList_SetItem( listValues, j, PyFloat_FromDouble( ( *_rspr )[index] ) );
                 }
             }
 
             else {
-                for ( int j = 0; j < nb_ranks; ++j ) {
+                for ( ASTERINTEGER j = 0; j < nb_ranks; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
                     if ( nosuff == ".RSP8" ) {
                         str_val = trim( ( ( *_rsp8 )[index] ).toString() );

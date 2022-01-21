@@ -5,7 +5,7 @@
  * @file Formula.h
  * @brief Implementation of functions.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,17 @@
 
  * person_in_charge: mathieu.courtois@edf.fr
  */
-#include <string>
-#include <vector>
-#include <cstdio>
-#include <boost/shared_ptr.hpp>
-
 #include "astercxx.h"
 #include "definition.h"
-#include "MemoryManager/JeveuxVector.h"
+
 #include "Functions/GenericFunction.h"
+#include "MemoryManager/JeveuxVector.h"
+
+#include <boost/shared_ptr.hpp>
+
+#include <cstdio>
+#include <string>
+#include <vector>
 
 /**
  * class Formula
@@ -94,7 +96,7 @@ class Formula : public GenericFunction {
      * @param name name of the parameter
      * @type  name string
      */
-    void setVariables( const VectorString &varnames ) ;
+    void setVariables( const VectorString &varnames );
 
     /**
      * @brief Return the name of the variables
@@ -115,7 +117,7 @@ class Formula : public GenericFunction {
      * @param expression expression of the formula
      * @type  expression string
      */
-    void setExpression( const std::string expression ) ;
+    void setExpression( const std::string expression );
 
     /**
      * @brief Return the expression of the formula.
@@ -123,7 +125,7 @@ class Formula : public GenericFunction {
      */
     std::string getExpression() const { return _expression; }
 
-    VectorReal evaluate( const VectorReal &values ) const ;
+    VectorReal evaluate( const VectorReal &values ) const;
 
     /**
      * @brief Assign the context for evaluation
@@ -170,7 +172,11 @@ class Formula : public GenericFunction {
      * @brief Update the pointers to the Jeveux objects
      * @return Return true if ok
      */
-    bool build() { return _property->updateValuePointer() && _variables->updateValuePointer(); }
+    bool build() {
+        _property->updateValuePointer();
+        _variables->updateValuePointer();
+        return true;
+    }
 };
 
 /**
@@ -183,9 +189,8 @@ typedef boost::shared_ptr< Formula > FormulaPtr;
 /**
  * @brief Evaluate Python code of a Formula
  */
-VectorReal evaluate_formula( const PyObject *code, PyObject *globals,
-                               const VectorString &variables,
-                               const VectorReal &values, int *retcode );
+VectorReal evaluate_formula( const PyObject *code, PyObject *globals, const VectorString &variables,
+                             const VectorReal &values, int *retcode );
 
 #ifdef __cplusplus
 extern "C" {

@@ -149,12 +149,12 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Returns the number of nodes
      */
-    int getNumberOfNodes() const;
+    ASTERINTEGER getNumberOfNodes() const;
 
     /**
      * @brief Returns the number of cells
      */
-    int getNumberOfCells() const;
+    ASTERINTEGER getNumberOfCells() const;
 
     /**
      * @brief Get all the names of nodes
@@ -170,7 +170,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
     /**
      * @brief Recuperation de la dimension du maillage
      */
-    int getDimension() const;
+    ASTERINTEGER getDimension() const;
 
     /**
      * @brief Teste l'existence d'un groupe de mailles dans le maillage

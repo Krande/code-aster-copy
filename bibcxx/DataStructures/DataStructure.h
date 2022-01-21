@@ -146,8 +146,9 @@ class DataStructure {
      * @return le type de la sd
      */
     const std::string getType() const {
-        if ( !_tco->updateValuePointer() )
+        if ( !_tco->exists() )
             return "not_found";
+        _tco->updateValuePointer();
         return ( *_tco )[0].rstrip();
     };
 

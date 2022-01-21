@@ -21,10 +21,13 @@
  */
 
 #include "Behaviours/BehaviourProperty.h"
+
 #include "aster_fort_calcul.h"
-#include <assert.h>
+
 #include <stdexcept>
 #include <string>
+
+#include <assert.h>
 
 /**
  * @class BehaviourProperty
@@ -42,9 +45,16 @@ void BehaviourProperty::createObjects() {
 
 /** @brief Constructor */
 BehaviourProperty::BehaviourProperty()
-    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR" ), _initialState( false ),
-      _implex( false ), _verbosity( false ), _model( nullptr ), _materialField( nullptr ),
-      _mesh( nullptr ), _CARCRI( nullptr ), _MULCOM( nullptr ), _COMPOR( nullptr ){};
+    : DataStructure( ResultNaming::getNewResultName(), 8, "COMPOR" ),
+      _initialState( false ),
+      _implex( false ),
+      _verbosity( false ),
+      _model( nullptr ),
+      _materialField( nullptr ),
+      _mesh( nullptr ),
+      _CARCRI( nullptr ),
+      _MULCOM( nullptr ),
+      _COMPOR( nullptr ){};
 
 /** @brief Constructor */
 BehaviourProperty::BehaviourProperty( ModelPtr model, MaterialFieldPtr materialField )
@@ -76,9 +86,9 @@ bool BehaviourProperty::build() {
 
     CALLO_NMDOCM( getModel()->getName(), _MULCOM->getName(), base );
 
-    AS_ASSERT( _COMPOR->updateValuePointers() );
-    AS_ASSERT( _MULCOM->updateValuePointers() );
-    AS_ASSERT( _CARCRI->updateValuePointers() );
+    _COMPOR->updateValuePointers();
+    _MULCOM->updateValuePointers();
+    _CARCRI->updateValuePointers();
 
     return true;
 };

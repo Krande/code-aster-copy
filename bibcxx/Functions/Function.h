@@ -5,7 +5,7 @@
  * @file Function.h
  * @brief Implementation of functions.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,13 @@
 
  * person_in_charge: mathieu.courtois@edf.fr
  */
-#include <string>
-#include <vector>
+#include "Functions/GenericFunction.h"
+#include "MemoryManager/JeveuxVector.h"
+
 #include <boost/shared_ptr.hpp>
 
-#include "MemoryManager/JeveuxVector.h"
-#include "Functions/GenericFunction.h"
+#include <string>
+#include <vector>
 
 /**
  * class BaseFunction
@@ -37,7 +38,6 @@
  */
 class BaseFunction : public GenericFunction {
   private:
-
   protected:
     // Vecteur Jeveux '.VALE'
     JeveuxVectorReal _value;
@@ -54,8 +54,7 @@ class BaseFunction : public GenericFunction {
      */
     BaseFunction( const std::string type, const std::string type2 );
 
-    BaseFunction( const std::string name, const std::string type,
-                       const std::string type2 );
+    BaseFunction( const std::string name, const std::string type, const std::string type2 );
 
     ~BaseFunction(){};
 
@@ -113,7 +112,7 @@ class BaseFunction : public GenericFunction {
      * @type  interpolation string
      * @todo checking
      */
-    void setInterpolation( const std::string type ) ;
+    void setInterpolation( const std::string type );
 
     /**
      * @brief Assign the values of the function
@@ -122,15 +121,12 @@ class BaseFunction : public GenericFunction {
      * @param ord values of the ordinates
      * @type  ord vector of double
      */
-    virtual void setValues( const VectorReal &absc,
-                            const VectorReal &ord ) ;
+    virtual void setValues( const VectorReal &absc, const VectorReal &ord );
 
     /**
      * @brief Return the values of the function
      */
-    const JeveuxVectorReal getValues() const {
-        return _value;
-    }
+    const JeveuxVectorReal getValues() const { return _value; }
 
     /**
      * @brief Return a pointer to the vector of data
@@ -140,9 +136,7 @@ class BaseFunction : public GenericFunction {
     /**
      * @brief Return the number of points of the function
      */
-    virtual ASTERINTEGER maximumSize() const {
-        return _value->size() / 2;
-    }
+    virtual ASTERINTEGER maximumSize() const { return _value->size() / 2; }
 
     /**
      * @brief Return the number of points of the function
@@ -153,7 +147,11 @@ class BaseFunction : public GenericFunction {
      * @brief Update the pointers to the Jeveux objects
      * @return Return true if ok
      */
-    bool build() { return _property->updateValuePointer() && _value->updateValuePointer(); }
+    bool build() {
+        _property->updateValuePointer();
+        _value->updateValuePointer();
+        return true;
+    }
 };
 
 /**
@@ -171,12 +169,11 @@ class Function : public BaseFunction {
     typedef boost::shared_ptr< Function > FunctionPtr;
 
     /**
-    * Constructeur
-    */
+     * Constructeur
+     */
     Function() : BaseFunction( "FONCTION", "FONCTION" ){};
 
-    Function( const std::string name )
-        : BaseFunction( name, "FONCTION", "FONCTION" ){};
+    Function( const std::string name ) : BaseFunction( name, "FONCTION", "FONCTION" ){};
 };
 
 /**
@@ -194,24 +191,21 @@ class FunctionComplex : public BaseFunction {
     typedef boost::shared_ptr< FunctionComplex > FunctionComplexPtr;
 
     /**
-    * Constructeur
-    */
-    FunctionComplex( const std::string name )
-        : BaseFunction( name, "FONCTION_C", "FONCT_C" ) {};
+     * Constructeur
+     */
+    FunctionComplex( const std::string name ) : BaseFunction( name, "FONCTION_C", "FONCT_C" ){};
 
-    FunctionComplex() : BaseFunction( "FONCTION_C", "FONCT_C" ) {};
+    FunctionComplex() : BaseFunction( "FONCTION_C", "FONCT_C" ){};
 
     /**
      * @brief Allocate function
      */
-    void allocate( ASTERINTEGER size ) ;
+    void allocate( ASTERINTEGER size );
 
     /**
      * @brief Return the number of points of the function
      */
-    virtual ASTERINTEGER maximumSize() const {
-        return _value->size() / 3;
-    }
+    virtual ASTERINTEGER maximumSize() const { return _value->size() / 3; }
 
     /**
      * @brief Return the number of points of the function
@@ -225,7 +219,7 @@ class FunctionComplex : public BaseFunction {
      * @param ord values of the ordinates (real1, imag1, real2, imag2...)
      * @type  ord vector of double
      */
-    void setValues( const VectorReal &absc, const VectorReal &ord ) ;
+    void setValues( const VectorReal &absc, const VectorReal &ord );
 
     /**
      * @brief Assign the values of the function
@@ -234,8 +228,7 @@ class FunctionComplex : public BaseFunction {
      * @param ord values of the ordinates
      * @type  ord vector of complex
      */
-    void setValues( const VectorReal &absc,
-                    const VectorComplex &ord ) ;
+    void setValues( const VectorReal &absc, const VectorComplex &ord );
 };
 
 /**

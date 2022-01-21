@@ -136,7 +136,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Move constructor
      * @param other field to move
      */
-    FieldOnNodes( FieldOnNodes &&other ) : DataField{std::move( other )} {
+    FieldOnNodes( FieldOnNodes &&other ) : DataField{ std::move( other ) } {
         // Pointers to be moved
         _descriptor = other._descriptor;
         _reference = other._reference;
@@ -230,7 +230,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "Fields have incompatible shapes" );
         CALL_JEMARQ();
         const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
-        bool retour = _valuesList->updateValuePointer();
+        _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = ( *this )[pos] + rhs[pos];
@@ -248,7 +248,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "Fields have incompatible shapes" );
         CALL_JEMARQ();
         const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
-        bool retour = _valuesList->updateValuePointer();
+        _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = ( *this )[pos] - rhs[pos];
@@ -262,7 +262,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
         CALL_JEMARQ();
-        bool retour = _valuesList->updateValuePointer();
+        _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             ( *this )[pos] = ( *this )[pos] * scal;
@@ -276,10 +276,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes< ValueType > operator-() {
         CALL_JEMARQ();
-        bool retour = _valuesList->updateValuePointer();
-
-        if ( !retour )
-            raiseAsterError( "Unable to update the FielsOnNodes object" );
+        _valuesList->updateValuePointer();
 
         FieldOnNodes< ValueType > tmp( *this );
         auto taille = _valuesList->size();
@@ -302,7 +299,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     friend FieldOnNodes< ValueType > operator*( FieldOnNodes< ValueType > lhs,
                                                 const ASTERDOUBLE &scal ) {
         CALL_JEMARQ();
-        bool retour = lhs.updateValuePointers();
+        lhs.updateValuePointers();
         int taille = lhs._valuesList->size();
         for ( int pos = 0; pos < taille; ++pos )
             lhs[pos] = lhs[pos] * scal;
@@ -406,7 +403,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     void setValues( const ValueType &value ) {
         CALL_JEMARQ();
-        bool retour = _valuesList->updateValuePointer();
+        _valuesList->updateValuePointer();
         const int taille = _valuesList->size();
 
         for ( int pos = 0; pos < taille; ++pos )
@@ -460,13 +457,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     norm( const std::string normType ) const {
         CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
-        bool retour = _valuesList->updateValuePointer();
+        _valuesList->updateValuePointer();
         int taille = _valuesList->size();
         const int rank = getMPIRank();
         if ( !_mesh )
             raiseAsterError( "Mesh is empty" );
         const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
-        retour = nodesRank->updateValuePointer();
+        nodesRank->updateValuePointer();
 
         if ( !_dofDescription )
             raiseAsterError( "Description is empty" );
@@ -517,17 +514,17 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     dot( const FieldOnNodesPtr &tmp ) const {
         CALL_JEMARQ();
-        bool retour = tmp->updateValuePointers();
-        retour = ( retour && _valuesList->updateValuePointer() );
-        const int taille = _valuesList->size();
+        tmp->updateValuePointers();
+        _valuesList->updateValuePointer();
+        const auto taille = _valuesList->size();
 
-        if ( !retour || taille != tmp->size() )
+        if ( taille != tmp->size() )
             raiseAsterError( "Incompatible size" );
 
         if ( !_mesh )
             raiseAsterError( "Mesh is empty" );
         JeveuxVectorLong nodesRank = _mesh->getNodesRank();
-        retour = nodesRank->updateValuePointer();
+        nodesRank->updateValuePointer();
 
         if ( !_dofDescription )
             raiseAsterError( "Description is empty" );
@@ -575,10 +572,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( _dofNum != nullptr ) {
             _dofDescription = _dofNum->getDescription();
             _mesh = _dofNum->getMesh();
-        } else if ( _dofDescription == nullptr && updateValuePointers() ) {
+        } else if ( _dofDescription == nullptr ) {
             typedef FieldOnNodesDescription FONDesc;
             typedef FieldOnNodesDescriptionPtr FONDescP;
 
+            _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
             _dofDescription = FONDescP( new FONDesc( name2 ) );
         }
@@ -590,11 +588,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    bool updateValuePointers() {
-        bool retour = _descriptor->updateValuePointer();
-        retour = ( retour && _reference->updateValuePointer() );
-        retour = ( retour && _valuesList->updateValuePointer() );
-        return retour;
+    void updateValuePointers() {
+        _descriptor->updateValuePointer();
+        _reference->updateValuePointer();
+        _valuesList->updateValuePointer();
     };
 
     friend class FieldBuilder;

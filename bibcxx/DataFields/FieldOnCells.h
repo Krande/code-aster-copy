@@ -133,7 +133,7 @@ class FieldOnCells : public DataField {
                       &iret, dcel->getName() );
         AS_ASSERT( iret == 0 );
 
-        AS_ASSERT( updateValuePointers() );
+        updateValuePointers();
     };
 
     /**
@@ -149,7 +149,7 @@ class FieldOnCells : public DataField {
         _dofDescription = toCopy._dofDescription;
         _model = toCopy._model;
 
-        AS_ASSERT( updateValuePointers() );
+        updateValuePointers();
     };
 
     /**
@@ -165,7 +165,7 @@ class FieldOnCells : public DataField {
         _dofDescription = toCopy._dofDescription;
         _model = toCopy._model;
 
-        AS_ASSERT( updateValuePointers() );
+        updateValuePointers();
     }
 
     /**
@@ -256,10 +256,11 @@ class FieldOnCells : public DataField {
      * @brief Update field and build FiniteElementDescriptor if necessary
      */
     ASTERBOOL build() {
-        if ( _dofDescription == nullptr && updateValuePointers() ) {
+        if ( _dofDescription == nullptr ) {
             if ( _model == nullptr )
                 raiseAsterError( "Model is empty" );
 
+            _reference->updateValuePointer();
             const std::string ligrel = trim( ( *_reference )[0].toString() );
 
             if ( ligrel.substr( 0, 8 ) == getName().substr( 0, 8 ) ) {
@@ -276,11 +277,10 @@ class FieldOnCells : public DataField {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    ASTERBOOL updateValuePointers() const {
-        bool retour = _descriptor->updateValuePointer();
-        retour = ( retour && _reference->updateValuePointer() );
-        retour = ( retour && _valuesList->updateValuePointer() );
-        return retour;
+    void updateValuePointers() const {
+        _descriptor->updateValuePointer();
+        _reference->updateValuePointer();
+        _valuesList->updateValuePointer();
     };
 
     /**
@@ -298,7 +298,7 @@ class FieldOnCells : public DataField {
         method should be a callable Python object" );
 
         FieldOnCells< ValueType > tmp( *this );
-        AS_ASSERT( updateValuePointers() );
+        updateValuePointers();
 
         ASTERINTEGER size = _valuesList->size();
         for ( auto i = 0; i < size; i++ ) {
@@ -325,7 +325,7 @@ class FieldOnCells : public DataField {
         method should be a callable Python object" );
 
         FieldOnCells< ValueType > tmp( *this );
-        AS_ASSERT( _valuesList->updateValuePointer() );
+        _valuesList->updateValuePointer();
 
         ASTERINTEGER size = _valuesList->size();
 
@@ -337,7 +337,7 @@ class FieldOnCells : public DataField {
             if ( PyComplex_Check( res ) ) {
                 ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
                 ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
-                tmp[i] = {re, im};
+                tmp[i] = { re, im };
             } else {
                 PyErr_Format( PyExc_ValueError, "Returned value of \
                     type different from ASTERCOMPLEX" );
@@ -357,7 +357,7 @@ class FieldOnCells : public DataField {
      */
     FieldOnCells< ValueType > operator-() const {
         FieldOnCells< ValueType > tmp( *this );
-        AS_ASSERT( _valuesList->updateValuePointer() );
+        _valuesList->updateValuePointer();
         ASTERINTEGER size = _valuesList->size();
         for ( auto pos = 0; pos < size; ++pos )
             tmp[pos] = -( *this )[pos];
@@ -369,8 +369,8 @@ class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator+=( const FieldOnCells< ValueType > &rhs ) {
-        AS_ASSERT( _valuesList->updateValuePointer() );
-        AS_ASSERT( rhs.updateValuePointers() );
+        _valuesList->updateValuePointer();
+        rhs.updateValuePointers();
 
         if ( !this->isSimilarTo( rhs ) ) {
             raiseAsterError( "Fields have incompatible shapes" );
@@ -388,8 +388,8 @@ class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator-=( const FieldOnCells< ValueType > &rhs ) {
-        AS_ASSERT( _valuesList->updateValuePointer() );
-        AS_ASSERT( rhs.updateValuePointers() );
+        _valuesList->updateValuePointer();
+        rhs.updateValuePointers();
 
         if ( !this->isSimilarTo( rhs ) ) {
             raiseAsterError( "Fields have incompatible shapes" );
@@ -425,8 +425,8 @@ class FieldOnCells : public DataField {
      */
     FieldOnCells< ValueType > operator+( const FieldOnCells< ValueType > &rhs ) {
         FieldOnCells< ValueType > tmp( *this );
-        AS_ASSERT( _valuesList->updateValuePointer() );
-        AS_ASSERT( rhs.updateValuePointers() );
+        _valuesList->updateValuePointer();
+        rhs.updateValuePointers();
 
         if ( !tmp.isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
@@ -445,8 +445,8 @@ class FieldOnCells : public DataField {
      */
     FieldOnCells< ValueType > operator-( const FieldOnCells< ValueType > &rhs ) {
         FieldOnCells< ValueType > tmp( *this );
-        AS_ASSERT( _valuesList->updateValuePointer() );
-        AS_ASSERT( rhs.updateValuePointers() );
+        _valuesList->updateValuePointer();
+        rhs.updateValuePointers();
         ASTERINTEGER size = rhs._valuesList->size();
 
         if ( !tmp.isSimilarTo( rhs ) )
@@ -467,7 +467,7 @@ class FieldOnCells : public DataField {
     friend FieldOnCells< ValueType > operator*( const FieldOnCells< ValueType > &lhs,
                                                 const ASTERDOUBLE &scal ) {
 
-        AS_ASSERT( lhs.updateValuePointers() )
+        lhs.updateValuePointers();
 
         ASTERINTEGER taille = lhs._valuesList->size();
         FieldOnCells< ValueType > tmp( lhs );
@@ -501,7 +501,7 @@ class FieldOnCells : public DataField {
      * @param value Value to affect
      */
     void setValues( const ValueType &value ) {
-        AS_ASSERT( _valuesList->updateValuePointer() );
+        _valuesList->updateValuePointer();
         const int taille = _valuesList->size();
 
         for ( int pos = 0; pos < taille; ++pos )
@@ -527,15 +527,11 @@ class FieldOnCells : public DataField {
 
         const int rank = getMPIRank();
 
-        AS_ASSERT( _valuesList->updateValuePointer() );
-        AS_ASSERT( _descriptor->updateValuePointer() );
-
-        /*if ( getMesh()->isParallel() ) {
-            AS_ASSERT(false);
-        }*/
+        _valuesList->updateValuePointer();
+        _descriptor->updateValuePointer();
 
         JeveuxVectorLong CellsRank = getMesh()->getCellsRank();
-        bool retour = CellsRank->updateValuePointer();
+        CellsRank->updateValuePointer();
 
         if ( !_model || _model->isEmpty() ) {
             raiseAsterError( "Model not assigned to the FieldOnCells or empty" );
@@ -618,8 +614,8 @@ class FieldOnCells : public DataField {
     template < class type = ValueType >
     typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value, ASTERDOUBLE >::type
     dot( const FieldOnCellsPtr &tmp ) const {
-        AS_ASSERT( tmp->updateValuePointers() );
-        AS_ASSERT( _valuesList->updateValuePointer() );
+        tmp->updateValuePointers();
+        _valuesList->updateValuePointer();
         ASTERINTEGER taille = _valuesList->size();
 
         if ( taille != tmp->size() )

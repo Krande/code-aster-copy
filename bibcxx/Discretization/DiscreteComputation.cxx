@@ -300,7 +300,8 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     auto compor = curMater->getBehaviourField();
 
     JeveuxVectorChar24 jvListOfLoads = _study->getListOfLoads()->getListVector();
-    jvListOfLoads->updateValuePointer();
+    if(jvListOfLoads->exists())
+        jvListOfLoads->updateValuePointer();
     ASTERINTEGER nbLoad = jvListOfLoads->size();
 
     std::string blanc( 24, ' ' );

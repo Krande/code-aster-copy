@@ -27,9 +27,9 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 #include "astercxx.h"
 
-#include "Steppers/GenericStepper.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/JeveuxVector.h"
+#include "Steppers/GenericStepper.h"
 
 typedef VectorReal::const_iterator VectorRealCIter;
 
@@ -59,7 +59,6 @@ class TimeStepper : public DataStructure, public GenericStepper {
     /** @brief '.ADAP.TPLUR' */
     JeveuxVectorReal _tplur;
 
-
   public:
     /**
      * @typedef TimeStepperPtr
@@ -71,18 +70,21 @@ class TimeStepper : public DataStructure, public GenericStepper {
      * @brief Constructeur
      */
     TimeStepper( const std::string name )
-        : DataStructure( name, 8, "LIST_INST" ), _values( getName() + ".LIST" ),
-        _ditr( getName() + ".LIST.DITR" ), _infor( getName() + ".LIST.INFOR" ),
-        _evenr( getName() + ".ECHE.EVENR" ), _evenk( getName() + ".ECHE.EVENK" ),
-        _subdr( getName() + ".ECHE.SUBDR" ),
-        _aevenr( getName() + ".ADAP.EVENR" ), _tpluk( getName() + ".ADAP.TPLUK" ),
-        _tplur( getName() + ".ADAP.TPLUR" ){};
+        : DataStructure( name, 8, "LIST_INST" ),
+          _values( getName() + ".LIST" ),
+          _ditr( getName() + ".LIST.DITR" ),
+          _infor( getName() + ".LIST.INFOR" ),
+          _evenr( getName() + ".ECHE.EVENR" ),
+          _evenk( getName() + ".ECHE.EVENK" ),
+          _subdr( getName() + ".ECHE.SUBDR" ),
+          _aevenr( getName() + ".ADAP.EVENR" ),
+          _tpluk( getName() + ".ADAP.TPLUK" ),
+          _tplur( getName() + ".ADAP.TPLUR" ){};
 
     /**
      * @brief Constructeur
      */
-    TimeStepper( )
-        : TimeStepper( DataStructureNaming::getNewName( 8 ) ){};
+    TimeStepper() : TimeStepper( DataStructureNaming::getNewName( 8 ) ){};
 
     /**
      * @brief Destructeur
@@ -163,16 +165,16 @@ class TimeStepper : public DataStructure, public GenericStepper {
      */
     ASTERINTEGER size() const { return _values->size(); };
 
-    VectorReal getValues()
-    {
-        return _values->toVector();
-    };
+    VectorReal getValues() { return _values->toVector(); };
 
     /**
      * @brief Fonction permettant de mettre a jour le stepper
      * @return true si tout s'est bien passé
      */
-    bool build() const { return _values->updateValuePointer(); };
+    bool build() const {
+        _values->updateValuePointer();
+        return true;
+    };
 };
 
 /**

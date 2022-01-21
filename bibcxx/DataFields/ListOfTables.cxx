@@ -20,11 +20,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "DataFields/ListOfTables.h"
+
 #include "aster_fort_jeveux.h"
 
-#include "DataFields/ListOfTables.h"
 #include "Utilities/Tools.h"
-
 
 ListOfTables::ListOfTables( const std::string &name ) : _name( name ) {
     _name.resize( 19, ' ' );
@@ -35,9 +35,18 @@ ListOfTables::ListOfTables( const std::string &name ) : _name( name ) {
 bool ListOfTables::update_tables() {
     CALL_JEMARQ();
 
-    if ( ! _dsId->updateValuePointer() || ! _dsName->updateValuePointer() ) {
+    if ( !_dsId->exists() ) {
         CALL_JEDEMA();
         return true;
+    } else {
+        _dsId->updateValuePointer();
+    }
+
+    if ( !_dsName->exists() ) {
+        CALL_JEDEMA();
+        return true;
+    } else {
+        _dsName->updateValuePointer();
     }
 
     const int size = _dsId->size();
@@ -57,7 +66,7 @@ bool ListOfTables::update_tables() {
 
 TablePtr ListOfTables::getTable( const std::string id ) {
     this->update_tables();
-    const auto id_ = trim ( id );
+    const auto id_ = trim( id );
     const auto curIter = _mapTables.find( id_ );
     if ( curIter == _mapTables.end() )
         return TablePtr( nullptr );

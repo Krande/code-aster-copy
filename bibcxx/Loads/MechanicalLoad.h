@@ -5,7 +5,7 @@
  * @file MechanicalLoad.h
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -34,13 +34,12 @@
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 
-
 /**
  * @class MechanicalLoad
  * @brief Define a generic mechanical load
  * @author Nicolas Sellenet
  */
-template< class ConstantFieldOnCellsType>
+template < class ConstantFieldOnCellsType >
 class MechanicalLoad : public DataStructure, public ListOfTables {
 
   protected:
@@ -83,63 +82,59 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
     MechanicalLoad( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 8, "CHAR_MECA" ),
           ListOfTables( name ),
-            _mecaLoadDesc( boost::make_shared<
-                MechanicalLoadDescription< ConstantFieldOnCellsType > >
-                    (getName() + ".CHME", currentModel) ),
-            _type( getName() + ".TYPE" ), _lisma01( getName() + ".LISMA01" ),
-            _lisma02( getName() + ".LISMA02" ), _trans01( getName() + ".TRANS01" ),
-            _trans02( getName() + ".TRANS02" ), _poidsMaille( getName() + ".POIDS_MAILLE" ){};
+          _mecaLoadDesc(
+              boost::make_shared< MechanicalLoadDescription< ConstantFieldOnCellsType > >(
+                  getName() + ".CHME", currentModel ) ),
+          _type( getName() + ".TYPE" ),
+          _lisma01( getName() + ".LISMA01" ),
+          _lisma02( getName() + ".LISMA02" ),
+          _trans01( getName() + ".TRANS01" ),
+          _trans02( getName() + ".TRANS02" ),
+          _poidsMaille( getName() + ".POIDS_MAILLE" ){};
 
     /**
      * @brief Get the model
      */
-    const MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType >&
-    getMechanicalLoadDescription() const { return _mecaLoadDesc; };
+    const MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType > &
+    getMechanicalLoadDescription() const {
+        return _mecaLoadDesc;
+    };
 
     /**
      * @brief Get the finite element descriptor
      */
-    FiniteElementDescriptorPtr getFiniteElementDescriptor() const
-    { return _mecaLoadDesc->getFiniteElementDescriptor(); };
-
-    /**
-     * @brief Get the model
-     */
-    ModelPtr getModel() const {
-        return _mecaLoadDesc->getModel();
+    FiniteElementDescriptorPtr getFiniteElementDescriptor() const {
+        return _mecaLoadDesc->getFiniteElementDescriptor();
     };
 
     /**
      * @brief Get the model
      */
-    BaseMeshPtr getMesh() const {
-        return _mecaLoadDesc->getMesh();
-    };
+    ModelPtr getModel() const { return _mecaLoadDesc->getModel(); };
 
-    JeveuxVectorChar8 getType() const
-    {
-        return _type;
-    }
+    /**
+     * @brief Get the model
+     */
+    BaseMeshPtr getMesh() const { return _mecaLoadDesc->getMesh(); };
 
-    bool hasLoad(const std::string& load_name) const
-    {
-        return _mecaLoadDesc->hasLoad(load_name);
+    JeveuxVectorChar8 getType() const { return _type; }
+
+    bool hasLoad( const std::string &load_name ) const {
+        return _mecaLoadDesc->hasLoad( load_name );
     }
 
     /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return true si la mise a jour s'est bien deroulee, false sinon
      */
-    bool updateValuePointers() {
-        bool retour = _mecaLoadDesc->updateValuePointers();
-        retour = ( retour && _type->updateValuePointer() );
-        retour = ( retour && _lisma01->updateValuePointer() );
-        retour = ( retour && _lisma02->updateValuePointer() );
-        retour = ( retour && _trans01->updateValuePointer() );
-        retour = ( retour && _trans02->updateValuePointer() );
-        retour = ( retour && _poidsMaille->updateValuePointer() );
-
-        return retour;
+    void updateValuePointers() {
+        _mecaLoadDesc->updateValuePointers();
+        _type->updateValuePointer();
+        _lisma01->updateValuePointer();
+        _lisma02->updateValuePointer();
+        _trans01->updateValuePointer();
+        _trans02->updateValuePointer();
+        _poidsMaille->updateValuePointer();
     };
 };
 
@@ -155,14 +150,12 @@ typedef MechanicalLoad< ConstantFieldOnCellsChar24 > MechanicalLoadFunction;
 typedef MechanicalLoad< ConstantFieldOnCellsComplex > MechanicalLoadComplex;
 
 /** @typedef MechanicalLoad  */
-template< class ConstantFieldOnCellsType>
-using MechanicalLoadPtr =
-    boost::shared_ptr< MechanicalLoad< ConstantFieldOnCellsType > >;
+template < class ConstantFieldOnCellsType >
+using MechanicalLoadPtr = boost::shared_ptr< MechanicalLoad< ConstantFieldOnCellsType > >;
 
 typedef boost::shared_ptr< MechanicalLoadReal > MechanicalLoadRealPtr;
 typedef boost::shared_ptr< MechanicalLoadFunction > MechanicalLoadFunctionPtr;
 typedef boost::shared_ptr< MechanicalLoadComplex > MechanicalLoadComplexPtr;
-
 
 /** @typedef std::list de MechanicalLoad */
 typedef std::list< MechanicalLoadRealPtr > ListMecaLoadReal;

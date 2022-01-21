@@ -277,10 +277,10 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
 
 bool ParallelMesh::build() {
 
-    if ( _joints.empty() ) {
+    const auto size = _listOfOppositeDomain->size();
+    if ( _joints.empty() && size > 0 ) {
         CALL_JEMARQ();
         _listOfOppositeDomain->updateValuePointer();
-        const auto size = _listOfOppositeDomain->size();
 
         const std::string cadre( "G" );
         const std::string error( "F" );

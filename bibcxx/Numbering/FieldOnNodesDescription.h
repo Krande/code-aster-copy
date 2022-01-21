@@ -94,7 +94,7 @@ class FieldOnNodesDescription : public DataStructure {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    bool updateValuePointers();
+    void updateValuePointers();
 };
 
 typedef boost::shared_ptr< FieldOnNodesDescription > FieldOnNodesDescriptionPtr;

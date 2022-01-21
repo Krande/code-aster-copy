@@ -6,7 +6,7 @@
  * @brief Header of class FieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,7 +55,7 @@ class FieldBuilder {
      * @brief Add a existing FieldOnNodesDescription in FieldBuilder
      */
     void addFieldOnNodesDescription( const FieldOnNodesDescriptionPtr &fond ) {
-        AS_ASSERT(fond);
+        AS_ASSERT( fond );
 
         _mapProfChno[trim( fond->getName() )] = fond;
     };
@@ -64,7 +64,7 @@ class FieldBuilder {
      * @brief Add a existing FiniteElementDescriptor in FieldBuilder
      */
     void addFiniteElementDescriptor( const FiniteElementDescriptorPtr &fed ) {
-        AS_ASSERT(fed);
+        AS_ASSERT( fed );
 
         _mapLigrel[trim( fed->getName() )] = fed;
     };
@@ -73,14 +73,14 @@ class FieldBuilder {
      * @brief Build a FieldOnCells with a FiniteElementDescriptor
      */
     template < typename ValueType >
-    boost::shared_ptr< FieldOnCells< ValueType > >
-    buildFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
+    boost::shared_ptr< FieldOnCells< ValueType > > buildFieldOnCells( const std::string &name,
+                                                                      const BaseMeshPtr mesh ) {
         typedef FiniteElementDescriptor FEDDesc;
         typedef FiniteElementDescriptorPtr FEDDescP;
 
         boost::shared_ptr< FieldOnCells< ValueType > > field =
             boost::make_shared< FieldOnCells< ValueType > >( name );
-        AS_ASSERT(field->updateValuePointers());
+        field->updateValuePointers();
 
         const std::string ligrel = trim( ( *( *field )._reference )[0].toString() );
 
@@ -88,9 +88,8 @@ class FieldBuilder {
         FEDDescP curDesc;
         if ( curIter != _mapLigrel.end() ) {
             curDesc = curIter->second;
-        }
-        else {
-            curDesc = boost::make_shared< FEDDesc >( ligrel, mesh) ;
+        } else {
+            curDesc = boost::make_shared< FEDDesc >( ligrel, mesh );
             _mapLigrel[ligrel] = curDesc;
         }
         field->setDescription( curDesc );
@@ -106,8 +105,8 @@ class FieldBuilder {
     buildConstantFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
 
         boost::shared_ptr< ConstantFieldOnCells< ValueType > > field =
-            boost::make_shared<  ConstantFieldOnCells< ValueType > >( name, mesh ) ;
-        AS_ASSERT(field->updateValuePointers());
+            boost::make_shared< ConstantFieldOnCells< ValueType > >( name, mesh );
+        field->updateValuePointers();
 
         return field;
     };
@@ -121,8 +120,8 @@ class FieldBuilder {
         typedef FieldOnNodesDescriptionPtr FONDescP;
 
         boost::shared_ptr< FieldOnNodes< ValueType > > field =
-            boost::make_shared<  FieldOnNodes< ValueType > >( name );
-        AS_ASSERT(field->updateValuePointers());
+            boost::make_shared< FieldOnNodes< ValueType > >( name );
+        field->updateValuePointers();
 
         const std::string profchno = trim( ( *( *field )._reference )[1].toString() );
 

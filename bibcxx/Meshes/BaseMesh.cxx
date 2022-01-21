@@ -23,13 +23,13 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "astercxx.h"
+#include "Meshes/BaseMesh.h"
 
 #include "aster_fort_mesh.h"
 #include "aster_fort_superv.h"
 #include "aster_fort_utils.h"
+#include "astercxx.h"
 
-#include "Meshes/BaseMesh.h"
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
@@ -37,30 +37,32 @@
 #include "Utilities/CapyConvertibleValue.h"
 #include "Utilities/Tools.h"
 
-
-int BaseMesh::getNumberOfNodes() const {
+ASTERINTEGER BaseMesh::getNumberOfNodes() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations->updateValuePointer() )
+    if ( !_dimensionInformations->exists() )
         return 0;
+    _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[0];
 }
 
-int BaseMesh::getNumberOfCells() const {
+ASTERINTEGER BaseMesh::getNumberOfCells() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations->updateValuePointer() )
+    if ( !_dimensionInformations->exists() )
         return 0;
+    _dimensionInformations->updateValuePointer();
     return ( *_dimensionInformations )[2];
 }
 
-int BaseMesh::getDimension() const {
+ASTERINTEGER BaseMesh::getDimension() const {
     if ( isEmpty() )
         return 0;
-    if ( !_dimensionInformations->updateValuePointer() )
+    if ( !_dimensionInformations->exists() )
         return 0;
 
-    const int dimGeom = ( *_dimensionInformations )[5];
+    _dimensionInformations->updateValuePointer();
+    const auto dimGeom = ( *_dimensionInformations )[5];
 
     if ( dimGeom == 3 ) {
         const std::string typeco( "MAILLAGE" );
@@ -152,15 +154,14 @@ const JeveuxVectorLong BaseMesh::getMedCellsTypes() const {
     return result;
 }
 
-bool BaseMesh::printMedFile( const std::string fileName, bool local ) const
-{
+bool BaseMesh::printMedFile( const std::string fileName, bool local ) const {
     LogicalUnitFile a( fileName, Binary, New );
     ASTERINTEGER retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
 
     SyntaxMapContainer dict;
 
-    if( isParallel() || isConnection()  )
+    if ( isParallel() || isConnection() )
         dict.container["PROC0"] = "NON";
     else
         dict.container["PROC0"] = "OUI";
@@ -201,12 +202,10 @@ const JeveuxCollectionLong BaseMesh::getInverseConnectivity() const {
     return result;
 };
 
-std::string BaseMesh::getNodeName( const ASTERINTEGER& index) const
-{
-    return trim(_nameOfNodes->getStringFromIndex(index));
+std::string BaseMesh::getNodeName( const ASTERINTEGER &index ) const {
+    return trim( _nameOfNodes->getStringFromIndex( index ) );
 };
 
-std::string BaseMesh::getCellName( const ASTERINTEGER& index) const
-{
-    return trim(_nameOfCells->getStringFromIndex(index));
+std::string BaseMesh::getCellName( const ASTERINTEGER &index ) const {
+    return trim( _nameOfCells->getStringFromIndex( index ) );
 };

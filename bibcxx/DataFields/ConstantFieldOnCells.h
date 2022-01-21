@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ConstantFieldOnCells
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,14 +26,10 @@
 
 /* person_in_charge: natacha.bereux at edf.fr */
 
-#include <assert.h>
-#include <stdexcept>
-#include <string>
-
-#include "astercxx.h"
 #include "aster_fort_calcul.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_utils.h"
+#include "astercxx.h"
 
 #include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxCollection.h"
@@ -43,6 +39,11 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/PhysicalQuantityManager.h"
 #include "Supervis/ResultNaming.h"
+
+#include <stdexcept>
+#include <string>
+
+#include <assert.h>
 
 /**
  * @class ConstantFieldOnZone Constant Field Zone
@@ -76,7 +77,9 @@ class ConstantFieldOnZone {
         : _mesh( mesh ), _localisation( OnGroupOfCells ), _grp( grp ){};
 
     ConstantFieldOnZone( BaseMeshPtr mesh, const VectorLong &indexes )
-        : _mesh( mesh ), _localisation( ListOfCells ), _grp( new GroupOfCells( "" ) ),
+        : _mesh( mesh ),
+          _localisation( ListOfCells ),
+          _grp( new GroupOfCells( "" ) ),
           _indexes( indexes ){};
 
     ConstantFieldOnZone( FiniteElementDescriptorPtr ligrel, const VectorLong &indexes )
@@ -106,7 +109,8 @@ class ConstantFieldOnZone {
  * @class ConstantFieldValues Constant Field values
  * @author Natacha Bereux
  */
-template < class ValueType > class ConstantFieldValues {
+template < class ValueType >
+class ConstantFieldValues {
   private:
     VectorString _components;
     std::vector< ValueType > _values;
@@ -125,7 +129,8 @@ template < class ValueType > class ConstantFieldValues {
  * @brief Cette classe permet de definir une carte (champ défini sur les mailles)
  * @author Natacha Bereux
  */
-template < class ValueType > class ConstantFieldOnCells : public DataField {
+template < class ValueType >
+class ConstantFieldOnCells : public DataField {
   private:
     /** @brief Vecteur Jeveux '.NOMA' */
     JeveuxVectorChar8 _meshName;
@@ -156,10 +161,8 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         if ( ( code == -1 || code == -3 ) && !_FEDesc )
             throw std::runtime_error(
                 "Build of ConstantFieldOnCells impossible, FiniteElementDescriptor is missing" );
-        bool test = _componentNames->updateValuePointer();
-        test = test && _valuesListTmp->updateValuePointer();
-        if ( !test )
-            throw std::runtime_error( "ConstantFieldOnCells not allocate" );
+        _componentNames->updateValuePointer();
+        _valuesListTmp->updateValuePointer();
         const ASTERINTEGER taille = _componentNames->size();
 
         const ASTERINTEGER tVerif1 = component->size();
@@ -188,10 +191,8 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         if ( ( code == -1 || code == -3 ) && !_FEDesc )
             throw std::runtime_error(
                 "Build of ConstantFieldOnCells impossible, FiniteElementDescriptor is missing" );
-        bool test = _componentNames->updateValuePointer();
-        test = test && _valuesListTmp->updateValuePointer();
-        if ( !test )
-            throw std::runtime_error( "ConstantFieldOnCells not allocate" );
+        _componentNames->updateValuePointer();
+        _valuesListTmp->updateValuePointer();
         const ASTERINTEGER taille = _componentNames->size();
 
         const ASTERINTEGER tVerif1 = component.size();
@@ -242,9 +243,12 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _nameOfLigrels( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _listOfMeshCells( JeveuxCollectionLong( getName() + ".LIMA" ) ),
-          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ), _mesh( mesh ),
-          _FEDesc( FiniteElementDescriptorPtr() ), _isAllocated( false ),
-          _componentNames( getName() + ".NCMP" ), _valuesListTmp( getName() + ".VALV" ){};
+          _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
+          _mesh( mesh ),
+          _FEDesc( FiniteElementDescriptorPtr() ),
+          _isAllocated( false ),
+          _componentNames( getName() + ".NCMP" ),
+          _valuesListTmp( getName() + ".VALV" ){};
 
     /**
      * @brief Constructeur
@@ -252,10 +256,9 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @param ligrel Ligrel support
      */
     ConstantFieldOnCells( std::string name, const FiniteElementDescriptorPtr &ligrel )
-        : ConstantFieldOnCells( name, ligrel->getMesh() )
-          {
-            _FEDesc = ligrel;
-          };
+        : ConstantFieldOnCells( name, ligrel->getMesh() ) {
+        _FEDesc = ligrel;
+    };
 
     /**
      * @brief Constructeur
@@ -263,7 +266,7 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @param name Nom Jeveux de la carte
      */
     ConstantFieldOnCells( const BaseMeshPtr &mesh )
-        : ConstantFieldOnCells( ResultNaming::getNewResultName(), mesh){};
+        : ConstantFieldOnCells( ResultNaming::getNewResultName(), mesh ){};
 
     /**
      * @brief Constructeur
@@ -271,30 +274,29 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @param name Nom Jeveux de la carte
      */
     ConstantFieldOnCells( const FiniteElementDescriptorPtr &ligrel )
-        : ConstantFieldOnCells( ResultNaming::getNewResultName(), ligrel){};
+        : ConstantFieldOnCells( ResultNaming::getNewResultName(), ligrel ){};
 
     /**
      * @brief Constructeur
      * @param ligrel Ligrel support
      * @param name Nom Jeveux de la carte
      */
-    ConstantFieldOnCells( const std::string& name, const ConstantFieldOnCells& toCopy )
-        : ConstantFieldOnCells(name, toCopy.getMesh()){
-            *( _meshName ) = *( toCopy._meshName );
-            *( _descriptor ) = *( toCopy._descriptor );
-            *( _valuesList ) = *( toCopy._valuesList );
-            *( _nameOfLigrels ) = *( toCopy._nameOfLigrels );
-            *( _listOfMeshCells ) = *( toCopy._listOfMeshCells );
-            *( _componentNames ) = *( toCopy._componentNames );
-            *( _valuesListTmp ) = *( toCopy._valuesListTmp );
-            _FEDesc = toCopy._FEDesc;
-            _isAllocated = toCopy._isAllocated;
+    ConstantFieldOnCells( const std::string &name, const ConstantFieldOnCells &toCopy )
+        : ConstantFieldOnCells( name, toCopy.getMesh() ) {
+        *( _meshName ) = *( toCopy._meshName );
+        *( _descriptor ) = *( toCopy._descriptor );
+        *( _valuesList ) = *( toCopy._valuesList );
+        *( _nameOfLigrels ) = *( toCopy._nameOfLigrels );
+        *( _listOfMeshCells ) = *( toCopy._listOfMeshCells );
+        *( _componentNames ) = *( toCopy._componentNames );
+        *( _valuesListTmp ) = *( toCopy._valuesListTmp );
+        _FEDesc = toCopy._FEDesc;
+        _isAllocated = toCopy._isAllocated;
 
-            AS_ASSERT(updateValuePointers());
-        };
+        updateValuePointers();
+    };
 
-    typedef boost::shared_ptr< ConstantFieldOnCells< ValueType > >
-        ConstantFieldOnCellsValueTypePtr;
+    typedef boost::shared_ptr< ConstantFieldOnCells< ValueType > > ConstantFieldOnCellsValueTypePtr;
 
     /**
      * @brief Destructeur
@@ -309,7 +311,8 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         if ( _mesh.use_count() == 0 || _mesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
 
-        std::string strJeveuxBase( "G" );;
+        std::string strJeveuxBase( "G" );
+        ;
         fortranAllocate( strJeveuxBase, componant );
         _isAllocated = true;
     };
@@ -373,9 +376,9 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
         const ASTERINTEGER nbCmpMax = compNames.size();
         VectorString cmpToReturn;
-        cmpToReturn.reserve(30*nec);
+        cmpToReturn.reserve( 30 * nec );
         std::vector< ValueType > valToReturn;
-        valToReturn.reserve(30*nec);
+        valToReturn.reserve( 30 * nec );
         for ( int i = 0; i < nec; ++i ) {
             ASTERINTEGER encodedInt = ( *_descriptor )[3 + 2 * nbZoneMax + position * nec + i];
             VectorLong vecOfComp( 30, -1 );
@@ -396,7 +399,7 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
     /**
      * @brief Get values of all zones
      */
-    std::vector<ConstantFieldValues< ValueType >> getValues() const {
+    std::vector< ConstantFieldValues< ValueType > > getValues() const {
         _valuesList->updateValuePointer();
         _descriptor->updateValuePointer();
         ASTERINTEGER nbZoneMax = ( *_descriptor )[1];
@@ -406,15 +409,14 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
         const auto &compNames = PhysicalQuantityManager::Class().getComponentNames( gdeur );
         const ASTERINTEGER nbCmpMax = compNames.size();
 
-        std::vector<ConstantFieldValues< ValueType >> vectorOfConstantFieldValues;
-        vectorOfConstantFieldValues.reserve(size);
+        std::vector< ConstantFieldValues< ValueType > > vectorOfConstantFieldValues;
+        vectorOfConstantFieldValues.reserve( size );
 
-        for(int position = 0; position < size; ++position)
-        {
+        for ( int position = 0; position < size; ++position ) {
             VectorString cmpToReturn;
-            cmpToReturn.reserve(30*nec);
+            cmpToReturn.reserve( 30 * nec );
             std::vector< ValueType > valToReturn;
-            valToReturn.reserve(30*nec);
+            valToReturn.reserve( 30 * nec );
             for ( int i = 0; i < nec; ++i ) {
                 ASTERINTEGER encodedInt = ( *_descriptor )[3 + 2 * nbZoneMax + position * nec + i];
                 VectorLong vecOfComp( 30, -1 );
@@ -430,7 +432,7 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
                 }
             }
             vectorOfConstantFieldValues.push_back(
-            ConstantFieldValues< ValueType >( cmpToReturn, valToReturn ) );
+                ConstantFieldValues< ValueType >( cmpToReturn, valToReturn ) );
         }
         return vectorOfConstantFieldValues;
     };
@@ -587,7 +589,8 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
     /**
      * @brief Get number of zone in ConstantFieldOnCells
      */
-    int size() const {
+    ASTERINTEGER size() const {
+        _descriptor->updateValuePointer();
         return ( *_descriptor )[2];
     };
 
@@ -595,14 +598,14 @@ template < class ValueType > class ConstantFieldOnCells : public DataField {
      * @brief Mise a jour des pointeurs Jeveux
      * @return true si la mise a jour s'est bien deroulee, false sinon
      */
-    bool updateValuePointers() {
-        bool retour = _meshName->updateValuePointer();
-        retour = ( retour && _descriptor->updateValuePointer() );
-        retour = ( retour && _valuesList->updateValuePointer() );
+    void updateValuePointers() {
+        _meshName->updateValuePointer();
+        _descriptor->updateValuePointer();
+        _valuesList->updateValuePointer();
         // Les deux elements suivants sont facultatifs
         _listOfMeshCells->build();
-        _nameOfLigrels->updateValuePointer();
-        return retour;
+        if ( _nameOfLigrels->exists() )
+            _nameOfLigrels->updateValuePointer();
     };
 };
 

@@ -24,8 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-
 #include "aster_fort_jeveux.h"
 #include "aster_utils.h"
 #include "astercxx.h"
@@ -34,6 +32,8 @@
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxObject.h"
 #include "Supervis/ResultNaming.h"
+
+#include <string>
 
 /**
  * @class JeveuxVectorClass
@@ -77,9 +77,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         const auto capa = toCopy.capacity();
 
         if ( capa > 0 ) {
-            AS_ASSERT( this->allocate( capa ) );
+            this->allocate( capa );
             this->setSize( size );
-            AS_ASSERT( toCopy.updateValuePointer() );
+            toCopy.updateValuePointer();
             for ( ASTERINTEGER i = 0; i < size; ++i )
                 this->operator[]( i ) = toCopy[i];
             // Copy Jeveux attribute
@@ -102,7 +102,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             this->deallocate();
         const ASTERINTEGER size = toCopy.size();
         if ( size > 0 ) {
-            AS_ASSERT( this->allocate( size ) );
+            this->allocate( size );
             for ( ASTERINTEGER i = 0; i < size; ++i )
                 this->operator[]( i ) = toCopy[i];
         }
@@ -120,10 +120,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
         CALL_JEMARQ();
         bool ret = true;
 
-        if(!toCompare.updateValuePointer())
-            return false;
-        if(!this->updateValuePointer())
-            return false;
+        toCompare.updateValuePointer();
+        this->updateValuePointer();
         const auto size = toCompare.size();
         for ( ASTERINTEGER i = 0; i < size; ++i ) {
             if ( this->operator[]( i ) != toCompare[i] ) {
@@ -146,8 +144,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         CALL_JEMARQ();
         bool ret = true;
-        if(!this->updateValuePointer())
-            return false;
+        this->updateValuePointer();
 
         const ASTERINTEGER size = toCompare.size();
         for ( ASTERINTEGER i = 0; i < size; ++i ) {
@@ -170,7 +167,12 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     inline const ValueType &operator[]( const ASTERINTEGER &i ) const {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _valuePtr != nullptr );
-        AS_ASSERT( 0 <= i && i < this->size() );
+        if ( i < 0 && i >= this->size() ) {
+            std::string error = "Out of range of JeveuxVector '" + _name +
+                                "', index = " + std::to_string( i ) +
+                                " ( size = " + std::to_string( this->size() ) + " )";
+            throw std::out_of_range( error );
+        }
 #endif
         return _valuePtr[i];
     };
@@ -183,7 +185,12 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     inline ValueType &operator[]( const ASTERINTEGER &i ) {
 #ifdef ASTER_DEBUG_CXX
         AS_ASSERT( _valuePtr != nullptr );
-        AS_ASSERT( 0 <= i && i < this->size() );
+        if ( i < 0 && i >= this->size() ) {
+            std::string error = "Out of range of JeveuxVector '" + _name +
+                                "', index = " + std::to_string( i ) +
+                                " ( size = " + std::to_string( this->size() ) + " )";
+            throw std::out_of_range( error );
+        }
 #endif
         return _valuePtr[i];
     };
@@ -193,22 +200,22 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param length Longueur du vecteur Jeveux a allouer
      * @return true si l'allocation s'est bien passee
      */
-    bool allocate( ASTERINTEGER length ) {
+    void allocate( ASTERINTEGER length ) {
+        bool ret = false;
         if ( _name != "" && length > 0 ) {
+            ret = true;
             std::string strJeveuxBase = JeveuxMemoryTypesNames[_mem];
             const auto intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
             std::string carac = strJeveuxBase + " V " + JeveuxTypesNames[intType];
             ASTERINTEGER taille = length;
             CALLO_WKVECTC( _name, carac, &taille, (void *)( &_valuePtr ) );
             if ( _valuePtr == NULL )
-                return false;
-        } else
-            return false;
+                ret = false;
+        }
+        if ( !ret ) {
+            throw std::bad_alloc();
+        }
         updateValuePointer();
-        // #ifdef ASTER_DEBUG_CXX
-        //         std::cout << "DEBUG: JeveuxVector.alloc: " << _name << std::endl;
-        // #endif
-        return true;
     };
 
     /**
@@ -316,32 +323,35 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @brief Mise a jour du pointeur Jeveux
      * @return true si la mise a jour s'est bien passee
      */
-    bool updateValuePointer() {
+    void updateValuePointer() {
         _valuePtr = NULL;
+        bool ok = true;
         if ( !exists() )
-            return false;
+            ok = false;
 
-        const std::string read( "L" );
-        CALLO_JEVEUOC( _name, read, (void *)( &_valuePtr ) );
+        if ( ok ) {
+            const std::string read( "L" );
+            CALLO_JEVEUOC( _name, read, (void *)( &_valuePtr ) );
+            if ( _valuePtr == NULL )
+                ok = false;
+        }
 
-        if ( _valuePtr == NULL )
-            return false;
-        return true;
+        if ( !ok ) {
+            throw std::bad_alloc();
+        }
     };
 
     /** @brief Convert to std::vector */
     std::vector< ValueType > toVector() {
         CALL_JEMARQ();
         std::vector< ValueType > toReturn;
-        bool ret = updateValuePointer();
+        updateValuePointer();
 
-        if ( ret ) {
-            ASTERINTEGER size = this->size();
-            toReturn.reserve( size );
+        ASTERINTEGER size = this->size();
+        toReturn.reserve( size );
 
-            for ( ASTERINTEGER i = 0; i < size; ++i )
-                toReturn.push_back( _valuePtr[i] );
-        }
+        for ( ASTERINTEGER i = 0; i < size; ++i )
+            toReturn.push_back( _valuePtr[i] );
         CALL_JEDEMA();
 
         return toReturn;
@@ -360,11 +370,11 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      */
     void resize( const ASTERINTEGER &size ) {
         if ( !this->isAllocated() ) {
-            AS_ASSERT( this->allocate( size ) );
+            this->allocate( size );
         } else if ( size > this->capacity() ) {
             ASTERINTEGER taille = size;
             CALLO_JUVECA( _name, &taille );
-            AS_ASSERT( updateValuePointer() );
+            updateValuePointer();
         }
 
         this->setSize( size );
@@ -393,7 +403,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             this->resize( capacity );
             this->setSize( size );
         } else {
-            AS_ASSERT( this->allocate( capacity ) );
+            this->allocate( capacity );
             this->setSize( 0 );
         }
     };
@@ -427,7 +437,8 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
  * @author Nicolas Sellenet
  * @todo Supprimer la classe enveloppe
  */
-template < class ValueType > class JeveuxVector {
+template < class ValueType >
+class JeveuxVector {
   public:
     typedef boost::shared_ptr< JeveuxVectorClass< ValueType > > JeveuxVectorTypePtr;
 
@@ -495,6 +506,6 @@ typedef JeveuxVector< JeveuxChar32 > JeveuxVectorChar32;
 /** @typedef Definition d'un vecteur JeveuxChar80 */
 typedef JeveuxVector< JeveuxChar80 > JeveuxVectorChar80;
 /** @typedef Definition d'un vecteur JeveuxLogical */
-typedef JeveuxVector< bool > JeveuxVectorLogical;
+typedef JeveuxVector< ASTERBOOL > JeveuxVectorLogical;
 
 #endif /* JEVEUXVECTOR_H_ */

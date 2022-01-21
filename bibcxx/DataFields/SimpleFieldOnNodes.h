@@ -38,7 +38,8 @@
  * @brief Cette classe template permet de definir un champ aux noeuds Aster
  * @author Nicolas Sellenet
  */
-template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
+template < class ValueType >
+class SimpleFieldOnNodes : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.CNSK' */
     JeveuxVectorChar8 _descriptor;
@@ -51,15 +52,15 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     /** @brief Vecteur Jeveux '.CNSL' */
     JeveuxVectorLogical _allocated;
     /** @brief Nombre de noeuds */
-    int _nbNodes;
+    ASTERINTEGER _nbNodes;
     /** @brief Nombre de composantes */
-    int _nbComp;
+    ASTERINTEGER _nbComp;
 
     /**
      * Functions to check an out-of-range condition
      */
-    void _checkNodeOOR( const int &ino ) const {
-        int nbNodes = this->getNumberOfNodes();
+    void _checkNodeOOR( const ASTERINTEGER &ino ) const {
+        ASTERINTEGER nbNodes = this->getNumberOfNodes();
         if ( ino < 0 || ino >= nbNodes ) {
             throw std::runtime_error( "Node index " + std::to_string( ino ) +
                                       " is out of range [0, " + std::to_string( nbNodes - 1 ) +
@@ -67,8 +68,8 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
         };
     }
 
-    void _checkCmpOOR( const int &icmp ) const {
-        int ncmp = this->getNumberOfComponents();
+    void _checkCmpOOR( const ASTERINTEGER &icmp ) const {
+        ASTERINTEGER ncmp = this->getNumberOfComponents();
         if ( icmp < 0 || icmp >= ncmp ) {
             throw std::runtime_error( "Component " + std::to_string( icmp ) +
                                       " is out of range [0, " + std::to_string( ncmp - 1 ) + "]" );
@@ -92,7 +93,9 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
           _size( JeveuxVectorLong( getName() + ".CNSD" ) ),
           _component( JeveuxVectorChar8( getName() + ".CNSC" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".CNSV" ) ),
-          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ), _nbNodes( 0 ), _nbComp( 0 ){};
+          _allocated( JeveuxVectorLogical( getName() + ".CNSL" ) ),
+          _nbNodes( 0 ),
+          _nbComp( 0 ){};
 
     /**
      * @brief Constructeur
@@ -105,9 +108,9 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ValueType &operator[]( int i ) { return _values->operator[]( i ); };
+    ValueType &operator[]( ASTERINTEGER i ) { return _values->operator[]( i ); };
 
-    const ValueType &getValue( int ino, int icmp ) const {
+    const ValueType &getValue( ASTERINTEGER ino, ASTERINTEGER icmp ) const {
 
 #ifdef ASTER_DEBUG_CXX
         if ( this->getNumberOfNodes() == 0 || this->getNumberOfComponents() == 0 )
@@ -133,12 +136,12 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     /**
      * @brief Get number of components
      */
-    int getNumberOfComponents() const { return _nbComp; }
+    ASTERINTEGER getNumberOfComponents() const { return _nbComp; }
 
     /**
      * @brief Get number of nodes
      */
-    int getNumberOfNodes() const { return _nbNodes; }
+    ASTERINTEGER getNumberOfNodes() const { return _nbNodes; }
 
     /**
      * @brief Return a pointer to the vector of data
@@ -184,7 +187,7 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
     /**
      * @brief Get the name of the i-th component
      */
-    std::string getNameOfComponent( const int &i ) const {
+    std::string getNameOfComponent( const ASTERINTEGER &i ) const {
 
         if ( i < 0 || i >= _nbComp ) {
             throw std::runtime_error( "Out of range" );
@@ -199,10 +202,10 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
      */
     VectorString getNameOfComponents() const {
 
-        int size = this->getNumberOfComponents();
+        ASTERINTEGER size = this->getNumberOfComponents();
         VectorString names;
         names.reserve( size );
-        for ( int i = 0; i < size; i++ ) {
+        for ( ASTERINTEGER i = 0; i < size; i++ ) {
             names.push_back( this->getNameOfComponent( i ) );
         }
         return names;
@@ -217,19 +220,15 @@ template < class ValueType > class SimpleFieldOnNodes : public DataStructure {
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    bool updateValuePointers() {
-        bool retour = _descriptor->updateValuePointer();
-        retour = ( retour && _size->updateValuePointer() );
-        retour = ( retour && _component->updateValuePointer() );
-        retour = ( retour && _values->updateValuePointer() );
-        retour = ( retour && _allocated->updateValuePointer() );
-        if ( retour ) {
-            _nbNodes = ( *_size )[0];
-            _nbComp = ( *_size )[1];
-            if ( _values->size() != _nbNodes * _nbComp )
-                throw std::runtime_error( "Programming error" );
-        }
-        return retour;
+    void updateValuePointers() {
+        _descriptor->updateValuePointer();
+        _size->updateValuePointer();
+        _component->updateValuePointer();
+        _values->updateValuePointer();
+        _allocated->updateValuePointer();
+
+        _nbNodes = ( *_size )[0];
+        _nbComp = ( *_size )[1];
     };
 };
 

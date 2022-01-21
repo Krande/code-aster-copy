@@ -3,7 +3,7 @@
  * @brief Implementation de DOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -58,7 +58,7 @@ bool BaseDOFNumbering::computeNumbering() {
 
         ASTERINTEGER nb_matr = _matrix.size();
         JeveuxVectorChar24 jvListOfMatr(ResultNaming::getNewResultName());
-        bool retour = jvListOfMatr->allocate( nb_matr );
+        jvListOfMatr->allocate( nb_matr );
 
         int ind = 0;
         for ( const auto &mat : _matrix )

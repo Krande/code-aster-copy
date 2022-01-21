@@ -6,7 +6,7 @@
  * @brief Definition of code_aster exceptions
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -68,6 +68,7 @@ template < int Id > class ErrorCpp : public AbstractErrorCpp {
 };
 
 typedef ErrorCpp< ASTER_ERROR > AsterErrorCpp;
+typedef ErrorCpp< ASTER_ERROR > InternalErrorCpp;
 
 // Translation functions: C++ exception to Python exception
 template < int Id >

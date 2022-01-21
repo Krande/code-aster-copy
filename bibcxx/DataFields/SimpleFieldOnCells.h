@@ -26,22 +26,24 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <string>
-#include <assert.h>
-
 #include "astercxx.h"
 
-#include "MemoryManager/NumpyAccess.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "DataStructures/DataStructure.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "MemoryManager/NumpyAccess.h"
 #include "Utilities/Tools.h"
+
+#include <string>
+
+#include <assert.h>
 
 /**
  * @class SimpleFieldOnCells
  * @brief Cette classe template permet de definir un champ aux éléments Aster
  * @author Nicolas Sellenet
  */
-template < class ValueType > class SimpleFieldOnCells : public DataStructure {
+template < class ValueType >
+class SimpleFieldOnCells : public DataStructure {
   private:
     /** @brief Vecteur Jeveux '.CESK' */
     JeveuxVectorChar8 _descriptor;
@@ -54,96 +56,101 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
     /** @brief Vecteur Jeveux '.CESL' */
     JeveuxVectorLogical _allocated;
     /** @brief Nombre de éléments */
-    int _nbCells;
+    ASTERINTEGER _nbCells;
     /** @brief Nombre de composantes */
-    int _nbComp;
+    ASTERINTEGER _nbComp;
     /** @brief Number of points */
-    int _nbPt;
+    ASTERINTEGER _nbPt;
     /** @brief Number of under points */
-    int _nbSpt;
+    ASTERINTEGER _nbSpt;
 
     /**
      * Some unsafe functions to access values without checking dimension
      * Their public version add an if statement
      */
 
-    int _ptCell( const int& ima )      const { return ( *_size )[4 + 4*ima + 1]; }
-    int _sptCell( const int& ima )     const { return ( *_size )[4 + 4*ima + 2]; }
-    int _cmpsSptCell( const int& ima ) const { return ( *_size )[4 + 4*ima + 3]; }
-    int _shiftCell( const int& ima )   const { return ( *_size )[4 + 4*ima + 4]; }
+    ASTERINTEGER _ptCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 1]; }
+    ASTERINTEGER _sptCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 2]; }
+    ASTERINTEGER _cmpsSptCell( const ASTERINTEGER &ima ) const {
+        return ( *_size )[4 + 4 * ima + 3];
+    }
+    ASTERINTEGER _shiftCell( const ASTERINTEGER &ima ) const { return ( *_size )[4 + 4 * ima + 4]; }
 
-    std::string _nameCmp( const int& icmp) const { return trim(( *_component )[icmp].toString()); }
+    std::string _nameCmp( const ASTERINTEGER &icmp ) const {
+        return trim( ( *_component )[icmp].toString() );
+    }
 
     /**
      * Calculate the position of value in CESV array
      */
-    int _positionInArray( const int& icmp, const int& ima,
-                 const int& ipt, const int& ispt) const {
+    ASTERINTEGER _positionInArray( const ASTERINTEGER &icmp, const ASTERINTEGER &ima,
+                                   const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
 
-      int npt = this->_ptCell(ima);
-      int nspt = this->_sptCell(ima);
-      int ncmp = this->_cmpsSptCell(ima);
-      int decal = this->_shiftCell(ima);
-      return decal + ipt*nspt*ncmp + ispt*ncmp + icmp;
+        ASTERINTEGER npt = this->_ptCell( ima );
+        ASTERINTEGER nspt = this->_sptCell( ima );
+        ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
+        ASTERINTEGER decal = this->_shiftCell( ima );
+        return decal + ipt * nspt * ncmp + ispt * ncmp + icmp;
     };
 
     /**
      * Calculate the size of CESV array
      */
-    int _nbValArray( ) const {
-      int nbVal = 0;
-      for (int ima=0 ; ima<this->getNumberOfCells() ;  ima++){
-        int npt = this->_ptCell(ima);
-        int nspt = this->_sptCell(ima);
-        int ncmp = this->_cmpsSptCell(ima);
-        nbVal = nbVal + npt*nspt*ncmp;
-      }
-      return nbVal;
+    ASTERINTEGER _nbValArray() const {
+        ASTERINTEGER nbVal = 0;
+        for ( ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++ ) {
+            ASTERINTEGER npt = this->_ptCell( ima );
+            ASTERINTEGER nspt = this->_sptCell( ima );
+            ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
+            nbVal = nbVal + npt * nspt * ncmp;
+        }
+        return nbVal;
     }
 
     /**
      * Functions to check an out-of-range condition
      */
-    void _checkCellOOR( const int& ima ) const {
-      int nbCells = this->getNumberOfCells();
-      if ( ima < 0 || ima >= nbCells) {
-        throw std::runtime_error( "Cell index '"+std::to_string(ima)+"' is out of range");
-      };
+    void _checkCellOOR( const ASTERINTEGER &ima ) const {
+        ASTERINTEGER nbCells = this->getNumberOfCells();
+        if ( ima < 0 || ima >= nbCells ) {
+            throw std::runtime_error( "Cell index '" + std::to_string( ima ) +
+                                      "' is out of range" );
+        };
     }
 
-    void _checkPtOOR( const int& ima, const int& ipt ) const {
-      int npt = this->_ptCell(ima);
-      if ( ipt  < 0 || ipt  >= npt  ) {
-        throw std::runtime_error( "Point     '"+std::to_string(ipt)
-                                  + "' is out of range for cell '"
-                                  +std::to_string(ima)+"'");
-      }
+    void _checkPtOOR( const ASTERINTEGER &ima, const ASTERINTEGER &ipt ) const {
+        ASTERINTEGER npt = this->_ptCell( ima );
+        if ( ipt < 0 || ipt >= npt ) {
+            throw std::runtime_error( "Point     '" + std::to_string( ipt ) +
+                                      "' is out of range for cell '" + std::to_string( ima ) +
+                                      "'" );
+        }
     }
 
-    void _checkSptOOR( const int& ima, const int& ispt ) const {
-      int nspt = this->_sptCell(ima);
-      if ( ispt < 0 || ispt >= nspt ) {
-        throw std::runtime_error( "SubPoint  '"+std::to_string(ispt)
-                                  +"' is out of range for cell '"
-                                  +std::to_string(ima)+"'");
-      }
+    void _checkSptOOR( const ASTERINTEGER &ima, const ASTERINTEGER &ispt ) const {
+        ASTERINTEGER nspt = this->_sptCell( ima );
+        if ( ispt < 0 || ispt >= nspt ) {
+            throw std::runtime_error( "SubPoint  '" + std::to_string( ispt ) +
+                                      "' is out of range for cell '" + std::to_string( ima ) +
+                                      "'" );
+        }
     }
 
-    void _checkCmpAtCellOOR( const int& ima, const int& icmp ) const {
-      int ncmp = this->_cmpsSptCell(ima);
-      if ( icmp < 0 || icmp >= ncmp ) {
-        throw std::runtime_error( "Component '"+std::to_string(icmp)
-                                  +"' is out of range for cell '"
-                                  +std::to_string(ima)+"'");
-      }
+    void _checkCmpAtCellOOR( const ASTERINTEGER &ima, const ASTERINTEGER &icmp ) const {
+        ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
+        if ( icmp < 0 || icmp >= ncmp ) {
+            throw std::runtime_error( "Component '" + std::to_string( icmp ) +
+                                      "' is out of range for cell '" + std::to_string( ima ) +
+                                      "'" );
+        }
     }
 
-    void _checkCmpOOR( const int& icmp ) const {
-      int ncmp = this->getNumberOfComponents();
-      if ( icmp < 0 || icmp >= ncmp ) {
-        throw std::runtime_error( "Component '"+std::to_string(icmp)
-                                  +"' is out of range");
-      }
+    void _checkCmpOOR( const ASTERINTEGER &icmp ) const {
+        ASTERINTEGER ncmp = this->getNumberOfComponents();
+        if ( icmp < 0 || icmp >= ncmp ) {
+            throw std::runtime_error( "Component '" + std::to_string( icmp ) +
+                                      "' is out of range" );
+        }
     }
 
   public:
@@ -164,111 +171,110 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
           _component( JeveuxVectorChar8( getName() + ".CESC" ) ),
           _values( JeveuxVector< ValueType >( getName() + ".CESV" ) ),
           _allocated( JeveuxVectorLogical( getName() + ".CESL" ) ),
-          _nbCells( 0 ), _nbComp( 0 ), _nbPt( 0 ), _nbSpt( 0 ){};
+          _nbCells( 0 ),
+          _nbComp( 0 ),
+          _nbPt( 0 ),
+          _nbSpt( 0 ){};
 
     /**
      * @brief Constructeur
 
      */
-    SimpleFieldOnCells(  )
-        : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ){};
+    SimpleFieldOnCells() : SimpleFieldOnCells( DataStructureNaming::getNewName( 19 ) ){};
 
     /**
      * @brief Surcharge de l'operateur []
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ValueType &operator[]( int i ) { return _values->operator[]( i ); };
+    ValueType &operator[]( ASTERINTEGER i ) { return _values->operator[]( i ); };
 
     /**
      * @brief Access to the (icmp) component of the (ima) cell
               at the (ipt) point, at the (ispt) sub-point.
     */
-    ValueType const &getValue( const int& ima, const int& icmp,
-                               const int& ipt, const int& ispt  ) const {
+    ValueType const &getValue( const ASTERINTEGER &ima, const ASTERINTEGER &icmp,
+                               const ASTERINTEGER &ipt, const ASTERINTEGER &ispt ) const {
 
 #ifdef ASTER_DEBUG_CXX
-      if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0)
-        throw std::runtime_error( "First call of updateValuePointers is mandatory" );
+        if ( this->getNumberOfCells() == 0 || this->getNumberOfComponents() == 0 )
+            throw std::runtime_error( "First call of updateValuePointers is mandatory" );
 #endif
 
-      this->_checkCellOOR(ima);
-      this->_checkPtOOR(ima, ipt);
-      this->_checkSptOOR(ima, ispt);
-      this->_checkCmpAtCellOOR(ima, icmp);
+        this->_checkCellOOR( ima );
+        this->_checkPtOOR( ima, ipt );
+        this->_checkSptOOR( ima, ispt );
+        this->_checkCmpAtCellOOR( ima, icmp );
 
-      int position = this->_positionInArray(icmp, ima, ipt, ispt);
-      bool allocated = ( *_allocated )[position];
+        ASTERINTEGER position = this->_positionInArray( icmp, ima, ipt, ispt );
+        bool allocated = ( *_allocated )[position];
 
 #ifdef ASTER_DEBUG_CXX
-      if ( !allocated ){
-        std::cout <<
-          "DEBUG: Position ("+std::to_string(icmp)
-          +", "+std::to_string(ima)
-          +", "+std::to_string(ipt)
-          +", "+std::to_string(ispt)
-          +") is valid but not allocated!"
-                  << std::endl;
-      };
+        if ( !allocated ) {
+            std::cout << "DEBUG: Position (" + std::to_string( icmp ) + ", " +
+                             std::to_string( ima ) + ", " + std::to_string( ipt ) + ", " +
+                             std::to_string( ispt ) + ") is valid but not allocated!"
+                      << std::endl;
+        };
 #endif
 
-      return ( *_values )[position];
+        return ( *_values )[position];
     }
 
     /**
      * @brief Get number of points of the i-th cell
      */
-    int getNumberOfPointsOfCell( const int& ima ) const {
-      this->_checkCellOOR(ima);
-      return this->_ptCell(ima);
+    ASTERINTEGER getNumberOfPointsOfCell( const ASTERINTEGER &ima ) const {
+        this->_checkCellOOR( ima );
+        return this->_ptCell( ima );
     }
 
     /**
      * @brief Get number of sub-points of the i-th cell
      */
-    int getNumberOfSubPointsOfCell( const int& ima ) const {
-      this->_checkCellOOR(ima);
-      return this->_sptCell(ima);
+    ASTERINTEGER getNumberOfSubPointsOfCell( const ASTERINTEGER &ima ) const {
+        this->_checkCellOOR( ima );
+        return this->_sptCell( ima );
     }
 
     /**
      * @brief Get number of components of the i-th cell
      */
-    int getNumberOfComponentsForSubpointsOfCell( const int& ima ) const {
-      this->_checkCellOOR(ima);
-      return this->_cmpsSptCell(ima);
+    ASTERINTEGER getNumberOfComponentsForSubpointsOfCell( const ASTERINTEGER &ima ) const {
+        this->_checkCellOOR( ima );
+        return this->_cmpsSptCell( ima );
     }
 
     /**
      * @brief Get number of components
      */
-    int getNumberOfComponents() const { return _nbComp; }
+    ASTERINTEGER getNumberOfComponents() const { return _nbComp; }
 
     /**
      * @brief Get number of nodes
      */
-    int getNumberOfCells() const { return _nbCells; }
+    ASTERINTEGER getNumberOfCells() const { return _nbCells; }
 
     /**
      * @brief Get number of points
      */
-    int getMaxNumberOfPoints() const { return _nbPt; }
+    ASTERINTEGER getMaxNumberOfPoints() const { return _nbPt; }
 
     /**
      * @brief Get number of sub-points
      */
-    int getMaxNumberOfSubPoints() const { return _nbSpt; }
+    ASTERINTEGER getMaxNumberOfSubPoints() const { return _nbSpt; }
 
     /**
      * @brief Get the name of the i-th component
      */
-    std::string getNameOfComponent( const int& icmp ) const {
+    std::string getNameOfComponent( const ASTERINTEGER &icmp ) const {
 
-      if ( icmp < 0 || icmp >= this->getNumberOfComponents()) {
-        throw std::runtime_error( "Component '"+std::to_string(icmp)
-                                  +"' is out of range");
-      };
-      return this->_nameCmp(icmp);
+        if ( icmp < 0 || icmp >= this->getNumberOfComponents() ) {
+            throw std::runtime_error( "Component '" + std::to_string( icmp ) +
+                                      "' is out of range" );
+        };
+        return this->_nameCmp( icmp );
     };
 
     /**
@@ -276,107 +282,100 @@ template < class ValueType > class SimpleFieldOnCells : public DataStructure {
      */
     VectorString getNameOfComponents() const {
 
-      int size = this->getNumberOfComponents();
-      VectorString names;
-      names.reserve(size);
-      for ( int icmp = 0 ; icmp < size; icmp++ ) {
-        names.push_back(this->_nameCmp(icmp));
-      }
-      return names;
+        ASTERINTEGER size = this->getNumberOfComponents();
+        VectorString names;
+        names.reserve( size );
+        for ( ASTERINTEGER icmp = 0; icmp < size; icmp++ ) {
+            names.push_back( this->_nameCmp( icmp ) );
+        }
+        return names;
     }
 
     /**
      * @brief Get physical quantity
      */
-    std::string getPhysicalQuantity() const {
-      return trim(( *_descriptor )[1].toString());
-    }
+    std::string getPhysicalQuantity() const { return trim( ( *_descriptor )[1].toString() ); }
 
     /**
      * @brief Get field location
      */
-    std::string getFieldLocation() const {
-      return trim(( *_descriptor )[2].toString());
-    }
+    std::string getFieldLocation() const { return trim( ( *_descriptor )[2].toString() ); }
 
     /**
      * @brief Get cells holding components
      */
-    VectorLong getCellsWithComponents( ) const {
-      VectorLong values;
-      for (int ima=0 ; ima<this->getNumberOfCells() ;  ima++){
-        if ( this->_cmpsSptCell(ima) > 0 )
-          values.push_back(ima);
-      }
-      return values;
+    VectorLong getCellsWithComponents() const {
+        VectorLong values;
+        for ( ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++ ) {
+            if ( this->_cmpsSptCell( ima ) > 0 )
+                values.push_back( ima );
+        }
+        return values;
     }
 
     /**
      * @brief Get values on cells holding components, with mask
      */
-    PyObject *getValues( ) {
+    PyObject *getValues() {
 
-      int sz = 0;
-      int ncmp_max = this->getNumberOfComponents();
-      VectorLong cells = this->getCellsWithComponents();
+        ASTERINTEGER sz = 0;
+        ASTERINTEGER ncmp_max = this->getNumberOfComponents();
+        VectorLong cells = this->getCellsWithComponents();
 
-      for ( const auto &ima : cells ) {
-        sz = sz + this->_ptCell(ima) * this->_sptCell(ima);
-      }
-      AS_ASSERT( sz > 0 );
-
-      npy_intp dims[2] = {sz, ncmp_max};
-      PyObject *data = PyArray_ZEROS(2, dims, npy_type< ValueType >::value, 0);
-      PyObject *mask = PyArray_ZEROS(2, dims, NPY_BOOL, 0);
-
-      ValueType *dataptr = (double *)PyArray_DATA((PyArrayObject *) data);
-      bool *maskptr = (bool *)PyArray_DATA((PyArrayObject *) mask);
-
-      int j=0;
-      for ( const auto &ima : cells ) {
-        for ( int ipt = 0 ; ipt < this->_ptCell(ima); ipt++ ) {
-          for ( int ispt = 0 ; ispt < this->_sptCell(ima); ispt++ ) {
-            for ( int icmp = 0 ; icmp < this->_cmpsSptCell(ima); icmp++) {
-              int posjv = this->_positionInArray(icmp, ima, ipt, ispt);
-              if ( ( *_allocated )[posjv] ) {
-                dataptr[j+icmp] = ( *_values )[posjv] ;
-                maskptr[j+icmp] = true ;
-              }
-            }
-            j = j + ncmp_max;
-          }
+        for ( const auto &ima : cells ) {
+            sz = sz + this->_ptCell( ima ) * this->_sptCell( ima );
         }
-      }
+        AS_ASSERT( sz > 0 );
 
-      PyArray_ENABLEFLAGS((PyArrayObject*) data, NPY_ARRAY_OWNDATA);
-      PyArray_ENABLEFLAGS((PyArrayObject*) mask, NPY_ARRAY_OWNDATA);
+        npy_intp dims[2] = { sz, ncmp_max };
+        PyObject *data = PyArray_ZEROS( 2, dims, npy_type< ValueType >::value, 0 );
+        PyObject *mask = PyArray_ZEROS( 2, dims, NPY_BOOL, 0 );
 
-      PyObject *resu_tuple = PyTuple_New( 2 );
-      PyTuple_SetItem(resu_tuple, 0, data);
-      PyTuple_SetItem(resu_tuple, 1, mask);
+        ValueType *dataptr = (double *)PyArray_DATA( (PyArrayObject *)data );
+        bool *maskptr = (bool *)PyArray_DATA( (PyArrayObject *)mask );
 
-      return resu_tuple;
+        ASTERINTEGER j = 0;
+        for ( const auto &ima : cells ) {
+            for ( ASTERINTEGER ipt = 0; ipt < this->_ptCell( ima ); ipt++ ) {
+                for ( ASTERINTEGER ispt = 0; ispt < this->_sptCell( ima ); ispt++ ) {
+                    for ( ASTERINTEGER icmp = 0; icmp < this->_cmpsSptCell( ima ); icmp++ ) {
+                        ASTERINTEGER posjv = this->_positionInArray( icmp, ima, ipt, ispt );
+                        if ( ( *_allocated )[posjv] ) {
+                            dataptr[j + icmp] = ( *_values )[posjv];
+                            maskptr[j + icmp] = true;
+                        }
+                    }
+                    j = j + ncmp_max;
+                }
+            }
+        }
+
+        PyArray_ENABLEFLAGS( (PyArrayObject *)data, NPY_ARRAY_OWNDATA );
+        PyArray_ENABLEFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
+
+        PyObject *resu_tuple = PyTuple_New( 2 );
+        PyTuple_SetItem( resu_tuple, 0, data );
+        PyTuple_SetItem( resu_tuple, 1, mask );
+
+        return resu_tuple;
     }
 
     /**
      * @brief Mise a jour des pointeurs Jeveux
      * @return renvoie true si la mise a jour s'est bien deroulee, false sinon
      */
-    bool updateValuePointers() {
-        bool retour = _descriptor->updateValuePointer();
-        retour = ( retour && _size->updateValuePointer() );
-        retour = ( retour && _component->updateValuePointer() );
-        retour = ( retour && _values->updateValuePointer() );
-        retour = ( retour && _allocated->updateValuePointer() );
-        if ( retour ) {
-            _nbCells = ( *_size )[0];
-            _nbComp = ( *_size )[1];
-            _nbPt = ( *_size )[2];
-            _nbSpt = ( *_size )[3];
-            if ( _values->size() != this->_nbValArray() )
-              throw std::runtime_error( "Programming error" );
-        }
-        return retour;
+    void updateValuePointers() {
+        _descriptor->updateValuePointer();
+        _size->updateValuePointer();
+        _component->updateValuePointer();
+        _values->updateValuePointer();
+        _allocated->updateValuePointer();
+        _nbCells = ( *_size )[0];
+        _nbComp = ( *_size )[1];
+        _nbPt = ( *_size )[2];
+        _nbSpt = ( *_size )[3];
+        if ( _values->size() != this->_nbValArray() )
+            throw std::runtime_error( "Programming error" );
     };
 };
 

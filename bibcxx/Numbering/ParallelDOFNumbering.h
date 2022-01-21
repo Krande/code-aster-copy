@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,8 +40,6 @@
  */
 class ParallelDOFNumbering : public BaseDOFNumbering {
   private:
-
-
   public:
     /**
      * @typedef ParallelDOFNumberingPtr
@@ -52,15 +50,13 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Constructeur
      */
-    ParallelDOFNumbering(  )
-        : BaseDOFNumbering( "NUME_DDL_P" ){};
+    ParallelDOFNumbering() : BaseDOFNumbering( "NUME_DDL_P" ){};
 
     /**
      * @brief Constructeur
      * @param name nom souhaité de la sd (utile pour le BaseDOFNumbering d'une sd_resu)
      */
-    ParallelDOFNumbering( const std::string name )
-        : BaseDOFNumbering( name, "NUME_DDL_P" ){};
+    ParallelDOFNumbering( const std::string name ) : BaseDOFNumbering( name, "NUME_DDL_P" ){};
 
     /**
      * @brief Methode permettant de savoir si l'objet est parallel
@@ -126,7 +122,6 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
         BaseDOFNumbering::setModel( currentModel );
     };
 
-
     /**
      * @brief Are Lagrange Multipliers used for BC or MPC
      */
@@ -140,81 +135,63 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    std::string getComponentAssociatedToRow(const ASTERINTEGER row, const bool local) const;
-    std::string getComponentAssociatedToRow(const ASTERINTEGER row) const {
-        return getComponentAssociatedToRow(row, false);
+    std::string getComponentAssociatedToRow( const ASTERINTEGER row, const bool local ) const;
+    std::string getComponentAssociatedToRow( const ASTERINTEGER row ) const {
+        return getComponentAssociatedToRow( row, false );
     };
 
     /**
      * @brief Get The Components Associated To A Given Node
      */
-    VectorString getComponentsAssociatedToNode(const ASTERINTEGER node, const bool local) const;
-    VectorString getComponentsAssociatedToNode(const ASTERINTEGER node) const {
-        return getComponentsAssociatedToNode(node, false);
+    VectorString getComponentsAssociatedToNode( const ASTERINTEGER node, const bool local ) const;
+    VectorString getComponentsAssociatedToNode( const ASTERINTEGER node ) const {
+        return getComponentsAssociatedToNode( node, false );
     };
 
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row, const bool local) const;
-    ASTERINTEGER getNodeAssociatedToRow(const ASTERINTEGER row) const {
-        return getNodeAssociatedToRow(row, false);
+    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row, const bool local ) const;
+    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row ) const {
+        return getNodeAssociatedToRow( row, false );
     };
 
     /**
      * @brief Get The total number of Dofs
      */
-    ASTERINTEGER getNumberOfDofs(const bool local) const;
-    ASTERINTEGER getNumberOfDofs() const {
-        return getNumberOfDofs(false);
-    };
+    ASTERINTEGER getNumberOfDofs( const bool local ) const;
+    ASTERINTEGER getNumberOfDofs() const { return getNumberOfDofs( false ); };
 
     /**
      * @brief get the Row index Associated To the Component of a Node
      */
-    ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node, const std::string comp,
-                                                                          const bool local) const;
-    ASTERINTEGER getRowAssociatedToNodeComponent(const ASTERINTEGER node, const std::string comp)
-                                                                                            const {
-        return getRowAssociatedToNodeComponent(node, comp, false);
+    ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node, const std::string comp,
+                                                  const bool local ) const;
+    ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node,
+                                                  const std::string comp ) const {
+        return getRowAssociatedToNodeComponent( node, comp, false );
     };
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    VectorLong getRowsAssociatedToPhysicalDofs(const bool local) const;
+    VectorLong getRowsAssociatedToPhysicalDofs( const bool local ) const;
     VectorLong getRowsAssociatedToPhysicalDofs() const {
-        return getRowsAssociatedToPhysicalDofs(false);
+        return getRowsAssociatedToPhysicalDofs( false );
     };
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    VectorLong getRowsAssociatedToLagrangeMultipliers(const bool local) const;
+    VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local ) const;
     VectorLong getRowsAssociatedToLagrangeMultipliers() const {
-        return getRowsAssociatedToLagrangeMultipliers(false);
+        return getRowsAssociatedToLagrangeMultipliers( false );
     };
 
     /**
      * @brief Get Assigned Components
      */
     VectorString getComponents() const;
-
-
-    // VectorLong getDEEG() const
-    // {
-    //     JeveuxVectorLong deeg = JeveuxVectorLong( getName() + ".NUME.DEEG" );
-    //     AS_ASSERT(deeg->updateValuePointer());
-    //     return deeg->toVector();
-    // }
-
-    // VectorLong getNULS() const
-    // {
-    //     JeveuxVectorLong nuls = JeveuxVectorLong( getName() + ".NUME.NULS" );
-    //     AS_ASSERT(nuls->updateValuePointer());
-    //     return nuls->toVector();
-    // }
-
 };
 
 /**

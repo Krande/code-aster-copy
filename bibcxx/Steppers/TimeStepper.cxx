@@ -28,7 +28,7 @@
 bool TimeStepper::setValues( const VectorReal &values ) {
     _values->clear();
     _values->reserve( values.size() );
-    AS_ASSERT( _values->updateValuePointer() );
+    _values->updateValuePointer();
 
     ASTERINTEGER compteur = 0;
     ASTERDOUBLE save = 0.;
