@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,7 @@ CAELEM=AFFE_CARA_ELEM(
     ORIENTATION=_F(GROUP_MA=('PT1'), CARA='VECT_X_Y', VALE=(-1.0, 0.0, 0.0, 0.0, 1.0, 0.0),)
 )
 
+resi_inte_rela=1.0E-09
 # --------------------------------------------------------------------------------------------------
 #
 # Déplacements imposés sur le Noeud 1 : trajet 1
@@ -82,7 +83,7 @@ RESU1=STAT_NON_LINE(
         _F(CHARGE=DEPL1,),
     ),
     COMPORTEMENT=(
-        _F(GROUP_MA='PT1',RELATION='DIS_CONTACT',),
+        _F(GROUP_MA='PT1',RELATION='DIS_CONTACT',RESI_INTE_RELA=resi_inte_rela,),
     ),
     INCREMENT=_F(LIST_INST=llinst1,),
     NEWTON=_F(REAC_INCR=1, MATRICE='TANGENTE', REAC_ITER=1,),
@@ -148,7 +149,7 @@ RESU2=STAT_NON_LINE(
         _F(CHARGE=DEPL2,),
     ),
     COMPORTEMENT=(
-        _F(GROUP_MA='PT1',RELATION='DIS_CONTACT',),
+        _F(GROUP_MA='PT1',RELATION='DIS_CONTACT',RESI_INTE_RELA=resi_inte_rela,),
     ),
     INCREMENT=_F(LIST_INST=llinst2,),
     NEWTON=_F(REAC_INCR=1, MATRICE='TANGENTE', REAC_ITER=1,),
@@ -214,7 +215,7 @@ RESU3=STAT_NON_LINE(
         _F(CHARGE=DEPL3,),
     ),
     COMPORTEMENT=(
-        _F(GROUP_MA='PT1',RELATION='DIS_CONTACT',),
+        _F(GROUP_MA='PT1',RELATION='DIS_CONTACT',RESI_INTE_RELA=resi_inte_rela,),
     ),
     INCREMENT=_F(LIST_INST=llinst3,),
     NEWTON=_F(REAC_INCR=1, MATRICE='TANGENTE', REAC_ITER=1,),

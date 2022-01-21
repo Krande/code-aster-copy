@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,13 @@ implicit none
         !       vecteur Force
         !       vecteur Sigma
         !       vecteur Variables internes
-        !   lMatr       :   FULL_MECA*                RIGI_MECA*
-        !   lVect       :   FULL_MECA*  RAPH_MECA     RIGI_MECA_TANG
-        !   lSigm       :   FULL_MECA*  RAPH_MECA     RIGI_MECA_TANG
+        !   lMatr       :   FULL_MECA*             RIGI_MECA*
+        !   lVect       :   FULL_MECA*  RAPH_MECA  RIGI_MECA_TANG
+        !   lSigm       :   FULL_MECA*  RAPH_MECA  RIGI_MECA_TANG
         !   lVari       :   FULL_MECA*  RAPH_MECA
+        !   lPred       :                          RIGI_MECA_TANG
         ! Si on fait uniquement une prédiction
-        !   lMatrPred   :                             RIGI_MECA_TANG
+        !   lMatrPred   :                          RIGI*
         !
         !   nomte   : nom terme élémentaire
         !   ndim    : dimension de l'espace
@@ -50,7 +51,9 @@ implicit none
         aster_logical       :: lMatr        = ASTER_FALSE
         aster_logical       :: lVari        = ASTER_FALSE
         aster_logical       :: lSigm        = ASTER_FALSE
+        aster_logical       :: lPred        = ASTER_FALSE
         aster_logical       :: lMatrPred    = ASTER_FALSE
+        aster_logical       :: lTraceDbg    = ASTER_FALSE
         !
         character(len=16)   :: option       = ''
         character(len=16)   :: nomte        = ''
@@ -66,7 +69,21 @@ implicit none
         real(kind=8)        :: ulm(12)
         real(kind=8)        :: dul(12)
         real(kind=8)        :: pgl(3, 3)
+        real(kind=8)        :: TempsPlus, TempsMoins
         !
     end type te0047_dscr
 !
+contains
+
+
+    subroutine te0047_dscr_write(D)
+        type(te0047_dscr), intent(in) :: D
+        !
+        write(*,'(5(A16))')[character(16) ::'option','nomte','rela_comp','type_comp','defo_comp']
+        write(*,'(5(A16))') D%option, D%nomte, D%rela_comp, D%type_comp, D%defo_comp
+        !
+        write(*,'(A)')       'Vect Matr Vari Sigm Pred MPred '
+        write(*,'(6(L,4X))')  D%lVect, D%lMatr, D%lVari, D%lSigm, D%lPred, D%lMatrPred
+    end
+
 end module te0047_type

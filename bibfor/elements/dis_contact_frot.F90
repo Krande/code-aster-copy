@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ integer, intent(out)          :: iret
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip
-    integer :: iretlc, ifono, imatsym, jtp, jtm, icarcr, iiter, iterat
+    integer :: iretlc, ifono, imatsym, icarcr, iiter, iterat
     integer :: icontm, icontp
 !
     real(kind=8)     :: klc(for_discret%nno*for_discret%nc*2*for_discret%nno*for_discret%nc*2)
@@ -99,7 +99,7 @@ integer, intent(out)          :: iret
     character(len=8)        :: ldcpac(1)
 !   Équations du système
     integer, parameter      :: nbequa=14
-    real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
+    real(kind=8)            :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax
     integer                 :: nbdecp
 !   Variables internes
     integer,parameter       :: nbvari=9, nbcorr=8, idebut=9
@@ -181,11 +181,9 @@ integer, intent(out)          :: iret
         varpl(ii) = varmo(ii)
     enddo
 !
-!   loi de comportement non-linéaire : récupération du temps + et - , calcul de dt
-    call jevech('PINSTPR', 'L', jtp)
-    call jevech('PINSTMR', 'L', jtm)
-    temps0 = zr(jtm)
-    temps1 = zr(jtp)
+!   Temps + et - , calcul de dt
+    temps0 = for_discret%TempsMoins
+    temps1 = for_discret%TempsPlus
     dtemps = temps1 - temps0
 !   contrôle de rk5 : découpage successif, erreur maximale
     call jevech('PCARCRI', 'L', icarcr)
@@ -236,7 +234,7 @@ integer, intent(out)          :: iret
     if ( for_discret%nno .eq. 2 ) then
 !       Longueur du discret
         xd(1:3)   = xl(1+for_discret%ndim:2*for_discret%ndim) - xl(1:for_discret%ndim)
-        LgDiscret  = xd(1)
+        LgDiscret = xd(1)
         Dist12    = -valre1(6) - valre1(7)
     else
         Dist12 = valre1(8) - valre1(6)
@@ -360,12 +358,11 @@ integer, intent(out)          :: iret
     if ((xjeu<=0.0).and.(nint(varmo(idebut)).eq.0)) then
         y0(4)  = raide(1)*xjeu
     endif
-!   Normalisation des équations, par défaut 1
-    ynorme(:)   = 1.0
+!   Pas de normalisation des équations : on laisse l'algo faire, c'est prévu :)
 !   On intègre
     iret = 0
-    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, dtemps, nbdecp,&
-                errmax, y0, dy0, ldc_dis_contact_frot, resu, iret, ynorme=ynorme)
+    call rk5adp(nbequa, ldcpar, ldcpai, ldcpac, temps0, dtemps, nbdecp, &
+                errmax, y0, dy0, ldc_dis_contact_frot, resu, iret)
 !   resu(1:nbequa)              : variables intégrées
 !   resu(nbequa+1:2*nbequa)     : d(resu)/d(t) a t+dt
     if (iret .ne. 0) goto 999
@@ -380,17 +377,19 @@ integer, intent(out)          :: iret
     xjeu = resu(14)*ldcpai(2) + ldcpar(ijeu)*(1.0 - ldcpai(2))
     if ( resu(1) + xjeu <= 0.0 ) then
         raide(1) = rignor
-        deplac = resu(1) - y0(1)
-        if ( abs(deplac) > r8prem() ) then
-            raide(1) = min( raide(1), abs((resu(4) - y0(4))/deplac) )
-        endif
-        deplac = resu(2) - y0(2)
-        if ( abs(deplac) > r8prem() ) then
-            raide(2) = min( raide(2), abs((resu(5) - y0(5))/deplac) )
-        endif
-        deplac = resu(3) - y0(3)
-        if ( abs(deplac) > r8prem() ) then
-            raide(3) = min( raide(3), abs((resu(6) - y0(6))/deplac) )
+        if ( for_discret%option .ne. 'RAPH_MECA' ) then
+            deplac = resu(1) - y0(1)
+            if ( abs(deplac) > r8prem() ) then
+                raide(1) = min( raide(1), abs((resu(4) - y0(4))/deplac) )
+            endif
+            deplac = resu(2) - y0(2)
+            if ( abs(deplac) > r8prem() ) then
+                raide(2) = min( raide(2), abs((resu(5) - y0(5))/deplac) )
+            endif
+            deplac = resu(3) - y0(3)
+            if ( abs(deplac) > r8prem() ) then
+                raide(3) = min( raide(3), abs((resu(6) - y0(6))/deplac) )
+            endif
         endif
     else
         raide(1) = 0.0
@@ -405,7 +404,7 @@ integer, intent(out)          :: iret
         call jevech('PMATUUR', 'E', imatsym)
         if (for_discret%ndim .eq. 3) then
             call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imatsym))
-        else if (for_discret%ndim .eq. 2) then
+        else
             call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imatsym))
         endif
     endif

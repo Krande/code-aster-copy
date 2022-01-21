@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,19 +16,22 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine disief(nbt, neq, nno, nc, pgl,&
-                  klv, dul, sim, ilogic, duly,&
-                  sip, fono, force, dimele)
-    implicit none
+subroutine discret_sief(for_discret, klv, dul, sim, ilogic, sip, fono, force)
+!
+use te0047_type
+implicit none
+!
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/ut2vlg.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
-    integer :: nbt, neq, ilogic, nno, nc, dimele
-    real(kind=8) :: pgl(3, 3), klv(nbt), dul(neq), sim(neq), duly
-    real(kind=8) :: sip(neq), fono(neq), force(3)
+!
+    type(te0047_dscr), intent(in) :: for_discret
+    integer         :: ilogic
+    real(kind=8)    :: klv(*), dul(*), sim(*)
+    real(kind=8)    :: sip(*), fono(*), force(*)
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
@@ -40,11 +43,6 @@ subroutine disief(nbt, neq, nno, nc, pgl,&
 ! --------------------------------------------------------------------------------------------------
 !
 ! IN
-!       nbt    : nombre de valeurs pour la demi-matrice
-!       neq    : nombre de ddl de l'élément
-!       nno    : nombre de noeuds de l'élément (1 ou 2)
-!       nc     : nombre de ddl par noeud
-!       pgl    : matrice de passage repère global -> local
 !       klv    : matrice de "raideur tangente"
 !       dul    : incrément de déplacement local
 !       sim    : efforts généralisés a l'instant précédent
@@ -56,71 +54,70 @@ subroutine disief(nbt, neq, nno, nc, pgl,&
 !       fono   : forces nodales
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: n, i
-    real(kind=8) :: klc(144), fl(12), zero
+    integer      :: ii, neq
+    real(kind=8) :: klc(144), fl(12)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT( (ilogic.eq.0) .or. (ilogic.eq.2) )
-    zero = 0.d0
+!
+    neq = for_discret%nno*for_discret%nc
 !   demi-matrice klv transformée en matrice pleine klc
-    call vecma(klv, nbt, klc, neq)
+    call vecma(klv, for_discret%nbt, klc, neq)
 !   calcul de fl = klc.dul (incrément d'effort)
     call pmavec('ZERO', neq, klc, dul, fl)
 !   efforts généralisés aux noeuds 1 et 2 (repère local)
 !   on change le signe des efforts sur le premier noeud pour les MECA_DIS_TR_L et MECA_DIS_T_L
-    if (nno .eq. 1) then
-        do i = 1, neq
-            sip(i) = fl(i) + sim(i)
-            fl(i)  = fl(i) + sim(i)
+    if (for_discret%nno .eq. 1) then
+        do ii = 1, neq
+            sip(ii) = fl(ii) + sim(ii)
+            fl(ii)  = fl(ii) + sim(ii)
         enddo
-    elseif (nno.eq.2) then
-        do i = 1, nc
-            sip(i)    = -fl(i)    + sim(i)
-            sip(i+nc) =  fl(i+nc) + sim(i+nc)
-            fl(i)     =  fl(i)    - sim(i)
-            fl(i+nc)  =  fl(i+nc) + sim(i+nc)
+    else if (for_discret%nno.eq.2) then
+        do ii = 1, for_discret%nc
+            sip(ii)                = -fl(ii)    + sim(ii)
+            sip(ii+for_discret%nc) =  fl(ii+for_discret%nc) + sim(ii+for_discret%nc)
+            fl(ii)                 =  fl(ii)    - sim(ii)
+            fl(ii+for_discret%nc)  =  fl(ii+for_discret%nc) + sim(ii+for_discret%nc)
         enddo
     endif
 !
     if (ilogic .eq. 2) then
-        if (nno .eq. 1) then
-            sip(1)   = force(1)
-            sip(2)   = force(2)
-            fl(1)    = force(1)
-            fl(2)    = force(2)
-            if (dimele .eq. 3) then
+        if (for_discret%nno .eq. 1) then
+            sip(1) = force(1)
+            sip(2) = force(2)
+            fl(1)  = force(1)
+            fl(2)  = force(2)
+            if (for_discret%ndim .eq. 3) then
                 fl(3)  = force(3)
                 sip(3) = force(3)
             endif
-        elseif (nno.eq.2) then
-            sip(1)      =  force(1)
-            sip(2)      =  force(2)
-            sip(1+nc)   =  force(1)
-            sip(2+nc)   =  force(2)
-            fl(1)       = -force(1)
-            fl(2)       = -force(2)
-            fl(1+nc)    =  force(1)
-            fl(2+nc)    =  force(2)
-            if (dimele .eq. 3) then
-                sip(3)    =  force(3)
-                sip(3+nc) =  force(3)
-                fl(3)     = -force(3)
-                fl(3+nc)  =  force(3)
+        else if (for_discret%nno.eq.2) then
+            sip(1)                =  force(1)
+            sip(2)                =  force(2)
+            sip(1+for_discret%nc) =  force(1)
+            sip(2+for_discret%nc) =  force(2)
+            fl(1)                 = -force(1)
+            fl(2)                 = -force(2)
+            fl(1+for_discret%nc)  =  force(1)
+            fl(2+for_discret%nc)  =  force(2)
+            if (for_discret%ndim .eq. 3) then
+                sip(3)                =  force(3)
+                sip(3+for_discret%nc) =  force(3)
+                fl(3)                 = -force(3)
+                fl(3+for_discret%nc)  =  force(3)
             endif
         endif
         if (abs(force(1)) .lt. r8prem()) then
-            do n = 1, neq
-                fl(n)  = zero
-                sip(n) = zero
-            enddo
+            fl(1:neq)  = 0.0
+            sip(1:neq) = 0.0
         endif
     endif
 !
 !   forces nodales aux noeuds 1 et 2 (repère global)
-    if (nc .ne. 2) then
-        call utpvlg(nno, nc, pgl, fl, fono)
+    if (for_discret%ndim .eq. 3) then
+        call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, fono)
     else
-        call ut2vlg(nno, nc, pgl, fl, fono)
+        call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, fono)
     endif
 end subroutine

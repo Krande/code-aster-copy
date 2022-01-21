@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,21 +17,20 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: Georges-cc.devesa at edf.fr
+# person_in_charge: jean-luc.flejou at edf.fr
 
 from .cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'DIS_CHOC',
     lc_type        = ('MECANIQUE',),
-    doc            =   """Relation de comportement de contact-frottement avec choc des elements discrets"""              ,
+    doc            =  """Relation de comportement de choc avec frottement pour les elements discrets"""              ,
     num_lc         = 0,
-    nb_vari        = 8,
-    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5',
-        'DIS6','DIS7','DIS8',),
+    nb_vari        = 9,
+    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5','DIS6','DIS7','DIS8','DIS9'),
     mc_mater       = None,
     modelisation   = ('DIS_T','DIS_TR','2D_DIS_T','2D_DIS_TR',),
-    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    deformation    = ('PETIT',),
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,

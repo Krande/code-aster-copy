@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: jean-luc.flejou at edf.fr
 !
-subroutine dicho0(for_discret, iret)
+subroutine dis_choc_frot(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -32,10 +31,12 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/dichoc.h"
+#include "asterfort/dis_choc_frot_syme.h"
+#include "asterfort/dis_choc_frot_nosyme.h"
 #include "asterfort/infdis.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
+#include "asterfort/rcvala.h"
 #include "asterfort/tecach.h"
 #include "asterfort/ut2mgl.h"
 #include "asterfort/ut2mlg.h"
@@ -43,6 +44,7 @@ implicit none
 #include "asterfort/ut2vlg.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/utpslg.h"
+#include "asterfort/utpnlg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
@@ -51,21 +53,29 @@ implicit none
 type(te0047_dscr), intent(in) :: for_discret
 integer, intent(out)          :: iret
 !
+! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ii, jinst, ivitp, idepen, iviten, neq, igeom, ivarip
-    integer :: iretlc, ifono
-    integer :: icontm, icontp
+    integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip, fdnc
+    integer :: iretlc, ifono, icontm, icontp
 !
-    real(kind=8)    :: klv(78), varmo(8), varpl(8)
-    real(kind=8)    :: force(3)
-    real(kind=8)    :: klc(144), fl(12), dvl(12), dpe(12), dve(12), ulp(12)
+!   Les variables internes
+    integer, parameter  :: nbvari=9
+    real(kind=8)        :: varmo(nbvari), varpl(nbvari)
 !
-    real(kind=8)        :: r8bid, duly
-    character(len=8)    :: k8bid
+    real(kind=8) :: dvl(12), dpe(12), dve(12), ulp(12), fl(12), force(3)
+    real(kind=8) :: klc(144), klv(78)
+!
+    real(kind=8)     :: r8bid
+    character(len=8) :: k8bid
+!
+    real(kind=8) :: valre1(1)
+    integer      :: codre1(1)
+!
+    aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique
+!
 ! --------------------------------------------------------------------------------------------------
 !
-    iret = 0
 !   paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
     call jevech('PGEOMER', 'L', igeom)
@@ -77,7 +87,7 @@ integer, intent(out)          :: iret
     if (irep .eq. 1) then
         if (for_discret%ndim .eq. 3) then
             call utpsgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
-        else if (for_discret%ndim.eq.2) then
+        else
             call ut2mgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(jdc), klv)
         endif
     else
@@ -86,29 +96,30 @@ integer, intent(out)          :: iret
     call jevech('PMATERC', 'L', imat)
     call jevech('PVARIMR', 'L', ivarim)
 !
-    do ii = 1, 8
+    do ii = 1, nbvari
         varmo(ii) = zr(ivarim+ii-1)
-        varpl(ii) = 0.
+        varpl(ii) = varmo(ii)
     enddo
-!
-    call jevech('PINSTPR', 'L', jinst)
 !
     call tecach('ONO', 'PVITPLU', 'L', iretlc, iad=ivitp)
     if (iretlc .eq. 0) then
+        IsDynamique = ASTER_TRUE
         if (for_discret%ndim .eq. 3) then
             call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(ivitp), dvl)
-        else if (for_discret%ndim.eq.2) then
+        else
             call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(ivitp), dvl)
         endif
     else
-        dvl(:)    = 0.0
+        IsDynamique = ASTER_FALSE
+        dvl(:) = 0
     endif
+    IsStatique  = .not. IsDynamique
 !
     call tecach('ONO', 'PDEPENT', 'L', iretlc, iad=idepen)
     if (iretlc .eq. 0) then
         if (for_discret%ndim .eq. 3) then
             call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
-        else if (for_discret%ndim.eq.2) then
+        else
             call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(idepen), dpe)
         endif
     else
@@ -119,35 +130,67 @@ integer, intent(out)          :: iret
     if (iretlc .eq. 0) then
         if (for_discret%ndim .eq. 3) then
             call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(iviten), dve)
-        else if (for_discret%ndim.eq.2) then
+        else
             call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, zr(iviten), dve)
         endif
     else
         dve(:) = 0.d0
     endif
-!
-    neq = for_discret%nno*for_discret%nc
+    !
     ulp(:) = for_discret%ulm(:) + for_discret%dul(:)
-!   relation de comportement de choc
-    call dichoc(for_discret%nbt, neq, for_discret%nno, for_discret%nc, zi(imat),&
-                for_discret%dul, ulp, zr(igeom), for_discret%pgl, klv,&
-                duly, dvl, dpe, dve, force,&
-                varmo, varpl, for_discret%ndim)
-!   actualisation de la matrice tangente
-    if (for_discret%lMatr) then
-        call jevech('PMATUUR', 'E', imat)
-        if (for_discret%ndim .eq. 3) then
-            call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
-        else if (for_discret%ndim.eq.2) then
-            call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
+    !
+    ! Traitement du cas coulomb=0
+    IsCoulomb = ASTER_FALSE
+    call rcvala(zi(imat), ' ', 'DIS_CONTACT', 0, ' ', [0.0d0], &
+                1, ['COULOMB'], valre1, codre1, 0, nan='NON')
+    ! Coulomb existe et >0
+    if ( codre1(1).eq.0 ) then
+        if ( valre1(1).gt.r8prem() ) then
+            IsCoulomb = ASTER_TRUE
         endif
     endif
-    !
+!
+    okelem = (for_discret%ndim .eq. 3)
+    okelem = okelem .and. ((for_discret%nomte.eq.'MECA_DIS_T_N') .or. &
+                           (for_discret%nomte.eq.'MECA_DIS_T_L') )
+!   Relation de comportement de choc
+    if ( IsCoulomb .and. IsStatique .and. okelem ) then
+        IsSymetrique = ASTER_FALSE
+        call dis_choc_frot_nosyme(for_discret, zi(imat), ulp, zr(igeom), klv, &
+                                  varmo, force, varpl)
+    else
+        IsSymetrique = ASTER_TRUE
+        call dis_choc_frot_syme(for_discret, zi(imat), ulp, zr(igeom), klv, &
+                                dvl, dpe, dve, force, varmo, varpl)
+    endif
+!   actualisation de la matrice tangente
+    if ( for_discret%lMatr ) then
+        if (IsSymetrique) then
+            call jevech('PMATUUR', 'E', imat)
+            if (for_discret%ndim .eq. 3) then
+                call utpslg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
+            else
+                call ut2mlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
+            endif
+        else
+            call jevech('PMATUNS', 'E', imat)
+            call utpnlg(for_discret%nno, for_discret%ndim, for_discret%pgl, klv, zr(imat))
+        endif
+    endif
+!
+    neq  = for_discret%nno*for_discret%nc
+    fdnc = for_discret%nc
+!   calcul des efforts généralisés, des forces nodales et des variables internes
     if ( for_discret%lVect .or. for_discret%lSigm ) then
-        ! demi-matrice klv transformée en matrice pleine klc
-        call vecma(klv, for_discret%nbt, klc, neq)
-        ! calcul de fl = klc.dul (incrément d'effort)
-        call pmavec('ZERO', neq, klc, for_discret%dul, fl)
+        if (IsSymetrique) then
+!           Demi-matrice klv (triangulaire supérieure) transformée en matrice pleine klc
+            call vecma(klv, for_discret%nbt, klc, neq)
+!           Calcul de fl = klc.dul (for_discret%incrément d'effort)
+            call pmavec('ZERO', neq, klc, for_discret%dul, fl)
+        else
+!           klv est déjà la matrice pleine
+            call pmavec('ZERO', neq, klv, for_discret%dul, fl)
+        endif
     endif
 !   calcul des efforts généralisés
     if ( for_discret%lSigm ) then
@@ -158,10 +201,9 @@ integer, intent(out)          :: iret
                 zr(icontp-1+ii) = fl(ii) + zr(icontm-1+ii)
             enddo
         else if (for_discret%nno.eq.2) then
-            do ii = 1, for_discret%nc
-                zr(icontp-1+ii)                = -fl(ii) + zr(icontm-1+ii)
-                zr(icontp-1+ii+for_discret%nc) =  fl(ii+for_discret%nc) + &
-                                                  zr(icontm-1+ii+for_discret%nc)
+            do ii = 1, fdnc
+                zr(icontp-1+ii)      = -fl(ii)      + zr(icontm-1+ii)
+                zr(icontp-1+ii+fdnc) =  fl(ii+fdnc) + zr(icontm-1+ii+fdnc)
             enddo
         endif
         if (for_discret%nno .eq. 1) then
@@ -171,15 +213,16 @@ integer, intent(out)          :: iret
                 zr(icontp-1+3) = force(3)
             endif
         else if (for_discret%nno.eq.2) then
-            zr(icontp-1+1)                = force(1)
-            zr(icontp-1+1+for_discret%nc) = force(1)
-            zr(icontp-1+2)                = force(2)
-            zr(icontp-1+2+for_discret%nc) = force(2)
+            zr(icontp-1+1)      = force(1)
+            zr(icontp-1+1+fdnc) = force(1)
+            zr(icontp-1+2)      = force(2)
+            zr(icontp-1+2+fdnc) = force(2)
             if (for_discret%ndim .eq. 3) then
-                zr(icontp-1+3)               = force(3)
-                zr(icontp-1+3+for_discret%nc) = force(3)
+                zr(icontp-1+3)      = force(3)
+                zr(icontp-1+3+fdnc) = force(3)
             endif
         endif
+!       Si force de contact petite ==> Tout est nul
         if (abs(force(1)) .lt. r8prem()) then
             do ii = 1, neq
                 zr(icontp-1+ii) = 0.0d0
@@ -195,10 +238,9 @@ integer, intent(out)          :: iret
                 fl(ii) = fl(ii) + zr(icontm-1+ii)
             enddo
         else if (for_discret%nno.eq.2) then
-            do ii = 1, for_discret%nc
-                fl(ii)                = fl(ii) - zr(icontm-1+ii)
-                fl(ii+for_discret%nc) = fl(ii+for_discret%nc) + &
-                                        zr(icontm-1+ii+for_discret%nc)
+            do ii = 1, fdnc
+                fl(ii)      = fl(ii)      - zr(icontm-1+ii)
+                fl(ii+fdnc) = fl(ii+fdnc) + zr(icontm-1+ii+fdnc)
             enddo
         endif
         if (for_discret%nno .eq. 1) then
@@ -208,33 +250,33 @@ integer, intent(out)          :: iret
                 fl(3) = force(3)
             endif
         else if (for_discret%nno.eq.2) then
-            fl(1)                = -force(1)
-            fl(1+for_discret%nc) = force(1)
-            fl(2)                = -force(2)
-            fl(2+for_discret%nc) = force(2)
+            fl(1)      = -force(1)
+            fl(1+fdnc) =  force(1)
+            fl(2)      = -force(2)
+            fl(2+fdnc) =  force(2)
             if (for_discret%ndim .eq. 3) then
-                fl(3)                = -force(3)
-                fl(3+for_discret%nc) =  force(3)
+                fl(3)      = -force(3)
+                fl(3+fdnc) =  force(3)
             endif
         endif
+!       Si force de contact petite ==> Tout est nul
         if (abs(force(1)) .lt. r8prem()) then
-            do ii = 1, neq
-                fl(ii) = 0.0d0
-            enddo
+            fl(1:neq) = 0.0d0
         endif
 !       forces nodales aux noeuds 1 et 2 (repère global)
-        if (for_discret%nc .ne. 2) then
+        if (for_discret%ndim .eq. 3) then
             call utpvlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         else
             call ut2vlg(for_discret%nno, for_discret%nc, for_discret%pgl, fl, zr(ifono))
         endif
     endif
-    ! mise à jour des variables internes
-    if (for_discret%lVari) then
+!
+!   Mise à jour des variables internes
+    if ( for_discret%lVari ) then
         call jevech('PVARIPR', 'E', ivarip)
-        do ii = 1, 8
+        do ii = 1, nbvari
             zr(ivarip+ii-1) = varpl(ii)
-            if (for_discret%nno .eq. 2) zr(ivarip+ii+7) = varpl(ii)
+            if (for_discret%nno .eq. 2) zr(ivarip+ii-1+nbvari) = varpl(ii)
         enddo
     endif
 end subroutine
