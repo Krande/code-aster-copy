@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/vecsum.h"
+#include "MeshTypes_type.h"
 !
     character(len=*) :: cnsz, cesz, base, cesmoz, typces, mnogaz
 ! ------------------------------------------------------------------
@@ -80,14 +82,15 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     integer :: ima, ncmp, icmp,  jcnsl
     integer :: jcesd,  jcesl, nbma, iret, nbsp, nbno, ico
     integer :: iad,  nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
-    integer ::   ilcnx1,  nbpg, ipg, imaref
-    integer :: mnogal, mnogad
+    integer :: ilcnx1,  nbpg, ipg, imaref, sz
+    integer :: mnogal, mnogad, summode
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: ces, cesmod, cns, mnoga
     real(kind=8) :: v, v1
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: nmnogav(:) => null()
+    real(kind=8) :: livr(MT_NNOMAX)
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
@@ -103,6 +106,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     ces = cesz
     cesmod = cesmoz
     cns = cnsz
+    livr(:) = 0.d0
+    summode = 1
 !
 !
 !   1- Recuperation d'informations dans cns :
@@ -195,14 +200,18 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
 !         -- CALCUL DE LA MOYENNE ARITHMETIQUE :
                 v = 0.d0
+                sz = 1
                 do ino = 1, nbno
                     nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) then
-                        v = v + cnsv((nuno-1)*ncmp+icmp)
+                       livr(sz) = cnsv((nuno-1)*ncmp+icmp)
+                       sz = sz+1
                     endif
                 end do
+!                 
+                call vecsum(livr, sz, summode, v)
+!                 
                 v = v/nbno
-!
 !
                 do ipt = 1, nbpt
                     do isp = 1, nbsp
@@ -297,15 +306,17 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                 if (ico .ne. nbno) goto 200
 !
                 do ipg = 1, nbpg
-                    v = 0.d0
-                    do ino = 1, nbno
-                        nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
-                        v1 = cnsv((nuno-1)*ncmp+icmp)
-                        v = v + v1*nmnogav(iad+1+nbno* (ipg-1)+ ino)
-                    end do
+                   v = 0.d0
+                   do ino = 1, nbno
+                      nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
+                      v1 = cnsv((nuno-1)*ncmp+icmp)
+                      livr(ino) = v1*nmnogav(iad+1+nbno* (ipg-1)+ ino)
+                   enddo
 !
-                    do isp = 1, nbsp
-                        call cesexi('C', jcesd, jcesl, ima, ipg,&
+                   call vecsum(livr, nbno, summode, v)
+!
+                   do isp = 1, nbsp
+                      call cesexi('C', jcesd, jcesl, ima, ipg,&
                                     isp, icmp, iad1)
                         ASSERT(iad1.lt.0)
                         zl(jcesl-1-iad1) = .true.
