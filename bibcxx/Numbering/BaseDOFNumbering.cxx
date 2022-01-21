@@ -30,8 +30,8 @@
 BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type )
     : DataStructure( name, 14, type ),
       _nameOfSolverDataStructure( JeveuxVectorChar24( getName() + ".NSLV" ) ),
-      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
       _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
+      _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
       _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
       _model( ModelPtr( nullptr ) ),
       _listOfLoads( new ListOfLoads() ),

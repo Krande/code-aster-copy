@@ -241,10 +241,10 @@ class BaseDOFNumbering : public DataStructure {
     // !!! Classe succinte car on ne sait pas comment elle sera utiliser !!!
     /** @brief Objet Jeveux '.NSLV' */
     JeveuxVectorChar24 _nameOfSolverDataStructure;
-    /** @brief Objet '.NUME' */
-    GlobalEquationNumberingPtr _globalNumbering;
     /** @brief Objet prof_chno */
     FieldOnNodesDescriptionPtr _dofDescription;
+    /** @brief Objet '.NUME' */
+    GlobalEquationNumberingPtr _globalNumbering;
     /** @brief Objet '.NUML' */
     LocalEquationNumberingPtr _localNumbering;
     /** @brief Modele */
