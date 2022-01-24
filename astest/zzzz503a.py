@@ -186,7 +186,7 @@ test.assertAlmostEqual(resu2.getValue(6, 0), 0.000757555469653289 / 10.)
 
 # To be sure that vcine is Permanent #30689
 libaster.deleteTemporaryObjects()
-test.assertTrue(vcine.updateValuePointers())
+vcine.updateValuePointers()
 
 # check other solvers attributes
 test.assertEqual(monSolver.getSolverName(), "MUMPS")
