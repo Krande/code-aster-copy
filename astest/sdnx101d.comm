@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -347,6 +347,7 @@ CALC_MISS(
         ALGO = 'DEPL',
         OFFSET_MAX=60,
         OFFSET_NB=300,
+        TYPE='BINAIRE',
     ),
 )
 
@@ -354,7 +355,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=25,)
 
 NDDLGE2 = NUME_DDL_GENE( BASE= BAMO2, STOCKAGE= 'PLEIN',)
 
-MATI = LIRE_IMPE_MISS(UNITE_RESU_IMPE=25, FREQ_EXTR=3.0,
+MATI = LIRE_IMPE_MISS(UNITE_RESU_IMPE=25, FREQ_EXTR=3.0, TYPE='BINAIRE',
                       BASE=BAMO2, NUME_DDL_GENE=NDDLGE2)
 
 MAEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
@@ -523,7 +524,7 @@ TEST_RESU(RESU=(
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
                    RESULTAT=MODEB,
-                   VALE_CALC=6.59540,
+                   VALE_CALC=6.5954006,
                    ),
                 ),
           )
@@ -556,7 +557,7 @@ TEST_RESU(RESU=(
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
                    RESULTAT=MODEBH,
-                   VALE_CALC=6.629256,
+                   VALE_CALC=6.6292528,
                    ),
                 ),
           )
@@ -575,7 +576,7 @@ TEST_RESU(RESU=(
                 _F(NUME_ORDRE=5,
                    PARA='AMOR_REDUIT',
                    RESULTAT=MODEBH,
-                   VALE_CALC=0.02029808,
+                   VALE_CALC=0.02029805,
                    ),
                 ),
           )
