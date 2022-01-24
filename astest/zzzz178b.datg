@@ -1,0 +1,53 @@
+//================================================
+//    Maillage du croisement
+//
+//    Utilisation :
+//    gmsh -3 -format med -o zzzz178b.mmed zzzz178b.datg
+//================================================
+
+Mesh.ElementOrder = 2;
+Mesh.SecondOrderIncomplete = 1;
+
+Point(1) = {0, 0, 0, 1};
+Point(2) = {1, 0, 0, 1};
+Line (1) = {1, 2};
+
+Nb_Elem=4;
+
+Transfinite Line{1} = Nb_Elem+1;
+
+
+Extrude {0,1,0} {
+  Line{1}; Layers{Nb_Elem};Recombine;
+}
+
+//+
+Extrude {1, 0, 0} {
+  Curve{4}; Layers {Nb_Elem}; Recombine;
+}
+//+
+Extrude {1, 0, 0} {
+  Curve{6}; Layers {Nb_Elem}; Recombine;
+}
+//+
+Extrude {0, -1, 0} {
+  Curve{7}; Layers {Nb_Elem}; Recombine;
+}
+//+
+Extrude {0, 1, 0} {
+  Curve{8}; Layers {Nb_Elem}; Recombine;
+}
+//+
+Extrude {0, 0, 1} {
+  Surface{21}; Surface{5}; Surface{9}; Surface{13}; Surface{17}; Layers {Nb_Elem}; Recombine;
+}
+//+
+Physical Surface("L1") = {64};
+//+
+Physical Surface("L2") = {104};
+//+
+Physical Surface("L3") = {126};
+//+
+Physical Surface("L4") = {38};
+//+
+Physical Volume("Volume") = {2, 3, 1, 4, 5};

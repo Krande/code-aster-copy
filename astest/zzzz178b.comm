@@ -1,0 +1,166 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+from code_aster import MPI
+import code_aster
+from code_aster.Utilities import shared_tmpdir
+from code_aster.Commands import *
+import os.path as osp
+
+test = code_aster.TestCase()
+
+code_aster.init("--test")
+
+rank = MPI.COMM_WORLD.Get_rank()
+nbproc = MPI.COMM_WORLD.Get_size()
+
+# Read the quadratic mesh - 2 cases : 1 or several procs
+if (nbproc > 1):
+    MQ = code_aster.ParallelMesh()
+    MQ.readMedFile('zzzz178b/{}.med'.format(rank), True)
+else:
+    MQ = code_aster.Mesh()
+    MQ.readMedFile('zzzz178b.mmed')
+    test.assertTrue(MQ.isQuadratic())
+
+# Create the linear mesh
+ML = CREA_MAILLAGE(MAILLAGE=MQ,
+                QUAD_LINE=_F(TOUT='OUI',),
+                INFO=1,)
+
+# Check the orientation of the boundary
+ML = MODI_MAILLAGE(reuse=ML,
+                   MAILLAGE=ML,
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='L1',),)
+
+MQ = MODI_MAILLAGE(reuse=MQ,
+                   MAILLAGE=MQ,
+                   ORIE_PEAU=_F(GROUP_MA_PEAU='L2',),)
+
+# Assign thermal model on linear model
+MODE_TL = AFFE_MODELE(MAILLAGE=ML,
+                      AFFE=_F(TOUT='OUI', MODELISATION='3D',
+                              PHENOMENE='THERMIQUE',),)
+
+# Assign thermal model on quadratic model (to be used in the projection)
+MODE_TQ = AFFE_MODELE(MAILLAGE=MQ,
+                      AFFE=_F(TOUT='OUI', MODELISATION='3D',
+                              PHENOMENE='THERMIQUE',),)
+
+
+# Assign Mechanical model
+MODE_MQ = AFFE_MODELE(MAILLAGE=MQ,
+                      AFFE=_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),)
+
+# Assign thermal loading
+CLIMT = AFFE_CHAR_THER(MODELE=MODE_TL,
+                       FLUX_REP=(_F(GROUP_MA='L1', FLUN=-400,),),
+                       )
+
+# Assign thermal Dirichlet BC
+BLOQT = AFFE_CHAR_CINE(MODELE=MODE_TL,
+                       THER_IMPO=_F(GROUP_MA='L2', TEMP=10,))
+
+# BLOQT = AFFE_CHAR_THER(MODELE=MODE_TL,
+#                           TEMP_IMPO=_F(GROUP_MA='L2', TEMP=10,),  # make the code crash
+#                        )
+
+# Define the thermal material
+ACIER_T = DEFI_MATERIAU(THER=_F(LAMBDA=33.5, RHO_CP=526.E4))
+
+# Assign the thermal material
+MATE_T = AFFE_MATERIAU(MAILLAGE=ML,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER_T,),)
+
+# Define the mechanical material
+ACIER_M = DEFI_MATERIAU(ELAS=_F(E=2.E+12, NU=0.3E+00,
+                                RHO=1.E+03, ALPHA=1.e-4)
+                        )
+
+# Assign mechanical Dirichlet BC
+DIRI = AFFE_CHAR_CINE(MODELE=MODE_MQ,
+                      MECA_IMPO=(_F(GROUP_MA='L1',
+                                    DX=0, DY=0.0, DZ=0.0),
+                                 ),
+                      )
+
+# Assign mechanical loading
+CHAR = AFFE_CHAR_MECA(MODELE=MODE_MQ,
+                      PRES_REP=_F(GROUP_MA='L2',
+                                  PRES=-100.0,),)
+
+# Solve the thermal problem
+TEMP = THER_LINEAIRE(MODELE=MODE_TL,
+                     CHAM_MATER=MATE_T,
+                     EXCIT=(_F(CHARGE=CLIMT,),
+                            _F(CHARGE=BLOQT,),),
+                     INFO=1,
+                     )
+
+# Extract the field from the result
+temp = TEMP.getField('TEMP', 0)
+
+# Project the field from the linear to the quadratic thermal model
+TEMP2 = PROJ_CHAMP(METHODE='COLLOCATION',
+                   RESULTAT=TEMP,
+                   MODELE_1=MODE_TL,
+                   MODELE_2=MODE_TQ,
+                   )
+
+# Validate the result
+temp2 = TEMP2.getField('TEMP', 0)
+test.assertAlmostEqual(temp2.norm("NORM_INFINITY"), temp.norm("NORM_INFINITY"))
+
+test.assertAlmostEqual(temp2.norm("NORM_2"), 412.46150094775635)
+
+# Assign the mechanical material with the thermal field
+MATE_M = AFFE_MATERIAU(MAILLAGE=MQ,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER_M,),
+                       AFFE_VARC=_F(TOUT='OUI', EVOL=TEMP2, VALE_REF=0.,
+                                    NOM_VARC='TEMP', NOM_CHAM='TEMP',),
+                       )
+
+# Solve the mechanical problem
+RESU = MECA_STATIQUE(MODELE=MODE_MQ,
+                     CHAM_MATER=MATE_M,
+                     EXCIT=(_F(CHARGE=CHAR,),
+                            _F(CHARGE=DIRI,),)
+                     )
+
+# Extract the field from the result
+displ = RESU.getField('DEPL', 1)
+
+with shared_tmpdir("foo") as tmpdir:
+    DEFI_FICHIER(UNITE=87, FICHIER=osp.join(tmpdir, "resu_{}.med".format(rank)), TYPE="BINARY",)
+    IMPR_RESU(FORMAT="MED", UNITE=87,
+              RESU=_F(RESULTAT=RESU,),)
+    DEFI_FICHIER(ACTION="LIBERER", UNITE=87)
+
+# Validate the result againt sequential run
+# norm = displ.norm("NORM_2")
+norm = 0.10070829146943601
+test.assertAlmostEqual(displ.norm("NORM_2"), norm)
+
+test.printSummary()
+
+code_aster.close()
