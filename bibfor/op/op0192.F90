@@ -306,7 +306,7 @@ implicit none
                     fieldQuantity, entityType, cmpNb, cmpAstName, cmpMedName,&
                     prolz, iinst, numpt, numord, inst,&
                     storeCrit, storeEpsi, fileUnit, option, param,&
-                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), codret)
+                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), codret, 'V')
 !
         call copisd('CHAMP_GD', 'G', fieldNameTemp, fieldNameAst)
         if (fieldSupport(1:2) .eq. 'NO') then

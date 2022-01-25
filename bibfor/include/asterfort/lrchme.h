@@ -23,7 +23,7 @@ interface
                       cmpNb       , cmpAstName   , cmpMedName,&
                       prolz, iinst, numpt, numord, inst,&
                       storeCrit, storeEpsi, fileUnit, option, param,&
-                      nbpgma, nbpgmm, nbspmm, codret)
+                      nbpgma, nbpgmm, nbspmm, codret, base)
         character(len=19) :: fieldNameAst
         character(len=*) :: cmpAstName, cmpMedName
         character(len=8) :: meshAst
@@ -40,5 +40,6 @@ interface
         integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
         real(kind=8) :: inst
         real(kind=8) :: storeEpsi
+        character(len=1), optional, intent(in) :: base
     end subroutine lrchme
 end interface

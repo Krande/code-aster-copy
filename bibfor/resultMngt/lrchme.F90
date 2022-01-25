@@ -22,7 +22,7 @@ subroutine lrchme(fieldNameAst, fieldNameMed ,&
                   cmpNb       , cmpAstName   , cmpMedName,&
                   prolz, iinst, numpt, numord, inst,&
                   storeCrit, storeEpsi, fileUnit, option, param,&
-                  nbpgma, nbpgmm, nbspmm, codret)
+                  nbpgma, nbpgmm, nbspmm, codret, base)
 !
 implicit none
 !
@@ -47,6 +47,7 @@ integer :: iinst, numpt, numord
 integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
 real(kind=8) :: inst
 real(kind=8) :: storeEpsi
+character(len=1), optional, intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,14 +88,20 @@ real(kind=8) :: storeEpsi
 !
     character(len=8) :: nommod
     integer :: iaux
+    character(len=1) :: bas2
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    if (.not. present(base)) then
+        bas2 = 'G'
+    else
+        bas2 = base
+    endif
     if (fieldSupport(1:2) .eq. 'NO') then
         call lrcnme(fieldNameAst, fieldNameMed, meshMed, meshAst, fieldQuantity,&
                     entityType, cmpNb, cmpAstName, cmpMedName, iinst,&
                     numpt, numord, inst, storeCrit, storeEpsi,&
-                    fileUnit, codret)
+                    fileUnit, codret, bas2)
     else if (fieldSupport(1:2).eq.'EL'.or.fieldSupport(1:2).eq.'CA') then
         call getvid(' ', 'MODELE', scal=nommod, nbret=iaux)
         if (iaux .eq. 0 .and. fieldSupport(1:4) .ne. 'CART') then

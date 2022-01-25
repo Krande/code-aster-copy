@@ -22,7 +22,7 @@ interface
     subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
                       typent, nbcmpv, ncmpva, ncmpvm, iinst,&
                       numpt, numord, inst, crit, prec,&
-                      nrofic, codret)
+                      nrofic, codret, base)
         character(len=*) :: chanom
         character(len=*) :: nochmd
         character(len=*) :: nomamd
@@ -40,5 +40,6 @@ interface
         real(kind=8) :: prec
         integer :: nrofic
         integer :: codret
+        character(len=1), optional, intent(in) :: base
     end subroutine lrcnme
 end interface

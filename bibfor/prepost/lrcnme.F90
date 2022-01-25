@@ -19,7 +19,7 @@
 subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
                   typent, nbcmpv, ncmpva, ncmpvm, iinst,&
                   numpt, numord, inst, crit, prec,&
-                  nrofic, codret)
+                  nrofic, codret, base)
 !_____________________________________________________________________
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -88,6 +88,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     integer :: nbcmpv
     integer :: iinst, numpt, numord
     integer :: codret
+    character(len=1), optional, intent(in) :: base
 !
     real(kind=8) :: inst
     real(kind=8) :: prec
@@ -117,12 +118,19 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     character(len=200) :: nofimd
     character(len=255) :: kfic
     aster_logical :: ttt
+    character(len=1) :: bas2
 !
 !====
 ! 1. ALLOCATION D'UN CHAM_NO_S  (CHAMNS)
 !====
 !
     call jemarq()
+    if (.not. present(base)) then
+        bas2 = 'G'
+    else
+        bas2 = base
+    endif
+
 ! 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 !
     call jenonu(jexnom ( '&CATA.GD.NOMGD', nomgd ), iaux)
@@ -209,7 +217,7 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
 !
     chamn = chanom
 !
-    call cnscno(chamns, ' ', 'NON', 'G', chamn,&
+    call cnscno(chamns, ' ', 'NON', bas2, chamn,&
                 'F', ibid)
 !
     call detrsd('CHAM_NO_S', chamns)
