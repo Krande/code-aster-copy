@@ -229,6 +229,8 @@ class SimpleFieldOnNodes : public DataStructure {
 
         _nbNodes = ( *_size )[0];
         _nbComp = ( *_size )[1];
+        if ( _values->size() != _nbNodes * _nbComp )
+          throw std::runtime_error( "Programming error" );
     };
 };
 
