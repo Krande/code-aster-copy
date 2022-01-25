@@ -115,6 +115,18 @@ class XfemCrack : public DataStructure, public ListOfTables {
     JeveuxVectorLong _heavisideCells;
     /** @brief JeveuxVectorLong  named '.MAILFISS.HECT' */
     JeveuxVectorLong _crackTipAndHeavisideCells;
+    /** @brief Field defining the status nodes */
+    FieldOnNodesLongPtr _nodeStatusField;
+    /** @brief JeveuxVectorLong  named '.MAILFISS.MAFOND' */
+    JeveuxVectorLong _crackTipCellGroup;
+    /** @brief JeveuxVectorLong  named '.GROUP_MA_ENRI' */
+    JeveuxVectorLong _enrichedCellGroup;
+    /** @brief JeveuxVectorChar8 named '.MAILLAGE' */
+    JeveuxVectorChar8 _meshName;
+    /** @brief JeveuxVectorChar8 named '.INFO' */
+    JeveuxVectorChar16 _info;
+    /** @brief JeveuxVectorLong  named '.NOFACPTFON' */
+    JeveuxVectorLong _crackTipNodeFacesField;
 
   public:
     /**

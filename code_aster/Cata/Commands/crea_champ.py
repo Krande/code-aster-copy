@@ -202,7 +202,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 
              b_extr_fissure  = BLOC(condition = """exists("FISSURE")""",
                  NOM_CHAM=SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("LTNO","LNNO",
-                               "GRLTNO","GRLNNO","STNO","STNOR","BASLOC","GRI.LNNO","GRI.LTNO","GRI.GRLNNO","GRI.GRLTNO")),
+                               "GRLTNO","GRLNNO","STNO","BASLOC","GRI.LNNO","GRI.LTNO","GRI.GRLNNO","GRI.GRLTNO")),
 
              ),
 

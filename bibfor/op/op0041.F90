@@ -528,9 +528,9 @@ subroutine op0041()
 !
 ! --- CREATION DU CHAM_NO POUR LA VISUALISATION
 !
-    stnor = fiss(1:8)//'.STNOR'
-    call cnscno(cnsenr, ' ', 'NON', 'G', stnor,&
-                'F', ibid)
+!    stnor = fiss(1:8)//'.STNOR'
+!    call cnscno(cnsenr, ' ', 'NON', 'G', stnor,&
+!                'F', ibid)
 !
 !-----------------------------------------------------------------------
 !     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE

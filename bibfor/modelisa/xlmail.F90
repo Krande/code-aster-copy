@@ -136,14 +136,14 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                     zr(jfo-1+4*(i-1)+k) = zr(jfon-1+4*(i-1)+k)
 850             continue
 860         continue
-!
+
             call wkvect(xnofaf, 'G V I', 4*nfon, jnf)
             do i = 1, nfon
                 do k = 1, 4
                     zi(jnf-1+4*(i-1)+k) = zi(jnofaf-1+4*(i-1)+k)
                 enddo
             enddo
-!
+
             call wkvect(xbasfo, 'G V R', 2*ndim*nfon, jba)
             do 940 i = 1, nfon
                 do 950 k = 1, ndim

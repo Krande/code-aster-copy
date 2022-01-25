@@ -1053,8 +1053,8 @@ subroutine op0010()
                 cnsen, cnsenr, ndim, fiss, goinop,&
                 lismae, lisnoe, operation_opt=operation)
 !
-    call cnscno(cnsenr, ' ', 'NON', 'G', fiss//'.STNOR',&
-                'F', ibid)
+!    call cnscno(cnsenr, ' ', 'NON', 'G', fiss//'.STNOR',&
+!                'F', ibid)
     call cnscno(cnsen, ' ', 'NON', 'G', fiss//'.STNO',&
                 'F', ibid)
 !

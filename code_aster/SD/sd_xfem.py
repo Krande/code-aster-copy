@@ -63,7 +63,6 @@ class sd_fiss_xfem(AsBase):
     GROUP_MA_ENRI = AsVI()
     GROUP_NO_ENRI = AsVI()
     STNO = sd_cham_no()
-    STNOR = sd_cham_no()
 
     MAILFISS_CTIP = Facultatif(AsVI(SDNom(nomj='.MAILFISS.CTIP')))
     MAILFISS_HEAV = Facultatif(AsVI(SDNom(nomj='.MAILFISS.HEAV')))

@@ -54,7 +54,13 @@ XfemCrack::XfemCrack( const std::string name, MeshPtr mesh )
       _enrichedNodes( JeveuxVectorLong( getName() + ".GROUP_NO_ENRI" ) ),
       _crackTipCells( JeveuxVectorLong( getName() + ".MAILFISS.CTIP" ) ),
       _heavisideCells( JeveuxVectorLong( getName() + ".MAILFISS.HEAV" ) ),
-      _crackTipAndHeavisideCells( JeveuxVectorLong( getName() + ".MAILFISS.HECT" ) ){};
+      _crackTipAndHeavisideCells( JeveuxVectorLong( getName() + ".MAILFISS.HECT" ) ),
+      _nodeStatusField( new FieldOnNodesLong( getName() + ".STNO" ) ),
+      _crackTipCellGroup( JeveuxVectorLong( getName() + ".MAILFISS.MAFOND" ) ),
+      _enrichedCellGroup( JeveuxVectorLong( getName() + ".GROUP_MA_ENRI" ) ),
+      _meshName( JeveuxVectorChar8( getName() + ".MAILLAGE" ) ),
+      _info( JeveuxVectorChar16( getName() + ".INFO" ) ),
+      _crackTipNodeFacesField( JeveuxVectorLong( getName() + ".NOFACPTFON" ) ){};
 
 XfemCrack::XfemCrack( MeshPtr mesh )
     : XfemCrack( ResultNaming::getNewResultName(), mesh ){};
