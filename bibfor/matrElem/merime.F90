@@ -50,7 +50,7 @@ implicit none
 !
 character(len=*), intent(in) :: modelz
 integer, intent(in) :: nbLoad
-character(len=24), pointer :: listLoadK24(:)
+character(len=24), pointer :: listLoadK24(:) 
 character(len=*), intent(in) :: matez, matecoz, caraElemz
 real(kind=8), intent(in) :: time
 character(len=*), intent(in) :: comporMultz, matrElemz
@@ -189,21 +189,19 @@ aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
     lchin(12) = chvarc(1:19)
     lpain(13) = 'PFIBRES'
     lchin(13) = chcara(17)(1:19)
-    lpain(14) = 'PGEOME2'
-    lchin(14) = chgeom(1:19)
-    lpain(15) = 'PCAGNBA'
-    lchin(15) = chcara(11)(1:19)
-    lpain(16) = 'PCAMASS'
-    lchin(16) = chcara(12)(1:19)
-    lpain(17) = 'PCAPOUF'
-    lchin(17) = chcara(13)(1:19)
-    lpain(18) = 'PCAGEPO'
-    lchin(18) = chcara(5)(1:19)
-    lpain(19) = 'PTEMPSR'
-    lchin(19) = chtime(1:19)
-    lpain(20) = 'PCINFDI'
-    lchin(20) = chcara(15)(1:19)
-    nbFieldIn = 20
+    lpain(14) = 'PCAGNBA'
+    lchin(14) = chcara(11)(1:19)
+    lpain(15) = 'PCAMASS'
+    lchin(15) = chcara(12)(1:19)
+    lpain(16) = 'PCAPOUF'
+    lchin(16) = chcara(13)(1:19)
+    lpain(17) = 'PCAGEPO'
+    lchin(17) = chcara(5)(1:19)
+    lpain(18) = 'PTEMPSR'
+    lchin(18) = chtime(1:19)
+    lpain(19) = 'PCINFDI'
+    lchin(19) = chcara(15)(1:19)
+    nbFieldIn = 19
 
 ! - Add input XFEM fields if required
     if (lxfem) then
