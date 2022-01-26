@@ -23,9 +23,10 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Meshes/Mesh.h"
+
 #include "astercxx.h"
 
-#include "Meshes/Mesh.h"
 #include "Utilities/Tools.h"
 
 bool Mesh::readAsterFile( const std::string &fileName ) {
@@ -60,7 +61,7 @@ bool Mesh::hasGroupOfNodes( const std::string &name, const bool local ) const {
 VectorString Mesh::getGroupsOfCells( const bool local ) const {
     ASTERINTEGER size = _nameOfGrpCells->size();
     VectorString names;
-    for ( int i = 0; i < size; i++ ) {
+    for ( auto i = 0; i < size; i++ ) {
         names.push_back( trim( _nameOfGrpCells->getStringFromIndex( i + 1 ) ) );
     }
     return names;
@@ -69,7 +70,7 @@ VectorString Mesh::getGroupsOfCells( const bool local ) const {
 VectorString Mesh::getGroupsOfNodes( const bool local ) const {
     ASTERINTEGER size = _nameOfGrpNodes->size();
     VectorString names;
-    for ( int i = 0; i < size; i++ ) {
+    for ( auto i = 0; i < size; i++ ) {
         names.push_back( trim( _nameOfGrpNodes->getStringFromIndex( i + 1 ) ) );
     }
     return names;
@@ -101,7 +102,7 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool localNumb
     CALL_JEMARQ();
     const auto cellsId = getCells( name );
 
-    if(cellsId.empty())
+    if ( cellsId.empty() )
         return VectorLong();
 
     const auto &connecExp = getConnectivityExplorer();
@@ -123,14 +124,14 @@ bool Mesh::isQuadratic() const {
 
     auto cellsType = getMedCellsTypes();
     cellsType->updateValuePointer();
-    const auto nb_elem = cellsType->size();
 
-    for ( ASTERINTEGER ii = 0; ii < nb_elem; ii++ ) {
-        const auto cellType = ( *cellsType )[ii];
+    for ( auto& cellType : cellsType ) {
         if ( cellType == 103 || cellType == 104 || cellType == 206 || cellType == 207 ||
              cellType == 208 || cellType == 209 || cellType == 310 || cellType == 315 ||
-             cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 )
+             cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 ) {
+            CALL_JEDEMA();
             return true;
+        }
     }
 
     CALL_JEDEMA();

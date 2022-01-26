@@ -32,8 +32,7 @@
 #include "MemoryManager/JeveuxAllowedTypes.h"
 #include "MemoryManager/JeveuxObject.h"
 #include "Supervis/ResultNaming.h"
-
-#include <string>
+#include "Utilities/Blas.h"
 
 /**
  * @class JeveuxVectorClass
@@ -106,6 +105,18 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             for ( ASTERINTEGER i = 0; i < size; ++i )
                 this->operator[]( i ) = toCopy[i];
         }
+        CALL_JEDEMA();
+
+        return *this;
+    };
+
+    /**
+     * @brief Surcharge de l'operateur =
+     */
+    JeveuxVectorClass &operator=( const ValueType &val ) {
+        CALL_JEMARQ();
+        this->updateValuePointer();
+        this->assign( val );
         CALL_JEDEMA();
 
         return *this;
@@ -200,7 +211,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param length Longueur du vecteur Jeveux a allouer
      * @return true si l'allocation s'est bien passee
      */
-    void allocate( ASTERINTEGER length ) {
+    void allocate( const ASTERINTEGER &length ) {
         bool ret = false;
         if ( _name != "" && length > 0 ) {
             ret = true;
@@ -216,6 +227,11 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
             throw std::bad_alloc();
         }
         updateValuePointer();
+    };
+
+    void allocate( const ASTERINTEGER &length, const ValueType &val ) {
+        this->allocate( length );
+        this->assign( val );
     };
 
     /**
@@ -384,6 +400,9 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
      * @param elem element to add
      */
     void push_back( const ValueType &elem ) {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+#endif
         const auto size = this->size();
         const auto capa = this->capacity();
 
@@ -392,6 +411,17 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 
         _valuePtr[size] = elem;
         this->setSize( size + 1 );
+    };
+
+    /** @brief replace in-place an element to the end
+     * @param elem element to add
+     */
+    void emplace_back( const ValueType &elem ) {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+#endif
+
+        _valuePtr[this->size() - 1] = elem;
     };
 
     /** @brief reserves storage. does not change the size of the vector.
@@ -417,6 +447,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     /** @brief access the last element */
     ValueType back() const {
 #ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
         AS_ASSERT( this->size() > 0 );
 #endif
         return _valuePtr[this->size() - 1];
@@ -425,10 +456,232 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
     /** @brief access the first element */
     ValueType front() const {
 #ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
         AS_ASSERT( this->size() > 0 );
 #endif
         return _valuePtr[0];
     }
+
+    /** @brief assign the vector with a given value */
+    void assign( const ValueType &val ) {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+#endif
+        const auto size = this->size();
+        for ( auto i = 0; i < size; i++ ) {
+            this->operator[]( i ) = val;
+        }
+    }
+
+    /** @brief overload << operator */
+    friend std::ostream &operator<<( std::ostream &os,
+                                     const JeveuxVectorClass< ValueType > &toPrint ) {
+        const_cast< JeveuxVectorClass< ValueType > & >( toPrint ).updateValuePointer();
+        os << "JeveuxVector: " << toPrint.getName() << "\n";
+        os << "Size: " << std::to_string( toPrint.size() )
+           << ", and capacity: " << std::to_string( toPrint.capacity() ) << ".\n";
+
+        const auto size = toPrint.size();
+        os << "List of values: \n";
+        os << "( ";
+        for ( auto i = 0; i < size - 1; i++ ) {
+            os << toPrint[i] << ", ";
+        }
+        os << toPrint[size - 1] << " )"
+           << "\n";
+
+        return os;
+    }
+
+    struct iterator {
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = ValueType;
+        using pointer = ValueType *;
+        using reference = ValueType &;
+
+        iterator( pointer ptr ) : m_ptr( ptr ) {}
+
+        reference operator*() const { return *m_ptr; }
+
+        pointer operator->() { return m_ptr; }
+
+        iterator &operator++() {
+            m_ptr++;
+            return *this;
+        }
+
+        friend bool operator==( const iterator &a, const iterator &b ) {
+            return a.m_ptr == b.m_ptr;
+        };
+
+        friend bool operator!=( const iterator &a, const iterator &b ) {
+            return a.m_ptr != b.m_ptr;
+        };
+
+      private:
+        pointer m_ptr;
+    };
+
+    iterator begin() {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+#endif
+
+        return iterator( ( &_valuePtr )[0] );
+    };
+
+    iterator end() {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+#endif
+
+        return iterator( (ValueType *)( _valuePtr + this->size() ) );
+    };
+
+    struct const_iterator {
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = ValueType;
+        using pointer = ValueType *;
+        using reference = ValueType &;
+
+        const_iterator( pointer ptr ) : m_ptr( ptr ) {}
+
+        const reference operator*() const { return *m_ptr; }
+
+        const pointer operator->() { return m_ptr; }
+
+        const_iterator &operator++() {
+            m_ptr++;
+            return *this;
+        }
+
+        friend bool operator==( const const_iterator &a, const const_iterator &b ) {
+            return a.m_ptr == b.m_ptr;
+        };
+
+        friend bool operator!=( const const_iterator &a, const const_iterator &b ) {
+            return a.m_ptr != b.m_ptr;
+        };
+
+      private:
+        pointer m_ptr;
+    };
+
+    const_iterator cbegin() {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+#endif
+
+        return const_iterator( ( &_valuePtr )[0] );
+    }
+
+    const_iterator cend() {
+#ifdef ASTER_DEBUG_CXX
+        AS_ASSERT( _valuePtr != nullptr );
+#endif
+
+        return const_iterator( (ValueType *)( _valuePtr + this->size() ) );
+    }
+
+    /**
+     * @brief TimesEqual overloading
+     * @return Updated JeveuxVector
+     */
+    JeveuxVectorClass< ValueType > &operator*=( const ValueType &scal ) {
+        CALL_JEMARQ();
+        this->updateValuePointer();
+        const auto size = this->size();
+
+        AsterBLAS::scal(size, scal, getDataPtr(), ASTERINTEGER(1));
+
+        CALL_JEDEMA();
+
+        return *this;
+    };
+
+    /**
+     * @brief MinusEqual overloading
+     * @return Updated JeveuxVector
+     */
+    JeveuxVectorClass< ValueType > &operator-=( const JeveuxVectorClass< ValueType > &vect ) {
+        CALL_JEMARQ();
+        const_cast< JeveuxVectorClass< ValueType > & >( vect ).updateValuePointer();
+        this->updateValuePointer();
+        const auto size = this->size();
+
+        if ( size != vect.size() ) {
+            throw std::runtime_error( "Incompatible sizes" );
+        }
+
+        for ( auto i = 0; i < size; i++ ) {
+            this->operator[]( i ) -= vect[i];
+        }
+
+        CALL_JEDEMA();
+
+        return *this;
+    };
+
+    /**
+     * @brief MinusEqual overloading
+     * @return Updated JeveuxVector
+     */
+    JeveuxVectorClass< ValueType > &operator-=( const ValueType &val ) {
+        CALL_JEMARQ();
+        this->updateValuePointer();
+        const auto size = this->size();
+
+        for ( auto i = 0; i < size; i++ ) {
+            this->operator[]( i ) -= val;
+        }
+
+        CALL_JEDEMA();
+
+        return *this;
+    };
+
+    /**
+     * @brief PlusEqual overloading
+     * @return Updated JeveuxVector
+     */
+    JeveuxVectorClass< ValueType > &operator+=( const JeveuxVectorClass< ValueType > &vect ) {
+        CALL_JEMARQ();
+        const_cast< JeveuxVectorClass< ValueType > & >( vect ).updateValuePointer();
+        this->updateValuePointer();
+        const auto size = this->size();
+
+        if ( size != vect.size() ) {
+            throw std::runtime_error( "Incompatible sizes" );
+        }
+
+        for ( auto i = 0; i < size; i++ ) {
+            this->operator[]( i ) += vect[i];
+        }
+
+        CALL_JEDEMA();
+
+        return *this;
+    };
+
+    /**
+     * @brief PlusEqual overloading
+     * @return Updated JeveuxVector
+     */
+    JeveuxVectorClass< ValueType > &operator+=( const ValueType &val ) {
+        CALL_JEMARQ();
+        this->updateValuePointer();
+        const auto size = this->size();
+
+        for ( auto i = 0; i < size; i++ ) {
+            this->operator[]( i ) += val;
+        }
+
+        CALL_JEDEMA();
+
+        return *this;
+    };
 };
 
 /**
@@ -452,20 +705,31 @@ class JeveuxVector {
     JeveuxVector() : _jeveuxVectorPtr( nullptr ){};
 
     JeveuxVector( std::string nom )
-        : _jeveuxVectorPtr( new JeveuxVectorClass< ValueType >( nom ) ){};
+        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ){};
 
     JeveuxVector( std::string nom, const std::vector< ValueType > &vect )
-        : _jeveuxVectorPtr( new JeveuxVectorClass< ValueType >( nom ) ) {
+        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
         ( *_jeveuxVectorPtr ) = vect;
     };
 
-    JeveuxVector( std::string nom, const ASTERINTEGER size )
-        : _jeveuxVectorPtr( new JeveuxVectorClass< ValueType >( nom ) ) {
+    JeveuxVector( const std::vector< ValueType > &vect )
+        : JeveuxVector( ResultNaming::getNewResultName(), vect ){};
+
+    JeveuxVector( std::string nom, const ASTERINTEGER &size )
+        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
         _jeveuxVectorPtr->allocate( size );
     };
 
-    JeveuxVector( const ASTERINTEGER size )
+    JeveuxVector( const ASTERINTEGER &size )
         : JeveuxVector( ResultNaming::getNewResultName(), size ){};
+
+    JeveuxVector( std::string nom, const ASTERINTEGER &size, const ValueType &val )
+        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
+        _jeveuxVectorPtr->allocate( size, val );
+    };
+
+    JeveuxVector( const ASTERINTEGER &size, const ValueType &val )
+        : JeveuxVector( ResultNaming::getNewResultName(), size, val ){};
 
     ~JeveuxVector(){};
 
@@ -485,6 +749,14 @@ class JeveuxVector {
             return true;
         return false;
     };
+
+    auto begin() { return _jeveuxVectorPtr->begin(); };
+
+    auto end() { return _jeveuxVectorPtr->end(); };
+
+    auto cbegin() { return _jeveuxVectorPtr->cbegin(); };
+
+    auto cend() { return _jeveuxVectorPtr->cend(); };
 };
 
 /** @typedef Definition d'un vecteur Jeveux entier long */

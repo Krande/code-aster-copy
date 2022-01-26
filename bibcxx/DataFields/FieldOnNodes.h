@@ -41,6 +41,7 @@
 #include "PythonBindings/LogicalUnitManager.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
+#include "Utilities/Blas.h"
 
 /**
  * @struct AllowedFieldType
@@ -164,7 +165,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( !_dofNum )
             raiseAsterError( "DOFNumering is empty" );
 
-        const int intType = AllowedFieldType< ValueType >::numTypeJeveux;
+        const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
                            _dofNum->getName() );
     };
@@ -192,14 +193,14 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ValueType &operator[]( int i ) { return _valuesList->operator[]( i ); };
+    ValueType &operator[]( ASTERINTEGER i ) { return _valuesList->operator[]( i ); };
 
     /**
      * @brief Surcharge de l'operateur []
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    const ValueType &operator[]( int i ) const { return _valuesList->operator[]( i ); };
+    const ValueType &operator[]( ASTERINTEGER i ) const { return _valuesList->operator[]( i ); };
 
     /**
      * @brief Check if fields are OK for +, +=, ...
@@ -228,13 +229,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes< ValueType > &operator+=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        CALL_JEMARQ();
-        const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
-        _valuesList->updateValuePointer();
-        int taille = _valuesList->size();
-        for ( int pos = 0; pos < taille; ++pos )
-            ( *this )[pos] = ( *this )[pos] + rhs[pos];
-        CALL_JEDEMA();
+        ( *_valuesList ) += ( *rhs._valuesList );
         return *this;
     };
 
@@ -246,13 +241,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     FieldOnNodes< ValueType > &operator-=( FieldOnNodes< ValueType > const &rhs ) {
         if ( !this->isSimilarTo( rhs ) )
             raiseAsterError( "Fields have incompatible shapes" );
-        CALL_JEMARQ();
-        const_cast< FieldOnNodes< ValueType > & >( rhs ).updateValuePointers();
-        _valuesList->updateValuePointer();
-        int taille = _valuesList->size();
-        for ( int pos = 0; pos < taille; ++pos )
-            ( *this )[pos] = ( *this )[pos] - rhs[pos];
-        CALL_JEDEMA();
+        ( *_valuesList ) -= ( *rhs._valuesList );
         return *this;
     };
 
@@ -261,12 +250,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return Updated field
      */
     FieldOnNodes< ValueType > &operator*=( const ASTERDOUBLE &scal ) {
-        CALL_JEMARQ();
-        _valuesList->updateValuePointer();
-        int taille = _valuesList->size();
-        for ( int pos = 0; pos < taille; ++pos )
-            ( *this )[pos] = ( *this )[pos] * scal;
-        CALL_JEDEMA();
+        // AsterBLAS::scal(scal, _valuesList);
+
+        ( *_valuesList ) *= scal;
+
         return *this;
     };
 
@@ -275,14 +262,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return Updated field
      */
     FieldOnNodes< ValueType > operator-() {
-        CALL_JEMARQ();
-        _valuesList->updateValuePointer();
-
         FieldOnNodes< ValueType > tmp( *this );
-        auto taille = _valuesList->size();
-        for ( int pos = 0; pos < taille; ++pos )
-            tmp[pos] = -( *this )[pos];
-        CALL_JEDEMA();
+        ( *tmp._valuesList ) *= ValueType( -1 );
         return tmp;
     };
 
@@ -298,12 +279,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     friend FieldOnNodes< ValueType > operator*( FieldOnNodes< ValueType > lhs,
                                                 const ASTERDOUBLE &scal ) {
-        CALL_JEMARQ();
-        lhs.updateValuePointers();
-        int taille = lhs._valuesList->size();
-        for ( int pos = 0; pos < taille; ++pos )
-            lhs[pos] = lhs[pos] * scal;
-        CALL_JEDEMA();
+
+        ( *lhs._valuesList ) *= scal;
         return lhs;
     };
 
@@ -404,10 +381,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     void setValues( const ValueType &value ) {
         CALL_JEMARQ();
         _valuesList->updateValuePointer();
-        const int taille = _valuesList->size();
-
-        for ( int pos = 0; pos < taille; ++pos )
-            ( *this )[pos] = value;
+        _valuesList->assign( value );
         CALL_JEDEMA();
     };
 
@@ -458,8 +432,8 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         CALL_JEMARQ();
         ASTERDOUBLE norme = 0.0;
         _valuesList->updateValuePointer();
-        int taille = _valuesList->size();
-        const int rank = getMPIRank();
+        auto taille = _valuesList->size();
+        const auto rank = getMPIRank();
         if ( !_mesh )
             raiseAsterError( "Mesh is empty" );
         const JeveuxVectorLong nodesRank = _mesh->getNodesRank();
@@ -470,20 +444,20 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
 
         if ( normType == "NORM_1" ) {
-            for ( int pos = 0; pos < taille; ++pos ) {
-                const int node_id = std::abs( nodesId[pos] );
+            for ( auto pos = 0; pos < taille; ++pos ) {
+                const auto node_id = std::abs( nodesId[pos] );
                 if ( ( *nodesRank )[node_id - 1] == rank )
                     norme += std::abs( ( *this )[pos] );
             }
         } else if ( normType == "NORM_2" ) {
-            for ( int pos = 0; pos < taille; ++pos ) {
-                const int node_id = std::abs( nodesId[pos] );
+            for ( auto pos = 0; pos < taille; ++pos ) {
+                const auto node_id = std::abs( nodesId[pos] );
                 if ( ( *nodesRank )[node_id - 1] == rank )
                     norme += ( *this )[pos] * ( *this )[pos];
             }
         } else if ( normType == "NORM_INFINITY" ) {
-            for ( int pos = 0; pos < taille; ++pos ) {
-                const int node_id = std::abs( nodesId[pos] );
+            for ( auto pos = 0; pos < taille; ++pos ) {
+                const auto node_id = std::abs( nodesId[pos] );
                 if ( ( *nodesRank )[node_id - 1] == rank )
                     norme = std::max( norme, std::abs( ( *this )[pos] ) );
             }
@@ -530,11 +504,11 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
             raiseAsterError( "Description is empty" );
         const VectorLong nodesId = _dofDescription->getNodesFromDOF();
 
-        const int rank = getMPIRank();
+        const auto rank = getMPIRank();
 
         ASTERDOUBLE ret = 0.0;
-        for ( int pos = 0; pos < taille; ++pos ) {
-            const int node_id = std::abs( nodesId[pos] );
+        for ( auto pos = 0; pos < taille; ++pos ) {
+            const auto node_id = std::abs( nodesId[pos] );
             if ( ( *nodesRank )[node_id - 1] == rank )
                 ret += ( *this )[pos] * ( *tmp )[pos];
         }
@@ -600,7 +574,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 template < class ValueType >
 bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName, bool local ) const {
     LogicalUnitFile a( fileName, Binary, New );
-    int retour = a.getLogicalUnit();
+    auto retour = a.getLogicalUnit();
     CommandSyntax cmdSt( "IMPR_RESU" );
 
     SyntaxMapContainer dict;

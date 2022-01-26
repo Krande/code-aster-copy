@@ -25,11 +25,11 @@
 #include <boost/python.hpp>
 
 namespace py = boost::python;
-#include <PythonBindings/factory.h>
-
 #include "DataFields/MeshCoordinatesField.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/FieldOnNodesInterface.h"
+
+#include <PythonBindings/factory.h>
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( print_overloads, printMedFile, 1, 2 )
 
@@ -46,10 +46,11 @@ void exportFieldOnNodesToPython() {
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesReal::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def(
-            "__getitem__", +[]( const FieldOnNodesReal &v, int i ) { return v.operator[]( i ); } )
+            "__getitem__",
+            +[]( const FieldOnNodesReal &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
         .def(
             "__setitem__",
-            +[]( FieldOnNodesReal &v, int i, float f ) { return v.operator[]( i ) = f; } )
+            +[]( FieldOnNodesReal &v, ASTERINTEGER i, float f ) { return v.operator[]( i ) = f; } )
         .def(
             "__add__", +[]( FieldOnNodesReal &v1, FieldOnNodesReal &v2 ) { return ( v1 + v2 ); } )
         .def( py::self += py::self )
@@ -115,22 +116,22 @@ Returns:
     list[float]: List of values.
         )",
               ( py::arg( "self" ) ) );
-              
-    py::class_< FieldOnNodesComplex, FieldOnNodesComplexPtr,
-                py::bases< DataField > >( "FieldOnNodesComplex", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesComplex >))
+
+    py::class_< FieldOnNodesComplex, FieldOnNodesComplexPtr, py::bases< DataField > >(
+        "FieldOnNodesComplex", py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesComplex > ) )
         .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FieldOnNodesComplex, std::string >))
+              py::make_constructor( &initFactoryPtr< FieldOnNodesComplex, std::string > ) )
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
-        .def( "exportToSimpleFieldOnNodes",
-              &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
+        .def( "exportToSimpleFieldOnNodes", &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
-        .def( "__getitem__",
-              +[]( const FieldOnNodesComplex &v, int i ) { return v.operator[]( i ); } )
         .def(
-            "__setitem__",
-            +[]( FieldOnNodesComplex &v, int i, ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
+            "__getitem__",
+            +[]( const FieldOnNodesComplex &v, ASTERINTEGER i ) { return v.operator[]( i ); } )
+        .def(
+            "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
+                                ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
         .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
         .def( "setDOFNumbering", &FieldOnNodesComplex::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
@@ -140,8 +141,8 @@ Returns:
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
         .def( "getValues", &FieldOnNodesComplex::getValues,
-              py::return_value_policy< py::copy_const_reference >(),R"(
-Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...] 
+              py::return_value_policy< py::copy_const_reference >(), R"(
+Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...]
 (m is the total number of componenets)
 
 Returns:

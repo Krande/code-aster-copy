@@ -26,11 +26,12 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "MemoryManager/JeveuxAllowedTypes.h"
-#include "MemoryManager/JeveuxObject.h"
 #include "aster_fort_jeveux.h"
 #include "aster_utils.h"
 #include "astercxx.h"
+
+#include "MemoryManager/JeveuxAllowedTypes.h"
+#include "MemoryManager/JeveuxObject.h"
 
 /**
  * @class NamesMapClass
@@ -40,14 +41,12 @@
 template < typename ValueType >
 class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< ValueType > {
   private:
-    ASTERINTEGER _size;
-
   public:
     /**
      * @brief Constructeur
      * @param name Nom Jeveux de l'objet
      */
-    NamesMapClass( std::string name ) : JeveuxObjectClass( name ), _size( 0 ){};
+    NamesMapClass( std::string name ) : JeveuxObjectClass( name ){};
 
     /**
      * @brief Destructeur
@@ -60,12 +59,17 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
      * @param toAdd value to add
      * @return true if adding is ok
      */
-    bool add( const int &position, const ValueType &toAdd ) {
-        if ( position <= _size ) {
+    bool add( const ASTERINTEGER &position, const ValueType &toAdd ) {
+        if ( position <= this->size() ) {
             JeveuxChar32 objName( " " );
             CALLO_JEXNOM( objName, _name, toAdd );
             CALLO_JECROC( objName );
             return true;
+        } else {
+            std::string error = "Out of range of NamesMap '" + _name +
+                                "', index = " + std::to_string( position ) +
+                                " ( size = " + std::to_string( this->size() ) + " )";
+            throw std::out_of_range( error );
         }
         return false;
     };
@@ -75,19 +79,18 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
      * @param size Taille
      * @return vrai en cas d'allocation
      */
-    bool allocate( int size ) {
+    void allocate( ASTERINTEGER size ) {
         if ( _name != "" && size > 0 ) {
             std::string strJeveuxBase = JeveuxMemoryTypesNames[_mem];
             ASTERINTEGER taille = size;
-            const int intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
+            const auto intType = AllowedJeveuxType< ValueType >::numTypeJeveux;
             std::string carac = strJeveuxBase + " N " + JeveuxTypesNames[intType];
             CALLO_JECREO( _name, carac );
             std::string param( "NOMMAX" );
             CALLO_JEECRA_WRAP( _name, param, &taille );
-            _size = size;
-            return true;
+        } else {
+            throw std::bad_alloc();
         }
-        return false;
     };
 
     /**
@@ -96,8 +99,6 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
     void deallocate() {
         if ( _name != "" && get_sh_jeveux_status() == 1 )
             CALLO_JEDETR( _name );
-
-        _size = 0;
     };
 
     /**
@@ -162,7 +163,7 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
 
         const auto size = toCompare.size();
         for ( ASTERINTEGER i = 1; i <= size; ++i ) {
-            if ( this->getStringFromIndex( i ) != toCompare.getStringFromIndex(i) )
+            if ( this->getStringFromIndex( i ) != toCompare.getStringFromIndex( i ) )
                 return false;
         }
         return true;
@@ -174,7 +175,8 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
  *   Enveloppe d'un pointeur intelligent vers un NamesMapClass
  * @author Nicolas Sellenet
  */
-template < class ValueType > class NamesMap {
+template < class ValueType >
+class NamesMap {
   public:
     typedef boost::shared_ptr< NamesMapClass< ValueType > > NamesMapPtr;
 
@@ -194,7 +196,6 @@ template < class ValueType > class NamesMap {
     const NamesMapPtr &operator->( void ) const { return _namesMapPtr; };
 
     NamesMapClass< ValueType > &operator*( void ) const { return *_namesMapPtr; };
-
 
     bool isEmpty() const {
         if ( _namesMapPtr.use_count() == 0 )

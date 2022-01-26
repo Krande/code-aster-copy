@@ -357,10 +357,7 @@ class FieldOnCells : public DataField {
      */
     FieldOnCells< ValueType > operator-() const {
         FieldOnCells< ValueType > tmp( *this );
-        _valuesList->updateValuePointer();
-        ASTERINTEGER size = _valuesList->size();
-        for ( auto pos = 0; pos < size; ++pos )
-            tmp[pos] = -( *this )[pos];
+        ( *tmp._valuesList ) *= ValueType( -1 );
         return tmp;
     };
 
@@ -369,16 +366,11 @@ class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator+=( const FieldOnCells< ValueType > &rhs ) {
-        _valuesList->updateValuePointer();
-        rhs.updateValuePointers();
-
         if ( !this->isSimilarTo( rhs ) ) {
             raiseAsterError( "Fields have incompatible shapes" );
         }
 
-        ASTERINTEGER size = _valuesList->size();
-        for ( int pos = 0; pos < size; ++pos )
-            ( *this )[pos] += rhs[pos];
+        ( *_valuesList ) += ( *rhs._valuesList );
 
         return *this;
     };
@@ -388,16 +380,11 @@ class FieldOnCells : public DataField {
      * @return Updated field
      */
     FieldOnCells< ValueType > &operator-=( const FieldOnCells< ValueType > &rhs ) {
-        _valuesList->updateValuePointer();
-        rhs.updateValuePointers();
-
         if ( !this->isSimilarTo( rhs ) ) {
             raiseAsterError( "Fields have incompatible shapes" );
         }
 
-        ASTERINTEGER size = _valuesList->size();
-        for ( int pos = 0; pos < size; ++pos )
-            ( *this )[pos] -= rhs[pos];
+        ( *_valuesList ) -= ( *rhs._valuesList );
 
         return *this;
     };
@@ -407,12 +394,7 @@ class FieldOnCells : public DataField {
      * @param i subscript
      * @return value at position i
      */
-    ValueType &operator[]( int i ) {
-#ifdef ASTER_DEBUG_CXX
-        AS_ASSERT( 0 <= i && i < this->size() );
-#endif
-        return _valuesList->operator[]( i );
-    };
+    ValueType &operator[]( int i ) { return _valuesList->operator[]( i ); };
 
     const ValueType &operator[]( int i ) const {
         return const_cast< ValueType & >(
@@ -466,14 +448,8 @@ class FieldOnCells : public DataField {
 
     friend FieldOnCells< ValueType > operator*( const FieldOnCells< ValueType > &lhs,
                                                 const ASTERDOUBLE &scal ) {
-
-        lhs.updateValuePointers();
-
-        ASTERINTEGER taille = lhs._valuesList->size();
         FieldOnCells< ValueType > tmp( lhs );
-        for ( int pos = 0; pos < taille; ++pos )
-            tmp[pos] = lhs[pos] * scal;
-
+        ( *tmp._valuesList ) *= scal;
         return tmp;
     };
 
@@ -502,10 +478,7 @@ class FieldOnCells : public DataField {
      */
     void setValues( const ValueType &value ) {
         _valuesList->updateValuePointer();
-        const int taille = _valuesList->size();
-
-        for ( int pos = 0; pos < taille; ++pos )
-            ( *this )[pos] = value;
+        _valuesList->assign( value );
     };
 
     /**
