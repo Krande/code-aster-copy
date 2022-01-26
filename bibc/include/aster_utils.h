@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -27,25 +27,25 @@
 extern "C" {
 #endif
 
-STRING_SIZE FStrlen( char *, STRING_SIZE );
-char * MakeCStrFromFStr( char *, STRING_SIZE );
-char * MakeFStrFromCStr( char *, STRING_SIZE );
-void   CopyCStrToFStr( char *, char *, STRING_SIZE );
-char * MakeTabFStr( int, STRING_SIZE );
-void   SetTabFStr( char *, int, char *, STRING_SIZE );
-void   BlankStr( char *, STRING_SIZE );
-char * MakeBlankFStr( STRING_SIZE );
+STRING_SIZE FStrlen( const char *, const STRING_SIZE );
+char * MakeCStrFromFStr( const char *, const STRING_SIZE );
+char * MakeFStrFromCStr( const char *, const STRING_SIZE );
+void   CopyCStrToFStr( char *, const char *, const STRING_SIZE );
+char * MakeTabFStr( const int, const STRING_SIZE );
+void   SetTabFStr( char *, const int, const char *, const STRING_SIZE );
+void   BlankStr( char *, const STRING_SIZE );
+char * MakeBlankFStr( const STRING_SIZE );
 void   FreeStr( char * );
 
-void _check_string_length( STRING_SIZE );
+void _check_string_length( const STRING_SIZE );
 
 
-extern void convc8( _IN int, _IN PyObject *, _OUT ASTERDOUBLE *);
+extern void convc8( _IN const int, _IN PyObject *, _OUT ASTERDOUBLE *);
 extern int conv_un_c8( _IN PyObject *, _OUT ASTERDOUBLE *);
-extern void convr8( _IN int, _IN PyObject *, _OUT ASTERDOUBLE *);
-extern void convert( _IN int, _IN PyObject *, _OUT ASTERINTEGER *);
-extern void convertxt( _IN int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
-extern void converltx( _IN int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
+extern void convr8( _IN const int, _IN PyObject *, _OUT ASTERDOUBLE *);
+extern void convert( _IN const int, _IN PyObject *, _OUT ASTERINTEGER *);
+extern void convertxt( _IN const int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
+extern void converltx( _IN const int, _IN PyObject *, _OUT char *, _IN STRING_SIZE);
 
 
 extern PyObject * MakeTupleString(long, char *, STRING_SIZE, ASTERINTEGER *);

@@ -2078,7 +2078,7 @@ void DEFPSS(LCCREE, lccree, _IN ASTERINTEGER *nbkit,
       ==> comport = catalc.create(*list_kit)
 */
    PyObject *catalc, *res, *tup_kit;
-   char *scomp;
+   const char *scomp;
 
    catalc = GetJdcAttr("catalc");
    /* transforme le tableau de chaines fortran en tuple */
@@ -2235,7 +2235,7 @@ void DEFSS(LCTYPE, lctype, _IN char *compor, STRING_SIZE lcompor,
          ==> ldctype = catalc.get_type(COMPOR)
 */
    PyObject *catalc, *res;
-   char *styp;
+   const char *styp;
 
    catalc = GetJdcAttr("catalc");
    res = PyObject_CallMethod(catalc, "get_type", "s#", compor, lcompor);

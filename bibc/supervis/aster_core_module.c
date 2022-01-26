@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -196,7 +196,7 @@ PyObject *args;
      *      iret = 4 : option inexistante, type incorrect.
      */
     PyObject *res, *option, *value, *set;
-    char *sopt;
+    const char *sopt;
 
     if ( !PyArg_ParseTuple(args, "OO:set_option", &option, &value) )
         return NULL;
@@ -275,7 +275,8 @@ char* asterc_getopt_string(_IN char *option, _OUT int *iret)
      *  iret = 4 : option inexistante, type incorrect.
      */
     PyObject *res;
-    char *value = NULL, *stmp = NULL;
+    char *value = NULL;
+    const char *stmp = NULL;
     STRING_SIZE lv;
     *iret = 4;
     res = asterc_getopt(option);
