@@ -3,7 +3,7 @@
  * @brief Implementation de Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,23 +21,22 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
+#include "Modeling/Model.h"
+
+#include "aster_fort_superv.h"
+#include "aster_fort_utils.h"
+#include "astercxx.h"
+
+#include "ParallelUtilities/AsterMPI.h"
+#include "Supervis/CommandSyntax.h"
+#include "Supervis/ResultNaming.h"
 
 #include <stdexcept>
 #include <typeinfo>
 
-#include "astercxx.h"
-
-#include "aster_fort_superv.h"
-#include "aster_fort_utils.h"
-#include "ParallelUtilities/AsterMPI.h"
-#include "Modeling/Model.h"
-#include "Supervis/CommandSyntax.h"
-#include "Supervis/ResultNaming.h"
-
-const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = {"CENTRALISE", "SOUS_DOMAINE",
-                                                                     "GROUP_ELEM"};
-const char *const GraphPartitionerNames[nbGraphPartitioner] = {"SCOTCH", "METIS"};
+const char *const ModelSplitingMethodNames[nbModelSplitingMethod] = { "CENTRALISE", "SOUS_DOMAINE",
+                                                                      "GROUP_ELEM" };
+const char *const GraphPartitionerNames[nbGraphPartitioner] = { "SCOTCH", "METIS" };
 
 SyntaxMapContainer Model::buildModelingsSyntaxMapContainer() const {
     SyntaxMapContainer dict;
@@ -148,6 +147,45 @@ bool Model::xfemPreconditioningEnable() {
     return false;
 };
 
+bool Model::existsXfem() {
+    const std::string typeco( "MODELE" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXI_XFEM" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
+
+ASTERINTEGER Model::nbSuperElement() {
+    const std::string typeco( "MODELE" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "NB_SS_ACTI" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+
+    return repi;
+};
+
+bool Model::existsFiniteElement() {
+    const std::string typeco( "MODELE" );
+    ASTERINTEGER repi = 0, ier = 0;
+    JeveuxChar32 repk( " " );
+    const std::string arret( "C" );
+    const std::string questi( "EXI_ELEM" );
+
+    CALLO_DISMOI( questi, getName(), typeco, &repi, repk, arret, &ier );
+    auto retour = trim( repk.toString() );
+    if ( retour == "OUI" )
+        return true;
+    return false;
+};
 
 void Model::addModelingOnGroupOfCells( Physics phys, Modelings mod, std::string nameOfGroup ) {
     if ( !_baseMesh )
@@ -167,12 +205,10 @@ void Model::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::string 
 
     _modelisations.push_back( listOfModsAndGrpsValue(
         ElementaryModeling( phys, mod ), MeshEntityPtr( new GroupOfNodes( nameOfGroup ) ) ) );
-    };
-
+};
 
 #ifdef ASTER_HAVE_MPI
-bool Model::setFrom( const ModelPtr model)
-{
+bool Model::setFrom( const ModelPtr model ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
@@ -184,13 +220,13 @@ bool Model::setFrom( const ModelPtr model)
 
     // tranfer LIGREL
     auto Fed = model->getFiniteElementDescriptor();
-    this->getFiniteElementDescriptor()->setFrom(Fed);
+    this->getFiniteElementDescriptor()->setFrom( Fed );
 
     // tranfer .MAILLE
     const auto nbCells = connectionMesh->getNumberOfCells();
-    _typeOfCells->allocate(nbCells);
-    auto& cellsLocNum = connectionMesh->getCellsLocalNumbering();
-    auto& cellsOwner = connectionMesh->getCellsOwner();
+    _typeOfCells->allocate( nbCells );
+    auto &cellsLocNum = connectionMesh->getCellsLocalNumbering();
+    auto &cellsOwner = connectionMesh->getCellsOwner();
 
     const auto rank = getMPIRank();
     const auto size = getMPISize();
@@ -208,16 +244,16 @@ bool Model::setFrom( const ModelPtr model)
     buffer.reserve( nbCellsLoc );
     for ( int i = 0; i < nbCells; ++i ) {
         if ( ( *cellsOwner )[i] == rank )
-            buffer.push_back( (*typeCellsOther)[ (*cellsLocNum)[i] - 1 ] );
+            buffer.push_back( ( *typeCellsOther )[( *cellsLocNum )[i] - 1] );
     }
 
-    std::vector<VectorLong> gathered;
-    AsterMPI::all_gather(buffer, gathered);
+    std::vector< VectorLong > gathered;
+    AsterMPI::all_gather( buffer, gathered );
 
-    VectorLong nbCellsProc( size, 0);
+    VectorLong nbCellsProc( size, 0 );
     for ( int i = 0; i < nbCells; ++i ) {
         auto rowner = ( *cellsOwner )[i];
-        (*_typeOfCells)[i] = gathered[rowner][nbCellsProc[rowner]];
+        ( *_typeOfCells )[i] = gathered[rowner][nbCellsProc[rowner]];
         nbCellsProc[rowner]++;
     }
 

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Model
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,13 +24,9 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
-#include <map>
-#include <stdexcept>
-
 #include "astercxx.h"
 
+#include "DataFields/ListOfTables.h"
 #include "DataStructures/DataStructure.h"
 #include "Loads/PhysicalQuantity.h"
 #include "Meshes/BaseMesh.h"
@@ -41,39 +37,36 @@
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
-#include "DataFields/ListOfTables.h"
-
 
 /**
  * @enum ModelSplitingMethod
- * @brief Methodes de partitionnement du modèle
- * @author Nicolas Sellenet
+ * @brief Types of partition for model
  */
 enum ModelSplitingMethod { Centralized, SubDomain, GroupOfCellsSplit };
 const int nbModelSplitingMethod = 3;
+
 /**
  * @var ModelSplitingMethodNames
- * @brief Nom Aster des differents partitionnement
+ * @brief Keyword for types of partition
  */
 extern const char *const ModelSplitingMethodNames[nbModelSplitingMethod];
 
 /**
  * @enum GraphPartitioner
- * @brief Partitionneur de graph
- * @author Nicolas Sellenet
+ * @brief Graph partitioner
  */
 enum GraphPartitioner { ScotchPartitioner, MetisPartitioner };
 const int nbGraphPartitioner = 2;
+
 /**
  * @var GraphPartitionerNames
- * @brief Nom Aster des differents partitionneur de graph
+ * @brief Keyword for graph partitioner
  */
 extern const char *const GraphPartitionerNames[nbGraphPartitioner];
 
 /**
  * @class Model
- * @brief Produit une sd identique a celle produite par AFFE_MODELE
- * @author Nicolas Sellenet
+ * @brief Datastructure for model (AFFE_MODELE)
  */
 class Model : public DataStructure, public ListOfTables {
   public:
@@ -144,9 +137,11 @@ class Model : public DataStructure, public ListOfTables {
           ListOfTables( name ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-          _baseMesh( mesh ), _splitMethod( SubDomain ), _graphPartitioner( MetisPartitioner ),
-          _ligrel( boost::make_shared< FiniteElementDescriptor >(
-                getName() + ".MODELE", _baseMesh ) ) {
+          _baseMesh( mesh ),
+          _splitMethod( SubDomain ),
+          _graphPartitioner( MetisPartitioner ),
+          _ligrel(
+              boost::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ) {
         if ( _baseMesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
 #ifdef ASTER_HAVE_MPI
@@ -161,16 +156,17 @@ class Model : public DataStructure, public ListOfTables {
         : DataStructure( name, 8, "MODELE" ),
           _typeOfCells( JeveuxVectorLong( getName() + ".MAILLE    " ) ),
           _typeOfNodes( JeveuxVectorLong( getName() + ".NOEUD     " ) ),
-          _baseMesh( mesh ), _connectionMesh( mesh ), _splitMethod( Centralized ),
+          _baseMesh( mesh ),
+          _connectionMesh( mesh ),
+          _splitMethod( Centralized ),
           _graphPartitioner( MetisPartitioner ),
-          _ligrel( boost::make_shared< FiniteElementDescriptor >(
-                                                        getName() + ".MODELE", _baseMesh ) ) {
+          _ligrel(
+              boost::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ) {
         AS_ASSERT( !_baseMesh->isEmpty() );
         AS_ASSERT( !_connectionMesh->isEmpty() );
     };
 
-    Model( const ConnectionMeshPtr mesh )
-        : Model( ResultNaming::getNewResultName(), mesh ){};
+    Model( const ConnectionMeshPtr mesh ) : Model( ResultNaming::getNewResultName(), mesh ){};
 #endif /* ASTER_HAVE_MPI */
 
     /**
@@ -205,17 +201,26 @@ class Model : public DataStructure, public ListOfTables {
      */
     virtual bool build();
 
-    /**
-     * @brief Function to know if there is MultiFiberBeam in the Model
-     * @return true if MultiFiberBeam present
-     */
+    /**@brief Has multi-fiber beams in model ? */
     bool existsMultiFiberBeam();
 
-    /**
-     * @brief Is THM present in model
-     * @return true if thm
-     */
+    /**@brief Has THM in model ? */
     bool existsThm();
+
+    /**@brief Has XFEM in model ? */
+    bool existsXfem();
+
+    /**
+     * @brief Number of super-elements in model
+     * @return Number of super elements in model
+     */
+    ASTERINTEGER nbSuperElement();
+
+    /**@brief Has super elements in model ? */
+    bool existsSuperElement() { return ( nbSuperElement() > 0 ); }
+
+    /** @brief Has finite element in model ? */
+    bool existsFiniteElement();
 
     /**
      * @brief function to know if XFEM Preconditioning is enable in model
@@ -257,10 +262,7 @@ class Model : public DataStructure, public ListOfTables {
         return _baseMesh;
     };
 
-    JeveuxVectorLong getTypeOfCells() const
-    {
-        return _typeOfCells;
-    }
+    JeveuxVectorLong getTypeOfCells() const { return _typeOfCells; }
 
     /**
      * @brief Methode permettant de savoir si le modele est vide
@@ -293,48 +295,35 @@ class Model : public DataStructure, public ListOfTables {
         _splitMethod = split;
     };
 
-
     /**
      * @brief To known if the the model is mechanical or not
      *
      * @return true The phenomen is  mechanical
      */
-    bool isMechanical( void ) const {
-        return this->getPhysics() == Physics::Mechanics;
-    };
+    bool isMechanical( void ) const { return this->getPhysics() == Physics::Mechanics; };
 
     /**
      * @brief To known if the the model is thermal or not
      *
      * @return true The phenomen is therman
      */
-    bool isThermal( void ) const {
-        return this->getPhysics() == Physics::Thermal;
-    };
+    bool isThermal( void ) const { return this->getPhysics() == Physics::Thermal; };
 
     /**
      * @brief To known if the the model is acoustic or not
      *
      * @return true The phenomen is acoustic
      */
-    bool isAcoustic( void ) const {
-        return this->getPhysics() == Physics::Acoustic;
-    };
+    bool isAcoustic( void ) const { return this->getPhysics() == Physics::Acoustic; };
 
-    int getPhysics( void ) const
-    {
-        return _ligrel->getPhysics();
-    }
+    int getPhysics( void ) const { return _ligrel->getPhysics(); }
 
 #ifdef ASTER_HAVE_MPI
-    bool setFrom( const ModelPtr model);
+    bool setFrom( const ModelPtr model );
 #endif
 };
 
-/**
- * @typedef Model
- * @brief Pointeur intelligent vers un Model
- */
+/** @typedef ModelPtr */
 typedef boost::shared_ptr< Model > ModelPtr;
 
 #endif /* MODEL_H_ */

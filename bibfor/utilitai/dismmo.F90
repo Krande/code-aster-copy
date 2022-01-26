@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ character(len=*) :: questi, nomobz, repkz
     integer :: ico, igrel
     integer :: iret, elemTypeNume, nbgrel, lielSize
     character(len=4) :: tytm
-    character(len=8) :: mesh, nomob
+    character(len=8) :: mesh, model
     character(len=16) :: elemTypeName, nomodl, nomod2
     character(len=19) :: modelLigrel
     character(len=32) :: repk
@@ -70,8 +70,8 @@ character(len=*) :: questi, nomobz, repkz
     repi = 0
     ierd = 0
 !
-    nomob=nomobz
-    modelLigrel=nomob//'.MODELE'
+    model=nomobz
+    modelLigrel=model//'.MODELE'
 !
     call jeveuo(modelLigrel//'.LGRF', 'L', vk8=lgrf)
     mesh = lgrf(1)
@@ -155,18 +155,18 @@ character(len=*) :: questi, nomobz, repkz
         call dismma(questi, mesh, repi, repk, ierd)
 
     else if (questi .eq. 'NB_FISS_XFEM') then
-        call jeexin(nomob//'.NFIS', iret)
+        call jeexin(model//'.NFIS', iret)
         if (iret .gt. 0) then
-            call jeveuo(nomob//'.NFIS', 'L', vi=nfis)
+            call jeveuo(model//'.NFIS', 'L', vi=nfis)
             repi=nfis(1)
         else
             repi=0
         endif
 
     else if (questi .eq. 'PRE_COND_XFEM') then
-        call jeexin(nomob//'.PRE_COND', iret)
+        call jeexin(model//'.PRE_COND', iret)
         if (iret .gt. 0) then
-            call jeveuo(nomob//'.PRE_COND', 'L', vk8=k8cond)
+            call jeveuo(model//'.PRE_COND', 'L', vk8=k8cond)
             repk=k8cond(1)
         else
             repk='NON'
@@ -210,6 +210,13 @@ character(len=*) :: questi, nomobz, repkz
                     goto 70
                 endif
             end do
+        else
+            repk='NON'
+        endif
+    else if (questi .eq. 'EXI_XFEM') then
+        call jeexin(model//'.FISS', iret)
+        if (iret .gt. 0) then
+            repk='OUI'
         else
             repk='NON'
         endif
