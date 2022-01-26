@@ -198,8 +198,8 @@ class Result : public DataStructure, public ListOfTables {
     };
 
     /**
-     * @brief Add elementary characteristics to container
-     * @param rank
+     * @brief Set list of loads at rank
+     * @param ListOfLoadsPtr, rank
      */
     void addListOfLoads( const ListOfLoadsPtr &, int rank ) ;
 
@@ -267,10 +267,10 @@ class Result : public DataStructure, public ListOfTables {
     };
 
     /**
-     * @brief Add elementary characteristics to container
+     * @brief Get list of loads at rank
      * @param rank
      */
-    ListOfLoadsPtr getListOfLoads( int rank ) ;
+    ListOfLoadsPtr getListOfLoads( int rank ) const;
 
     /**
      * @brief Get elementary characteristics

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -112,6 +112,13 @@ class ComputeAdditionalField(ExecuteCommand):
                 for elem in elems:
                     if elem:
                         self._result.addDependency(elem)
+            except RuntimeError:
+                pass
+            try:
+                for rank in self._result.getRanks():
+                    list_of_load =  keywords["RESULTAT"].getListOfLoads( rank )
+                    if list_of_load:
+                        self._result.setListOfLoads( list_of_load, rank )
             except RuntimeError:
                 pass
 

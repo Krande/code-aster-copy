@@ -214,11 +214,9 @@ bool Result::hasElementaryCharacteristics( ASTERINTEGER rank ) const {
 
 bool Result::hasElementaryCharacteristics() const { return !_mapElemCara.empty(); };
 
-ListOfLoadsPtr Result::getListOfLoads( int rank ) {
-    auto curIter = _mapLoads.find( rank );
-    if ( curIter == _mapLoads.end() )
-        throw std::runtime_error( "Rank not found" );
-    return ( *curIter ).second;
+ListOfLoadsPtr Result::getListOfLoads( int rank ) const {
+    auto it = _mapLoads.find( rank );
+    return it==_mapLoads.end() ? nullptr : it->second;
 };
 
 std::vector< MaterialFieldPtr > Result::getMaterialFields() const
