@@ -253,7 +253,8 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
         _outerNodes->updateValuePointer();
         const int rank = getMPIRank();
 
-        for ( auto &node : nodes ) {
+        SetLong loopnodes = nodes;
+        for ( auto &node : loopnodes ) {
             if ( rank != ( *_outerNodes )[node - 1] )
                 nodes.erase( node );
         }
