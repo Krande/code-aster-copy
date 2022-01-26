@@ -192,8 +192,8 @@ class Result : public DataStructure, public ListOfTables {
     };
 
     /**
-     * @brief Add elementary characteristics to container
-     * @param rank
+     * @brief Set list of loads at rank
+     * @param ListOfLoadsPtr, rank
      */
     void setListOfLoads( const ListOfLoadsPtr &, ASTERINTEGER rank );
 
@@ -241,7 +241,7 @@ class Result : public DataStructure, public ListOfTables {
     void setModel( const ModelPtr & );
 
     /**
-     * @brief Add elementary characteristics to container
+     * @brief Get list of loads at rank
      * @param rank
      */
     ListOfLoadsPtr getListOfLoads( ASTERINTEGER rank ) const;
