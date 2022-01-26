@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryTerm
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,19 +24,16 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "DataStructures/DataStructure.h"
-#include "MemoryManager/JeveuxVector.h"
 #include "MemoryManager/JeveuxCollection.h"
-#include "Supervis/ResultNaming.h"
+#include "MemoryManager/JeveuxVector.h"
 
 /**
  * @class ElementaryTerm
- * @brief Class which describe a RESUELEM
- * @author Nicolas Sellenet
+ * @brief Class which describe a RESUELEM (which is part of MATR_ELEM and VECT_ELEM )
  */
-template < class ValueType > class ElementaryTerm : public DataStructure {
+template < typename ValueType >
+class ElementaryTerm : public DataStructure {
   private:
     /** @brief Objet Jeveux '.NOLI' */
     JeveuxVectorChar24 _noli;
@@ -47,37 +44,22 @@ template < class ValueType > class ElementaryTerm : public DataStructure {
 
   public:
     /**
-     * @typedef ElementaryTermPtr
-     * @brief Pointeur intelligent vers un ElementaryTerm
+     * @brief Constructor only with predefined name
+     * @param name predefined name
      */
-    typedef boost::shared_ptr< ElementaryTerm > ElementaryTermPtr;
-
-    /**
-     * @brief Constructor
-     * @param name Jeveux name
-     */
-    ElementaryTerm( const std::string name  )
+    ElementaryTerm( const std::string name )
         : DataStructure( name, 19, "RESUELEM" ),
           _noli( JeveuxVectorChar24( getName() + ".NOLI" ) ),
           _desc( JeveuxVectorLong( getName() + ".DESC" ) ),
           _resl( JeveuxCollection< ValueType >( getName() + ".RESL" ) ){};
-
-    /**
-     * @brief Constructor
-
-     */
-    ElementaryTerm()
-        : ElementaryTerm(ResultNaming::getNewResultName()) {};
 };
 
-/**
- * @typedef ElementaryTermRealPtr
- */
+/** @typedef ElementaryTermRealPtr */
+typedef ElementaryTerm< ASTERDOUBLE > ElementaryTermReal;
 typedef boost::shared_ptr< ElementaryTerm< ASTERDOUBLE > > ElementaryTermRealPtr;
 
-/**
- * @typedef ElementaryTermComplexPtr
- */
+/** @typedef ElementaryTermComplexPtr */
+typedef ElementaryTerm< ASTERCOMPLEX > ElementaryTermComplex;
 typedef boost::shared_ptr< ElementaryTerm< ASTERCOMPLEX > > ElementaryTermComplexPtr;
 
 #endif /* ELEMENTARYTERM_H_ */
