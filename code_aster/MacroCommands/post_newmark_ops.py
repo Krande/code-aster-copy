@@ -266,14 +266,12 @@ def post_newmark_ops(self,**args):
                                           GROUP_NO=('LIGNE_','DOMAIN_',),
                             ),)
 
-    #IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
-
 
     __mail_L = CREA_MAILLAGE(MAILLAGE=__mail_2,#INFO=2,
                              RESTREINT=_F(GROUP_MA=('LIGNE_',),
                                           GROUP_NO=('LIGNE_',),
                             ),)
-
+    IMPR_RESU(RESU=_F(MAILLAGE = __mail_2,),FORMAT='MED',UNITE=23)
 
 ###############################################################################
 ####
@@ -493,6 +491,29 @@ def post_newmark_ops(self,**args):
                                        POINT = (posx, posy),
                                        RAYON = r),)
 
+      __mail = DEFI_GROUP(reuse = __mail,
+                    MAILLAGE = __mail,
+                    CREA_GROUP_MA = _F(NOM = 'GLISSE',
+                                       #TYPE_MAILLE = '2D',
+                                       INTERSEC = ('GLISSE_','ALL'),),)
+
+      __mail = DEFI_GROUP(reuse = __mail,
+                    MAILLAGE = __mail,
+                    CREA_GROUP_MA = _F(NOM = 'NGLISSE',
+                                       TYPE_MAILLE = '2D',
+                                       DIFFE = ('ALL','GLISSE'),),)
+
+      __mail = DEFI_GROUP(reuse = __mail,
+                MAILLAGE = __mail,
+                CREA_GROUP_NO = _F( GROUP_MA = ('NGLISSE','GLISSE'),),)
+
+      __mail = DEFI_GROUP(reuse = __mail,
+                MAILLAGE = __mail,
+                CREA_GROUP_NO = _F( NOM = 'LIGNE',
+                                    INTERSEC = ('GLISSE','NGLISSE'),),)
+
+      #IMPR_RESU(RESU=_F(MAILLAGE = __mail,),FORMAT='MED',UNITE=23)
+
     ### Si maillage de la zone de rupture fourni, il faut pouvoir trouver les mailles
     elif TYPE == 'MAILLAGE':
 
@@ -508,13 +529,13 @@ def post_newmark_ops(self,**args):
                     CREA_GROUP_MA=_F( NOM = 'GLISSE_',OPTION='APPUI',
                                       TYPE_APPUI='AU_MOINS_UN', GROUP_NO='GLISSE_',))
 
-    __mail = DEFI_GROUP(reuse = __mail,
+      __mail = DEFI_GROUP(reuse = __mail,
                     MAILLAGE = __mail,
                     CREA_GROUP_MA = _F(NOM = 'GLISSE',
                                        #TYPE_MAILLE = '2D',
                                        INTERSEC = ('GLISSE_','ALL'),),)
 
-    __mail = DEFI_GROUP(reuse = __mail,
+      __mail = DEFI_GROUP(reuse = __mail,
                 MAILLAGE = __mail,
                 CREA_GROUP_NO = _F( GROUP_MA = 'GLISSE')
               )
@@ -536,29 +557,27 @@ def post_newmark_ops(self,**args):
 
   #### Il faut que SIEF_ELGA soit prélablement calculé par l'utilisateur
 
-    __RESU3 = CALC_CHAMP(
-             RESULTAT = RESULTAT,
-             MODELE = __model,
-             CHAM_MATER = __ch_mat,
-             FORCE = ('FORC_NODA'),
-             #CONTRAINTE = ('SIEF_ELGA',),
-             );
-
-
   ##### Calcul de la résultante sur la ligne de glissement du calcul dynamique
 
+    __RESU3 = CALC_CHAMP(
+                 RESULTAT = RESULTAT,
+                 MODELE = __model,
+                 CHAM_MATER = __ch_mat,
+                 FORCE = ('FORC_NODA'),
+                 GROUP_MA = ('GLISSE'),
+                 );
+
     if TYPE == 'CERCLE':
-      __tabFLI = MACR_LIGN_COUPE(RESULTAT = __RESU3,
-                          NOM_CHAM = 'FORC_NODA',
-                          LIGN_COUPE = _F(TYPE = 'ARC',
-                                        OPERATION = 'EXTRACTION',
-                                        RESULTANTE   = ('DX','DY'),
-                                        NB_POINTS = 1000,
-                                        CENTRE = (posx, posy),
-                                        COOR_ORIG = (posx-r,posy),
-                                        ANGLE = 360.),)
+
+      __tabFLI = POST_RELEVE_T(ACTION=_F(INTITULE = 'RESU',
+                                OPERATION='EXTRACTION',
+                                GROUP_NO='NGLISSE',
+                                RESULTANTE=('DX','DY'),
+                                RESULTAT=__RESU3,
+                                NOM_CHAM='FORC_NODA',),)
 
     elif TYPE == 'MAILLAGE':
+
 
 ### CHAMP FORC_NODA POUR CALCUL RESULTANTE
       __recou = PROJ_CHAMP(METHODE='COLLOCATION',
@@ -570,6 +589,9 @@ def post_newmark_ops(self,**args):
                      PROL_ZERO='OUI',
 #                     DISTANCE_MAX=0.1,
                      )
+
+#      IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=__RESU3),UNITE=24)
+#      IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=__recou),UNITE=25)
 
     #### TABLE AVEC RESULTANTE CALCUL DYNAMIQUE DANS LE REPERE GLOBAL
     #### UTILISE POUR CALCUL DE L'ACCELERATION MOYENNE
@@ -839,7 +861,7 @@ def post_newmark_ops(self,**args):
     __tabvAF = CREA_TABLE(FONCTION=_F(FONCTION=__vitAF),)
     __tabdAF = CREA_TABLE(FONCTION=_F(FONCTION=__deplAF),)
 
-    tabout = CREA_TABLE(FONCTION=_F(FONCTION=__accyFL),)
+    tabout = CREA_TABLE(FONCTION=_F(FONCTION=__accxFL),)
 
     act_table = []
     act_table.append(_F(OPERATION='COMB',
@@ -866,9 +888,14 @@ def post_newmark_ops(self,**args):
   if args['RESULTAT'] is not None :
     __mail = DEFI_GROUP(reuse = __mail,
                   MAILLAGE = __mail,
-                  DETR_GROUP_MA = _F(NOM = ('GLISSE_','GLISSE',),),
+                  DETR_GROUP_MA = _F(NOM = ('GLISSE','GLISSE_'),),
                   DETR_GROUP_NO = _F(NOM = ('GLISSE',),),
                 )
+    if TYPE == 'CERCLE' :
+        __mail = DEFI_GROUP(reuse = __mail,
+                  MAILLAGE = __mail,
+                  DETR_GROUP_MA = _F(NOM = ('NGLISSE'),),
+                  DETR_GROUP_NO = _F(NOM = ('NGLISSE','LIGNE'),),),
 
   if TYPE == 'MAILLAGE':
     __mail = DEFI_GROUP(reuse = __mail,
@@ -877,7 +904,8 @@ def post_newmark_ops(self,**args):
                   )
     __mail_1 = DEFI_GROUP(reuse = __mail_1,
                   MAILLAGE = __mail_1,
-                  DETR_GROUP_MA = _F(NOM = ('RUPTURE','ALL'),),)
+                  DETR_GROUP_MA = _F(NOM = ('RUPTURE','ALL'),),
+                  )
     __mail_1 = DEFI_GROUP(reuse = __mail_1,
                   MAILLAGE = __mail_1,
                   DETR_GROUP_NO = _F(NOM = ('LIGNE_','DOMAIN_',),),
