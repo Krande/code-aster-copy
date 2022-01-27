@@ -51,6 +51,20 @@ class ContactZone : public DataStructure {
     VectorString _excluded_slave;
     /** @brief  Check direction of normal */
     bool _checkNormal;
+        /** @brief  List of master Cells */
+    VectorLong _masterCells;
+    /** @brief List of slave cells */
+    VectorLong _slaveCells;
+    /** @brief  Master inverse connectivity */
+    JeveuxCollectionLong _masterInverseConnectivity;
+    /** @brief  Slave inverse connectivity */
+    JeveuxCollectionLong _slaveInverseConnectivity;
+     /** @brief  Master Nodes */
+    VectorLong _masterNodes;
+    /** @brief  Master cells neighbors */
+    JeveuxCollectionLong _masterNeighbors;
+    /** @brief  slave cells neighbors */
+    JeveuxCollectionLong _slaveNeighbors;
 
   public:
     /**
@@ -111,6 +125,74 @@ class ContactZone : public DataStructure {
     void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
 
     bool checkNormals() const { return _checkNormal; }
+       const VectorLong& getMasterCells() const {return _masterCells;};
+    
+    VectorLong&  getMasterCells() { 
+      return const_cast<VectorLong&>(std::as_const(*this).getMasterCells());
+    }
+
+    void updateMasterCells(){
+        if(_masterCells.empty()) _masterCells =  getMesh()->getCells( _master );
+    }
+
+    const VectorLong& getSlaveCells() const { return _slaveCells; };
+
+    VectorLong&  getSlaveCells() {
+      return const_cast<VectorLong&>(std::as_const(*this).getSlaveCells());
+    }
+
+    void updateSlaveCells(){
+        if( _slaveCells.empty() ) _slaveCells  =  getMesh()->getCells( _slave );
+    }
+
+    VectorLong getMasterCellsFromNode(const int& i) const {
+        auto vct =  _masterInverseConnectivity->getObject(i).toVector();
+        std::transform(vct.begin(), vct.end(), vct.begin(),
+          [this](ASTERINTEGER k) -> ASTERINTEGER { return k > 0 ? _masterCells[k-1] : 0; });
+        return vct;
+    }
+
+    VectorLong getSlaveCellsFromNode(const int& i) const {
+        auto vct =  _slaveInverseConnectivity->getObject(i).toVector();
+        std::transform(vct.begin(), vct.end(), vct.begin(),
+          [this](ASTERINTEGER k) -> ASTERINTEGER { return k > 0 ? _slaveCells[k-1] : 0; });
+        return vct;
+    }
+
+    VectorLong getMasterCellNeighbors(const int& i) const{
+      ASTERINTEGER ind_min = *std::min_element(_masterCells.begin(), _masterCells.end());
+      ASTERINTEGER ind_max = *std::max_element(_masterCells.begin(), _masterCells.end());
+
+      if(i < ind_min  || i > ind_max) throw std::out_of_range(" the master cell's number should be"
+      " between " +  std::to_string(ind_min) + " and "  + std::to_string(ind_max));
+
+      auto vct = _masterNeighbors->getObject(i-ind_min+1).toVector();
+      vct.erase(std::remove_if(vct.begin(), vct.end(),[](ASTERINTEGER& i) {return i == 0;}), 
+                                                                                  vct.end() );
+      return vct;
+    }
+
+
+    VectorLong getSlaveCellNeighbors(const int& i) const{
+
+      ASTERINTEGER ind_min = *std::min_element(_slaveCells.begin(), _slaveCells.end());
+      ASTERINTEGER ind_max = *std::max_element(_slaveCells.begin(), _slaveCells.end());
+
+      if(i < ind_min  || i > ind_max) throw std::out_of_range(" the slave cell's number should be"
+      " between " +  std::to_string(ind_min) + " and "  + std::to_string(ind_max));
+      
+      auto vct = _slaveNeighbors->getObject(i-ind_min+1).toVector();
+      vct.erase(std::remove_if(vct.begin(), vct.end(),[](ASTERINTEGER& i) {return i == 0;}), 
+                                                                                  vct.end() );
+      return vct;
+    }
+
+     /**
+     * @brief Construct the inverse connectivity 
+     */
+    ASTERBOOL  buildInverseConnectivity();
+
+    ASTERBOOL  buildCellsNeighbors();
 };
 
 /**

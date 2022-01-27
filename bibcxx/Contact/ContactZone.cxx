@@ -31,7 +31,11 @@ ContactZone::ContactZone( const std::string name, const ModelPtr model )
     : DataStructure( name, 8, "CHAR_CONT_ZONE" ), _model( model ), _verbosity( 1 ),
       _checkNormal( true ), _contParam( boost::make_shared< ContactParameter >() ),
       _fricParam( boost::make_shared< FrictionParameter >() ),
-      _pairParam( boost::make_shared< PairingParameter >() ) {
+      _pairParam( boost::make_shared< PairingParameter >() ),
+      _masterInverseConnectivity( JeveuxCollectionLong( getName() + ".CM") ),
+      _slaveInverseConnectivity( JeveuxCollectionLong( getName() + ".CS") ),
+      _masterNeighbors( JeveuxCollectionLong( getName() + ".MN") ),
+      _slaveNeighbors( JeveuxCollectionLong( getName() + ".SN") ) {
     // model has to be mechanics
     if ( !_model->isMechanical() )
         UTMESS( "F", "CONTACT1_2" );
@@ -77,5 +81,71 @@ bool ContactZone::build() {
         std::string master = ljust( getMasterGroupOfCells(), 24, ' ' );
         CALL_CHECKNORMALS( _model->getName().c_str(), slave.c_str(), master.c_str() );
     }
+
+    // Be sure that the lists of cells are updated
+    updateMasterCells();
+    updateSlaveCells();
+    
+    // build inverse connvectivity 
+    buildInverseConnectivity();
+
+    // build master and slave  Cells Neighbors
+    buildCellsNeighbors();
     return true;
+}
+
+ASTERBOOL  ContactZone::buildInverseConnectivity() {
+        // create master inverse connectivity 
+        ASTERINTEGER nbMaster = getMasterCells().size();
+        std::string base("G");
+
+        CALL_CNCINV (getMesh()->getName().c_str(), _masterCells.data(), &nbMaster, base.c_str(),
+                                        _masterInverseConnectivity->getName().c_str() );
+        _masterInverseConnectivity->build();
+
+        // create slave inverse connectivity 
+        ASTERINTEGER nbSlave = getSlaveCells().size();
+
+        CALL_CNCINV (getMesh()->getName().c_str(), _slaveCells.data(), &nbSlave, base.c_str(),
+                                    _slaveInverseConnectivity->getName().c_str() );
+        _slaveInverseConnectivity->build(); 
+        return true;
+}
+
+ASTERBOOL  ContactZone::buildCellsNeighbors() {
+
+        ASTERINTEGER ind_max, ind_min;
+        // get master neighbors
+        ASTERINTEGER nbMaster = getMasterCells().size();
+        ind_max = *std::max_element(_masterCells.begin(), _masterCells.end());
+        ind_min = *std::min_element(_masterCells.begin(), _masterCells.end());
+        
+
+        std::string invmcn_name = ljust( _masterInverseConnectivity->getName(), 24, ' ' );
+        std::string mn_name = ljust( _masterNeighbors->getName(), 24, ' ' );
+
+      
+        CALL_CNVOIS(getMesh()->getName(), _masterCells.data(), invmcn_name, &nbMaster,
+                                &ind_min, &ind_max, mn_name);
+        
+        _masterNeighbors->build();
+
+        // get slave neighbors
+
+        ASTERINTEGER nbSlave = getSlaveCells().size();
+        ind_max = *std::max_element(_slaveCells.begin(), _slaveCells.end());
+        ind_min = *std::min_element(_slaveCells.begin(), _slaveCells.end());
+        
+
+        std::string invscn_name = ljust( _slaveInverseConnectivity->getName(), 24, ' ' );
+        std::string sn_name = ljust( _slaveNeighbors->getName(), 24, ' ' );
+
+      
+        CALL_CNVOIS(getMesh()->getName(), _slaveCells.data(), invscn_name, &nbMaster,
+                                &ind_min, &ind_max, sn_name);
+        
+        _slaveNeighbors->build();
+
+
+        return true;
 }

@@ -76,6 +76,11 @@ extern void DEFSSS( CHVENO, chveno, const char *, STRING_SIZE,
 extern void DEFSSS( CHECKNORMALS, checknormals, const char *, STRING_SIZE,
                      const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALL_CNVOIS( a, b, c, d, e, f, g ) CALLOPOPPPO( CNVOIS, cnvois, a, b, c, d, e, f, g )
+extern void DEFSPSPPPS( CNVOIS, cnvois, const char *, STRING_SIZE, ASTERINTEGER *,
+                     const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
+                        ASTERINTEGER * , const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif

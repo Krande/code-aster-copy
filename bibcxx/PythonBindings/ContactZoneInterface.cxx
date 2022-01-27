@@ -171,5 +171,23 @@ Reruen True if there is check to verify that normals are outwards
 Returns:
       Bool: True if checking is performed else False
         )",
-              ( py::arg( "self" ) ) );
+              ( py::arg( "self" ) ) )
+        .def( "updateSlaveCells", &ContactZone::updateSlaveCells, R"(
+Returns:
+      Bool: True if the slave cells are updated
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "updateMasterCells", &ContactZone::updateMasterCells, R"(
+Returns:
+      Bool: True if checking is performed else False
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "getMasterCellsFromNode",
+                        &ContactZone::getMasterCellsFromNode )
+        .def( "getSlaveCellsFromNode",
+                        &ContactZone::getSlaveCellsFromNode )
+        .def( "getMasterCellNeighbors",
+                        &ContactZone::getMasterCellNeighbors )
+        .def( "getSlaveCellNeighbors",
+                        &ContactZone::getSlaveCellNeighbors );
 };

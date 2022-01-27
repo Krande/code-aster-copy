@@ -3,7 +3,7 @@
  * @brief Utilitaires pour convertir un vector en list et inversement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,6 +31,7 @@
 #include "Materials/MaterialProperty.h"
 #include "Modeling/Model.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "Contact/ContactZone.h"
 #include "PythonBindings/ConvertersInterface.h"
 
 void exportConverters() {
@@ -54,6 +55,7 @@ void exportConverters() {
     exportVectorConverter< DirichletBCPtr >();
     exportVectorConverter< MechanicalLoadRealPtr >();
     exportVectorConverter< MechanicalLoadFunctionPtr >();
+    exportVectorConverter< ContactZonePtr >();
 #ifdef ASTER_HAVE_MPI
     exportVectorConverter< ParallelMechanicalLoadRealPtr >();
     exportVectorConverter< ParallelMechanicalLoadFunctionPtr >();

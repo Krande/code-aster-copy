@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 !
 interface
-    subroutine cnvois(mesh      , list_elem , nb_elem, elem_indx_mini, elem_indx_maxi,&
-                      conx_inve , elem_neigh)
+    subroutine cnvois(mesh      , list_elem , conx_inve , nb_elem, elem_indx_mini,&  
+                    elem_indx_maxi, elem_neigh)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: conx_inve
         integer, intent(in) :: nb_elem

@@ -28,7 +28,7 @@ namespace py = boost::python;
 
 void exportContactNewToPython() {
 
-    py::class_< ContactNew, ContactNew::ContactNewPtr, py::bases< DataStructure > >( "ContactNew",
+    py::class_< ContactNew, ContactNewPtr, py::bases< DataStructure > >( "ContactNew",
                                                                                      py::no_init )
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< ContactNew, std::string, ModelPtr > ) )
@@ -71,6 +71,13 @@ Returns:
     ContactZone: contact zone.
         )",
               ( py::arg( "self" ), py::arg( "zone_id" ) ) )
+       .def( "getContactZones", &ContactNew::getContactZones, R"(
+Return the list of contact zones
+
+Returns:
+    List[ContactZone]: List of contact zones.
+        )",
+              ( py::arg( "self" ) ) )
         .def( "appendContactZone", &ContactNew::appendContactZone, R"(
 Append a new contact zone to the contact definition
 

@@ -128,10 +128,10 @@ implicit none
 !
     call jedetr(sdappa_slne)
     call jedetr(sdappa_mane)
-    call cnvois(mesh  , v_appa_slav_mpi, nb_el_slav_mpi, slav_indx_mini, slav_indx_maxi,&
-                cnives, sdappa_slne)
-    call cnvois(mesh       , v_sdappa_mast, nb_elem_mast, mast_indx_mini, mast_indx_maxi,&
-                sdappa_civm, sdappa_mane)
+    call cnvois(mesh, v_appa_slav_mpi, cnives, nb_el_slav_mpi, slav_indx_mini, slav_indx_maxi,&
+                sdappa_slne)
+    call cnvois(mesh , v_sdappa_mast, sdappa_civm, nb_elem_mast, mast_indx_mini, mast_indx_maxi,&
+                 sdappa_mane)
     AS_DEALLOCATE(vi=v_appa_slav_mpi)
 !
 ! - Cleaning
