@@ -17,7 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='NON')
 
 from numpy import array,shape,reshape,real
 from cmath import *
@@ -75,11 +75,11 @@ mail_barrage = ('ENR','ENRW','ENROC','ENROCW','TRANS','TRANSW','NOYAU','FILTRE')
 Cotes     = ('DRO', 'GAU')
 Paraxiaux = ('BAS',)
 
-#Orientation des mailles surfaciques
+##Orientation des mailles surfaciques
 MA = MODI_MAILLAGE(reuse        = MA,
                    MAILLAGE     = MA,
                    ORIE_PEAU = _F(GROUP_MA_PEAU=Paraxiaux+Cotes,
-                                     GROUP_MA_INTERNE=('Fondation'),),)
+                                  GROUP_MA_INTERNE=('Fondation'),),)
 
 MODYN = AFFE_MODELE(MAILLAGE = MA,
                     AFFE  = (_F(GROUP_MA     = mail_barrage,
@@ -276,10 +276,10 @@ DYNA_V = CALC_CHAMP(reuse = DYNA_V,
            CHAM_MATER = MATDYN,
            EXCIT=(_F(CHARGE=CHARGX,),
                   _F(CHARGE=ONDELATE,),),
-           CONTRAINTE = ('SIEF_ELGA','SIGM_ELGA'),
+           CONTRAINTE = ('SIEF_ELGA',),
            )
 
-ky=0.001
+ky=0.0001
 posx=80.
 posy=220.
 r=50.
@@ -301,8 +301,8 @@ TEST_TABLE(  TABLE=TAB_RESU,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0003539038489101157,
-              VALE_CALC=0.0003539038489101157,
+              VALE_REFE=0.00039809480592392865,
+              VALE_CALC=0.00039809480592392865,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -314,8 +314,8 @@ TEST_TABLE(  TABLE=TAB_RESU,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0019051098891468712,
-              VALE_CALC=0.0019051098891468712,
+              VALE_REFE=0.00043886872700467616,
+              VALE_CALC=0.00043886872700467616,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -336,8 +336,8 @@ TEST_TABLE(  TABLE=TAB_RES2,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0003539038490900916,
-              VALE_CALC=0.0003539038490900916,
+              VALE_REFE=0.0002922274669936611,
+              VALE_CALC=0.0002922274669936611,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -349,8 +349,8 @@ TEST_TABLE(  TABLE=TAB_RES2,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0019051098903609238,
-              VALE_CALC=0.0019051098903609238,
+              VALE_REFE=0.0015886699716850462,
+              VALE_CALC=0.0015886699716850462,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -369,8 +369,8 @@ TEST_TABLE(  TABLE=TAB_RES3,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0003539038490900916,
-              VALE_CALC=0.0003539038490900916,
+              VALE_REFE=0.0002922274669936611,
+              VALE_CALC=0.0002922274669936611,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
@@ -382,8 +382,8 @@ TEST_TABLE(  TABLE=TAB_RES3,
                         CRITERE='RELATIF',
                         ),
               REFERENCE='NON_DEFINI',
-              VALE_REFE=0.0019051098903609238,
-              VALE_CALC=0.0019051098903609238,
+              VALE_REFE=0.0015886699716850462,
+              VALE_CALC=0.0015886699716850462,
               PRECISION=0.00001,
               CRITERE='RELATIF',
               VALE_ABS='NON',)
