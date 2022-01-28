@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from libaster import deleteTemporaryObjects
+from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
 
 from ..Commands import CALC_CHAMP
 from ..Messages import UTMESS
@@ -178,6 +178,7 @@ def meca_statique_ops(self, **args):
     logger.debug("<MECA_STATIQUE>: Initialization")
 
     verbosity = args["INFO"]
+    setFortranLoggingLevel(verbosity)
 
     # Create result
     result = args.get("RESULTAT")
@@ -270,5 +271,6 @@ def meca_statique_ops(self, **args):
 
     if verbosity > 1:
         print_stats()
+    resetFortranLoggingLevel()
 
     return result

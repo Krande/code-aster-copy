@@ -53,6 +53,9 @@ extern void DEFSSSPSSP( DISMOI, dismoi, const char *, STRING_SIZE, const char *,
 #define CALL_FCLOSE( a ) CALLP( FCLOSE, fclose, a )
 extern void DEFP( FCLOSE, fclose, ASTERINTEGER * );
 
+#define CALL_INFMAJ_EXT( a ) CALLP( INFMAJ_EXT, infmaj_ext, a  )
+extern void DEFP( INFMAJ_EXT, infmaj_ext, const ASTERINTEGER *const );
+
 #define CALL_ISDECO( a, b, c ) CALLPPP( ISDECO, isdeco, a, b, c )
 void DEFPPP( ISDECO, isdeco, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER * );
 
