@@ -43,13 +43,10 @@ FieldOnNodesRealPtr ElementaryVector::assemble( const BaseDOFNumberingPtr dofNum
     ASTERDOUBLE list_coef = 1.0;
     ASTERINTEGER typscal = 1;
     ASTERINTEGER nbElem = 1;
-
     std::string base( "G" );
-    std::string blanc( "        " );
-    std::string zero( "ZERO" );
 
     CALL_ASSVEC( base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
-                 dofNume->getName().c_str(), blanc.c_str(), zero.c_str(), &typscal );
+                 dofNume->getName().c_str(), &typscal );
 
     FreeStr( tabNames );
 

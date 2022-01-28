@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -160,8 +160,8 @@ integer :: numins
                              ds_measure , ds_system      ,&
                              time_prev  , time_curr      ,&
                              valinc     , solalg)
-    call assvec('V'               , ds_system%cnfnod, 1     , ds_system%vefnod, [1.d0],&
-                ds_system%nume_dof, ' '             , 'ZERO', 1)
+    call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0],&
+                ds_system%nume_dof)
     call jeveuo(ds_system%cnfnod//'.VALE', 'L', vr=cnfno)
     do i_equa = 1, nb_equa
         fexmo(i_equa) = fexmo(i_equa) + cnfno(i_equa)

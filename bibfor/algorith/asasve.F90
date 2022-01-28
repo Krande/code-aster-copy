@@ -159,7 +159,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
             call jedetr('&&ASASVE           .RELR')
             call reajre('&&ASASVE', resuel, 'V')
             call assvec('V', chamno, 1, '&&ASASVE           .RELR', [1.d0],&
-                        numedd, ' ', 'ZERO', ityp)
+                        numedd, vectScalType_ = ityp)
 !
 !
 !       -- SI LE RESUELEM N'EST PAS UN RESUELEM !(CHAM_NO)

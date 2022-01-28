@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,8 +125,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                 'OUI')
     call jedetr('&&RAPOTU           .RELR')
     call reajre('&&RAPOTU', lchout(3), 'V')
-    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
     valech = 'CH_DEPL_3          .VALE'
     nbcoef = 1
     idec = 0
@@ -161,16 +160,6 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
     call calcul('S', 'CARA_SECT_POUT5', ligrel, 6, lchin,&
                 lpain, 3, lchout, lpaout, 'V',&
                 'OUI')
-!    call jedetr('&&RAPOTU           .RELR')
-!    call reajre('&&RAPOTU', lchout(1), 'V')
-!    call assvec('V', 'CH_DEPL_1', 1, '&&RAPOTU           .RELR', [1.d0],&
-!                numddl, ' ', 'ZERO', 1)
-!
-!    RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
-!    call jedetr('&&RAPOTU           .RELR')
-!    call reajre('&&RAPOTU', lchout(2), 'V')
-!    call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', [1.d0],&
-!                numddl, ' ', 'ZERO', 1)
 !
 !    RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL WIM
 !    OU SI IMOD=1 LE DDL DZ DANS REPERE LOCAL DU TUYAU ET WI1
@@ -178,8 +167,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
     call jedetr('&&RAPOTU           .RELR')
     call reajre('&&RAPOTU', lchout(3), 'V')
-    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
     valech = 'CH_DEPL_3          .VALE'
     idec = 0
 !
@@ -228,8 +216,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                     'OUI')
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(1), 'V')
-        call assvec('V', 'CH_DEPL_1', 1, '&&RAPOTU           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+        call assvec('V', 'CH_DEPL_1', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
         valech = 'CH_DEPL_1          .VALE'
 !
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL UIM
@@ -255,8 +242,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !        RELATIONS ENTRE LES NOEUDS DE COQUE ET LE NOEUD POUTRE DDL VOM
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(2), 'V')
-        call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+        call assvec('V', 'CH_DEPL_2', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
         nbcoef = 1
@@ -283,8 +269,7 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
 !
         call jedetr('&&RAPOTU           .RELR')
         call reajre('&&RAPOTU', lchout(3), 'V')
-        call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+        call assvec('V', 'CH_DEPL_3', 1, '&&RAPOTU           .RELR', [1.d0], numddl)
         valech = 'CH_DEPL_3          .VALE'
         idec = 0
 !

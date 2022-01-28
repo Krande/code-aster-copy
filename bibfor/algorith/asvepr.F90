@@ -190,7 +190,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
                 ASSERT(.false.)
             endif
             call assvec('V', chamno, 1, '&&ASVEPR           .RELR', [1.d0],&
-                        numedd, ' ', 'ZERO', ityprs)
+                        numedd, vectScalType_ = ityprs)
         endif
 !
 ! ----- SI LE RESU_ELEM EST UN FAUX RESU_ELEM (CHAM_NO)

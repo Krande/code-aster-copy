@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -158,8 +158,8 @@ character(len=19), intent(in) :: hval_measse(*)
                              ds_measure , ds_system      ,&
                              time_prev  , time_curr      ,&
                              hval_incr  , hval_algo      )
-    call assvec('V'               , ds_system%cnfnod, 1     , ds_system%vefnod, [1.d0],&
-                ds_system%nume_dof, ' '             , 'ZERO', 1)
+    call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0],&
+                ds_system%nume_dof)
     if (niv .ge. 2) then
         call nmdebg('VECT', ds_system%cnfnod, 6)
     endif

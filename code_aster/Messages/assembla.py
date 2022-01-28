@@ -153,54 +153,15 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
-    44 : _("""
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""),
-
-    45 : _("""
-Erreur Programmeur ou utilisateur :
------------------------------------
- Le LIGREL    %(k1)s  référencé par le noeud supplémentaire %(i1)d
- de la maille %(i2)d  du  %(k2)s  du VECT_ELEM : %(k3)s
- n'est pas présent  dans le NUME_DDL : %(k4)s
-
-Risques & conseils :
---------------------
- Si vous utilisez la commande MACRO_ELAS_MULT :
-   Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
+    45 : _("""Erreur lors de l'assemblage.
+Si vous utilisez la commande MACRO_ELAS_MULT :
+   S'il y a une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
    Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHAR_MECA_GLOBAL ?
    En effet, il faut indiquer TOUTES les charges dualisées derrière CHAR_MECA_GLOBAL.
-
- Si vous utilisez directement la commande ASSE_VECTEUR :
-   Si %(k5)s est une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
+Si vous utilisez directement la commande ASSE_VECTEUR :
+   S'il y a une charge contenant des conditions aux limites dualisées (DDL_IMPO, ...),
    Êtes-vous sur d'avoir indiqué cette charge derrière le mot clé CHARGE
-   de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?
-"""),
-
-    46 : _("""
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""),
-
-    47 : _("""
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""),
-
-    48 : _("""
- --- le noeud  : %(i1)d  du  %(k1)s  du VECT_ELEM   : %(k2)s
- --- n'a pas d''adresse  dans la numérotation : %(k3)s
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""),
-
-    49 : _("""
- --- le noeud  : %(i1)d  du  %(k1)s  du VECT_ELEM   : %(k2)s
- --- a une adresse : %(i2)d  supérieur au nombre d'équations : %(i3)d
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""),
+   de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?"""),
 
     63 : _("""
  erreur sur le premier Lagrange d'une LIAISON_DDL

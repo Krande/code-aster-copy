@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,14 +71,14 @@ subroutine op0013()
     call jecreo(vecas//'.LICOEF', 'V V R ')
     call jeecra(vecas//'.LICOEF', 'LONMAX', nbvec)
     call jeveuo(vecas//'.LICOEF', 'E', vr=licoef)
-    do 5 i = 1, nbvec
+    do i = 1, nbvec
         licoef(i) = 1.0d0
- 5  end do
+    end do
 !
     call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
     vprof = '        '
     call assvec('G', vecas, nbvec, zk8(ilivec), licoef,&
-                nu, vprof, 'ZERO', type)
+                nu, vectScalType_ = type)
     ch19 = vecas
     call jedetr(ch19//'.LILI')
     call jedetr(ch19//'.ADNE')

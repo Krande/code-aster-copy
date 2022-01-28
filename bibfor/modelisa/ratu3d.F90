@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -136,8 +136,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
                 'OUI')
     call jedetr('&&RATU3D           .RELR')
     call reajre('&&RATU3D', lchout(3), 'V')
-    call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0], numddl)
     valech = 'CH_DEPL_3          .VALE'
     nbcoef = 1
     idec = 0
@@ -179,8 +178,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
     call jedetr('&&RATU3D           .RELR')
     call reajre('&&RATU3D', lchout(3), 'V')
-    call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0], numddl)
     valech = 'CH_DEPL_3          .VALE'
     idec = 0
 !
@@ -203,8 +201,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 !
     call jedetr('&&RATU3D           .RELR')
     call reajre('&&RATU3D', lchout(6), 'V')
-    call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', [1.d0], numddl)
     valech = 'CH_DEPL_6          .VALE'
     idec = 0
 !
@@ -237,7 +234,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(1), 'V')
         call assvec('V', 'CH_DEPL_1', 1, '&&RATU3D           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+                    numddl)
         valech = 'CH_DEPL_1          .VALE'
         idec = 0
         nbcoef = 1
@@ -252,7 +249,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(4), 'V')
         call assvec('V', 'CH_DEPL_4', 1, '&&RATU3D           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+                    numddl)
         valech = 'CH_DEPL_4          .VALE'
         idec = 0
         nbcoef = 1
@@ -267,7 +264,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(2), 'V')
         call assvec('V', 'CH_DEPL_2', 1, '&&RATU3D           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+                    numddl)
         valech = 'CH_DEPL_2          .VALE'
         idec = 0
         nbcoef = 1
@@ -282,7 +279,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(5), 'V')
         call assvec('V', 'CH_DEPL_5', 1, '&&RATU3D           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+                    numddl)
         valech = 'CH_DEPL_5          .VALE'
         idec = 0
         nbcoef = 1
@@ -299,7 +296,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(3), 'V')
         call assvec('V', 'CH_DEPL_3', 1, '&&RATU3D           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+                    numddl)
         valech = 'CH_DEPL_3          .VALE'
         idec = 0
 !
@@ -318,7 +315,7 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
         call jedetr('&&RATU3D           .RELR')
         call reajre('&&RATU3D', lchout(6), 'V')
         call assvec('V', 'CH_DEPL_6', 1, '&&RATU3D           .RELR', [1.d0],&
-                    numddl, ' ', 'ZERO', 1)
+                    numddl)
         valech = 'CH_DEPL_6          .VALE'
         idec = 0
 !

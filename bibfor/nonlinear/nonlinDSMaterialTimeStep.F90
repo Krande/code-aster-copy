@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,8 +91,7 @@ integer, intent(in) :: nume_inst
     call nmvcfo('+'   , model    , ds_material%mater, ds_material%mateco,&
                 cara_elem, ds_constitutive%compor,&
                 ds_material%varc_refe, hval_incr, vect_elem)
-    call assvec('V', vect_asse, 1, vect_elem, [1.d0],&
-                nume_dof, ' ', 'ZERO', 1)
+    call assvec('V', vect_asse, 1, vect_elem, [1.d0], nume_dof)
     call detrsd('RESUELEM', vect_elem)
 !
 end subroutine

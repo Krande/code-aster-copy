@@ -54,12 +54,12 @@ void DEFPSSSSSSPS( ASMATR, asmatr, ASTERINTEGER *, const char *, STRING_SIZE, co
                    STRING_SIZE, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
                    STRING_SIZE );
 
-#define CALL_ASSVEC( a, b, c, d, e, f, g, h, i )                                                   \
-    CALLSSPSPSSSP( ASSVEC, assvec, a, b, c, d, e, f, g, h, i )
-void DEFSSPSPSSSP( ASSVEC, assvec, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                    ASTERINTEGER *, const char *, STRING_SIZE,
-                    ASTERDOUBLE *, const char *, STRING_SIZE, const char *, STRING_SIZE,
-                    const char *, STRING_SIZE, ASTERINTEGER * );
+#define CALL_ASSVEC( a, b, c, d, e, f, g)                                                          \
+    CALLSSPSPSP( ASSVEC_WRAP, assvec_wrap, a, b, c, d, e, f, g )
+void DEFSSPSPSP( ASSVEC_WRAP, assvec_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+                 ASTERINTEGER *, const char *, STRING_SIZE,
+                 ASTERDOUBLE *, const char *, STRING_SIZE, 
+                 ASTERINTEGER *);
 
 #define CALLO_AP_ASSEMBLY_VECTOR( a ) CALLO( AP_ASSEMBLY_VECTOR, ap_assembly_vector, a )
 void DEFS( AP_ASSEMBLY_VECTOR, ap_assembly_vector, const char *, STRING_SIZE );
@@ -84,7 +84,7 @@ void DEFSSSSSSPPPP( COMPSTRESSFIELD, compstressfield, const char *, STRING_SIZE,
 void DEFSP( CONLAG, conlag, const char *, STRING_SIZE, ASTERDOUBLE * );
 
 #define CALLO_CORICHWRITE( a, b ) CALLOP( CORICHWRITE, corichwrite, a, b)
-void DEFSP( CORICHWRITE, corichwrite, 
+void DEFSP( CORICHWRITE, corichwrite,
             const char *, STRING_SIZE, ASTERINTEGER *);
 
 #define CALLO_CRESOL_WRAP( a, b, c ) CALLOOO( CRESOL_WRAP, cresol_wrap, a, b, c )

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W0413
+!
 subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     implicit none
 #include "jeveux.h"
@@ -92,7 +93,7 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     integer :: iocc
     real(kind=8) :: igzz, coorig(3), beta, eps, un
     real(kind=8) :: xpou, ypou, s, s1, xg, yg, dnorme
-    real(kind=8) :: ax, ay, axx, ayy, valr(9) 
+    real(kind=8) :: ax, ay, axx, ayy, valr(9)
     complex(kind=8) :: betac, ccmp(3)
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
@@ -366,15 +367,13 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 !     ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
     call jedetr('&&RAPO2D           .RELR')
     call reajre('&&RAPO2D', lchout(1), 'V')
-    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO2D           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO2D           .RELR', [1.d0], numddl)
 !
 ! --- -----------------------------------------------------------------
 !     ASSEMBLAGE DE LCHOUT(2) DANS LE CHAMNO DE NOM 'CH_DEPL_2'
     call jedetr('&&RAPO2D           .RELR')
     call reajre('&&RAPO2D', lchout(2), 'V')
-    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO2D           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO2D           .RELR', [1.d0], numddl)
 !
     vale1 = 'CH_DEPL_1          .VALE'
     vale2 = 'CH_DEPL_2          .VALE'

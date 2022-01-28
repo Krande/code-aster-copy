@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,7 @@ subroutine calflu(chamno, modele, mate, mateco, nu, vectas,&
 !     --- ASSEMBLAGE DU VECTEUR ELEMENTAIRE DE FLUX SUR LA
 !                       NUMEROTATION NU DU MODELE THERMIQUE ---
 !
-    call assvec('V', vectas, 1, ve(1:19), [1.d0],&
-                nu, ' ', 'ZERO', 1)
+    call assvec('V', vectas, 1, ve(1:19), [1.d0], nu)
     call jedetr(ve)
 !
     call jelira(vectas(1:19)//'.DESC', 'LONMAX', nd)

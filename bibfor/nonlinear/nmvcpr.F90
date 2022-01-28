@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -107,8 +107,7 @@ character(len=24), intent(in) :: nume_dof
     coef_vect(2) = -1.d0
     vect_elem(1) = vect_curr
     vect_elem(2) = vect_prev
-    call assvec(base, cnvcpr, 2, vect_elem, coef_vect,&
-                nume_dof, ' ', 'ZERO', 1)
+    call assvec(base, cnvcpr, 2, vect_elem, coef_vect, nume_dof)
     if (niv .ge. 2) then
         call nmdebg('VECT', cnvcpr, 6)
     endif

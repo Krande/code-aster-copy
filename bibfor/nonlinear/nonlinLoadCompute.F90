@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -236,8 +236,7 @@ aster_logical, optional, intent(in) :: prediction_
             call nmchex(hval_veasse, 'VEASSE', 'CNDIPI', vect_asse)
             call vedpme(model, lload_name, lload_info, time_curr,&
                         vect_elem)
-            call assvec('V', vect_asse, 1, vect_elem, [1.d0],&
-                        nume_dof, ' ', 'ZERO', 1)
+            call assvec('V', vect_asse, 1, vect_elem, [1.d0], nume_dof)
             if (niv .ge. 2) then
                 call nmdebg('VECT', vect_asse, 6)
             endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,8 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1501
+!
 subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     implicit none
 #include "asterf_types.h"
@@ -179,7 +180,7 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
     motcle(1) = 'GROUP_MA_1'
     motcle(2) = 'MAILLE_1'
     typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'     
+    typmcl(2) = 'MAILLE'
 !
 ! --- -----------------------------------------------------------------
 ! --- MODELE ASSOCIE AU LIGREL DE CHARGE
@@ -496,15 +497,13 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 !     ASSEMBLAGE DE LCHOUT(1) DANS LE CHAMNO DE NOM 'CH_DEPL_1'
     call jedetr('&&RAPO3D           .RELR')
     call reajre('&&RAPO3D', lchout(1), 'V')
-    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO3D           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_1', 1, '&&RAPO3D           .RELR', [1.d0], numddl)
 !
 ! --- -----------------------------------------------------------------
 !     ASSEMBLAGE DE LCHOUT(2) DANS LE CHAMNO DE NOM 'CH_DEPL_2'
     call jedetr('&&RAPO3D           .RELR')
     call reajre('&&RAPO3D', lchout(2), 'V')
-    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO3D           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+    call assvec('V', 'CH_DEPL_2', 1, '&&RAPO3D           .RELR', [1.d0], numddl)
 !
     vale1 = 'CH_DEPL_1          .VALE'
     vale2 = 'CH_DEPL_2          .VALE'

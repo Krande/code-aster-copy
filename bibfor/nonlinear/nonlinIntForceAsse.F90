@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,12 +78,10 @@ type(NL_DS_System), intent(in) :: ds_system
         ASSERT(ASTER_FALSE)
     elseif (typeAsse .eq. INTE_FORCE_INTE) then
 !       Assemblage que de l'intégration (RAPH_MECA / FULL_MECA / RIGI_MECA_TANG)
-        call assvec('V'               , ds_system%cnfint, 1     , ds_system%veinte, [1.d0],&
-                    ds_system%nume_dof, ' '             , 'ZERO', 1)
+        call assvec('V', ds_system%cnfint, 1, ds_system%veinte, [1.d0], ds_system%nume_dof)
     elseif (typeAsse .eq. INTE_FORCE_FNOD) then
 !       Assemblage que de FORC_NODA
-        call assvec('V'               , ds_system%cnfint, 1     , ds_system%vefnod, [1.d0],&
-                    ds_system%nume_dof, ' '             , 'ZERO', 1)
+        call assvec('V', ds_system%cnfint, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof)
 !       For external state variables
         call vtaxpy(-1.d0, ds_material%fvarc_pred, ds_system%cnfint)
     elseif (typeAsse .eq. INTE_FORCE_NONE) then

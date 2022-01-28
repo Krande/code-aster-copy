@@ -15,19 +15,14 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine assvec(jvBase, vectAsseZ,&
-                      nbVectElem, listVectElem, coefVectElem,&
-                      numeDofZ_, vectAsseForNumeZ_,&
-                      vectScalType_)
-        character(len=1), intent(in) :: jvBase
-        character(len=*), intent(in) :: vectAsseZ
+    subroutine asseVectField(vectAsse, numeDof, vectScalType,&
+                            nbVectElem, listVectElem)
+        character(len=19), intent(in) :: vectAsse
+        character(len=14), intent(in) :: numeDof
+        integer, intent(in) :: vectScalType
         integer, intent(in) :: nbVectElem
         character(len=*), intent(in) :: listVectElem(nbVectElem)
-        real(kind=8), intent(in) :: coefVectElem(nbVectElem)
-        character(len=*), optional, intent(in) :: vectAsseForNumeZ_, numeDofZ_
-        integer, optional, intent(in) :: vectScalType_
-    end subroutine assvec
+    end subroutine asseVectField
 end interface

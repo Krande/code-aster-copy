@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1501
+!
 subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
-    implicit none
+!
+implicit none
 !
 !    ATTENTION CETTE PROGRAMMATION SUPPOSE QUE L'OBJET NUEQ EST UN
 !    VECTEUR IDENTITE. A MODIFIER
@@ -529,7 +531,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     call jedetr('&&RAPOCO           .RELR')
     call reajre('&&RAPOCO', lchout(1), 'V')
     call assvec('V', '&&RAPOCO.CH_DEPL_01', 1, '&&RAPOCO           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+                numddl)
 !
     vale1 = '&&RAPOCO.CH_DEPL_01.VALE'
     call jeveuo(vale1, 'L', idch1)
@@ -541,7 +543,7 @@ subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
     call reajre('&&RAPOCO', lchout(2), 'V')
 !
     call assvec('V', '&&RAPOCO.CH_DEPL_02', 1, '&&RAPOCO           .RELR', [1.d0],&
-                numddl, ' ', 'ZERO', 1)
+                numddl)
 !
     vale2 = '&&RAPOCO.CH_DEPL_02.VALE'
     call jeveuo(vale2, 'L', idch2)

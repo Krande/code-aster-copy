@@ -15,19 +15,23 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
 !
 interface
-    subroutine assvec(jvBase, vectAsseZ,&
-                      nbVectElem, listVectElem, coefVectElem,&
-                      numeDofZ_, vectAsseForNumeZ_,&
-                      vectScalType_)
-        character(len=1), intent(in) :: jvBase
-        character(len=*), intent(in) :: vectAsseZ
-        integer, intent(in) :: nbVectElem
-        character(len=*), intent(in) :: listVectElem(nbVectElem)
-        real(kind=8), intent(in) :: coefVectElem(nbVectElem)
-        character(len=*), optional, intent(in) :: vectAsseForNumeZ_, numeDofZ_
-        integer, optional, intent(in) :: vectScalType_
-    end subroutine assvec
+    subroutine asseVectSuper(model, mesh, vectElem,&
+                             vectScalType, vectElemCoef,&
+                             nomacr, meshNbNode,&
+                             nec, nbecmx, nbCmp,&
+                             icodla, icodge,&
+                             idprn1, idprn2,&
+                             iapsdl, ianueq, jvale, jresl)
+        character(len=8), intent(in) :: model, mesh
+        character(len=19), intent(in) :: vectElem
+        integer, intent(in) :: vectScalType
+        real(kind=8), intent(in) :: vectElemCoef
+        character(len=8), pointer :: nomacr(:)
+        integer, intent(in) :: meshNbNode, nbCmp, nec, nbecmx
+        integer, intent(in) :: iapsdl, ianueq, jvale, jresl
+        integer, intent(in) :: idprn1, idprn2
+        integer, intent(inout) :: icodla(nbecmx), icodge(nbecmx)
+    end subroutine asseVectSuper
 end interface

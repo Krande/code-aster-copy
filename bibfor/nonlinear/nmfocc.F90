@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -137,9 +137,9 @@ type(NL_DS_Constitutive), intent(in) :: ds_constitutive
                     time_prev     , time_curr     ,&
                     disp_cumu_inst, &
                     vect_elem_cont, vect_elem_fric)
-        call assvec('V', vect_asse_cont, 1, vect_elem_cont, [1.d0], nume_dof, ' ', 'ZERO', 1)
+        call assvec('V', vect_asse_cont, 1, vect_elem_cont, [1.d0], nume_dof)
         if (l_fric) then
-            call assvec('V', vect_asse_fric, 1, vect_elem_fric, [1.d0], nume_dof, ' ', 'ZERO', 1)
+            call assvec('V', vect_asse_fric, 1, vect_elem_fric, [1.d0], nume_dof)
         endif
         call nmtime(ds_measure, 'Stop', 'Cont_Elem')
         call nmrinc(ds_measure, 'Cont_Elem')
