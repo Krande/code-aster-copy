@@ -61,9 +61,10 @@ MODELE2 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('Cylindre2',),
                       MAILLAGE=MAILLA2)
 
 # -- DEFINITION DU MATERIAU
-INOX = DEFI_MATERIAU(ELAS=_F(E=190.E9,
+scaling=1.E10
+INOX = DEFI_MATERIAU(ELAS=_F(E=190.E9/scaling,
                              NU=0.3,
-                             RHO=7800.0))
+                             RHO=7800.0/scaling))
 
 
 # -- AFFECTATION DES MATERIAUX
@@ -180,11 +181,11 @@ with shared_tmpdir('foo') as tmpdir:
 print("**** Eigen Pulses ****")
 print(omega)
 
-ref = [25.04011769+0.j,  25.12869802+0.j, 148.58133493+0.j,
-       151.1633228 +0.j, 179.73528393+0.j, 278.39303912+0.j]
+ref = [ 25.12740005+0.j,  25.12740048+0.j, 148.76610952+0.j, 148.7665605 +0.j,
+ 179.8428347 +0.j, 310.35187247+0.j]
 
 for idx, val in enumerate(omega):
-    test.assertAlmostEqual(val, ref[idx], delta=1.e-4)
+    test.assertAlmostEqual(val, ref[idx], delta=1.e-1)
 
 
 # =======================================
@@ -269,31 +270,41 @@ Proj_Gto2 = PROJ_CHAMP(MODELE_1=MODELEG,
 
 mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
         name2="Approche Globale", normalize=False, dof=['DX', 'DY', 'DZ', ])
+print(mac)
 
-mac_ref = np.array([[1.56983461e-01, 8.47504545e-01, 9.81695670e-04, 2.15431345e-04, 1.21526733e-06, 6.82275539e-04],
-                    [8.40477880e-01, 1.57085199e-01, 1.14196871e-02, 9.34638930e-04, 6.30799714e-07, 1.94350317e-05],
-                    [3.13422158e-08, 3.74089968e-09, 6.30453472e-01, 1.02513664e+00, 1.63651014e-09, 1.31020313e-02],
-                    [1.84280500e-08, 3.48079682e-09, 3.76043867e-01, 4.58038348e-07, 3.39061721e-05, 1.84971322e-04],
-                    [5.82019858e-09, 2.11995936e-10, 6.54721640e-04, 6.34943196e-04, 1.00648508e+00, 7.33023808e-04],
-                    [1.50639487e-09, 1.44017160e-10, 5.17471421e-05, 1.71611362e-05, 3.16617572e-06, 5.28751980e-02]])
+mac_ref = np.array(
+[[7.09643318e-01, 2.94831811e-01, 3.35960254e-05, 5.42903358e-05,
+  1.85017882e-23, 1.46302864e-11],
+ [2.94846967e-01, 7.09658508e-01, 5.42880769e-05, 3.35966051e-05,
+  9.20976185e-24, 2.81724000e-11],
+ [2.70776379e-08, 5.31743939e-10, 5.45272987e-02, 9.66151875e-01,
+  2.89999160e-25, 1.70634088e-09],
+ [5.31845223e-10, 2.70767000e-08, 9.66145941e-01, 5.45276300e-02,
+  3.07899080e-27, 4.55685138e-08],
+ [5.65272975e-23, 6.60958964e-22, 3.71706902e-19, 1.03013236e-21,
+  1.00816581e+00, 1.07682789e-24],
+ [6.87687281e-18, 2.51694278e-15, 2.56194581e-09, 4.54607270e-12,
+  2.13831721e-29, 1.00317007e+00],]
+)
 
 for (idx, jdx), val in np.ndenumerate(mac):
-    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
+    # we do not check these modes because they are double and we cannot know which one arrives first
+    if idx not in (0,1,2,3):
+        test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-2)
 
 # ------------------------------------------------------------------------------
 
 mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
-      list1=range(1,4))
+      list1=range(4,6), list2=range(4,6))
+print(mac)
 
-mac_ref = np.array([[1.86778814e-01, 1.00000000e+00, 1.55712628e-03],
-                    [1.00000000e+00, 1.85350273e-01, 1.81134495e-02],
-                    [3.72909467e-08, 4.41401725e-09, 1.00000000e+00],
-                    [2.19256812e-08, 4.10711286e-09, 5.96465693e-01],
-                    [6.92486824e-09, 2.50141356e-10, 1.03849319e-03],
-                    [1.79230757e-09, 1.69930841e-10, 8.20792405e-05]])
+mac_ref = np.array(
+[[1.00000000e+00, 2.44101476e-27],
+ [2.70159860e-18, 1.00000000e+00]]
+ )
 
 for (idx, jdx), val in np.ndenumerate(mac):
-    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-6)
 
 
 FIN()

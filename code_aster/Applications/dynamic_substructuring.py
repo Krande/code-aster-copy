@@ -18,9 +18,11 @@
 # --------------------------------------------------------------------
 
 import numpy as np
+import numpy.random
 import scipy.sparse
 import scipy.sparse.linalg
 import os
+import inspect
 from ..Objects.user_extensions import WithEmbeddedObjects
 try :
     import matplotlib.pyplot as plt
@@ -30,6 +32,45 @@ except ImportError:
 
 from ..Commands import (CREA_CHAMP, RESOUDRE, CREA_RESU, FACTORISER)
 
+DEBUG = False
+def debugPrint(*args, **kwargs):
+    if DEBUG:
+        #get module, class, function, linenumber information
+        className = None
+        try:
+            className = inspect.stack()[2][0].f_locals['self'].__class__.__name__
+        except:
+            pass
+        modName=None
+        try:
+            modName = os.path.basename(inspect.stack()[2][1])
+        except:
+            pass
+        lineNo=inspect.stack()[2][2]
+        fnName=None
+        try:
+            fnName = inspect.stack()[2][3]
+        except:
+            pass
+        DbgText="<DEBUG> line#{}:{}->{}->{}()".format(lineNo, modName,className, fnName)
+        argCnt=len(args)
+        kwargCnt=len(kwargs)
+        fmt=""
+        fmt1=DbgText+":"+"->"
+        if argCnt > 0:
+            fmt1+=(argCnt-1)*"%s,"
+            fmt1+="%s"
+            fmt+=fmt1
+
+        if kwargCnt>0:
+            fmt2="%s"
+            args+=("{}".format(kwargs),)
+            if len(fmt)>0:
+                fmt+=","+fmt2
+            else:
+                fmt+=fmt2
+
+        print(fmt,*args)
 
 
 class Interface(WithEmbeddedObjects):
@@ -119,9 +160,9 @@ class Interface(WithEmbeddedObjects):
             Coord_t[:, i1] -= np.mean(Coord_t[:, i1])
 
         # if there is an ovious mean plane, we use it. Otherwise we compute it with a SVD
-        CoordSum = np.abs(Coord_t).sum(axis=0)
-        if np.any(CoordSum<1.e-12):
-            indx = np.where(CoordSum<1.e-12)[0][0]
+        CoordMax = np.abs(Coord_t).max(axis=0)
+        if np.any(CoordMax<1.e-12):
+            indx = np.where(CoordMax<1.e-12)[0][0]
             U = np.eye(3)
             U[:,[2, indx]] = U[:,[indx,2]]  # swap the columns
         else:
@@ -450,7 +491,9 @@ class Structure(WithEmbeddedObjects):
 
         # Solve
         nmodes = nmodes or rightVP.shape[0] - 2
-        omredred, evredred = scipy.sparse.linalg.eigs(rightVP, k=nmodes, which='LR',
+        # initial vector - mandatory to get same results on different platforms
+        v0 = rightVP.Kfact(np.random.rand(Kredred.shape[0]) - 0.5)
+        omredred, evredred = scipy.sparse.linalg.eigs(rightVP, k=nmodes, which='LR', v0=v0,
                                                       maxiter=1000*nmodes)
 
         # tri des valeurs propres
@@ -678,8 +721,8 @@ def macPlot(lres1, lres2, lmass, fluid_material=None, massprod=True, normalize=T
     lMode2 = list2 if list2 else range(1,nModes2+1)
     lMode11 = list1 if list1 else range(nModes1)
     lMode22 = list2 if list2 else range(nModes2)
-    lFreq1 = lres1[0].getAccessParameters()["FREQ"]
-    lFreq2 = lres2[0].getAccessParameters()["FREQ"]
+    lFreq1 = lres1[0].LIST_VARI_ACCES()["FREQ"]
+    lFreq2 = lres2[0].LIST_VARI_ACCES()["FREQ"]
     rhof = fluid_material.RCVALE("FLUIDE", nomres=("RHO"), stop=2)[0][0] if fluid_material else 1.
     # start MAC computation : MAC = MAC1 **2 / MAC2 / MAC3
     MAC1 = np.zeros((nModes2, nModes1))

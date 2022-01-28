@@ -85,12 +85,13 @@ MODELE2 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('s2Tuyau', 'Tuyau'),
                       MAILLAGE=MAILLA2)
 
 # -- DEFINITION DU MATERIAU
-acier = DEFI_MATERIAU(ELAS=_F(E=190.e9,
+scaling = 1.e10
+acier = DEFI_MATERIAU(ELAS=_F(E=190.e9/scaling,
                               NU=0.3,
-                              RHO=7800.0))
+                              RHO=7800.0/scaling))
 
 eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0,
-                              RHO=732.0))
+                              RHO=732.0/scaling))
 
 # -- AFFECTATION DES MATERIAUX
 CHAMAT1 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Tuyau'),
@@ -164,37 +165,33 @@ def printToMedFile(resu, filename: str):
                  UNITE=99)
 
 
-nModes1 = 12
+nModes1 = 20
 
-MODES_1 = CALC_MODES(
-    OPTION='CENTRE',
-    CALC_FREQ=_F(NMAX_FREQ=nModes1,
-                 FREQ=3.,
-                 ),
-    MATR_RIGI=RAID1,
-    MATR_MASS=MASS1,
-    TYPE_RESU='DYNAMIQUE',
-    SOLVEUR=_F(METHODE='MUMPS',
-               NPREC=11,),
-    VERI_MODE=_F(STOP_ERREUR='NON',),)
+MODES_1 = CALC_MODES(OPTION='CENTRE',
+                     CALC_FREQ=_F(NMAX_FREQ=nModes1,
+                                  FREQ=3.,),
+                     MATR_RIGI=RAID1,
+                     MATR_MASS=MASS1,
+                     TYPE_RESU='DYNAMIQUE',
+                     SOLVEUR=_F(METHODE='MUMPS',
+                                NPREC=11,),
+                     VERI_MODE=_F(STOP_ERREUR='NON',),)
 
 
 with shared_tmpdir('foo') as tmpdir:
    printToMedFile(MODES_1, osp.join(tmpdir, 'modes1.resu.med'))
 
-nModes2 = 12
+nModes2 = nModes1
 
-MODES_2 = CALC_MODES(
-    OPTION='CENTRE',
-    CALC_FREQ=_F(NMAX_FREQ=nModes2,
-                 FREQ=3.,
-                 ),
-    MATR_RIGI=RAID2,
-    MATR_MASS=MASS2,
-    TYPE_RESU='DYNAMIQUE',
-    SOLVEUR=_F(METHODE='MUMPS',
-               NPREC=11,),
-    VERI_MODE=_F(STOP_ERREUR='NON',),)
+MODES_2 = CALC_MODES(OPTION='CENTRE',
+                     CALC_FREQ=_F(NMAX_FREQ=nModes2,
+                                  FREQ=3.,),
+                     MATR_RIGI=RAID2,
+                     MATR_MASS=MASS2,
+                     TYPE_RESU='DYNAMIQUE',
+                     SOLVEUR=_F(METHODE='MUMPS',
+                                NPREC=11,),
+                     VERI_MODE=_F(STOP_ERREUR='NON',),)
 
 with shared_tmpdir('foo') as tmpdir:
    printToMedFile(MODES_2, osp.join(tmpdir, 'modes2.resu.med'))
@@ -229,12 +226,11 @@ with shared_tmpdir('foo') as tmpdir:
 print("**** Eigen Pulses ****")
 print(omega)
 
-# To fix
-# ref = [13.5883057 +0.j, 22.59117747+0.j, 40.30871231+0.j, 56.76452412+0.j,
-#  60.70947434+0.j, 93.79725303+0.j]
+ref = [13.48270131+0.j, 25.92723462+0.j, 37.46030897+0.j, 63.12339528+0.j,
+ 69.98275372+0.j, 74.05160745+0.j]
 
-# for idx, val in enumerate(omega):
-#     test.assertAlmostEqual(val, ref[idx], delta=1.e-5)
+for idx, val in enumerate(omega):
+    test.assertAlmostEqual(val, ref[idx], delta=1.e-1)
 
 
 # =======================================
@@ -340,36 +336,38 @@ mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], fluid_material=ea
               name1="Approche Sous-structuree",name2="Approche Globale",
               normalize=True, dof=['DX', 'DY', 'DZ', 'PRES'])
 
-# to fix
-# mac_ref = np.array([[1.00000000e+00, 0.2266323378792222, 3.63372139e-14, 0.1845503340173774,
-#         0.41593422164449056, 1.0],
-#        [1.84361700e-16, 1.00000000e+00, 1.66894526e-10, 8.81827644e-02,
-#         6.62535435e-13, 1.14356263e-02],
-#        [7.86363833e-16, 0.23125533748972527, 1.00000000e+00, 0.2617913362425637,
-#         1.34608700e-12, 2.26876651e-11],
-#        [3.52226557e-16, 1.91119971e-02, 8.39389082e-12, 1.00000000e+00,
-#         0.3250444649617388, 6.74989871e-03],
-#        [3.07064925e-15, 1.79060590e-02, 1.02646543e-11, 0.4496474887474227,
-#         0.5764274866857108, 6.34334347e-03],
-#        [2.24812538e-17, 1.38767475e-05, 1.08556450e-13, 0.7911865375331046,
-#         1.0, 0.3084948506463945]])
-# for (idx, jdx), val in np.ndenumerate(mac):
-#     test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
+mac_ref = np.array(
+[[1.00000000e+00, 4.44733751e-14, 1.95423722e-11, 9.40605050e-15,
+  6.97229183e-15, 3.07548911e-15],
+ [6.75176408e-16, 1.00000000e+00, 1.10265687e-10, 1.38343460e-06,
+  5.81377829e-02, 2.61053554e-02],
+ [1.82839754e-11, 7.38673314e-11, 1.00000000e+00, 3.77463339e-13,
+  7.99321646e-11, 4.03787624e-11],
+ [2.86692757e-15, 2.53188666e-02, 1.74629568e-11, 1.00000000e+00,
+  4.44002698e-01, 3.09959410e-01],
+ [1.77981338e-15, 2.40220346e-02, 1.78601277e-11, 6.73899124e-01,
+  4.19716546e-01, 3.07817271e-01],
+ [1.93087050e-17, 4.71317959e-04, 4.12046048e-13, 1.09914369e-05,
+  1.00000000e+00, 1.00000000e+00]])
+
+for (idx, jdx), val in np.ndenumerate(mac):
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
 
 # ------------------------------------------------------------------------------
 
 mac = macPlot(resuSub, [Proj_Gto1, Proj_Gto2], [MASS1, MASS2], name1="Approche Sous-structuree",
               list1=range(1,4))
 
-# to fix
-# mac_ref = np.array([[1.00000000e+00, 5.68168484e-15, 5.22953574e-11],
-#        [5.55802473e-11, 1.00000000e+00, 4.53408010e-06],
-#        [1.26057732e-15, 0.11510204760460666, 1.00000000e+00],
-#        [1.74680828e-13, 3.11969982e-03, 1.44228134e-08],
-#        [1.68332369e-13, 3.03454699e-03, 1.40339997e-08],
-#        [2.64795246e-13, 4.65560243e-03, 2.14756542e-08]])
-# for (idx, jdx), val in np.ndenumerate(mac):
-#     test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
+mac_ref = np.array(
+[[1.00000000e+00, 4.23459308e-12, 6.61055425e-10],
+ [2.70226098e-14, 1.00000000e+00, 1.80476633e-10],
+ [1.30254211e-09, 6.12794010e-10, 1.00000000e+00],
+ [5.46067297e-16, 2.01558880e-03, 2.34592043e-12],
+ [4.00608940e-17, 1.97971401e-03, 2.38667054e-12],
+ [3.27863601e-16, 5.27977759e-03, 6.14099065e-12]])
+
+for (idx, jdx), val in np.ndenumerate(mac):
+    test.assertAlmostEqual(val, mac_ref[idx, jdx], delta=1.e-1)
 
 test.assertTrue(True)
 

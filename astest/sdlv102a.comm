@@ -83,12 +83,13 @@ MODELE2 = AFFE_MODELE(AFFE=(_F(GROUP_MA=('s2Tuyau', 'Tuyau'),
                     MAILLAGE=MAILLA2)
 
 #-- DEFINITION DU MATERIAU
-acier = DEFI_MATERIAU(ELAS=_F(E=190.e9,
+scaling = 1.e10  # terme de mise à l'échelle
+acier = DEFI_MATERIAU(ELAS=_F(E=190.e9/scaling,
                               NU=0.3,
-                              RHO=7800.0))
+                              RHO=7800.0/scaling))
 
 eau = DEFI_MATERIAU(FLUIDE=_F(CELE_R=970.0,
-                              RHO=732.0))
+                              RHO=732.0/scaling))
 
 #-- AFFECTATION DES MATERIAUX
 CHAMAT1 = AFFE_MATERIAU(AFFE=(_F(GROUP_MA=('Tuyau'),
@@ -222,13 +223,10 @@ with shared_tmpdir('foo') as tmpdir:
 print("**** Eigen Pulses ****")
 print(omega)
 
-test.assertTrue(True)
+ref = [13.58422747+0.j, 25.93127875+0.j, 37.48177452+0.j, 63.65458916+0.j,
+ 70.38457542+0.j, 74.24372915+0.j]
 
-# to fix
-# ref = [13.5883057 +0.j, 22.59117747+0.j, 40.30871231+0.j, 56.76452412+0.j,
-#  60.70947434+0.j, 93.79725303+0.j]
-
-# for idx, val in enumerate(omega):
-#     test.assertAlmostEqual(val, ref[idx], delta=1.e-5)
+for idx, val in enumerate(omega):
+    test.assertAlmostEqual(val, ref[idx], delta=1.e-2)
 
 FIN()
