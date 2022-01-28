@@ -58,6 +58,10 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
     /** @brief sd_char_chme '.CHME' */
     MechanicalLoadDescriptionPtr< ConstantFieldOnCellsType > _mecaLoadDesc;
 
+    JeveuxVectorChar8 _dualPrdk;
+    JeveuxVectorChar8 _dualPrdso;
+    JeveuxVectorLong _dualPrdi;
+
   public:
     /**
      * @typedef MechanicalLoadPtr
@@ -90,6 +94,9 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
           _lisma02( getName() + ".LISMA02" ),
           _trans01( getName() + ".TRANS01" ),
           _trans02( getName() + ".TRANS02" ),
+          _dualPrdk( JeveuxVectorChar8(getName() + ".DUAL.PRDK") ),
+          _dualPrdso( JeveuxVectorChar8(getName() + ".DUAL.PRDSO") ),
+          _dualPrdi( JeveuxVectorLong(getName() + ".DUAL.PRDI") ),
           _poidsMaille( getName() + ".POIDS_MAILLE" ){};
 
     /**

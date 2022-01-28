@@ -60,6 +60,8 @@ class ThermalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _flunl;
     /** @brief Carte '.FLURE' */
     ConstantFieldOnCellsTypePtr _flure;
+    /** @brief Carte '.FLUR2' */
+    ConstantFieldOnCellsTypePtr _flur2;
     /** @brief Carte '.GRAIN' */
     ConstantFieldOnCellsTypePtr _grain;
     /** @brief Carte '.HECHP' */
@@ -86,6 +88,7 @@ class ThermalLoadDescription : public DataStructure {
         _coefh( std::make_shared< ConstantFieldOnCellsType >( getName() + ".COEFH", _FEDesc ) ),
         _flunl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUNL", _FEDesc ) ),
         _flure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLURE", _FEDesc ) ),
+        _flur2( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUR2", _FEDesc ) ),
         _grain( std::make_shared< ConstantFieldOnCellsType >( getName() + ".GRAIN", _FEDesc ) ),
         _hechp( std::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
         _soure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),

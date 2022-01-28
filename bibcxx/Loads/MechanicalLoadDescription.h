@@ -67,12 +67,18 @@ class MechanicalLoadDescription : public DataStructure {
     ConstantFieldOnCellsTypePtr _dpgen;
     /** @brief Carte '.EPSIN' */
     ConstantFieldOnCellsTypePtr _epsin;
+    /** @brief Carte '.F1D1D' */
+    ConstantFieldOnCellsTypePtr _f1d1d;
     /** @brief Carte '.F1D2D' */
     ConstantFieldOnCellsTypePtr _f1d2d;
     /** @brief Carte '.F1D3D' */
     ConstantFieldOnCellsTypePtr _f1d3d;
+    /** @brief Carte '.F2D2D' */
+    ConstantFieldOnCellsTypePtr _f2d2d;
     /** @brief Carte '.F2D3D' */
     ConstantFieldOnCellsTypePtr _f2d3d;
+    /** @brief Carte '.F3D3D' */
+    ConstantFieldOnCellsTypePtr _f3d3d;
     /** @brief Carte '.FCO2D' */
     ConstantFieldOnCellsTypePtr _fco2d;
     /** @brief Carte '.FCO3D' */
@@ -124,9 +130,12 @@ class MechanicalLoadDescription : public DataStructure {
           _cmult( std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CMULT", _FEDesc ) ),
           _dpgen( std::make_shared< ConstantFieldOnCellsType >( getName() + ".DPGEN", _FEDesc ) ),
           _epsin( std::make_shared< ConstantFieldOnCellsType >( getName() + ".EPSIN", _FEDesc ) ),
+          _f1d1d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F1D1D", _FEDesc ) ),
           _f1d2d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F1D2D", _FEDesc ) ),
+          _f2d2d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F2D2D", _FEDesc ) ),
           _f1d3d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F1D3D", _FEDesc ) ),
           _f2d3d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F2D3D", _FEDesc ) ),
+          _f3d3d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".F3D3D", _FEDesc ) ),
           _fco2d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FCO2D", _FEDesc ) ),
           _fco3d( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FCO3D", _FEDesc ) ),
           _felec( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FELEC", _FEDesc ) ),
