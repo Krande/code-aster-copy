@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 #include "asterf_types.h"
 !
 interface
     subroutine assma3(lmasym, lmesym, tt, igr, iel,&
-                      c1, rang, jnueq, jnumsd, jresl,&
+                      c1, rang, jnueq, numsd, jresl,&
                       nbvel, nnoe, ldist, ldgrel,&
                       ilima, jadli, jadne, jprn1, jprn2,&
                       jnulo1, jposd1, admodl,&
@@ -36,7 +34,7 @@ interface
         real(kind=8) :: c1
         integer :: rang
         integer :: jnueq
-        integer :: jnumsd
+        integer, pointer :: numsd(:)
         integer :: jresl
         integer :: nbvel
         integer :: nnoe

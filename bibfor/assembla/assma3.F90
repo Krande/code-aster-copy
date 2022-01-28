@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+! aslint: disable=W1504
+!
 subroutine assma3(lmasym, lmesym, tt, igr, iel,&
-                  c1, rang, jnueq, jnumsd, jresl,&
+                  c1, rang, jnueq, numsd, jresl,&
                   nbvel, nnoe, ldist, ldgrel,&
                   ilima, jadli, jadne, jprn1, jprn2,&
                   jnulo1, jposd1, admodl,&
                   lcmodl, mode, nec, nmxcmp, ncmp,&
                   jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
                   lgtmp2, jvalm, ilinu, ellagr, nbeltb, ti1, ti2)
-! person_in_charge: jacques.pellet at edf.fr
-! aslint: disable=W1504
-    implicit none
+!
+implicit none
+!
 !-----------------------------------------------------------------------
 ! BUT : ASSEMBLER UN ELEMENT FINI
 !-----------------------------------------------------------------------
@@ -39,19 +40,21 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 #include "asterfort/corddl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/voiuti.h"
-    aster_logical :: lmasym, lmesym
-    character(len=2) :: tt
-    real(kind=8) :: c1
-    integer :: iel, admodl, rang, iconx1, iconx2, jadli, jadne
-    integer :: i1, i2, iad1, iad11, iad2, iad21
-    integer :: igr, ilima, ilinu, nbterm
-    integer :: jnueq, jnulo1, jnumsd, jposd1, jprn1, jprn2
-    integer :: jresl, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
-    integer :: lcmodl, k1, k2, n2, n3
-    integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
-    integer :: nec, nmxcmp, nnoe, numa, nk2, decael
-    integer :: ti1(*), ti2(*), nbeltb
-    aster_logical :: ldist, ldgrel
+!
+aster_logical :: lmasym, lmesym
+character(len=2) :: tt
+real(kind=8) :: c1
+integer :: iel, admodl, rang, iconx1, iconx2, jadli, jadne
+integer :: i1, i2, iad1, iad11, iad2, iad21
+integer :: igr, ilima, ilinu, nbterm
+integer :: jnueq, jnulo1, jposd1, jprn1, jprn2
+integer :: jresl, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
+integer :: lcmodl, k1, k2, n2, n3
+integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
+integer :: nec, nmxcmp, nnoe, numa, nk2, decael
+integer :: ti1(*), ti2(*), nbeltb
+aster_logical :: ldist, ldgrel
+integer, pointer :: numsd(:)
 !
     integer :: nbi1
 !-----------------------------------------------------------------------
@@ -89,7 +92,7 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
 !       NE TRAITE QUE CELLES ASSOCIEES AUX SD QUI LUI SONT ATTRIBUES
 !       SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
         if (numa .gt. 0) then
-            if (zi(jnumsd-1+numa) .ne. rang) goto 110
+            if (numsd(numa) .ne. rang) goto 110
         else
             if (rang .ne. 0) goto 110
         endif

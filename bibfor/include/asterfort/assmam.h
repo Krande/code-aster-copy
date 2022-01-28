@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,18 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
 !
 interface
-    subroutine assmam(base, matas, nbmat, tlimat, licoef,&
-                      nu, motcle, itysca)
-        character(len=*) :: base
-        character(len=*) :: matas
-        integer :: nbmat
-        character(len=*) :: tlimat(*)
-        real(kind=8) :: licoef(*)
-        character(len=*) :: nu
-        character(len=4) :: motcle
-        integer :: itysca
+    subroutine assmam(jvBase, matrAsseZ,&
+                      nbMatrElem, listMatrElem, coefMatrElem,&
+                      numeDofZ, motcle, matrScalType)
+        character(len=1), intent(in) :: jvBase
+        integer, intent(in) :: nbMatrElem
+        character(len=*), intent(in) :: matrAsseZ, listMatrElem(nbMatrElem), numeDofZ
+        integer, intent(in) :: matrScalType
+        real(kind=8), intent(in) :: coefMatrElem(*)
+        character(len=4), intent(in) :: motcle
     end subroutine assmam
 end interface
