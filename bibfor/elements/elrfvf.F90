@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ integer, optional, intent(out) :: nno_
 ! - Get coordinates of nodes for geometric support
     call elrfno(elrefz, nno)
 
-! - Compute shape functions 
+! - Compute shape functions
     select case (elrefz)
         case('HE8')
             x0 = x(1)
@@ -112,7 +112,7 @@ integer, optional, intent(out) :: nno_
             ff(6) = (un+x0)* (un-y0)* (un+z0)*uns8
             ff(7) = (un+x0)* (un+y0)* (un+z0)*uns8
             ff(8) = (un-x0)* (un+y0)* (un+z0)*uns8
-            ff(9) = (un-(z0**2))
+            ff(9) = 0.d0
 
         case('H20')
             x0 = x(1)

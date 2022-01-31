@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,19 +19,26 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 # Prepare mesh
-MESH0=LIRE_MAILLAGE(FORMAT='MED',)
-MESH=CREA_MAILLAGE(MAILLAGE     = MESH0,
-                   INFO         = 1,
-                   COQUE_SOLIDE = _F(GROUP_MA      = 'Plaque',
-                                     GROUP_MA_SURF = 'SurfSup',
-                                  ),
-                  )
+meshHE8=LIRE_MAILLAGE(FORMAT='MED',)
+meshHE9=CREA_MAILLAGE(MAILLAGE     = meshHE8,
+                      INFO         = 1,
+                      COQUE_SOLIDE = _F(GROUP_MA      = 'Plaque',
+                                        GROUP_MA_SURF = 'SurfSup', ),
+                     )
+
+geomFieldNode = CREA_CHAMP(MAILLAGE  = meshHE9,
+                           OPERATION = 'EXTR',
+                           TYPE_CHAM = 'NOEU_GEOM_R',
+                           NOM_CHAM  = 'GEOMETRIE',
+                          )
 
 # Material parameters
 alpha = 6.5E-6
 tempRefe = 20.
 nu = 0.3
 young = 30.E+06
+lamb = 1.0
+rho_cp = 2.0
 
 funcYoung=DEFI_FONCTION(NOM_PARA='Z',
                      PROL_DROITE='CONSTANT',
@@ -48,86 +55,56 @@ funcNu=DEFI_FONCTION(NOM_PARA='Z',
 
 funcAlpha=DEFI_CONSTANTE(VALE=alpha);
 
-
-MATfunc=DEFI_MATERIAU(ELAS_FO = _F(E              = funcYoung,
+mecaMate=DEFI_MATERIAU(ELAS_FO = _F(E              = funcYoung,
                                    NU             = funcNu,
                                    ALPHA          = funcAlpha,
                                    TEMP_DEF_ALPHA = tempRefe,)
+                      )
+
+therMate=DEFI_MATERIAU( THER=_F(  LAMBDA = lamb, RHO_CP = rho_cp))
+
+# Calcul thermique
+modelTher=AFFE_MODELE(MAILLAGE = meshHE8,
+                      AFFE     = _F(TOUT='OUI',
+                                    PHENOMENE='THERMIQUE',
+                                    MODELISATION=('3D',),
+                                 ),
                      )
 
-# Select finite elements
-MODEL=AFFE_MODELE(MAILLAGE = MESH,
-                  AFFE     = _F(TOUT='OUI',
-                                PHENOMENE='MECANIQUE',
-                                MODELISATION=('COQUE_SOLIDE',),
-                             ),
-                 )
+fieldMateTher=AFFE_MATERIAU(MAILLAGE=meshHE8,
+                            AFFE=_F(  TOUT = 'OUI', MATER = therMate) )
 
-# Create field for temperature
-tempValeFunc = FORMULE(VALE='-50. + Z*400.',
-                       NOM_PARA=['Z'],)
+tempImpo=AFFE_CHAR_THER(MODELE=modelTher,
+                        TEMP_IMPO=(_F( GROUP_MA = 'SurfInf', TEMP = -50.),
+                                   _F( GROUP_MA = 'SurfSup', TEMP = +50.),),
+         )
 
-neutFieldFunc = CREA_CHAMP(OPERATION = 'AFFE',
-                           TYPE_CHAM = 'ELGA_NEUT_F',
-                           MODELE    = MODEL,
-                           PROL_ZERO = 'OUI',
-                           AFFE      = _F(TOUT    = 'OUI',
-                                          NOM_CMP = ('X1',),
-                                          VALE_F  = (tempValeFunc,),
-                                         )
-                          )
+timeList=DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=_F( JUSQU_A = 1.0,   NOMBRE = 1)
+                        )
 
-geomFieldNode = CREA_CHAMP(MAILLAGE  = MESH,
-                           OPERATION = 'EXTR',
-                           TYPE_CHAM = 'NOEU_GEOM_R',
-                           NOM_CHAM  = 'GEOMETRIE',
-                          )
+resuTher=THER_LINEAIRE(MODELE=modelTher,
+                       CHAM_MATER=fieldMateTher,
+                       ETAT_INIT=_F(  VALE = tempRefe),
+                       INCREMENT=_F(  LIST_INST = timeList),
+                       EXCIT=_F( CHARGE = tempImpo)
+                      )
 
-geomFieldElga = CREA_CHAMP(MODELE    = MODEL,
-                           OPERATION = 'DISC',
-                           TYPE_CHAM = 'ELGA_GEOM_R', 
-                           CHAM_GD   = geomFieldNode,
-                          )
+# Static linear
+modelMeca=AFFE_MODELE(MAILLAGE = meshHE9,
+                      AFFE     = _F(TOUT='OUI',
+                                    PHENOMENE='MECANIQUE',
+                                    MODELISATION=('COQUE_SOLIDE',),
+                                 ),
+                      )
 
-neutFieldElga = CREA_CHAMP(OPERATION = 'EVAL',
-                           TYPE_CHAM = 'ELGA_NEUT_R',
-                           CHAM_F    = neutFieldFunc,
-                           CHAM_PARA = geomFieldElga,
-                          )
+# Project result from thermic
+resthe= PROJ_CHAMP(PROJECTION='OUI',
+                   RESULTAT=resuTher,
+                   MODELE_1=modelTher,
+                   MODELE_2=modelMeca,);
 
-neutFieldNode = CREA_CHAMP(MODELE    = MODEL,
-                           OPERATION = 'DISC',
-                           TYPE_CHAM = 'NOEU_NEUT_R', 
-                           CHAM_GD   = neutFieldElga,
-                          )
-
-tempFieldNode = CREA_CHAMP(MODELE    = MODEL,
-                           OPERATION = 'ASSE',
-                           TYPE_CHAM = 'NOEU_TEMP_R',
-                           ASSE      = _F(TOUT         = 'OUI',
-                                          CHAM_GD      = neutFieldNode,
-                                          NOM_CMP      = ('X1',),
-                                          NOM_CMP_RESU = ('TEMP',),
-                                         ),
-                           )
-
-tempFieldInit = CREA_CHAMP(MODELE    = MODEL,
-                           OPERATION = 'AFFE',
-                           AFFE      = _F(NOM_CMP = ('TEMP', ),
-                                          TOUT    = 'OUI',
-                                          VALE    = tempRefe,),
-                           TYPE_CHAM = 'CART_TEMP_R')
-
-evolTher = CREA_RESU(AFFE      = (_F(CHAM_GD = tempFieldInit,
-                                     INST    = 0.0,),
-                                  _F(CHAM_GD = tempFieldNode,
-                                     INST    = 1.0,),),
-                     NOM_CHAM  = 'TEMP',
-                     OPERATION = 'AFFE',
-                     TYPE_RESU = 'EVOL_THER')
-
-# Boundary conditions and loads
-kineCondition=AFFE_CHAR_CINE(MODELE    = MODEL,
+kineCondition=AFFE_CHAR_CINE(MODELE    = modelMeca,
                              MECA_IMPO = (_F(GROUP_MA = ('FaceDA'),
                                              DX       = 0.,),
                                           _F(GROUP_MA = ('FaceAB'),
@@ -136,22 +113,23 @@ kineCondition=AFFE_CHAR_CINE(MODELE    = MODEL,
                                              DZ       = 0.,),),
                              )
 
-# Static linear
-MATLine=AFFE_MATERIAU(MAILLAGE  = MESH,
-                       AFFE      = _F(GROUP_MA = 'Plaque',
-                                      MATER    = MATfunc,
-                                   ),
-                       AFFE_VARC = (_F(NOM_VARC = 'TEMP',
-                                       CHAM_GD  = tempFieldNode,
-                                       VALE_REF = tempRefe),
-                                    _F(NOM_VARC = 'GEOM',
-                                       CHAM_GD  = geomFieldNode,),
-                                   ),)
+fieldMateMeca = AFFE_MATERIAU(   MAILLAGE  = meshHE9,
+                                 AFFE      = _F(GROUP_MA = 'Plaque',
+                                           MATER    = mecaMate,
+                                          ),
+                                 AFFE_VARC = (_F(NOM_VARC = 'TEMP',
+                                            EVOL     = resthe,
+                                            VALE_REF = tempRefe),
+                                         _F(NOM_VARC = 'GEOM',
+                                            CHAM_GD  = geomFieldNode,),
+                                        ),
+                              )
 
-resuLinear=MECA_STATIQUE(MODELE     = MODEL,
-                         CHAM_MATER = MATLine,
-                         EXCIT      = _F(CHARGE=kineCondition,),
+resuLinear=MECA_STATIQUE(MODELE     = modelMeca,
+                         CHAM_MATER = fieldMateMeca,
+                         EXCIT      = _F(CHARGE = kineCondition,),
                          SOLVEUR    = _F(RESI_RELA = 1.E-5),
+                         LIST_INST  = timeList,
                         )
 
 # Post-treatement
@@ -160,43 +138,20 @@ resuLinear=CALC_CHAMP(reuse       = resuLinear,
                       DEFORMATION = ('EPVC_ELGA',),
                       CRITERES    = ('SIEQ_ELGA', 'EPEQ_ELGA', ),)
 
-# Output
-IMPR_RESU(RESU=_F(RESULTAT = resuLinear,))
-
-# Static linear with non-linear operator
-MATSNL=AFFE_MATERIAU(MAILLAGE  = MESH,
-                     AFFE      = _F(GROUP_MA = 'Plaque',
-                                    MATER    = MATfunc,
-                                 ),
-                     AFFE_VARC = (_F(NOM_VARC = 'TEMP',
-                                     EVOL     = evolTher,
-                                     VALE_REF = tempRefe,
-                                    ),
-                                  _F(NOM_VARC = 'GEOM',
-                                     CHAM_GD  = geomFieldNode,
-                                    ),
-                                 ),)
-
-
 ramp = DEFI_FONCTION(NOM_PARA = 'INST',
                      VALE     = (0.0, 0.0, 1.0, 1.0))
 
-listReal = DEFI_LIST_REEL(DEBUT      = 0.0,
-                          INTERVALLE = _F(JUSQU_A = 1.0,
-                                          NOMBRE  = 1))
-
-resuLinearSNL = STAT_NON_LINE(MODELE     = MODEL,
-                              CHAM_MATER = MATSNL,
+resuLinearSNL = STAT_NON_LINE(MODELE     = modelMeca,
+                              CHAM_MATER = fieldMateMeca,
                               EXCIT      = _F(CHARGE    = kineCondition,
                                               FONC_MULT = ramp,),
-                              INCREMENT  = _F(LIST_INST=listReal,),)
+                              INCREMENT  = _F(LIST_INST=timeList,),)
 
 # Post-treatement
 resuLinearSNL=CALC_CHAMP(reuse       = resuLinearSNL,
                          RESULTAT    = resuLinearSNL,
                          DEFORMATION = ('EPVC_ELGA',),
                          CRITERES    = ('SIEQ_ELGA', 'EPEQ_ELGA', ),)
-
 
 # Tests
 deplRefe = 0.1033
@@ -210,7 +165,7 @@ deplTole = 0.01 * 2.6
 epvcTole = 0.01 * 1.E-6
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_NO   = 'NodeASup',
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'DZ',
@@ -220,7 +175,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    PRECISION  = deplTole,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 5,
                    NOM_CHAM   = 'SIEF_ELGA',
@@ -228,7 +183,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    VALE_CALC  = sixxCalcMecaStatique,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 1,
                    NOM_CHAM   = 'SIEF_ELGA',
@@ -236,7 +191,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    VALE_CALC  = siyyCalcMecaStatique,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 5,
                    NOM_CHAM   = 'EPVC_ELGA',
@@ -247,7 +202,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
                    PRECISION  = epvcTole,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinear,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 5,
                    NOM_CHAM   = 'EPEQ_ELGA',
@@ -265,7 +220,7 @@ epvcTole = 0.01 * 1.E-6
 epeqTole = 0.01 * 1.E-6
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_NO   = 'NodeASup',
                    NOM_CHAM   = 'DEPL',
                    NOM_CMP    = 'DZ',
@@ -275,7 +230,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
                    PRECISION  = deplTole,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 5,
                    NOM_CHAM   = 'SIEF_ELGA',
@@ -286,7 +241,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
                    PRECISION  = sixxTole,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 1,
                    NOM_CHAM   = 'SIEF_ELGA',
@@ -297,7 +252,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
                    PRECISION  = siyyTole,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 5,
                    NOM_CHAM   = 'EPVC_ELGA',
@@ -308,7 +263,7 @@ TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
                    PRECISION  = epvcTole,),),)
 
 TEST_RESU(RESU=(_F(RESULTAT   = resuLinearSNL,
-                   NUME_ORDRE = 1,
+                   INST       = 1.0,
                    GROUP_MA   = 'CellTest',
                    POINT      = 5,
                    NOM_CHAM   = 'EPEQ_ELGA',
