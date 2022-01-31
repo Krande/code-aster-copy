@@ -98,7 +98,7 @@ class NonLinearSolver:
         Arguments:
             keywords (dict) : keywords as dict
         """
-        self.phys_pb.computeBehaviourProperty(keywords)
+        self.phys_pb.computeBehaviourProperty(keywords, "NON", "NON", 2)
 
     def setLinearSolver(self, solver=None, keywords=None):
         """Set linear solver from keywords or directly.
@@ -195,7 +195,6 @@ class NonLinearSolver:
             time_curr = self.stepper.getNext()
             self.step_rank += 1
             self.phys_state.time_step = time_curr - self.phys_state.time
-            logger.info("Solve current time step %s", time_curr)
 
             solv = self.getStepSolver(self.step_rank)
             solv.setPhysicalProblem(self.phys_pb)

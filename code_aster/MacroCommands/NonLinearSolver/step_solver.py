@@ -20,9 +20,10 @@
 from libaster import deleteTemporaryObjects
 
 from ...Supervis import ConvergenceError
-from ...Utilities import logger, no_new_attributes, profile
+from ...Utilities import no_new_attributes, profile
 from .convergence_manager import ConvergenceManager
 from .incremental_solver import IncrementalSolver
+from .logging_manager import LoggingManager
 
 
 class StepSolver:
@@ -147,6 +148,20 @@ class StepSolver:
         # current_state == U, Delta_U, P, (Sigm)
         return IncrementalSolver()
 
+    def createLoggingManager(self):
+        """Return a logging manager
+
+        Returns:
+            LoggingManager: object for logging
+        """
+        logManager = LoggingManager()
+        logManager.addConvTableColumn("NEWTON")
+        logManager.addConvTableColumn("RESIDU RELATIF RESI_GLOB_RELA")
+        logManager.addConvTableColumn("RESIDU ABSOLU RESI_GLOB_MAXI")
+        logManager.addConvTableColumn("OPTION ASSEMBLAGE")
+
+        return logManager
+
     def hasFinished(self):
         """Tell if there are iterations to be computed.
 
@@ -181,8 +196,11 @@ class StepSolver:
             *ConvergenceError* exception in case of error.
         """
         convManager = self.createConvergenceManager()
+        logManager = self.createLoggingManager()
+        logManager.printIntro(self.phys_state.time + self.phys_state.time_step, 1)
+        logManager.printConvTableEntries()
+
         while not self.hasFinished() and not convManager.hasConverged():
-            logger.info("----- current iteration %s", self.current_iter)
             iteration = self.createIncrementalSolver()
             iteration.setConvergenceCriteria(convManager)
             iteration.setPhysicalProblem(self.phys_pb)
@@ -196,9 +214,9 @@ class StepSolver:
             )
             self.updatePhysicalState(displ_incr, variP, sigma, convManager)
 
-            logger.info("      residual relative and maximum: %s, %s",
-                        convManager.residual["RESI_GLOB_RELA"],
-                        convManager.residual["RESI_GLOB_MAXI"])
+            logManager.printConvTableRow([self.current_iter, convManager.residual["RESI_GLOB_RELA"],
+                                          convManager.residual["RESI_GLOB_MAXI"], matrix_type])
+
             self.current_iter += 1
 
         if not convManager.hasConverged():
@@ -210,3 +228,5 @@ class StepSolver:
             self.current_matrix = None
 
         deleteTemporaryObjects()
+
+        logManager.printConvTableEnd()
