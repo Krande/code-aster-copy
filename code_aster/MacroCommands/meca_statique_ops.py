@@ -20,7 +20,6 @@
 from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
 
 from ..Commands import CALC_CHAMP
-from ..Messages import UTMESS
 from ..Objects import (
     AssemblyMatrixDisplacementReal,
     DiscreteComputation,
@@ -248,8 +247,6 @@ def meca_statique_ops(self, **args):
         # store rank
         storage_manager.storeState(rank, phys_state.time, phys_pb, phys_state)
 
-        UTMESS("I", "ARCHIVAGE_6", valk="DEPL", valr=phys_state.time, vali=rank)
-
         timeStepper.completed()
         rank += 1
         isFirst = False
@@ -258,7 +255,6 @@ def meca_statique_ops(self, **args):
     linear_solver.deleteFactorizedMatrix()
 
     # store field
-    storage_manager.store()
     result = storage_manager.getResult()
 
     # cleaning because some objects are still on VOLATILE

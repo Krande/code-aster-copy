@@ -91,9 +91,7 @@ class ConvergenceManager:
         eliminatedDofs = dofNume.getDirichletBCDOFs()
         nb_dofs = len(eliminatedDofs)
 
-        residuals.resi_int.updateValuePointers()
-        residuals.resi_dual.updateValuePointers()
-        residuals.resi_ext.updateValuePointers()
+        residuals.update()
 
         for ieq in range(nb_dofs):
             f_int = 0.0

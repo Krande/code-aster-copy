@@ -30,6 +30,19 @@ class ResiState:
     resi = resi_int = resi_ext = resi_dual = resi_stress = resi_cont = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
+    def update(self):
+        if self.resi is not None:
+            self.resi.updateValuePointers()
+        if self.resi_int is not None:
+            self.resi_int.updateValuePointers()
+        if self.resi_ext is not None:
+            self.resi_ext.updateValuePointers()
+        if self.resi_dual is not None:
+            self.resi_dual.updateValuePointers()
+        if self.resi_stress is not None:
+            self.resi_stress.updateValuePointers()
+        if self.resi_cont is not None:
+            self.resi_cont.updateValuePointers()
 
 class IncrementalSolver:
     """Solve an iteration."""

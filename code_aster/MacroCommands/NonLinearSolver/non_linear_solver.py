@@ -17,6 +17,8 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortranLoggingLevel
+
 from ...Objects import NonLinearResult, PhysicalProblem, LinearSolver
 from ...Supervis import ConvergenceError, ExecuteCommand, IntegrationError
 from ...Utilities import logger, no_new_attributes, profile
@@ -140,19 +142,20 @@ class NonLinearSolver:
         """
         return self.stepper.hasFinished()
 
-    def setVerbose(self, level):
-        """Set verbose level.
+    def setLoggingLevel(self, level):
+        """Set logging level.
 
         Arguments:
             level (int): verbosity level.
         """
         if level is not None:
+            setFortranLoggingLevel(level)
             # Disable printing of python command
             if level < 3:
                 ExecuteCommand.level += 1
 
-    def _resetVerbose(self, level):
-        """Reset verbose level
+    def _resetLoggingLevel(self, level):
+        """Reset logging level
 
         Arguments:
             level (int): verbosity level.
@@ -160,6 +163,7 @@ class NonLinearSolver:
         if level is not None:
             if level < 3:
                 ExecuteCommand.level -= 1
+        resetFortranLoggingLevel()
 
     def _storeRank(self, rank, time):
         """Store the current physical state.
@@ -181,7 +185,7 @@ class NonLinearSolver:
     @profile
     def run(self):
         """Solve the problem."""
-        self.setVerbose(self._get("INFO"))
+        self.setLoggingLevel(self._get("INFO"))
         self.phys_pb.computeListOfLoads()
         self.phys_pb.computeDOFNumbering()
         self._initializeRun()
@@ -219,8 +223,9 @@ class NonLinearSolver:
                 self.stepper.completed()
             self.current_matrix = solv.current_matrix
 
-        self.storage_manager.store()
-        self._resetVerbose(self._get("INFO"))
+        self._resetLoggingLevel(self._get("INFO"))
+
+        deleteTemporaryObjects()
 
     def _get(self, keyword, parameter=None, default=None):
         """"Return a keyword value"""

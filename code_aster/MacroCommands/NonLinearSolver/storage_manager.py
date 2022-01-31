@@ -17,6 +17,7 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+from ...Messages import UTMESS
 from ...Utilities import no_new_attributes, profile
 
 
@@ -69,6 +70,8 @@ class StorageManager:
         slot.fields["COMPORTEMENT"] = phys_pb.getBehaviourProperty().getBehaviourField()
         self.buffer.append(slot)
 
+        self.store()
+
     @profile
     def store(self):
         """Build result with all ranks in buffer."""
@@ -91,5 +94,6 @@ class StorageManager:
                 for field_type, field in slot.fields.items():
                     if field is not None:
                         self.result.setField(field, field_type, rank_curr)
+                        UTMESS("I", "ARCHIVAGE_6", valk=field_type, valr=slot.time, vali=rank_curr)
 
         self.buffer = []
