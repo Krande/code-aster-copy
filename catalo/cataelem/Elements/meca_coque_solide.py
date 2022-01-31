@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -189,7 +189,7 @@ class MESSHELL_SB9(Element):
                         (SP.PVARCRR, LC.ZVARCPG),
                         (SP.PCONTMR, LC.EGIG3DR),
                         (SP.PVARIMP, LC.ZVARIPG), (SP.PVARIMR, LC.ZVARIPG),),
-            para_out = ((SP.PCODRET, LC.ECODRET), 
+            para_out = ((SP.PCODRET, LC.ECODRET),
                         (SP.PCONTPR, LC.EGIG3DR), (SP.PVARIPR, LC.ZVARIPG),
                         (SP.PMATUNS, MMATUNS)   , (SP.PMATUUR, MMATUUR),
                         (SP.PVECTUR, MVECTUR),),
@@ -260,7 +260,7 @@ class MESSHELL_SB9(Element):
                         (SP.PVARCRR, LC.ZVARCPG),
                         (SP.PCONTMR, LC.EGIG3DR),
                         (SP.PVARIMP, LC.ZVARIPG), (SP.PVARIMR, LC.ZVARIPG),),
-            para_out = ((SP.PCODRET, LC.ECODRET), 
+            para_out = ((SP.PCODRET, LC.ECODRET),
                         (SP.PCONTPR, LC.EGIG3DR), (SP.PVARIPR, LC.ZVARIPG),
                         (SP.PVECTUR, MVECTUR),),
         ),
@@ -306,7 +306,7 @@ class MESSHELL_SB9(Element):
             para_out = ((SP.PGEOM_R, LC.EGGEO3D),
                         (OP.TOU_INI_ELGA.PNEUT_F, LC.EGTINIF), (OP.TOU_INI_ELGA.PNEUT_R, LC.EGTINIR),
                         (OP.TOU_INI_ELGA.PSIEF_R, LC.EGIG3DR), (OP.TOU_INI_ELGA.PVARI_R, LC.ZVARIPG),
-                        (OP.TOU_INI_ELGA.PEPSI_R, LC.EGPS3DR),
+                        (OP.TOU_INI_ELGA.PEPSI_R, LC.EGPS3DR), (OP.TOU_INI_ELGA.PTEMP_R, LC.ETEMPPG),
                         (OP.TOU_INI_ELGA.PDOMMAG, LC.EDOMGGA), (SP.PFACY_R, LC.EGFC3DR),
                         (OP.TOU_INI_ELGA.PINST_R, LC.EGINST_R),),
         ),
@@ -325,4 +325,3 @@ class MESSHELL_SB9(Element):
             para_out = ((SP.PCODRET, LC.ECODRET),),
         ),
     )
-
