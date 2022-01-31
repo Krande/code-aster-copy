@@ -65,6 +65,8 @@ class ConvergenceManager:
             nbElimination = len(eliminatedDofs)
             assert residual.size() == nbElimination
 
+            residual.updateValuePointers()
+            diriBCs.updateValuePointers()
             for ieq in range(nbElimination):
                 if eliminatedDofs[ieq] == 1:
                     residual[ieq] = diriBCs[ieq]
@@ -88,6 +90,10 @@ class ConvergenceManager:
 
         eliminatedDofs = dofNume.getDirichletBCDOFs()
         nb_dofs = len(eliminatedDofs)
+
+        residuals.resi_int.updateValuePointers()
+        residuals.resi_dual.updateValuePointers()
+        residuals.resi_ext.updateValuePointers()
 
         for ieq in range(nb_dofs):
             f_int = 0.0

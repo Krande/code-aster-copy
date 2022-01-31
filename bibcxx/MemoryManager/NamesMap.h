@@ -60,7 +60,7 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
      * @return true if adding is ok
      */
     bool add( const ASTERINTEGER &position, const ValueType &toAdd ) {
-        if ( position <= this->size() ) {
+        if ( position <= this->capacity() ) {
             JeveuxChar32 objName( " " );
             CALLO_JEXNOM( objName, _name, toAdd );
             CALLO_JECROC( objName );
@@ -68,7 +68,7 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
         } else {
             std::string error = "Out of range of NamesMap '" + _name +
                                 "', index = " + std::to_string( position ) +
-                                " ( size = " + std::to_string( this->size() ) + " )";
+                                " ( capacity = " + std::to_string( this->capacity() ) + " )";
             throw std::out_of_range( error );
         }
         return false;
