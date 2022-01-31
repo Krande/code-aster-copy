@@ -217,7 +217,7 @@ subroutine kineLoadGlueMeshMeca(loadNameZ, modelZ, valeTypeZ, lVerbose, listLine
                                       nbNodeSlav, geomSlavJv, nodeSlav,&
                                       nbCellMast, geomMastJv, cellMast,&
                                       corres)
-                    
+
         elseif (linkType .eq. 'MASSIF_COQUE') then
             call kineLoadMeshProjVoSh(modelZ, meshNbNode,&
                                       lDistMaxi, distMaxi, distAlarm,&
@@ -434,10 +434,10 @@ subroutine kineLoadGlueMeshMecaPara(factorKeywordZ, iOcc, geomDime,&
                 if (dofName(iDof) .eq. 'DNOR') then
                     call utmess('F', 'CHARGES7_2')
                 endif
-            end do
+            enddo
         endif
     endif
-
+    !
     call getvtx(factorKeywordZ, 'ELIM_MULT', iocc=iocc, scal=answer, nbret=nbRet)
     lElimMult = answer .eq. 'OUI'
     distMaxi = 0.d0
@@ -800,7 +800,7 @@ subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
             nbEqua = 1
             dofLinkName(1, 1) = 'DEPL'
             dofLinkName(1, 2) = 'DEPL'
-        elseif (useDisp) then
+        else if (useDisp) then
             if (lApplyRota) then
                 nbDofMast = 1
                 nbDofSlav = geomDime
@@ -840,7 +840,7 @@ subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
             do iDof = 1, nbDof
                 dofLinkName(iDof, 1) = dofName(iDof)
                 dofLinkName(iDof, 2) = dofName(iDof)
-            end do
+            enddo
         endif
     endif
 
@@ -853,18 +853,18 @@ subroutine kineLoadGlueMeshMecaLine(linkType, meshZ, geomDime,&
                                   nbEqua, nbDofSlav, nbDofMast, dofLinkName,&
                                   kineListRela)
 
-    elseif (linkType .eq. 'MASSIF_COQUE') then
+    else if (linkType .eq. 'MASSIF_COQUE') then
         call kineLoadMeshLinkVoSh(mesh, geomDime,&
                                   corres, kineListRela)
 
-    elseif (linkType .eq. 'COQUE_MASSIF') then
+    else if (linkType .eq. 'COQUE_MASSIF') then
         call kineLoadMeshLinkShVo(mesh, geomDime,&
                                   corres, corre1, corre2, corre3,&
                                   kineListRela)
 
-    elseif (linkType .eq. 'COQUE') then
+    else if (linkType .eq. 'COQUE') then
         call kineLoadMeshLinkShSh(mesh, geomDime,&
-                                  corres, kineListRela)
+                                  corres, useDisp, dofName, kineListRela)
 
     else
         ASSERT(ASTER_FALSE)
@@ -1034,7 +1034,7 @@ end subroutine
 ! Create linear relations for 'MASSIF'
 !
 ! Each equation is a relation between one slave node and several master nodes:
-!    CoefSlav_1 * NodeSlav_Dof1 + CoefSlav_2 * NodeSlav_Dof2  + ... = 
+!    CoefSlav_1 * NodeSlav_Dof1 + CoefSlav_2 * NodeSlav_Dof2  + ... =
 !      (i=1, nbNodeMast) {CoefMast_1 * NodeMast^i_Dof1 + CoefMast_2 * NodeMast^i_Dof2  + ... }
 !
 !      nbEqua: number of equations
@@ -1302,7 +1302,7 @@ subroutine kineLoadMeshLinkVoSh(meshZ, geomDime,&
                 kineListRela%coefMultReal(iTerm) = nodeMastCoef
                 iTerm = iTerm + 1
             end do
-            
+
 ! --------- Loop on master nodes (rotations)
             do iNodeMastRota = 1, nbNodeMastRota
                 nodeMastNume = pjefNu(shiftNodeMast + iNodeMastRota)
@@ -1604,32 +1604,35 @@ end subroutine
 !
 ! --------------------------------------------------------------------------------------------------
 subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
-                                corres, kineListRela)
+                                corres, useDisp, dofName, kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-    character(len=*), intent(in) :: meshZ
-    integer, intent(in) :: geomDime
-    character(len=16), intent(in) :: corres
+    character(len=*), intent(in)        :: meshZ
+    integer, intent(in)                 :: geomDime
+    character(len=16), intent(in)       :: corres
+    aster_logical, intent(in)           :: useDisp
+    character(len=8), pointer           :: dofName(:)
     type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
     character(len=80), parameter :: title = 'LIAISON_MAIL-COQUE'
     character(len=8), parameter :: dofDispName(3) = (/'DX', 'DY', 'DZ'/)
     character(len=8), parameter :: dofRotaName(3) = (/'DRX', 'DRY', 'DRZ'/)
-    integer :: iNodeMast, iTerm, iDime
+    integer :: iNodeMast, iTerm, iDime, ii, nbDof
     integer :: shiftNodeMast
     integer :: iLink, nbLink, nodeSlavNume, nodeMastNume, cellMastNume
-    character(len=8) :: nodeSlavName, nodeMastName, dofName
+    character(len=8) :: nodeSlavName, nodeMastName, LocDofName
     character(len=8) :: mesh
     real(kind=8) :: nodeMastCoef
     integer :: nbNodeMast, nbTerm
     real(kind=8), pointer :: meshVale(:) => null()
     integer, pointer :: pjefNu(:) => null(), pjefNb(:) => null(), pjefM1(:) => null()
     real(kind=8), pointer :: pjefCf(:) => null(), pjefCo(:) => null()
+    aster_logical :: TakeDof
 !   ------------------------------------------------------------------------------------------------
 !
     mesh = meshZ
 
-! - Acces to link parameters
+! - Access to link parameters
     call jelira(corres//'.PJEF_NB', 'LONMAX', nbLink)
     call jeveuo(corres//'.PJEF_M1', 'L', vi = pjefM1)
     call jeveuo(corres//'.PJEF_NB', 'L', vi = pjefNb)
@@ -1659,10 +1662,29 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
 ! ----- Link for DISPLACEMENTS
         nbTerm = 1 + nbNodeMast
         ASSERT(nbTerm .le. kineListRela%nbTermMaxi)
-
+! ----- Number of Dof to consider
+        nbDof = size(dofName)
+        ! Not necessary because the rule is in the catalog, but ...
+        !   useDisp : True, if DDL is not used ==> (not useDisp) DDL is used
+        if ( .not. useDisp ) then
+            ASSERT( (nbDof.ge.1).and.(nbDof.le.6) )
+        endif
+        !
         do iDime = 1, 3
-            dofName = dofDispName(iDime)
-
+            LocDofName = dofDispName(iDime)
+! --------- Is this Dof is taken into account
+            if ( .not. useDisp ) then
+                TakeDof = ASTER_FALSE
+                do ii = 1, nbDof
+                    if ( LocDofName .eq. dofName(ii) ) then
+                        TakeDof = ASTER_TRUE
+                        exit
+                    endif
+                enddo
+                if ( .not. TakeDof ) then
+                    cycle
+                endif
+            endif
 ! --------- Init list of relations
             call kineListRelaInit(kineListRela)
 
@@ -1670,7 +1692,7 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
             iTerm = 1
             kineListRela%nodeName(iTerm) = nodeSlavName
             kineListRela%coefMultReal(iTerm) = -1.d0
-            kineListRela%dofName(iTerm) = dofName
+            kineListRela%dofName(iTerm) = LocDofName
 
 ! --------- Master nodes (displacements)
             do iNodeMast = 1, nbNodeMast
@@ -1679,7 +1701,7 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
                 nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
                 call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
                 kineListRela%nodeName(iTerm) = nodeMastName
-                kineListRela%dofName(iTerm) = dofName
+                kineListRela%dofName(iTerm) = LocDofName
                 kineListRela%coefMultReal(iTerm) = nodeMastCoef
                 if (nodeMastNume .eq. nodeSlavNume) then
                     if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
@@ -1687,12 +1709,12 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
                         cycle
                     endif
                 endif
-            end do
+            enddo
 
 ! --------- Affect linear relation
             call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_TRUE)
 
-        end do
+        enddo
 
 ! ----- Link for ROTATIONS
         nbTerm = 1 + nbNodeMast
@@ -1700,7 +1722,20 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
 
 
         do iDime = 1, 3
-            dofName = dofRotaName(iDime)
+            LocDofName = dofRotaName(iDime)
+! --------- Is this Dof is taken into account
+            if ( .not. useDisp ) then
+                TakeDof = ASTER_FALSE
+                do ii = 1, nbDof
+                    if ( LocDofName .eq. dofName(ii) ) then
+                        TakeDof = ASTER_TRUE
+                        exit
+                    endif
+                enddo
+                if ( .not. TakeDof ) then
+                    cycle
+                endif
+            endif
 
 ! --------- Init list of relations
             call kineListRelaInit(kineListRela)
@@ -1709,7 +1744,7 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
             iTerm = 1
             kineListRela%nodeName(iTerm) = nodeSlavName
             kineListRela%coefMultReal(iTerm) = -1.d0
-            kineListRela%dofName(iTerm) = dofName
+            kineListRela%dofName(iTerm) = LocDofName
 
 ! --------- Master nodes (displacements)
             do iNodeMast = 1, nbNodeMast
@@ -1718,7 +1753,7 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
                 nodeMastCoef = pjefCf(shiftNodeMast+iNodeMast)
                 call jenuno(jexnum(mesh//'.NOMNOE', nodeMastNume), nodeMastName)
                 kineListRela%nodeName(iTerm) = nodeMastName
-                kineListRela%dofName(iTerm) = dofName
+                kineListRela%dofName(iTerm) = LocDofName
                 kineListRela%coefMultReal(iTerm) = nodeMastCoef
                 if (nodeMastNume .eq. nodeSlavNume) then
                     if (abs(nodeMastCoef-1.0d0) .lt. 1.0d-02) then
@@ -1726,12 +1761,12 @@ subroutine kineLoadMeshLinkShSh(meshZ, geomDime,&
                         cycle
                     endif
                 endif
-            end do
+            enddo
 
 ! --------- Affect linear relation
             call kineListRelaSave(title, nbTerm, kineListRela, epsiDebg_= ASTER_TRUE)
 
-        end do
+        enddo
 
 ! ----- Next master nodes
         shiftNodeMast = shiftNodeMast + nbNodeMast

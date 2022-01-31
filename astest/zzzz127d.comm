@@ -1,0 +1,186 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+#--------------------------------------------------------------------
+# Validation de LIAISON_MAIL / TYPE_RACCORD='COQUE'  (Coque / Coque)
+#   Avec
+#       DDL = ('DX','DY','DZ', 'DRX', 'DRY','DRZ',)
+#       DDL = ('DX','DY','DZ', 'DRX', 'DRY',)
+#       DDL = ('DX','DY','DZ', )
+#
+#   Maillage issu de : ssls101n
+#--------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+Epais=0.10
+Press=1.0
+
+
+MAILL=LIRE_MAILLAGE(FORMAT='MED',)
+
+# remarque importante :
+# Le point D existe en double dans le maillage (D1 dans ABC et D2 dans DBCE).
+# D1 va etre "attache" a DBCE (LIAISON_MAIL). Il sera quasiment elimine.
+# il ne faut pas lui ajouter les conditions de symetrie (sinon : pivot nul)
+# C'est pour cela que l'on cree le group_no AB1 = AB - D1
+# On fait la meme chose pour CA1 = CA - E1
+MAILL = DEFI_GROUP(reuse=MAILL, MAILLAGE=MAILL,
+    CREA_GROUP_NO=(
+        _F(TOUT_GROUP_MA='OUI',),
+        _F(NOM='AB1',DIFFE=('AB','D1',)),
+        _F(NOM='CA1',DIFFE=('CA','E1',)),
+    ),
+)
+
+MAILL=MODI_MAILLAGE(reuse =MAILL, MAILLAGE=MAILL,
+    ORIE_NORM_COQUE=(
+        _F(GROUP_MA='ADE',  GROUP_NO='A', VECT_NORM=(0., 0., 1.)),
+        _F(GROUP_MA='DBCE', GROUP_NO='B', VECT_NORM=(0., 0., 1.)),
+    ),
+)
+
+MATER=DEFI_MATERIAU(ELAS=_F(E = 1.0, NU = 0.3) )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILL, AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+
+MODEL=AFFE_MODELE(
+    MAILLAGE=MAILL,
+    AFFE=(
+        _F(GROUP_MA='ADE',  MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE'),
+        _F(GROUP_MA='DBCE', MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE'),
+    ),
+)
+
+CARELEM=AFFE_CARA_ELEM(
+    MODELE=MODEL,
+    COQUE=_F(GROUP_MA = 'ABC', COQUE_NCOU=9, EPAIS = Epais,  ANGL_REP = (0., 0.,),),
+)
+
+CHARGE=AFFE_CHAR_MECA(MODELE=MODEL, INFO=1,
+    DDL_IMPO=(
+        _F( GROUP_MA = 'BC',     DX = 0.,  DY = 0.,   DZ =  0.),
+        _F( GROUP_NO = 'AB1',    DY = 0.,  DRX = 0.,  DRZ = 0.),
+        _F( GROUP_NO = 'CA1',    DX = 0.,  DRY = 0.,  DRZ = 0.),
+    ),
+    PRES_REP=(
+        _F(GROUP_MA='ADE',    PRES =  Press),
+        _F(GROUP_MA='DBCE',   PRES =  Press),
+    ),
+)
+
+# --------------------------------------------------------------------------------------------------
+# Avec tous les DDL de DEPL
+#   C'est le comportement normal que l'on mette DDL ou pas
+#   On passe dans la vérification des DDL et ils sont tous pris en compte
+#   Le résultat est issu de ssls101n
+RACCORD1=AFFE_CHAR_MECA(MODELE=MODEL,
+    LIAISON_MAIL =(
+        _F(TYPE_RACCORD='COQUE', GROUP_NO_ESCL='DE', GROUP_MA_MAIT='DBCE',
+           DDL=('DZ','DY','DX','DRY','DRZ','DRX'),),
+    ),
+)
+
+RESU1=MECA_STATIQUE(MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    EXCIT=(
+        _F(CHARGE = CHARGE),
+        _F(CHARGE = RACCORD1),
+    ),
+)
+
+TEST_RESU(
+    RESU=_F(NUME_ORDRE=1, GROUP_NO='A', REFERENCE='ANALYTIQUE', RESULTAT=RESU1,
+            NOM_CHAM='DEPL', NOM_CMP='DZ',
+            VALE_CALC=-694.983097112,
+            VALE_REFE=-695.6256, PRECISION=2.E-3,
+        ),
+)
+
+# --------------------------------------------------------------------------------------------------
+# On enlève DRZ ==> cela ne doit rien changer pour ce cas de chargement
+#   Le résultat est issu de ssls101n
+RACCORD2=AFFE_CHAR_MECA(MODELE=MODEL,
+    LIAISON_MAIL =(
+        _F(TYPE_RACCORD='COQUE', GROUP_NO_ESCL='DE', GROUP_MA_MAIT='DBCE',
+           DDL=('DZ','DY','DX','DRY','DRX'),),
+    ),
+)
+
+RESU2=MECA_STATIQUE(MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    EXCIT=(
+        _F(CHARGE = CHARGE),
+        _F(CHARGE = RACCORD2),
+    ),
+)
+
+TEST_RESU(
+    RESU=_F(NUME_ORDRE=1, GROUP_NO='A', REFERENCE='ANALYTIQUE', RESULTAT=RESU2,
+            NOM_CHAM='DEPL', NOM_CMP='DZ',
+            VALE_CALC=-694.983097112,
+            VALE_REFE=-695.6256, PRECISION=2.E-3,
+        ),
+)
+
+
+# --------------------------------------------------------------------------------------------------
+# On enlève DRZ, DRY, DRX
+#   Test en non régression
+#   Comparaison entre les AFFE_CHAR_MECA( INFO=2 ) des relations prises en compte ou pas
+RACCORD3=AFFE_CHAR_MECA(MODELE=MODEL,
+    LIAISON_MAIL =(
+        _F(TYPE_RACCORD='COQUE', GROUP_NO_ESCL='DE', GROUP_MA_MAIT='DBCE',
+           DDL=('DZ','DY','DX',),),
+    ),
+)
+
+RESU3=MECA_STATIQUE(MODELE=MODEL,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    EXCIT=(
+        _F(CHARGE = CHARGE),
+        _F(CHARGE = RACCORD3),
+    ),
+)
+
+TEST_RESU(
+    RESU=_F(NUME_ORDRE=1, GROUP_NO='A', REFERENCE='NON_DEFINI', RESULTAT=RESU3,
+            NOM_CHAM='DEPL', NOM_CMP='DZ',
+            VALE_REFE=-1041.5169,VALE_CALC=-1041.5169,
+        ),
+)
+
+"""
+# --------------------------------------------------------------------------------------------------
+unit=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='REPE_OUT/resu1.med', TYPE='LIBRE')
+IMPR_RESU(UNITE=unit, FORMAT='MED', RESU=_F(RESULTAT=RESU1))
+DEFI_FICHIER(ACTION='LIBERER',UNITE=unit)
+
+unit=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='REPE_OUT/resu2.med', TYPE='LIBRE')
+IMPR_RESU(UNITE=unit, FORMAT='MED', RESU=_F(RESULTAT=RESU2))
+DEFI_FICHIER(ACTION='LIBERER',UNITE=unit)
+
+unit=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER='REPE_OUT/resu3.med', TYPE='LIBRE')
+IMPR_RESU(UNITE=unit, FORMAT='MED', RESU=_F(RESULTAT=RESU3))
+DEFI_FICHIER(ACTION='LIBERER',UNITE=unit)
+"""
+
+FIN()
