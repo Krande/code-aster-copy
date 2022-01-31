@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
+#include "asterfort/Behaviour_type.h"
 !
 interface
     subroutine lc0075(fami, kpg, ksp, ndim, imate,&
@@ -30,8 +28,8 @@ interface
         integer :: ksp
         integer :: ndim
         integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: carcri(*)
+        character(len=16) :: compor(COMPOR_SIZE)
+        real(kind=8) :: carcri(CARCRI_SIZE)
         real(kind=8) :: instam
         real(kind=8) :: instap
         integer :: neps
