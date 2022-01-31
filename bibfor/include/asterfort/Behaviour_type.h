@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -144,6 +144,11 @@
 #define HHO_STAB_MANU 2
 #define HHO_CALC_YES  1
 #define HHO_CALC_NO   2
+!
+! Slots: for generic parameters
+!
+#define ITER_INTE_MAXI  1
+#define RESI_INTE_RELA  3
 !
 !        type of external state variables
 !
