@@ -75,6 +75,9 @@ bool ContactZone::build() {
         UTMESS( "F", "CONTACT1_1" );
     }
 
+    // Update  master nodes
+    _masterNodes = std::move(masterNodes_lc);
+
     // check mesh orientation (normals)
     if ( checkNormals() ) {
         std::string slave = ljust( getSlaveGroupOfCells(), 24, ' ' );
@@ -91,6 +94,7 @@ bool ContactZone::build() {
 
     // build master and slave  Cells Neighbors
     buildCellsNeighbors();
+
     return true;
 }
 
@@ -141,7 +145,7 @@ ASTERBOOL  ContactZone::buildCellsNeighbors() {
         std::string sn_name = ljust( _slaveNeighbors->getName(), 24, ' ' );
 
       
-        CALL_CNVOIS(getMesh()->getName(), _slaveCells.data(), invscn_name, &nbMaster,
+        CALL_CNVOIS(getMesh()->getName(), _slaveCells.data(), invscn_name, &nbSlave,
                                 &ind_min, &ind_max, sn_name);
         
         _slaveNeighbors->build();

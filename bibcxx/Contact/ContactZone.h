@@ -125,22 +125,44 @@ class ContactZone : public DataStructure {
     void checkNormals( const bool &checkNormal ) { _checkNormal = checkNormal; }
 
     bool checkNormals() const { return _checkNormal; }
-       const VectorLong& getMasterCells() const {return _masterCells;};
+
+    /**
+     * @brief get master nodes
+     */
+    const VectorLong& getMasterNodes() const {return _masterCells;};
     
+    VectorLong&  getMasterNodes() { 
+      return const_cast<VectorLong&>(std::as_const(*this).getMasterCells());
+    }
+    
+      /**
+     * @brief get master cells
+     */
+    const VectorLong& getMasterCells() const {return _masterCells;};
+
     VectorLong&  getMasterCells() { 
       return const_cast<VectorLong&>(std::as_const(*this).getMasterCells());
     }
-
+    
+    /**
+     * @brief  update list of master cells
+     */
     void updateMasterCells(){
         if(_masterCells.empty()) _masterCells =  getMesh()->getCells( _master );
     }
-
+    
+    /**
+     * @brief get slave cells
+     */
     const VectorLong& getSlaveCells() const { return _slaveCells; };
 
     VectorLong&  getSlaveCells() {
       return const_cast<VectorLong&>(std::as_const(*this).getSlaveCells());
     }
 
+    /**
+     * @brief update list of slave cells
+     */
     void updateSlaveCells(){
         if( _slaveCells.empty() ) _slaveCells  =  getMesh()->getCells( _slave );
     }
@@ -187,11 +209,32 @@ class ContactZone : public DataStructure {
       return vct;
     }
 
+    /**
+     * @brief get master inverse connectivity as JeVeuxCollection
+     */
+    JeveuxCollectionLong getMasterInverseConnectivity() const { 
+                                      return _masterInverseConnectivity; }
+    /**
+     * @brief get slave inverse connectivity as JeVeuxCollection
+     */
+    JeveuxCollectionLong getSlaveInverseConnectivity() const { 
+                                      return _slaveInverseConnectivity; }
+
+    /**
+     * @brief get master neighbors
+     */
+    JeveuxCollectionLong getMasterNeighbors() const { return _masterNeighbors; }
+    /**
+     * @brief get slave neighbors
+     */
+    JeveuxCollectionLong getSlaveNeighbors() const { return _slaveNeighbors;}
      /**
      * @brief Construct the inverse connectivity 
      */
     ASTERBOOL  buildInverseConnectivity();
-
+    /**
+     * @brief construct master/slave cells neighbors
+     */
     ASTERBOOL  buildCellsNeighbors();
 };
 

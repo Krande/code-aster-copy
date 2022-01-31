@@ -87,6 +87,14 @@ DEFICO = DEFI_CONT(MODELE=MODI,
                             CONTACT_INIT='INTERPENETRE',)),)
 
 
+
+# some checks for the  first zone :
+zone = DEFICO.getContactZone(0)
+test.assertEqual(zone.getMasterCellsFromNode(20), [13, 14])
+test.assertEqual(zone.getSlaveCellsFromNode(65), [62, 63])
+test.assertEqual(zone.getMasterCellNeighbors(15), [14, 16])
+test.assertEqual(zone.getSlaveCellNeighbors(55), [56, 54])
+
 test.assertEqual(DEFICO.getNumberOfContactZones(), 2)
 test.assertEqual(DEFICO.getVerbosity(), 2)
 test.assertEqual(DEFICO.getModel().getName(), MODI.getName())

@@ -183,11 +183,35 @@ Returns:
         )",
               ( py::arg( "self" ) ) )
         .def( "getMasterCellsFromNode",
-                        &ContactZone::getMasterCellsFromNode )
+                        &ContactZone::getMasterCellsFromNode,R"(
+Get the master cells associtaed with a node number
+
+Arguments:
+    int: node number
+        )",
+              ( py::arg( "self" ), py::arg( "node_number" ) ) )
         .def( "getSlaveCellsFromNode",
-                        &ContactZone::getSlaveCellsFromNode )
+                        &ContactZone::getSlaveCellsFromNode, R"(
+Get the slave cells associtaed with a node number
+
+Arguments:
+    int: node number
+        )",
+              ( py::arg( "self" ), py::arg( "node_number" ) )  )
         .def( "getMasterCellNeighbors",
-                        &ContactZone::getMasterCellNeighbors )
+                        &ContactZone::getMasterCellNeighbors, R"(
+Get the master cells in the neighbor of a given master cell number
+
+Arguments:
+    int: master cell number
+        )",
+              ( py::arg( "self" ), py::arg( "cell_number" ) )  )
         .def( "getSlaveCellNeighbors",
-                        &ContactZone::getSlaveCellNeighbors );
+                        &ContactZone::getSlaveCellNeighbors, R"(
+Get the slave cells in the neighbor of a given slave cell number
+
+Arguments:
+    int: slave cell number
+        )",
+              ( py::arg( "self" ), py::arg( "cell_number" ) )  );
 };
