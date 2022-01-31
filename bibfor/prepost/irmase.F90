@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -127,8 +127,14 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
             zr(ibid+2) = -1.0d0 + icouch*delta
             zr(ibid)   = zr(ibid+2) - delta
             zr(ibid+1) = 0.5d0*(zr(ibid+2)+zr(ibid))
+            !
+            if ( icouch .ne. 1) then
+                zr(ibid)   = zr(ibid)   + 0.10*delta
+            endif
+            if ( icouch .ne. nbrcou ) then
+                zr(ibid+2) = zr(ibid+2) - 0.10*delta
+            endif
         enddo
-!
     else if (typsec .eq. 'GRILLE') then
         ndim   = 1
         nbpoin = 1
