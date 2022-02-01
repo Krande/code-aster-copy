@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -74,12 +74,11 @@ class FieldCreator(ExecuteCommand):
                 self._result = FieldOnNodesReal()
             if mesh is not None:
                 self._result.setMesh(mesh)
+            if numeDdl is not None:
+                self._result.setDescription(numeDdl.getDescription())
         else:
             # ELGA_
             self._result = FieldOnCellsReal()
-
-        if numeDdl is not None:
-            self._result.setDOFNumbering(numeDdl)
 
         if location[:2] == "EL":
             chamF = keywords.get("CHAM_F")
@@ -115,11 +114,11 @@ class FieldCreator(ExecuteCommand):
         """
 
         if isinstance(self._result, FieldOnNodesReal):
-            if not self._result.getDOFNumbering():
+            if not self._result.getDescription():
                 for comb in force_list(keywords.get("COMB", [])):
-                    dofNum = comb['CHAM_GD'].getDOFNumbering()
-                    if dofNum:
-                        self._result.setDOFNumbering(dofNum)
+                    desc = comb['CHAM_GD'].getDescription()
+                    if desc:
+                        self._result.setDescription(desc)
                         break
             if not self._result.getMesh():
                 for comb in force_list(keywords.get("COMB", [])):

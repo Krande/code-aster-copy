@@ -102,7 +102,8 @@ ExternalStateVariablesBuilder::computeExternalStateVariablesLoad( const BaseDOFN
     JeveuxVectorChar24 vectOut( out );
     vectOut->updateValuePointer();
     FieldOnNodesRealPtr toReturn( new FieldOnNodesReal( ( *vectOut )[0].toString() ) );
-    toReturn->setDOFNumbering(dofNUM);
+    toReturn->setDescription(dofNUM->getDescription());
+    toReturn->setMesh(dofNUM->getMesh());
     toReturn->build();
     toReturn->updateValuePointers();
 

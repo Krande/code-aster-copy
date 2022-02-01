@@ -85,8 +85,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.VALE' */
     JeveuxVector< ValueType > _valuesList;
-    /** @brief Numbering of a FieldOnNodes */
-    BaseDOFNumberingPtr _dofNum;
     /** @brief Dof description */
     FieldOnNodesDescriptionPtr _dofDescription;
     /** @brief Support mesh */
@@ -108,7 +106,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
           _valuesList( JeveuxVector< ValueType >( getName() + ".VALE" ) ),
-          _dofNum( nullptr ),
           _dofDescription( nullptr ),
           _mesh( nullptr ){};
 
@@ -128,7 +125,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         *( _valuesList ) = *( toCopy._valuesList );
         *( _title ) = *( toCopy._title );
         // Pointers to be copied
-        _dofNum = toCopy._dofNum;
         _dofDescription = toCopy._dofDescription;
         _mesh = toCopy._mesh;
     }
@@ -143,7 +139,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         _reference = other._reference;
         _valuesList = other._valuesList;
         _title = other._title;
-        _dofNum = other._dofNum;
         _dofDescription = other._dofDescription;
         _mesh = other._mesh;
     }
@@ -158,16 +153,13 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Constructor with DOFNumbering
      */
     FieldOnNodes( const BaseDOFNumberingPtr &dofNum ) : FieldOnNodes() {
-        _dofNum = dofNum;
+
         _dofDescription = dofNum->getDescription();
         _mesh = dofNum->getMesh();
 
-        if ( !_dofNum )
-            raiseAsterError( "DOFNumering is empty" );
-
         const auto intType = AllowedFieldType< ValueType >::numTypeJeveux;
         CALLO_VTCREB_WRAP( getName(), JeveuxMemoryTypesNames[Permanent], JeveuxTypesNames[intType],
-                           _dofNum->getName() );
+                           dofNum->getName() );
     };
 
     /**
@@ -184,7 +176,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
           _descriptor( toCopy->_descriptor ),
           _reference( toCopy->_reference ),
           _valuesList( toCopy->_valuesList ),
-          _dofNum( nullptr ),
           _dofDescription( nullptr ),
           _mesh( nullptr ){};
 
@@ -354,26 +345,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     bool printMedFile( const std::string fileName, bool local = true ) const;
 
     /**
-     * @brief Set DOFNumering
-     */
-    void setDOFNumbering( const BaseDOFNumberingPtr &dofNum ) {
-        if ( !dofNum )
-            raiseAsterError( "Empty DOFNumbering" );
-        if ( _dofNum && dofNum->getName() != _dofNum->getName() )
-            raiseAsterError( "DOFNumbering inconsistents" );
-        _dofNum = dofNum;
-        _dofDescription = dofNum->getDescription();
-        if ( _mesh != nullptr ) {
-            const auto name1 = _mesh->getName();
-            const auto name2 = _dofNum->getMesh()->getName();
-            if ( name1 != name2 )
-                raiseAsterError( "Meshes inconsistents" );
-        } else {
-            _mesh = dofNum->getMesh();
-        }
-    };
-
-    /**
      * @brief Set the Values object
      *
      * @param value Value to affect
@@ -414,12 +385,6 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         if ( _mesh && mesh->getName() != _mesh->getName() )
             raiseAsterError( "Meshes inconsistents" );
         _mesh = mesh;
-        if ( _dofNum != nullptr ) {
-            const auto name1 = _mesh->getName();
-            const auto name2 = _dofNum->getMesh()->getName();
-            if ( name1 != name2 )
-                raiseAsterError( "Meshes inconsistents" );
-        }
     };
 
     /**
@@ -523,15 +488,18 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         return ret;
     }
 
+    bool hasConstantProfile() const {
+        CALL_JEMARQ();
+        _descriptor->updateValuePointer();
+        bool ret = ( ( *_descriptor )[1] <= 0 );
+        CALL_JEDEMA();
+        return ret;
+    }
+
     /**
      * @brief Size of the FieldOnNodes
      */
     ASTERINTEGER size( void ) const { return _valuesList->size(); }
-
-    /**
-     * @brief Get DOFNumbering
-     */
-    BaseDOFNumberingPtr getDOFNumbering( void ) { return _dofNum; };
 
     /**
      * @brief Get FieldOnNodesDescription
@@ -542,19 +510,17 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Update field and build FieldOnNodesDescription if necessary
      */
     bool build() {
-        CALL_JEMARQ();
-        if ( _dofNum != nullptr ) {
-            _dofDescription = _dofNum->getDescription();
-            _mesh = _dofNum->getMesh();
-        } else if ( _dofDescription == nullptr ) {
+        if ( !_dofDescription ) {
+            CALL_JEMARQ();
+
             typedef FieldOnNodesDescription FONDesc;
             typedef FieldOnNodesDescriptionPtr FONDescP;
 
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
-            _dofDescription = FONDescP( new FONDesc( name2 ) );
+            _dofDescription = boost::make_shared< FONDesc >( name2 );
+            CALL_JEDEMA();
         }
-        CALL_JEDEMA();
         return true;
     };
 

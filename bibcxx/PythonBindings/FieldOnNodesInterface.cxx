@@ -62,11 +62,9 @@ void exportFieldOnNodesToPython() {
         .def( py::self *= float() )
         .def( -py::self )
         .def( "printMedFile", &FieldOnNodesReal::printMedFile, print_overloads() )
-        .def( "setDOFNumbering", &FieldOnNodesReal::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesReal::setMesh )
         .def( "setDescription", &FieldOnNodesReal::setDescription )
         .def( "build", &FieldOnNodesReal::build )
-        .def( "getDOFNumbering", &FieldOnNodesReal::getDOFNumbering )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
@@ -133,11 +131,9 @@ Returns:
             "__setitem__", +[]( FieldOnNodesComplex &v, ASTERINTEGER i,
                                 ASTERCOMPLEX f ) { return v.operator[]( i ) = f; } )
         .def( "printMedFile", &FieldOnNodesComplex::printMedFile )
-        .def( "setDOFNumbering", &FieldOnNodesComplex::setDOFNumbering )
         .def( "setMesh", &FieldOnNodesComplex::setMesh )
         .def( "setDescription", &FieldOnNodesComplex::setDescription )
         .def( "build", &FieldOnNodesComplex::build )
-        .def( "getDOFNumbering", &FieldOnNodesComplex::getDOFNumbering )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
         .def( "getValues", &FieldOnNodesComplex::getValues,

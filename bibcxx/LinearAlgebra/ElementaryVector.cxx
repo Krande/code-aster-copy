@@ -16,28 +16,27 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#include <stdexcept>
-#include "astercxx.h"
-#include "aster_fort_calcul.h"
 #include "LinearAlgebra/ElementaryVector.h"
+
+#include "aster_fort_calcul.h"
+#include "astercxx.h"
+
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
+#include <stdexcept>
 
-FieldOnNodesRealPtr
-ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume )  const
-{
+FieldOnNodesRealPtr ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume ) const {
     if ( _isEmpty )
         raiseAsterError( "The ElementaryVector is empty" );
 
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>();
-    field->setDOFNumbering( dofNume );
+    FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
 
-    VectorString vect_elem(1, getName());
+    VectorString vect_elem( 1, getName() );
 
     char *tabNames = vectorStringAsFStrArray( vect_elem, 19 );
 
@@ -45,30 +44,29 @@ ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume )  const
     ASTERINTEGER typscal = 1;
     ASTERINTEGER nbElem = 1;
 
-
     std::string base( "G" );
     std::string blanc( "        " );
     std::string zero( "ZERO" );
 
-    CALL_ASSVEC(base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
-     dofNume->getName().c_str(), blanc.c_str(), zero.c_str(), &typscal);
+    CALL_ASSVEC( base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
+                 dofNume->getName().c_str(), blanc.c_str(), zero.c_str(), &typscal );
 
     FreeStr( tabNames );
+
+    field->build();
 
     return field;
 };
 
-FieldOnNodesRealPtr
-ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
-                            const ASTERDOUBLE &time ) {
+FieldOnNodesRealPtr ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
+                                                                 const ASTERDOUBLE &time ) {
     if ( _isEmpty )
         raiseAsterError( "The ElementaryVector is empty" );
 
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
-    FieldOnNodesRealPtr field = boost::make_shared<FieldOnNodesReal>();
-    field->setDOFNumbering( dofNume );
+    FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
     std::string name( " " );
     name.resize( 24, ' ' );
 
@@ -79,7 +77,7 @@ ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
         for ( ASTERINTEGER i = 1; i <= size; ++i ) {
             std::string vectElem( ( *_listOfElementaryTerms )[i - 1].toString() );
             vectElem.resize( 24, ' ' );
-            CALLO_CORICHWRITE(vectElem, &i);
+            CALLO_CORICHWRITE( vectElem, &i );
         }
     }
 
@@ -100,24 +98,23 @@ ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
     field->allocateFrom( *vectTmp3 );
     std::string base = "G";
 
-    CALLO_ASCOVA( detr, name, fomult, param, &time, typres, field->getName(), base);
+    CALLO_ASCOVA( detr, name, fomult, param, &time, typres, field->getName(), base );
+
+    field->build();
 
     return field;
 };
 
-bool ElementaryVector::build()
-{
+bool ElementaryVector::build() {
     _listOfElementaryTerms->updateValuePointer();
     _realVector.clear();
     auto size = _listOfElementaryTerms->size();
     _realVector.reserve( size );
-    for ( int pos = 0; pos < size; ++pos )
-    {
+    for ( int pos = 0; pos < size; ++pos ) {
         const std::string name = ( *_listOfElementaryTerms )[pos].toString();
-        if ( trim( name ) != "" )
-        {
+        if ( trim( name ) != "" ) {
             ElementaryTermRealPtr toPush =
-                boost::make_shared< ElementaryTerm< ASTERDOUBLE > >( name ) ;
+                boost::make_shared< ElementaryTerm< ASTERDOUBLE > >( name );
             _realVector.push_back( toPush );
         }
     }

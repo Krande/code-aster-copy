@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -46,7 +46,8 @@ class ProdMatrCham(ExecuteCommand):
         mat = keywords["MATR_ASSE"]
 
         dofNum = mat.getDOFNumbering()
-        self._result.setDOFNumbering(dofNum)
+        self._result.setDescription(dofNum.getDescription())
+        self._result.setMesh(dofNum.getMesh())
 
         self._result.build()
 

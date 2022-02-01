@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ class FieldOnNodesStateBuilder(InternalStateBuilder):
         """
         super().save(field)
         self._st["mesh"] = field.getMesh()
-        self._st["dofn"] = field.getDOFNumbering()
+        self._st["dofd"] = field.getDescription()
         return self
 
     def restore(self, field):
@@ -59,8 +59,8 @@ class FieldOnNodesStateBuilder(InternalStateBuilder):
         super().restore(field)
         if self._st["mesh"]:
             field.setMesh(self._st["mesh"])
-        if self._st["dofn"]:
-            field.setDOFNumbering(self._st["dofn"])
+        if self._st["dofd"]:
+            field.setDescription(self._st["dofd"])
 
 
 @injector(FieldOnNodesReal)

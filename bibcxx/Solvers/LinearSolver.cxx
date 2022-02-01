@@ -23,21 +23,27 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Solvers/LinearSolver.h"
+
 #include "astercxx.h"
 
-#include "Solvers/LinearSolver.h"
 #include "Supervis/CommandSyntax.h"
 #include "Supervis/ResultNaming.h"
 
 LinearSolver::LinearSolver( const std::string name )
-    : DataStructure( name, 19, "SOLVEUR" ), _isEmpty( true ),
+    : DataStructure( name, 19, "SOLVEUR" ),
+      _isEmpty( true ),
       _charValues( JeveuxVectorChar24( getName() + ".SLVK" ) ),
       _doubleValues( JeveuxVectorReal( getName() + ".SLVR" ) ),
       _integerValues( JeveuxVectorLong( getName() + ".SLVI" ) ),
-      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ), _matrix( nullptr ),
-      _matrixPrec( nullptr ), _commandName( "SOLVEUR" ), _xfem( false ), _keywords( NULL ){
+      _petscOptions( JeveuxVectorChar80( getName() + ".SLVO" ) ),
+      _matrix( nullptr ),
+      _matrixPrec( nullptr ),
+      _commandName( "SOLVEUR" ),
+      _xfem( false ),
+      _keywords( NULL ){
 
-                                                                         };
+      };
 
 void LinearSolver::setKeywords( PyObject *user_keywords ) {
     _isEmpty = true;
@@ -158,14 +164,7 @@ FieldOnNodesRealPtr LinearSolver::solve( const FieldOnNodesRealPtr currentRHS,
         raiseAsterError( "Matrix must be factored first" );
     }
 
-    auto result = boost::make_shared< FieldOnNodesReal >();
-
-    try {
-        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering() ) {
-            result->setDOFNumbering( currentRHS->getDOFNumbering() );
-        }
-    } catch ( ... ) {
-    }
+    auto result = boost::make_shared< FieldOnNodesReal >( _matrix->getDOFNumbering() );
 
     std::string diriName( " " );
     if ( dirichletBCField )
@@ -184,14 +183,7 @@ FieldOnNodesComplexPtr LinearSolver::solve( const FieldOnNodesComplexPtr current
         raiseAsterError( "Matrix must be factored first" );
     }
 
-    auto result = boost::make_shared< FieldOnNodesComplex >();
-
-    try {
-        if ( !result->getDOFNumbering() && currentRHS->getDOFNumbering() ) {
-            result->setDOFNumbering( currentRHS->getDOFNumbering() );
-        }
-    } catch ( ... ) {
-    }
+    auto result = boost::make_shared< FieldOnNodesComplex >( _matrix->getDOFNumbering() );
 
     std::string diriName( " " );
     if ( dirichletBCField )

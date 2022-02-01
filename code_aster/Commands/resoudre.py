@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -46,17 +46,13 @@ class SolveLinearSystem(ExecuteCommand):
 
         rhs = keywords.get("CHAM_NO")  # Right Hand Side
 
-        dofNum = rhs.getDOFNumbering()
-        if dofNum is not None:
-            self._result.setDOFNumbering(dofNum)
-        else:
-            mesh = rhs.getMesh()
-            if mesh is not None:
-                self._result.setMesh(mesh)
+        mesh = rhs.getMesh()
+        if mesh is not None:
+            self._result.setMesh(mesh)
 
-            desc = rhs.getDescription()
-            if desc is not None:
-                self._result.setDescription(desc)
+        desc = rhs.getDescription()
+        if desc is not None:
+            self._result.setDescription(desc)
 
         self._result.build()
 

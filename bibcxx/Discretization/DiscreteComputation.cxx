@@ -21,10 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-#include <string>
-
 #include "Discretization/DiscreteComputation.h"
+
+#include "aster_fort_calcul.h"
+#include "aster_fort_superv.h"
+
 #include "Loads/DirichletBC.h"
 #include "Loads/MechanicalLoad.h"
 #include "Materials/ExternalStateVariablesBuilder.h"
@@ -33,8 +34,9 @@
 #include "Modeling/Model.h"
 #include "Numbering/ParallelDOFNumbering.h"
 #include "Utilities/Tools.h"
-#include "aster_fort_calcul.h"
-#include "aster_fort_superv.h"
+
+#include <iostream>
+#include <string>
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
@@ -232,7 +234,8 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
     if ( _listOfLoad->isEmpty() )
         _listOfLoad->build( _study->getModel() );
 
-    FieldOnNodesRealPtr retour = boost::make_shared< FieldOnNodesReal >();
+    FieldOnNodesRealPtr retour =
+        boost::make_shared< FieldOnNodesReal >( _study->getDOFNumbering() );
     std::string resuName = retour->getName();
     std::string dofNumName = _study->getDOFNumbering()->getName();
 
@@ -247,7 +250,6 @@ FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) 
     // Generic for mechanics and thermics
     CALLO_ASCAVC_WRAP( lLoadName, infLoadName, funcLoadName, dofNumName, &time, resuName, base );
 
-    retour->setDOFNumbering( _study->getDOFNumbering() );
     retour->build();
 
     return retour;
@@ -300,7 +302,7 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     auto compor = curMater->getBehaviourField();
 
     JeveuxVectorChar24 jvListOfLoads = _study->getListOfLoads()->getListVector();
-    if(jvListOfLoads->exists())
+    if ( jvListOfLoads->exists() )
         jvListOfLoads->updateValuePointer();
     ASTERINTEGER nbLoad = jvListOfLoads->size();
 
