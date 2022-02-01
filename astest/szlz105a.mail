@@ -1,5 +1,5 @@
  TITRE
-JE-01-JUIL-2021 07:54:09                                                        
+JE-01-JUIL-2021 07:54:09
  FINSF
  %
  COOR_2D
@@ -9,28 +9,32 @@ JE-01-JUIL-2021 07:54:09
  NO4       0.00000000000000E+00  1.00000000000000E+00
  FINSF
  %
- QUAD4   
- MA1      NO1      NO2      NO3      NO4     
+ QUAD4
+ MA1      NO1      NO2      NO3      NO4
+ FINSF
+ %
+GROUP_MA
+ MA1
+ MA1
+ FINSF
+ GROUP_NO
+ NO4
+ NO4
  FINSF
  %
  GROUP_NO
- NO4                     
- NO4     
+ NO2
+ NO2
  FINSF
  %
  GROUP_NO
- NO2                     
- NO2     
+ NO1
+ NO1
  FINSF
  %
  GROUP_NO
- NO1                     
- NO1     
- FINSF
- %
- GROUP_NO
- NO3                     
- NO3     
+ NO3
+ NO3
  FINSF
  %
  FIN

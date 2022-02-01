@@ -38,7 +38,6 @@ from .affe_char_meca_c import AFFE_CHAR_MECA_C
 from .affe_char_meca_f import AFFE_CHAR_MECA_F
 from .affe_char_ther import AFFE_CHAR_THER
 from .affe_char_ther_f import AFFE_CHAR_THER_F
-from .affe_materiau import AFFE_MATERIAU
 from .affe_modele import AFFE_MODELE
 from .asse_maillage import ASSE_MAILLAGE
 from .asse_matr_gene import ASSE_MATR_GENE
@@ -99,7 +98,6 @@ from .defi_list_enti import DEFI_LIST_ENTI
 from .defi_list_inst import DEFI_LIST_INST
 from .defi_list_reel import DEFI_LIST_REEL
 from .defi_maillage import DEFI_MAILLAGE
-from .defi_materiau import DEFI_MATERIAU
 from .defi_modele_gene import DEFI_MODELE_GENE
 from .defi_nappe import DEFI_NAPPE
 from .defi_obstacle import DEFI_OBSTACLE
@@ -150,7 +148,6 @@ from .modi_modele import MODI_MODELE
 from .modi_modele_xfem import MODI_MODELE_XFEM
 from .modi_repere import MODI_REPERE
 from .norm_mode import NORM_MODE
-from .nume_ddl import NUME_DDL
 from .nume_ddl_gene import NUME_DDL_GENE
 from .post_cham_xfem import POST_CHAM_XFEM
 from .post_champ import POST_CHAMP

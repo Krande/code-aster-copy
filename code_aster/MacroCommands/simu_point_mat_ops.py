@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -308,6 +308,21 @@ def simu_point_mat_ops(
            GROUP_MA
            TOUT  VOLUME
            FINSF
+           GROUP_MA
+           VOLUME  VOLUME
+           FINSF
+           GROUP_MA
+           F1  F1
+           FINSF
+           GROUP_MA
+           F2  F2
+           FINSF
+           GROUP_MA
+           F3  F3
+           FINSF
+           GROUP_MA
+           F4  F4
+           FINSF
            GROUP_NO
            TOUT  P1 P2 P0 P3
            FINSF
@@ -333,6 +348,18 @@ def simu_point_mat_ops(
            GROUP_MA
            TOUT  VOLUME
            FINSF
+           GROUP_MA
+           VOLUME  VOLUME
+           FINSF
+           GROUP_MA
+           S1  S1
+           FINSF
+           GROUP_MA
+           S2  S2
+           FINSF
+           GROUP_MA
+           S3  S3
+           FINSF
            GROUP_NO
            TOUT  P1 P2 P0
            FINSF
@@ -350,7 +377,7 @@ def simu_point_mat_ops(
 
         if MODELISATION == "3D":
             __MO = AFFE_MODELE(MAILLAGE=__MA,
-                               AFFE=_F(MAILLE=('VOLUME', 'F1', 'F2', 'F3', 'F4'), PHENOMENE='MECANIQUE', MODELISATION='3D',))
+                               AFFE=_F(GROUP_MA=('VOLUME', 'F1', 'F2', 'F3', 'F4'), PHENOMENE='MECANIQUE', MODELISATION='3D',))
 # ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
 # imposées.
             if ANGLE != 0.:
@@ -384,7 +411,7 @@ def simu_point_mat_ops(
         else:
         # MODELISATION 2D
             __MO = AFFE_MODELE(MAILLAGE=__MA,
-                               AFFE=_F(MAILLE=('VOLUME', 'S1', 'S2', 'S3'), PHENOMENE='MECANIQUE', MODELISATION=MODELISATION))
+                               AFFE=_F(GROUP_MA=('VOLUME', 'S1', 'S2', 'S3'), PHENOMENE='MECANIQUE', MODELISATION=MODELISATION))
 # ANGLE : rotation de ANGLE autour de Z uniquement, et seulement pour les déformations
 # imposées.
             if ANGLE != 0.:
@@ -409,10 +436,10 @@ def simu_point_mat_ops(
             ANGMAS = dict(MASSIF[0])
             if ANGMAS["ANGL_REP"] is None:
                 __CARA = AFFE_CARA_ELEM(MODELE=__MO, MASSIF=_F(
-                    MAILLE='VOLUME', ANGL_EULER=ANGMAS["ANGL_EULER"]),)
+                    GROUP_MA='VOLUME', ANGL_EULER=ANGMAS["ANGL_EULER"]),)
             else:
                 __CARA = AFFE_CARA_ELEM(MODELE=__MO, MASSIF=_F(
-                    MAILLE='VOLUME', ANGL_REP=ANGMAS["ANGL_REP"]),)
+                    GROUP_MA='VOLUME', ANGL_REP=ANGMAS["ANGL_REP"]),)
 
 #     -- Chargement en deformation
 
@@ -452,46 +479,46 @@ def simu_point_mat_ops(
 
             r33 = 3 ** -0.5
             __S[0] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_FACE=(
-                _F(MAILLE='F1', FX=-1),
-                _F(MAILLE='F4', FX=r33),))
+                _F(GROUP_MA='F1', FX=-1),
+                _F(GROUP_MA='F4', FX=r33),))
 
             __S[1] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_FACE=(
-                _F(MAILLE='F2', FY=-1),
-                _F(MAILLE='F4', FY=r33),))
+                _F(GROUP_MA='F2', FY=-1),
+                _F(GROUP_MA='F4', FY=r33),))
 
             __S[2] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_FACE=(
-                _F(MAILLE='F3', FZ=-1),
-                _F(MAILLE='F4', FZ=r33),))
+                _F(GROUP_MA='F3', FZ=-1),
+                _F(GROUP_MA='F4', FZ=r33),))
 
             __S[3] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_FACE=(
-                _F(MAILLE='F1', FY=-1),
-                _F(MAILLE='F2', FX=-1),
-                _F(MAILLE='F4', FX=r33, FY=r33),))
+                _F(GROUP_MA='F1', FY=-1),
+                _F(GROUP_MA='F2', FX=-1),
+                _F(GROUP_MA='F4', FX=r33, FY=r33),))
 
             __S[4] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_FACE=(
-                _F(MAILLE='F1', FZ=-1),
-                _F(MAILLE='F3', FX=-1),
-                _F(MAILLE='F4', FX=r33, FZ=r33),))
+                _F(GROUP_MA='F1', FZ=-1),
+                _F(GROUP_MA='F3', FX=-1),
+                _F(GROUP_MA='F4', FX=r33, FZ=r33),))
 
             __S[5] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_FACE=(
-                _F(MAILLE='F2', FZ=-1),
-                _F(MAILLE='F3', FY=-1),
-                _F(MAILLE='F4', FY=r33, FZ=r33), ))
+                _F(GROUP_MA='F2', FZ=-1),
+                _F(GROUP_MA='F3', FY=-1),
+                _F(GROUP_MA='F4', FY=r33, FZ=r33), ))
 
         else:
             r22 = 2 ** -0.5
             __S[0] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_CONTOUR=(
-                _F(MAILLE='S1', FX=-1),
-                _F(MAILLE='S3', FX=r22), ))
+                _F(GROUP_MA='S1', FX=-1),
+                _F(GROUP_MA='S3', FX=r22), ))
 
             __S[1] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_CONTOUR=(
-                _F(MAILLE='S2', FY=-1),
-                _F(MAILLE='S3', FY=r22), ))
+                _F(GROUP_MA='S2', FY=-1),
+                _F(GROUP_MA='S3', FY=r22), ))
 
             __S[2] = AFFE_CHAR_MECA(MODELE=__MO, FORCE_CONTOUR=(
-                _F(MAILLE='S1', FY=-1),
-                _F(MAILLE='S2', FX=-1),
-                _F(MAILLE='S3', FX=r22, FY=r22), ))
+                _F(GROUP_MA='S1', FY=-1),
+                _F(GROUP_MA='S2', FX=-1),
+                _F(GROUP_MA='S3', FX=r22, FY=r22), ))
 
 #     -- Construction de la charge
 
@@ -524,7 +551,7 @@ def simu_point_mat_ops(
                             __CHV[it] = CREA_CHAMP(TYPE_CHAM=typech,
                                                    OPERATION='AFFE',
                                                    MAILLAGE=__MA,
-                                                   AFFE=_F(MAILLE='VOLUME',
+                                                   AFFE=_F(GROUP_MA='VOLUME',
                                                            NOM_CMP='TEMP',
                                                            VALE=lordo[it],
                                                            ),
@@ -552,19 +579,19 @@ def simu_point_mat_ops(
                                                    OPERATION='AFFE', PROL_ZERO='OUI',
                                                    MODELE=__MO,
                                                    AFFE=(
-                                                   _F(MAILLE='VOLUME',
+                                                   _F(GROUP_MA='VOLUME',
                                                       NOM_CMP='X1',
                                                       VALE=lordo1[it],
                                                       ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X2',
                                                           VALE=lordo2[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X3',
                                                           VALE=lordo3[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X4',
                                                           VALE=lordo4[it],
                                                           ),
@@ -607,39 +634,39 @@ def simu_point_mat_ops(
                                                    OPERATION='AFFE', PROL_ZERO='OUI',
                                                    MODELE=__MO,
                                                    AFFE=(
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X1',
                                                           VALE=lordo1[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X2',
                                                           VALE=lordo2[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X3',
                                                           VALE=lordo3[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X4',
                                                           VALE=lordo4[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X5',
                                                           VALE=lordo5[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X6',
                                                           VALE=lordo6[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X7',
                                                           VALE=lordo7[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X8',
                                                           VALE=lordo8[it],
                                                           ),
-                                                       _F(MAILLE='VOLUME',
+                                                       _F(GROUP_MA='VOLUME',
                                                           NOM_CMP='X9',
                                                           VALE=lordo9[it],
                                                           ),
@@ -676,7 +703,7 @@ def simu_point_mat_ops(
                             __CHV[it] = CREA_CHAMP(TYPE_CHAM=typech,
                                                    OPERATION='AFFE',
                                                    MAILLAGE=__MA,
-                                                   AFFE=_F(MAILLE='VOLUME',
+                                                   AFFE=_F(GROUP_MA='VOLUME',
                                                            NOM_CMP=lvarc[
                                                            ivarc]['NOM_VARC'],
                                                            VALE=lordo[it],
@@ -689,7 +716,7 @@ def simu_point_mat_ops(
                         __EVOV = CREA_RESU(
                             OPERATION='AFFE', TYPE_RESU='EVOL_VARC', NOM_CHAM=str(lvarc[ivarc]['NOM_VARC']),
                             AFFE=l_affe_cham)
-                    dico["MAILLE"] = 'VOLUME'
+                    dico["GROUP_MA"] = 'VOLUME'
                     dico["EVOL"] = __EVOV
                     if (str(lvarc[ivarc]['NOM_VARC']) == 'M_ZIRC'):
                         dico["NOM_VARC"] = "M_ZIRC"
@@ -703,12 +730,12 @@ def simu_point_mat_ops(
 #      -- Materiau et modele
         if len(mcvarc) > 0:
             __CHMAT = AFFE_MATERIAU(
-                MAILLAGE=__MA, AFFE=_F(MAILLE='VOLUME', MATER=MATER),
+                MAILLAGE=__MA, AFFE=_F(GROUP_MA='VOLUME', MATER=MATER),
                 AFFE_VARC=mcvarc,
             )
         else:
             __CHMAT = AFFE_MATERIAU(
-                MAILLAGE=__MA, AFFE=_F(MAILLE='VOLUME', MATER=MATER))
+                MAILLAGE=__MA, AFFE=_F(GROUP_MA='VOLUME', MATER=MATER))
 
 #     Etat initial
         SIGINI = {}
@@ -747,7 +774,7 @@ def simu_point_mat_ops(
 
             __NEUT = CREA_CHAMP(
                 OPERATION='AFFE', TYPE_CHAM='CART_N480_R', MAILLAGE=__MA,
-                AFFE=_F(MAILLE='VOLUME', NOM_CMP=lnomneu, VALE=VARINI['VALE']))
+                AFFE=_F(GROUP_MA='VOLUME', NOM_CMP=lnomneu, VALE=VARINI['VALE']))
 
             __VAR_INIT = CREA_CHAMP(
                 MODELE=__MO, OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',

@@ -17,185 +17,190 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: mathieu.courtois@edf.fr
-
 import numpy
 
-from .. import Objects as all_types
-from ..Cata.Language.SyntaxObjects import _F
+from libaster import (
+    createEnthalpy,
+    deleteTemporaryObjects,
+    resetFortranLoggingLevel,
+    setFortranLoggingLevel,
+)
+
+from ..Cata.Syntax import _F
 from ..Messages import UTMESS
-from ..Objects import (DataStructure, Formula, Function,
-                       Material, MaterialProperty,
-                       Function2D, Table)
-from ..Supervis import ExecuteCommand, replace_enum
+from ..Objects import (
+    DataStructure,
+    Formula,
+    Function,
+    Function2D,
+    Material,
+    MaterialProperty,
+    Table,
+)
+from ..Supervis import replace_enum
 
-from libaster import createEnthalpy
 
+def defi_materiau_ops(self, **args):
+    """Execute the command.
 
-class MaterialDefinition(ExecuteCommand):
-
-    """Definition of the material properties.
-    Returns a :class:`~code_aster.Objects.Material` object.
+    Arguments:
+        **args (dict): User's keywords.
     """
-    command_name = "DEFI_MATERIAU"
 
-    def create_result(self, keywords):
-        """Initialize the :class:`~code_aster.Objects.Material`.
+    args = _F(args)
 
-        Arguments:
-            keywords (dict): Keywords arguments of user's keywords.
-        """
-        if keywords.get("reuse"):
-            assert keywords["reuse"] == keywords["MATER"]
-            self._result = keywords["MATER"]
+    setFortranLoggingLevel(args["INFO"])
+
+    if args.get("reuse"):
+        assert args["reuse"] == args["MATER"]
+        mater = args["MATER"]
+    else:
+        mater = Material()
+
+    # In this function, we can check the value of keywords and add some properties
+    check_keywords(args)
+    replace_enum(self._cata, args)
+
+    mater2 = args.get("MATER")
+    if args.get("reuse"):
+        mater.setReferenceMaterial(mater2)
+    elif mater2 is not None:
+        if mater2 != mater:
+            mater.setReferenceMaterial(mater2)
+
+    materByName = _buildInstance(args)
+    for fkwName, fkw in args.items():
+        if type(fkw) in (list, tuple):
+            assert len(fkw) == 1
+            fkw = fkw[0]
+        # only see factor keyword
+        if not isinstance(fkw, dict):
+            continue
+        if fkwName in materByName:
+            matBehav = materByName[fkwName]
+            klassName = matBehav.getName()
         else:
-            self._result = Material()
+            raise NotImplementedError("Unsupported behaviour: '{0}'"
+                                      .format(fkwName))
 
-    def exec_(self, keywords):
-        """Execute the command.
-
-        Arguments:
-            keywords (dict): User's keywords.
-        """
-
-        # In this function, we can check the value of keywords and add some properties
-        check_keywords(keywords)
-        replace_enum(self._cata, keywords)
-
-        mater = keywords.get("MATER")
-        if keywords.get("reuse"):
-            self._result.setReferenceMaterial(mater)
-        elif mater is not None:
-                if mater.getName() != self._result.getName():
-                    self._result.setReferenceMaterial(mater)
-
-        materByName = self._buildInstance(keywords)
-        for fkwName, fkw in keywords.items():
-            if type(fkw) in (list, tuple):
-                assert len(fkw) == 1
-                fkw = fkw[0]
-            # only see factor keyword
-            if not isinstance(fkw, dict):
+        for skwName, skw in fkw.items():
+            if skwName == "ORDRE_PARAM":
+                matBehav.setSortedListParameters(list(skw))
                 continue
-            if fkwName in materByName:
-                matBehav = materByName[fkwName]
-                klassName = matBehav.getName()
-            else:
-                raise NotImplementedError("Unsupported behaviour: '{0}'"
-                                              .format(fkwName))
+            iName = skwName.capitalize()
+            if fkwName in ("MFRONT", "UMAT"):
+                matBehav.setValueVectorReal(iName, list(skw))
+                continue
+            if fkwName in ("MFRONT_FO", "UMAT_FO"):
+                matBehav.setValue(iName, list(skw))
+                continue
 
-            for skwName, skw in fkw.items():
-                if skwName == "ORDRE_PARAM":
-                    matBehav.setSortedListParameters(list(skw))
-                    continue
-                iName = skwName.capitalize()
-                if fkwName in ("MFRONT", "UMAT"):
-                    matBehav.setValueVectorReal(iName, list(skw))
-                    continue
-                if fkwName in ("MFRONT_FO", "UMAT_FO"):
-                    matBehav.setValue(iName, list(skw))
-                    continue
-
-                cRet = None
-                if type(skw) in (float, int, numpy.float64):
-                    cRet = matBehav.setValueReal(iName, float(skw))
-                    if not cRet:
-                        print(ValueError("Can not assign keyword '{1}'/'{0}' "
-                                         "(as '{3}'/'{2}') "
-                                         .format(skwName, fkwName, iName,
-                                                 klassName)))
-                elif type(skw) in (complex, str, Table, Function, Function2D, Formula):
-                    cRet = matBehav.setValue(iName, skw)
-                    if not cRet:
-                        print(ValueError("Can not assign keyword '{1}'/'{0}' "
-                                         "(as '{3}'/'{2}') "
-                                         .format(skwName, fkwName, iName,
-                                                 klassName)))
-                elif type(skw) is tuple and type(skw[0]) is str:
-                    if skw[0] == "RI":
-                        comp = complex(skw[1], skw[2])
-                        cRet = matBehav.setValue(iName, comp)
-                    else:
-                        raise NotImplementedError("Unsupported type for keyword: "
-                                                  "{0} <{1}>"
-                                                  .format(skwName, type(skw)))
-                elif type(skw) in (list, tuple) and type(skw[0]) in (float, int, numpy.float64):
-                    cRet = matBehav.setValueVectorReal(iName, list([float(x) for x in skw]))
+            cRet = None
+            if type(skw) in (float, int, numpy.float64):
+                cRet = matBehav.setValueReal(iName, float(skw))
+                if not cRet:
+                    ValueError("Can not assign keyword '{1}'/'{0}' "
+                               "(as '{3}'/'{2}') "
+                               .format(skwName, fkwName, iName,
+                                       klassName))
+            elif type(skw) in (complex, str, Table, Function, Function2D, Formula):
+                cRet = matBehav.setValue(iName, skw)
+                if not cRet:
+                    ValueError("Can not assign keyword '{1}'/'{0}' "
+                               "(as '{3}'/'{2}') "
+                               .format(skwName, fkwName, iName,
+                                       klassName))
+            elif type(skw) is tuple and type(skw[0]) is str:
+                if skw[0] == "RI":
+                    comp = complex(skw[1], skw[2])
+                    cRet = matBehav.setValue(iName, comp)
                 else:
                     raise NotImplementedError("Unsupported type for keyword: "
                                               "{0} <{1}>"
                                               .format(skwName, type(skw)))
-                if not cRet:
-                    raise NotImplementedError("Unsupported keyword: "
-                                              "{0} <{1}>"
-                                              .format(iName, type(skw)))
-            self._result.addMaterialProperty(matBehav)
+            elif type(skw) in (list, tuple) and type(skw[0]) in (float, int, numpy.float64):
+                cRet = matBehav.setValueVectorReal(
+                    iName, list([float(x) for x in skw]))
+            else:
+                raise NotImplementedError("Unsupported type for keyword: "
+                                          "{0} <{1}>"
+                                          .format(skwName, type(skw)))
+            if not cRet:
+                raise NotImplementedError("Unsupported keyword: "
+                                          "{0} <{1}>"
+                                          .format(iName, type(skw)))
+        mater.addMaterialProperty(matBehav)
 
-        self._result.build()
+    mater.build()
 
-    def _buildInstance(self, keywords):
-        """Build a dict with MaterialProperty
+    resetFortranLoggingLevel()
+    deleteTemporaryObjects()
 
-        Returns:
-            dict: Behaviour instances from keywords of command.
-        """
-        objects = {}
-        for materName, skws in keywords.items():
-            if materName == "INFO":
-                continue
-            asterNewName = ""
-            if materName.endswith("_FO"):
-                asterNewName = materName.replace("_FO", "")
-            mater = MaterialProperty(materName, asterNewName)
-            # to build Traction function later
-            if materName in ("TRACTION", "META_TRACTION"):
-                mater.hasTractionFunction(True)
+    return mater
 
-            if type(skws) in (list, tuple):
-                assert len(skws) == 1
-                skws = skws[0]
-            if isinstance(skws, _F) or type(skws) is dict:
-                for kwName, kwValue in skws.items():
-                    curType = type(kwValue)
-                    mandatory = False
-                    if kwName == "ORDRE_PARAM":
-                        continue
-                    if curType in (float, int, numpy.float64):
-                        mater.addPropertyReal(kwName, mandatory)
-                    elif curType is complex:
+
+# internal methods
+
+def _buildInstance(keywords):
+    """Build a dict with MaterialProperty
+
+    Returns:
+        dict: Behaviour instances from keywords of command.
+    """
+    objects = {}
+    for materName, skws in keywords.items():
+        if materName == "INFO":
+            continue
+        asterNewName = ""
+        if materName.endswith("_FO"):
+            asterNewName = materName.replace("_FO", "")
+        mater = MaterialProperty(materName, asterNewName)
+        # to build Traction function later
+        if materName in ("TRACTION", "META_TRACTION"):
+            mater.hasTractionFunction(True)
+
+        if type(skws) in (list, tuple):
+            assert len(skws) == 1
+            skws = skws[0]
+        if isinstance(skws, _F) or type(skws) is dict:
+            for kwName, kwValue in skws.items():
+                curType = type(kwValue)
+                mandatory = False
+                if kwName == "ORDRE_PARAM":
+                    continue
+                if curType in (float, int, numpy.float64):
+                    mater.addPropertyReal(kwName, mandatory)
+                elif curType is complex:
+                    mater.addPropertyComplex(kwName, mandatory)
+                elif curType is str:
+                    mater.addPropertyString(kwName, mandatory)
+                elif isinstance(kwValue, Function) or\
+                        isinstance(kwValue, Function2D) or\
+                        isinstance(kwValue, Formula):
+                    mater.addPropertyFunction(kwName, mandatory)
+                elif isinstance(kwValue, Table):
+                    mater.addPropertyTable(kwName, mandatory)
+                elif type(kwValue) in (list, tuple):
+                    if type(kwValue[0]) is float:
+                        mater.addPropertyVectorOfReal(
+                            kwName, mandatory)
+                    elif isinstance(kwValue[0], DataStructure):
+                        mater.addPropertyVectorOfFunction(
+                            kwName, mandatory)
+                    elif kwValue[0] == 'RI':
                         mater.addPropertyComplex(kwName, mandatory)
-                    elif curType is str:
-                        mater.addPropertyString(kwName, mandatory)
-                    elif isinstance(kwValue, Function) or\
-                            isinstance(kwValue, Function2D) or\
-                            isinstance(kwValue, Formula):
-                        mater.addPropertyFunction(kwName, mandatory)
-                    elif isinstance(kwValue, Table):
-                        mater.addPropertyTable(kwName, mandatory)
-                    elif type(kwValue) in (list, tuple):
-                        if type(kwValue[0]) is float:
-                            mater.addPropertyVectorOfReal(
-                                kwName, mandatory)
-                        elif isinstance(kwValue[0], DataStructure):
-                            mater.addPropertyVectorOfFunction(
-                                kwName, mandatory)
-                        elif kwValue[0] == 'RI':
-                            mater.addPropertyComplex(kwName, mandatory)
-                        elif type(kwValue[0]) is str:
-                            pass
-                        else:
-                            raise NotImplementedError("Type not implemented for"
-                                                      " material property: '{0}'"
-                                                      .format(kwName))
+                    elif type(kwValue[0]) is str:
+                        pass
                     else:
                         raise NotImplementedError("Type not implemented for"
                                                   " material property: '{0}'"
                                                   .format(kwName))
-            objects[materName] = mater
-        return objects
-
-
-DEFI_MATERIAU = MaterialDefinition.run
+                else:
+                    raise NotImplementedError("Type not implemented for"
+                                              " material property: '{0}'"
+                                              .format(kwName))
+        objects[materName] = mater
+    return objects
 
 
 def check_keywords(kwargs):
@@ -282,7 +287,7 @@ def check_dis_ecro_trac(keywords):
     OkFct = OkFct and dx >= 0.0 and abs(dx) <= precis
     OkFct = OkFct and fx >= 0.0 and abs(fx) <= precis
     if not OkFct:
-        _message(4,"[%s %s]" % (dx, fx))
+        _message(4, "[%s %s]" % (dx, fx))
     # FX et DX sont strictement positifs, dFx >0 , dDx >0
     #   Au lieu de la boucle, on peut faire :
     #       xx=np.where(np.diff(absc) <= 0.0 or np.diff(ordo) <= 0.0)[0]
@@ -357,7 +362,8 @@ def check_dis_choc_endo(keywords):
     OkFct = len(Fxx) == len(Rix) == len(Amx)
     OkFct = OkFct and (len(Fxx) >= 5)
     if not OkFct:
-        _message(3, "%s" % LesFctsName, "%d, %d, %d" % (len(Fxx), len(Rix), len(Amx)))
+        _message(3, "%s" % LesFctsName, "%d, %d, %d" %
+                 (len(Fxx), len(Rix), len(Amx)))
     # La 1ère abscisse c'est ZERO
     x1 = Fxx[0]
     if not (0.0 <= x1 <= precis):
@@ -378,7 +384,8 @@ def check_dis_choc_endo(keywords):
         x3 = Amx[ii]
         ddx = abs(x1-x2)+abs(x1-x3)
         if ddx > precis:
-            _message(5, "%s" % LesFctsName, "(%d) : %s, %s, %s" % (ii+1, x1, x2, x3))
+            _message(5, "%s" % LesFctsName, "(%d) : %s, %s, %s" %
+                     (ii+1, x1, x2, x3))
         if xp1 >= x1:
             _message(6, "%s" % LesFctsName, "(%d) : %s, %s" % (ii+1, xp1, x1))
         xp1 = x1
@@ -396,7 +403,8 @@ def check_dis_choc_endo(keywords):
     pente = Riy[2]
     for ii in range(3, len(Riy)):
         if Riy[ii]-pente > Riy[0]*precis:
-            _message(9, "%s" % Clefs['RIGI_NOR'].getName(),"(%d) : %s %s" %(ii,pente, Riy[ii]))
+            _message(9, "%s" % Clefs['RIGI_NOR'].getName(),
+                     "(%d) : %s %s" % (ii, pente, Riy[ii]))
         pente = Riy[ii]
     # --------------------------------------------------------------- Fin des vérifications
     # Création des fonctions
@@ -416,7 +424,8 @@ def check_dis_choc_endo(keywords):
     newRi.setParameterName('PCUM')
     newAm.setParameterName('PCUM')
     # Modification des abscisses pour avoir la plasticité cumulée et plus le déplacement
-    pp9 = numpy.round(numpy.array(Fxx) - numpy.array(Fxy) / numpy.array(Riy), 10)
+    pp9 = numpy.round(numpy.array(Fxx) - numpy.array(Fxy) /
+                      numpy.array(Riy), 10)
     # Le 1er point a une abscisse négative et la valeur du 2ème point
     pp9[0] = -pp9[2]
     # Vérification que p est strictement croissant.
@@ -441,6 +450,7 @@ def check_dis_choc_endo(keywords):
     #
     return Clefs
 
+
 def check_dis_jvp(keywords):
     """Check for parameters in JONC_ENDO_PLAS
 
@@ -458,14 +468,14 @@ def check_dis_jvp(keywords):
                vali=num)
     #
     Clefs = keywords
-    ke=Clefs['KE']
-    kp=Clefs['KP']
-    kdp=Clefs['KDP']
-    kdm=Clefs['KDM']
-    myp=Clefs['MYP']
-    mym=Clefs['MYM']
-    rdp=Clefs['RDP']
-    rdm=Clefs['RDM']
+    ke = Clefs['KE']
+    kp = Clefs['KP']
+    kdp = Clefs['KDP']
+    kdm = Clefs['KDM']
+    myp = Clefs['MYP']
+    mym = Clefs['MYM']
+    rdp = Clefs['RDP']
+    rdm = Clefs['RDM']
     #
     if ke < kp:
         _message(1)

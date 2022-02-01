@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -109,7 +109,7 @@ MO=AFFE_MODELE(
                    MODELISATION = '3D'
                      ),
                  _F(
-                   MAILLE = 'PRISMDEG',
+                   GROUP_MA='G_DEG',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = '3D_JOINT_HYME'
                    )
@@ -139,8 +139,8 @@ MAT_JF=DEFI_MATERIAU(
 
 CM_F=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
-                      _F(MAILLE='PRISM',MATER = MAT_CUB),
-                      _F(MAILLE='PRISMDEG',  MATER = MAT_JF))
+                      _F(GROUP_MA='G_PRISM',MATER = MAT_CUB),
+                      _F(GROUP_MA='G_DEG',  MATER = MAT_JF))
                  );
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
@@ -203,9 +203,9 @@ U_F=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA='G_DEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             GROUP_MA='G_PRISM',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE = _F(
@@ -233,7 +233,7 @@ U_F=CALC_CHAMP(reuse =U_F,
 U_F=CALC_CHAMP(reuse =U_F,
              RESULTAT=U_F,
              VARI_INTERNE='VARI_NOEU',CONTRAINTE='SIEF_NOEU',
-             MAILLE='PRISMDEG'
+             GROUP_MA='G_DEG'
              );
 
 
@@ -464,9 +464,9 @@ U_2=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_FROT',
-             MAILLE = 'PRISMDEG', ),
+             GROUP_MA='G_DEG', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'PRISM',),
+             GROUP_MA='G_PRISM',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),

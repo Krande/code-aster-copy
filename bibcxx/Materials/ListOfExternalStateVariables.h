@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ExternalStateVariable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,9 +26,9 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include "Materials/BaseExternalStateVariables.h"
 #include "astercxx.h"
 
+#include "Materials/BaseExternalStateVariables.h"
 
 /**
  * @class ListOfExternalStateVariables
@@ -75,7 +75,7 @@ class ListOfExternalStateVariables {
      */
     template < class ExternalStateVariablePtr >
     void addExternalStateVariableOnGroupOfCells( const ExternalStateVariablePtr &curBehav,
-                                            const std::string &nameOfGroup ) {
+                                                 const std::string &nameOfGroup ) {
         if ( !_mesh )
             throw std::runtime_error( "Mesh is not defined" );
         if ( !_mesh->hasGroupOfCells( nameOfGroup ) )
@@ -83,19 +83,6 @@ class ListOfExternalStateVariables {
 
         _externalVars.push_back( VectorOfexternalVarAndGrpsValue(
             curBehav, MeshEntityPtr( new GroupOfCells( nameOfGroup ) ) ) );
-    };
-
-    /**
-     * @brief Add an input variable on an element
-     */
-    template < class ExternalStateVariablePtr >
-    void addExternalStateVariableOnCell( const ExternalStateVariablePtr &curBehav,
-                                    const std::string &nameOfCell ) {
-        if ( !_mesh )
-            throw std::runtime_error( "Mesh is not defined" );
-
-        _externalVars.push_back(
-            VectorOfexternalVarAndGrpsValue( curBehav, MeshEntityPtr( new Cell( nameOfCell ) ) ) );
     };
 };
 

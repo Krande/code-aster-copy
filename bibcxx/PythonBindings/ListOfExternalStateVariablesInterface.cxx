@@ -3,7 +3,7 @@
  * @brief Interface python de BaseExternalStateVariables
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,158 +24,111 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/ListOfExternalStateVariablesInterface.h"
+
 #include "Materials/ListOfExternalStateVariables.h"
-#include <PythonBindings/factory.h>
+
 #include <boost/python.hpp>
+
+#include <PythonBindings/factory.h>
 
 namespace py = boost::python;
 
 void exportListOfExternalStateVariablesToPython() {
 
-    py::class_<ListOfExternalStateVariables, ListOfExternalStateVariablesPtr >
-        c3("ListOfExternalStateVariables", py::no_init );
-    c3.def( "__init__",
-            py::make_constructor(&initFactoryPtr< ListOfExternalStateVariables, const MeshPtr & >));
+    py::class_< ListOfExternalStateVariables, ListOfExternalStateVariablesPtr > c3(
+        "ListOfExternalStateVariables", py::no_init );
     c3.def( "__init__", py::make_constructor(
-                            &initFactoryPtr< ListOfExternalStateVariables, const SkeletonPtr & >));
+                            &initFactoryPtr< ListOfExternalStateVariables, const MeshPtr & > ) );
+    c3.def( "__init__",
+            py::make_constructor(
+                &initFactoryPtr< ListOfExternalStateVariables, const SkeletonPtr & > ) );
 #ifdef ASTER_HAVE_MPI
     c3.def( "__init__",
             py::make_constructor(
-                &initFactoryPtr< ListOfExternalStateVariables, const ParallelMeshPtr & >));
+                &initFactoryPtr< ListOfExternalStateVariables, const ParallelMeshPtr & > ) );
 #endif /* ASTER_HAVE_MPI */
-    c3.def(
-        "addExternalStateVariableOnMesh",
-        &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-        TemperatureExternalStateVariablePtr > );
+    c3.def( "addExternalStateVariableOnMesh",
+            &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
+                TemperatureExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 TemperatureExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnCell",
-        &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-        TemperatureExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-            GeometryExternalStateVariablePtr > );
+                GeometryExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 GeometryExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-            GeometryExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-            CorrosionExternalStateVariablePtr > );
+                CorrosionExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 CorrosionExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-            CorrosionExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
-    &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-                                             IrreversibleDeformationExternalStateVariablePtr > );
+            &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
+                IrreversibleDeformationExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 IrreversibleDeformationExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-    &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-                                             IrreversibleDeformationExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
-    &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-                                             ConcreteHydratationExternalStateVariablePtr > );
+            &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
+                ConcreteHydratationExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 ConcreteHydratationExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-           &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-                                             ConcreteHydratationExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnMesh",
-        &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-        IrradiationExternalStateVariablePtr > );
+    c3.def( "addExternalStateVariableOnMesh",
+            &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
+                IrradiationExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 IrradiationExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnCell",
-        &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-        IrradiationExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnMesh",
-        &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-        SteelPhasesExternalStateVariablePtr > );
+    c3.def( "addExternalStateVariableOnMesh",
+            &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
+                SteelPhasesExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 SteelPhasesExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnCell",
-        &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-        SteelPhasesExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnMesh",
-        &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-        ZircaloyPhasesExternalStateVariablePtr > );
+    c3.def( "addExternalStateVariableOnMesh",
+            &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
+                ZircaloyPhasesExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 ZircaloyPhasesExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnCell",
-        &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-        ZircaloyPhasesExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-            Neutral1ExternalStateVariablePtr > );
+                Neutral1ExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 Neutral1ExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-            Neutral1ExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-            Neutral2ExternalStateVariablePtr > );
+                Neutral2ExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 Neutral2ExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-            Neutral2ExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-            Neutral3ExternalStateVariablePtr > );
+                Neutral3ExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 Neutral3ExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-            Neutral3ExternalStateVariablePtr > );
-    c3.def(
-        "addExternalStateVariableOnMesh",
-        &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-               ConcreteDryingExternalStateVariablePtr > );
+    c3.def( "addExternalStateVariableOnMesh",
+            &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
+                ConcreteDryingExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 ConcreteDryingExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-                                             ConcreteDryingExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-                                             TotalFluidPressureExternalStateVariablePtr > );
+                TotalFluidPressureExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 TotalFluidPressureExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-                                             TotalFluidPressureExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<
-                                             VolumetricDeformationExternalStateVariablePtr > );
+                VolumetricDeformationExternalStateVariablePtr > );
     c3.def( "addExternalStateVariableOnGroupOfCells",
             &ListOfExternalStateVariables::addExternalStateVariableOnGroupOfCells<
                 VolumetricDeformationExternalStateVariablePtr > );
-    c3.def( "addExternalStateVariableOnCell",
-            &ListOfExternalStateVariables::addExternalStateVariableOnCell<
-                                             VolumetricDeformationExternalStateVariablePtr > );
 };

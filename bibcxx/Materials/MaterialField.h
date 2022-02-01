@@ -26,6 +26,8 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "astercxx.h"
+
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Materials/BehaviourDefinition.h"
@@ -36,7 +38,7 @@
 #include "Meshes/Skeleton.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
-#include "astercxx.h"
+
 #include <stdexcept>
 
 class MaterialFieldBuilder;
@@ -54,8 +56,7 @@ class PartOfMaterialField {
   public:
     PartOfMaterialField() : _entity( nullptr ){};
 
-    PartOfMaterialField( const std::vector< MaterialPtr > &vecOfMater,
-                              const MeshEntityPtr &entity )
+    PartOfMaterialField( const std::vector< MaterialPtr > &vecOfMater, const MeshEntityPtr &entity )
         : _vecOfMater( vecOfMater ), _entity( entity ){};
 
     /**
@@ -186,13 +187,6 @@ class MaterialField : public DataStructure {
     void addBehaviourOnGroupOfCells( BehaviourDefinitionPtr &curBehav, std::string nameOfGroup );
 
     /**
-     * @brief Ajout d'un materiau sur une entite du maillage
-     * @param curMater behaviour to add
-     * @param nameOfGroup Name of group
-     */
-    void addBehaviourOnCell( BehaviourDefinitionPtr &curBehav, std::string nameOfCell );
-
-    /**
      * @brief Add one or mmore materials on all the mesh
      * @param curMaters Material to be added
      */
@@ -209,14 +203,6 @@ class MaterialField : public DataStructure {
     void addMaterialsOnGroupOfCells( MaterialPtr &curMater, VectorString namesOfGroup );
 
     /**
-     * @brief Ajout d'un materiau sur une entite du maillage
-     * @param curMaters Materiau a ajouter
-     * @param nameOfCell Nom des mailles
-     */
-    void addMaterialsOnCell( std::vector< MaterialPtr > curMaters, VectorString namesOfCells );
-    void addMaterialsOnCell( MaterialPtr &curMater, VectorString namesOfCells );
-
-    /**
      * @brief Build MaterialFieldPtr without ExternalStateVariable
      * @return true
      */
@@ -225,9 +211,7 @@ class MaterialField : public DataStructure {
     /**
      * @brief Return the ConstantFieldOnCells of behaviour
      */
-    ConstantFieldOnCellsRealPtr getBehaviourField() const {
-        return _behaviourField;
-    };
+    ConstantFieldOnCellsRealPtr getBehaviourField() const { return _behaviourField; };
 
     /**
      * @brief Return a vector of MaterialPtr
@@ -264,7 +248,7 @@ class MaterialField : public DataStructure {
     /**
      * @brief Get model
      */
-    ModelPtr getModel() const { return _model;};
+    ModelPtr getModel() const { return _model; };
 
     /**
      * @brief Set the model

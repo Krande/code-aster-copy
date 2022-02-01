@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -110,12 +110,12 @@ MO=AFFE_MODELE(
 
                 AFFE= (
                 _F(
-                   MAILLE = 'CUBE',
+                   GROUP_MA='G_CUBE',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'D_PLAN'
                      ),
                  _F(
-                   MAILLE = 'CUBEDEG',
+                   GROUP_MA='G_CUBE_D',
                    PHENOMENE = 'MECANIQUE',
                    MODELISATION = 'PLAN_JOINT_HYME'
                    )
@@ -144,8 +144,8 @@ MAT_JOI=DEFI_MATERIAU(
 
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
-                      _F(MAILLE='CUBE',MATER = MAT_CUB),
-                      _F(MAILLE='CUBEDEG',  MATER = MAT_JOI))
+                      _F(GROUP_MA='G_CUBE',MATER = MAT_CUB),
+                      _F(GROUP_MA='G_CUBE_D',  MATER = MAT_JOI))
                  );
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
@@ -203,9 +203,9 @@ U_HM=STAT_NON_LINE(
   ),
   COMPORTEMENT  = (
           _F(RELATION = 'JOINT_MECA_RUPT',
-             MAILLE = 'CUBEDEG', ),
+             GROUP_MA='G_CUBE_D', ),
           _F(RELATION = 'ELAS',
-             MAILLE = 'CUBE',),
+             GROUP_MA='G_CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
   CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
@@ -221,7 +221,7 @@ U_HM=STAT_NON_LINE(
 U_HM=CALC_CHAMP(reuse =U_HM,
             RESULTAT=U_HM,
             FORCE='FORC_NODA',
-            MAILLE='CUBE',
+            GROUP_MA='G_CUBE',
             );
 # VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',

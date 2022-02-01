@@ -3,7 +3,7 @@
  * @brief Implementation de MaterialFieldBuilder::build
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,8 +56,6 @@ void MaterialFieldBuilder::buildClass( MaterialField &curMater,
             dict2.container["GROUP_MA"] = ( curIter.second )->getNames();
         else if ( tmp->getType() == GroupOfNodesType )
             dict2.container["GROUP_NO"] = ( curIter.second )->getNames();
-        else if ( tmp->getType() == CellType )
-            dict2.container["MAILLE"] = ( curIter.second )->getNames();
         else
             throw std::runtime_error( "Support entity undefined" );
         listeAFFE.push_back( dict2 );
@@ -73,8 +71,6 @@ void MaterialFieldBuilder::buildClass( MaterialField &curMater,
             dict2.container["TOUT"] = "OUI";
         else if ( tmp->getType() == GroupOfCellsType )
             dict2.container["GROUP_MA"] = ( curIter.second )->getName();
-        else if ( tmp->getType() == CellType )
-            dict2.container["MAILLE"] = ( curIter.second )->getName();
         else
             throw std::runtime_error( "Support entity undefined" );
         listeAFFE_COMPOR.push_back( dict2 );
@@ -112,8 +108,6 @@ void MaterialFieldBuilder::buildClass( MaterialField &curMater,
                 dict2.container["TOUT"] = "OUI";
             else if ( tmp->getType() == GroupOfCellsType )
                 dict2.container["GROUP_MA"] = ( curIter.second )->getName();
-            else if ( tmp->getType() == CellType )
-                dict2.container["MAILLE"] = ( curIter.second )->getName();
             else
                 throw std::runtime_error( "Support entity undefined" );
             listeAFFE_VARC.push_back( dict2 );
