@@ -26,11 +26,12 @@
 
 #ifdef ASTER_HAVE_MPI
 
+#include "aster_fort_mesh.h"
+#include "aster_fort_utils.h"
+
 #include "Meshes/ParallelMesh.h"
 #include "ParallelUtilities/AsterMPI.h"
 #include "Utilities/Tools.h"
-#include "aster_fort_mesh.h"
-#include "aster_fort_utils.h"
 
 bool ParallelMesh::readPartitionedMedFile( const std::string &fileName ) {
     const bool ret = BaseMesh::readMedFile( fileName );
@@ -56,11 +57,13 @@ bool ParallelMesh::updateGlobalGroupOfNodes( void ) {
     if ( _globalGroupOfNodes->exists() )
         _globalGroupOfNodes->deallocate();
 
-    _globalGroupOfNodes->allocate( _setOfAllGON.size() );
-    ASTERINTEGER num = 0;
-    for ( auto &nameOfGrp : _setOfAllGON ) {
-        _globalGroupOfNodes->add( num, nameOfGrp );
-        ++num;
+    if ( _setOfAllGON.size() > 0 ) {
+        _globalGroupOfNodes->allocate( _setOfAllGON.size() );
+        ASTERINTEGER num = 0;
+        for ( auto &nameOfGrp : _setOfAllGON ) {
+            _globalGroupOfNodes->add( num, nameOfGrp );
+            ++num;
+        }
     }
 
     return true;
@@ -79,11 +82,13 @@ bool ParallelMesh::updateGlobalGroupOfCells( void ) {
     if ( _globalGroupOfCells->exists() )
         _globalGroupOfCells->deallocate();
 
-    _globalGroupOfCells->allocate( _setOfAllGOE.size() );
-    ASTERINTEGER num = 0;
-    for ( auto &nameOfGrp : _setOfAllGOE ) {
-        _globalGroupOfCells->add( num, nameOfGrp );
-        ++num;
+    if ( _setOfAllGOE.size() > 0 ) {
+        _globalGroupOfCells->allocate( _setOfAllGOE.size() );
+        ASTERINTEGER num = 0;
+        for ( auto &nameOfGrp : _setOfAllGOE ) {
+            _globalGroupOfCells->add( num, nameOfGrp );
+            ++num;
+        }
     }
 
     return true;
