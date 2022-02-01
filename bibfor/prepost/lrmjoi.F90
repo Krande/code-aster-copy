@@ -145,11 +145,11 @@ use sort_module
                     if ( entlcl.eq.MED_NODE.and.geolcl.eq.MED_NONE ) then
                         call codlet(domdis, 'G', chdomdis)
                         if ( dom1.eq.rang ) then
-                            nojoin = mesh//'.RT'//chdomdis
+                            nojoin = mesh//'.R.'//chdomdis
                             incr = incr + 1
                             v_dom(incr) = domdis
                         else
-                            nojoin = mesh//'.ET'//chdomdis
+                            nojoin = mesh//'.E.'//chdomdis
                         endif
 !
 ! --- Récupération de la table de correspondance pour les noeuds partagés par 2 sous-domaines

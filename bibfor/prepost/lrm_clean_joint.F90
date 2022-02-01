@@ -96,13 +96,13 @@ subroutine lrm_clean_joint(mesh, v_noex)
 !
 ! --- Il faut préparer les noeuds à envoyer et à recevoir
 !
-        name_join_e_old = mesh//".ET"//chdomdis
+        name_join_e_old = mesh//".E."//chdomdis
         call jelira(name_join_e_old, 'LONMAX', nb_corr, k8bid)
         nb_node_e = nb_corr/2
 !
         call wkvect("&&LRMJOI.NOJOE", 'V V I', nb_node_e, vi=v_nojoe)
 
-        name_join_r_old = mesh//".RT"//chdomdis
+        name_join_r_old = mesh//".R."//chdomdis
         call jelira(name_join_r_old, 'LONMAX', nb_corr, k8bid)
         nb_node_r = nb_corr/2
 !
