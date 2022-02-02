@@ -17,8 +17,12 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import logging
 import code_aster
 from code_aster.Commands import *
+from code_aster.Utilities import logger
+
+logger.setLevel(logging.DEBUG)
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',), INFO=1,)
@@ -96,7 +100,7 @@ SOLUN=MECA_NON_LINE(MODELE=model,
                               MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     INCREMENT=_F(LIST_INST=LIST,),
-                    INFO=1)
+                    INFO=2)
 
 print("Field in new SNL:", flush=True)
 SOLUN.printListOfFields()

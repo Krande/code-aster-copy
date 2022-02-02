@@ -21,7 +21,7 @@ from libaster import deleteTemporaryObjects, setFortranLoggingLevel, resetFortra
 
 from ...Objects import NonLinearResult, PhysicalProblem, LinearSolver
 from ...Supervis import ConvergenceError, ExecuteCommand, IntegrationError
-from ...Utilities import logger, no_new_attributes, profile
+from ...Utilities import logger, no_new_attributes, profile, logger
 from .physical_state import PhysicalState
 from .step_solver import StepSolver
 from .storage_manager import StorageManager
@@ -148,8 +148,10 @@ class NonLinearSolver:
         Arguments:
             level (int): verbosity level.
         """
+        info = {0: 0, 1: 20, 2: 10, 3: 10, 4: 10}
         if level is not None:
             setFortranLoggingLevel(level)
+            logger.setLevel(info[level])
             # Disable printing of python command
             if level < 3:
                 ExecuteCommand.level += 1
@@ -164,6 +166,7 @@ class NonLinearSolver:
             if level < 3:
                 ExecuteCommand.level -= 1
         resetFortranLoggingLevel()
+        logger.setLevel(20)
 
     def _storeRank(self, rank, time):
         """Store the current physical state.

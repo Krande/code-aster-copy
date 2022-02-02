@@ -44,6 +44,7 @@ def meca_non_line_ops(self, **args):
     args = _F(args)
 
     snl = NonLinearSolver()
+    snl.setLoggingLevel(args["INFO"])
     snl.setPhysicalProblem(args["MODELE"], args["CHAM_MATER"], args["CARA_ELEM"])
 
     # Add parameters
