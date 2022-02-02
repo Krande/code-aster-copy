@@ -37,6 +37,22 @@ model = AFFE_MODELE(MAILLAGE=mesh,
 
 dofNume = NUME_DDL(MODELE=model, )
 
+elno = CREA_CHAMP(TYPE_CHAM='ELGA_DEPL_R',
+                  NUME_DDL=dofNume,
+                  OPERATION='AFFE',
+                  MODELE=model,
+                  AFFE=_F(TOUT='OUI',
+                           NOM_CMP=('DX', 'DY', 'DZ'),
+                          VALE=(-1.0, 2.0, 3.0)))
+
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=elno,
+                     REFERENCE='ANALYTIQUE',
+                     VALE_CALC=-1.0,
+                     VALE_REFE=-1.0,
+                     NOM_CMP='DX',
+                     TYPE_TEST='MIN', )
+          )
+
 field = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                    OPERATION='AFFE',
                    NUME_DDL=dofNume,
