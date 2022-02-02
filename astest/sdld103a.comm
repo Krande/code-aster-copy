@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -154,46 +154,6 @@ MODE_STA = MODE_STATIQUE(MATR_RIGI = RIGIDITE,
                                        ),
                          )
 
-
-
-
-
-##########################################################
-# CALCUL MODES STATIQUES POUR CORRECTION STATIQUE A PRIORI
-##########################################################
-
-"""
-
-PSEUDO = MODE_STATIQUE(MATR_RIGI   = RIGIDITE,
-                       MATR_MASS   = MASSE   ,
-                       SOLVEUR     =_F(METHODE = SOLVEURL       ,
-                                       ),
-                       PSEUDO_MODE =_F(AXE     = ('X', 'Y', 'Z'),
-                                       ),
-                       )
-
-PSEUDO = CALC_CHAMP(reuse      = PSEUDO                  ,
-                    RESULTAT   = PSEUDO                  ,
-                    CONTRAINTE =('SIEF_ELGA','EFGE_ELNO'),
-                    )
-
-
-PSEUDO = CALC_CHAMP(reuse    = PSEUDO     ,
-                    RESULTAT = PSEUDO     ,
-                    FORCE    = 'REAC_NODA',
-                    )
-
-MODESTAT = MODE_STATIQUE(MATR_RIGI    = RIGIDITE,
-                         SOLVEUR      =_F(METHODE = SOLVEURL,
-                                          ),
-                         MATR_MASS    = MASSE,
-                         FORCE_NODALE =_F(TOUT     = 'OUI',
-                                          TOUT_CMP = 'OUI',
-                                          ),
-                         )
-
-"""
-
 #
 # DESCRIPTION DES PAS DES FONCTIONS:
 #-----------------------------------
@@ -316,7 +276,7 @@ MULT_X1 = CALC_CHAR_SEISME(MATR_MASS = MASSE       ,
 MULT_X2 = CALC_CHAR_SEISME(MATR_MASS = MASSE       ,
                            DIRECTION = (1., 0., 0.),
                            MODE_STAT = MODE_STA    ,
-                           GROUP_NO     = 'NO5'       ,
+                           GROUP_NO  = 'NO5'       ,
                            )
 
 #
@@ -735,7 +695,7 @@ RESUAEX=REST_GENE_PHYS(  RESU_GENE=TRAN_EXT,
                         TOUT_CHAM='OUI',
                         MULT_APPUI='OUI'
                        )
-# 
+#
 
 # RESTITUTION DU DEPLACEMENT RELATIF
 # ----------------------------------
@@ -768,7 +728,7 @@ RESUREX=REST_GENE_PHYS(  RESU_GENE=TRAN_EXT,
                          LIST_INST=L_RECU,
                         TOUT_CHAM='OUI',
                        )
-# 
+#
 # CALCUL ANALYTIQUE DES DEPLACEMENTS
 # ----------------------------------
 
@@ -1128,7 +1088,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=-0.80506994456601,
                          VALE_REFE= -174.7903813154,
                          VALE_PARA=1.0,
                          FONCTION=NO2DXR_T,),
-                      
+
                       ),
               )
 
@@ -1616,8 +1576,8 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.40227533302404,
                          REFERENCE='AUTRE_ASTER',
                          VALE_REFE= 12325.20961868,
                          VALE_PARA=1.0,
-                         FONCTION=NO2DXA_T,),                    
-                         
+                         FONCTION=NO2DXA_T,),
+
                       _F(VALE_CALC=0.40227527625251,
                         PRECISION=1.E-3,
                         REFERENCE='AUTRE_ASTER',
@@ -1648,7 +1608,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.40227533302404,
                         VALE_REFE= 12325.20961868,
                         VALE_PARA=1.0,
                         FONCTION=NO2DXAF2,),
-                        
+
                       _F(VALE_CALC=0.40227527625251,
                         PRECISION=1.E-3,
                         REFERENCE='AUTRE_ASTER',
@@ -1981,7 +1941,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=7.326288802406E-05,
                         VALE_REFE= 8133.611113923,
                         VALE_PARA=1.0,
                         FONCTION=NO3DXAF2,),
-                        
+
                       _F(VALE_CALC=0.06491341642472,
                         PRECISION=1.E-3,
                         REFERENCE='AUTRE_ASTER',
@@ -2216,8 +2176,8 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=7.062609205065E-03,
                          REFERENCE='AUTRE_ASTER',
                          VALE_REFE= 4041.863106074,
                          VALE_PARA=1.0,
-                         FONCTION=NO4DXA_T,),                       
-                      
+                         FONCTION=NO4DXA_T,),
+
                       _F(VALE_CALC=7.062628220585E-03,
                         PRECISION=1.E-3,
                         REFERENCE='AUTRE_ASTER',
@@ -2249,7 +2209,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=7.062609205065E-03,
                         VALE_REFE= 4041.863106074,
                         VALE_PARA=1.0,
                         FONCTION=NO4DXAF2,),
-                        
+
                       _F(VALE_CALC=7.062628220585E-03,
                         PRECISION=1.E-3,
                         REFERENCE='AUTRE_ASTER',

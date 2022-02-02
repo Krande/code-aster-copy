@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -590,8 +590,11 @@ class DynaLineBasis:
         if len(charges) == 0:
             return None
         pseudo_mode = []
+        keywords = {}
+        keywords["NOM_DIR"] = "AxePseudo_Mode"
         for charge in charges:
-            pseudo_mode.append({"DIRECTION": charge["DIRECTION"]})
+            keywords["DIRECTION"] = charge["DIRECTION"]
+            pseudo_mode.append(keywords)
         __pseudoModes=MODE_STATIQUE(MATR_MASS=self.dynaLineFEM.getMassPhy(),
                                   MATR_RIGI=self.dynaLineFEM.getRigiPhy(),
                                   PSEUDO_MODE=pseudo_mode)

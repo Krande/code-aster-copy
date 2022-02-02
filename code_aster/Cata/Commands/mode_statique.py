@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
            NOEUD           =SIMP(statut='c',typ=no   ,max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno ,max='**'),
            b_dir           =BLOC(condition = """exists("DIRECTION")""",
-             NOM_DIR         =SIMP(statut='f',typ='TXM' ),),
+             NOM_DIR         =SIMP(statut='o',typ='TXM' ),),
            b_cmp          =BLOC(condition="""exists("TOUT") or exists("NOEUD") or exists("GROUP_NO")""",
              regles=(UN_PARMI('TOUT_CMP','AVEC_CMP','SANS_CMP'),),
              TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
