@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,11 +98,13 @@ real(kind=8), intent(out) :: vectce(27), vectfe(27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    plagft(:) = 0.d0
-    dlagft(:) = 0.d0
-    prese (:) = 0.d0
-    dvitet(:) = 0.d0
-    pdvitt(:) = 0.d0
+    plagft = 0.d0
+    dlagft = 0.d0
+    prese = 0.d0
+    dvitet = 0.d0
+    pdvitt = 0.d0
+    vectce = 0.d0
+    vectfe = 0.d0
 !
 ! - PROJECTION DU LAGRANGE DE FROTTEMENT SUR LE PLAN TANGENT
 !
@@ -123,7 +125,7 @@ real(kind=8), intent(out) :: vectce(27), vectfe(27)
     if (phase .eq. 'GLIS') then
         do  i = 1, ndim
             do  j = 1, ndim
-                if (l_large_slip) then 
+                if (l_large_slip) then
                    g(i,j) = kappa(1,1)*mprt11(i,j)+&
                             kappa(1,2)*mprt12(i,j)+&
                             kappa(2,1)*mprt21(i,j)+&

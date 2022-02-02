@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,12 +104,14 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    plagft(:) = 0.d0
-    dlagft(:) = 0.d0
-    prese (:) = 0.d0
-    dvitet(:) = 0.d0
-    pdvitt(:) = 0.d0
-    matr(:)   = 0.d0
+    plagft = 0.d0
+    dlagft = 0.d0
+    prese = 0.d0
+    dvitet = 0.d0
+    pdvitt = 0.d0
+    matr = 0.d0
+    vectcm = 0.d0
+    vectfm = 0.d0
 !
 ! - PROJECTION DU LAGRANGE DE FROTTEMENT SUR LE PLAN TANGENT
 !
@@ -182,12 +184,12 @@ real(kind=8), intent(out) :: vectcm(27), vectfm(27)
             end do
         endif
     endif
-    
+
     if (phase .eq. 'GLIS') then
         do inom = 1, nnm
             do idim = 1, ndim
                 ii = ndim*(inom-1)+idim
-                if (l_large_slip) then 
+                if (l_large_slip) then
                     matr(ii)   = ffm(inom)*prese(idim)+1.* dffm(1,inom)*&
                         prese1(idim)+1.*dffm(2,inom)*prese2(idim)
                     vectfm(ii) = vectfm(ii)+ wpg*matr(ii)*jacobi*(lambda-0.*jeu)*coefff
