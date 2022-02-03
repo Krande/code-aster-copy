@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -75,11 +75,11 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED', UNITE=20)
 
 # AFFECTATION DU MODELE
 MODE=AFFE_MODELE(MAILLAGE = MAIL,
-           AFFE     = _F(TOUT         = 'OUI',
-                   PHENOMENE    = 'MECANIQUE',
-                          MODELISATION = '3D_GRAD_VARI',
-                               ),
-                  )
+                 AFFE     = _F(TOUT         = 'OUI',
+                               PHENOMENE    = 'MECANIQUE',
+                               MODELISATION = '3D_GRAD_VARI',
+                 ),
+)
 
 # MODELISATION DU MATERIAU 20 MnMoNi 5-5  (MAQUETTE)
 
@@ -89,25 +89,25 @@ f_0 = 2e-4
 for i in range(nbc):
     f0 = f_0 + i*f_0
     ACIER[i] = DEFI_MATERIAU(ELAS       = _F(E=190000, NU=0.3),
-                       ECRO_NL    = _F(R0 = 488.361123569,
-                             RH = 0,
-                             R1 = 57.1333673502,
-                             GAMMA_1 = 8613.0,
-                             R2 = 238.731127339,
-                             GAMMA_2 = 10.386585592,
+                             ECRO_NL    = _F(R0 = 488.361123569,
+                                             RH = 0,
+                                             R1 = 57.1333673502,
+                                             GAMMA_1 = 8613.0,
+                                             R2 = 238.731127339,
+                                             GAMMA_2 = 10.386585592,
                              ),
-                               GTN = _F(Q1 = 1.5,
-                                              Q2 = 1.07,
-                                             PORO_INIT = f0,
-                                              COAL_PORO = 0.05,
-                                             COAL_ACCE = 3,
-                                             NUCL_GAUSS_PORO = 0.0,
-                                             NUCL_GAUSS_PLAS = 0.6,
-                                             NUCL_GAUSS_DEV = 0.01,
+                             GTN = _F(Q1 = 1.5,
+                                      Q2 = 1.07,
+                                      PORO_INIT = f0,
+                                      COAL_PORO = 0.05,
+                                      COAL_ACCE = 3,
+                                      NUCL_GAUSS_PORO = 0.0,
+                                      NUCL_GAUSS_PLAS = 0.6,
+                                      NUCL_GAUSS_DEV = 0.01,
                              ),
-                     NON_LOCAL = _F(C_GRAD_VARI = 1,
-                            PENA_LAGR   =5000,),
-                               )
+                             NON_LOCAL = _F(C_GRAD_VARI = 1,
+                                            PENA_LAGR   =5000,),
+    )
 
 
 #-----------------------------------------------------------
@@ -116,14 +116,14 @@ for i in range(nbc):
 
 affe_mater = []
 for i in range (nbc):
-  mon_dico = {}
-  mon_dico['GROUP_MA'] = ['V_Element_'+str(i)]
-  mon_dico['MATER'] = [ACIER[i]]
-  affe_mater.append(mon_dico)
+    mon_dico = {}
+    mon_dico['GROUP_MA'] = ['V_Element_'+str(i)]
+    mon_dico['MATER'] = [ACIER[i]]
+    affe_mater.append(mon_dico)
 
 
 MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
-                        AFFE = affe_mater)
+                      AFFE = affe_mater)
 
 
 #-----------------------------------------------------------
@@ -132,18 +132,18 @@ MATE = AFFE_MATERIAU (MAILLAGE = MAIL,
 #Liste_Couche = ['F_Couche_' + str(i) for i in range(0,2*nbc+1)]
 Liaison_uni = []
 for i in range (2*nbc+1):
-  mon_dico = {}
-  mon_dico['GROUP_NO'] = ['F_Couche_'+str(i)]
-  mon_dico['DDL'] = ['DZ']
-  Liaison_uni.append(mon_dico)
+    mon_dico = {}
+    mon_dico['GROUP_NO'] = ['F_Couche_'+str(i)]
+    mon_dico['DDL'] = ['DZ']
+    Liaison_uni.append(mon_dico)
 
 
 CL = AFFE_CHAR_MECA(MODELE    = MODE,
                     LIAISON_UNIF = Liaison_uni,)
 
 ENCAST = AFFE_CHAR_CINE(MODELE    = MODE,
-                    MECA_IMPO = _F(GROUP_NO = 'Fixe',  DZ = 0), # eviter le mouvement rigid
-                     )
+                        MECA_IMPO = _F(GROUP_NO = 'Fixe',  DZ = 0), # eviter le mouvement rigid
+)
 
 DEFX = DEFI_FONCTION(NOM_PARA = 'X',
                      VALE = (0,0,lx,beta),)
@@ -172,25 +172,27 @@ FONC = DEFI_FONCTION(NOM_PARA = 'INST',
 # CALCUL NON LINEAIRE
 
 RESU = STAT_NON_LINE (MODELE       = MODE,
-                CHAM_MATER   = MATE ,
-                EXCIT        = (_F(CHARGE = CL),
-                                _F(CHARGE = ENCAST),
-                                _F(CHARGE = CHARGE, FONC_MULT=FONC),),
-                    COMPORTEMENT = _F(TOUT = 'OUI', RELATION='GTN', DEFORMATION='GDEF_LOG'),
+                      CHAM_MATER   = MATE ,
+                      EXCIT        = (_F(CHARGE = CL),
+                                      _F(CHARGE = ENCAST),
+                                      _F(CHARGE = CHARGE, FONC_MULT=FONC),),
+                      COMPORTEMENT = _F(TOUT = 'OUI', RELATION='GTN', DEFORMATION='GDEF_LOG'),
                       INCREMENT    = _F(LIST_INST = INST_CAL, INST_FIN=inst_fin),
                       CONVERGENCE  = _F(ITER_GLOB_MAXI= 20,
-                    RESI_GLOB_MAXI=1.E-3,
-                    ),
-                      NEWTON       = _F(MATRICE='TANGENTE',REAC_ITER=1),
-                      SOLVEUR      = _F(METHODE='MUMPS', PCENT_PIVOT=40, MATR_DISTRIBUEE='OUI',),
+                                        RESI_GLOB_MAXI=1.E-3,
+                      ),
+                      NEWTON       = _F(MATRICE='TANGENTE',
+                                        REAC_ITER=1),
+                      SOLVEUR      = _F(METHODE='MUMPS',
+                                        POSTTRAITEMENTS='MINI'),
                       ARCHIVAGE    = _F(LIST_INST=REEL_ARC),
-              )
+)
 
 
 # COORDONNEES DES POINTS DE GAUSS
 
 COOR = CALC_CHAM_ELEM(MODELE = MODE,
-                OPTION = 'COOR_ELGA',)
+                      OPTION = 'COOR_ELGA',)
 
 COORX = COOR.EXTR_COMP('X',['V_Bar3D']).valeurs
 COORY = COOR.EXTR_COMP('Y',['V_Bar3D']).valeurs
@@ -212,11 +214,11 @@ for i in range (len(COORX)):
 
 # INST1 = 0.50     (INST_TOTAL = 1.00)
 SIGMA1 = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                 OPERATION = 'EXTR',
-                   RESULTAT  = RESU,
-                   NOM_CHAM  = 'SIEF_ELGA',
-                   INST      = 0.50,
-                   )
+                    OPERATION = 'EXTR',
+                    RESULTAT  = RESU,
+                    NOM_CHAM  = 'SIEF_ELGA',
+                    INST      = 0.50,
+)
 
 SIXX1 = SIGMA1.EXTR_COMP('SIXX',['V_Bar3D']).valeurs
 
@@ -224,30 +226,31 @@ SXX11 = CREA_TABLE(LISTE = (_F(PARA='SIXX',LISTE_R = SIXX1[j])))
 SXX12 = CREA_TABLE(LISTE = (_F(PARA='SIXX',LISTE_R = SIXX1[k])))
 
 TEST_TABLE(TABLE = SXX11,
-       NOM_PARA = 'SIXX',
+           NOM_PARA = 'SIXX',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 724.42151258972,
-           TOLE_MACHINE=5.e-5,
+           VALE_CALC = 724.421454585613,
+           TOLE_MACHINE=1.e-3,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 7.243507e+02,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 TEST_TABLE(TABLE = SXX12,
-       NOM_PARA = 'SIXX',
+           NOM_PARA = 'SIXX',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 776.5939332901285,
+           VALE_CALC = 776.5935243930542,
+           TOLE_MACHINE=1.e-3,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 7.766714e+02,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 
 # INST2 = 0.80     (INST_TOTAL = 1.00)
 SIGMA2 = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                 OPERATION = 'EXTR',
-                   RESULTAT  = RESU,
-                   NOM_CHAM  = 'SIEF_ELGA',
-                   INST      = 0.80,
-                   )
+                    OPERATION = 'EXTR',
+                    RESULTAT  = RESU,
+                    NOM_CHAM  = 'SIEF_ELGA',
+                    INST      = 0.80,
+)
 
 SIXX2 = SIGMA2.EXTR_COMP('SIXX',['V_Bar3D']).valeurs
 
@@ -255,23 +258,23 @@ SXX21 = CREA_TABLE(LISTE = (_F(PARA='SIXX',LISTE_R = SIXX2[j])))
 SXX22 = CREA_TABLE(LISTE = (_F(PARA='SIXX',LISTE_R = SIXX2[k])))
 
 TEST_TABLE(TABLE = SXX21,
-       NOM_PARA = 'SIXX',
+           NOM_PARA = 'SIXX',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 410.0712604018969,
-           TOLE_MACHINE = 2.e-5,
+           VALE_CALC = 410.07265782202194,
+           TOLE_MACHINE=1.e-3,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 4.099964e+02,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 TEST_TABLE(TABLE = SXX22,
-       NOM_PARA = 'SIXX',
+           NOM_PARA = 'SIXX',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 758.512252393203,
-           TOLE_MACHINE = 1.e-4,
+           VALE_CALC = 758.5122561150149,
+           TOLE_MACHINE=1.e-3,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE=7.586364e+02,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 
 
 #---------------------------------------------------------------------------------------------------------------
@@ -283,11 +286,11 @@ TEST_TABLE(TABLE = SXX22,
 ###
 
 VI1 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
-               OPERATION = 'EXTR',
+                 OPERATION = 'EXTR',
                  RESULTAT  = RESU,
                  NOM_CHAM  = 'VARI_ELGA',
                  INST      = 0.50,
-                 )
+)
 
 #   VARIABLE D'ECROUISSAGE
 V11 = VI1.EXTR_COMP('V1',['V_Bar3D']).valeurs
@@ -295,21 +298,21 @@ V111 = CREA_TABLE(LISTE = (_F(PARA='V1',LISTE_R = V11[j])))
 V112 = CREA_TABLE(LISTE = (_F(PARA='V1',LISTE_R = V11[k])))
 
 TEST_TABLE(TABLE = V111,
-       NOM_PARA = 'V1',
+           NOM_PARA = 'V1',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 0.9329560287805482,
+           VALE_CALC = 0.9329560290213263,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 9.318300e-01,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 TEST_TABLE(TABLE = V112,
-       NOM_PARA = 'V1',
+           NOM_PARA = 'V1',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 0.9479309978816209,
+           VALE_CALC = 0.9479309978790983,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 9.450810e-01,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 
 #  POROSITE
 V12 = VI1.EXTR_COMP('V2',['V_Bar3D']).valeurs
@@ -317,21 +320,21 @@ V121 = CREA_TABLE(LISTE = (_F(PARA='V2',LISTE_R = V12[j])))
 V122 = CREA_TABLE(LISTE = (_F(PARA='V2',LISTE_R = V12[k])))
 
 TEST_TABLE(TABLE = V121,
-       NOM_PARA = 'V2',
+           NOM_PARA = 'V2',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 0.032923540428174754,
+           VALE_CALC = 0.032923539655282275,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 3.292354e-02,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 TEST_TABLE(TABLE = V122,
-       NOM_PARA = 'V2',
+           NOM_PARA = 'V2',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 0.0036681811060352005,
+           VALE_CALC = 0.0036681811307388195,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 3.668169e-03,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 
 
 ###
@@ -339,11 +342,11 @@ TEST_TABLE(TABLE = V122,
 ###
 
 VI2 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
-               OPERATION = 'EXTR',
+                 OPERATION = 'EXTR',
                  RESULTAT  = RESU,
                  NOM_CHAM  = 'VARI_ELGA',
                  INST      = 0.80,
-                 )
+)
 
 #   VARIABLE D'ECROUISSAGE
 V21 = VI2.EXTR_COMP('V1',['V_Bar3D']).valeurs
@@ -351,21 +354,21 @@ V211 = CREA_TABLE(LISTE = (_F(PARA='V1',LISTE_R = V21[j])))
 V212 = CREA_TABLE(LISTE = (_F(PARA='V1',LISTE_R = V21[k])))
 
 TEST_TABLE(TABLE = V211,
-       NOM_PARA = 'V1',
+           NOM_PARA = 'V1',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 1.2815364036377224,
+           VALE_CALC = 1.2815364179749937,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 1.280017e+00,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 TEST_TABLE(TABLE = V212,
-       NOM_PARA = 'V1',
+           NOM_PARA = 'V1',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 1.3547156295915688,
+           VALE_CALC = 1.354715629567071,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 1.350605e+00,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 
 #  POROSITE
 V22 = VI2.EXTR_COMP('V2',['V_Bar3D']).valeurs
@@ -373,19 +376,19 @@ V221 = CREA_TABLE(LISTE = (_F(PARA='V2',LISTE_R = V22[j])))
 V222 = CREA_TABLE(LISTE = (_F(PARA='V2',LISTE_R = V22[k])))
 
 TEST_TABLE(TABLE = V221,
-       NOM_PARA = 'V2',
+           NOM_PARA = 'V2',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 0.11743319303405511,
+           VALE_CALC = 0.1174331646781611,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 1.174330e-01,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 TEST_TABLE(TABLE = V222,
-       NOM_PARA = 'V2',
+           NOM_PARA = 'V2',
            TYPE_TEST = 'MAX',
-           VALE_CALC = 0.012563556810918771,
+           VALE_CALC = 0.01256355684895239,
            REFERENCE= 'SOURCE_EXTERNE',
            VALE_REFE= 1.256342e-02,
-       PRECISION = 0.01,
-           )
+           PRECISION = 0.01,
+)
 FIN()
