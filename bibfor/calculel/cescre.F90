@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
-                  ncmpg, licmp, npg, nspt, ncmp)
+                  ncmpg, licmp, npg, nspt, ncmp, undf0_)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-    implicit none
+  implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -44,6 +45,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     character(len=*) :: maz, nomgdz, cesz, basez, typcez
     integer :: npg(*), nspt(*), ncmp(*)
     character(len=*) :: licmp(*)
+    aster_logical, optional, intent(in) :: undf0_
 ! ------------------------------------------------------------------
 ! BUT : CREER UN CHAM_ELEM_S VIERGE (CESZ)
 ! ------------------------------------------------------------------
@@ -93,6 +95,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !                 NCMP(IMA) EST LE NOMBRE DE CMPS VOULUES POUR LA
 !                 MAILLE IMA
 !
+! UNDFO  IN       L : Initialisation à zéro du champ
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
@@ -105,6 +108,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     integer :: gd, ncmpmx, nbma, jcmpgd, icmp, jcmp, jcesk, jcesd
     integer :: jcesc, k, jcesl, jcesv, ncmpg, ima, jlconx, decal
     integer :: nptma, nsptma, ncmpma, ncmp2, jlicmp, iret
+    aster_logical :: undf0
 !
 !     FONCTION FORMULE:
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
@@ -116,6 +120,11 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
     base = basez
     nomgd = nomgdz
     ma = maz
+
+    undf0 = ASTER_FALSE
+    if ( present(undf0_)) then
+        undf0 = undf0_
+     endif
 !
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -276,7 +285,7 @@ subroutine cescre(basez, cesz, typcez, maz, nomgdz,&
 !     6- CREATION DE CES.CESV:
 !     ------------------------
     call wkvect(ces//'.CESV', base//' V '//tsca, decal, jcesv)
-    call jeundf(ces//'.CESV')
+    call jeundf(ces//'.CESV', undf0)
 !
 !
 !------------------------------------------------------------------

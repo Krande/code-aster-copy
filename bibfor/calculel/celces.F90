@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine celces(celz, basez, cesz, l_copy_nan_)
+subroutine celces(celz, basez, cesz, l_copy_nan_, undf0_)
 !
 implicit none
 !
@@ -46,7 +46,7 @@ implicit none
 #include "asterfort/as_allocate.h"
 !
 character(len=*), intent(in) :: celz, cesz, basez
-aster_logical, optional, intent(in) :: l_copy_nan_
+aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,6 +62,7 @@ aster_logical, optional, intent(in) :: l_copy_nan_
 ! In  ces              : name of CHAM_ELEM_S
 ! In  base             : JEVEUX base to create CHAM_ELEM_S
 ! In  l_copy_nan       : flag to copy NaN values
+! In  undf0            : flag to init field with zeros
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,7 +81,7 @@ aster_logical, optional, intent(in) :: l_copy_nan_
     integer :: nb_pt_max, nb_elem, nb_cmp_max, nb_spt, nb_dyn, nb_dyn_max, lgcata
     integer :: ico, adiel, nb_cmp_cumu
     character(len=24) :: valk(2)
-    aster_logical :: sdveri, l_copy_nan
+    aster_logical :: sdveri, l_copy_nan, undf0
     integer, pointer :: v_liel(:) => null()
     integer, pointer :: v_liel_long(:) => null()
     integer, pointer :: v_celd(:) => null()
@@ -114,6 +115,11 @@ aster_logical, optional, intent(in) :: l_copy_nan_
     l_copy_nan = ASTER_TRUE
     if ( present(l_copy_nan_)) then
         l_copy_nan = l_copy_nan_
+    endif
+!
+    undf0 = ASTER_FALSE
+    if ( present(undf0_)) then
+        undf0 = undf0_
     endif
 !
 ! - Some checks
@@ -242,7 +248,7 @@ aster_logical, optional, intent(in) :: l_copy_nan_
 ! - Allocate the CHAM_ELEM_S
 !
     call cescre(base  , ces     , typces, mesh   , nomgd,&
-                nb_cmp, cmp_name, v_nbpt, v_nbspt, v_nbcmp)
+                nb_cmp, cmp_name, v_nbpt, v_nbspt, v_nbcmp, undf0)
 !
 ! - Access to the CHAM_ELEM_S
 !
