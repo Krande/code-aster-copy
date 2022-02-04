@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,6 +33,7 @@ from subprocess import Popen
 
 try:
     from asrun import create_run_instance
+
     HAS_ASRUN = True
 except ImportError:
     HAS_ASRUN = False
@@ -82,13 +83,8 @@ def get_titre_concept(co=None):
         "dateheure": "%(dateheure)s",
         "typeco": "DE TYPE %(type_concept)s",
     }
-    format = [
-        fmt["version"],
-    ]
-    dfmt = {
-        "version": get_version(),
-        "dateheure": time.strftime("LE %m/%d/%Y A %H:%M:%S"),
-    }
+    format = [fmt["version"]]
+    dfmt = {"version": get_version(), "dateheure": time.strftime("LE %m/%d/%Y A %H:%M:%S")}
     if co:
         dfmt["nom_concept"] = co.getName()
         format.append(fmt["nomco"])
@@ -112,11 +108,11 @@ def fmtF2PY(fformat):
     matP = re.search("([0-9]+)P", fformat)
     if matP:
         fmt += " " * int(matP.group(1))
-    matR = re.search("([eEdDfFgG]{1})([\.0-9]+)", fformat)
+    matR = re.search(r"([eEdDfFgG]{1})([\.0-9]+)", fformat)
     if matR:
         fmt += "%" + matR.group(2) + re.sub("[dD]+", "E", matR.group(1))
     try:
-        s = fmt % -0.123
+        _ = fmt % -0.123
     except (ValueError, TypeError) as msg:
         fmt = "%12.5E"
         print("Error :", msg)
