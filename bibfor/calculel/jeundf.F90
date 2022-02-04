@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine jeundf(obj)
+subroutine jeundf(obj, undf0_)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-    implicit none
+  implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8nnem.h"
@@ -28,7 +29,8 @@ subroutine jeundf(obj)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    character(len=*) :: obj
+    character(len=*), intent(in) :: obj
+    aster_logical, optional, intent(in) :: undf0_
 ! ----------------------------------------------------------------------
 !     BUT : METTRE A "UNDEF" UN OBJET JEVEUX
 !             I   :  ISMAEM()
@@ -38,6 +40,7 @@ subroutine jeundf(obj)
 !             K*  : 'XXXXXXXXXXXXXX'
 !
 !     OBJ   IN/JXVAR  K24 : NOM DE L'OBJET
+!     undf0 IN        L   : Initialisation à 0 des R, C et I
 !
     character(len=24) :: obj2
     real(kind=8) :: r1undf
@@ -49,13 +52,29 @@ subroutine jeundf(obj)
     character(len=1) :: xous, type
     complex(kind=8) :: c1undf
     integer :: long, i1undf, ltyp, iad, k
+    aster_logical :: undf0
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()
+
+!
+! - Parameter: is undefined a zero ?
+!
+    undf0 = ASTER_FALSE
+    if ( present(undf0_)) then
+        undf0 = undf0_
+    endif
+
     obj2=obj
 !
-    i1undf=ismaem()
-    r1undf=r8nnem()
+    if (undf0) then
+       i1undf=0
+       r1undf=0.d0
+    else
+       i1undf=ismaem()
+       r1undf=r8nnem()
+    endif
+
     c1undf=dcmplx(r1undf,r1undf)
     k8df='XXXXXXXX'
     k16df=k8df//k8df

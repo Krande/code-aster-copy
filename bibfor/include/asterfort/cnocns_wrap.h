@@ -15,11 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-#include "asterf_types.h"
+
+!
 !
 interface
-    subroutine cnocns(cnoz, basez, cnsz, undf0_)
-        character(len=*), intent(in) :: cnoz, basez, cnsz
-        aster_logical, optional, intent(in) :: undf0_
-    end subroutine cnocns
+    subroutine cnocns_wrap(cnoz, basez, cnsz)
+        character(len=*) :: cnoz
+        character(len=*) :: basez
+        character(len=*) :: cnsz
+    end subroutine cnocns_wrap
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,10 +17,11 @@
 ! --------------------------------------------------------------------
 
 subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
-                  cnsz)
+                  cnsz, undf0_)
 ! person_in_charge: jacques.pellet at edf.fr
 ! A_UTIL
-    implicit none
+  implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
@@ -33,6 +34,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
     character(len=*) :: maz, nomgdz, cnsz, basez
     integer :: ncmp
     character(len=*) :: licmp(ncmp)
+    aster_logical, optional, intent(in) :: undf0_
 ! ------------------------------------------------------------------
 ! BUT : CREER UN CHAM_NO_S
 ! ------------------------------------------------------------------
@@ -43,6 +45,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
 ! LICMP   IN       L_K8: NOMS DES CMPS VOULUES DANS CNSZ
 ! BASEZ   IN       K1  : BASE DE CREATION POUR CNSZ : G/V/L
 ! CNSZ    IN/JXOUT K19 : SD CHAM_NO_S A CREER
+! undf0   IN           : flag to init field with zeros
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
@@ -52,6 +55,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
     character(len=19) :: cns
     integer :: nbno, jcnsk, jcnsd
     integer :: jcnsc, k, jcnsl, jcnsv, iret
+    aster_logical :: undf0
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -59,6 +63,11 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
     base = basez
     nomgd = nomgdz
     ma = maz
+
+    undf0 = ASTER_FALSE
+    if ( present(undf0_)) then
+        undf0 = undf0_
+     endif
 !
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
@@ -106,7 +115,7 @@ subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
 !     6- CREATION DE CNS.CNSV:
 !     ------------------------
     call wkvect(cns//'.CNSV', base//' V '//tsca, nbno*ncmp, jcnsv)
-    call jeundf(cns//'.CNSV')
+    call jeundf(cns//'.CNSV', undf0)
 !
     call jedema()
 end subroutine

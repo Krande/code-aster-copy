@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,10 +16,11 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cnocns(cnoz, basez, cnsz)
+subroutine cnocns(cnoz, basez, cnsz, undf0_)
 !
-implicit none
+  implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterfort/as_deallocate.h"
@@ -40,6 +41,7 @@ implicit none
     character(len=*), intent(in) :: cnoz
     character(len=*), intent(in) :: cnsz
     character(len=*), intent(in) :: basez
+    aster_logical, optional, intent(in) :: undf0_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,6 +53,7 @@ implicit none
 ! CNOZ    IN/JXIN  K19 : SD CHAM_NO A TRANSFORMER
 ! BASEZ   IN       K1  : BASE DE CREATION POUR CNSZ : G/V/L
 ! CNSZ    IN/JXOUT K19 : SD CHAM_NO_S A CREER
+! undf0   IN           : flag to init field with zeros
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,6 +70,7 @@ implicit none
     integer, pointer :: cata_to_field(:) => null()
     integer, pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
+    aster_logical :: undf0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,6 +78,11 @@ implicit none
     cno = cnoz
     cns = cnsz
     base = basez
+
+    undf0 = ASTER_FALSE
+    if ( present(undf0_)) then
+        undf0 = undf0_
+     endif
 !
 ! - Check ?
 !
@@ -110,7 +119,7 @@ implicit none
 ! - Allocate CNS
 !
     call cnscre(mesh, gran_name, nb_cmp, cmp_name, base,&
-                cns)
+                cns, undf0)
 !
 ! - Access to CNS
 !

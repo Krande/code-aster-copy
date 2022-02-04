@@ -332,7 +332,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         SimpleFieldOnNodesValueTypePtr toReturn( new SimpleFieldOnNodesValueType() );
         const std::string resultName = toReturn->getName();
         const std::string inName = getName();
-        CALLO_CNOCNS( inName, JeveuxMemoryTypesNames[Permanent], resultName );
+        CALLO_CNOCNS_WRAP( inName, JeveuxMemoryTypesNames[Permanent], resultName );
         toReturn->updateValuePointers();
         return toReturn;
     };

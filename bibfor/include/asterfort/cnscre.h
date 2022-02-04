@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
+#include "asterf_types.h"
 !
 interface
     subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
-                      cnsz)
+                      cnsz, undf0_)
         integer :: ncmp
         character(len=*) :: maz
         character(len=*) :: nomgdz
         character(len=*) :: licmp(ncmp)
         character(len=*) :: basez
         character(len=*) :: cnsz
+        aster_logical, optional, intent(in) :: undf0_
     end subroutine cnscre
 end interface

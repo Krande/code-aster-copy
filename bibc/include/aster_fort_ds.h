@@ -39,9 +39,9 @@ void DEFSSSS( ALCART, alcart, const char *, STRING_SIZE, const char *, STRING_SI
 void DEFSSS( CELCES_WRAP, celces_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
              const char *, STRING_SIZE );
 
-#define CALLO_CNOCNS( a, b, c ) CALLOOO( CNOCNS, cnocns, a, b, c )
-void DEFSSS( CNOCNS, cnocns, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
-             STRING_SIZE );
+#define CALLO_CNOCNS_WRAP( a, b, c ) CALLOOO( CNOCNS_WRAP, cnocns_wrap, a, b, c )
+void DEFSSS( CNOCNS_WRAP, cnocns_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
+             const char *, STRING_SIZE );
 
 #define CALL_CLEAN_JEVEUX_MEMORY( ) CALL0( CLEANJEVEUXMEMORY, cleanjeveuxmemory )
 void DEF0( CLEANJEVEUXMEMORY, cleanjeveuxmemory);

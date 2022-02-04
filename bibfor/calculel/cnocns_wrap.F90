@@ -15,11 +15,27 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+
+subroutine cnocns_wrap(cnoz, basez, cnsz)
+! A_UTIL
+  implicit none
 #include "asterf_types.h"
+#include "asterfort/cnocns.h"
 !
-interface
-    subroutine cnocns(cnoz, basez, cnsz, undf0_)
-        character(len=*), intent(in) :: cnoz, basez, cnsz
-        aster_logical, optional, intent(in) :: undf0_
-    end subroutine cnocns
-end interface
+    character(len=*) :: cnoz, basez, cnsz
+!
+! --------------------------------------------------------------------------------------------------
+!
+! BUT : TRANSFORMER UN CHAM_NO (CNOZ) EN CHAM_NO_S (CNSZ)
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     ARGUMENTS:
+! CNOZ    IN/JXIN  K19 : SD CHAM_NO A TRANSFORMER
+! BASEZ   IN       K1  : BASE DE CREATION POUR CNSZ : G/V/L
+! CNSZ    IN/JXOUT K19 : SD CHAM_NO_S A CREER
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call cnocns(cnoz, basez, cnsz, ASTER_TRUE)
+end subroutine
