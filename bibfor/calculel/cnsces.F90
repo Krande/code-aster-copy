@@ -19,7 +19,10 @@
 subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                   cesz)
 ! person_in_charge: jacques.pellet at edf.fr
-    implicit none
+
+  use compensated_ops_module, only : sum, dot_product
+
+  implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
@@ -35,7 +38,6 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/vecsum.h"
 #include "MeshTypes_type.h"
 !
     character(len=*) :: cnsz, cesz, base, cesmoz, typces, mnogaz
@@ -83,14 +85,14 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     integer :: jcesd,  jcesl, nbma, iret, nbsp, nbno, ico
     integer :: iad,  nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
     integer :: ilcnx1,  nbpg, ipg, imaref, sz
-    integer :: mnogal, mnogad, summode
+    integer :: mnogal, mnogad
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: ces, cesmod, cns, mnoga
-    real(kind=8) :: v, v1
+    real(kind=8) :: v
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: nmnogav(:) => null()
-    real(kind=8) :: livr(MT_NNOMAX)
+    real(kind=8) :: liv1(MT_NNOMAX), liv2(MT_NNOMAX)
     character(len=8), pointer :: cnsc(:) => null()
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
@@ -106,8 +108,6 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     ces = cesz
     cesmod = cesmoz
     cns = cnsz
-    livr(:) = 0.d0
-    summode = 1
 !
 !
 !   1- Recuperation d'informations dans cns :
@@ -199,19 +199,17 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                 if (ico .ne. nbno) goto 90
 !
 !         -- CALCUL DE LA MOYENNE ARITHMETIQUE :
-                v = 0.d0
+                liv1(:) = 0.d0
                 sz = 1
                 do ino = 1, nbno
                     nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
                     if (zl(jcnsl-1+ (nuno-1)*ncmp+icmp)) then
-                       livr(sz) = cnsv((nuno-1)*ncmp+icmp)
+                       liv1(sz) = cnsv((nuno-1)*ncmp+icmp)
                        sz = sz+1
                     endif
                 end do
-!                 
-                call vecsum(livr, sz, summode, v)
-!                 
-                v = v/nbno
+!
+                v = sum(liv1)/nbno
 !
                 do ipt = 1, nbpt
                     do isp = 1, nbsp
@@ -294,6 +292,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
             if (nbno .ne. nbno2 .and. cnsz .eq. '&&VRCIN1.CNS1') nbno = nbno2
             ASSERT(nbno.eq.nbno2)
             ASSERT(nbpg.eq.nbpg2)
+            liv1(:) = 0.d0
+            liv2(:) = 0.d0
 !
             do icmp = 1, ncmp
 !
@@ -306,14 +306,13 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                 if (ico .ne. nbno) goto 200
 !
                 do ipg = 1, nbpg
-                   v = 0.d0
                    do ino = 1, nbno
                       nuno = connex(1+zi(ilcnx1-1+ima)-2+ino)
-                      v1 = cnsv((nuno-1)*ncmp+icmp)
-                      livr(ino) = v1*nmnogav(iad+1+nbno* (ipg-1)+ ino)
+                      liv1(ino) = cnsv((nuno-1)*ncmp+icmp)
+                      liv2(ino) = nmnogav(iad+1+nbno* (ipg-1)+ino)
                    enddo
 !
-                   call vecsum(livr, nbno, summode, v)
+                   v = dot_product(liv1, liv2)
 !
                    do isp = 1, nbsp
                       call cesexi('C', jcesd, jcesl, ima, ipg,&
