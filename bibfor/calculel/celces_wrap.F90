@@ -34,5 +34,5 @@ subroutine celces_wrap(celz, basez, cesz)
 ! CESZ    IN/JXOUT K19 : SD CHAM_ELEM_S A CREER
 !     ------------------------------------------------------------------
 !
-    call celces(celz, basez, cesz, ASTER_TRUE, ASTER_TRUE)
+    call celces(celz, basez, cesz, ASTER_TRUE, ASTER_TRUE, ASTER_TRUE)
 end subroutine

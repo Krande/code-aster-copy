@@ -18,8 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine celces(celz, basez, cesz, l_copy_nan_, undf0_)
+    subroutine celces(celz, basez, cesz, l_copy_nan_, undf0_, rect_)
         character(len=*), intent(in) :: celz, cesz, basez
-        aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
+        aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
     end subroutine celces
 end interface

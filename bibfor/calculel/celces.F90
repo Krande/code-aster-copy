@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine celces(celz, basez, cesz, l_copy_nan_, undf0_)
+subroutine celces(celz, basez, cesz, l_copy_nan_, undf0_, rect_)
 !
 implicit none
 !
@@ -46,7 +46,7 @@ implicit none
 #include "asterfort/as_allocate.h"
 !
 character(len=*), intent(in) :: celz, cesz, basez
-aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
+aster_logical, optional, intent(in) :: l_copy_nan_, undf0_, rect_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,6 +63,7 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
 ! In  base             : JEVEUX base to create CHAM_ELEM_S
 ! In  l_copy_nan       : flag to copy NaN values
 ! In  undf0            : flag to init field with zeros
+! In  rect             : flag to create a rectangular field ( All SubPoints with nmcp==ncmp_max )
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +72,7 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
     character(len=4) :: typces, kmpic
     character(len=8) :: mesh, nomgd
     character(len=19) :: cel, ces, ligrel
-    integer :: nec, gd, nb_cmp_mx, nb_cell
+    integer :: nec, gd, nb_cmp_mx, nb_cell, mval
     integer :: iadg, nume_cmp, nb_cmp
     integer :: jv_celv, jv_molo
     integer :: jv_cesl, jv_cesv, jv_cesd
@@ -81,7 +82,7 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
     integer :: nb_pt_max, nb_elem, nb_cmp_max, nb_spt, nb_dyn, nb_dyn_max, lgcata
     integer :: ico, adiel, nb_cmp_cumu
     character(len=24) :: valk(2)
-    aster_logical :: sdveri, l_copy_nan, undf0
+    aster_logical :: sdveri, l_copy_nan, undf0, rect
     integer, pointer :: v_liel(:) => null()
     integer, pointer :: v_liel_long(:) => null()
     integer, pointer :: v_celd(:) => null()
@@ -120,6 +121,11 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
     undf0 = ASTER_FALSE
     if ( present(undf0_)) then
         undf0 = undf0_
+    endif
+!
+    rect = ASTER_FALSE
+    if ( present(rect_)) then
+        rect = rect_
     endif
 !
 ! - Some checks
@@ -245,10 +251,21 @@ aster_logical, optional, intent(in) :: l_copy_nan_, undf0_
         nb_cmp = -nb_dyn_max
     endif
 !
+! - Si rect
+!
+    if ( rect ) then
+       mval = maxval(v_nbcmp)
+       do elem_nume = 1,  size(v_nbcmp)
+          if ( v_nbcmp(elem_nume) .ne. 0 ) then
+             v_nbcmp(elem_nume) = mval
+          endif
+       enddo
+    endif
+!
 ! - Allocate the CHAM_ELEM_S
 !
     call cescre(base  , ces     , typces, mesh   , nomgd,&
-                nb_cmp, cmp_name, v_nbpt, v_nbspt, v_nbcmp, undf0)
+         nb_cmp, cmp_name, v_nbpt, v_nbspt, v_nbcmp, undf0)
 !
 ! - Access to the CHAM_ELEM_S
 !
