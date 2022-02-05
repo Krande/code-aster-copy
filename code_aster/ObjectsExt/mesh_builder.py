@@ -39,6 +39,19 @@ import tempfile
 from math import sqrt, cos, sin, pi
 
 
+def createFromMedCouplingMesh(cls, mcmesh):
+    """Build mesh from medcoupling mesh
+    Arguments:
+       mcmesh [MEDFileUMesh] : the medcoupling mesh
+    """
+
+    mesh = cls()
+    with tempfile.NamedTemporaryFile(mode="w+") as f:
+        mcmesh.write(f.name, 2)
+        mesh.readMedFile(f.name)
+    return mesh
+
+
 def buildSquare(cls, lx=1, ly=1, refine=0, info=1):
     """Build the quadrilateral mesh of a square.
 

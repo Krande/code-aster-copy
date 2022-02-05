@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,6 +76,15 @@ gmsh.readGmshFile("ssnv187a.msh")
 mcgmsh = gmsh.createMedCouplingMesh()
 test.assertEqual(gmsh.getDimension(), 2)
 test.assertEqual(mcgmsh.getSpaceDimension(), 2)
+
+mesh2 = code_aster.Mesh.createFromMedCouplingMesh(mcmesh)
+test.assertEqual(mesh.getDimension(), mesh2.getDimension())
+test.assertEqual(mesh.getNumberOfCells(), mesh2.getNumberOfCells())
+test.assertEqual(mesh.getNumberOfNodes(), mesh2.getNumberOfNodes())
+test.assertSetEqual(set(mesh.getGroupsOfNodes()), set(mesh2.getGroupsOfNodes()))
+test.assertSetEqual(set(mesh.getGroupsOfCells()), set(mesh2.getGroupsOfCells()))
+test.assertSequenceEqual(mesh.getMedCellsTypes(), mesh2.getMedCellsTypes())
+test.assertSequenceEqual(mesh.getMedConnectivity(), mesh2.getMedConnectivity())
 
 test.printSummary()
 

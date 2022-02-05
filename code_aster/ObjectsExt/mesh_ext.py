@@ -41,6 +41,7 @@ class ExtendedMesh:
     buildDisk = classmethod(mesh_builder.buildDisk)
     buildCube = classmethod(mesh_builder.buildCube)
     buildCylinder = classmethod(mesh_builder.buildCylinder)
+    createFromMedCouplingMesh = classmethod(mesh_builder.createFromMedCouplingMesh)
 
     def LIST_GROUP_NO(self):
         """Retourne la liste des groupes de noeuds sous la forme :
