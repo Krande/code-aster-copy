@@ -30,6 +30,8 @@ namespace py = boost::python;
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/SimpleFieldOnNodesInterface.h"
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( getvalues_overloads, getValues, 0, 1 )
+
 void exportSimpleFieldOnNodesToPython() {
     py::class_< SimpleFieldOnNodesReal, SimpleFieldOnNodesRealPtr,
                 py::bases< DataStructure > >( "SimpleFieldOnNodesReal", py::no_init )
@@ -48,17 +50,20 @@ Returns:
     (float): The field value. NaN is returned if the position is not allocated.
         )", ( py::arg("self" ), py::arg("ino" ), py::arg("icmp")))
 
-        .def( "getValues", &SimpleFieldOnNodesReal::getValues, R"(
+        .def( "getValues", &SimpleFieldOnNodesReal::getValues, getvalues_overloads( R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
 The first array contains the field values while the second one is a mask
 which is `True` if the corresponding value exists, `False` otherwise.
 
 Where the mask is `False` the corresponding value is set to zero.
 
+Args:
+        copy (bool): If True copy the data, default: *False*
+
 Returns:
     ndarray (float): Field values.
     ndarray (bool): Mask for the field values.
-        )", ( py::arg("self" )))
+        )", ( py::arg("self" ), py::arg("copy" ))))
 
         .def( "getNumberOfComponents", &SimpleFieldOnNodesReal::getNumberOfComponents )
         .def( "getNumberOfNodes", &SimpleFieldOnNodesReal::getNumberOfNodes )
@@ -85,17 +90,20 @@ Returns:
     (complex): The field value. NaN is returned if the position is not allocated.
         )", ( py::arg("self" ), py::arg("ino" ), py::arg("icmp")) )
 
-        .def( "getValues", &SimpleFieldOnNodesComplex::getValues, R"(
+        .def( "getValues", &SimpleFieldOnNodesComplex::getValues, getvalues_overloads( R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
 The first array contains the field values while the second one is a mask
 which is `True` if the corresponding value exists, `False` otherwise.
 
 Where the mask is `False` the corresponding value is set to zero.
 
+Args:
+        copy (bool): If True copy the data, default: *False*
+
 Returns:
     ndarray (complex): Field values.
     ndarray (bool): Mask for the field values.
-        )", ( py::arg("self" )))
+        )", ( py::arg("self" ), py::arg("copy" ))))
 
         .def( "getNumberOfComponents", &SimpleFieldOnNodesComplex::getNumberOfComponents )
         .def( "getNumberOfNodes", &SimpleFieldOnNodesComplex::getNumberOfNodes )

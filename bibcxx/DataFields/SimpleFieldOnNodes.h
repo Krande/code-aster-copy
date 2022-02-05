@@ -151,35 +151,48 @@ class SimpleFieldOnNodes : public DataStructure {
     /**
      * @brief Get values with mask
      */
-    PyObject *getValues() {
+    PyObject *getValues( bool copy = false ) {
 
-        npy_intp dims[2] = { this->getNumberOfNodes(), this->getNumberOfComponents() };
+        PyObject *resu_tuple = PyTuple_New( 2 );
+
+        npy_intp dims[2] = { _values->size()/this->getNumberOfComponents(),
+                             this->getNumberOfComponents() };
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );
-        PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL, _allocated->getDataPtr() );
+        PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL,
+                                                    _allocated->getDataPtr() );
         AS_ASSERT( values != NULL );
         AS_ASSERT( mask != NULL );
 
-        PyObject *values_copy = PyArray_ZEROS( 2, dims, npy_type< ValueType >::value, 0 );
-        PyObject *ret = PyArray_PutMask( (PyArrayObject *)values_copy, values, mask );
-        AS_ASSERT( values_copy != NULL );
-        AS_ASSERT( ret != NULL );
+        if ( copy ) {
+          PyObject *values_copy = PyArray_NewLikeArray( (PyArrayObject *)values,
+                                                        NPY_ANYORDER, NULL, 0 );
+          PyArray_CopyInto( (PyArrayObject *)values_copy, (PyArrayObject *)values );
+          AS_ASSERT( values_copy != NULL );
 
-        PyObject *mask_copy = PyArray_NewLikeArray( (PyArrayObject *)mask, NPY_ANYORDER, NULL, 0 );
-        PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask );
-        AS_ASSERT( mask_copy != NULL );
+          PyObject *mask_copy = PyArray_NewLikeArray( (PyArrayObject *)mask,
+                                                      NPY_ANYORDER, NULL, 0 );
+          PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask );
+          AS_ASSERT( mask_copy != NULL );
 
-        PyArray_ENABLEFLAGS( (PyArrayObject *)values_copy, NPY_ARRAY_OWNDATA );
-        PyArray_ENABLEFLAGS( (PyArrayObject *)mask_copy, NPY_ARRAY_OWNDATA );
+          PyArray_ENABLEFLAGS( (PyArrayObject *)values_copy, NPY_ARRAY_OWNDATA );
+          PyArray_ENABLEFLAGS( (PyArrayObject *)mask_copy, NPY_ARRAY_OWNDATA );
 
-        Py_XDECREF( values );
-        Py_XDECREF( mask );
-        Py_XDECREF( ret );
+          Py_XDECREF( values );
+          Py_XDECREF( mask );
 
-        PyObject *resu_tuple = PyTuple_New( 2 );
-        PyTuple_SetItem( resu_tuple, 0, values_copy );
-        PyTuple_SetItem( resu_tuple, 1, mask_copy );
+          PyTuple_SetItem( resu_tuple, 0, values_copy );
+          PyTuple_SetItem( resu_tuple, 1, mask_copy );
+
+        } else {
+          PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_WRITEABLE );
+          PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_WRITEABLE );
+          PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
+          PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
+          PyTuple_SetItem( resu_tuple, 0, values );
+          PyTuple_SetItem( resu_tuple, 1, mask );
+        }
 
         return resu_tuple;
     }
@@ -229,8 +242,8 @@ class SimpleFieldOnNodes : public DataStructure {
 
         _nbNodes = ( *_size )[0];
         _nbComp = ( *_size )[1];
-        if ( _values->size() != _nbNodes * _nbComp )
-          throw std::runtime_error( "Programming error" );
+        AS_ASSERT( _values->size() == _nbNodes * _nbComp );
+        AS_ASSERT( _values->size() > 0 );
     };
 };
 
