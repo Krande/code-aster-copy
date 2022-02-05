@@ -33,10 +33,6 @@
 #include "MemoryManager/NumpyAccess.h"
 #include "Utilities/Tools.h"
 
-#include <string>
-
-#include <assert.h>
-
 /**
  * @class SimpleFieldOnCells
  * @brief Cette classe template permet de definir un champ aux éléments Aster
@@ -61,7 +57,7 @@ class SimpleFieldOnCells : public DataStructure {
     ASTERINTEGER _nbComp;
     /** @brief Number of points */
     ASTERINTEGER _nbPt;
-    /** @brief Number of under points */
+    /** @brief Number of subpoints */
     ASTERINTEGER _nbSpt;
 
     /**
@@ -98,12 +94,16 @@ class SimpleFieldOnCells : public DataStructure {
      */
     ASTERINTEGER _nbValArray() const {
         ASTERINTEGER nbVal = 0;
+        ASTERINTEGER ncmp_max = this->getNumberOfComponents();
         for ( ASTERINTEGER ima = 0; ima < this->getNumberOfCells(); ima++ ) {
             ASTERINTEGER npt = this->_ptCell( ima );
             ASTERINTEGER nspt = this->_sptCell( ima );
             ASTERINTEGER ncmp = this->_cmpsSptCell( ima );
+            if ( ncmp > 0 )
+              AS_ASSERT( ncmp == ncmp_max );
             nbVal = nbVal + npt * nspt * ncmp;
         }
+        AS_ASSERT( nbVal > 0 );
         return nbVal;
     }
 
@@ -316,46 +316,48 @@ class SimpleFieldOnCells : public DataStructure {
     /**
      * @brief Get values on cells holding components, with mask
      */
-    PyObject *getValues() {
-
-        ASTERINTEGER sz = 0;
-        ASTERINTEGER ncmp_max = this->getNumberOfComponents();
-        VectorLong cells = this->getCellsWithComponents();
-
-        for ( const auto &ima : cells ) {
-            sz = sz + this->_ptCell( ima ) * this->_sptCell( ima );
-        }
-        AS_ASSERT( sz > 0 );
-
-        npy_intp dims[2] = { sz, ncmp_max };
-        PyObject *data = PyArray_ZEROS( 2, dims, npy_type< ValueType >::value, 0 );
-        PyObject *mask = PyArray_ZEROS( 2, dims, NPY_BOOL, 0 );
-
-        ValueType *dataptr = (double *)PyArray_DATA( (PyArrayObject *)data );
-        bool *maskptr = (bool *)PyArray_DATA( (PyArrayObject *)mask );
-
-        ASTERINTEGER j = 0;
-        for ( const auto &ima : cells ) {
-            for ( ASTERINTEGER ipt = 0; ipt < this->_ptCell( ima ); ipt++ ) {
-                for ( ASTERINTEGER ispt = 0; ispt < this->_sptCell( ima ); ispt++ ) {
-                    for ( ASTERINTEGER icmp = 0; icmp < this->_cmpsSptCell( ima ); icmp++ ) {
-                        ASTERINTEGER posjv = this->_positionInArray( icmp, ima, ipt, ispt );
-                        if ( ( *_allocated )[posjv] ) {
-                            dataptr[j + icmp] = ( *_values )[posjv];
-                            maskptr[j + icmp] = true;
-                        }
-                    }
-                    j = j + ncmp_max;
-                }
-            }
-        }
-
-        PyArray_ENABLEFLAGS( (PyArrayObject *)data, NPY_ARRAY_OWNDATA );
-        PyArray_ENABLEFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
+    PyObject *getValues( bool copy = false ) {
 
         PyObject *resu_tuple = PyTuple_New( 2 );
-        PyTuple_SetItem( resu_tuple, 0, data );
-        PyTuple_SetItem( resu_tuple, 1, mask );
+
+        npy_intp dims[2] = { _values->size()/this->getNumberOfComponents(),
+                             this->getNumberOfComponents() };
+
+        PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
+                                                      _values->getDataPtr() );
+        PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL,
+                                                    _allocated->getDataPtr() );
+        AS_ASSERT( values != NULL );
+        AS_ASSERT( mask != NULL );
+
+        if ( copy ) {
+          PyObject *values_copy = PyArray_NewLikeArray( (PyArrayObject *)values,
+                                                        NPY_ANYORDER, NULL, 0 );
+          PyArray_CopyInto( (PyArrayObject *)values_copy, (PyArrayObject *)values );
+          AS_ASSERT( values_copy != NULL );
+
+          PyObject *mask_copy = PyArray_NewLikeArray( (PyArrayObject *)mask,
+                                                      NPY_ANYORDER, NULL, 0 );
+          PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask );
+          AS_ASSERT( mask_copy != NULL );
+
+          PyArray_ENABLEFLAGS( (PyArrayObject *)values_copy, NPY_ARRAY_OWNDATA );
+          PyArray_ENABLEFLAGS( (PyArrayObject *)mask_copy, NPY_ARRAY_OWNDATA );
+
+          Py_XDECREF( values );
+          Py_XDECREF( mask );
+
+          PyTuple_SetItem( resu_tuple, 0, values_copy );
+          PyTuple_SetItem( resu_tuple, 1, mask_copy );
+
+        } else {
+          PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_WRITEABLE );
+          PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_WRITEABLE );
+          PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
+          PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
+          PyTuple_SetItem( resu_tuple, 0, values );
+          PyTuple_SetItem( resu_tuple, 1, mask );
+        }
 
         return resu_tuple;
     }
@@ -374,8 +376,8 @@ class SimpleFieldOnCells : public DataStructure {
         _nbComp = ( *_size )[1];
         _nbPt = ( *_size )[2];
         _nbSpt = ( *_size )[3];
-        if ( _values->size() != this->_nbValArray() )
-            throw std::runtime_error( "Programming error" );
+
+        AS_ASSERT( _values->size() == this->_nbValArray() );
     };
 };
 

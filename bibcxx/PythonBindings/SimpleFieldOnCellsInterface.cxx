@@ -30,6 +30,8 @@ namespace py = boost::python;
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/SimpleFieldOnCellsInterface.h"
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( getvalues_overloads, getValues, 0, 1 )
+
 void exportSimpleFieldOnCellsToPython() {
     py::class_< SimpleFieldOnCellsReal, SimpleFieldOnCellsRealPtr,
                 py::bases< DataStructure > >( "SimpleFieldOnCellsReal", py::no_init )
@@ -53,17 +55,20 @@ Returns:
              NaN if the position is not allocated.
         )", (py::arg( "self" ), py::arg("ima"), py::arg("icmp"), py::arg("ipt"), py::arg("ispt")))
 
-        .def( "getValues", &SimpleFieldOnCellsReal::getValues, R"(
+        .def( "getValues", &SimpleFieldOnCellsReal::getValues, getvalues_overloads( R"(
 Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
 The first array contains the field values while the second one is a mask
 which is `True` if the corresponding value exists, `False` otherwise.
 
 Where the mask is `False` the corresponding value is set to zero.
 
+Args:
+        copy (bool): If True copy the data, default: *False*
+
 Returns:
     ndarray (float): Field values.
     ndarray (bool): Mask for the field values.
-        )", (py::arg( "self" )))
+        )", (py::arg( "self" ), py::arg("copy" ))))
 
         .def( "getCellsWithComponents", &SimpleFieldOnCellsReal::getCellsWithComponents, R"(
 Returns the list of cells where the field is defined.
