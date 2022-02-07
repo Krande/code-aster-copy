@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# person_in_charge: nicolas.sellenet@edf.fr
 
 from ..Objects import (FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsComplex,
                        FieldOnNodesReal, FieldOnNodesComplex,
@@ -41,6 +40,14 @@ class FieldCreator(ExecuteCommand):
         """
         location = keywords["TYPE_CHAM"][:5]
         typ = keywords["TYPE_CHAM"][10:]
+
+# c'est très sale, à corriger, voir 31791
+        if keywords["TYPE_CHAM"] == "ELNO_SIEFMX_R":
+            location = "ELNO"
+            typ = "R"
+        if keywords["TYPE_CHAM"] == "ELEM_DCEL_I":
+            location = "ELEM"
+            typ = "R"
 
         mesh = keywords.get("MAILLAGE")
         model = keywords.get("MODELE")
@@ -72,6 +79,7 @@ class FieldCreator(ExecuteCommand):
             if typ == "C":
                 self._result = FieldOnNodesComplex()
             else:
+# c'est très sale, à corriger, voir 31788
                 self._result = FieldOnNodesReal()
             if mesh is not None:
                 self._result.setMesh(mesh)
@@ -84,6 +92,9 @@ class FieldCreator(ExecuteCommand):
                 self._result = FieldOnCellsLong()
             elif typ == "C":
                 self._result = FieldOnCellsComplex()
+            elif typ == "F":
+# c'est très sale, à corriger, voir 31788
+                self._result = FieldOnCellsReal()
             else:
                 raise NotImplementedError("Output for CREA_CHAMP not defined")
 
