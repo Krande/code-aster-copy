@@ -390,7 +390,7 @@ def C_SOLVEUR(COMMAND, BASE=None):  # COMMUN#
         statut='f', typ='I', defaut=20, val_min=1, )
     _BlocXX_SP['GESTION_MEMOIRE'] = SIMP(
         statut='f', typ='TXM', defaut="AUTO", into=("IN_CORE", "AUTO"), )
-    _BlocXX_SP['LOW_RANK_SEUIL'] = SIMP(statut='f', typ='R', defaut=1.E-08, )
+    _BlocXX_SP['LOW_RANK_SEUIL'] = SIMP(statut='f', typ='R', defaut=0.0, )
 # --------------------------------------------------------------------
 
     _BlocPE_ML['RENUM'] = SIMP(
