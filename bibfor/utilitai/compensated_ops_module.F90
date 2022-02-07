@@ -29,6 +29,10 @@ module compensated_ops_module
      module procedure sum2s
   end interface sum
 
+  interface matmul
+     module procedure matmul2
+  end interface matmul
+
 ! -------------------------------------------------------
 !
 ! Compensated algorithms from Ogita-Oishi-Rump
@@ -112,5 +116,18 @@ function dot2(vx, vy) result(t)
 
 end function dot2
 
+function matmul2(A, B) result(C)
+  implicit none
+  real(kind=8), dimension(:,:), intent(in) :: A, B
+  real(kind=8), dimension(size(A,1), size(B, 2)) :: C
+  integer :: i, j
+
+  do i = 1, size(A, 1)
+     do j = 1, size(B, 2)
+        C(i, j) = dot2(A(i, :), B(:, j))
+     end do
+  end do
+
+end function matmul2
 
 end module compensated_ops_module
