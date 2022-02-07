@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -106,7 +106,7 @@ integer, intent(inout) :: codret
 !
     integer, parameter :: ndim = 3
     aster_logical :: grand, axi, cplan
-    aster_logical :: lVect, lMatr, lSigm, lMatrPred
+    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lPred
     integer :: kpg, j, strain_model
     integer :: cod(npg)
     real(kind=8) :: dsidep(6, 6)
@@ -130,6 +130,7 @@ integer, intent(inout) :: codret
     lSigm      = L_SIGM(option)
     lVect      = L_VECT(option)
     lMatr      = L_MATR(option)
+    lPred      = L_PRED(option)
     lMatrPred  = L_MATR_PRED(option)
     dispCurr   = 0.d0
     rela_comp  = compor(RELA_NAME)
@@ -231,6 +232,10 @@ integer, intent(inout) :: codret
             endif
         else
             ASSERT(ASTER_FALSE)
+        endif
+! ----- For PREDICTION: initialization of stress
+        if (lPred) then
+            sigmPost = sigmPrep
         endif
 ! ----- Compute internal forces vector and rigidity matrix
         call nmgrtg(ndim    , nno   , poids    , kpg   , vff     ,&

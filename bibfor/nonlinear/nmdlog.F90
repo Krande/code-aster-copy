@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,7 +93,7 @@ integer, intent(in) :: ndim, nno, npg
 !
     aster_logical :: grand, axi, cplan
     aster_logical :: matsym, lintbo
-    aster_logical :: lVect, lMatr, lSigm, lMatrPred
+    aster_logical :: lVect, lMatr, lSigm, lMatrPred, lCorr, lVari
     integer :: kpg, nddl, cod(npg), ivf
     integer :: mate, lgpg, codret, iw, idff, iret
     character(len=8) :: typmod(*)
@@ -113,48 +113,41 @@ integer, intent(in) :: ndim, nno, npg
     real(kind=8) :: def(2*ndim, nno, ndim), pff(2*ndim, nno, nno)
     real(kind=8) :: dsidep(6, 6), pk2Curr(6), pk2Prev(6)
     type(Behaviour_Integ) :: BEHinteg
-    aster_logical :: resi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
     grand     = ASTER_TRUE
     axi       = typmod(1) .eq. 'AXIS'
     cplan     = typmod(1).eq.'C_PLAN'
     lSigm     = L_SIGM(option)
+    lVari     = L_VARI(option)
     lVect     = L_VECT(option)
     lMatr     = L_MATR(option)
     lMatrPred = L_MATR_PRED(option)
+    lCorr     = L_CORR(option)
     nddl      = ndim*nno
-!
-! - Initialisation of behaviour datastructure
-!
-    call behaviourInit(BEHinteg)
-!
     ASSERT(nno.le.27)
-    if (compor(PLANESTRESS)(1:7) .eq. 'DEBORST') then
-        ASSERT(.false.)
-    endif
-!
+    ASSERT(compor(PLANESTRESS) .ne. 'DEBORST')
+
+! - Initialisation of behaviour datastructure
+    call behaviourInit(BEHinteg)
+
 ! - Prepare external state variables
-!
     call behaviourPrepESVAElem(carcri  , typmod  ,&
                                nno     , npg     , ndim,&
                                iw      , ivf     , idff,&
                                geomInit, BEHinteg,&
                                dispPrev, dispIncr)
-!
+
 ! - Update configuration
-!
     call dcopy(nddl, geomInit, 1, geomPrev, 1)
     call daxpy(nddl, 1.d0, dispPrev, 1, geomPrev, 1)
     call dcopy(nddl, dispPrev, 1, dispCurr, 1)
-    if (resi) then
+    if (lCorr) then
         call daxpy(nddl, 1.d0, dispIncr, 1, dispCurr, 1)
     endif
-!
+
 ! - Loop on Gauss points
-!
     lintbo = ASTER_FALSE
     cod    = 0
     do kpg = 1, npg
@@ -170,7 +163,7 @@ integer, intent(in) :: ndim, nno, npg
 ! ----- Pre-treatment of kinematic quantities
         call prelog(ndim    , lgpg , vim(1, kpg), gn      , lamb    ,&
                     logl    , fPrev, fCurr      , epslPrev, epslIncr,&
-                    tlogPrev, resi , cod(kpg))
+                    tlogPrev, lCorr, cod(kpg))
         if (cod(kpg) .ne. 0) then
             goto 999
         endif
@@ -192,11 +185,12 @@ integer, intent(in) :: ndim, nno, npg
             lintbo= .true.
         endif
 ! ----- Post-treatment of sthenic quantities
-        call poslog(resi            , lMatr           , tlogPrev, tlogCurr, fPrev,&
-                    lgpg            , vip(1, kpg)     , ndim    , fCurr   , kpg  ,&
-                    dtde            , sigmPrev(1, kpg), cplan   , fami    , mate ,&
-                    instp           , angmas          , gn      , lamb    , logl ,&
-                    sigmCurr(1, kpg), dsidep          , pk2Prev , pk2Curr , iret)
+        call poslog(lCorr, lMatr, lSigm, lVari,&
+                    tlogPrev, tlogCurr, fPrev,&
+                    lgpg, vip(1, kpg), ndim, fCurr, kpg ,&
+                    dtde, sigmPrev(1, kpg), cplan, fami, mate ,&
+                    instp , angmas, gn, lamb, logl,&
+                    sigmCurr(1, kpg), dsidep, pk2Prev, pk2Curr , iret)
         if (iret .eq. 1) then
             cod(kpg) = 1
             goto 999

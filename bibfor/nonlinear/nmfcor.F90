@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -202,8 +202,8 @@ aster_logical :: lerrit
                         hval_incr      , hval_algo      , hhoField, &
                         option_nonlin  , ldccvg)
             if (ldccvg .ne. 1) then
-                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume, ds_material,&
-                                        ds_system)
+                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume,&
+                                        ds_material, ds_constitutive, ds_system)
             endif
         else
             call nonlinIntForce(CORR_NEWTON   ,&
@@ -225,8 +225,8 @@ aster_logical :: lerrit
                                ASTER_TRUE , ASTER_FALSE,&
                                rigid      , condcvg)
             if (ldccvg .ne. 1) then
-                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume, ds_material,&
-                                        ds_system)
+                call nonlinIntForceAsse(INTE_FORCE_INTE, list_func_acti, sdnume,&
+                                        ds_material, ds_constitutive, ds_system)
             endif
         end if
     endif

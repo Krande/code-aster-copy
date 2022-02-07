@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume, ds_material, ds_system)
+subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume,&
+                              ds_material, ds_constitutive, ds_system)
 !
 use NonLin_Datastructure_type
 use NonLinear_module, only : setNodalValuesGDVARINO
@@ -27,6 +28,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
 #include "asterfort/isfonc.h"
@@ -38,6 +40,7 @@ implicit none
 integer, intent(in) :: typeAsse, list_func_acti(*)
 character(len=19), intent(in) :: sdnume
 type(NL_DS_Material), intent(in) :: ds_material
+type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 type(NL_DS_System), intent(in) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,6 +55,7 @@ type(NL_DS_System), intent(in) :: ds_system
 ! In  list_func_acti   : list of active functionnalities
 ! In  sdnume           : datastructure for dof positions
 ! In  ds_material      : datastructure for material parameters
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_system        : datastructure for non-linear system management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -74,16 +78,20 @@ type(NL_DS_System), intent(in) :: ds_system
 ! - Assemble
 !
     if (typeAsse .eq. INTE_FORCE_COMB) then
-!       Assemblage special: In: cninte + cnfnod + ds_material%fvarc_pred + COPRED
-        ASSERT(ASTER_FALSE)
+!       Assemblage special: In: cninte + cnfnod + ds_material%fvarc_pred
+        call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof,&
+                    maskElem_ = ds_constitutive%code_pred,&
+                    maskInve_ = ASTER_TRUE)
+        call assvec('V', ds_system%cninte, 1, ds_system%veinte, [1.d0], ds_system%nume_dof,&
+                    maskElem_ = ds_constitutive%code_pred,&
+                    maskInve_ = ASTER_FALSE)
+        call vtzero(ds_system%cnfint)
+        call vtaxpy(-1.d0, ds_material%fvarc_pred, ds_system%cnfint)
+        call vtaxpy(1.d0, ds_system%cnfnod, ds_system%cnfint)
+        call vtaxpy(1.d0, ds_system%cninte, ds_system%cnfint)
     elseif (typeAsse .eq. INTE_FORCE_INTE) then
 !       Assemblage que de l'intégration (RAPH_MECA / FULL_MECA / RIGI_MECA_TANG)
         call assvec('V', ds_system%cnfint, 1, ds_system%veinte, [1.d0], ds_system%nume_dof)
-    elseif (typeAsse .eq. INTE_FORCE_FNOD) then
-!       Assemblage que de FORC_NODA
-        call assvec('V', ds_system%cnfint, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof)
-!       For external state variables
-        call vtaxpy(-1.d0, ds_material%fvarc_pred, ds_system%cnfint)
     elseif (typeAsse .eq. INTE_FORCE_NONE) then
 !       Nothing to do
         ASSERT(.not. l_gdvarino)

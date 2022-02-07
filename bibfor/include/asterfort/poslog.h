@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,28 +15,25 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
-    subroutine poslog(resi, rigi, tn, tp, fm,&
-                      lgpg, vip, ndim, fp, g,&
+    subroutine poslog(lCorr, lMatr, lSigm, lVari,&
+                      tlogPrev, tlogCurr, fPrev,&
+                      lgpg, vip, ndim, fCurr, kpg,&
                       dtde, sigm, cplan, fami, mate,&
                       instp, angmas, gn, lamb, logl,&
-                      sigp, dsidep, pk2m, pk2p, codret)
-        aster_logical, intent(in) :: resi
-        aster_logical, intent(in) :: rigi
+                      sigmCurr, dsidep, pk2Prev, pk2Curr, codret)
+        aster_logical, intent(in) :: lCorr, lMatr, lSigm, lVari
         aster_logical, intent(in) :: cplan
-        real(kind=8), intent(in) :: tn(6)
-        real(kind=8), intent(in) :: tp(6)
-        real(kind=8), intent(in) :: fm(3, 3)
-        real(kind=8), intent(in) :: fp(3, 3)
+        real(kind=8), intent(in) :: tlogPrev(6)
+        real(kind=8), intent(in) :: tlogCurr(6)
+        real(kind=8), intent(in) :: fPrev(3, 3)
+        real(kind=8), intent(in) :: fCurr(3, 3)
         integer, intent(in) :: ndim
         integer, intent(in) :: lgpg
         real(kind=8), intent(out) :: vip(lgpg)
-        integer, intent(in) :: g
+        integer, intent(in) :: kpg
         real(kind=8), intent(in) :: dtde(6,6)
         real(kind=8), intent(in) :: sigm(2*ndim)
         character(len=*), intent(in) :: fami
@@ -46,10 +43,10 @@ interface
         real(kind=8), intent(in) :: gn(3, 3)
         real(kind=8), intent(in) :: lamb(3)
         real(kind=8), intent(in) :: logl(3)
-        real(kind=8), intent(out) :: sigp(2*ndim)
+        real(kind=8), intent(out) :: sigmCurr(2*ndim)
         real(kind=8), intent(out) :: dsidep(6, 6)
-        real(kind=8), intent(out) :: pk2m(6)
-        real(kind=8), intent(out) :: pk2p(6)
+        real(kind=8), intent(out) :: pk2Prev(6)
+        real(kind=8), intent(out) :: pk2Curr(6)
         integer, intent(out) :: codret
     end subroutine poslog
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 interface
     subroutine nifilg(ndim, nnod, nnog, nnop, npg,&
-                      iw, vffd, vffg, vffp, idff1,&
+                      iw, vffd, vffg, vffp, idffd,&
                       vu, vg, vp, geomi, typmod,&
                       option, mate, compor, lgpg, carcri,&
                       instm, instp, ddlm, ddld, angmas,&
@@ -36,7 +36,7 @@ interface
         real(kind=8) :: vffd(nnod, npg)
         real(kind=8) :: vffg(nnog, npg)
         real(kind=8) :: vffp(nnop, npg)
-        integer :: idff1
+        integer :: idffd
         integer :: vu(3, 27)
         integer :: vg(27)
         integer :: vp(27)
@@ -59,7 +59,8 @@ interface
         aster_logical :: rigi
         real(kind=8) :: vect(*)
         real(kind=8) :: matr(*)
-        aster_logical :: matsym, lMatr, lVect, lSigm, lVari
+        aster_logical :: matsym
+        aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
         integer :: codret
     end subroutine nifilg
 end interface

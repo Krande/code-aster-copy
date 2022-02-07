@@ -26,7 +26,8 @@
 ! L_SIGM: we have stress and return code error
 ! L_VECT: compute internal forces vector
 ! L_MATR: compute tangent matrix
-! L_PRED: set special indicator for prediction
+! L_PRED: prediction phase of Newton
+! L_CORR: correction phase of Newton
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,6 +36,7 @@
 #define L_VECT(option) (option.eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG')
 #define L_MATR(option) (option(1:9).eq.'FULL_MECA' .or. option(1:9).eq.'RIGI_MECA')
 #define L_PRED(option) (option .eq. 'RIGI_MECA_TANG')
+#define L_CORR(option) (option .ne. 'RIGI_MECA_TANG')
 #define L_MATR_PRED(option) (option(1:4) .eq. 'RIGI')
 !
 ! --------------------------------------------------------------------------------------------------

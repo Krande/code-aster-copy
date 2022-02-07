@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,11 +17,13 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume, ds_material, ds_system)
+    subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume,&
+                                  ds_material, ds_constitutive, ds_system)
         use NonLin_Datastructure_type
         integer, intent(in) :: typeAsse, list_func_acti(*)
         character(len=19), intent(in) :: sdnume
         type(NL_DS_Material), intent(in) :: ds_material
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_System), intent(in) :: ds_system
     end subroutine nonlinIntForceAsse
 end interface

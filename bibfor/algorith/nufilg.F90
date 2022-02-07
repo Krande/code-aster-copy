@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,8 @@
 ! aslint: disable=W1306,W1504
 !
 subroutine nufilg(ndim, nnod, nnop, npg, iw,&
-                  vffd, vffp, idffd, vu, vp,&
+                  vffd, vffp, idffd,&
+                  vu, vp,&
                   geomi, typmod, option, mate, compor,&
                   lgpg, carcri, instm, instp, ddlm,&
                   ddld, angmas, sigm, vim, sigp,&
@@ -107,7 +108,10 @@ aster_logical, intent(in) :: lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: axi, grand, mini, resi
+    aster_logical, parameter :: mini = ASTER_FALSE
+    aster_logical, parameter :: grand  = ASTER_TRUE
+    aster_logical :: axi
+    aster_logical :: lCorr, lSigm, lVari
     integer :: kpg, nddl, ndu
     integer :: ia, na, sa, ib, nb, rb, sb, ja, jb
     integer :: lij(3, 3), os, kk
@@ -118,11 +122,11 @@ aster_logical, intent(in) :: lVect, lMatr
     real(kind=8) :: presm(27), presd(27)
     character(len=16) :: rela_comp
     real(kind=8) :: pm, pd, pp
-    real(kind=8) :: fm(3, 3), jm, ftm(3, 3), corm, epsml(6)
-    real(kind=8) :: fp(3, 3), jp, ftp(3, 3), corp, deps(6)
+    real(kind=8) :: fPrev(3, 3), jm, ftm(3, 3), corm, epslPrev(6)
+    real(kind=8) :: fCurr(3, 3), jp, ftp(3, 3), corp, epslIncr(6)
     real(kind=8) :: gn(3, 3), lamb(3), logl(3)
-    real(kind=8) :: tn(6), tp(6), dtde(6, 6)
-    real(kind=8) :: pk2(6), pk2m(6)
+    real(kind=8) :: tlogPrev(6), tlogCurr(6), dtde(6, 6)
+    real(kind=8) :: pk2Curr(6), pk2Prev(6)
     real(kind=8) :: taup(6), taudv(6), tauhy, tauldc(6)
     real(kind=8) :: dsidep(6, 6)
     real(kind=8) :: d(6, 6), ddev(6, 6), devd(6, 6), dddev(6, 6)
@@ -146,13 +150,12 @@ aster_logical, intent(in) :: lVect, lMatr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! - Special case for GDEF_LOG
-    resi   = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
-    mini   = ASTER_FALSE
-    grand  = ASTER_TRUE
-    axi    = typmod(1).eq.'AXIS'
-    nddl   = nnod*ndim + nnop
-    ndu    = ndim
+    lSigm = L_SIGM(option)
+    lVari = L_VARI(option)
+    lCorr = L_CORR(option)
+    axi = typmod(1).eq.'AXIS'
+    nddl = nnod*ndim + nnop
+    ndu = ndim
     if (axi) then
         ndu = 3
     endif
@@ -168,13 +171,12 @@ aster_logical, intent(in) :: lVect, lMatr
             matr(1:nddl*nddl) = 0.d0
         endif
     endif
-!
+
 ! - Initialisation of behaviour datastructure
-!
     call behaviourInit(BEHinteg)
-!
+    rela_comp = compor(RELA_NAME)
+
 ! - Extract for fields
-!
     do na = 1, nnod
         do ia = 1, ndim
             geomm(ia+ndim*(na-1)) = geomi(ia,na) + ddlm(vu(ia,na))
@@ -187,86 +189,90 @@ aster_logical, intent(in) :: lVect, lMatr
         presm(sa) = ddlm(vp(sa))
         presd(sa) = ddld(vp(sa))
     end do
-!
-! - Properties of behaviour
-!
-    rela_comp = compor(RELA_NAME)
-!
+
 ! - Loop on Gauss points
-!
     do kpg = 1, npg
 ! ----- Kinematic - Previous strains
         call dfdmip(ndim, nnod, axi, geomi, kpg,&
                     iw, vffd(1, kpg), idffd, r, w,&
                     dffd)
         call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
-                    r, dffd, deplm, fm)
+                    r, dffd, deplm, fPrev)
+
 ! ----- Kinematic - Current strains
         call nmepsi(ndim, nnod, axi, grand, vffd(1, kpg),&
-                    r, dffd, deplp, fp)
+                    r, dffd, deplp, fCurr)
         call dfdmip(ndim, nnod, axi, geomp, kpg,&
                     iw, vffd(1, kpg), idffd, r, wp,&
                     dffd)
-        call nmmalu(nnod, axi, r, vffd(1, kpg), dffd,&
-                    lij)
+        call nmmalu(nnod, axi, r, vffd(1, kpg), dffd, lij)
+
 ! ----- Gradient
-        jm = fm(1,1)*(fm(2,2)*fm(3,3)-fm(2,3)*fm(3,2)) -&
-             fm(2,1)*(fm(1,2)*fm(3,3)-fm(1,3)*fm(3,2)) +&
-             fm(3,1)*(fm(1,2)*fm(2,3)-fm(1,3)*fm(2,2))
-        jp = fp(1,1)*(fp(2,2)*fp(3,3)-fp(2,3)*fp(3,2)) -&
-             fp(2,1)*(fp(1,2)*fp(3,3)-fp(1,3)*fp(3,2)) +&
-             fp(3,1)*(fp(1,2)*fp(2,3)-fp(1,3)*fp(2,2))
+        jm = fPrev(1,1)*(fPrev(2,2)*fPrev(3,3)-fPrev(2,3)*fPrev(3,2)) -&
+             fPrev(2,1)*(fPrev(1,2)*fPrev(3,3)-fPrev(1,3)*fPrev(3,2)) +&
+             fPrev(3,1)*(fPrev(1,2)*fPrev(2,3)-fPrev(1,3)*fPrev(2,2))
+        jp = fCurr(1,1)*(fCurr(2,2)*fCurr(3,3)-fCurr(2,3)*fCurr(3,2)) -&
+             fCurr(2,1)*(fCurr(1,2)*fCurr(3,3)-fCurr(1,3)*fCurr(3,2)) +&
+             fCurr(3,1)*(fCurr(1,2)*fCurr(2,3)-fCurr(1,3)*fCurr(2,2))
         if (jp .le. 0.d0) then
             cod(kpg) = 1
             goto 999
         endif
+
 ! ----- Pressure
         pm = ddot(nnop,vffp(1,kpg),1,presm,1)
         pd = ddot(nnop,vffp(1,kpg),1,presd,1)
-        pp = pm+pd
+        pp = pm + pd
+
 ! ----- CALCUL DES DEFORMATIONS ENRICHIES
         corm = (1.d0/jm)**(1.d0/3.d0)
-        call dcopy(9, fm, 1, ftm, 1)
+        call dcopy(9, fPrev, 1, ftm, 1)
         call dscal(9, corm, ftm, 1)
         corp = (1.d0/jp)**(1.d0/3.d0)
-        call dcopy(9, fp, 1, ftp, 1)
+        call dcopy(9, fCurr, 1, ftp, 1)
         call dscal(9, corp, ftp, 1)
+
 ! ----- Pre-treatment of kinematic quantities
         call prelog(ndim, lgpg, vim(1, kpg), gn, lamb,&
-                    logl, ftm, ftp, epsml, deps,&
-                    tn, resi, cod(kpg))
+                    logl, ftm, ftp, epslPrev, epslIncr,&
+                    tlogPrev, lCorr, cod(kpg))
         if (cod(kpg) .ne. 0) then
             goto 999
         endif
+
 ! ----- Compute behaviour
         cod(kpg) = 0
-        dtde     = 0.d0
-        tp       = 0.d0
-        taup     = 0.d0
+        dtde = 0.d0
+        tlogCurr = 0.d0
+        taup = 0.d0
         call nmcomp(BEHinteg,&
                     'RIGI', kpg, 1, ndim, typmod,&
                     mate, compor, carcri, instm, instp,&
-                    6, epsml, deps, 6, tn,&
+                    6, epslPrev, epslIncr, 6, tlogPrev,&
                     vim(1, kpg), option, angmas, &
-                    tp, vip(1, kpg), 36, dtde, cod(kpg))
+                    tlogCurr, vip(1, kpg), 36, dtde, cod(kpg))
         if (cod(kpg) .eq. 1) then
             goto 999
         endif
+
 ! ----- Post-treatment of sthenic quantities
-        call poslog(resi, lMatr, tn, tp, ftm,&
+        call poslog(lCorr, lMatr, lSigm, lVari,&
+                    tlogPrev, tlogCurr, ftm,&
                     lgpg, vip(1, kpg), ndim, ftp, kpg,&
                     dtde, sigm(1, kpg), .false._1, 'RIGI', mate,&
                     instp, angmas, gn, lamb, logl,&
-                    sigp( 1, kpg), dsidep, pk2m, pk2, iret)
+                    sigp( 1, kpg), dsidep, pk2Prev, pk2Curr, iret)
         if (iret .eq. 1) then
             cod(kpg) = 1
             goto 999
         end if
+
 ! ----- Compute "bubble" matrix
         call tanbul(option, ndim, kpg, mate, rela_comp,&
                     lVect, mini, alpha, dsbdep, trepst)
-! ----- Internal forces and Cauchy stresses
-        if (resi) then
+
+! ----- Cauchy stresses
+        if (lSigm) then
             call dcopy(2*ndim, sigp(1, kpg), 1, taup, 1)
             call dscal(2*ndim, 1.d0/jp, sigp(1, kpg), 1)
             sigtr = sigp(1,kpg)+sigp(2,kpg)+sigp(3,kpg)
@@ -278,7 +284,11 @@ aster_logical, intent(in) :: lVect, lMatr
             do ia = 1, 6
                 taudv(ia) = taup(ia) - tauhy*kr(ia)
             end do
-! --------- VECTEUR FINT:U
+        endif
+
+! ----- Internal forces
+        if (lVect) then
+            ASSERT(lSigm)
             do na = 1, nnod
                 do ia = 1, ndu
                     kk = vu(ia,na)
@@ -290,7 +300,6 @@ aster_logical, intent(in) :: lVect, lMatr
                     vect(kk) = vect(kk) + w*t1
                 end do
             end do
-! --------- VECTEUR FINT:P
             t2 = log(jp) - pp*alpha-trepst
             do sa = 1, nnop
                 kk = vp(sa)
@@ -298,10 +307,11 @@ aster_logical, intent(in) :: lVect, lMatr
                 vect(kk) = vect(kk) + w*t1
             end do
         endif
+
 ! ----- Rigidity matrix
         if (lMatr) then
             ! Contraintes generalisees EF (bloc mecanique pour la rigidite geometrique)
-            if (resi) then
+            if (lCorr) then
                 call dcopy(9, ftp, 1, ftr, 1)
             else
                 call dcopy(2*ndim, sigm(1, kpg), 1, taup, 1)
@@ -311,7 +321,6 @@ aster_logical, intent(in) :: lVect, lMatr
 !
 ! - CALCUL DE L'OPERATEUR TANGENT SYMÉTRISÉ D
             call dsde2d(3, ftr, dsidep, d)
-!
             call pmat(6, idev/3.d0, d, devd)
             call pmat(6, d, idev/3.d0, ddev)
             call pmat(6, devd, idev/3.d0, dddev)
@@ -477,8 +486,8 @@ aster_logical, intent(in) :: lVect, lMatr
     end do
 !
 999 continue
-!
+
 ! - Return code summary
-!
     call codere(cod, npg, codret)
+!
 end subroutine

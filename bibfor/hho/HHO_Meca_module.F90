@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -381,7 +381,7 @@ contains
 !   Out codret      : info of the LDC integration
 ! --------------------------------------------------------------------------------------------------
 !
-        aster_logical :: axi, cplan, deborst, resi, rigi
+        aster_logical :: axi, cplan, deborst, resi
         integer:: cbs, fbs, total_dofs, j, faces_dofs
         integer :: imate, jmate, lgpg, iret, jtab(7), icarcr, iinstm, iinstp, icontm, ivarim
         integer :: icontp, ivarip, jv_mult_comp
@@ -403,7 +403,6 @@ contains
 !     we have to force this computation in replacing RAPH_MECA by FULL_MECA
 !
         resi    = (option.eq.'RAPH_MECA') .or. (option(1:4).eq.'FULL')
-        rigi    = ASTER_TRUE
 !
         if (option.eq.'RAPH_MECA') then
             option_inte = "FULL_MECA"
@@ -475,7 +474,7 @@ contains
             call hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
                                       fami, typmod, imate, compor, option_inte, zr(icarcr), lgpg, &
                                       nbsigm(), zr(iinstm), zr(iinstp), deplm, deplp, &
-                                    zr(icontm), zr(ivarim), angl_naut, mult_comp, resi, rigi, &
+                                    zr(icontm), zr(ivarim), angl_naut, mult_comp, resi, &
                                       cplan, lhs, rhs, zr(icontp), zr(ivarip), codret)
         else
 !

@@ -683,7 +683,7 @@ integer :: codret
                     compor, carcri, instam, instap, neps, &
                     epsm, deps, nsig, sigm, nvi, vim, &
                     option, angmas, sigp, vip, typmod, icomp,&
-                    ndsde, dsidep, codret)             
+                    ndsde, dsidep, codret)
     case (77)
         call lc0077(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, neps, &
@@ -1047,7 +1047,7 @@ integer :: codret
                     epsm, deps, nsig, sigm, nvi, vim,&
                     option, angmas, sigp, vip,&
                     typmod, icomp, ndsde,&
-                    dsidep, codret)                    
+                    dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - With INTERFAC/ELEMDISC/EJ_HYME/ELEMJOIN
@@ -1219,7 +1219,7 @@ integer :: codret
     if (l_regu_visc) then
         ndimsi = 2*ndim
         ASSERT(.not. l_large)
-        ASSERT (typmod(2).eq.' ' .or. typmod(2).eq.'GRADVARI') 
+        ASSERT (typmod(2).eq.' ' .or. typmod(2).eq.'GRADVARI')
         ASSERT(neps.ge.ndimsi)
         ASSERT(nsig.ge.ndimsi)
         ASSERT(neps*nsig.eq.ndsde .or. (ndsde.eq.36 .and. neps*nsig.le.36))

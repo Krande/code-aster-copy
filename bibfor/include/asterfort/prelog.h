@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,27 +15,19 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
-!
 #include "asterf_types.h"
 !
 interface
     subroutine prelog(ndim, lgpg, vim, gn, lamb,&
-                      logl, fm, fp, epsml, deps,&
-                      tn, resi, iret)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: lgpg
+                      logl, fPrev, fCurr, epslPrev, epslIncr,&
+                      tlogPrev, lCorr, iret)
+        integer, intent(in) :: ndim, lgpg
         real(kind=8), intent(in) :: vim(lgpg)
-        real(kind=8), intent(in) :: fm(3, 3)
-        real(kind=8), intent(in) :: fp(3, 3)
-        real(kind=8), intent(out) :: epsml(6)
-        real(kind=8), intent(out) :: tn(6)
-        real(kind=8), intent(out) :: deps(6)
-        real(kind=8), intent(out) :: gn(3, 3)
-        real(kind=8), intent(out) :: lamb(3)
-        real(kind=8), intent(out) :: logl(3)
+        real(kind=8), intent(in) :: fPrev(3, 3), fCurr(3, 3)
+        real(kind=8), intent(out) :: epslPrev(6), epslIncr(6)
+        real(kind=8), intent(out) :: tlogPrev(6)
+        real(kind=8), intent(out) :: gn(3, 3), lamb(3), logl(3)
+        aster_logical, intent(in) :: lCorr
         integer, intent(out) :: iret
-        aster_logical, intent(in) :: resi
     end subroutine prelog
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1504
 !
 module HHO_LargeStrainMeca_module
 !
@@ -78,7 +78,7 @@ contains
     subroutine hhoLargeStrainLCMeca(hhoCell, hhoData, hhoQuadCellRigi, gradrec, &
                                     & fami, typmod, imate, compor, option, carcri, lgpg, ncomp,&
                                     & time_prev, time_curr, depl_prev, depl_curr, &
-                                    & sig_prev, vi_prev, angmas, mult_comp, resi, rigi, cplan, &
+                                    & sig_prev, vi_prev, angmas, mult_comp, resi, cplan, &
                                     & lhs, rhs, sig_curr, vi_curr, codret)
 !
     implicit none
@@ -104,7 +104,6 @@ contains
         real(kind=8), intent(in)        :: angmas(*)
         character(len=16), intent(in)   :: mult_comp
         aster_logical, intent(in)       :: resi
-        aster_logical, intent(in)       :: rigi
         aster_logical, intent(in)       :: cplan
         real(kind=8), intent(inout)     :: lhs(MSIZE_TDOFS_VEC, MSIZE_TDOFS_VEC)
         real(kind=8), intent(inout)     :: rhs(MSIZE_TDOFS_VEC)
@@ -137,7 +136,6 @@ contains
 !   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
 !   In multcomp     : ?
 !   In resi         : TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
-!   In rigi         : TRUE. SI FULL_MECA/RIGI_MECA .FALSE. SI RAPH_MECA_TANG
 !   In cplan        : plane stress hypothesis
 !   Out lhs         : local contribution (lhs)
 !   Out rhs         : local contribution (rhs)
@@ -260,7 +258,7 @@ contains
                 if(l_gdeflog) then
                     call gdeflog(BEHinteg,&
                                  hhoCell%ndim, fami, typmod, imate, compor, option, carcri, lgpg, &
-                                 ipg, time_prev, time_curr, angmas, mult_comp, resi, rigi, cplan, &
+                                 ipg, time_prev, time_curr, angmas, mult_comp, cplan, &
                                  F_prev, F_curr, sig_prev(1:nbsig, ipg), vi_prev(1:lgpg, ipg), &
                                  sig_curr(1:nbsig, ipg), vi_curr(1:lgpg, ipg), &
                                  Pk1_curr, module_tang, cod(ipg), l_tang)
@@ -716,7 +714,7 @@ contains
 !===================================================================================================
 !
     subroutine gdeflog(BEHinteg, ndim, fami, typmod, imate, compor, option, carcri, lgpg, ipg, &
-                       time_prev, time_curr, angmas, mult_comp, resi, rigi, cplan, &
+                       time_prev, time_curr, angmas, mult_comp, cplan, &
                        F_prev, F_curr, sig_prev_pg, vi_prev_pg, sig_curr_pg, vi_curr_pg, &
                        PK1_curr, module_tang, cod, l_tang)
 !
@@ -736,8 +734,6 @@ contains
         real(kind=8), intent(in)        :: time_curr
         real(kind=8), intent(in)        :: angmas(*)
         character(len=16), intent(in)   :: mult_comp
-        aster_logical, intent(in)       :: resi
-        aster_logical, intent(in)       :: rigi
         aster_logical, intent(in)       :: cplan
         real(kind=8), intent(in)        :: F_prev(3,3)
         real(kind=8), intent(in)        :: F_curr(3,3)
@@ -769,7 +765,6 @@ contains
 !   In angmas       : LES TROIS ANGLES DU MOT_CLEF MASSIF
 !   In multcomp     : ?
 !   In resi         : TRUE. SI FULL_MECA/RAPH_MECA .FALSE. SI RIGI_MECA_TANG
-!   In rigi         : TRUE. SI FULL_MECA/RIGI_MECA .FALSE. SI RAPH_MECA_TANG
 !   In cplan        : plane stress hypothesis
 !   In F_prev       : previous deformation gradient at T-
 !   In F_curr       : curr deformation gradient at T+
@@ -783,26 +778,37 @@ contains
 !   In  l_tang      : compute tangent modulus ?
 ! --------------------------------------------------------------------------------------------------
 !
-        real(kind=8) :: gn(3,3), lamb(3), logl(3), epsml(6), deps(6), tn(6), tp(6)
+        real(kind=8) :: gn(3,3), lamb(3), logl(3), epslPrev(6), epslIncr(6)
+        real(kind=8) :: tlogPrev(6), tlogCurr(6)
         real(kind=8) :: dtde(6, 6), PK2_prev(6), PK2_curr(6)
         real(kind=8) :: dpk2dc(6,6), me(3,3,3,3)
+        aster_logical :: lCorr, lMatr, lSigm, lVari
+
+        lCorr = L_CORR(option)
+        lMatr = L_MATR(option)
+        lSigm = L_SIGM(option)
+        lVari = L_VARI(option)
+        lMatr = ASTER_TRUE
 !
 ! ----- Compute pre-processing Elog
 !
-        call prelog(ndim, lgpg, vi_prev_pg, gn, lamb, logl, F_prev, F_curr,&
-                    epsml, deps, tn, resi, cod)
-!
-        if (cod .ne. 0) goto 999
+        call prelog(ndim, lgpg, vi_prev_pg, gn,&
+                    lamb, logl, F_prev, F_curr, epslPrev, epslIncr,&
+                    tlogPrev, lCorr, cod)
+        if (cod .ne. 0) then
+            goto 999
+        endif
 !
 ! ----- Compute Stress and module_tangent
 !
         dtde = 0.d0
-        tp = 0.d0
-        call nmcomp(BEHinteg  , fami      , ipg       , 1     , ndim     , typmod,&
-                    imate     , compor    , carcri, time_prev, time_curr,&
-                    6         , epsml     , deps  , 6        , tn    ,&
-                    vi_prev_pg, option    , angmas, &
-                    tp        , vi_curr_pg, 36    , dtde     , cod       , mult_comp)
+        tlogCurr = 0.d0
+        call nmcomp(BEHinteg,&
+                    fami, ipg, 1, ndim, typmod,&
+                    imate, compor, carcri, time_prev, time_curr,&
+                    6, epslPrev, epslIncr, 6, tlogPrev,&
+                    vi_prev_pg, option , angmas, &
+                    tlogCurr, vi_curr_pg, 36, dtde, cod, mult_comp)
 !
 ! ----- Test the code of the LDC
 !
@@ -810,17 +816,18 @@ contains
 !
 ! ----- Compute post-processing Elog
 !
-        call poslog(resi       , rigi       , tn      , tp      , F_prev ,&
-                    lgpg       , vi_curr_pg , ndim    , F_curr  , ipg    ,&
-                    dtde       , sig_prev_pg, cplan   , fami    , imate  ,&
-                    time_curr  , angmas     , gn      , lamb    , logl   ,&
-                    sig_curr_pg, dpk2dc     , PK2_prev, PK2_curr, cod)
+        call poslog(lCorr, lMatr, lSigm, lVari,&
+                    tlogPrev , tlogCurr, F_prev,&
+                    lgpg, vi_curr_pg , ndim, F_curr, ipg,&
+                    dtde, sig_prev_pg, cplan, fami, imate,&
+                    time_curr, angmas, gn, lamb, logl,&
+                    sig_curr_pg, dpk2dc, PK2_prev, PK2_curr, cod)
 !
 ! ----- Test the code of the LDC
 !
         if (cod .ne. 0) goto 999
 !
-        if(.not. resi) then
+        if(.not. lCorr) then
             PK2_curr = PK2_prev
         end if
 !

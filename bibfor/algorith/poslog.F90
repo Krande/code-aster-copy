@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,14 +15,16 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine poslog(resi, rigi, tn, tp, fm,&
-                  lgpg, vip, ndim, fp, g,&
+! aslint: disable=W1504
+!
+subroutine poslog(lCorr, lMatr, lSigm, lVari,&
+                  tlogPrev, tlogCurr, fPrev,&
+                  lgpg, vip, ndim, fCurr, kpg,&
                   dtde, sigm, cplan, fami, mate,&
                   instp, angmas, gn, lamb, logl,&
-                  sigp, dsidep, pk2m, pk2p, codret)
+                  sigmCurr, dsidep, pk2Prev, pk2Curr, codret)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
@@ -37,85 +39,82 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 !
-    aster_logical, intent(in) :: resi
-    aster_logical, intent(in) :: rigi
-    aster_logical, intent(in) :: cplan
-    real(kind=8), intent(in) :: tn(6)
-    real(kind=8), intent(in) :: tp(6)
-    real(kind=8), intent(in) :: fm(3, 3)
-    real(kind=8), intent(in) :: fp(3, 3)
-    integer, intent(in) :: ndim
-    integer, intent(in) :: lgpg
-    real(kind=8), intent(out) :: vip(lgpg)
-    integer, intent(in) :: g
-    real(kind=8), intent(in) :: dtde(6,6)
-    real(kind=8), intent(in) :: sigm(2*ndim)
-    character(len=*), intent(in) :: fami
-    integer, intent(in) :: mate
-    real(kind=8), intent(in) :: instp
-    real(kind=8), intent(in) :: angmas(*)
-    real(kind=8), intent(in) :: gn(3, 3)
-    real(kind=8), intent(in) :: lamb(3)
-    real(kind=8), intent(in) :: logl(3)
-    real(kind=8), intent(out) :: sigp(2*ndim)
-    real(kind=8), intent(out) :: dsidep(6, 6)
-    real(kind=8), intent(out) :: pk2m(6)
-    real(kind=8), intent(out) :: pk2p(6)
-    integer, intent(out) :: codret
+aster_logical, intent(in) :: lCorr, lMatr, lSigm, lVari
+aster_logical, intent(in) :: cplan
+real(kind=8), intent(in) :: tlogPrev(6)
+real(kind=8), intent(in) :: tlogCurr(6)
+real(kind=8), intent(in) :: fPrev(3, 3)
+real(kind=8), intent(in) :: fCurr(3, 3)
+integer, intent(in) :: ndim
+integer, intent(in) :: lgpg
+real(kind=8), intent(out) :: vip(lgpg)
+integer, intent(in) :: kpg
+real(kind=8), intent(in) :: dtde(6,6)
+real(kind=8), intent(in) :: sigm(2*ndim)
+character(len=*), intent(in) :: fami
+integer, intent(in) :: mate
+real(kind=8), intent(in) :: instp
+real(kind=8), intent(in) :: angmas(*)
+real(kind=8), intent(in) :: gn(3, 3)
+real(kind=8), intent(in) :: lamb(3)
+real(kind=8), intent(in) :: logl(3)
+real(kind=8), intent(out) :: sigmCurr(2*ndim)
+real(kind=8), intent(out) :: dsidep(6, 6)
+real(kind=8), intent(out) :: pk2Prev(6)
+real(kind=8), intent(out) :: pk2Curr(6)
+integer, intent(out) :: codret
+!
 ! --------------------------------------------------------------------------------------------------
+!
 !     BUT:  POST TRAITEMENT GRANDES DEFORMATIONS 2D ET 3D LOG
 !     SUIVANT ARTICLE MIEHE APEL LAMBRECHT CMAME 2002
 !     CONFIGURATION LAGRANGIENNE (PK2)
+!
 ! --------------------------------------------------------------------------------------------------
+!
 ! in  resi    : .true. si full_meca/raph_meca .false. si rigi_meca_tang
-! in  rigi    : .true. si full_meca/rigi_meca_tang
-! in  tn      : contraintes associees aux def. logarithmiques en t-
-! in  tp      : contraintes associees aux def. logarithmiques en t+
-! in  fm      : gradient transformation en t-
+! in  lMatr    : .true. si full_meca/rigi_meca_tang
+! in  tlogPrev      : contraintes associees aux def. logarithmiques en t-
+! in  tlogCurr      : contraintes associees aux def. logarithmiques en t+
+! in  fPrev      : gradient transformation en t-
 ! in  lgpg    : dimension du vecteur des var. internes pour 1 pt gauss
 ! var vip     : variables internes en t+
 ! in  ndim    : dimension de l'espace
-! in  fp      : gradient transformation en t+
-! in  pes     : operateur de transformation tn (ou tp) en pk2
-! in  g       : numero du points de gauss
+! in  fCurr      : gradient transformation en t+
+! in  pes     : operateur de transformation tlogPrev (ou tlogCurr) en pk2
+! in  kpg       : numero du points de gauss
 ! in  dtde    : operateur tangent issu de nmcomp (6,6)
 ! in  sigm    : contrainte de cauchy en t-
 ! in  gn      : termes utiles au calcul de tl dans poslog
 ! in  feta    : termes utiles au calcul de tl dans poslog
 ! in  xi      : termes utiles au calcul de tl dans poslog
 ! in  me      : termes utiles au calcul de tl dans poslog
-! out sigp    : contraintes de cauchy en t+
+! out sigmCurr    : contraintes de cauchy en t+
 !
-! aslint: disable=W1504
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, kl, ivtn
+    integer :: i, j, kl
     real(kind=8) :: trav(6, 6), trav2(6, 6), sig(6)
     real(kind=8) :: pes(6, 6), tp2(6), fr(3, 3), detf
     real(kind=8) :: tl(3, 3, 3, 3), tls(6, 6), epse(4), d1(4, 4)
     real(kind=8) :: feta(4), xi(3, 3), me(3, 3, 3, 3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-! ---------------------------------------------------------------------
-!********************CONTRAINTE ET FORCES INTERIEURES******************
 !
-
-
-    pk2m = 0.d0
-    pk2p = 0.d0
+! --------------------------------------------------------------------------------------------------
+!
+    pk2Prev = 0.d0
+    pk2Curr = 0.d0
     codret = 0
     sig = 0.d0
-    sigp = 0.d0
-!
-!     CALCUL DES PRODUITS SYMETR. DE F PAR N
-    if (resi) then
-        call dcopy(9, fp, 1, fr, 1)
+    sigmCurr = 0.d0
+
+! - Get gradient
+    if (lCorr) then
+        call dcopy(9, fCurr, 1, fr, 1)
     else
-        call dcopy(9, fm, 1, fr, 1)
+        call dcopy(9, fPrev, 1, fr, 1)
     endif
-!
-!     DETERMINANT DE LA MATRICE Fr
     call lcdetf(ndim, fr, detf)
-!
-!     PERTINENCE DES GRANDEURS
     if (detf .le. r8prem()) then
         codret = 1
         goto 999
@@ -124,84 +123,72 @@ subroutine poslog(resi, rigi, tn, tp, fm,&
 ! CORRECTION POUR LES CONTRAINTES PLANES
 ! NE FONCTIONNE QUE SI DET(F_PLAS)=1  SOIT DEF. PLAS. INCOMPRESSIBLES
 ! CF. COMP. METHODES FOR PLASTICITY - DE SOUZA-NIETO, PERIC, OWEN p.603
-!
     if (cplan) then
         epse = 0.d0
-        if (resi) then
-            call d1macp(fami, mate, instp, '+', g, 1, angmas, d1)
+        if (lCorr) then
+            call d1macp(fami, mate, instp, '+', kpg, 1, angmas, d1)
             do i = 1, 4
                 do j = 1, 4
-                    epse(i)=epse(i)+d1(i,j)*tp(j)
+                    epse(i) = epse(i)+d1(i,j)*tlogCurr(j)
                 end do
             end do
-!           EN ELASTICITE ISTROPE
-            epse(3)=d1(1,2)*(tp(1)+tp(2))
+            epse(3) = d1(1,2)*(tlogCurr(1)+tlogCurr(2))
         else
-            call d1macp(fami, mate, instp, '-', g, 1, angmas, d1)
+            call d1macp(fami, mate, instp, '-', kpg, 1, angmas, d1)
             do i = 1, 4
                 do j = 1, 4
-                    epse(i)=epse(i)+d1(i,j)*tn(j)
+                    epse(i) = epse(i)+d1(i,j)*tlogPrev(j)
                 end do
             end do
-!           EN ELASTICITE ISTROPE
-            epse(3)=d1(1,2)*(tn(1)+tn(2))
+            epse(3) = d1(1,2)*(tlogPrev(1)+tlogPrev(2))
         endif
-        detf=exp(epse(1)+epse(2)+epse(3))
+        detf = exp(epse(1)+epse(2)+epse(3))
     endif
-!
-! ********************* TENSEUR DE PASSAGE DE T A PK2*******************
-!
-    call deflg2(gn, lamb, logl, pes, feta,xi, me)
-!
-! *********************MATRICE TANGENTE(SYMETRIQUE)*********************
-    if (rigi) then
+
+! - Tensor to change stress(log) to stress(PK2)
+    call deflg2(gn, lamb, logl, pes, feta, xi, me)
+
+! - Tangent matrix
+    if (lMatr) then
         dsidep = 0.d0
-!
 !        POUR LA RIGIDITE GEOMETRIQUE : CALCUL AVEC LES PK2
         tp2 = 0.d0
-        if (.not.resi) then
-            sig(1:2*ndim) = sigm(1:2*ndim)
-            call pk2sig(ndim, fm, detf, pk2m, sig, -1)
-            do kl = 4, 2*ndim
-                pk2m(kl)=pk2m(kl)*rac2
-            end do
-            call dcopy(6, tn, 1, tp2, 1)
+        if (lCorr) then
+            call dcopy(6, tlogCurr, 1, tp2, 1)
         else
-            call dcopy(6, tp, 1, tp2, 1)
+            sig(1:2*ndim) = sigm(1:2*ndim)
+            call pk2sig(ndim, fPrev, detf, pk2Prev, sig, -1)
+            do kl = 4, 2*ndim
+                pk2Prev(kl)=pk2Prev(kl)*rac2
+            end do
+            call dcopy(6, tlogPrev, 1, tp2, 1)
+
         endif
 !
         call deflg3(gn, feta, xi, me, tp2, tl)
-!
         call symt46(tl, tls)
-!
         call lctr2m(6, pes, trav)
         call pmat(6, trav, dtde, trav2)
         call pmat(6, trav2, pes, dsidep)
-!
         call daxpy(36, 1.d0, tls, 1, dsidep, 1)
 !
     endif
 !
-    if (resi) then
-        sigp = 0.d0
-!
-!        TRANSFORMATION DU TENSEUR T EN PK2
-!
+! - Compute Cauchy stress
+    if (lSigm) then
+        sigmCurr = 0.d0
         do i = 1, 6
             do j = 1, 6
-                pk2p(i)=pk2p(i)+tp(j)*pes(j,i)
+                pk2Curr(i) = pk2Curr(i) + tlogCurr(j)*pes(j,i)
             end do
         end do
-!        CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
-        call pk2sig(ndim, fp, detf, pk2p, sigp, 1)
-!
-!       --------------------------------
-!       pour gagner du temps : on stocke TP comme variable interne
-!       --------------------------------
-        ivtn=lgpg-6+1
-        vip(lgpg-1:lgpg)=0.d0
-        call dcopy(2*ndim, tp, 1, vip(ivtn), 1)
-!
+        call pk2sig(ndim, fCurr, detf, pk2Curr, sigmCurr, 1)
+    endif
+
+! - On stocke TP comme variable interne
+    if (lVari) then
+        vip(lgpg-1:lgpg) = 0.d0
+        call dcopy(2*ndim, tlogCurr, 1, vip(lgpg-6+1), 1)
     endif
 !
 999 continue

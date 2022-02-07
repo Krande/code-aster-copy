@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -887,7 +887,7 @@ subroutine inteForceGetOption(phaseType, list_func_acti, ds_algorom,&
     endif
 ! - Which second member ?
     if (phaseType .eq. PRED_EULER) then
-        typeAsse = INTE_FORCE_FNOD
+        typeAsse = INTE_FORCE_COMB
         if (lDyna .or. lRomCorr) then
             typeAsse = INTE_FORCE_INTE
         endif
