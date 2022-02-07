@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,6 @@ cata_msg = {
 
    9: _("""
 Attention, le critère de détection de singularité (paramètre SOLVEUR/NPREC) est trop relâché: %(i1)d.
-La valeur par défaut est 8. Au pire il peut monter jusqu'à 11. Avec une valeur négative, il débranche même complètement
-l'algorithme de détection de singularité.
 
 Avec cette valeur particulière, certains problèmes de mise en données (degré de liberté mal bloqué, condition limite redondante...)
 ne seront alors pas détectés. Vous risquez donc de résoudre un problème différent de celui escompté.

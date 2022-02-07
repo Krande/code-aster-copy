@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -21,53 +21,28 @@ from ..Utilities import _
 
 cata_msg = {
 
-    1 : _("""
-  -> On ne peut pas faire propager une interface.
-     Seule les fissures (possédant un fond de fissure) peuvent être propagées.
-"""),
+    1 : _("""On ne peut pas faire propager une interface. Seules les fissures (possédant un fond de fissure) peuvent être propagées."""),
 
 
-    2 : _("""
-  -> GROT_GDEP n'est pas disponible pour un comportement élastique non linéaire.
-  -> Conseils : Utilisez un comportement élastique linéaire.
-"""),
+    2 : _("""GROT_GDEP n'est pas disponible pour un comportement élastique non linéaire."""),
 
-    3 : _("""
-On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques.
-"""),
+    3 : _("""On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques."""),
 
     4 : _("""
 Nombre d'arêtes vitales : %(i1)d
 """),
 
-    5 : _("""
-  -> Avec GROT_GDEP, la modélisation axisymétrique n'est pas disponible.
-"""),
+    5 : _("""Avec GROT_GDEP, la modélisation axisymétrique n'est pas disponible."""),
 
-    6 : _("""
-  -> Le nombre de fissures est limité à %(i1)d, or vous en avez définies %(i2)d !
-     Veuillez contacter votre assistance technique.
-"""),
+    6 : _("""Le nombre de fissures est limité à %(i1)d, or vous en avez définies %(i2)d."""),
+    
+    7 : _("""La fissure %(k1)s est de type CZM. On ne peut pas appliquer de chargement de pression ou de condition d'échange thermique sur ses lèvres."""),
 
-7 : _("""
-La fissure %(k1)s est de type CZM.
-On ne peut pas appliquer de chargement de pression ou de condition d'échange thermique sur ses lèvres.
-"""),
+    8 : _("""Le modèle transmis dans DEFI_CONTACT n'est pas un modèle XFEM.
+Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à DEFI_CONTACT un modèle XFEM."""),
 
-    8 : _("""
-  -> Le modèle %(k1)s transmis dans DEFI_CONTACT n'est pas un modèle
-     XFEM.
-  -> Risque & Conseil:
-     Veuillez utiliser la commande MODI_MODELE_XFEM pour fournir à
-     DEFI_CONTACT un modèle XFEM.
-"""),
-
-    9 : _("""
-  -> Le modèle %(k1)s transmis dans DEFI_CONTACT n'est pas un modèle
-     XFEM avec contact.
-  -> Risque & Conseil:
-     Veuillez activer CONTACT dans MODI_MODELE_XFEM.
-"""),
+    9 : _("""Le modèle transmis dans DEFI_CONTACT n'est pas un modèle XFEM avec contact.
+Veuillez activer CONTACT dans MODI_MODELE_XFEM."""),
 
     10 : _("""
   -> Toutes les fissures ne sont pas rattachées au même maillage.
@@ -247,9 +222,6 @@ ne borde pourtant aucune maille principale.
      donnés dans l'opérateur PROPA_FISS ne contiennent qu'un seul instant.
 """),
 
-
-
-
     73 : _("""
   -> L'option NB_POINT_FOND a été utilisé dans PROPA_FISS mais le
      modèle est 2D.
@@ -317,7 +289,7 @@ ne borde pourtant aucune maille principale.
 """),
 
     86 : _("""
- -> Le maillage/la grille sur lequel/laquelle vous voulez créer le group
+ -> Le maillage/la grille sur lequel/laquelle vous voulez créer le groupe
     n'est pas associé/associée à la fissure donnée.
 
  -> Risque & Conseil:
@@ -386,20 +358,13 @@ ne borde pourtant aucune maille principale.
   """),
 
     92 : _("""
-  -> Vous avez demandé la création d'un group de noeuds dans un tore
-     construit autour du fond de la fissure suivante:
+Vous avez demandé la création d'un groupe de noeuds dans un tore construit autour du fond de la fissure suivante:
+FISSURE = %(k1)s
 
-     FISSURE = %(k1)s
+Toutefois cette fissure a été calculée par PROPA_FISS en utilisant la localisation du domaine.
+Dans ce cas le groupe de noeuds doit être forcement défini en utilisant le tore déjà utilisé par PROPA_FISS.
 
-     Toutefois cette fissure a été calculée par PROPA_FISS en utilisant
-     la localisation du domaine (ZONE_MAJ='TORE', par défaut).
-     Dans ce cas le group de noeuds doit être forcement défini en
-     utilisant le tore déjà utilisé par PROPA_FISS.
-
-  -> Le group de noeuds sera crée en utilisant le domaine de
-     localisation de la fissure (option TYPE_GROUP='ZONE_MAJ').
-
-  """),
+Le groupe de noeuds sera créé en utilisant le domaine de localisation de la fissure (option TYPE_GROUP='ZONE_MAJ')."""),
 
 
     93 : _("""
@@ -444,7 +409,7 @@ ne borde pourtant aucune maille principale.
   """),
 
     96 : _("""
- -> Le maillage sur lequel vous voulez créer le group n'est pas associé à
+ -> Le maillage sur lequel vous voulez créer le groupe n'est pas associé à
     la fissure donnée.
 
  -> Les maillages suivants sont associés à cette fissure:

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cazocx(sdcont, model, keywf, i_zone)
 !
 implicit none
@@ -106,11 +106,11 @@ implicit none
 !
     call exixfe(model, iret)
     if (iret .eq. 0) then
-        call utmess('F', 'XFEM2_8', sk=model)
+        call utmess('F', 'XFEM2_8')
     else
         call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=v_xfem_cont)
         if (v_xfem_cont(1) .eq. 0) then
-            call utmess('F', 'XFEM2_9', sk=model)
+            call utmess('F', 'XFEM2_9')
         endif
     endif
 !
