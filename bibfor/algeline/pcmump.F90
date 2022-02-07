@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,7 +79,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 !
     new_facto_loc = .false.
 !
-    ASSERT((precon.eq.'LDLT_SP').or.(precon.eq.'LDLT_DP')) 
+    ASSERT((precon.eq.'LDLT_SP').or.(precon.eq.'LDLT_DP'))
 !
 ! --  PRISE EN COMPTE DES CHARGEMENTS CINEMATIQUES
 ! --  SAUF DANS LE CAS OU LE SOLVEUR EST PETSC
@@ -94,16 +94,16 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 ! --  CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION/LOW_RANK
 ! --  (A DETRUIRE A LA SORTIE)
     solvbd=slvk(3)
-    if ( precon .eq. 'LDLT_SP' ) then 
+    if ( precon .eq. 'LDLT_SP' ) then
        prec='S'
     else if ( precon .eq. 'LDLT_DP') then
        prec='D'
     endif
-    if (abs(blreps) < r8prem()) then 
+    if (abs(blreps) < r8prem()) then
         rank='F'
     else
         rank='L'
-    endif 
+    endif
     solvbd = slvk(3)
     call crsvfm(solvbd, matass, prec, rank, pcpiv, usersm, blreps, renum, redmpi )
 !
@@ -117,9 +117,9 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
         new_facto_loc = .true.
     endif
 !
-    if ( present( new_facto) ) then 
+    if ( present( new_facto) ) then
        new_facto = new_facto_loc
-    endif 
+    endif
 !
 ! --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
     call detrsd('SOLVEUR', solvbd)
