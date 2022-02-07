@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ P_A_RMIN=[1.3814566168E-01, 1.3812431142E-01, 1.2586877949E-01]
 
 SIH_N_RMAX=[2.8446678525E+08, 2.8443789909E+08, 2.9175175164E+08]
 SIH_A_RMAX=[2.8414272810E+08, 2.8414284529E+08, 2.9156991651E+08]
-P_N_RMAX=[8.2214760642E-05, 8.459222524274407E-05, 3.1681517017E-05]
+P_N_RMAX=[8.2214760642E-05, 8.459479534403419E-05, 3.1681517017E-05]
 P_A_RMAX=[5.8228400148E-05, 5.8227926343E-05, 2.9581564223E-05]
 
 #Propriétés matériaux
