@@ -31,6 +31,7 @@ implicit none
 #include "asterfort/vtzero.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"
+#include "asterfort/exisd.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
@@ -61,6 +62,7 @@ type(NL_DS_System), intent(in) :: ds_system
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: iRet
     aster_logical :: l_gdvarino, l_resi_comp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -78,17 +80,28 @@ type(NL_DS_System), intent(in) :: ds_system
 ! - Assemble
 !
     if (typeAsse .eq. INTE_FORCE_COMB) then
-!       Assemblage special: In: cninte + cnfnod + ds_material%fvarc_pred
-        call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof,&
-                    maskElem_ = ds_constitutive%code_pred,&
-                    maskInve_ = ASTER_TRUE)
-        call assvec('V', ds_system%cninte, 1, ds_system%veinte, [1.d0], ds_system%nume_dof,&
-                    maskElem_ = ds_constitutive%code_pred,&
-                    maskInve_ = ASTER_FALSE)
+! ----- Assemblage special: In: cninte + cnfnod + ds_material%fvarc_pred
         call vtzero(ds_system%cnfint)
         call vtaxpy(-1.d0, ds_material%fvarc_pred, ds_system%cnfint)
-        call vtaxpy(1.d0, ds_system%cnfnod, ds_system%cnfint)
-        call vtaxpy(1.d0, ds_system%cninte, ds_system%cnfint)
+        call exisd('CHAM_ELEM', ds_constitutive%code_pred, iRet)
+        if (iRet .eq. 0) then
+! --------- Some options (RIGI_MECA_ELAS) has no CODE_PRED
+            call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof)
+            call vtaxpy(1.d0, ds_system%cnfnod, ds_system%cnfint)
+
+        else
+            call assvec('V', ds_system%cnfnod, 1, ds_system%vefnod, [1.d0], ds_system%nume_dof,&
+                        maskElem_ = ds_constitutive%code_pred,&
+                        maskInve_ = ASTER_TRUE)
+            call assvec('V', ds_system%cninte, 1, ds_system%veinte, [1.d0], ds_system%nume_dof,&
+                        maskElem_ = ds_constitutive%code_pred,&
+                        maskInve_ = ASTER_FALSE)
+            call vtaxpy(1.d0, ds_system%cnfnod, ds_system%cnfint)
+            call vtaxpy(1.d0, ds_system%cninte, ds_system%cnfint)
+
+        endif
+
+
     elseif (typeAsse .eq. INTE_FORCE_INTE) then
 !       Assemblage que de l'intégration (RAPH_MECA / FULL_MECA / RIGI_MECA_TANG)
         call assvec('V', ds_system%cnfint, 1, ds_system%veinte, [1.d0], ds_system%nume_dof)
