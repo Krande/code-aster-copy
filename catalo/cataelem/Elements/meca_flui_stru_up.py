@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -32,11 +32,16 @@ from cataelem.Options.options import OP
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
                              components=('DX', 'DY', 'DZ', 'PRES',))
 
+NACCELR  = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
+    components=('DX', 'DY', 'DZ',))
+
 MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
+MVECTAR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NACCELR)
 
 #----------------------------------------------------------------------------------------------
 class MEFS_FACE3P(Element):
@@ -46,6 +51,12 @@ class MEFS_FACE3P(Element):
         ElrefeLoc(MT.TR3, gauss=('RIGI=COT3', 'FPG1=FPG1',), mater=('FPG1',),),
     )
     calculs = (
+        OP.ACCEPTANCE(te=329,
+            para_in =( (SP.PACCELR, NACCELR), (SP.PGEOMER, LC.EGEOM3D),
+                       (SP.PNUMMOD, LC.CNUMMOD), ),
+            para_out=( (SP.PVECTUR, MVECTAR), ),
+        ),
+
         OP.CHAR_MECA_PRES_F(te=205,
             para_in  = ((SP.PGEOMER, LC.EGEOM3D), (SP.PPRESSF, LC.CPRE3DF),
                         (SP.PTEMPSR, LC.MTEMPSR),),
