@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -229,6 +229,7 @@ integer, intent(out) :: codret
                               ntens, nstatv, props,&
                               nprops, drot, pnewdt, nummod)
     else if (option(1:9).eq. 'RIGI_MECA') then
+        sigp = sigm
         call mfront_behaviour(pfcmfr, sigm, vim, ddsdde,&
                               stran, dstran, dtime,&
                               temp, dtemp,&
@@ -259,7 +260,7 @@ integer, intent(out) :: codret
             do j = 1, 3
                 dsidep(i,j) = ddsdde(3*(i-1)+j)
             end do
-        end do       
+        end do
     endif
 !
 ! - Return code from MFront
