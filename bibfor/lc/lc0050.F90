@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ integer, intent(out) :: codret
 ! UMAT : INTERFACE POUR ROUTINE D'INTEGRATION LOI DE COMPORTEMENT UMAT
 !
 ! --------------------------------------------------------------------------------------------------
-! 
+!
 ! In  BEHinteg         : parameters for integration of behaviour
 ! In  fami             : Gauss family for integration point rule
 ! In  kpg              : current point gauss
@@ -104,7 +104,7 @@ integer, intent(out) :: codret
 !            TEMP    TEMPERATURE A T
 !            DTEMP   INCREMENT DE TEMPERATURE
 !            PREDEF  VARIABLES DE COMMANDE A T
-!            DPRED   INCREMENT DE VARIABLES DE COMMANDE  
+!            DPRED   INCREMENT DE VARIABLES DE COMMANDE
 !       OUT  STRESS    CONTRAINTE A T+DT
 ! !!!!!        ATTENTION : ZONE MEMOIRE NON DEFINIE SI RIGI_MECA_TANG
 !            STATEV  VARIABLES INTERNES A T+DT
@@ -159,7 +159,7 @@ integer, intent(out) :: codret
 !
 ! - Get index of element / Newton iteration
 !
-    if (ca_iactif_ .ne. 2) then 
+    if (ca_iactif_ .ne. 2) then
         if (option(1:9) .eq. 'RIGI_MECA') then
             kinc = 0
         else
@@ -168,7 +168,7 @@ integer, intent(out) :: codret
         end if
         call tecael(iadzi, iazk24, noms=0)
         noel = zi(iadzi)
-    else 
+    else
         kinc = 0
         noel = 1
     end if
@@ -245,6 +245,7 @@ integer, intent(out) :: codret
                     layer, kspt, kstep, kinc)
     else if (option(1:9).eq. 'RIGI_MECA') then
         dstran = 0.d0
+        stress = sigm
         call umatwp(pfumat, sigm, vim, ddsdde,&
                     sse, spd, scd, rpl, ddsddt,&
                     drplde, drpldt, stran, dstran, time,&
