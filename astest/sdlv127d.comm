@@ -61,7 +61,7 @@ from math import *
 
 # Coordonnées du point de départ de l'onde.
 y0=-200.;
-x0=0;
+x0=100;
 
 
 # Angle d'incidence par rapport à la verticale de propagation de l'onde (0=vertical)
@@ -332,7 +332,7 @@ EVOCH1=CREA_RESU (
    PRECISION=1.E-6,CRITERE='RELATIF',
    LIST_INST=LINST,
    GROUP_NO_INTERF = 'LID',
-   COOR_REFE  = (Lt/2., y0, 0.),
+   COOR_REFE  = (x0+Lt/2., y0, 0.),
    VITE_ONDE = (Vp/sina),
    DIRECTION = (1.0, 0.0, 0.0),
                 ),
@@ -364,7 +364,7 @@ EVOCH2=CREA_RESU (
    PRECISION=1.E-6,CRITERE='RELATIF',
    LIST_INST=LINST,
    GROUP_NO_INTERF = 'LIG',
-   COOR_REFE  = (Lt/2., y0, 0.),
+   COOR_REFE  = (x0+Lt/2., y0, 0.),
    VITE_ONDE = (Vp/sina),
    DIRECTION = (1.0, 0.0, 0.0),
                 ),
@@ -765,7 +765,7 @@ EVOCH1S=CREA_RESU (
    PRECISION=1.E-6,CRITERE='RELATIF',
    LIST_INST=LINST,
    GROUP_NO_INTERF = 'LID',
-   COOR_REFE  = (Lt/2., y0, 0.),
+   COOR_REFE  = (x0+Lt/2., y0, 0.),
    VITE_ONDE = (Vs/sina),
    DIRECTION = (1.0, 0.0, 0.0),
                 ),
@@ -797,7 +797,7 @@ EVOCH2S=CREA_RESU (
    PRECISION=1.E-6,CRITERE='RELATIF',
    LIST_INST=LINST,
    GROUP_NO_INTERF = 'LIG',
-   COOR_REFE  = (Lt/2., y0, 0.),
+   COOR_REFE  = (x0+Lt/2., y0, 0.),
    VITE_ONDE = (Vs/sina),
    DIRECTION = (1.0, 0.0, 0.0),
                 ),

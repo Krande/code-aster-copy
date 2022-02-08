@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -357,7 +357,7 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(2, 1) = 'PRES'
     else if (loadType .eq. 'ONDE_PLANE') then
         nbCmp(1) = 2
-        nbCmp(2) = 7
+        nbCmp(2) = 8
         cmpName(1, 1) = 'Z1'
         cmpName(1, 2) = 'Z2'
         cmpName(2, 1) = 'X1'
@@ -367,6 +367,7 @@ character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBC
         cmpName(2, 5) = 'X5'
         cmpName(2, 6) = 'X6'
         cmpName(2, 7) = 'X7'
+        cmpName(2, 8) = 'X8'
     else if (loadType .eq. 'ROTATION') then
         nbCmp(1) = 7
         cmpName(1, 1) = 'OME'

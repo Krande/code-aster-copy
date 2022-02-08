@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -231,11 +231,11 @@ subroutine te0499(option, nomte)
             z1=(h2-x0*sina)/cosa
             dist1=x0*sina+(2.d0*z1-z0)*(-cosa)
             if (type .eq. 'P') then
-              zsv=cosb2*(2.d0*z1-z0)/rc1c2/cosa
-              xsv=(sina/cosa)*(2.d0*z1-z0)-sinb2*(2.d0*z1-z0)/rc1c2/cosa
+              zsv=z1+cosb2*(z1-z0)/rc1c2/cosa
+              xsv=x0+(sina/cosa)*(z1-z0)-sinb2*(z1-z0)/rc1c2/cosa
             else
-              zsv=cosb2*(2.d0*z1-z0)*rc1c2/cosa
-              xsv=(sina/cosa)*(2.d0*z1-z0)-sinb2*(2.d0*z1-z0)*rc1c2/cosa
+              zsv=z1+cosb2*(z1-z0)*rc1c2/cosa
+              xsv=x0+(sina/cosa)*(z1-z0)-sinb2*(z1-z0)*rc1c2/cosa
             endif
             dist2=xsv*sinb2+zsv*(-cosb2)
           endif
