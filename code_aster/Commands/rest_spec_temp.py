@@ -59,7 +59,7 @@ class FourierTransformation(ExecuteCommand):
             keywords (dict): User's keywords.
         """
         if keywords.get("RESULTAT"):
-            self._result.setModel(keywords.get("RESULTAT").getModel())
+            self._result.appendModelOnAllRanks(keywords.get("RESULTAT").getModel())
         else:
             self._result.setGeneralizedDOFNumbering(
                 keywords["RESU_GENE"].getGeneralizedDOFNumbering()

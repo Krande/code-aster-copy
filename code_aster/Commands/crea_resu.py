@@ -83,7 +83,7 @@ class ResultCreator(ExecuteCommand):
         fkw = force_list(keywords.get("AFFE", []))
         for occ in fkw:
             if occ.get("MODELE"):
-                self._result.setModel(occ["MODELE"])
+                self._result.appendModelOnAllRanks(occ["MODELE"])
                 break
             chamGd = occ.get("CHAM_GD")
             if chamGd is not None:
@@ -94,16 +94,16 @@ class ResultCreator(ExecuteCommand):
                         break
 
         if keywords.get("MATR_RIGI"):
-            self._result.setModel(keywords["MATR_RIGI"].getModel())
+            self._result.appendModelOnAllRanks(keywords["MATR_RIGI"].getModel())
 
         if keywords.get("ECLA_PG"):
-            self._result.setModel(keywords["ECLA_PG"]["MODELE_INIT"])
+            self._result.appendModelOnAllRanks(keywords["ECLA_PG"]["MODELE_INIT"])
         if keywords.get("CONV_CHAR"):
-            self._result.setModel(keywords["CONV_CHAR"]["MATR_RIGI"].getModel())
+            self._result.appendModelOnAllRanks(keywords["CONV_CHAR"]["MATR_RIGI"].getModel())
         if keywords.get("CONV_RESU"):
-            self._result.setModel(keywords["CONV_RESU"]["RESU_INIT"].getModel())
+            self._result.appendModelOnAllRanks(keywords["CONV_RESU"]["RESU_INIT"].getModel())
         if keywords.get("KUCV"):
-            self._result.setModel(keywords["KUCV"]["RESU_INIT"].getModel())
+            self._result.appendModelOnAllRanks(keywords["KUCV"]["RESU_INIT"].getModel())
         if keywords.get("PROL_RTZ"):
             self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
 

@@ -3,7 +3,7 @@
  * @brief Interface python de Result
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,6 +56,27 @@ void exportResultToPython() {
         .def( "__init__",
               py::make_constructor(
                   &initFactoryPtr< Result, std::string, std::string >))
+        
+        .def( "addTimeValue", &Result::addTimeValue, R"(
+Add time at the specified rank
+
+Arguments:
+    time (float): time value to save
+    rank (int):  rank where to save time value
+        )",
+              ( py::arg( "self" ), py::arg( "time" ), py::arg( "rank" ) ) )
+        
+        .def( "getTimeValue", &Result::getTimeValue, R"(
+Get time at the specified rank
+
+Arguments:
+    rank (int):  rank where to save time value
+
+Returns
+    float: time value
+        )",
+              ( py::arg( "self" ), py::arg( "rank" ) ) )
+        
         .def( "addFieldOnNodesDescription", &Result::addFieldOnNodesDescription )
         .def( "addMaterialField", &Result::addMaterialField )
         .def( "addModel", &Result::addModel )

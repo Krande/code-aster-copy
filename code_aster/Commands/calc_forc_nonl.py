@@ -42,7 +42,7 @@ class CalcForcNonl(ExecuteCommand):
         Arguments:
             keywords (dict): User's keywords.
         """
-        self._result.setModel(keywords["RESULTAT"].getModel())
+        self._result.appendModelOnAllRanks(keywords["RESULTAT"].getModel())
 
 
 CALC_FORC_NONL = CalcForcNonl.run
