@@ -1,0 +1,258 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+import os.path as osp
+
+import code_aster
+from code_aster.Commands import *
+from code_aster.Utilities import ExecutionParameter
+
+mac3c = osp.join(ExecutionParameter().get_option('rcdir'), 'tests_data', 'mac3c')
+meshfile = osp.join(mac3c, 'mac3c14a.mmed')
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'))
+
+test = code_aster.TestCase()
+
+dist_geom = 5.E-3
+R_TG = 5.E-3
+EP_TG = 5.E-4
+R_CR = 5.E-3
+
+knor_ress=1e6
+knor_boss=1e6
+ktan_ress=1e6
+ktan_boss=1e6
+
+fser_glis = 5.
+coulomb_glis = 0.1
+
+fser_adh = 100.
+coulomb_adh = 0.5
+
+MA = code_aster.Mesh()
+MA.readMedFile(meshfile)
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.0E11,
+                          NU=0.3,
+                          RHO=7800))
+
+R_ADH=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR = knor_ress,
+                                   RIGI_TAN = ktan_ress,
+                                   COULOMB  = coulomb_adh,
+                                   DIST_1   = dist_geom+fser_adh/knor_ress))
+
+B_ADH=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR = knor_boss,
+                                   RIGI_TAN = ktan_boss,
+                                   COULOMB  = coulomb_adh,
+                                   DIST_1   = dist_geom+fser_adh/knor_boss/2))
+
+R_GLIS=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR = knor_ress,
+                                   RIGI_TAN = ktan_ress,
+                                   COULOMB  = coulomb_glis,
+                                   DIST_1   = dist_geom+fser_glis/knor_ress))
+
+B_GLIS=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR = knor_boss,
+                                   RIGI_TAN = ktan_boss,
+                                   COULOMB  = coulomb_glis,
+                                   DIST_1   = dist_geom+fser_glis/knor_boss/2))
+
+CHMAT_ADH = AFFE_MATERIAU(MAILLAGE=MA,
+                          AFFE=(_F(GROUP_MA=('TG', 'CR'),
+                                   MATER=MAT),
+                                _F(GROUP_MA='GR_CR_R',
+                                   MATER=R_ADH),
+                                _F(GROUP_MA='GR_CR_B',
+                                   MATER=B_ADH)))
+
+CHMAT_GLIS = AFFE_MATERIAU(MAILLAGE=MA,
+                           AFFE=(_F(GROUP_MA=('TG', 'CR'),
+                                    MATER=MAT),
+                                 _F(GROUP_MA='GR_CR_R',
+                                    MATER=R_GLIS),
+                                 _F(GROUP_MA='GR_CR_B',
+                                    MATER=B_GLIS)))
+
+MODELE = AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=(_F(GROUP_MA='TG',
+                              MODELISATION='POU_D_E',
+                              PHENOMENE='MECANIQUE'),
+                           _F(GROUP_MA='GR_TG',
+                              MODELISATION='DIS_TR',
+                              PHENOMENE='MECANIQUE'),
+                           _F(GROUP_MA=('NGR1', 'NGR2', 'NGR3', 'NGR4', 'NGR5', 'NGR6', 'NGR7'),
+                              MODELISATION='DIS_T',
+                              PHENOMENE='MECANIQUE'),
+                           _F(GROUP_MA='CR',
+                              MODELISATION='POU_D_E',
+                              PHENOMENE='MECANIQUE'),
+                           _F(GROUP_MA='GR_CR_R',
+                              MODELISATION='DIS_T',
+                              PHENOMENE='MECANIQUE'),
+                           _F(GROUP_MA='GR_CR_B',
+                              MODELISATION='DIS_T',
+                              PHENOMENE='MECANIQUE'),
+                           _F(GROUP_MA='BAS_CR',
+                              MODELISATION='DIS_TR',
+                              PHENOMENE='MECANIQUE')))
+
+CAREL = AFFE_CARA_ELEM(MODELE=MODELE,
+                       DISCRET=(_F(CARA='K_TR_D_L',
+                                   GROUP_MA='GR_TG',
+                                   REPERE='GLOBAL',
+                                   VALE=(1E9, 1E9, 1E9, 1E9, 1E9, 1E9)),
+                                _F(CARA='M_T_D_N',
+                                   GROUP_MA=('NGR1', 'NGR2', 'NGR3', 'NGR4', 'NGR5', 'NGR6', 'NGR7'),
+                                   REPERE='GLOBAL',
+                                   VALE=1),
+                                _F(CARA='M_TR_D_L',
+                                   GROUP_MA='GR_TG',
+                                   REPERE='GLOBAL',
+                                   VALE=(0.0, 0.0, 0.0, 0.0)),
+                                _F(CARA='K_T_D_L',
+                                   GROUP_MA='GR_CR_R',
+                                   REPERE='LOCAL',
+                                   VALE=(knor_ress, 0.0, 0.0)),
+                                _F(CARA='K_T_D_L',
+                                   GROUP_MA='GR_CR_B',
+                                   REPERE='LOCAL',
+                                   VALE=(knor_boss, 0.0, 0.0)),
+                                _F(CARA='K_TR_D_N',
+                                   GROUP_MA='BAS_CR',
+                                   REPERE='GLOBAL',
+                                   VALE=(0.0, 0.0, 1.E-3, 0.0, 0.0, 0.0))),
+                       POUTRE=(_F(CARA=('R', 'EP'),
+                                  GROUP_MA='TG',
+                                  SECTION='CERCLE',
+                                  VALE=(R_TG, EP_TG)),
+                               _F(CARA='R',
+                                  GROUP_MA='CR',
+                                  SECTION='CERCLE',
+                                  VALE=R_CR)))
+
+ENCAST = AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(DRZ=0.0,
+                                     GROUP_MA='TG'),
+                                  _F(DRX=0.0,
+                                     DRY=0.0,
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     GROUP_NO='GR1'),
+                                  _F(DRX=0.0,
+                                     DRY=0.0,
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     GROUP_NO='GR7'),
+                                  _F(DRZ=0.0,
+                                     GROUP_NO='BAS_CR')),
+                        LIAISON_SOLIDE=(_F(GROUP_NO='GR2'),
+                                        _F(GROUP_NO='GR3'),
+                                        _F(GROUP_NO='GR4'),
+                                        _F(GROUP_NO='GR5'),
+                                        _F(GROUP_NO='GR6')))
+
+# Flexion avec deplacement cyclique imposé
+FLEX=AFFE_CHAR_MECA(MODELE=MODELE,
+                    DDL_IMPO=_F(GROUP_NO='FLGR4',
+                                DY=5.E-3))
+
+LINE = DEFI_FONCTION(NOM_PARA = 'INST',
+                     VALE = (0.0,  0.0,
+                             1.0,  1.0))
+
+LINST0 = DEFI_LIST_REEL(VALE=(0. , 1.0))
+
+LINST = DEFI_LIST_INST(METHODE = 'MANUEL',
+                       DEFI_LIST = _F(LIST_INST = LINST0),
+                       ECHEC= (
+                           _F(EVENEMENT = 'ERREUR',
+                              ACTION = 'DECOUPE',
+                              SUBD_METHODE = 'MANUEL',
+                              SUBD_NIVEAU = 4,
+                              SUBD_PAS = 2,
+                           ),
+                       ))
+
+U_ADH = STAT_NON_LINE(MODELE=MODELE,
+                      CHAM_MATER=CHMAT_ADH,
+                      CARA_ELEM=CAREL,
+                      EXCIT=(_F(CHARGE=ENCAST),
+                             _F(CHARGE=FLEX,
+                                FONC_MULT=LINE)),
+                      COMPORTEMENT=(_F(GROUP_MA=('TG', 'GR_TG'),
+                                       RELATION='ELAS'),
+                                    _F(GROUP_MA=('CR','BAS_CR'),
+                                       RELATION='ELAS'),
+                                    _F(GROUP_MA=('GR_CR_R','GR_CR_B'),
+                                       RELATION='DIS_CHOC')),
+                      INCREMENT=_F(LIST_INST=LINST),
+                      CONVERGENCE=_F(RESI_REFE_RELA=1.,
+                                     SIGM_REFE=1.E-6,
+                                     EFFORT_REFE=1.E-3,
+                                     MOMENT_REFE=1.E-3,),
+                      SOLVEUR=_F(METHODE='MUMPS'))
+
+U_ADH = CALC_CHAMP(reuse=U_ADH,
+                   RESULTAT=U_ADH,
+                   MODELE=MODELE,
+                   CHAM_MATER=CHMAT_ADH,
+                   CARA_ELEM=CAREL,
+                   FORCE=('FORC_NODA','REAC_NODA'))
+
+U_GLIS = STAT_NON_LINE(MODELE=MODELE,
+                       CHAM_MATER=CHMAT_GLIS,
+                       CARA_ELEM=CAREL,
+                       EXCIT=(_F(CHARGE=ENCAST),
+                              _F(CHARGE=FLEX,
+                                 FONC_MULT=LINE)),
+                       COMPORTEMENT=(_F(GROUP_MA=('TG', 'GR_TG'),
+                                        RELATION='ELAS'),
+                                     _F(GROUP_MA=('CR','BAS_CR'),
+                                        RELATION='ELAS'),
+                                     _F(GROUP_MA=('GR_CR_R','GR_CR_B'),
+                                        RELATION='DIS_CHOC')),
+                       INCREMENT=_F(LIST_INST=LINST),
+                       CONVERGENCE=_F(RESI_REFE_RELA=1.,
+                                      SIGM_REFE=1.E-6,
+                                      EFFORT_REFE=1.E-3,
+                                      MOMENT_REFE=1.E-3,),
+                       SOLVEUR=_F(METHODE='MUMPS',
+                                  NPREC=10))
+
+U_GLIS = CALC_CHAMP(reuse=U_GLIS,
+                    RESULTAT=U_GLIS,
+                    MODELE=MODELE,
+                    CHAM_MATER=CHMAT_GLIS,
+                    CARA_ELEM=CAREL,
+                    FORCE=('FORC_NODA','REAC_NODA'))
+
+depl_glis = U_GLIS.getField('DEPL', 1).exportToSimpleFieldOnNodes()
+depl_adh = U_ADH.getField('DEPL', 1).exportToSimpleFieldOnNodes()
+
+depl_glis_v, m = depl_glis.getValues(True)
+depl_adh_v, m = depl_adh.getValues(True)
+
+test.assertAlmostEqual(depl_adh_v.T[1].sum(), 0.8659260401497046, places=6)
+test.assertAlmostEqual(depl_glis_v.T[1].sum(), 0.9114729066886575, places=6)
+
+test.printSummary()
+
+FIN()
