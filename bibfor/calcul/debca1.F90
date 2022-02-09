@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -233,16 +233,17 @@ implicit none
     ca_ldist_=.false.
     ca_ldgrel_=.false.
     ca_lparal_=.false.
+!
+    call asmpi_info(rank=mrank, size=msize)
+    ca_rang_ = to_aster_int(mrank)
+    ca_nbproc_ = to_aster_int(msize)
+!
     call dismoi('PARTITION', ca_ligrel_, 'LIGREL', repk=partit)
     call jeexin(partit//'.PRTK', iret)
     if (iret .ne. 0) then
         ca_ldist_=.true.
-        call asmpi_info(rank=mrank, size=msize)
-        ca_rang_ = to_aster_int(mrank)
-        ca_nbproc_ = to_aster_int(msize)
-
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ca_ldgrel_= prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM' 
+        ca_ldgrel_= prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
         if (.not.ca_ldgrel_) then
             call jeveuo(partit//'.PRTI', 'L', vi=prti)
             if (prti(1) .ne. ca_nbproc_) then
