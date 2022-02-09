@@ -51,6 +51,8 @@ class ResultStateBuilder(InternalStateBuilder):
         self._st["mater"] = []
         # list of ElementaryCharacteristics
         self._st["cara_elem"] = []
+        # list of list of loads
+        self._st["loads"] = []
         for i in self._st["rank"]:
             if result.hasModel(i):
                 self._st["model"].append(result.getModel(i))
@@ -59,6 +61,8 @@ class ResultStateBuilder(InternalStateBuilder):
             if result.hasElementaryCharacteristics(i):
                 self._st["cara_elem"].append(
                     result.getElementaryCharacteristics(i))
+            if result.hasListOfLoads(i):
+                self._st["loads"].append(result.getListOfLoads(i))
 
         if len(self._st["rank"]) != len(self._st["model"]):
             logger.debug(
@@ -78,6 +82,12 @@ class ResultStateBuilder(InternalStateBuilder):
                 f"{len(self._st['rank'])} ranks, {len(self._st['cara_elem'])} elementary characteristics"
             )
             self._st["cara_elem"] = []
+        if len(self._st["loads"]) > 0 and len(self._st["rank"]) != len(self._st["loads"]):
+            logger.debug(
+                f"Inconsistent definition of list of loads: "
+                f"{len(self._st['rank'])} ranks, {len(self._st['loads'])} list of loads"
+            )
+            self._st["loads"] = []
         return self
 
     def restore(self, result):
@@ -96,6 +106,8 @@ class ResultStateBuilder(InternalStateBuilder):
             if len(self._st["cara_elem"]) > 0 and self._st["cara_elem"]:
                 result.setElementaryCharacteristics(
                     self._st["cara_elem"][i], rank)
+            if len(self._st["loads"]) > 0 and self._st["loads"]:
+                result.setListOfLoads(self._st["loads"][i], rank)
         if self._st["model"]:
             result.build()
 

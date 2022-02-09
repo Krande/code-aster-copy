@@ -21,8 +21,10 @@
  */
 
 #include "PythonBindings/ListOfLoadsInterface.h"
+
 #include "PythonBindings/LoadUtilities.h"
 #include "PythonBindings/factory.h"
+
 #include <boost/python.hpp>
 
 namespace py = boost::python;
@@ -32,7 +34,10 @@ void exportListOfLoadsToPython() {
     py::class_< ListOfLoads, ListOfLoadsPtr, py::bases< DataStructure > > c1( "ListOfLoads",
                                                                               py::no_init );
     c1.def( "__init__", py::make_constructor( &initFactoryPtr< ListOfLoads > ) );
+    c1.def( "__init__", py::make_constructor( &initFactoryPtr< ListOfLoads, std::string > ) );
     c1.def( "__init__", py::make_constructor( &initFactoryPtr< ListOfLoads, ModelPtr > ) );
+    c1.def( "__init__",
+            py::make_constructor( &initFactoryPtr< ListOfLoads, std::string, ModelPtr > ) );
     c1.def( "isEmpty", &ListOfLoads::isEmpty, R"(
             The list of loads is empty or not.
 
@@ -79,8 +84,7 @@ Returns:
         )",
             ( py::arg( "self" ) ) );
 #ifdef ASTER_HAVE_MPI
-    c1.def( "getParallelMechanicalLoadsReal",
-            &ListOfLoads::getParallelMechanicalLoadsReal,
+    c1.def( "getParallelMechanicalLoadsReal", &ListOfLoads::getParallelMechanicalLoadsReal,
             py::return_value_policy< py::copy_const_reference >(), R"(
 Return list of real parallel mechanical loads
 
@@ -88,8 +92,7 @@ Returns:
     ListParaMecaLoadReal: a list of real parallel mechanical loads
         )",
             ( py::arg( "self" ) ) );
-    c1.def( "getParallelMechanicalLoadsFunction",
-            &ListOfLoads::getParallelMechanicalLoadsFunction,
+    c1.def( "getParallelMechanicalLoadsFunction", &ListOfLoads::getParallelMechanicalLoadsFunction,
             py::return_value_policy< py::copy_const_reference >(), R"(
 Return list of function parallel mechanical loads
 
@@ -98,4 +101,12 @@ Returns:
         )",
             ( py::arg( "self" ) ) );
 #endif /* ASTER_HAVE_MPI */
+
+    c1.def( "getModel", &ListOfLoads::getModel, R"(
+Return the model used
+
+Returns:
+    Model: model used
+        )",
+            ( py::arg( "self" ) ) );
 };

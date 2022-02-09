@@ -217,10 +217,13 @@ bool Result::hasElementaryCharacteristics( ASTERINTEGER rank ) const {
 
 bool Result::hasElementaryCharacteristics() const { return !_mapElemCara.empty(); };
 
-ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER rank ) const {
-    auto it = _mapLoads.find( rank );
-    return it==_mapLoads.end() ? nullptr : it->second;
+bool Result::hasListOfLoads() const { return !_mapLoads.empty(); };
+
+bool Result::hasListOfLoads( const ASTERINTEGER &rank ) const {
+    return _mapLoads.count( rank ) > 0;
 };
+
+ListOfLoadsPtr Result::getListOfLoads( ASTERINTEGER rank ) const { return _mapLoads.at( rank ); };
 
 std::vector< MaterialFieldPtr > Result::getMaterialFields() const {
     return unique( _mapMaterial );

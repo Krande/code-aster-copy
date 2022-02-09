@@ -68,6 +68,7 @@ from .linearsolver_ext import (
 )
 from .listoffloats_ext import ListOfFloats
 from .listofintegers_ext import ListOfIntegers
+from .listofloads_ext import ListOfLoads
 from .material_ext import Material
 from .materialfield_ext import MaterialField
 from .mechanicalload_ext import MechanicalLoadReal, MechanicalLoadFunction, MechanicalLoadComplex

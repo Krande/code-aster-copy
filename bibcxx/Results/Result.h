@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "Python.h"
 #include "astercxx.h"
 
 #include "DataFields/FieldBuilder.h"
@@ -44,8 +45,6 @@
 #include "Numbering/DOFNumbering.h"
 #include "Numbering/ParallelDOFNumbering.h"
 #include "Supervis/ResultNaming.h"
-
-#include "Python.h"
 
 /**
  * @class Result
@@ -158,7 +157,8 @@ class Result : public DataStructure, public ListOfTables {
      * @brief Constructeur
      */
     Result( const std::string &name, const std::string &resuTyp )
-        : DataStructure( name, 19, resuTyp ), ListOfTables( name ),
+        : DataStructure( name, 19, resuTyp ),
+          ListOfTables( name ),
           _symbolicNamesOfFields( NamesMapChar16( getName() + ".DESC" ) ),
           _namesOfFields( JeveuxCollectionChar24( getName() + ".TACH" ) ),
           _accessVariables( NamesMapChar16( getName() + ".NOVA" ) ),
@@ -168,7 +168,8 @@ class Result : public DataStructure, public ListOfTables {
           _rspr( JeveuxVectorReal( getName() + ".RSPR" ) ),
           _rsp8( JeveuxVectorChar8( getName() + ".RSP8" ) ),
           _rs16( JeveuxVectorChar16( getName() + ".RS16" ) ),
-          _rs24( JeveuxVectorChar24( getName() + ".RS24" ) ), _mesh( nullptr ),
+          _rs24( JeveuxVectorChar24( getName() + ".RS24" ) ),
+          _mesh( nullptr ),
           _fieldBuidler( FieldBuilder() ){};
 
     /**
@@ -245,6 +246,10 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank
      */
     ListOfLoadsPtr getListOfLoads( ASTERINTEGER rank ) const;
+
+    bool hasListOfLoads( const ASTERINTEGER &rank ) const;
+
+    bool hasListOfLoads() const;
 
     /**
      * @brief Get elementary characteristics

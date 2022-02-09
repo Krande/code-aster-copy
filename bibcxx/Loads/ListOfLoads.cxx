@@ -29,15 +29,22 @@
 #include "Loads/ListOfLoads.h"
 #include "Supervis/CommandSyntax.h"
 
-ListOfLoads::ListOfLoads( )
-    : ListOfLoads(nullptr) {};
 
-ListOfLoads::ListOfLoads( const ModelPtr model )
-    : DataStructure( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD", 19, "L_CHARGES" ),
+ListOfLoads::ListOfLoads( const std::string& name, const ModelPtr model)
+    : DataStructure( name, 19, "L_CHARGES" ),
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
       _list( JeveuxVectorChar24( getName() + ".LCHA" ) ),
       _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ), _isEmpty( true ),
       _model( model ){};
+
+ListOfLoads::ListOfLoads( const ModelPtr model )
+    : ListOfLoads( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD", model ){};
+
+ListOfLoads::ListOfLoads( const std::string& name )
+    : ListOfLoads(name, nullptr) {};
+
+ListOfLoads::ListOfLoads( )
+    : ListOfLoads(DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD") {};
 
 bool ListOfLoads::checkModelConsistency( const ModelPtr& model ) const
 {

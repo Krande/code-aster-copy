@@ -67,6 +67,11 @@ class ComputeAdditionalField(ExecuteCommand):
 
             if dofNume is not None:
                 self._result.setDOFNumbering(dofNume)
+
+            for rank in self._result.getRanks():
+                if keywords["RESULTAT"].hasListOfLoads(rank):
+                    list_of_load = keywords["RESULTAT"].getListOfLoads(rank)
+                    self._result.setListOfLoads(list_of_load, rank)
         else:
             try:
                 modele = self._result.getModel()
@@ -112,13 +117,6 @@ class ComputeAdditionalField(ExecuteCommand):
                 for elem in elems:
                     if elem:
                         self._result.addDependency(elem)
-            except RuntimeError:
-                pass
-            try:
-                for rank in self._result.getRanks():
-                    list_of_load =  keywords["RESULTAT"].getListOfLoads( rank )
-                    if list_of_load:
-                        self._result.setListOfLoads( list_of_load, rank )
             except RuntimeError:
                 pass
 

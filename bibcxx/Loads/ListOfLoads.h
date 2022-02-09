@@ -100,7 +100,17 @@ class ListOfLoads : public DataStructure {
     /**
      * @brief Constructeur
      */
+    ListOfLoads(const std::string& name);
+
+    /**
+     * @brief Constructeur
+     */
     ListOfLoads( const ModelPtr model );
+
+    /**
+     * @brief Constructeur
+     */
+    ListOfLoads( const std::string& name, const ModelPtr model );
 
     /**
      * @brief Function d'ajout d'une charge cinematique
