@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -460,7 +460,7 @@ class MECA_HEXA20(Element):
         ),
 
         OP.CHAR_MECA_TEMP_R(te=13,
-            para_in=((SP.PCAMASS, CCAMASS), 
+            para_in=((SP.PCAMASS, CCAMASS),
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), ),
@@ -695,7 +695,7 @@ class MECA_HEXA20(Element):
         ),
 
         OP.EPVC_ELGA(te=529,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), 
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (OP.EPVC_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=((OP.EPVC_ELGA.PDEFOPG, EDFVCPG), ),
         ),
@@ -1117,7 +1117,7 @@ class MECA_HEXA20(Element):
         ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PNEUT_I, LC.CNEUTI3)),
         ),
 
         OP.TOU_INI_ELGA(te=99,

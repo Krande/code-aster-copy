@@ -56,6 +56,10 @@ CFOR2DR = LocatedComponents(phys=PHY.FORC_R, type='ELEM',
 CFOR3DR = LocatedComponents(phys=PHY.FORC_R, type='ELEM',
                             components=('FX','FY','FZ',))
 
+# For neural components (3D)
+CNEUTI3 = LocatedComponents(phys=PHY.NEUT_I, type='ELEM',
+                            components=('X[30]',))
+
 # For pressure (Function-2D)
 CPRE2DF = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
                             components=('PRES','CISA',))

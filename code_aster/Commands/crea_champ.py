@@ -19,8 +19,9 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (FieldOnCellsReal, FieldOnNodesComplex,
-                       FieldOnNodesReal, FullResult, ModeResult,
+from ..Objects import (FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsComplex,
+                       FieldOnNodesReal, FieldOnNodesComplex,
+                       FullResult, ModeResult,
                        ConstantFieldOnCellsReal)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
@@ -77,8 +78,14 @@ class FieldCreator(ExecuteCommand):
             if numeDdl is not None:
                 self._result.setDescription(numeDdl.getDescription())
         else:
-            # ELGA_
-            self._result = FieldOnCellsReal()
+            if typ == "R":
+                self._result = FieldOnCellsReal()
+            elif typ == "I":
+                self._result = FieldOnCellsLong()
+            elif typ == "C":
+                self._result = FieldOnCellsComplex()
+            else:
+                raise NotImplementedError("Output for CREA_CHAMP not defined")
 
         if location[:2] == "EL":
             chamF = keywords.get("CHAM_F")

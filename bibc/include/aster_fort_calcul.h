@@ -58,8 +58,16 @@ void DEFPSSSSSSPS( ASMATR, asmatr, ASTERINTEGER *, const char *, STRING_SIZE, co
     CALLSSPSPSP( ASSVEC_WRAP, assvec_wrap, a, b, c, d, e, f, g )
 void DEFSSPSPSP( ASSVEC_WRAP, assvec_wrap, const char *, STRING_SIZE, const char *, STRING_SIZE,
                  ASTERINTEGER *, const char *, STRING_SIZE,
-                 ASTERDOUBLE *, const char *, STRING_SIZE, 
+                 ASTERDOUBLE *, const char *, STRING_SIZE,
                  ASTERINTEGER *);
+
+#define CALL_ASSVECWITHMASK( a, b, c, d, e, f, g, h, i)                                          \
+    CALLSSPSPSPSP( ASSVECWITHMASK, assvecwithmask, a, b, c, d, e, f, g, h, i )
+void DEFSSPSPSPSP( ASSVECWITHMASK, assvecwithmask, const char *, STRING_SIZE,
+                   const char *, STRING_SIZE,
+                   ASTERINTEGER *, const char *, STRING_SIZE,
+                   ASTERDOUBLE *, const char *, STRING_SIZE,
+                   ASTERINTEGER *, const char *, STRING_SIZE, const ASTERLOGICAL * );
 
 #define CALLO_AP_ASSEMBLY_VECTOR( a ) CALLO( AP_ASSEMBLY_VECTOR, ap_assembly_vector, a )
 void DEFS( AP_ASSEMBLY_VECTOR, ap_assembly_vector, const char *, STRING_SIZE );

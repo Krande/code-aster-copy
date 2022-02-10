@@ -117,3 +117,30 @@ bool ElementaryVector::build() {
     }
     return true;
 };
+
+FieldOnNodesRealPtr ElementaryVector::assembleWithMask( const BaseDOFNumberingPtr &dofNume,
+                                                        const FieldOnCellsLongPtr &maskCell,
+                                                        const int &maskInve ) {
+
+    if ( ( !dofNume ) || dofNume->isEmpty() )
+        raiseAsterError( "Numerotation is empty" );
+
+    FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
+
+    VectorString vectElem( 1, getName() );
+
+    char *tabNames = vectorStringAsFStrArray( vectElem, 19 );
+
+    ASTERDOUBLE list_coef = 1.0;
+    ASTERINTEGER typscal = 1;
+    ASTERINTEGER nbElem = 1;
+    std::string base( "G" );
+
+    CALL_ASSVECWITHMASK( base.c_str(), field->getName().c_str(), &nbElem, tabNames, &list_coef,
+                         dofNume->getName().c_str(), &typscal, maskCell->getName().c_str(),
+                         (ASTERLOGICAL *)&maskInve );
+
+    FreeStr( tabNames );
+
+    return field;
+};

@@ -19,7 +19,7 @@
 subroutine assvec(jvBase, vectAsseZ,&
                   nbVectElem, listVectElem, coefVectElem,&
                   numeDofZ_, vectAsseForNumeZ_,&
-                  vectScalType_)
+                  vectScalType_, maskElem_, maskInve_)
 !
 implicit none
 !
@@ -69,6 +69,8 @@ character(len=*), intent(in) :: listVectElem(nbVectElem)
 real(kind=8), intent(in) :: coefVectElem(nbVectElem)
 character(len=*), optional, intent(in) :: vectAsseForNumeZ_, numeDofZ_
 integer, optional, intent(in) :: vectScalType_
+character(len=24), optional, intent(in) :: maskElem_
+aster_logical, optional, intent(in) :: maskInve_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -123,6 +125,11 @@ integer, optional, intent(in) :: vectScalType_
     character(len=8), pointer :: nomacr(:) => null()
     real(kind=8) :: vectElemCoef, elemCoef
     integer :: vectScalType
+    character(len=24) :: coefLigrelName
+    character(len=24), pointer :: celk(:) => null()
+    integer, pointer :: celd(:) => null(), celv(:) => null()
+    integer :: coefPond
+    aster_logical :: maskInve
 ! --------------------------------------------------------------------------------------------------
 #define zzngel(ligrelNume) adli(1+3*(ligrelNume-1))
 #define zznelg(ligrelNume,iGrel) zi(adli(1+3*(ligrelNume-1)+2)+iGrel)-\
@@ -146,6 +153,19 @@ integer, optional, intent(in) :: vectScalType_
     vectScalType = 1
     if (present(vectScalType_)) then
         vectScalType = vectScalType_
+    endif
+    maskInve = ASTER_FALSE
+    if (present(maskInve_)) then
+        maskInve = maskInve_
+    endif
+
+! - Prepare parameters for coefficeints at each element
+    coefLigrelName = ' '
+    if (present(maskElem_)) then
+        call jeveuo(maskElem_(1:19)//'.CELK', 'L', vk24 = celk)
+        call jeveuo(maskElem_(1:19)//'.CELD', 'L', vi = celd)
+        call jeveuo(maskElem_(1:19)//'.CELV', 'L', vi = celv)
+        coefLigrelName = celk(1)
     endif
 
 ! - Acces to description of local mode
@@ -357,7 +377,16 @@ integer, optional, intent(in) :: vectScalType_
 ! --------------------- Loop on elements
                         do iElem = 1, nbElem
                             elemNume = zzliel(ligrelNume,iGrel,iElem)
-                            elemCoef = vectElemCoef
+                            if (coefLigrelName .eq. ligrelName) then
+                                coefPond = celv(celd(celd(4+iGrel)+4+4*(iElem-1)+4))
+                                if (maskInve) then
+                                    elemCoef = vectElemCoef * (1-coefPond)
+                                else
+                                    elemCoef = vectElemCoef * coefPond
+                                endif
+                            else
+                                elemCoef = vectElemCoef
+                            endif
 
                             if (ldist .and. .not. ldgrel) then
                                 if (elemNume .gt. 0) then
