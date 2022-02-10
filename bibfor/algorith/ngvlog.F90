@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -224,6 +224,7 @@ integer,intent(out)            :: codret
         silcm(neu+1:neu+neg) = siefm(neu+1:neu+neg,g)
 
         ! Comportement
+        silcp = 0.d0
         call nmcomp(BEHinteg,&
                     fami, g, 1, ndim, typmod,&
                     mate, compor, crit, instm, instp,&

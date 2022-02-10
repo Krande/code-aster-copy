@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -356,6 +356,7 @@ character(len=16) :: option
 !
 ! -    APPEL A LA LOI DE COMPORTEMENT
                 ksp=(icou-1)*(2*nbsec+1) + isect
+                sigma = 0.d0
                 call nmcomp(BEHinteg,&
                             'RIGI', igau, ksp, 2, typmod,&
                             zi(imate), zk16(icompo), zr(icarcr), instm, instp,&

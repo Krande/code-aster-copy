@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -112,6 +112,7 @@ real(kind=8) :: vim(*), vip(*), sigx, sigxp, epsx, depx, etan
 !
 !
 ! -    APPEL A LA LOI DE COMPORTEMENT
+    sigp = 0.d0
     call nmcomp(BEHinteg,&
                 fami, kpg, ksp, 2, typmod,&
                 zi(imate), zk16(icompo), zr(icarcr), zr(iinstm), zr(iinstp),&

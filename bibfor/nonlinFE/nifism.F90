@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -261,6 +261,7 @@ character(len=16) :: compor(*), option
             sigm_ldc(ia) = sigm(ia,g)*rac2
         end do
 !
+        taup = 0.d0
         call nmcomp(BEHinteg,&
                     'RIGI', g, 1, 3, typmod,&
                     mate, compor, carcri, instm, instp,&

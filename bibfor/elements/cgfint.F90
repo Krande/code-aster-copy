@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -216,6 +216,7 @@ implicit none
         BEHinteg%elga%tenscab = a*sigcab
         BEHinteg%elga%curvcab = courb
 !
+        de = 0.d0
         call nmcomp(BEHinteg,&
                     'RIGI', g, 1, ndim, typmod,&
                     mat, comporSheath, carcri, instam, instap,&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -213,6 +213,7 @@ character(len=8) :: typmod(*)
 ! ----- Solve creep law
 !
         l_epsi_varc = ASTER_TRUE
+        sigf2 = 0.d0
         call nmcomp(BEHinteg,&
                     fami, kpg, ksp, ndim, typmod,&
                     imat, compor_creep, carcri, timed, timef  ,&
@@ -286,6 +287,7 @@ character(len=8) :: typmod(*)
 !
     l_epsi_varc = ASTER_FALSE
     idx_vi_plas = nvi_flua + 1
+    sigf = 0.d0
     call nmcomp(BEHinteg,&
                 fami, kpg, ksp, ndim, typmod,&
                 imat, compor_plas, carcri, timed, timef  ,&

@@ -202,6 +202,7 @@ integer, intent(inout) :: codret
                 endif
             endif
 ! --------- Compute behaviour
+            sigmPost = 0.d0
             call nmcomp(BEHinteg   ,&
                         fami       , kpg        , 1        , ndim  , typmod  ,&
                         imate      , compor     , carcri   , instam, instap  ,&
@@ -220,6 +221,7 @@ integer, intent(inout) :: codret
                 goto 999
             endif
 ! --------- Compute behaviour
+            sigmPost = 0.d0
             call nmcomp(BEHinteg   ,&
                         fami       , kpg        , 1        , ndim  , typmod  ,&
                         imate      , compor     , carcri   , instam, instap  ,&

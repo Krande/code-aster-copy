@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,7 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
     integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,W => 1ER INDICE
     real(kind=8) :: coopg(3, npg)
-    real(kind=8) :: dsidep(6, 6), b(2, 8)
+    real(kind=8) :: dsidep(6, 6), b(2, 8), sigmPost(6)
     real(kind=8) :: sum(2), dsu(2), poids
     real(kind=8) :: carcri(*)
     real(kind=8) :: angmas(3)
@@ -137,12 +137,18 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm
 ! ----- Compute behaviour
         code(kpg) = 0
         BEHinteg%elem%coor_elga(kpg,1:2) = coopg(1:2,kpg)
+        sigmPost = 0.d0
         call nmcomp(BEHinteg,&
                     'RIGI', kpg, 1, 2, typmod,&
                     mate, compor, carcri, tm, tp,&
                     2, sum, dsu, 1, sigmo(1, kpg),&
                     vim(1, kpg), option, angmas, &
-                    sigma(1, kpg), vip(1, kpg), 36, dsidep, codret)
+                    sigmPost, vip(1, kpg), 36, dsidep, codret)
+
+        if (lSigm) then
+           sigma(1,kpg) = sigmPost(1)
+           sigma(2,kpg) = sigmPost(2)
+        endif
 ! ----- Internal forces
         if (lVect) then
 !       Il faudrait séparer les deux => petit travail de réflexion
