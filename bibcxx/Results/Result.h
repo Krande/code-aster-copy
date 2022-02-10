@@ -206,8 +206,6 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank
      */
     void addTimeValue( ASTERDOUBLE, int rank );
-    
-    ASTERDOUBLE getTimeValue( ASTERINTEGER rank );
 
     /**
      * @brief Append a elementary characteristics on all rank of Result

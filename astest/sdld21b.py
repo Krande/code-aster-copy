@@ -47,7 +47,6 @@ CHA_ON = CREA_RESU(
 )
 
 test.assertEqual(CHA_ON.getNumberOfRanks(), 256)
-test.assertAlmostEqual(CHA_ON.getTimeValue(1), dt)
 
 test.printSummary()
 

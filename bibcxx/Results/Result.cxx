@@ -109,42 +109,6 @@ void Result::addTimeValue( ASTERDOUBLE value, int rank ) {
     CALLO_RSADPA_ZR_WRAP( getName(), &rang, &value, type );
 };
 
-ASTERDOUBLE Result::getTimeValue( ASTERINTEGER rank ) {
-
-    ASTERINTEGER nb_ranks = getNumberOfRanks();
-
-    AS_ASSERT( rank <= nb_ranks );
-
-    _serialNumber->updateValuePointer();
-    _rspr->updateValuePointer();
-
-    auto &calcParam = _calculationParameter->getVectorOfObjects();
-    auto nbParam = calcParam.size();
-
-    for ( ASTERINTEGER i = 0; i < nbParam; ++i ) {
-        const auto item = calcParam[i];
-        auto typevar = trim( item[3].toString() );
-
-        if ( typevar == "ACCES" ) {
-            auto var_name = trim( _accessVariables->getStringFromIndex( i + 1 ) );
-            if ( var_name == "INST" ) {
-                auto nosuff = trim( item[0].toString() );
-                auto ivar = std::stoi( trim( item[1].toString() ) );
-                auto nmax = std::stoi( trim( item[2].toString() ) );
-
-                AS_ASSERT( nosuff == ".RSPR" )
-
-                auto index = nmax * rank + ivar - 1;
-
-                return ( *_rspr )[index];
-            }
-        }
-    }
-
-    AS_ASSERT( false );
-    return 0.0;
-};
-
 bool Result::allocate( int nbRanks ) {
     std::string base( JeveuxMemoryTypesNames[getMemoryType()] );
     ASTERINTEGER nbordr = nbRanks;
