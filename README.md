@@ -2,9 +2,7 @@
 
 > Home page: https://www.code-aster.org/
 >
-> Forge: https://gitlab.com/codeaster-repo/
->
-> code_aster repositories are moving to Git, the work is in progress...
+> Forge: https://gitlab.com/codeaster/
 
 **code_aster** source files are dispatched into 3 repositories.
 
@@ -13,7 +11,7 @@
 - *validation*: few testcase files with proprietary datas,
 - *data*: material datas that can not be freely distributed.
 
-Other independant repositories exist:
+Other independent repositories exist:
 
 - [devtools][2]: contains helper scripts.
 - [changelog][3]: publishes the changelog of each incremental version.
@@ -56,24 +54,27 @@ enhancements:
 
 code_aster needs some prerequisites.
 
-Singularity containers are available on the [website][9] in the section Download/salome_meca.
+Singularity containers are available from the [website][9] in the section Download/salome_meca.
 The current version salome_meca and the prerequisites are provided in these containers.
 Of course the container must be updated each time that new prerequisites are required
 by the development version.
 
+See the [Installation and Development][4] documentation and its changelog page to select
+the correct image to be used.
+
 ### Example
 
-For the version 16.1.0, the container name is `salome_meca-lgpl-2021.0.0-0-20211014-scibian-9.sif`.
+For the version 16.1.0, the container name is `salome_meca-lgpl-2021.0.0-2-20211014-scibian-9.sif`.
 
 ```bash
 $ mkdir $HOME/containers && cd $HOME/containers
 
 # download and the container image (.sif) here
-$ singularity run --app install salome_meca-edf-2021.0.0-2-20211014-scibian-9.sif
+$ singularity run --app install salome_meca-lgpl-2021.0.0-2-20211014-scibian-9.sif
 
 # build code_aster in the container environment
 $ cd $HOME/dev/codeaster/src
-$ $HOME/containers/salome_meca-edf-2021.0.0-2-20211014-scibian-9 --shell
+$ $HOME/containers/salome_meca-lgpl-2021.0.0-2-20211014-scibian-9 --shell
 
 Singularity> ./waf configure install
 
@@ -81,7 +82,8 @@ Singularity> ./waf configure install
 Singularity> make bootstrap
 ```
 
-[1]: ../src
-[2]: ../devtools
-[3]: ../changelog
+[1]: ../../../../src
+[2]: ../../../../devtools
+[3]: ../../../../changelog
+[4]: https://gitlab.com/codeaster-opensource-documentation/opensource-installation-development
 [9]: https://www.code-aster.org/
