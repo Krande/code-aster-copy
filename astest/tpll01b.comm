@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -179,73 +179,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                 ),
           )
 
-#==============================================================
-# POUR TESTER LES POST-TRAITEMENTS AUX POINTS DE GAUSS :
-# ----------------------------------------------------------
-
-MACR_ECLA_PG(   MODELE_INIT = MOTH,  RESU_INIT = TEMPE,
-                NOM_CHAM = ('FLUX_ELGA',), INST=(0.,10.),
-                RESULTAT = CO("U2B"), MAILLAGE = CO("MA2"),
-                 )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=0,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U2B,
-                   NOM_CHAM='FLUX_ELGA',
-                   VALE_CALC=2.6208004533937E5,),
-                _F(NUME_ORDRE=2,
-                   TYPE_TEST='SOMM_ABS',
-                   RESULTAT=U2B,
-                   NOM_CHAM='FLUX_ELGA',
-                   VALE_CALC=2.6208004533937E5,),
-                ),
-          )
-
-# pour faire du MACR_LIGN_COUPE / POST_RELEVE_T sur un resultat obtenu par MACR_ECLA_PG :
-# ---------------------------------------------------------------------------------------
-
-# Modele inutile (mais obligatoire pour MACR_LIGN_COUPE):
-MO2=AFFE_MODELE(  MAILLAGE=MA2,
-                   AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN',  PHENOMENE = 'THERMIQUE'))
-
-RELTEMP=MACR_LIGN_COUPE(RESULTAT=U2B,   NOM_CHAM='FLUX_ELGA',  MODELE=MO2,
-                  LIGN_COUPE=(
-                     _F(TYPE='SEGMENT', NB_POINTS=10, INTITULE='EXT_FLUX',
-                        DISTANCE_MAX=1.e-5,
-                        COOR_ORIG=(1.40278e-2,  0.05,),
-                        COOR_EXTR=(5.29166e-2,  0.05,),
-                 )))
-
-TEST_TABLE(  TABLE=RELTEMP, NOM_PARA='FLUX',
-    VALE_CALC=9.6E+02,
-    FILTRE=(
-       _F( NOM_PARA='INST',       VALE=10.,),
-       _F( NOM_PARA='ABSC_CURV',  VALE=1.72839E-02,),
-    ))
-
-TEST_TABLE(  TABLE=RELTEMP, NOM_PARA='FLUY',
-    VALE_CALC=7.2E+02,
-    FILTRE=(
-       _F( NOM_PARA='INST',       VALE=10.,),
-       _F( NOM_PARA='ABSC_CURV',  VALE=1.72839E-02,),
-    ))
-
-
-#==============================================================
-# pour tester MACR_ECLA_PG sur un ensemble de mailles
-
-MACR_ECLA_PG(   MODELE_INIT = MOTH,  RESU_INIT = TEMPE,
-                NOM_CHAM = ('FLUX_ELGA',), INST=(5.,), MAILLE=('M3','M5'),
-                RESULTAT = CO("U3B"), MAILLAGE = CO("MA3B"),
-                 )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  RESULTAT=U3B,
-                  NOM_CHAM='FLUX_ELGA',
-                  NOEUD='N5',
-                  NOM_CMP='FLUX',
-                  VALE_CALC=960.00023993481,),
-          )
 
 FIN()
 #
