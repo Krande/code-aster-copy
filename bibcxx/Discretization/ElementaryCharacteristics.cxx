@@ -3,7 +3,7 @@
  * @brief Implementation de ElementaryCharacteristics
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,29 +21,32 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
+#include "Discretization/ElementaryCharacteristics.h"
 
 #include "astercxx.h"
 
-#include "Python.h"
-#include "Discretization/ElementaryCharacteristics.h"
+#include "DataFields/FieldBuilder.h"
 
 ElementaryCharacteristics::ElementaryCharacteristics( const std::string name,
-                                                                      const ModelPtr &model )
-    : DataStructure( name, 8, "CARA_ELEM" ), _model( model ), _mesh( model->getMesh() ),
-      _numberOfSubpoints( new ConstantFieldOnCellsLong( getName() + ".CANBSP", _mesh ) ),
-      _curveBeam( new ConstantFieldOnCellsReal( getName() + ".CARARCPO", _mesh ) ),
-      _cable( new ConstantFieldOnCellsReal( getName() + ".CARCABLE", _mesh ) ),
-      _shell( new ConstantFieldOnCellsReal( getName() + ".CARCOQUE", _mesh ) ),
-      _dumping( new ConstantFieldOnCellsReal( getName() + ".CARDISCA", _mesh ) ),
-      _rigidity( new ConstantFieldOnCellsReal( getName() + ".CARDISCK", _mesh ) ),
-      _mass( new ConstantFieldOnCellsReal( getName() + ".CARDISCM", _mesh ) ),
-      _bar( new ConstantFieldOnCellsReal( getName() + ".CARGENBA", _mesh ) ),
-      _beamSection( new ConstantFieldOnCellsReal( getName() + ".CARGENPO", _mesh ) ),
-      _beamGeometry( new ConstantFieldOnCellsReal( getName() + ".CARGEOPO", _mesh ) ),
-      _orthotropicBasis( new ConstantFieldOnCellsReal( getName() + ".CARMASSI", _mesh ) ),
-      _localBasis( new ConstantFieldOnCellsReal( getName() + ".CARORIEN", _mesh ) ),
-      _beamCharacteristics( new ConstantFieldOnCellsReal( getName() + ".CARPOUFL", _mesh ) ),
+                                                      const ModelPtr &model )
+    : DataStructure( name, 8, "CARA_ELEM" ),
+      _model( model ),
+      _mesh( model->getMesh() ),
+      _CARORIEN( new ConstantFieldOnCellsReal( getName() + ".CARORIEN", _mesh ) ),
+      _CARDISCK( new ConstantFieldOnCellsReal( getName() + ".CARDISCK", _mesh ) ),
+      _CARDISCM( new ConstantFieldOnCellsReal( getName() + ".CARDISCM", _mesh ) ),
+      _CARDISCA( new ConstantFieldOnCellsReal( getName() + ".CARDISCA", _mesh ) ),
+      _CARGEOPO( new ConstantFieldOnCellsReal( getName() + ".CARGEOPO", _mesh ) ),
+      _CARGENPO( new ConstantFieldOnCellsReal( getName() + ".CARGENPO", _mesh ) ),
+      _CARCOQUE( new ConstantFieldOnCellsReal( getName() + ".CARCOQUE", _mesh ) ),
+      _CARARCPO( new ConstantFieldOnCellsReal( getName() + ".CARARCPO", _mesh ) ),
+      _CARCABLE( new ConstantFieldOnCellsReal( getName() + ".CARCABLE", _mesh ) ),
+      _CARGENBA( new ConstantFieldOnCellsReal( getName() + ".CARGENBA", _mesh ) ),
+      _CARMASSI( new ConstantFieldOnCellsReal( getName() + ".CARMASSI", _mesh ) ),
+      _CARPOUFL( new ConstantFieldOnCellsReal( getName() + ".CARPOUFL", _mesh ) ),
+      _CANBSP( new ConstantFieldOnCellsLong( getName() + ".CANBSP", _mesh ) ),
+      _CAFIBR( new ConstantFieldOnCellsReal( getName() + ".CAFIBR", _mesh ) ),
+      _CARDINFO( new ConstantFieldOnCellsReal( getName() + ".CARDINFO", _mesh ) ),
       _isEmpty( true ){};
 
 ModelPtr ElementaryCharacteristics::getModel() const {

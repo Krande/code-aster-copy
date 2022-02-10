@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ElementaryCharacteristics
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,20 +24,16 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Meshes/BaseMesh.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
 #include "astercxx.h"
-#include "definition.h"
 
 /**
  * @class ElementaryCharacteristics
- * @brief Cette classe decrit un cara_elem
- * @author Nicolas Sellenet
+ * @brief Class for elementary characteristics (from AFFE_CARA_ELEM)
  */
 class ElementaryCharacteristics : public DataStructure {
   private:
@@ -45,80 +41,84 @@ class ElementaryCharacteristics : public DataStructure {
     ModelPtr _model;
     /** @brief Mesh */
     BaseMeshPtr _mesh;
-    /** @brief Objet Jeveux '.CANBSP' */
-    ConstantFieldOnCellsLongPtr _numberOfSubpoints;
-    /** @brief Objet Jeveux '.CARARCPO' */
-    ConstantFieldOnCellsRealPtr _curveBeam;
-    /** @brief Objet Jeveux '.CARCABLE' */
-    ConstantFieldOnCellsRealPtr _cable;
-    /** @brief Objet Jeveux '.CARCOQUE' */
-    ConstantFieldOnCellsRealPtr _shell;
-    /** @brief Objet Jeveux '.CARDISCA' */
-    ConstantFieldOnCellsRealPtr _dumping;
-    /** @brief Objet Jeveux '.CARDISCK' */
-    ConstantFieldOnCellsRealPtr _rigidity;
-    /** @brief Objet Jeveux '.CARDISCM' */
-    ConstantFieldOnCellsRealPtr _mass;
-    /** @brief Objet Jeveux '.CARGENBA' */
-    ConstantFieldOnCellsRealPtr _bar;
-    /** @brief Objet Jeveux '.CARGENPO' */
-    ConstantFieldOnCellsRealPtr _beamSection;
-    /** @brief Objet Jeveux '.CARGEOPO' */
-    ConstantFieldOnCellsRealPtr _beamGeometry;
-    /** @brief Objet Jeveux '.CARMASSI' */
-    ConstantFieldOnCellsRealPtr _orthotropicBasis;
-    /** @brief Objet Jeveux '.CARORIEN' */
-    ConstantFieldOnCellsRealPtr _localBasis;
-    /** @brief Objet Jeveux '.CARPOUFL' */
-    ConstantFieldOnCellsRealPtr _beamCharacteristics;
-
-    /** @brief Booleen indiquant si le maillage est vide */
+    /** @brief Objet Jeveux '.CARORIEN' for local basis */
+    ConstantFieldOnCellsRealPtr _CARORIEN;
+    /** @brief Objet Jeveux '.CARDISCK' for rigidity parameters for DIS_* elements */
+    ConstantFieldOnCellsRealPtr _CARDISCK;
+    /** @brief Objet Jeveux '.CARDISCM' for mass parameters for DIS_* elements */
+    ConstantFieldOnCellsRealPtr _CARDISCM;
+    /** @brief Objet Jeveux '.CARDISCA' for damping parameters for DIS_* elements */
+    ConstantFieldOnCellsRealPtr _CARDISCA;
+    /** @brief Objet Jeveux '.CARGENPO' for section properties for beam elements */
+    ConstantFieldOnCellsRealPtr _CARGENPO;
+    /** @brief Objet Jeveux '.CARGEOPO' for geometric properties for beam elements */
+    ConstantFieldOnCellsRealPtr _CARGEOPO;
+    /** @brief Objet Jeveux '.CARCOQUE' for properties of shell elements */
+    ConstantFieldOnCellsRealPtr _CARCOQUE;
+    /** @brief Objet Jeveux '.CARARCPO' for flexibility coefficients */
+    ConstantFieldOnCellsRealPtr _CARARCPO;
+    /** @brief Objet Jeveux '.CARCABLE' for properties of cable elements */
+    ConstantFieldOnCellsRealPtr _CARCABLE;
+    /** @brief Objet Jeveux '.CARGENBA' for properties of bar elements */
+    ConstantFieldOnCellsRealPtr _CARGENBA;
+    /** @brief Objet Jeveux '.CARMASSI' for orientation of material parameters */
+    ConstantFieldOnCellsRealPtr _CARMASSI;
+    /** @brief Objet Jeveux '.CARPOUFL' for properties of fluid beam elements */
+    ConstantFieldOnCellsRealPtr _CARPOUFL;
+    /** @brief Objet Jeveux '.CANBSP' for number of subpoints */
+    ConstantFieldOnCellsLongPtr _CANBSP;
+    /** @brief Objet Jeveux '.CAFIBR' for fibers */
+    ConstantFieldOnCellsRealPtr _CAFIBR;
+    /** @brief Objet Jeveux '.CARDINFO' for general parameters for DIS_* elements */
+    ConstantFieldOnCellsRealPtr _CARDINFO;
+    /** @brief Flag for empty datastructure */
     bool _isEmpty;
 
   public:
-    /**
-     * @typedef ElementaryCharacteristicsPtr
-     * @brief Pointeur intelligent vers un ElementaryCharacteristics
-     */
+    /** @typedef ElementaryCharacteristicsPtr */
     typedef boost::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with a name */
     ElementaryCharacteristics( const std::string name, const ModelPtr &model );
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with automatic name */
     ElementaryCharacteristics( const ModelPtr &model )
         : ElementaryCharacteristics( ResultNaming::getNewResultName(), model ){};
 
-    /**
-     * @brief Destructeur
-     */
+    /** @brief Destructor */
     ~ElementaryCharacteristics(){};
 
-    /**
-     * @brief Get the model
-     */
+    /** @brief Get the model */
     ModelPtr getModel() const;
 
-    /**
-     * @brief Get the model
-     */
+    /** @brief Get the mesh */
     BaseMeshPtr getMesh() const;
 
     /**
-     * @brief Fonction permettant de savoir si un maillage est vide (non relu par exemple)
-     * @return retourne true si le maillage est vide
+     * @brief Detect state of datastructure
+     * @return true if empty datastructure
      */
     bool isEmpty() const { return _isEmpty; };
+
+    /** @brief Get fields */
+    ConstantFieldOnCellsRealPtr getLocalBasis() { return _CARORIEN; };
+    ConstantFieldOnCellsRealPtr getDiscreteRigidity() { return _CARDISCK; };
+    ConstantFieldOnCellsRealPtr getDiscreteMass() { return _CARDISCM; };
+    ConstantFieldOnCellsRealPtr getDiscreteDamping() { return _CARDISCA; };
+    ConstantFieldOnCellsRealPtr getBeamGeometry() { return _CARGEOPO; };
+    ConstantFieldOnCellsRealPtr getBeamSection() { return _CARGENPO; };
+    ConstantFieldOnCellsRealPtr getShellParameters() { return _CARCOQUE; };
+    ConstantFieldOnCellsRealPtr getFlexibilityCoefficients() { return _CARARCPO; };
+    ConstantFieldOnCellsRealPtr getCableParameters() { return _CARCABLE; };
+    ConstantFieldOnCellsRealPtr getBarParameters() { return _CARGENBA; };
+    ConstantFieldOnCellsRealPtr getMaterialBase() { return _CARMASSI; };
+    ConstantFieldOnCellsRealPtr getFluidBeamParameters() { return _CARPOUFL; };
+    ConstantFieldOnCellsLongPtr getNumberOfSubpoints() { return _CANBSP; };
+    ConstantFieldOnCellsRealPtr getFibers() { return _CAFIBR; };
+    ConstantFieldOnCellsRealPtr getDiscreteParameters() { return _CARDINFO; };
 };
 
-/**
- * @typedef ElementaryCharacteristicsPtr
- * @brief Pointeur intelligent vers un ElementaryCharacteristics
- */
+/** @typedef ElementaryCharacteristicsPtr */
 typedef boost::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
 
 #endif /* ELEMENTARYCHARACTERISTICS_H_ */
