@@ -3,7 +3,7 @@
 
 /**
  * @file ElementaryMatrix.h
- * @brief Fichier entete de la classe ElementaryMatrix
+ * @brief Definition of elementary matrices
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
@@ -24,12 +24,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "astercxx.h"
 
 #include "DataFields/ElementaryTerm.h"
 #include "DataStructures/DataStructure.h"
+#include "Discretization/ElementaryCharacteristics.h"
 #include "Loads/MechanicalLoad.h"
 #include "Loads/PhysicalQuantity.h"
 #include "Materials/MaterialField.h"
@@ -40,39 +39,42 @@
 
 /**
  * @class BaseElementaryMatrix
- * @brief Class definissant une sd_matr_elem
- * @author Nicolas Sellenet
+ * @brief Generic class for sd_matr_elem
  */
 class BaseElementaryMatrix : public DataStructure {
   protected:
-    /** @brief Objet Jeveux '.RERR' */
+    /** @brief Objects for computation of elementary terms */
     JeveuxVectorChar24 _description;
-    /** @brief Objet Jeveux '.RELR' */
     JeveuxVectorChar24 _listOfElementaryTerms;
-    /** @brief Booleen indiquant si la sd est vide */
+
+    /** @brief Flag for empty datastructure */
     bool _isEmpty;
-    /** @brief Modele */
+
+    /** @brief Model */
     ModelPtr _model;
-    /** @brief MaterialField */
+
+    /** @brief Field of material parameters */
     MaterialFieldPtr _materialField;
+
+    /** @brief Elementary characteristics */
+    ElementaryCharacteristicsPtr _elemChara;
+
     /** @brief Vectors of FiniteElementDescriptor */
     std::vector< FiniteElementDescriptorPtr > _FEDVector;
     std::set< std::string > _FEDNames;
 
-    /**
-     * @brief Constructor with a name
-     */
+  public:
+    /** @brief Constructor with a name */
     BaseElementaryMatrix( const std::string name, const std::string type = "MATR_ELEM" )
         : DataStructure( name, 19, type ),
           _description( JeveuxVectorChar24( getName() + ".RERR" ) ),
           _listOfElementaryTerms( JeveuxVectorChar24( getName() + ".RELR" ) ),
           _isEmpty( true ),
           _model( nullptr ),
-          _materialField( nullptr ){};
+          _materialField( nullptr ),
+          _elemChara( nullptr ){};
 
-    /**
-     * @brief Constructor
-     */
+    /** @brief Constructor with automatic name */
     BaseElementaryMatrix( const std::string type = "MATR_ELEM" )
         : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ){};
 
@@ -81,8 +83,8 @@ class BaseElementaryMatrix : public DataStructure {
      * @brief Add a FiniteElementDescriptor to elementary matrix
      * @param FiniteElementDescriptorPtr FiniteElementDescriptor
      */
-    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &curFED ) {
-        const auto name = trim( curFED->getName() );
+    bool addFiniteElementDescriptor( const FiniteElementDescriptorPtr &modelFED ) {
+        const auto name = trim( modelFED->getName() );
         if ( _FEDNames.find( name ) == _FEDNames.end() ) {
             _FEDVector.push_back( _model->getFiniteElementDescriptor() );
             _FEDNames.insert( name );
@@ -97,68 +99,70 @@ class BaseElementaryMatrix : public DataStructure {
      */
     std::vector< FiniteElementDescriptorPtr > getFiniteElementDescriptors() { return _FEDVector; };
 
-    /**
-     * @brief Get the MaterialField
-     */
+    /** @brief Get the field of material parameters */
     MaterialFieldPtr getMaterialField() const {
         if ( _materialField == nullptr )
             throw std::runtime_error( "MaterialField is not set" );
         return _materialField;
     };
 
-    /**
-     * @brief Obtenir le modèle de l'étude
-     */
+    /** @brief Get the model */
     ModelPtr getModel() const { return _model; };
 
-    /**
-     * @brief Obtenir le maillage de l'étude
-     */
+    /** @brief Get the mesh */
     BaseMeshPtr getMesh( void ) const;
 
     /**
-     * @brief Methode permettant de savoir si les matrices elementaires sont vides
-     * @return true si les matrices elementaires sont vides
+     * @brief Detect state of datastructure
+     * @return true if empty datastructure
      */
     bool isEmpty() { return _isEmpty; };
 
     /**
-     * @brief Methode permettant de changer l'état de remplissage
-     * @param bEmpty booleen permettant de dire que l'objet est vide ou pas
+     * @brief Set state of datastructure
+     * @param bEmpty flag for state of datastructure
      */
     void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
 
     /**
-     * @brief Set the MaterialField
-     * @param currentMater MaterialField
+     * @brief Set the field of material parameters
+     * @param currMaterialField pointer to material field
      */
-    void setMaterialField( const MaterialFieldPtr &currentMater ) {
-        _materialField = currentMater;
+    void setMaterialField( const MaterialFieldPtr &currMaterialField ) {
+        _materialField = currMaterialField;
     };
 
     /**
-     * @brief Methode permettant de definir le modele
-     * @param currentModel Modele de la numerotation
+     * @brief Set elementary characteristics
+     * @param currElemChara pointer to elementary characteristics
      */
-    void setModel( const ModelPtr &currentModel ) {
-        _model = currentModel;
-        auto curFED = _model->getFiniteElementDescriptor();
-        const auto name = trim( curFED->getName() );
+    void setElementaryCharacteristics( const ElementaryCharacteristicsPtr &currElemChara ) {
+        _elemChara = currElemChara;
+    };
+
+    /**
+     * @brief Set the model
+     * @param currModel pointer to model
+     */
+    void setModel( const ModelPtr &currModel ) {
+        _model = currModel;
+        auto modelFED = _model->getFiniteElementDescriptor();
+        const auto name = trim( modelFED->getName() );
         if ( _FEDNames.find( name ) == _FEDNames.end() ) {
-            _FEDVector.push_back( _model->getFiniteElementDescriptor() );
+            _FEDVector.push_back( modelFED );
             _FEDNames.insert( name );
         }
     };
 };
 
+/** @typedef BaseElementaryMatrixPtr */
 typedef boost::shared_ptr< BaseElementaryMatrix > BaseElementaryMatrixPtr;
 
 /**
  * @class ElementaryMatrix
- * @brief Class definissant une sd_matr_elem template
- * @author Nicolas Sellenet
+ * @brief Class for sd_matr_elem template
  */
-template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
+template < typename ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class ElementaryMatrix : public BaseElementaryMatrix {
   private:
     /** @brief Vectors of RESUELEM */
@@ -166,28 +170,21 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     std::vector< ElementaryTermComplexPtr > _complexVector;
 
   public:
-    /**
-     * @typedef ElementaryMatrixPtr
-     * @brief Pointeur intelligent vers un ElementaryMatrix
-     */
+    /** @typedef ElementaryMatrixPtr */
     typedef boost::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > >
         ElementaryMatrixPtr;
 
-    /**
-     * @brief Constructor with a name
-     */
+    /** @brief Constructor with a name */
     ElementaryMatrix( const std::string name )
         : BaseElementaryMatrix(
               name, "MATR_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                        ( typeid( ValueType ) == typeid( double ) ? "_R" : "_C" ) ){};
+                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ){};
 
-    /**
-     * @brief Constructor
-     */
+    /** @brief Constructor with automatic name */
     ElementaryMatrix() : ElementaryMatrix( ResultNaming::getNewResultName() ){};
 
     /**
-     * @brief function to update ElementaryTerm
+     * @brief Function to update ElementaryTerm
      */
     bool build() {
         if ( _listOfElementaryTerms->exists() ) {
@@ -208,26 +205,25 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     };
 };
 
-/** @typedef Definition d'une matrice élémentaire de double */
+/** @typedef Elementary matrix for displacement-double */
 template class ElementaryMatrix< ASTERDOUBLE, Displacement >;
 typedef ElementaryMatrix< ASTERDOUBLE, Displacement > ElementaryMatrixDisplacementReal;
+typedef boost::shared_ptr< ElementaryMatrixDisplacementReal > ElementaryMatrixDisplacementRealPtr;
 
-/** @typedef Definition d'une matrice élémentaire de complexe */
+/** @typedef Elementary matrix for displacement-complex */
 template class ElementaryMatrix< ASTERCOMPLEX, Displacement >;
 typedef ElementaryMatrix< ASTERCOMPLEX, Displacement > ElementaryMatrixDisplacementComplex;
-
-/** @typedef Definition d'une matrice élémentaire de double temperature */
-template class ElementaryMatrix< ASTERDOUBLE, Temperature >;
-typedef ElementaryMatrix< ASTERDOUBLE, Temperature > ElementaryMatrixTemperatureReal;
-
-/** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */
-template class ElementaryMatrix< ASTERCOMPLEX, Pressure >;
-typedef ElementaryMatrix< ASTERCOMPLEX, Pressure > ElementaryMatrixPressureComplex;
-
-typedef boost::shared_ptr< ElementaryMatrixDisplacementReal > ElementaryMatrixDisplacementRealPtr;
 typedef boost::shared_ptr< ElementaryMatrixDisplacementComplex >
     ElementaryMatrixDisplacementComplexPtr;
+
+/** @typedef Elementary matrix for temperature-double */
+template class ElementaryMatrix< ASTERDOUBLE, Temperature >;
+typedef ElementaryMatrix< ASTERDOUBLE, Temperature > ElementaryMatrixTemperatureReal;
 typedef boost::shared_ptr< ElementaryMatrixTemperatureReal > ElementaryMatrixTemperatureRealPtr;
+
+/** @typedef Elementary matrix for pressure-complex */
+template class ElementaryMatrix< ASTERCOMPLEX, Pressure >;
+typedef ElementaryMatrix< ASTERCOMPLEX, Pressure > ElementaryMatrixPressureComplex;
 typedef boost::shared_ptr< ElementaryMatrixPressureComplex > ElementaryMatrixPressureComplexPtr;
 
 #endif /* ELEMENTARYMATRIX_H_ */

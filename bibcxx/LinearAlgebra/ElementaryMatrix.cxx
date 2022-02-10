@@ -3,7 +3,7 @@
  * @brief Implementation de ElementaryMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,10 +23,8 @@
 
 #include "LinearAlgebra/ElementaryMatrix.h"
 
-
-BaseMeshPtr BaseElementaryMatrix::getMesh( void ) const
-{
-    if( _model )
+BaseMeshPtr BaseElementaryMatrix::getMesh( void ) const {
+    if ( _model )
         return _model->getMesh();
 
     return nullptr;
