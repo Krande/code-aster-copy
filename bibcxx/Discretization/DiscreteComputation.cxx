@@ -34,6 +34,7 @@
 #include "Materials/MaterialField.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
+#include "Modeling/XfemModel.h"
 #include "Utilities/Tools.h"
 
 FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTime ) {
@@ -315,9 +316,10 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     }
     _calcul->addFourierModeField( nh );
     _calcul->addTimeField( time );
-    // if ( currModel->existsXfem() ) {
-    //    _calcul->addXFEMField( currModel );
-    //}
+    if ( currModel->existsXfem() ) {
+        XfemModelPtr currXfemModel = currModel->getXfemModel();
+        _calcul->addXFEMField( currXfemModel );
+    }
 
     // Add output elementary terms
     ElementaryTermRealPtr resuElemSyme =

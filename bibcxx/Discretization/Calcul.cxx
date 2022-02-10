@@ -115,6 +115,22 @@ void Calcul::addTimeField( const ASTERDOUBLE time ) {
     addInputField( "PTEMPSR", _timeField );
 }
 
+/** @brief Create and add input fields for XFEM */
+void Calcul::addXFEMField( const XfemModelPtr &xfemModel ) {
+    addInputField( "PPINTTO", xfemModel->getField( "PINTTO" ) );
+    addInputField( "PCNSETO", xfemModel->getField( "CNSETO" ) );
+    addInputField( "PHEAVTO", xfemModel->getField( "HEAVTO" ) );
+    addInputField( "PLONCHA", xfemModel->getField( "LONCHA" ) );
+    addInputField( "PBASLOR", xfemModel->getField( "BASLOC" ) );
+    addInputField( "PLSN", xfemModel->getField( "LSN" ) );
+    addInputField( "PLST", xfemModel->getField( "LST" ) );
+    addInputField( "PSTANO", xfemModel->getField( "STANO" ) );
+    addInputField( "PPMILTO", xfemModel->getField( "PMILT" ) );
+    addInputField( "PFISNO", xfemModel->getField( "FISSNO" ) );
+    addInputField( "PHEA_NO", xfemModel->getField( "HEAVNO" ) );
+    addInputField( "PHEA_FA", xfemModel->getField( "HEAVFA" ) );
+}
+
 /** @brief Compute option */
 void Calcul::compute() {
 

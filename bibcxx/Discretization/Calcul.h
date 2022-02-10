@@ -31,6 +31,7 @@
 #include "MemoryManager/JeveuxObject.h"
 #include "Modeling/FiniteElementDescriptor.h"
 #include "Modeling/Model.h"
+#include "Modeling/XfemModel.h"
 
 /**
  * @class Calcul
@@ -148,6 +149,9 @@ class Calcul {
 
     /** @brief Create and add input field for current time */
     void addTimeField( const ASTERDOUBLE time );
+
+    /** @brief Create and add input fields for XFEM */
+    void addXFEMField( const XfemModelPtr &xfemModel );
 };
 
 /**  @typedef CalculPtr */
