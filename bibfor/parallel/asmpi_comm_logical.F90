@@ -18,13 +18,13 @@
 
 subroutine asmpi_comm_logical(op, svl)
 !
-implicit none
+   implicit none
 #include "asterf_types.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 !
-    aster_logical, intent(inout) :: svl
-    character(len=*), intent(in) :: op
+   aster_logical, intent(inout) :: svl
+   character(len=*), intent(in) :: op
 !
 !
 !
@@ -39,37 +39,37 @@ implicit none
 !
 #ifdef ASTER_HAVE_MPI
 !
-    integer(kind=4) :: i
+   integer(kind=4) :: i
 !
-    if(svl) then
-        i = 1
-    else
-        i = 0
-    end if
+   if (svl) then
+      i = 1
+   else
+      i = 0
+   end if
 !
-    if( op == "MPI_LAND" ) then
-        call asmpi_comm_vect('MPI_MIN', 'I', sci4=i)
-        if(i == 0) then
-            svl = ASTER_FALSE
-        else
-            svl = ASTER_TRUE
-        end if
-    elseif( op == "MPI_LOR" ) then
-        call asmpi_comm_vect('MPI_MAX', 'I', sci4=i)
-        if(i == 0) then
-            svl = ASTER_FALSE
-        else
-            svl = ASTER_TRUE
-        end if
-    else
-        ASSERT(ASTER_FALSE)
-    end if
+   if (op == "MPI_LAND") then
+      call asmpi_comm_vect('MPI_MIN', 'S', sci4=i)
+      if (i == 0) then
+         svl = ASTER_FALSE
+      else
+         svl = ASTER_TRUE
+      end if
+   elseif (op == "MPI_LOR") then
+      call asmpi_comm_vect('MPI_MAX', 'S', sci4=i)
+      if (i == 0) then
+         svl = ASTER_FALSE
+      else
+         svl = ASTER_TRUE
+      end if
+   else
+      ASSERT(ASTER_FALSE)
+   end if
 #else
-    aster_logical :: tmp
-    character(len=8) :: kbid
+   aster_logical :: tmp
+   character(len=8) :: kbid
 
-    tmp = svl
-    kbid = op
+   tmp = svl
+   kbid = op
 #endif
 !
 end subroutine
