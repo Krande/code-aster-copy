@@ -35,6 +35,7 @@
 #include "Meshes/Skeleton.h"
 #include "Modeling/ElementaryModeling.h"
 #include "Modeling/FiniteElementDescriptor.h"
+#include "Modeling/XfemModel.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
 
@@ -70,9 +71,6 @@ extern const char *const GraphPartitionerNames[nbGraphPartitioner];
  */
 class Model : public DataStructure, public ListOfTables {
   public:
-    /**
-     * @brief Forward declaration for the XFEM enrichment
-     */
     typedef boost::shared_ptr< Model > ModelPtr;
 
   protected:
@@ -98,8 +96,11 @@ class Model : public DataStructure, public ListOfTables {
     listOfModsAndGrps _modelisations;
     /** @brief Maillage sur lequel repose la modelisation */
     BaseMeshPtr _baseMesh;
-    /** @brief Maillage sur lequel repose la modelisation */
+    /** @brief Model without XFEM */
     ModelPtr _saneModel;
+    /** @brief Model with XFEM */
+    XfemModelPtr _xfemModel;
+
 /**
  * @brief Maillage sur lequel repose la modelisation
  * @todo a supprimer en templatisant Model etc.
@@ -141,7 +142,8 @@ class Model : public DataStructure, public ListOfTables {
           _splitMethod( SubDomain ),
           _graphPartitioner( MetisPartitioner ),
           _ligrel(
-              boost::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ) {
+              boost::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ),
+          _xfemModel( nullptr ) {
         if ( _baseMesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
 #ifdef ASTER_HAVE_MPI
@@ -252,6 +254,11 @@ class Model : public DataStructure, public ListOfTables {
     ModelPtr getSaneModel() const { return _saneModel; };
 
     /**
+     * @brief Get the Xfem model
+     */
+    XfemModelPtr getXfemModel() const { return _xfemModel; };
+
+    /**
      * @brief Obtention de la methode de partition
      */
     ModelSplitingMethod getSplittingMethod() const { return _splitMethod; };
@@ -274,6 +281,11 @@ class Model : public DataStructure, public ListOfTables {
      * @brief Set the sane base model
      */
     void setSaneModel( ModelPtr saneModel ) { _saneModel = saneModel; };
+
+    /**
+     * @brief Set XFEM model
+     */
+    void setXfemModel();
 
     /**
      * @brief Definition de la methode de partition

@@ -207,6 +207,11 @@ void Model::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::string 
         ElementaryModeling( phys, mod ), MeshEntityPtr( new GroupOfNodes( nameOfGroup ) ) ) );
 };
 
+void Model::setXfemModel() {
+    const std::string modelName = getName();
+    _xfemModel = boost::make_shared< XfemModel >( modelName );
+};
+
 #ifdef ASTER_HAVE_MPI
 bool Model::setFrom( const ModelPtr model ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"
@@ -259,5 +264,4 @@ bool Model::setFrom( const ModelPtr model ) {
 
     return true;
 };
-
 #endif
