@@ -34,10 +34,10 @@ implicit none
 !
     character(len=16) :: option, nomte
 !
+    integer, parameter :: sdim = 3
     integer, parameter :: ncmp_el = 4
     integer, parameter :: ncmp_th = 2
-    integer, parameter :: ncmptot = ncmp_el + ncmp_th
-    integer, parameter :: sdim = 3
+    integer, parameter :: ncmptot = sdim + ncmp_el + ncmp_th
 
     integer :: igeom, i, j, nbpar, ipar
     integer :: ndim, npg1, kpg, spt, iret
@@ -144,12 +144,16 @@ implicit none
             xyzgau(i) = xyzgau0(indir(i))
         enddo
 
+        do i = 1, sdim
+           zr(ival-1+(kpg-1)*ncmptot+i) = xyzgau0(i)
+        enddo
+
         call rcvalb(fami, kpg, spt, poum, mater,&
                     ' ', phenom_el, nbpar, nompar, xyzgau,&
                     ncmp_el, nomres_el, valres_el, icodre_el, 0, 'NON')
 
         do i = 1, ncmp_el
-           zr(ival-1+(kpg-1)*ncmptot+i) = valres_el(i)
+           zr(ival-1+(kpg-1)*ncmptot+sdim+i) = valres_el(i)
         enddo
 
         call rcvalb(fami, kpg, spt, poum, mater,&
@@ -157,7 +161,7 @@ implicit none
                     ncmp_th, nomres_th, valres_th, icodre_th, 0, 'NON')
 
         do i = 1, ncmp_th
-           zr(ival-1+(kpg-1)*ncmptot+ncmp_el+i) = valres_th(i)
+           zr(ival-1+(kpg-1)*ncmptot+sdim+ncmp_el+i) = valres_th(i)
         enddo
 
     enddo

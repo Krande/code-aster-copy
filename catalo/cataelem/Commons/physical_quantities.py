@@ -2053,6 +2053,9 @@ MASS_R   = PhysicalQuantity(type='R',
 
 MATE_R   = PhysicalQuantity(type='R',
     components=(
+       'X',
+       'Y',
+       'Z',
        'E',
        'NU',
        'RHO',
@@ -2061,6 +2064,9 @@ MATE_R   = PhysicalQuantity(type='R',
        'RHO_CP',
     ),
     comment="""  MATE_R Type:R Paramètres matériaux
+       X      : Coordonné X Gauss
+       Y      : Coordonné Y Gauss
+       Z      : Coordonné Z Gauss
        E      : Module de Young
        NU     : Coefficient de Poisson
        RHO    : Masse volumique
