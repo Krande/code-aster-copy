@@ -50,7 +50,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,
 
          reuse=SIMP(statut='c', typ=CO),
 
-         OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2","KUCV","CONV_CHAR","CONV_RESU"),
+         OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2","KUCV","CONV_CHAR","CONV_RESU"),
                          fr=tr("choix de la fonction a activer"),),
 
          TYPE_RESU    =SIMP(statut='o',typ='TXM',
@@ -63,8 +63,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,
                                     "EVOL_THER","EVOL_VARC","EVOL_CHAR"
                                   # pour bloc ASSE
                                   # "EVOL_THER "
-                                  # pour bloc ECLA_PG
-                                  # "EVOL_ELAS","EVOL_NOLI","EVOL_THER"
                                   # pour bloc PERM_CHAM
                                   # "EVOL_NOLI"
                                   # pour bloc PROL_RTZ
@@ -228,32 +226,6 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,
              TRANSLATION    =SIMP(statut='f',typ='R',defaut= 0. ),
            ),
          ),
-
-
-         b_ecla_pg    =BLOC(condition = """equal_to("OPERATION", 'ECLA_PG')""",
-
-           ECLA_PG         =FACT(statut='o',
-             regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO('ELGA'),),
-             MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster),
-             TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             MAILLE          =SIMP(statut='c',typ=ma  ,validators=NoRepeat(),max='**'),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster),
-             MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
-             TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-             NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
-             LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
-             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-             LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
-             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
-             b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-             b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-                 PRECISION       =SIMP(statut='o',typ='R',),),
-           ),
-         ),
-
 
          b_perm_cham =BLOC(condition = """equal_to("OPERATION", 'PERM_CHAM')""",
 

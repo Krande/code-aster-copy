@@ -226,14 +226,6 @@ Erreur Utilisateur :
  On ne trouve aucun point de Gauss
 """),
 
-    37: _("""
- le type de RESU_INIT est différent de celui du résultat.
-"""),
-
-    38: _("""
- la liste de numéros d'ordre est vide.
-"""),
-
     39: _("""
  les seuls champs autorisés pour ECLA_PG sont les champs réels.
 """),
@@ -324,10 +316,6 @@ Conseil :
   Lorsque l'on utilise le mot clé PILOTAGE, les variables de commande ne doivent
   pas dépendre du temps.
   Il faut utiliser le mot clé AFFE_VARC / CHAM_GD
-"""),
-
-    59: _("""
-  La fonctionnalité ECLA_PG de CREA_RESU n'est pas disponible en parallèle.
 """),
 
 
