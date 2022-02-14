@@ -29,6 +29,7 @@
 #include "DataFields/ElementaryTerm.h"
 #include "DataStructures/DataStructure.h"
 #include "Discretization/ElementaryCharacteristics.h"
+#include "Discretization/ElementaryCompute.h"
 #include "Loads/MechanicalLoad.h"
 #include "Loads/PhysicalQuantity.h"
 #include "Materials/MaterialField.h"
@@ -43,9 +44,8 @@
  */
 class BaseElementaryMatrix : public DataStructure {
   protected:
-    /** @brief Objects for computation of elementary terms */
-    JeveuxVectorChar24 _description;
-    JeveuxVectorChar24 _listOfElementaryTerms;
+    /** @brief Option to compute */
+    std::string _option;
 
     /** @brief Flag for empty datastructure */
     bool _isEmpty;
@@ -63,22 +63,30 @@ class BaseElementaryMatrix : public DataStructure {
     std::vector< FiniteElementDescriptorPtr > _FEDVector;
     std::set< std::string > _FEDNames;
 
+    /** @brief Elementary compute */
+    ElementaryComputePtr _elemComp;
+
+    /**
+     * @brief Set the option
+     * @param currOption option
+     */
+    void setOption( const std::string option ) { _option = option; };
+
   public:
     /** @brief Constructor with a name */
     BaseElementaryMatrix( const std::string name, const std::string type = "MATR_ELEM" )
         : DataStructure( name, 19, type ),
-          _description( JeveuxVectorChar24( getName() + ".RERR" ) ),
-          _listOfElementaryTerms( JeveuxVectorChar24( getName() + ".RELR" ) ),
           _isEmpty( true ),
           _model( nullptr ),
           _materialField( nullptr ),
-          _elemChara( nullptr ){};
+          _elemChara( nullptr ),
+          _elemComp( nullptr ),
+          _option( " " ){};
 
     /** @brief Constructor with automatic name */
     BaseElementaryMatrix( const std::string type = "MATR_ELEM" )
         : BaseElementaryMatrix( ResultNaming::getNewResultName(), type ){};
 
-  public:
     /**
      * @brief Add a FiniteElementDescriptor to elementary matrix
      * @param FiniteElementDescriptorPtr FiniteElementDescriptor
@@ -111,6 +119,9 @@ class BaseElementaryMatrix : public DataStructure {
 
     /** @brief Get the mesh */
     BaseMeshPtr getMesh( void ) const;
+
+    /** @brief Get option */
+    std::string getOption() const { return _option; };
 
     /**
      * @brief Detect state of datastructure
@@ -153,6 +164,26 @@ class BaseElementaryMatrix : public DataStructure {
             _FEDNames.insert( name );
         }
     };
+
+    /** @brief  Prepare compute */
+    void prepareCompute( const std::string option ) {
+        setOption( option );
+        _elemComp = boost::make_shared< ElementaryCompute >( this->getName(), _option );
+        if ( _option != "WRAP_FORTRAN" ) {
+            _elemComp->createDescriptor( _model, _materialField, _elemChara );
+            _elemComp->createListOfElementaryTerms();
+        }
+    };
+
+    /** @brief Genearate names of elementary terms */
+    std::string generateNameOfElementaryTerm() const {
+        std::string elemTermName( " " );
+        std::ostringstream numString;
+        numString << std::setw( 7 ) << std::setfill( '0' ) << _elemComp->getIndexName();
+        _elemComp->nextIndexName();
+        elemTermName = this->getName().substr( 0, 8 ) + "." + numString.str();
+        return elemTermName;
+    }
 };
 
 /** @typedef BaseElementaryMatrixPtr */
@@ -166,8 +197,7 @@ template < typename ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class ElementaryMatrix : public BaseElementaryMatrix {
   private:
     /** @brief Vectors of RESUELEM */
-    std::vector< ElementaryTermRealPtr > _realVector;
-    std::vector< ElementaryTermComplexPtr > _complexVector;
+    std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > _elemTerm;
 
   public:
     /** @typedef ElementaryMatrixPtr */
@@ -178,7 +208,9 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     ElementaryMatrix( const std::string name )
         : BaseElementaryMatrix(
               name, "MATR_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ){};
+                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ) {
+        _elemTerm.clear();
+    };
 
     /** @brief Constructor with automatic name */
     ElementaryMatrix() : ElementaryMatrix( ResultNaming::getNewResultName() ){};
@@ -187,22 +219,30 @@ class ElementaryMatrix : public BaseElementaryMatrix {
      * @brief Function to update ElementaryTerm
      */
     bool build() {
-        if ( _listOfElementaryTerms->exists() ) {
-            CALL_JEMARQ();
-            _listOfElementaryTerms->updateValuePointer();
-            _realVector.clear();
-            for ( ASTERINTEGER pos = 0; pos < _listOfElementaryTerms->size(); ++pos ) {
-                const std::string name = ( *_listOfElementaryTerms )[pos].toString();
+        _elemComp = boost::make_shared< ElementaryCompute >( this->getName() );
+        if ( _elemComp->hasElementaryTerm() ) {
+            std::vector< JeveuxChar24 > elemTermNames = _elemComp->getNameOfElementaryTerms();
+            for ( int pos = 0; pos < elemTermNames.size(); ++pos ) {
+                const std::string name = elemTermNames[pos].toString();
                 if ( trim( name ) != "" ) {
-                    ElementaryTermRealPtr toPush(
-                        boost::make_shared< ElementaryTerm< ASTERDOUBLE > >( name ) );
-                    _realVector.push_back( toPush );
+                    boost::shared_ptr< ElementaryTerm< ValueType > > toPush(
+                        new ElementaryTerm< ValueType >( name ) );
+                    _elemTerm.push_back( toPush );
                 }
             }
-            CALL_JEDEMA();
         }
         return true;
     };
+
+    /**
+     * @brief Add elementary term
+     */
+    void addElementaryTerm( const boost::shared_ptr< ElementaryTerm< ValueType > > &elemTerm ) {
+        _elemComp->addElementaryTerm( elemTerm->getName() );
+        _elemTerm.push_back( elemTerm );
+    };
+
+    friend class DiscreteComputation;
 };
 
 /** @typedef Elementary matrix for displacement-double */

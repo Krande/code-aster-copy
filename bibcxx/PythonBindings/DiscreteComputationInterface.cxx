@@ -115,14 +115,21 @@ void exportDiscreteComputationToPython() {
         .def( "elasticStiffnessMatrix",
               &DiscreteComputation::elasticStiffnessMatrix,
               computeElasticStiffnessMatrix_overloads() )
-        .def( "computeElementaryTangentMatrix",
-                              &DiscreteComputation::computeElementaryTangentMatrix )
-        .def( "computeElementaryJacobianMatrix",
-              &DiscreteComputation::computeElementaryJacobianMatrix )
         .def( "computeMechanicalDampingMatrix",
-              &DiscreteComputation::computeMechanicalDampingMatrix )
+            &DiscreteComputation::computeMechanicalDampingMatrix )
         .def( "computeMechanicalStiffnessMatrix",
-              &DiscreteComputation::computeMechanicalStiffnessMatrix )
-        .def( "computeMechanicalMassMatrix", &DiscreteComputation::computeMechanicalMassMatrix )
-        .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem );
+            &DiscreteComputation::computeMechanicalStiffnessMatrix )
+        .def( "getPhysicalProblem",
+            &DiscreteComputation::getPhysicalProblem )
+        .def( "computeMechanicalDualBCMatrix",
+            &DiscreteComputation::computeMechanicalDualBCMatrix,
+            R"(
+      Return elementary matrices for dual BC
+
+      Arguments:
+            None
+
+      Returns:
+            ElementaryMatrix: elementary matrices
+        )");
 };

@@ -24,158 +24,136 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "astercxx.h"
 
 #include "Behaviours/BehaviourProperty.h"
+#include "Discretization/Calcul.h"
 #include "LinearAlgebra/ElementaryMatrix.h"
 #include "LinearAlgebra/ElementaryVector.h"
 #include "Numbering/DOFNumbering.h"
 #include "Studies/PhysicalProblem.h"
-#include <vector>
 
 /**
  * @class DiscreteComputation
- * @brief Cette classe permet de definir une étude au sens Aster
- * @author Nicolas Sellenet
+ * @brief Compute discrete operators (vectors and matrices)
  */
 class DiscreteComputation {
   private:
-    /** @brief Etude definie par l'utilisateur */
+    /** @brief Physical problem */
     PhysicalProblemPtr _study;
 
-    /**
-     * @brief Production d'un CommandSyntax pour CALC_MATR_ELEM
-     */
-    SyntaxMapContainer computeMatrixSyntax( const std::string &optionName );
+    /** @brief Create CommandSyntax (for CALC_MATR_ELEM) */
+    SyntaxMapContainer computeMatrixSyntax( const std::string &option );
 
-    /**
-     * @brief Calcul des matrices elementaires pour une option quelconque
-     */
-    ElementaryMatrixDisplacementRealPtr computeMechanicalMatrix( const std::string &optionName );
+    /** @brief Compute B elementary matrices fo dualized boundary conditions */
+    void baseComputeMechanicalDualBCMatrix( CalculPtr &calcul,
+                                            ElementaryMatrixDisplacementRealPtr &elemMatr );
 
   public:
-    /**
-     * @typedef DiscreteComputationPtr
-     * @brief Pointeur intelligent vers un DiscreteComputation
-     */
+    /** @typedef DiscreteComputationPtr */
     typedef boost::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
 
+    /** @brief Default constructor disabled */
     DiscreteComputation( void ) = delete;
 
     /**
-     * @brief Constructeur
-     * @param PhysicalProblemPtr Etude utilisateur
+     * @brief Constructor
+     * @param PhysicalProblemPtr study
      */
-    DiscreteComputation( const PhysicalProblemPtr &currentStudy ) : _study( currentStudy ){};
+    DiscreteComputation( const PhysicalProblemPtr &currStudy ) : _study( currStudy ){};
 
-    /**
-     * @brief Desctructeur
-     */
+    /** @brief Destructor */
     ~DiscreteComputation(){};
 
     /**
-     * @brief Fonction permettant de calculer les vecteurs des
-              chargements de Dirichlet B*U_imp
-     * @param time Instant de calcul
-     * @return Vecteur assemblé de chargement
+     * @brief Compute Dirichlet imposed displacement U_impo
+     * @param time Time
+     * @return Nodal field for imposed displacement
      */
-    FieldOnNodesRealPtr imposedDisplacement( ASTERDOUBLE time = 0. );
+    FieldOnNodesRealPtr imposedDisplacement( ASTERDOUBLE currTime = 0. );
 
     /**
-     * @brief Fonction permettant de calculer le vecteur pour les
-              réactions de Dirichlet B^T * \lambda
-     * @param time Instant de calcul
-     * @return Vecteur de réaction assemblé
+     * @brief Compute Dirichlet reaction vector B^T * \lambda
+     * @param time Time
+     * @return Nodal field for Dirichlet reaction vector
      */
     FieldOnNodesRealPtr dualReaction( FieldOnNodesRealPtr lagr_curr );
 
     /**
-     * @brief Fonction permettant de calculer le vecteur pour les
-              déplacements de Dirichlet B * U
-     * @param time Instant de calcul
-     * @return Vecteur de déplacements de Dirichlet assemblé
+     * @brief Compute Dirichlet imposed dualized displacement B * U
+     * @param time Time
+     * @return Nodal field for dualized displacement
      */
     FieldOnNodesRealPtr dualDisplacement( FieldOnNodesRealPtr disp_curr,
                                           ASTERDOUBLE scaling = 1.0 );
 
     /**
-     * @brief Fonction permettant de calculer les vecteurs  pour les
-              chargements de Neumann
-     * @param time Instants de calcul (vecteur de longueur 3 : instant courant, deltat, paramètre
-     theta
-     * @return Vecteur des chargement de Neumann assemblé
+     * @brief Compute Neumann loads
+     * @param TimeParameters Parameters for time
+     * @return Nodal field for Neumann loads
      */
-    FieldOnNodesRealPtr neumann( const VectorReal time );
+    FieldOnNodesRealPtr neumann( const VectorReal timeParameters );
 
     /**
-     * @brief Fonction permettant de calculer les vecteurs  pour les
-              chargements de Neumann
-     * @param time Instants de calcul (vecteur de longueur 3 : instant courant, deltat, paramètre
-     theta
-     * @return Vecteur des chargement de Neumann assemblé
+     * @brief Compute nodal field for external state variables
+     * @param time Time
+     * @return Nodal field for external state variables
      */
     FieldOnNodesRealPtr externalStateVariables( const ASTERDOUBLE &time );
 
     /**
-     * @brief Fonction permettant de calculer les matrices élémentaires de rigidité
-     * @param time Instant de calcul
-     * @return Vecteur élémentaire contenant la rigidité mécanique
+     * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
+     * @param time Time
+     * @return Elementary matrices for mechanical stiffness (RIGI_MECA)
      */
     ElementaryMatrixDisplacementRealPtr elasticStiffnessMatrix( ASTERDOUBLE time = 0. );
 
     /**
-     * @brief Fonction permettant de calculer les matrices élémentaires pour la matrice tangente
-     * utilisée pour l'étape de prédiction de la méthode de Newton
-     * @param time Instant de calcul
-     * @return Matrice élémentaire contenant la rigidité mécanique
-     */
-    ElementaryMatrixDisplacementRealPtr computeElementaryTangentMatrix( ASTERDOUBLE time = 0. );
-
-    ElementaryMatrixDisplacementRealPtr computeElementaryJacobianMatrix( ASTERDOUBLE time = 0. );
-
-    /**
-     * @brief Construction d'un vecteur de chargement cinématique
-     * @return Booleen indiquant que tout s'est bien passe
+     * @brief Compute nodal field for kinematic boundary condition
+     * @param time Time
+     * @return Nodal field for kinematic boundary condition
      */
     FieldOnNodesRealPtr dirichletBC( const ASTERDOUBLE &time ) const;
 
     /**
-     * @brief Construction d'un vecteur de chargement cinématique
-     * @return Booleen indiquant que tout s'est bien passe
+     * @brief Compute nodal field for incremental kinematic boundary condition
+     * @param time Time
+     * @param disp_curr Current displacement
+     * @return Nodal field for incremental kinematic boundary condition
      */
     FieldOnNodesRealPtr incrementalDirichletBC( const ASTERDOUBLE &time,
                                                 const FieldOnNodesRealPtr disp_curr ) const;
 
     /**
-     * @brief Calcul des matrices elementaires pour l'option AMOR_MECA
+     * @brief Compute elementary matrices for mechanical damping (AMOR_MECA)
+     * @param rigiMatrElem Elementary matrices for rigidity (RIGI_MECA)
+     * @param massMatrElem Elementary matrices for mass (MASS_MECA)
+     * @return Elementary matrices for mechanical damping (AMOR_MECA)
      */
     ElementaryMatrixDisplacementRealPtr
-    computeMechanicalDampingMatrix( const ElementaryMatrixDisplacementRealPtr &rigidity,
-                                    const ElementaryMatrixDisplacementRealPtr &mass );
+    computeMechanicalDampingMatrix( const ElementaryMatrixDisplacementRealPtr &rigiMatrElem,
+                                    const ElementaryMatrixDisplacementRealPtr &massMatrElem );
 
     /**
-     * @brief Calcul des matrices elementaires pour l'option RIGI_MECA
+     * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
+     * @return Elementary matrices for mechanical stiffness (RIGI_MECA)
      */
     ElementaryMatrixDisplacementRealPtr computeMechanicalStiffnessMatrix();
 
     /**
-     * @brief Calcul des matrices elementaires pour l'option MASS_MECA
+     * @brief Compute B elementary matrices for dualized boundary conditions
+     * @return Elementary matrices for dualized boundary conditions
      */
-    ElementaryMatrixDisplacementRealPtr computeMechanicalMassMatrix();
+    ElementaryMatrixDisplacementRealPtr computeMechanicalDualBCMatrix();
 
     /**
-     * @brief Récupération de l'étude
-     * @return Numérotation du problème discret
+     * @brief Get physical problem
+     * @return Physical problem
      */
     PhysicalProblemPtr getPhysicalProblem() const { return _study; };
 };
 
-/**
- * @typedef DiscreteComputationPtr
- * @brief Pointeur intelligent vers un DiscreteComputation
- */
+/** @typedef DiscreteComputationPtr */
 typedef boost::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
 
 #endif /* DISCRETEPROBLEM_H_ */

@@ -69,17 +69,6 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
     // Elementary vector names
     std::string vectElemName = getName();
 
-    // Link between vector and load function
-    if ( !_corichRept->exists() ) {
-        _relr->updateValuePointer();
-        auto size = _relr->size();
-        for ( ASTERINTEGER i = 1; i <= size; ++i ) {
-            std::string vectElem( ( *_relr )[i - 1].toString() );
-            vectElem.resize( 24, ' ' );
-            CALLO_CORICHWRITE( vectElem, &i );
-        }
-    }
-
     // Pre-assembling
     std::string typres( "R" );
     std::string name( " " );
@@ -106,22 +95,6 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
     CALLO_ASCOVA( detr, name, fomult, param, &time, typres, field->getName(), base );
 
     return field;
-};
-
-bool BaseElementaryVector::build() {
-    _relr->updateValuePointer();
-    _realVector.clear();
-    auto size = _relr->size();
-    _realVector.reserve( size );
-    for ( int pos = 0; pos < size; ++pos ) {
-        const std::string name = ( *_relr )[pos].toString();
-        if ( trim( name ) != "" ) {
-            ElementaryTermRealPtr toPush =
-                boost::make_shared< ElementaryTerm< ASTERDOUBLE > >( name );
-            _realVector.push_back( toPush );
-        }
-    }
-    return true;
 };
 
 FieldOnNodesRealPtr BaseElementaryVector::assembleWithMask( const BaseDOFNumberingPtr &dofNume,
