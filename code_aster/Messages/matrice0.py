@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -63,6 +63,8 @@ cata_msg = {
     11: _("""
  Pour calculer AMOR_MECA, il faut avoir calculé RIGI_MECA et MASS_MECA auparavant (dans le même appel).
 """),
+
+    12: _(""" Pour calculer AMOR_MECA, il faut donner MASS_MECA."""),
 
     13: _("""
 La numérotation généralisée retenue pour la construction des
