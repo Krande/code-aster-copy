@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedDOFNumbering
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,7 +70,7 @@ class GeneralizedDOFNumbering : public DataStructure {
      * @typedef GeneralizedDOFNumberingPtr
      * @brief Pointeur intelligent vers un GeneralizedDOFNumbering
      */
-    typedef boost::shared_ptr< GeneralizedDOFNumbering > GeneralizedDOFNumberingPtr;
+    typedef std::shared_ptr< GeneralizedDOFNumbering > GeneralizedDOFNumberingPtr;
 
     /**
      * @brief Constructeur
@@ -160,6 +160,6 @@ class GeneralizedDOFNumbering : public DataStructure {
  * @typedef GeneralizedDOFNumberingPtr
  * @brief Pointeur intelligent vers un GeneralizedDOFNumbering
  */
-typedef boost::shared_ptr< GeneralizedDOFNumbering > GeneralizedDOFNumberingPtr;
+typedef std::shared_ptr< GeneralizedDOFNumbering > GeneralizedDOFNumberingPtr;
 
 #endif /* GENERALIZEDDOFNUMBERING_H_ */

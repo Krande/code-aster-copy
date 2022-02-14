@@ -3,7 +3,7 @@
  * @brief Interface python de FullHarmonicAcousticResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,20 +22,13 @@
  */
 
 #include "PythonBindings/FullHarmonicAcousticResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportFullHarmonicAcousticResultToPython() {
+void exportFullHarmonicAcousticResultToPython( py::module_ &mod ) {
 
-    py::class_< FullHarmonicAcousticResult,
-                FullHarmonicAcousticResultPtr,
-                py::bases< FullResult > >( "FullHarmonicAcousticResult",
-                                                             py::no_init )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< FullHarmonicAcousticResult, std::string >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FullHarmonicAcousticResult >));
+    py::class_< FullHarmonicAcousticResult, FullHarmonicAcousticResultPtr, FullResult >(
+        mod, "FullHarmonicAcousticResult" )
+        .def( py::init( &initFactoryPtr< FullHarmonicAcousticResult, std::string > ) )
+        .def( py::init( &initFactoryPtr< FullHarmonicAcousticResult > ) );
 };

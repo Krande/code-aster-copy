@@ -22,27 +22,23 @@
  */
 
 #include "PythonBindings/ExternalStateVariablesBuilderInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportExternalStateVariablesBuilderToPython() {
+void exportExternalStateVariablesBuilderToPython( py::module_ &mod ) {
 
-    py::class_< ExternalStateVariablesBuilder, ExternalStateVariablesBuilderPtr,
-                py::bases< DataStructure > >( "ExternalStateVariablesBuilder", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< ExternalStateVariablesBuilder > ) )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ExternalStateVariablesBuilder, const ModelPtr &,
-                                   const MaterialFieldPtr &, const ElementaryCharacteristicsPtr &,
-                                   const CodedMaterialPtr & > ) )
+    py::class_< ExternalStateVariablesBuilder, ExternalStateVariablesBuilderPtr, DataStructure >(
+        mod, "ExternalStateVariablesBuilder" )
+        .def( py::init( &initFactoryPtr< ExternalStateVariablesBuilder > ) )
+        .def( py::init(
+            &initFactoryPtr< ExternalStateVariablesBuilder, const ModelPtr &,
+                             const MaterialFieldPtr &, const ElementaryCharacteristicsPtr &,
+                             const CodedMaterialPtr & > ) )
         .def( "hasExternalStateVariables",
               &ExternalStateVariablesBuilder::hasExternalStateVariables, R"(
 Return True if external state variables are defined
 
 Returns:
     bool: True if external state variables are defined
-        )",
-              ( py::arg( "self" ) ) );
+        )" );
 };

@@ -28,13 +28,11 @@
 
 #ifdef __cplusplus
 
-#include <exception>
-#include <string>
-
+#include "aster_pybind.h"
 #include "astercxx.h"
 
-// static table of Python exceptions
-static std::map< int, PyObject * > ErrorPy;
+#include <exception>
+#include <string>
 
 class AbstractErrorCpp : public std::exception {
   private:
@@ -45,7 +43,7 @@ class AbstractErrorCpp : public std::exception {
 
   public:
     AbstractErrorCpp( std::string idmess, VectorString valk = {}, VectorLong vali = {},
-                   VectorReal valr = {} )
+                      VectorReal valr = {} )
         : _idmess( idmess ), _valk( valk ), _vali( vali ), _valr( valr ) {}
 
     const char *what() const noexcept { return _idmess.c_str(); }
@@ -57,7 +55,8 @@ class AbstractErrorCpp : public std::exception {
 };
 
 // Subclasses
-template < int Id > class ErrorCpp : public AbstractErrorCpp {
+template < int Id >
+class ErrorCpp : public AbstractErrorCpp {
   private:
     int _id = Id;
 
@@ -65,21 +64,18 @@ template < int Id > class ErrorCpp : public AbstractErrorCpp {
     ErrorCpp< Id >( std::string idmess, VectorString valk = {}, VectorLong vali = {},
                     VectorReal valr = {} )
         : AbstractErrorCpp( idmess, valk, vali, valr ) {}
+
+    const int id() const { return _id; }
 };
 
-typedef ErrorCpp< ASTER_ERROR > AsterErrorCpp;
-typedef ErrorCpp< ASTER_ERROR > InternalErrorCpp;
+using AsterErrorCpp = ErrorCpp< ASTER_ERROR >;
+using ConvergenceErrorCpp = ErrorCpp< ASTER_CONVERGENCE_ERROR >;
+using IntegrationErrorCpp = ErrorCpp< ASTER_INTEGRATION_ERROR >;
+using SolverErrorCpp = ErrorCpp< ASTER_SOLVER_ERROR >;
+using ContactErrorCpp = ErrorCpp< ASTER_CONTACT_ERROR >;
+using TimeLimitErrorCpp = ErrorCpp< ASTER_TIMELIMIT_ERROR >;
 
-// Translation functions: C++ exception to Python exception
-template < int Id >
-void translateError( const ErrorCpp< Id > &exc ) {
-    PyObject *py_err = exc.py_attrs();
-    PyErr_SetObject( ErrorPy[Id], py_err );
-    Py_DECREF( py_err );
-}
-
-
-PyObject *createPyException( const char *name, PyObject *baseTypeObj = PyExc_Exception );
+void createExceptions( py::module_ &mod );
 
 void raiseAsterError( const std::string idmess = "VIDE_1" );
 

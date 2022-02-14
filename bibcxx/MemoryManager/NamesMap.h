@@ -178,7 +178,7 @@ class NamesMapClass : public JeveuxObjectClass, private AllowedJeveuxType< Value
 template < class ValueType >
 class NamesMap {
   public:
-    typedef boost::shared_ptr< NamesMapClass< ValueType > > NamesMapPtr;
+    typedef std::shared_ptr< NamesMapClass< ValueType > > NamesMapPtr;
 
   private:
     NamesMapPtr _namesMapPtr;

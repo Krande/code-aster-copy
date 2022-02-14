@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe CyclicSymmetryMode
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -70,7 +70,7 @@ class CyclicSymmetryMode : public DataStructure {
      * @typedef CyclicSymmetryModePtr
      * @brief Pointeur intelligent vers un CyclicSymmetryMode
      */
-    typedef boost::shared_ptr< CyclicSymmetryMode > CyclicSymmetryModePtr;
+    typedef std::shared_ptr< CyclicSymmetryMode > CyclicSymmetryModePtr;
 
     /**
      * @brief Constructeur
@@ -111,7 +111,7 @@ class CyclicSymmetryMode : public DataStructure {
  * @typedef CyclicSymmetryModePtr
  * @brief Pointeur intelligent vers un CyclicSymmetryMode
  */
-typedef boost::shared_ptr< CyclicSymmetryMode > CyclicSymmetryModePtr;
+typedef std::shared_ptr< CyclicSymmetryMode > CyclicSymmetryModePtr;
 
 /**
  * @brief Definition du maillage

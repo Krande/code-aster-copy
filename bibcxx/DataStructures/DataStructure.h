@@ -27,6 +27,7 @@
 
 #ifdef __cplusplus
 
+#include "aster_pybind.h"
 #include "astercxx.h"
 
 #include "DataStructures/DataStructureNaming.h"
@@ -42,7 +43,7 @@
 class DataStructure {
   public:
     /** @typedef shared_ptr d'une DataStructure */
-    typedef boost::shared_ptr< DataStructure > DataStructurePtr;
+    typedef std::shared_ptr< DataStructure > DataStructurePtr;
 
   private:
     /** @brief Nom de la sd */
@@ -53,6 +54,8 @@ class DataStructure {
     JeveuxVectorChar24 _tco;
     /** @brief Vector which contains reference to other DataStructure */
     std::vector< DataStructurePtr > _depsVector;
+    /** @brief Python attributes for sdj/sdveri */
+    py::object _sdj;
 
   protected:
     /** @brief Object that stores the title of the DataStructure */
@@ -121,11 +124,6 @@ class DataStructure {
     void debugPrint( const int logicalUnit = 6 ) const;
 
     /**
-     * @brief Function membre debugPrint
-     */
-    void debugPrint() const { debugPrint( 6 ); };
-
-    /**
      * @brief Function membre getName
      * @return une chaine contenant le nom de la sd
      */
@@ -153,6 +151,16 @@ class DataStructure {
     };
 
     /**
+     * @brief Getter for SDJ property
+     */
+    const py::object &getSDJ() const { return _sdj; }
+
+    /**
+     * @brief Setter for SDJ property
+     */
+    void setSDJ( py::object &sdj ) { _sdj = sdj; }
+
+    /**
      * @brief Virtual function to update DataStructure
      */
     virtual bool build() { return true; };
@@ -164,6 +172,7 @@ class DataStructure {
      */
     void setType( const std::string newType );
 };
+using DataStructurePtr = std::shared_ptr< DataStructure >;
 
 #endif
 

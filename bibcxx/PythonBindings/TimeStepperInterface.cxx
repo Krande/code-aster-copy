@@ -3,7 +3,7 @@
  * @brief Interface python de TimeStepper
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,19 +23,16 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-
-#include <PythonBindings/factory.h>
 #include "PythonBindings/TimeStepperInterface.h"
+
+#include "aster_pybind.h"
+
 #include "PythonBindings/DataStructureInterface.h"
 
-void exportTimeStepperToPython() {
+void exportTimeStepperToPython( py::module_ &mod ) {
 
-    py::class_< TimeStepper, TimeStepper::TimeStepperPtr,
-                py::bases< DataStructure > >( "TimeStepper", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TimeStepper >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TimeStepper, std::string >))
+    py::class_< TimeStepper, TimeStepper::TimeStepperPtr, DataStructure >( mod, "TimeStepper" )
+        .def( py::init( &initFactoryPtr< TimeStepper > ) )
+        .def( py::init( &initFactoryPtr< TimeStepper, std::string > ) )
         .def( "setValues", &TimeStepper::setValues );
 };

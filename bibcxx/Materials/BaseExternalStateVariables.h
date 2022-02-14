@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ExternalStateVariable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -95,7 +95,7 @@ class EvolutionParameter {
     };
 };
 
-typedef boost::shared_ptr< EvolutionParameter > EvolutionParameterPtr;
+typedef std::shared_ptr< EvolutionParameter > EvolutionParameterPtr;
 
 struct TemperatureExternalStateVariablesTraits {
     constexpr static const char *name = "TEMP";
@@ -168,7 +168,7 @@ class BaseExternalStateVariable {
     EvolutionParameterPtr _evolParam;
 
   public:
-    typedef boost::shared_ptr< BaseExternalStateVariable > BaseExternalStateVariablePtr;
+    typedef std::shared_ptr< BaseExternalStateVariable > BaseExternalStateVariablePtr;
 
     /**
      * @brief Constructeur
@@ -308,27 +308,27 @@ typedef ExternalStateVariable< TotalFluidPressureExternalStateVariablesTraits >
 typedef ExternalStateVariable< VolumetricDeformationExternalStateVariablesTraits >
     VolumetricDeformationExternalStateVariable;
 
-typedef boost::shared_ptr< BaseExternalStateVariable > BaseExternalStateVariablePtr;
-typedef boost::shared_ptr< TemperatureExternalStateVariable > TemperatureExternalStateVariablePtr;
-typedef boost::shared_ptr< GeometryExternalStateVariable > GeometryExternalStateVariablePtr;
-typedef boost::shared_ptr< CorrosionExternalStateVariable > CorrosionExternalStateVariablePtr;
-typedef boost::shared_ptr< IrreversibleDeformationExternalStateVariable >
+typedef std::shared_ptr< BaseExternalStateVariable > BaseExternalStateVariablePtr;
+typedef std::shared_ptr< TemperatureExternalStateVariable > TemperatureExternalStateVariablePtr;
+typedef std::shared_ptr< GeometryExternalStateVariable > GeometryExternalStateVariablePtr;
+typedef std::shared_ptr< CorrosionExternalStateVariable > CorrosionExternalStateVariablePtr;
+typedef std::shared_ptr< IrreversibleDeformationExternalStateVariable >
     IrreversibleDeformationExternalStateVariablePtr;
-typedef boost::shared_ptr< ConcreteHydratationExternalStateVariable >
+typedef std::shared_ptr< ConcreteHydratationExternalStateVariable >
     ConcreteHydratationExternalStateVariablePtr;
-typedef boost::shared_ptr< IrradiationExternalStateVariable > IrradiationExternalStateVariablePtr;
-typedef boost::shared_ptr< SteelPhasesExternalStateVariable > SteelPhasesExternalStateVariablePtr;
-typedef boost::shared_ptr< ZircaloyPhasesExternalStateVariable >
+typedef std::shared_ptr< IrradiationExternalStateVariable > IrradiationExternalStateVariablePtr;
+typedef std::shared_ptr< SteelPhasesExternalStateVariable > SteelPhasesExternalStateVariablePtr;
+typedef std::shared_ptr< ZircaloyPhasesExternalStateVariable >
     ZircaloyPhasesExternalStateVariablePtr;
-typedef boost::shared_ptr< Neutral1ExternalStateVariable > Neutral1ExternalStateVariablePtr;
-typedef boost::shared_ptr< Neutral2ExternalStateVariable > Neutral2ExternalStateVariablePtr;
-typedef boost::shared_ptr< Neutral3ExternalStateVariable > Neutral3ExternalStateVariablePtr;
+typedef std::shared_ptr< Neutral1ExternalStateVariable > Neutral1ExternalStateVariablePtr;
+typedef std::shared_ptr< Neutral2ExternalStateVariable > Neutral2ExternalStateVariablePtr;
+typedef std::shared_ptr< Neutral3ExternalStateVariable > Neutral3ExternalStateVariablePtr;
 
-typedef boost::shared_ptr< ConcreteDryingExternalStateVariable >
+typedef std::shared_ptr< ConcreteDryingExternalStateVariable >
     ConcreteDryingExternalStateVariablePtr;
-typedef boost::shared_ptr< TotalFluidPressureExternalStateVariable >
+typedef std::shared_ptr< TotalFluidPressureExternalStateVariable >
     TotalFluidPressureExternalStateVariablePtr;
-typedef boost::shared_ptr< VolumetricDeformationExternalStateVariable >
+typedef std::shared_ptr< VolumetricDeformationExternalStateVariable >
     VolumetricDeformationExternalStateVariablePtr;
 
 

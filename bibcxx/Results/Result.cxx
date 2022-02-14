@@ -317,9 +317,9 @@ ConstantFieldOnCellsRealPtr Result::getConstantFieldOnCellsReal( const std::stri
     return _dictOfMapOfConstantFieldOnCellsReal.at( name ).at( rank );
 };
 
-PyObject *Result::getAccessParameters() const {
+py::dict Result::getAccessParameters() const {
 
-    PyObject *returnDict = PyDict_New();
+    py::dict returnDict;
     std::string var_name, str_val, typevar, nosuff;
     ASTERINTEGER ivar, nmax, index;
 
@@ -341,12 +341,11 @@ PyObject *Result::getAccessParameters() const {
     ASTERINTEGER nb_ranks = getNumberOfRanks();
 
     var_name = "NUME_ORDRE";
-    PyObject *listValues = PyList_New( nb_ranks );
+    py::list listValues;
     for ( ASTERINTEGER j = 0; j < nb_ranks; ++j ) {
-        PyList_SetItem( listValues, j, PyLong_FromLong( ( *_serialNumber )[j] ) );
+        listValues.append( ( *_serialNumber )[j] );
     }
-    PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
-    Py_DECREF( listValues );
+    returnDict[var_name.c_str()] = listValues;
 
     for ( ASTERINTEGER i = 0; i < ( _calculationParameter->getVectorOfObjects() ).size(); ++i ) {
         const auto item = _calculationParameter->getVectorOfObjects()[i];
@@ -358,19 +357,19 @@ PyObject *Result::getAccessParameters() const {
             ivar = std::stoi( trim( item[1].toString() ) );
             nmax = std::stoi( trim( item[2].toString() ) );
 
-            PyObject *listValues = PyList_New( nb_ranks );
+            py::list listV;
 
             if ( nosuff == ".RSPI" ) {
                 for ( ASTERINTEGER j = 0; j < nb_ranks; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
-                    PyList_SetItem( listValues, j, PyLong_FromLong( ( *_rspi )[index] ) );
+                    listV.append( ( *_rspi )[index] );
                 }
             }
 
             else if ( nosuff == ".RSPR" ) {
                 for ( ASTERINTEGER j = 0; j < nb_ranks; ++j ) {
                     index = nmax * ( j ) + ivar - 1;
-                    PyList_SetItem( listValues, j, PyFloat_FromDouble( ( *_rspr )[index] ) );
+                    listV.append( ( *_rspr )[index] );
                 }
             }
 
@@ -388,14 +387,13 @@ PyObject *Result::getAccessParameters() const {
                     }
 
                     if ( str_val.length() == 0 ) {
-                        PyList_SetItem( listValues, j, Py_None );
+                        listV.append( py::none() );
                     } else {
-                        PyList_SetItem( listValues, j, PyUnicode_FromString( str_val.c_str() ) );
+                        listV.append( str_val );
                     }
                 }
             }
-            PyDict_SetItemString( returnDict, var_name.c_str(), listValues );
-            Py_DECREF( listValues );
+            returnDict[var_name.c_str()] = listV;
         }
     }
     CALL_JEDEMA();
@@ -507,7 +505,7 @@ bool Result::setField( const FieldOnNodesRealPtr field, const std::string &name,
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnNodesRealPtr result = boost::make_shared< FieldOnNodesReal >( internalName, *field );
+    FieldOnNodesRealPtr result = std::make_shared< FieldOnNodesReal >( internalName, *field );
 
     _fieldBuidler.addFieldOnNodesDescription( result->getDescription() );
 
@@ -537,8 +535,7 @@ bool Result::setField( const FieldOnNodesComplexPtr field, const std::string &na
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnNodesComplexPtr result =
-        boost::make_shared< FieldOnNodesComplex >( internalName, *field );
+    FieldOnNodesComplexPtr result = std::make_shared< FieldOnNodesComplex >( internalName, *field );
 
     _fieldBuidler.addFieldOnNodesDescription( result->getDescription() );
 
@@ -568,7 +565,7 @@ bool Result::setField( const FieldOnCellsRealPtr field, const std::string &name,
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnCellsRealPtr result = boost::make_shared< FieldOnCellsReal >( internalName, *field );
+    FieldOnCellsRealPtr result = std::make_shared< FieldOnCellsReal >( internalName, *field );
 
     if ( _dictOfMapOfFieldOnCellsReal.count( trim_name ) == 0 ) {
         _dictOfMapOfFieldOnCellsReal[trim_name] = MapOfFieldOnCellsReal();
@@ -596,8 +593,7 @@ bool Result::setField( const FieldOnCellsComplexPtr field, const std::string &na
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnCellsComplexPtr result =
-        boost::make_shared< FieldOnCellsComplex >( internalName, *field );
+    FieldOnCellsComplexPtr result = std::make_shared< FieldOnCellsComplex >( internalName, *field );
 
     if ( _dictOfMapOfFieldOnCellsComplex.count( trim_name ) == 0 ) {
         _dictOfMapOfFieldOnCellsComplex[trim_name] = MapOfFieldOnCellsComplex();
@@ -625,7 +621,7 @@ bool Result::setField( const FieldOnCellsLongPtr field, const std::string &name,
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    FieldOnCellsLongPtr result = boost::make_shared< FieldOnCellsLong >( internalName, *field );
+    FieldOnCellsLongPtr result = std::make_shared< FieldOnCellsLong >( internalName, *field );
 
     if ( _dictOfMapOfFieldOnCellsLong.count( trim_name ) == 0 ) {
         _dictOfMapOfFieldOnCellsLong[trim_name] = MapOfFieldOnCellsLong();
@@ -653,7 +649,7 @@ bool Result::setField( const ConstantFieldOnCellsChar16Ptr field, const std::str
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    auto result = boost::make_shared< ConstantFieldOnCellsChar16 >( internalName, *field );
+    auto result = std::make_shared< ConstantFieldOnCellsChar16 >( internalName, *field );
 
     if ( _dictOfMapOfConstantFieldOnCellsChar16.count( trim_name ) == 0 ) {
         _dictOfMapOfConstantFieldOnCellsChar16[trim_name] = MapOfConstantFieldOnCellsChar16();
@@ -681,7 +677,7 @@ bool Result::setField( const ConstantFieldOnCellsRealPtr field, const std::strin
 
     CALLO_RSNOCH( getName(), name, &rank );
     std::string internalName( rschex.second.c_str(), 19 );
-    auto result = boost::make_shared< ConstantFieldOnCellsReal >( internalName, *field );
+    auto result = std::make_shared< ConstantFieldOnCellsReal >( internalName, *field );
 
     if ( _dictOfMapOfConstantFieldOnCellsReal.count( trim_name ) == 0 ) {
         _dictOfMapOfConstantFieldOnCellsReal[trim_name] = MapOfConstantFieldOnCellsReal();

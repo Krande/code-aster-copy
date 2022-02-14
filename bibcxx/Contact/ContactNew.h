@@ -50,7 +50,7 @@ class ContactNew : public DataStructure {
      * @typedef ContactNewPtr
      * @brief Pointeur intelligent vers un ContactNew
      */
-    typedef boost::shared_ptr< ContactNew > ContactNewPtr;
+    typedef std::shared_ptr< ContactNew > ContactNewPtr;
     /**
      * @brief Constructeur
      */
@@ -101,6 +101,6 @@ class ContactNew : public DataStructure {
  * @typedef ContactNewPtr
  * @brief Pointeur intelligent vers un ContactNew
  */
-typedef boost::shared_ptr< ContactNew > ContactNewPtr;
+typedef std::shared_ptr< ContactNew > ContactNewPtr;
 
 #endif /* CONTACTNEW_H_ */

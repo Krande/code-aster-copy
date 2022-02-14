@@ -101,10 +101,10 @@ class ElementaryTerm : public DataField {
 
 /** @typedef ElementaryTermRealPtr */
 using ElementaryTermReal = ElementaryTerm< ASTERDOUBLE >;
-using ElementaryTermRealPtr = boost::shared_ptr< ElementaryTermReal >;
+using ElementaryTermRealPtr = std::shared_ptr< ElementaryTermReal >;
 
 /** @typedef ElementaryTermComplexPtr */
 using ElementaryTermComplex = ElementaryTerm< ASTERCOMPLEX >;
-using ElementaryTermComplexPtr = boost::shared_ptr< ElementaryTermComplex >;
+using ElementaryTermComplexPtr = std::shared_ptr< ElementaryTermComplex >;
 
 #endif /* ELEMENTARYTERM_H_ */

@@ -40,7 +40,7 @@ class XfemField : public DataField {
 
   public:
     /** @typedef XfemFieldOnCellsPtr */
-    typedef boost::shared_ptr< XfemField > XfemFieldPtr;
+    typedef std::shared_ptr< XfemField > XfemFieldPtr;
 
     /** @brief Constructor */
     XfemField( const std::string name )
@@ -60,7 +60,7 @@ class XfemField : public DataField {
     };
 };
 
-typedef boost::shared_ptr< XfemField > XfemFieldPtr;
+typedef std::shared_ptr< XfemField > XfemFieldPtr;
 
 /**
  * @class XfemModel
@@ -68,7 +68,7 @@ typedef boost::shared_ptr< XfemField > XfemFieldPtr;
  */
 class XfemModel {
   private:
-    typedef boost::shared_ptr< XfemField > XfemFieldPtr;
+    typedef std::shared_ptr< XfemField > XfemFieldPtr;
     typedef std::map< std::string, XfemFieldPtr > listFields;
     /** Fields for XFEM */
     listFields _listfields;
@@ -77,29 +77,29 @@ class XfemModel {
     XfemModel( const std::string modelName ) { createFields( modelName ); };
 
     void createFields( const std::string modelName ) {
-        XfemFieldPtr pinttoPtr = boost::make_shared< XfemField >( modelName + ".TOPOSE.PIN" );
+        XfemFieldPtr pinttoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.PIN" );
         _listfields.insert( listFields::value_type( "PINTTO", pinttoPtr ) );
-        XfemFieldPtr cnsetoPtr = boost::make_shared< XfemField >( modelName + ".TOPOSE.CNS" );
+        XfemFieldPtr cnsetoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.CNS" );
         _listfields.insert( listFields::value_type( "CNSETO", cnsetoPtr ) );
-        XfemFieldPtr heavtoPtr = boost::make_shared< XfemField >( modelName + ".TOPOSE.HEA" );
+        XfemFieldPtr heavtoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.HEA" );
         _listfields.insert( listFields::value_type( "HEAVTO", heavtoPtr ) );
-        XfemFieldPtr lonchaPtr = boost::make_shared< XfemField >( modelName + ".TOPOSE.LON" );
+        XfemFieldPtr lonchaPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.LON" );
         _listfields.insert( listFields::value_type( "LONCHA", lonchaPtr ) );
-        XfemFieldPtr baslocPtr = boost::make_shared< XfemField >( modelName + ".BASLOC" );
+        XfemFieldPtr baslocPtr = std::make_shared< XfemField >( modelName + ".BASLOC" );
         _listfields.insert( listFields::value_type( "BASLOC", baslocPtr ) );
-        XfemFieldPtr lsnPtr = boost::make_shared< XfemField >( modelName + ".LNNO" );
+        XfemFieldPtr lsnPtr = std::make_shared< XfemField >( modelName + ".LNNO" );
         _listfields.insert( listFields::value_type( "LSN", lsnPtr ) );
-        XfemFieldPtr lstPtr = boost::make_shared< XfemField >( modelName + ".LTNO" );
+        XfemFieldPtr lstPtr = std::make_shared< XfemField >( modelName + ".LTNO" );
         _listfields.insert( listFields::value_type( "LST", lstPtr ) );
-        XfemFieldPtr stanoPtr = boost::make_shared< XfemField >( modelName + ".STNO" );
+        XfemFieldPtr stanoPtr = std::make_shared< XfemField >( modelName + ".STNO" );
         _listfields.insert( listFields::value_type( "STANO", stanoPtr ) );
-        XfemFieldPtr pmiltoPtr = boost::make_shared< XfemField >( modelName + ".TOPOSE.PMI" );
+        XfemFieldPtr pmiltoPtr = std::make_shared< XfemField >( modelName + ".TOPOSE.PMI" );
         _listfields.insert( listFields::value_type( "PMILT", pmiltoPtr ) );
-        XfemFieldPtr fissnoPtr = boost::make_shared< XfemField >( modelName + ".FISSNO" );
+        XfemFieldPtr fissnoPtr = std::make_shared< XfemField >( modelName + ".FISSNO" );
         _listfields.insert( listFields::value_type( "FISSNO", fissnoPtr ) );
-        XfemFieldPtr heavnoPtr = boost::make_shared< XfemField >( modelName + ".TOPONO.HNO" );
+        XfemFieldPtr heavnoPtr = std::make_shared< XfemField >( modelName + ".TOPONO.HNO" );
         _listfields.insert( listFields::value_type( "HEAVNO", heavnoPtr ) );
-        XfemFieldPtr heavfaPtr = boost::make_shared< XfemField >( modelName + ".TOPONO.HFA" );
+        XfemFieldPtr heavfaPtr = std::make_shared< XfemField >( modelName + ".TOPONO.HFA" );
         _listfields.insert( listFields::value_type( "HEAVFA", heavfaPtr ) );
     };
 
@@ -108,6 +108,6 @@ class XfemModel {
     };
 };
 
-typedef boost::shared_ptr< XfemModel > XfemModelPtr;
+typedef std::shared_ptr< XfemModel > XfemModelPtr;
 
 #endif /* XFEMMODEL_H_ */

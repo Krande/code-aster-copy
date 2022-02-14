@@ -21,82 +21,66 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/ElementaryTermInterface.h"
 
-#include <PythonBindings/factory.h>
+#include "aster_pybind.h"
 
-void exportElementaryTermToPython() {
+void exportElementaryTermToPython( py::module_ &mod ) {
 
-    py::class_< ElementaryTermReal, ElementaryTermRealPtr, py::bases< DataField > >(
-        "ElementaryTermReal", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< ElementaryTermReal > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryTermReal, std::string > ) )
+    py::class_< ElementaryTermReal, ElementaryTermRealPtr, DataField >( mod, "ElementaryTermReal" )
+        .def( py::init( &initFactoryPtr< ElementaryTermReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryTermReal, std::string > ) )
         .def( "getFiniteElementDescriptor", &ElementaryTermReal::getFiniteElementDescriptor, R"(
-Return the finite element descriptor
+            Return the finite element descriptor
 
-Returns:
-    FiniteElementDescriptor: finite element descriptor
-        )",
-              ( py::arg( "self" ) ) )
+            Returns:
+                FiniteElementDescriptor: finite element descriptor
+            )" )
         .def( "getOption", &ElementaryTermReal::getOption, R"(
-Return the optior used to compute it
+            Return the optior used to compute it
 
-Returns:
-    str: name of the option
-        )",
-              ( py::arg( "self" ) ) )
+            Returns:
+                str: name of the option
+            )" )
         .def( "getMesh", &ElementaryTermReal::getMesh, R"(
-Return the mesh
+            Return the mesh
 
-Returns:
-    BaseMesh: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) ) )
+            Returns:
+                BaseMesh: a pointer to the mesh
+        )" )
         .def( "getPhysicalQuantity", &ElementaryTermReal::getPhysicalQuantity, R"(
-Return the physical quantity
+            Return the physical quantity
 
-Returns:
-    str: name of the physical quantity
-        )",
-              ( py::arg( "self" ) ) );
+            Returns:
+                str: name of the physical quantity
+            )" );
 
-    py::class_< ElementaryTermComplex, ElementaryTermComplexPtr, py::bases< DataField > >(
-        "ElementaryTermComplex", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< ElementaryTermComplex > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryTermComplex, std::string > ) )
+    py::class_< ElementaryTermComplex, ElementaryTermComplexPtr, DataField >(
+        mod, "ElementaryTermComplex" )
+        .def( py::init( &initFactoryPtr< ElementaryTermComplex > ) )
+        .def( py::init( &initFactoryPtr< ElementaryTermComplex, std::string > ) )
         .def( "getFiniteElementDescriptor", &ElementaryTermComplex::getFiniteElementDescriptor, R"(
-Return the finite element descriptor
+            Return the finite element descriptor
 
-Returns:
-    FiniteElementDescriptor: finite element descriptor
-        )",
-              ( py::arg( "self" ) ) )
+            Returns:
+                FiniteElementDescriptor: finite element descriptor
+            )" )
         .def( "getOption", &ElementaryTermComplex::getOption, R"(
-Return the optior used to compute it
+            Return the optior used to compute it
 
-Returns:
-    str: name of the option
-        )",
-              ( py::arg( "self" ) ) )
+            Returns:
+                str: name of the option
+            )" )
         .def( "getMesh", &ElementaryTermComplex::getMesh, R"(
-Return the mesh
+            Return the mesh
 
-Returns:
-    BaseMesh: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) ) )
+            Returns:
+                BaseMesh: a pointer to the mesh
+            )" )
         .def( "getPhysicalQuantity", &ElementaryTermComplex::getPhysicalQuantity, R"(
-Return the physical quantity
+            Return the physical quantity
 
-Returns:
-    str: name of the physical quantity
-        )",
-              ( py::arg( "self" ) ) );
+            Returns:
+                str: name of the physical quantity
+            )" );
 };

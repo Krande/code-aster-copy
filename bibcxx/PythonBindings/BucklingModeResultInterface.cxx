@@ -3,7 +3,7 @@
  * @brief Interface python de BucklingModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,31 +22,29 @@
  */
 
 #include "PythonBindings/BucklingModeResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
+
 #include "PythonBindings/VariantStiffnessMatrixInterface.h"
 
-void exportBucklingModeResultToPython() {
+void exportBucklingModeResultToPython( py::module_ &mod ) {
 
-    bool ( BucklingModeResult::*c1 )( const AssemblyMatrixDisplacementRealPtr & ) =
-        &BucklingModeResult::setStiffnessMatrix;
-    bool ( BucklingModeResult::*c2 )( const AssemblyMatrixTemperatureRealPtr & ) =
-        &BucklingModeResult::setStiffnessMatrix;
-    bool ( BucklingModeResult::*c3 )( const AssemblyMatrixDisplacementComplexPtr & ) =
-        &BucklingModeResult::setStiffnessMatrix;
-    bool ( BucklingModeResult::*c4 )( const AssemblyMatrixPressureRealPtr & ) =
-        &BucklingModeResult::setStiffnessMatrix;
-
-    py::class_< BucklingModeResult, BucklingModeResultPtr,
-            py::bases< FullResult > >( "BucklingModeResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< BucklingModeResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< BucklingModeResult, std::string >))
+    py::class_< BucklingModeResult, BucklingModeResultPtr, FullResult >( mod, "BucklingModeResult" )
+        .def( py::init( &initFactoryPtr< BucklingModeResult > ) )
+        .def( py::init( &initFactoryPtr< BucklingModeResult, std::string > ) )
         .def( "getStiffnessMatrix", &getStiffnessMatrix< BucklingModeResultPtr > )
-        .def( "setStiffnessMatrix", c1 )
-        .def( "setStiffnessMatrix", c2 )
-        .def( "setStiffnessMatrix", c3 )
-        .def( "setStiffnessMatrix", c4 );
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixDisplacementRealPtr & >(
+                                        &BucklingModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix",
+              py::overload_cast< const AssemblyMatrixDisplacementComplexPtr & >(
+                  &BucklingModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixTemperatureRealPtr & >(
+                                        &BucklingModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixPressureRealPtr & >(
+                                        &BucklingModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const GeneralizedAssemblyMatrixRealPtr & >(
+                                        &BucklingModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix",
+              py::overload_cast< const GeneralizedAssemblyMatrixComplexPtr & >(
+                  &BucklingModeResult::setStiffnessMatrix ) );
 };

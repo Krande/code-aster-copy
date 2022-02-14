@@ -45,7 +45,7 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
      * @typedef ParallelDOFNumberingPtr
      * @brief Pointeur intelligent vers un ParallelDOFNumbering
      */
-    typedef boost::shared_ptr< ParallelDOFNumbering > ParallelDOFNumberingPtr;
+    typedef std::shared_ptr< ParallelDOFNumbering > ParallelDOFNumberingPtr;
 
     /**
      * @brief Constructeur
@@ -135,58 +135,40 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
     /**
      * @brief Get The Component Associated To A Given Row
      */
-    std::string getComponentAssociatedToRow( const ASTERINTEGER row, const bool local ) const;
-    std::string getComponentAssociatedToRow( const ASTERINTEGER row ) const {
-        return getComponentAssociatedToRow( row, false );
-    };
+    std::string getComponentAssociatedToRow( const ASTERINTEGER row,
+                                             const bool local = false ) const;
 
     /**
      * @brief Get The Components Associated To A Given Node
      */
-    VectorString getComponentsAssociatedToNode( const ASTERINTEGER node, const bool local ) const;
-    VectorString getComponentsAssociatedToNode( const ASTERINTEGER node ) const {
-        return getComponentsAssociatedToNode( node, false );
-    };
+    VectorString getComponentsAssociatedToNode( const ASTERINTEGER node,
+                                                const bool local = false ) const;
 
     /**
      * @brief Get The Node Id Associated To A Given Row
      */
-    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row, const bool local ) const;
-    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row ) const {
-        return getNodeAssociatedToRow( row, false );
-    };
+    ASTERINTEGER getNodeAssociatedToRow( const ASTERINTEGER row, const bool local = false ) const;
 
     /**
      * @brief Get The total number of Dofs
      */
-    ASTERINTEGER getNumberOfDofs( const bool local ) const;
-    ASTERINTEGER getNumberOfDofs() const { return getNumberOfDofs( false ); };
+    ASTERINTEGER getNumberOfDofs( const bool local = false ) const;
 
     /**
      * @brief get the Row index Associated To the Component of a Node
      */
     ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node, const std::string comp,
-                                                  const bool local ) const;
-    ASTERINTEGER getRowAssociatedToNodeComponent( const ASTERINTEGER node,
-                                                  const std::string comp ) const {
-        return getRowAssociatedToNodeComponent( node, comp, false );
-    };
+                                                  const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to all Physical Dof
      */
-    VectorLong getRowsAssociatedToPhysicalDofs( const bool local ) const;
-    VectorLong getRowsAssociatedToPhysicalDofs() const {
-        return getRowsAssociatedToPhysicalDofs( false );
-    };
+    VectorLong getRowsAssociatedToPhysicalDofs( const bool local = false ) const;
 
     /**
      * @brief Get Rows Associated to Lagrange Multipliers Dof
      */
-    VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local ) const;
-    VectorLong getRowsAssociatedToLagrangeMultipliers() const {
-        return getRowsAssociatedToLagrangeMultipliers( false );
-    };
+    VectorLong getRowsAssociatedToLagrangeMultipliers( const bool local = false ) const;
 
     /**
      * @brief Get Assigned Components
@@ -198,7 +180,7 @@ class ParallelDOFNumbering : public BaseDOFNumbering {
  * @typedef ParallelDOFNumberingPtr
  * @brief Pointeur intelligent vers un ParallelDOFNumbering
  */
-typedef boost::shared_ptr< ParallelDOFNumbering > ParallelDOFNumberingPtr;
+typedef std::shared_ptr< ParallelDOFNumbering > ParallelDOFNumberingPtr;
 
 #endif /* PARALLELDOFNUMBERING_H_ */
 

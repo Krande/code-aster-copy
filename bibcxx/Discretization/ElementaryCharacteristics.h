@@ -24,12 +24,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "astercxx.h"
+
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
 #include "Meshes/BaseMesh.h"
 #include "Modeling/Model.h"
 #include "Supervis/ResultNaming.h"
-#include "astercxx.h"
 
 /**
  * @class ElementaryCharacteristics
@@ -76,7 +77,7 @@ class ElementaryCharacteristics : public DataStructure {
 
   public:
     /** @typedef ElementaryCharacteristicsPtr */
-    typedef boost::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
+    typedef std::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
 
     /** @brief Constructor with a name */
     ElementaryCharacteristics( const std::string name, const ModelPtr &model );
@@ -119,6 +120,6 @@ class ElementaryCharacteristics : public DataStructure {
 };
 
 /** @typedef ElementaryCharacteristicsPtr */
-typedef boost::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
+typedef std::shared_ptr< ElementaryCharacteristics > ElementaryCharacteristicsPtr;
 
 #endif /* ELEMENTARYCHARACTERISTICS_H_ */

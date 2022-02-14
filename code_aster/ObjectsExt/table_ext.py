@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -107,9 +107,7 @@ class ExtendedTable:
         # restriction aux paramètres demandés
         if para is not None:
             if not isinstance(para, (list, tuple)):
-                para = [
-                    para,
-                ]
+                para = [para]
             para = [p.strip() for p in para]
             restr = []
             for ip in lparam:
@@ -137,14 +135,6 @@ class ExtendedTable:
                 d[p] = dval[p][i]
             lisdic.append(d)
         return TablePy(lisdic, lpar, ltyp, titr, self.getName())
-
-    def Valeurs(self):
-        """
-        Retourne une liste contenant les paramètres et les valeurs
-        """
-        values = self.exportValuesToPython()
-        parameters = self.exportParametersToPython()
-        return [parameters, values]
 
 
 @injector(TableOfFunctions)

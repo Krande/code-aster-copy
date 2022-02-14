@@ -57,8 +57,8 @@ void Calcul::setModel( const ModelPtr &model ) {
 /** @brief Compute on a part of the model */
 void Calcul::setGroupsOfCells( const ModelPtr &model, const VectorString &groupOfCells ) {
     _mesh = model->getMesh();
-    _FEDesc = boost::make_shared< FiniteElementDescriptor >(
-        *( model->getFiniteElementDescriptor() ), groupOfCells );
+    _FEDesc = std::make_shared< FiniteElementDescriptor >( *( model->getFiniteElementDescriptor() ),
+                                                           groupOfCells );
     if ( _mesh->isParallel() ) {
         _completeField = false;
     }
@@ -104,7 +104,7 @@ void Calcul::addElementaryCharacteristicsField( const ElementaryCharacteristicsP
 
 /** @brief Create and add input field for Fourier */
 void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
-    auto _FourierField = boost::make_shared< ConstantFieldOnCellsLong >(
+    auto _FourierField = std::make_shared< ConstantFieldOnCellsLong >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "HARMON" );
     _FourierField->allocate( physicalName );
@@ -116,7 +116,7 @@ void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
 
 /** @brief Create and add input field for current time */
 void Calcul::addTimeField( const ASTERDOUBLE &time ) {
-    auto _timeField = boost::make_shared< ConstantFieldOnCellsReal >(
+    auto _timeField = std::make_shared< ConstantFieldOnCellsReal >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );

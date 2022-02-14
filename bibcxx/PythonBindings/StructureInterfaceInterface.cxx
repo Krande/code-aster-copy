@@ -3,7 +3,7 @@
  * @brief Interface python de StructureInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,32 +21,23 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/StructureInterfaceInterface.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( StructureInterface_overloads, addInterface, 3, 4 )
+#include "aster_pybind.h"
 
-void exportStructureInterfaceToPython() {
+void exportStructureInterfaceToPython( py::module_ &mod ) {
 
-    py::enum_< InterfaceTypeEnum >( "InterfaceType" )
+    py::enum_< InterfaceTypeEnum >( mod, "InterfaceType" )
         .value( "MacNeal", MacNeal )
         .value( "CraigBampton", CraigBampton )
         .value( "HarmonicCraigBampton", HarmonicCraigBampton )
-        .value( "None", NoInterfaceType );
+        .value( "None", NoInterfaceType )
+        .export_values();
 
-    py::class_< StructureInterface, StructureInterface::StructureInterfacePtr,
-            py::bases< DataStructure > >( "StructureInterface", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< StructureInterface >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< StructureInterface, std::string >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< StructureInterface, DOFNumberingPtr >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< StructureInterface, std::string, DOFNumberingPtr >))
-        .def( "addInterface", &StructureInterface::addInterface,
-              StructureInterface_overloads() );
+    py::class_< StructureInterface, StructureInterface::StructureInterfacePtr, DataStructure >(
+        mod, "StructureInterface" )
+        .def( py::init( &initFactoryPtr< StructureInterface > ) )
+        .def( py::init( &initFactoryPtr< StructureInterface, std::string > ) )
+        .def( py::init( &initFactoryPtr< StructureInterface, DOFNumberingPtr > ) )
+        .def( py::init( &initFactoryPtr< StructureInterface, std::string, DOFNumberingPtr > ) );
 };

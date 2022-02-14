@@ -89,6 +89,6 @@ class ElementaryCompute {
     ASTERINTEGER getNumberOfElementaryTerms() const { return _relr->size(); };
 };
 
-using ElementaryComputePtr = boost::shared_ptr< ElementaryCompute >;
+using ElementaryComputePtr = std::shared_ptr< ElementaryCompute >;
 
 #endif /* ELEMENTARYCOMPUTE_H_ */

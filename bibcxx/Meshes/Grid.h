@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Grid
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,7 +48,7 @@ class Grid : public Mesh {
      * @typedef GridPtr
      * @brief Pointeur intelligent vers un Grid
      */
-    typedef boost::shared_ptr< Grid > GridPtr;
+    typedef std::shared_ptr< Grid > GridPtr;
 
     /**
      * @brief Constructeur
@@ -60,6 +60,6 @@ class Grid : public Mesh {
  * @typedef GridPtr
  * @brief Pointeur intelligent vers un Grid
  */
-typedef boost::shared_ptr< Grid > GridPtr;
+typedef std::shared_ptr< Grid > GridPtr;
 
 #endif /* GRID_H_ */

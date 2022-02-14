@@ -77,7 +77,7 @@ class BaseElementaryVector : public DataStructure {
           _model( nullptr ),
           _materialField( nullptr ),
           _elemChara( nullptr ),
-          _elemComp( boost::make_shared< ElementaryCompute >( getName() ) ),
+          _elemComp( std::make_shared< ElementaryCompute >( getName() ) ),
           _listOfLoads( new ListOfLoads() ){};
 
     /** @brief Constructor with automatic name */
@@ -98,15 +98,7 @@ class BaseElementaryVector : public DataStructure {
      * @param dofNume object DOFNumbering
      */
     FieldOnNodesRealPtr assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
-                                                   const ASTERDOUBLE &time );
-
-    /**
-     * @brief Assembly with dofNume and apply functions from loads
-     * @param dofNume object DOFNumbering
-     */
-    FieldOnNodesRealPtr assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume ) {
-        return assembleWithLoadFunctions( dofNume, 0. );
-    };
+                                                   const ASTERDOUBLE &time = 0. );
 
     /** @brief Get the model */
     ModelPtr getModel() const { return _model; };
@@ -195,8 +187,10 @@ class BaseElementaryVector : public DataStructure {
     };
 };
 
-/** @typedef BaseElementaryVectorPtr */
-typedef boost::shared_ptr< BaseElementaryVector > BaseElementaryVectorPtr;
+/**
+ * @typedef BaseElementaryVectorPtr
+ */
+typedef std::shared_ptr< BaseElementaryVector > BaseElementaryVectorPtr;
 
 /**
  * @class ElementaryVector
@@ -206,15 +200,14 @@ template < typename ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class ElementaryVector : public BaseElementaryVector {
   private:
     /** @brief Vectors of RESUELEM */
-    std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > _elemTerm;
+    std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > _elemTerm;
 
     /** @typedef FieldOnNodesPtr */
-    typedef boost::shared_ptr< FieldOnNodes< ValueType > > FieldOnNodesPtr;
+    typedef std::shared_ptr< FieldOnNodes< ValueType > > FieldOnNodesPtr;
 
   public:
     /** @typedef ElementaryVectorPtr */
-    typedef boost::shared_ptr< ElementaryVector< ValueType, PhysicalQuantity > >
-        ElementaryVectorPtr;
+    typedef std::shared_ptr< ElementaryVector< ValueType, PhysicalQuantity > > ElementaryVectorPtr;
 
     /** @brief Constructor with a name */
     ElementaryVector( const std::string name )
@@ -242,13 +235,12 @@ class ElementaryVector : public BaseElementaryVector {
                 const std::string name = trim( elemTerm.toString() );
                 elemKeep.insert( name );
                 if ( name != " " && elemSave.count( name ) == 0 ) {
-                    _elemTerm.push_back(
-                        boost::make_shared< ElementaryTerm< ValueType > >( name ) );
+                    _elemTerm.push_back( std::make_shared< ElementaryTerm< ValueType > >( name ) );
                 }
             }
 
             // clean ElementaryTerm
-            std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > elemTermNew;
+            std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > elemTermNew;
             elemTermNew.reserve( _elemTerm.size() );
             for ( auto &elemTerm : _elemTerm ) {
                 auto name = trim( elemTerm->getName() );
@@ -285,7 +277,7 @@ class ElementaryVector : public BaseElementaryVector {
     /**
      * @brief Add elementary term
      */
-    void addElementaryTerm( const boost::shared_ptr< ElementaryTerm< ValueType > > &elemTerm ) {
+    void addElementaryTerm( const std::shared_ptr< ElementaryTerm< ValueType > > &elemTerm ) {
         _elemComp->addElementaryTerm( elemTerm->getName() );
         _elemTerm.push_back( elemTerm );
     };
@@ -302,7 +294,7 @@ class ElementaryVector : public BaseElementaryVector {
             raiseAsterError( "Numerotation is empty" );
 
         // Create field
-        auto field = boost::make_shared< FieldOnNodes< ValueType > >( dofNume );
+        auto field = std::make_shared< FieldOnNodes< ValueType > >( dofNume );
 
         // Elementary vector names
         std::string vectElemName = getName();
@@ -327,16 +319,16 @@ class ElementaryVector : public BaseElementaryVector {
 /** @typedef Elementary vector for displacement-double */
 template class ElementaryVector< ASTERDOUBLE, Displacement >;
 typedef ElementaryVector< ASTERDOUBLE, Displacement > ElementaryVectorDisplacementReal;
-typedef boost::shared_ptr< ElementaryVectorDisplacementReal > ElementaryVectorDisplacementRealPtr;
+typedef std::shared_ptr< ElementaryVectorDisplacementReal > ElementaryVectorDisplacementRealPtr;
 
 /** @typedef Elementary vector for temperature-double */
 template class ElementaryVector< ASTERDOUBLE, Temperature >;
 typedef ElementaryVector< ASTERDOUBLE, Temperature > ElementaryVectorTemperatureReal;
-typedef boost::shared_ptr< ElementaryVectorTemperatureReal > ElementaryVectorTemperatureRealPtr;
+typedef std::shared_ptr< ElementaryVectorTemperatureReal > ElementaryVectorTemperatureRealPtr;
 
 /** @typedef Elementary vector for pressure-complex */
 template class ElementaryVector< ASTERCOMPLEX, Pressure >;
 typedef ElementaryVector< ASTERCOMPLEX, Pressure > ElementaryVectorPressureComplex;
-typedef boost::shared_ptr< ElementaryVectorPressureComplex > ElementaryVectorPressureComplexPtr;
+typedef std::shared_ptr< ElementaryVectorPressureComplex > ElementaryVectorPressureComplexPtr;
 
 #endif /* ELEMENTARYVECTOR_H_ */

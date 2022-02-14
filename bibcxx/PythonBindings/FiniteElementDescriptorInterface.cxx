@@ -3,7 +3,7 @@
  * @brief Interface python de FiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,24 +23,19 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/FiniteElementDescriptorInterface.h"
-#include <PythonBindings/factory.h>
 
-void exportFiniteElementDescriptorToPython() {
+#include "aster_pybind.h"
 
-    py::class_< FiniteElementDescriptor,
-                FiniteElementDescriptor::FiniteElementDescriptorPtr,
-                py::bases< DataStructure > >( "FiniteElementDescriptor", py::no_init )
-// fake initFactoryPtr: not directly created by user
-// fake initFactoryPtr: not directly created by user
-        .def( "getPhysics",
-              &FiniteElementDescriptor::getPhysics )
+void exportFiniteElementDescriptorToPython( py::module_ &mod ) {
+
+    py::class_< FiniteElementDescriptor, FiniteElementDescriptor::FiniteElementDescriptorPtr,
+                DataStructure >( mod, "FiniteElementDescriptor" )
+        // fake initFactoryPtr: not directly created by user
+        // fake initFactoryPtr: not directly created by user
+        .def( "getPhysics", &FiniteElementDescriptor::getPhysics )
 #ifdef ASTER_HAVE_MPI
-        .def( "transferDofDescriptorFrom",
-              &FiniteElementDescriptor::transferDofDescriptorFrom )
+        .def( "transferDofDescriptorFrom", &FiniteElementDescriptor::transferDofDescriptorFrom )
 #endif /* ASTER_HAVE_MPI */
         ;
 };

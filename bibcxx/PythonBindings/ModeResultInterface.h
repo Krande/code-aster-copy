@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ModeResultInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,11 +24,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "Results/ModeResult.h"
 #include "Results/ModeResultComplex.h"
 
-void exportModeResultToPython();
-void exportModeResultComplexToPython();
+void exportModeResultToPython( py::module_ &mod );
+void exportModeResultComplexToPython( py::module_ &mod );
 
 #endif /* MECHANICALMODERESULTINTERFACE_H_ */

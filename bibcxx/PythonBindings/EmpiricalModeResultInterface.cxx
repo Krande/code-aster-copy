@@ -3,7 +3,7 @@
  * @brief Interface python de EmpiricalModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,16 +22,12 @@
  */
 
 #include "PythonBindings/EmpiricalModeResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportEmpiricalModeResultToPython() {
+void exportEmpiricalModeResultToPython( py::module_ &mod ) {
 
-    py::class_< EmpiricalModeResult, EmpiricalModeResultPtr,
-                py::bases< Result > >( "EmpiricalModeResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< EmpiricalModeResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< EmpiricalModeResult, std::string >));
+    py::class_< EmpiricalModeResult, EmpiricalModeResultPtr, Result >( mod, "EmpiricalModeResult" )
+        .def( py::init( &initFactoryPtr< EmpiricalModeResult > ) )
+        .def( py::init( &initFactoryPtr< EmpiricalModeResult, std::string > ) );
 };

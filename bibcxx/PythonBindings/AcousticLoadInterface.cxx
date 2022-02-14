@@ -3,7 +3,7 @@
  * @brief Interface python de AcousticLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,21 +21,16 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/AcousticLoadInterface.h"
 
-void exportAcousticLoadToPython() {
+#include "aster_pybind.h"
 
-    py::class_< AcousticLoadComplex, AcousticLoadComplex::AcousticLoadPtr,
-            py::bases< DataStructure > >( "AcousticLoadComplex", py::no_init )
-        .def( "__init__", py::make_constructor(
-                &initFactoryPtr< AcousticLoadComplex, ModelPtr >))
-        .def( "__init__",
-              py::make_constructor(
-                    &initFactoryPtr< AcousticLoadComplex, std::string, ModelPtr >))
+void exportAcousticLoadToPython( py::module_ &mod ) {
+
+    py::class_< AcousticLoadComplex, AcousticLoadComplex::AcousticLoadPtr, DataStructure >(
+        mod, "AcousticLoadComplex" )
+        .def( py::init( &initFactoryPtr< AcousticLoadComplex, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< AcousticLoadComplex, std::string, ModelPtr > ) )
         .def( "getFiniteElementDescriptor", &AcousticLoadComplex::getFiniteElementDescriptor )
         .def( "getMesh", &AcousticLoadComplex::getMesh )
         .def( "getModel", &AcousticLoadComplex::getModel );

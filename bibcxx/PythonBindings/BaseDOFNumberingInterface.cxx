@@ -22,32 +22,21 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/BaseDOFNumberingInterface.h"
+
+#include "aster_pybind.h"
+
 #include "PythonBindings/LoadUtilities.h"
-#include <PythonBindings/factory.h>
 
-void exportBaseDOFNumberingToPython() {
+void exportBaseDOFNumberingToPython( py::module_ &mod ) {
 
-    py::class_< FieldOnNodesDescription, FieldOnNodesDescriptionPtr,
-                py::bases< DataStructure > >( "FieldOnNodesDescription", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FieldOnNodesDescription >))
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< FieldOnNodesDescription, std::string >));
+    py::class_< FieldOnNodesDescription, FieldOnNodesDescriptionPtr, DataStructure >(
+        mod, "FieldOnNodesDescription" )
+        .def( py::init( &initFactoryPtr< FieldOnNodesDescription > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesDescription, std::string > ) );
 
-    void ( BaseDOFNumbering::*f1 )( const ElementaryMatrixDisplacementRealPtr & ) =
-        &BaseDOFNumbering::setElementaryMatrix;
-    void ( BaseDOFNumbering::*f2 )( const ElementaryMatrixDisplacementComplexPtr & ) =
-        &BaseDOFNumbering::setElementaryMatrix;
-    void ( BaseDOFNumbering::*f3 )( const ElementaryMatrixTemperatureRealPtr & ) =
-        &BaseDOFNumbering::setElementaryMatrix;
-    void ( BaseDOFNumbering::*f4 )( const ElementaryMatrixPressureComplexPtr & ) =
-        &BaseDOFNumbering::setElementaryMatrix;
-
-    py::class_< BaseDOFNumbering, BaseDOFNumbering::BaseDOFNumberingPtr,
-                py::bases< DataStructure > > c1( "BaseDOFNumbering", py::no_init );
+    py::class_< BaseDOFNumbering, BaseDOFNumbering::BaseDOFNumberingPtr, DataStructure > c1(
+        mod, "BaseDOFNumbering" );
     // fake initFactoryPtr: created by subclasses
     // fake initFactoryPtr: created by subclasses
     c1.def( "addFiniteElementDescriptor", &BaseDOFNumbering::addFiniteElementDescriptor );
@@ -61,42 +50,42 @@ Returns the name of the physical quantity that is numbered.
 
 Returns:
     str: physical quantity name.
-        )",
-              ( py::arg( "self" ) )  );
+        )" );
 
     c1.def( "isParallel", &BaseDOFNumbering::isParallel, R"(
 The numbering is distributed across MPI processes for High Performance Computing.
 
 Returns:
     bool: *True* if used, *False* otherwise.
-        )",
-              ( py::arg( "self" ) )    );
+        )" );
     c1.def( "hasDirichletBC", &BaseDOFNumbering::hasDirichletBC, R"(
 The list of loads used to build numbering contains Dirichlet BC.
 
 Returns:
     bool: *True* if Dirichlet BC are present, *False* otherwise.
-        )",
-              ( py::arg( "self" ) )    );
-    c1.def( "setElementaryMatrix", f1 );
-    c1.def( "setElementaryMatrix", f2 );
-    c1.def( "setElementaryMatrix", f3 );
-    c1.def( "setElementaryMatrix", f4 );
+        )" );
+    c1.def( "setElementaryMatrix", py::overload_cast< const ElementaryMatrixDisplacementRealPtr & >(
+                                       &BaseDOFNumbering::setElementaryMatrix ) );
+    c1.def( "setElementaryMatrix",
+            py::overload_cast< const ElementaryMatrixDisplacementComplexPtr & >(
+                &BaseDOFNumbering::setElementaryMatrix ) );
+    c1.def( "setElementaryMatrix", py::overload_cast< const ElementaryMatrixTemperatureRealPtr & >(
+                                       &BaseDOFNumbering::setElementaryMatrix ) );
+    c1.def( "setElementaryMatrix", py::overload_cast< const ElementaryMatrixPressureComplexPtr & >(
+                                       &BaseDOFNumbering::setElementaryMatrix ) );
     c1.def( "getModel", &BaseDOFNumbering::getModel, R"(
 Return the model
 
 Returns:
     ModelPtr: a pointer to the model
-        )",
-              ( py::arg( "self" ) )  );
+        )" );
     c1.def( "setModel", &BaseDOFNumbering::setModel );
     c1.def( "getMesh", &BaseDOFNumbering::getMesh, R"(
 Return the mesh
 
 Returns:
     MeshPtr: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) ) );
+        )" );
     c1.def( "getDirichletBCDOFs", &BaseDOFNumbering::getDirichletBCDOFs, R"(
 Return a vector which describes DOFs that are imposed by Dirichlet BC.
 
@@ -107,13 +96,12 @@ Be carefull all Dirichlet BC have to be added before to call this function.
 
 Returns:
     tuple(int): a list with dirichlet imposition.
-        )",
-              ( py::arg( "self" ) ) );
+        )" );
     addDirichletBCToInterface( c1 );
     addMechanicalLoadToInterface( c1 );
     addThermalLoadToInterface( c1 );
     addAcousticLoadToInterface( c1 );
 #ifdef ASTER_HAVE_MPI
-    addParallelMechanicalLoadToInterface(c1);
+    addParallelMechanicalLoadToInterface( c1 );
 #endif
 };

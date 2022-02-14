@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StaticMacroElement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -75,7 +75,7 @@ class ProjMesu : public DataStructure {
  * @typedef ProjMesuPtr
  * @brief Pointeur intelligent vers un ProjMesu
  */
-typedef boost::shared_ptr< ProjMesu > ProjMesuPtr;
+typedef std::shared_ptr< ProjMesu > ProjMesuPtr;
 
 /**
  * @class StaticMacroElement
@@ -118,7 +118,7 @@ class StaticMacroElement : public DataStructure {
      * @typedef StaticMacroElementPtr
      * @brief Pointeur intelligent vers un StaticMacroElement
      */
-    typedef boost::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
+    typedef std::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
 
     /**
      * @brief Constructeur
@@ -145,6 +145,6 @@ class StaticMacroElement : public DataStructure {
  * @typedef StaticMacroElementPtr
  * @brief Pointeur intelligent vers un StaticMacroElement
  */
-typedef boost::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
+typedef std::shared_ptr< StaticMacroElement > StaticMacroElementPtr;
 
 #endif /* STATICMACROELEMENT_H_ */

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ThermalResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -47,6 +47,6 @@ class ThermalResult : public TransientResult {
  * @typedef ThermalResultPtr
  * @brief Pointeur intelligent vers un ThermalResult
  */
-typedef boost::shared_ptr< ThermalResult > ThermalResultPtr;
+typedef std::shared_ptr< ThermalResult > ThermalResultPtr;
 
 #endif /* EVOLUTIVETHERMALLOAD_H_ */

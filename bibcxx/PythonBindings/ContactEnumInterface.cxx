@@ -20,44 +20,50 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/ContactEnumInterface.h"
 
-void exportContactEnumToPython() {
+#include "aster_pybind.h"
 
-    py::enum_< ContactAlgo >( "ContactAlgo" )
+void exportContactEnumToPython( py::module_ &mod ) {
+
+    py::enum_< ContactAlgo >( mod, "ContactAlgo" )
         .value( "Lagrangian", ContactAlgo::Lagrangian )
         .value( "Nitsche", ContactAlgo::Nitsche )
-        .value( "Penalization", ContactAlgo::Penalization );
+        .value( "Penalization", ContactAlgo::Penalization )
+        .export_values();
 
-    py::enum_< ContactVariant >( "ContactVariant" )
+    py::enum_< ContactVariant >( mod, "ContactVariant" )
         .value( "Empty", ContactVariant::Empty )
         .value( "Rapide", ContactVariant::Rapide )
-        .value( "Robust", ContactVariant::Robust );
+        .value( "Robust", ContactVariant::Robust )
+        .export_values();
 
-    py::enum_< ContactType >( "ContactType" )
+    py::enum_< ContactType >( mod, "ContactType" )
         .value( "Unilateral", ContactType::Unilateral )
         .value( "Bilateral", ContactType::Bilateral )
-        .value( "Stick", ContactType::Stick );
+        .value( "Stick", ContactType::Stick )
+        .export_values();
 
-    py::enum_< FrictionAlgo >( "FrictionAlgo" )
+    py::enum_< FrictionAlgo >( mod, "FrictionAlgo" )
         .value( "Lagrangian", FrictionAlgo::Lagrangian )
         .value( "Nitsche", FrictionAlgo::Nitsche )
-        .value( "Penalization", FrictionAlgo::Penalization );
+        .value( "Penalization", FrictionAlgo::Penalization )
+        .export_values();
 
-    py::enum_< FrictionType >( "FrictionType" )
+    py::enum_< FrictionType >( mod, "FrictionType" )
         .value( "Without", FrictionType::Without )
         .value( "Tresca", FrictionType::Tresca )
         .value( "Coulomb", FrictionType::Coulomb )
-        .value( "Stick", FrictionType::Stick );
+        .value( "Stick", FrictionType::Stick )
+        .export_values();
 
-    py::enum_< PairingAlgo >( "PairingAlgo" )
-        .value( "Mortar", PairingAlgo::Mortar );
+    py::enum_< PairingAlgo >( mod, "PairingAlgo" )
+        .value( "Mortar", PairingAlgo::Mortar )
+        .export_values();
 
-    py::enum_< InitialState >( "InitialState" )
+    py::enum_< InitialState >( mod, "InitialState" )
         .value( "Interpenetrated", InitialState::Interpenetrated )
         .value( "Yes", InitialState::Yes )
-        .value( "No", InitialState::No );
+        .value( "No", InitialState::No )
+        .export_values();
 };

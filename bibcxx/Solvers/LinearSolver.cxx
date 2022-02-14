@@ -25,6 +25,7 @@
 
 #include "Solvers/LinearSolver.h"
 
+#include "aster_pybind.h"
 #include "astercxx.h"
 
 #include "Supervis/CommandSyntax.h"
@@ -41,29 +42,25 @@ LinearSolver::LinearSolver( const std::string name )
       _matrixPrec( nullptr ),
       _commandName( "SOLVEUR" ),
       _xfem( false ),
-      _keywords( NULL ){
+      _keywords( py::none() ){
 
       };
 
-void LinearSolver::setKeywords( PyObject *user_keywords ) {
+void LinearSolver::setKeywords( py::object &user_keywords ) {
     _isEmpty = true;
-    Py_XDECREF( _keywords );
     _keywords = user_keywords;
-    Py_INCREF( _keywords );
 #ifdef ASTER_DEBUG_CXX
-    PYDBG( "setKeywords:", _keywords );
+    PYDBG( "setKeywords:", _keywords.ptr() );
 #endif
 }
 
-PyObject *LinearSolver::getKeywords() const {
+py::dict LinearSolver::getKeywords() const {
     /* Returns a dict containing the SOLVEUR keywords.
      *
      * Return value: New reference.
      */
-    AS_ASSERT( _keywords != NULL );
-    PyObject *dict = PyDict_New();
-    std::string mcf = "SOLVEUR";
-    PyDict_SetItemString( dict, mcf.c_str(), _keywords );
+    AS_ASSERT( !_keywords.is_none() );
+    py::dict dict( py::arg( "SOLVEUR" ) = _keywords );
     return dict;
 }
 
@@ -80,8 +77,7 @@ bool LinearSolver::build() {
     CommandSyntax cmdSt( _commandName );
     cmdSt.setResult( getName(), getType() );
 
-    PyObject *dict = getKeywords();
-    cmdSt.define( dict );
+    cmdSt.define( getKeywords() );
 
     std::string base( "G" );
     std::string xfem( "   " );
@@ -90,7 +86,6 @@ bool LinearSolver::build() {
     }
     CALLO_CRESOL_WRAP( newName, base, xfem );
     _isEmpty = false;
-    Py_DECREF( dict );
 
     return true;
 };
@@ -132,15 +127,13 @@ bool LinearSolver::factorize( const BaseAssemblyMatrixPtr currentMatrix ) {
     CommandSyntax cmdSt( _commandName );
     cmdSt.setResult( getName(), getType() );
 
-    PyObject *dict = getKeywords();
-    cmdSt.define( dict );
+    cmdSt.define( getKeywords() );
 
     CALLO_MATRIX_FACTOR( solverName, base, &cret, _matrixPrec->getName(), matass, &npvneg, &istop );
 
-    _matrix->isFactorized( true );
+    _matrix->setFactorized( true );
     _matrix->setSolverName( getSolverName() );
 
-    Py_DECREF( dict );
     return true;
 };
 
@@ -164,7 +157,7 @@ FieldOnNodesRealPtr LinearSolver::solve( const FieldOnNodesRealPtr currentRHS,
         raiseAsterError( "Matrix must be factored first" );
     }
 
-    auto result = boost::make_shared< FieldOnNodesReal >( _matrix->getDOFNumbering() );
+    auto result = std::make_shared< FieldOnNodesReal >( _matrix->getDOFNumbering() );
 
     std::string diriName( " " );
     if ( dirichletBCField )
@@ -183,7 +176,7 @@ FieldOnNodesComplexPtr LinearSolver::solve( const FieldOnNodesComplexPtr current
         raiseAsterError( "Matrix must be factored first" );
     }
 
-    auto result = boost::make_shared< FieldOnNodesComplex >( _matrix->getDOFNumbering() );
+    auto result = std::make_shared< FieldOnNodesComplex >( _matrix->getDOFNumbering() );
 
     std::string diriName( " " );
     if ( dirichletBCField )

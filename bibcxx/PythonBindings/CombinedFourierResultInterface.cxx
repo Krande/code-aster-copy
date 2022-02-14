@@ -3,7 +3,7 @@
  * @brief Interface python de CombinedFourierResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,16 +22,13 @@
  */
 
 #include "PythonBindings/CombinedFourierResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportCombinedFourierResultToPython() {
+void exportCombinedFourierResultToPython( py::module_ &mod ) {
 
-    py::class_< CombinedFourierResult, CombinedFourierResultPtr,
-                py::bases< Result > >( "CombinedFourierResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< CombinedFourierResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< CombinedFourierResult, std::string >));
+    py::class_< CombinedFourierResult, CombinedFourierResultPtr, Result >( mod,
+                                                                           "CombinedFourierResult" )
+        .def( py::init( &initFactoryPtr< CombinedFourierResult > ) )
+        .def( py::init( &initFactoryPtr< CombinedFourierResult, std::string > ) );
 };

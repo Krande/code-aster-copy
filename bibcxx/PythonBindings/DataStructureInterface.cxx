@@ -24,111 +24,99 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/DataStructureInterface.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportDataStructureToPython() {
+#include <iostream>
 
-    void ( DataStructure::*c1 )( const int ) const = &DataStructure::debugPrint;
-    void ( DataStructure::*c2 )() const = &DataStructure::debugPrint;
+void exportDataStructureToPython( py::module_ &mod ) {
 
-    py::class_< DataStructure, DataStructure::DataStructurePtr >( "DataStructure", py::no_init )
-        .enable_pickling()
+    py::class_< DataStructure, DataStructurePtr >( mod, "DataStructure" )
+        // .enable_pickling()
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
+        .def_property( "ptr_sdj", &DataStructure::getSDJ, &DataStructure::setSDJ )
         .def( "id", &DataStructure::id,
-        R"(
+              R"(
 Return the identity of the object.
 
 Returns:
     int: Identifier (address as int).
-        )",
-            ( py::arg( "self" ) ) )
-
+        )" )
 
         .def( "addDependency", &DataStructure::addDependency,
-        R"(
+              R"(
 Add a dependency to a *DataStructure*.
 
 Arguments:
     ds (*DataStructure*): Parent *DataStructure* to depend on.
         )",
-            ( py::arg( "self" ), py::arg( "ds" ) ) )
+              py::arg( "ds" ) )
 
         .def( "removeDependency", &DataStructure::removeDependency,
-        R"(
+              R"(
 Remove a dependency to a *DataStructure*.
 
 Arguments:
     ds (*DataStructure*): Parent *DataStructure* to be removed from
         dependencies.
         )",
-            ( py::arg( "self" ), py::arg( "ds" ) ) )
+              py::arg( "ds" ) )
 
         .def( "resetDependencies", &DataStructure::resetDependencies,
-        R"(
+              R"(
 Clear the list of explicit dependencies.
-        )",
-            ( py::arg( "self" ) ) )
+        )" )
 
         .def( "getDependencies", &DataStructure::getDependencies,
-        R"(
+              R"(
 Return the explicit dependencies.
 
 Returns:
     list[*DataStructure*]: List of parents (dependencies) *DataStructure*.
-        )",
-            ( py::arg( "self" ) ) )
+        )" )
 
-        .def( "getName", &DataStructure::getName, py::return_value_policy< py::return_by_value >(),
-        R"(
+        .def( "getName", &DataStructure::getName,
+              R"(
 Return the internal (*Jeveux*) name of the *DataStructure*.
 
 Returns:
     str: Internal/*Jeveux* name.
-        )",
-            ( py::arg( "self" ) ) )
+        )" )
 
-        .add_property( "userName",
-                       make_function( &DataStructure::getUserName,
-                                      py::return_value_policy< py::return_by_value >() ),
-                       &DataStructure::setUserName,
+        .def_property( "userName", &DataStructure::getUserName, &DataStructure::setUserName,
+                       py::return_value_policy::copy,
                        R"(
 str: Name of the user variable that holds this object.
         )" )
-        .def( "getType", &DataStructure::getType, py::return_value_policy< py::return_by_value >(),
-        R"(
+        .def( "getType", &DataStructure::getType,
+              R"(
 Return the name of the *DataStructure* type.
 
 Returns:
     str: Name of the *DataStructure* type.
-        )",
-            ( py::arg( "self" ) ) )
+        )" )
         .def( "setTitle", &DataStructure::setTitle,
-        R"(
+              R"(
 Set the tile of the *DataStructure* .
 
 Arguments:
     title [str]: Title of the *DataStructure*.
         )",
-            ( py::arg( "self" ), py::arg( "title" ) ) )
-        .def( "debugPrint", c1 )
-        .def( "debugPrint", c2 )
+              py::arg( "title" ) )
+        .def( "debugPrint", &DataStructure::debugPrint, R"(
+Print the raw content of a *DataStructure* on the selected file.
+
+Args:
+    unit (int): File number (default: 6, means stdout).
+        )",
+              py::arg( "unit" ) = 6 )
         .def( "build", &DataStructure::build,
-        R"(
+              R"(
 Update the *DataStructure* attributes from the *Jeveux* objects.
 *Only use internally after calling fortran subroutines*.
 
 Returns:
     bool: *True* if all went ok, *False* otherwise.
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
 };
-
-/* Don't know how to document a property (for userName):
-        R"(
-str: Name of the user variable that holds this object.
-        )",
-                                        ( py::arg( "self" ) ) ),
-*/

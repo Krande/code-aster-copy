@@ -72,13 +72,13 @@ extern const char *const GraphPartitionerNames[nbGraphPartitioner];
  */
 class Model : public DataStructure, public ListOfTables {
   public:
-    typedef boost::shared_ptr< Model > ModelPtr;
+    typedef std::shared_ptr< Model > ModelPtr;
 
   protected:
     // On redefinit le type MeshEntityPtr afin de pouvoir stocker les MeshEntity
     // dans la list
     /** @brief Pointeur intelligent vers un VirtualMeshEntity */
-    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+    typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
     /** @brief std::list de std::pair de ElementaryModeling et MeshEntityPtr */
     typedef std::vector< std::pair< ElementaryModeling, MeshEntityPtr > > listOfModsAndGrps;
     /** @brief Valeur contenue dans listOfModsAndGrps */
@@ -143,7 +143,7 @@ class Model : public DataStructure, public ListOfTables {
           _splitMethod( SubDomain ),
           _graphPartitioner( MetisPartitioner ),
           _ligrel(
-              boost::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ),
+              std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ),
           _xfemModel( nullptr ) {
         if ( _baseMesh->isEmpty() )
             throw std::runtime_error( "Mesh is empty" );
@@ -164,7 +164,7 @@ class Model : public DataStructure, public ListOfTables {
           _splitMethod( Centralized ),
           _graphPartitioner( MetisPartitioner ),
           _ligrel(
-              boost::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ) {
+              std::make_shared< FiniteElementDescriptor >( getName() + ".MODELE", _baseMesh ) ) {
         AS_ASSERT( !_baseMesh->isEmpty() );
         AS_ASSERT( !_connectionMesh->isEmpty() );
     };
@@ -244,7 +244,7 @@ class Model : public DataStructure, public ListOfTables {
 #ifdef ASTER_HAVE_MPI
     ConnectionMeshPtr getConnectionMesh() const {
         if ( ( !_connectionMesh ) || _connectionMesh->isEmpty() )
-            throw std::runtime_error( "Mesh of model is empty" );
+            throw std::runtime_error( "ConnectionMesh of model is empty" );
         return _connectionMesh;
     };
 #endif /* ASTER_HAVE_MPI */
@@ -345,7 +345,9 @@ class Model : public DataStructure, public ListOfTables {
 #endif
 };
 
-/** @typedef ModelPtr */
-typedef boost::shared_ptr< Model > ModelPtr;
+/**
+ * @typedef Model
+ */
+using ModelPtr = std::shared_ptr< Model >;
 
 #endif /* MODEL_H_ */

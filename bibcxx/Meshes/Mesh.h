@@ -28,8 +28,8 @@
 #include "astercxx.h"
 
 #include "Meshes/BaseMesh.h"
-#include "Supervis/ResultNaming.h"
 #include "ParallelUtilities/AsterMPI.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class Mesh
@@ -47,7 +47,7 @@ class Mesh : public BaseMesh {
      * @typedef MeshPtr
      * @brief Pointeur intelligent vers un Mesh
      */
-    typedef boost::shared_ptr< Mesh > MeshPtr;
+    typedef std::shared_ptr< Mesh > MeshPtr;
 
     /**
      * @brief Constructeur
@@ -59,29 +59,15 @@ class Mesh : public BaseMesh {
      */
     Mesh( const std::string name ) : BaseMesh( name, "MAILLAGE" ){};
 
-    bool hasGroupOfCells( const std::string &name, const bool local ) const;
+    bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 
-    bool hasGroupOfCells( const std::string &name ) const {
-        return hasGroupOfCells( name, false );
-    };
+    bool hasGroupOfNodes( const std::string &name, const bool local = false ) const;
 
-    bool hasGroupOfNodes( const std::string &name, const bool local ) const;
+    VectorString getGroupsOfCells( const bool local = false ) const;
 
-    bool hasGroupOfNodes( const std::string &name ) const {
-        return hasGroupOfNodes( name, false );
-    };
+    VectorString getGroupsOfNodes( const bool local = false ) const;
 
-    VectorString getGroupsOfCells( const bool local ) const;
-
-    VectorString getGroupsOfCells() const { return getGroupsOfCells( false ); };
-
-    VectorString getGroupsOfNodes( const bool local ) const;
-
-    VectorString getGroupsOfNodes() const { return getGroupsOfNodes( false ); };
-
-    VectorLong getCells( const std::string name ) const;
-
-    VectorLong getCells() const { return getCells( std::string() ); };
+    VectorLong getCells( const std::string name = "" ) const;
 
     /**
      * @brief Return list of nodes
@@ -90,33 +76,10 @@ class Mesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of Nodes
      */
-    VectorLong getNodes( const std::string name, const bool localNumbering,
-                         const bool same_rank ) const; // 1
+    VectorLong getNodes( const std::string name, const bool localNumbering = true,
+                         const bool same_rank = true ) const;
 
-    VectorLong getNodes( const bool localNumbering, const bool same_rank ) const {
-        return getNodes( std::string(), localNumbering, same_rank ); // ->1
-    };
-
-    VectorLong getNodes() const {
-        return getNodes( std::string(), true, true ); // ->0
-    };
-
-    VectorLong getNodes( const std::string name ) const {
-        return getNodes( name, true, true ); // ->0
-    };
-
-    VectorLong getNodes( const std::string name, const bool localNumbering ) const {
-        return getNodes( name, localNumbering, true ); // ->0
-    };
-
-    VectorLong getNodes( const bool localNumbering ) const {
-        return getNodes( std::string(), localNumbering, true ); // ->0
-    };
-
-    // VectorLong getNodes( const bool same_rank ) const; //not possible
-
-    // VectorLong getNodes( const std::string name,
-    //                              const bool same_rank ) const; //not possible
+    VectorLong getNodes() const { return getNodes( std::string() ); };
 
     /**
      * @brief Returns the nodes indexes of a group of cells
@@ -125,16 +88,8 @@ class Mesh : public BaseMesh {
      * @param same_rank keep or not the nodes owned by the current domain
      * @return list of nodes indexes
      */
-    VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
-                                  const bool same_rank ) const;
-
-    VectorLong getNodesFromCells( const std::string name) const {
-        return getNodesFromCells( name, true, true ) ;
-    };
-
-    VectorLong getNodesFromCells( const std::string name, const bool localNumbering) const {
-        return getNodesFromCells( name, localNumbering, true ) ;
-    };
+    VectorLong getNodesFromCells( const std::string name, const bool localNumbering = true,
+                                  const bool same_rank = true ) const;
 
     /**
      * @brief Get inner nodes
@@ -185,6 +140,6 @@ class Mesh : public BaseMesh {
  * @typedef MeshPtr
  * @brief Pointeur intelligent vers un Mesh
  */
-typedef boost::shared_ptr< Mesh > MeshPtr;
+typedef std::shared_ptr< Mesh > MeshPtr;
 
 #endif /* MESH_H_ */

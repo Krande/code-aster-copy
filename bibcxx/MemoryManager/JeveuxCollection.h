@@ -761,7 +761,7 @@ std::vector< JeveuxChar32 > JeveuxCollectionClass< ValueType, AccessType >::getO
  */
 template < class ValueType, class AccessType = ASTERINTEGER > class JeveuxCollection {
   public:
-    typedef boost::shared_ptr< JeveuxCollectionClass< ValueType, AccessType > >
+    typedef std::shared_ptr< JeveuxCollectionClass< ValueType, AccessType > >
         JeveuxCollectionTypePtr;
 
   private:

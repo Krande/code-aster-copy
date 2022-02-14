@@ -61,7 +61,7 @@ class ConnectionMesh : public BaseMesh {
      * @typedef ConnectionMeshPtr
      * @brief Pointeur intelligent vers un ConnectionMesh
      */
-    typedef boost::shared_ptr< ConnectionMesh > ConnectionMeshPtr;
+    typedef std::shared_ptr< ConnectionMesh > ConnectionMeshPtr;
 
     /**
      * @brief Constructeur
@@ -88,17 +88,15 @@ class ConnectionMesh : public BaseMesh {
 
     const ParallelMeshPtr &getParallelMesh() const { return _pMesh; };
 
-    VectorString getGroupsOfCells() const;
+    VectorString getGroupsOfCells( const bool local = false ) const;
 
-    VectorString getGroupsOfNodes() const;
+    VectorString getGroupsOfNodes( const bool local = false ) const;
 
-    bool hasGroupOfCells( const std::string &name ) const;
+    bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 
-    bool hasGroupOfNodes( const std::string &name ) const;
+    bool hasGroupOfNodes( const std::string &name, const bool local = false ) const;
 
-    VectorLong getCells( const std::string name ) const;
-
-    VectorLong getCells() const { return getCells( std::string() ); };
+    VectorLong getCells( const std::string name = "" ) const;
 
     /**
      * @brief Fonction permettant de savoir si un maillage est partiel
@@ -111,7 +109,7 @@ class ConnectionMesh : public BaseMesh {
  * @typedef ConnectionMeshPtr
  * @brief Pointeur intelligent vers un ConnectionMesh
  */
-typedef boost::shared_ptr< ConnectionMesh > ConnectionMeshPtr;
+typedef std::shared_ptr< ConnectionMesh > ConnectionMeshPtr;
 
 #endif /* ASTER_HAVE_MPI */
 

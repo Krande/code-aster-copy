@@ -5,7 +5,7 @@
  * @file ThermalLoad.h
  * @brief Fichier entete de la classe ThermalLoad
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -39,7 +39,7 @@ template< typename ConstantFieldOnCellsType>
 class ThermalLoadDescription : public DataStructure {
 
   public:
-    typedef boost::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
+    typedef std::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
 
   private:
     /** @brief Modele */
@@ -78,18 +78,18 @@ class ThermalLoadDescription : public DataStructure {
         DataStructure( name, 13, "CHAR_CHTH" ),
         _model( currentModel ),
         _modelName( getName() + ".MODEL.NOMO" ), _convection( getName() + ".CONVE.VALE" ),
-        _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
+        _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
                                                                     _model->getMesh() ) ),
-        _cimpo( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
-        _cmult( boost::make_shared< ConstantFieldOnCellsReal >(
+        _cimpo( std::make_shared< ConstantFieldOnCellsType >( getName() + ".CIMPO", _FEDesc ) ),
+        _cmult( std::make_shared< ConstantFieldOnCellsReal >(
                                                                 getName() + ".CMULT", _FEDesc ) ),
-        _coefh( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".COEFH", _FEDesc ) ),
-        _flunl( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUNL", _FEDesc ) ),
-        _flure( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".FLURE", _FEDesc ) ),
-        _grain( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".GRAIN", _FEDesc ) ),
-        _hechp( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
-        _soure( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),
-        _tExt( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ){};
+        _coefh( std::make_shared< ConstantFieldOnCellsType >( getName() + ".COEFH", _FEDesc ) ),
+        _flunl( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLUNL", _FEDesc ) ),
+        _flure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".FLURE", _FEDesc ) ),
+        _grain( std::make_shared< ConstantFieldOnCellsType >( getName() + ".GRAIN", _FEDesc ) ),
+        _hechp( std::make_shared< ConstantFieldOnCellsType >( getName() + ".HECHP", _FEDesc ) ),
+        _soure( std::make_shared< ConstantFieldOnCellsType >( getName() + ".SOURE", _FEDesc ) ),
+        _tExt( std::make_shared< ConstantFieldOnCellsType >( getName() + ".T_EXT", _FEDesc ) ){};
 
     /**
      * @brief Get the finite element descriptor
@@ -122,6 +122,6 @@ typedef ThermalLoadDescription< ConstantFieldOnCellsChar24 >
 
 template< typename ConstantFieldOnCellsType >
 using ThermalLoadDescriptionPtr =
-    boost::shared_ptr< ThermalLoadDescription< ConstantFieldOnCellsType > >;
+    std::shared_ptr< ThermalLoadDescription< ConstantFieldOnCellsType > >;
 
 #endif /* THERMALLOADDESCRIPTION_H_ */

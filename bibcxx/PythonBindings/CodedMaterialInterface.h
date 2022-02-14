@@ -24,9 +24,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "Materials/CodedMaterial.h"
 
-void exportCodedMaterialToPython();
+void exportCodedMaterialToPython( py::module_ &mod );
 
 #endif /* CODEDMATERIALINTERFACE_H_ */

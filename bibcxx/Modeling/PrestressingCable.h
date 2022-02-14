@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe PrestressingCable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -67,7 +67,7 @@ class PrestressingCable : public DataStructure {
      * @typedef PrestressingCable
      * @brief Pointeur intelligent vers un PrestressingCable
      */
-    typedef boost::shared_ptr< PrestressingCable > PrestressingCablePtr;
+    typedef std::shared_ptr< PrestressingCable > PrestressingCablePtr;
 
     /**
      * @brief Constructeur
@@ -97,6 +97,6 @@ class PrestressingCable : public DataStructure {
  * @typedef PrestressingCable
  * @brief Pointeur intelligent vers un PrestressingCable
  */
-typedef boost::shared_ptr< PrestressingCable > PrestressingCablePtr;
+typedef std::shared_ptr< PrestressingCable > PrestressingCablePtr;
 
 #endif /* PRESTRESSINGCABLE_H_ */

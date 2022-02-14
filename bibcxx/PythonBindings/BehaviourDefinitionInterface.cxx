@@ -3,7 +3,7 @@
  * @brief Interface python de BehaviourDefinition
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,17 +21,14 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/BehaviourDefinitionInterface.h"
 
-void exportBehaviourDefinitionToPython() {
+#include "aster_pybind.h"
 
-    py::class_< BehaviourDefinition, BehaviourDefinition::BehaviourDefinitionPtr,
-            py::bases< DataStructure > >( "BehaviourDefinition", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< BehaviourDefinition >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< BehaviourDefinition, std::string >));
+void exportBehaviourDefinitionToPython( py::module_ &mod ) {
+
+    py::class_< BehaviourDefinition, BehaviourDefinition::BehaviourDefinitionPtr, DataStructure >(
+        mod, "BehaviourDefinition" )
+        .def( py::init( &initFactoryPtr< BehaviourDefinition > ) )
+        .def( py::init( &initFactoryPtr< BehaviourDefinition, std::string > ) );
 };

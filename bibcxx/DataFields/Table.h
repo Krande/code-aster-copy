@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Table
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,7 +56,7 @@ class Table : public DataStructure {
     * @typedef TablePtr
     * @brief Definition of a smart pointer to a Table
     */
-    typedef boost::shared_ptr< Table > TablePtr;
+    typedef std::shared_ptr< Table > TablePtr;
 
     // FIXME: Development documentation says 17 chars + "  ", for 'LG' logicals.
 
@@ -103,7 +103,7 @@ class Table : public DataStructure {
   * @typedef TablePtr
   * @brief Definition of a smart pointer to a Table
   */
-typedef boost::shared_ptr< Table > TablePtr;
+typedef std::shared_ptr< Table > TablePtr;
 
 /**
  * @typedef TableOfFunctions
@@ -118,7 +118,7 @@ class TableOfFunctions : public Table {
     * @typedef TableOfFunctionsPtr
     * @brief Definition of a smart pointer to a TableOfFunctions
     */
-    typedef boost::shared_ptr< TableOfFunctions > TableOfFunctionsPtr;
+    typedef std::shared_ptr< TableOfFunctions > TableOfFunctionsPtr;
 
     /**
     * @brief Constructeur

@@ -3,7 +3,7 @@
  * @brief Interface python de MPIInfos
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,19 +23,17 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-
 #include "PythonBindings/DeleteTemporaryObjectsInterface.h"
 
-void exportDeleteTemporaryObjectsToPython() {
+#include "aster_pybind.h"
 
-    py::def( "deleteTemporaryObjects", deleteTemporaryObjects, R"(
+void exportDeleteTemporaryObjectsToPython( py::module_ &mod ) {
+
+    mod.def( "deleteTemporaryObjects", deleteTemporaryObjects, R"(
 Delete temporary Jeveux objects
-        )");
+        )" );
 
-    py::def( "cleanJeveuxMemory", cleanJeveuxMemory, R"(
+    mod.def( "cleanJeveuxMemory", cleanJeveuxMemory, R"(
 Clean Jeveux objects (temporary, matrix, base, ...)
-        )");
+        )" );
 };

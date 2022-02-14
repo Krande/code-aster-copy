@@ -2,7 +2,7 @@
  * @file ResultNaming.cxx
  * @brief Implementation of automatic naming of jeveux objects.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -21,35 +21,30 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
+#include "Functions/Formula.h"
+
+#include "aster_pybind.h"
+#include "astercxx.h"
+
+#include "Supervis/ResultNaming.h"
+#include "Utilities/Tools.h"
+
+#include <cstdio>
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <cstdio>
-
-#include "astercxx.h"
-#include "Functions/Formula.h"
-#include "Supervis/ResultNaming.h"
-#include "Utilities/Tools.h"
 
 Formula::Formula( const std::string name )
     : GenericFunction( name, "FORMULE", "INTERPRE" ),
       _variables( JeveuxVectorChar24( getName() + ".NOVA" ) ),
       _pointers( JeveuxVectorLong( getName() + ".ADDR" ) ),
       _expression( "" ),
-      _code( NULL ),
-      _context( NULL ) {
-    _context = PyDict_New();
-}
+      _code( py::none() ),
+      _context( py::dict() ) {}
 
-Formula::Formula()
-    : Formula::Formula( ResultNaming::getNewResultName() ) {
+Formula::Formula() : Formula::Formula( ResultNaming::getNewResultName() ) {
     propertyAllocate();
     _pointers->allocate( 2 );
-}
-
-Formula::~Formula() {
-    Py_XDECREF( _code );
-    Py_XDECREF( _context );
 }
 
 void Formula::setVariables( const VectorString &names ) {
@@ -63,6 +58,7 @@ void Formula::setVariables( const VectorString &names ) {
         ++idx;
     }
 }
+
 VectorString Formula::getVariables() const {
     _variables->updateValuePointer();
     long nbvars = _variables->size();
@@ -74,22 +70,44 @@ VectorString Formula::getVariables() const {
 }
 
 void Formula::setExpression( const std::string expression ) {
-    const std::string name = "formula";
+    std::string name( trim( "code_of_" + getName() ) );
     _expression = expression;
-    Py_XDECREF( _code );
     PyCompilerFlags flags;
     flags.cf_flags = CO_FUTURE_DIVISION;
-    _code = Py_CompileStringFlags( _expression.c_str(), name.c_str(), Py_eval_input, &flags );
+
+    PyObject *pcode;
+    pcode = Py_CompileStringFlags( _expression.c_str(), name.c_str(), Py_eval_input, &flags );
+    _code = py::reinterpret_steal< py::object >( pcode );
+    _code.inc_ref();
+
     _pointers->updateValuePointer();
-    ( *_pointers )[0] = (long)_code;
-    if ( _code == NULL ) {
+    ( *_pointers )[0] = (ASTERINTEGER)_code.ptr();
+    if ( _code.ptr() == nullptr ) {
         PyErr_Print();
         throw std::runtime_error( "Invalid syntax in expression." );
     }
 }
 
-VectorReal Formula::evaluate( const VectorReal &values ) const
-    {
+void Formula::setContext( py::object context ) {
+    if ( !PyDict_Check( context.ptr() ) ) {
+        throw std::runtime_error( "Formula: 'dict' object is expected." );
+    }
+    _context = context;
+    _context.inc_ref();
+    _pointers->updateValuePointer();
+    ( *_pointers )[1] = (ASTERINTEGER)_context.ptr();
+}
+
+VectorString Formula::getProperties() const {
+    _property->updateValuePointer();
+    VectorString prop;
+    for ( int i = 0; i < 6; ++i ) {
+        prop.push_back( ( *_property )[i].rstrip() );
+    }
+    return prop;
+}
+
+VectorReal Formula::evaluate( const VectorReal &values ) const {
     int iret = 0;
     VectorString vars = getVariables();
     VectorReal result = evaluate_formula( _code, _context, vars, values, &iret );
@@ -105,10 +123,10 @@ VectorReal Formula::evaluate( const VectorReal &values ) const
 }
 
 /* functions shared with evaluation from Fortran */
-VectorReal evaluate_formula( const PyObject *code, PyObject *globals,
-                               const VectorString &variables,
-                               const VectorReal &values, int *retcode ) {
-    if ( !code ) {
+VectorReal evaluate_formula( const py::object &code, const py::object &globals,
+                             const VectorString &variables, const VectorReal &values,
+                             int *retcode ) {
+    if ( code.is_none() ) {
         std::cerr << "Formula has no expression:" << std::endl;
         *retcode = 4;
         return VectorReal( 0., 0 );
@@ -120,33 +138,31 @@ VectorReal evaluate_formula( const PyObject *code, PyObject *globals,
         return VectorReal( 0., 0 );
     }
 
-    PyObject *locals = PyDict_New();
+    py::object locals = py::dict();
     for ( int i = 0; i < nbvars; ++i ) {
-        PyObject *value = PyFloat_FromDouble( values[i] );
-        PyDict_SetItemString( locals, trim( variables[i] ).c_str(),
-                              value );
-        Py_DECREF( value );
+        locals[trim( variables[i] ).c_str()] = values[i];
     }
 
-    PyObject *res = PyEval_EvalCode( (PyObject *)code, globals, locals );
+    // res = py::eval( expression, globals, locals );
+    PyObject *res = PyEval_EvalCode( code.ptr(), globals.ptr(), locals.ptr() );
     if ( res == NULL ) {
         std::cerr << "Evaluation failed with: ";
-        PyObject_Print( locals, stderr, 0 );
+        PyObject_Print( locals.ptr(), stderr, 0 );
         std::cerr << std::endl;
         if ( PyErr_Occurred() ) {
             std::cerr << "Detailed traceback of evaluation:" << std::endl;
             PyErr_Print();
+            throw py::error_already_set();
         }
         *retcode = 4;
-        Py_DECREF( locals );
         return VectorReal( 0., 0 );
     }
 
     VectorReal result;
     if ( PyTuple_Check( res ) ) {
-        const long nbres = PyTuple_Size( res );
-        for ( long i = 0; i < nbres; ++i ) {
-            result.push_back( PyFloat_AsDouble( PyTuple_GetItem( res, i ) ) );
+        py::tuple tup = py::reinterpret_borrow< py::tuple >( res );
+        for ( auto &value : tup ) {
+            result.push_back( value.cast< double >() );
         }
     } else if ( PyComplex_Check( res ) ) {
         result.push_back( PyComplex_RealAsDouble( res ) );
@@ -154,7 +170,6 @@ VectorReal evaluate_formula( const PyObject *code, PyObject *globals,
     } else {
         result.push_back( PyFloat_AsDouble( res ) );
     }
-    Py_DECREF( locals );
     Py_DECREF( res );
 
     return result;
@@ -165,8 +180,8 @@ void DEFPPSPPPPP( EVAL_FORMULA, eval_formula, ASTERINTEGER *pcode, ASTERINTEGER 
                   char *array_vars, STRING_SIZE lenvars, ASTERDOUBLE *array_values,
                   ASTERINTEGER *nbvar, _OUT ASTERINTEGER *iret, _IN ASTERINTEGER *nbres,
                   _OUT ASTERDOUBLE *result ) {
-    PyObject *code = (PyObject *)( *pcode );
-    PyObject *globals = (PyObject *)( *pglobals );
+    const py::object code = py::reinterpret_borrow< py::object >( (PyObject *)( *pcode ) );
+    const py::object globals = py::reinterpret_borrow< py::object >( (PyObject *)( *pglobals ) );
 
     VectorString vars;
     VectorReal values;
@@ -179,7 +194,7 @@ void DEFPPSPPPPP( EVAL_FORMULA, eval_formula, ASTERINTEGER *pcode, ASTERINTEGER 
     VectorReal retvalues = evaluate_formula( code, globals, vars, values, &ret );
     *iret = (ASTERINTEGER)ret;
     if ( ret == 0 ) {
-        for ( long i = 0; i < int(retvalues.size()) && i < ( *nbres ); ++i ) {
+        for ( long i = 0; i < int( retvalues.size() ) && i < ( *nbres ); ++i ) {
             result[i] = (ASTERDOUBLE)retvalues[i];
         }
     }

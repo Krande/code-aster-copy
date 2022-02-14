@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedAssemblyVector
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -89,7 +89,7 @@ class GeneralizedAssemblyVector : public GenericGeneralizedAssemblyVector {
      * @typedef GeneralizedAssemblyVectorPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyVector
      */
-    typedef boost::shared_ptr< GeneralizedAssemblyVector< ValueType > >
+    typedef std::shared_ptr< GeneralizedAssemblyVector< ValueType > >
         GeneralizedAssemblyVectorPtr;
 
     /**
@@ -118,21 +118,21 @@ typedef GeneralizedAssemblyVector< ASTERCOMPLEX > GeneralizedAssemblyVectorCompl
  * @typedef GenericGeneralizedAssemblyVectorPtr
  * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyVector
  */
-typedef boost::shared_ptr< GenericGeneralizedAssemblyVector >
+typedef std::shared_ptr< GenericGeneralizedAssemblyVector >
     GenericGeneralizedAssemblyVectorPtr;
 
 /**
  * @typedef GeneralizedAssemblyVectorRealPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorReal
  */
-typedef boost::shared_ptr< GeneralizedAssemblyVectorReal >
+typedef std::shared_ptr< GeneralizedAssemblyVectorReal >
     GeneralizedAssemblyVectorRealPtr;
 
 /**
  * @typedef GeneralizedAssemblyVectorComplexPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyVectorComplex
  */
-typedef boost::shared_ptr< GeneralizedAssemblyVectorComplex >
+typedef std::shared_ptr< GeneralizedAssemblyVectorComplex >
     GeneralizedAssemblyVectorComplexPtr;
 
 #endif /* GENERALIZEDASSEMBLYVECTOR_H_ */

@@ -80,7 +80,7 @@ template < class ValueType >
 class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
   private:
     typedef SimpleFieldOnNodes< ValueType > SimpleFieldOnNodesValueType;
-    typedef boost::shared_ptr< SimpleFieldOnNodesValueType > SimpleFieldOnNodesValueTypePtr;
+    typedef std::shared_ptr< SimpleFieldOnNodesValueType > SimpleFieldOnNodesValueTypePtr;
 
     /** @brief Vecteur Jeveux '.DESC' */
     JeveuxVectorLong _descriptor;
@@ -95,7 +95,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
   public:
     /** @typedef FieldOnNodesPtr */
-    typedef boost::shared_ptr< FieldOnNodes > FieldOnNodesPtr;
+    typedef std::shared_ptr< FieldOnNodes > FieldOnNodesPtr;
 
     /**
      * @brief Constructor
@@ -247,7 +247,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @brief Unary Minus overloading
      * @return Updated field
      */
-    FieldOnNodes< ValueType > operator-() {
+    FieldOnNodes< ValueType > operator-() const {
         FieldOnNodes< ValueType > tmp( *this );
         ( *tmp._valuesList ) *= ValueType( -1 );
         return tmp;
@@ -275,7 +275,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      * @return New field
      */
     friend FieldOnNodes< ValueType > operator*( const ASTERDOUBLE &scal,
-                                                FieldOnNodes< ValueType > &rhs ) {
+                                                const FieldOnNodes< ValueType > &rhs ) {
         return rhs * scal;
     };
 
@@ -531,7 +531,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
 
             _reference->updateValuePointer();
             const std::string name2 = trim( ( *_reference )[1].toString() );
-            _dofDescription = boost::make_shared< FONDesc >( name2 );
+            _dofDescription = std::make_shared< FONDesc >( name2 );
             CALL_JEDEMA();
         }
         return true;
@@ -587,18 +587,18 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName, bool l
 
 /** @typedef FieldOnNodesReal */
 using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
-using FieldOnNodesRealPtr = boost::shared_ptr< FieldOnNodesReal >;
+using FieldOnNodesRealPtr = std::shared_ptr< FieldOnNodesReal >;
 
 /** @typedef FieldOnNodesLong */
 using FieldOnNodesLong = FieldOnNodes< ASTERINTEGER >;
-using FieldOnNodesLongPtr = boost::shared_ptr< FieldOnNodesLong >;
+using FieldOnNodesLongPtr = std::shared_ptr< FieldOnNodesLong >;
 
 /** @typedef FieldOnNodesComplex*/
 using FieldOnNodesComplex = FieldOnNodes< ASTERCOMPLEX >;
-using FieldOnNodesComplexPtr = boost::shared_ptr< FieldOnNodesComplex >;
+using FieldOnNodesComplexPtr = std::shared_ptr< FieldOnNodesComplex >;
 
 /** @typedef FieldOnNodesChar8 */
 using FieldOnNodesChar8 = FieldOnNodes< JeveuxChar8 >;
-using FieldOnNodesChar8Ptr = boost::shared_ptr< FieldOnNodesChar8 >;
+using FieldOnNodesChar8Ptr = std::shared_ptr< FieldOnNodesChar8 >;
 
 #endif /* FIELDONNODES_H_ */

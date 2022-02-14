@@ -277,71 +277,71 @@ bool TableContainer::build() {
                 // pass
             } else if ( type == "MATR_ASSE_GENE_R" ) {
                 if ( _mapGAMD[name] == nullptr ) {
-                    _mapGAMD[name] = boost::make_shared< GeneralizedAssemblyMatrixReal >( dsName );
+                    _mapGAMD[name] = std::make_shared< GeneralizedAssemblyMatrixReal >( dsName );
                 }
             } else if ( type == "MATR_ELEM_DEPL_R" ) {
                 if ( _mapEMDD[name] == nullptr ) {
                     _mapEMDD[name] =
-                        boost::make_shared< ElementaryMatrixDisplacementReal >( dsName );
+                        std::make_shared< ElementaryMatrixDisplacementReal >( dsName );
                 }
             } else if ( type == "MATR_ELEM_TEMP_R" ) {
                 if ( _mapEMTD[name] == nullptr ) {
                     _mapEMTD[name] =
-                        boost::make_shared< ElementaryMatrixTemperatureReal >( dsName );
+                        std::make_shared< ElementaryMatrixTemperatureReal >( dsName );
                 }
             } else if ( type == "VECT_ELEM_DEPL_R" ) {
                 if ( _mapEVDD[name] == nullptr ) {
                     _mapEVDD[name] =
-                        boost::make_shared< ElementaryVectorDisplacementReal >( dsName );
+                        std::make_shared< ElementaryVectorDisplacementReal >( dsName );
                 }
             } else if ( type == "VECT_ELEM_TEMP_R" ) {
                 if ( _mapEVTD[name] == nullptr ) {
                     _mapEVTD[name] =
-                        boost::make_shared< ElementaryVectorTemperatureReal >( dsName );
+                        std::make_shared< ElementaryVectorTemperatureReal >( dsName );
                 }
             } else if ( type == "CHAM_GD" ) {
                 if ( _mapGDF[name] == nullptr ) {
-                    _mapGDF[name] = boost::make_shared< DataField >( dsName, "CHAM_GD" );
+                    _mapGDF[name] = std::make_shared< DataField >( dsName, "CHAM_GD" );
                 }
             } else if ( type == "CHAM_NO" ) {
                 if ( _mapFOND[name] == nullptr ) {
-                    _mapFOND[name] = boost::make_shared< FieldOnNodesReal >( dsName );
+                    _mapFOND[name] = std::make_shared< FieldOnNodesReal >( dsName );
                 }
                 // } else if ( type == "CARTE" ) {
-                //     _mapPCFOMD[name] = boost::make_shared< ConstantFieldOnCellsReal >( dsName );
+                //     _mapPCFOMD[name] = std::make_shared< ConstantFieldOnCellsReal >( dsName );
             } else if ( type == "CHAM_ELEM" ) {
                 if ( _mapFOED[name] == nullptr ) {
-                    _mapFOED[name] = boost::make_shared< FieldOnCellsReal >( dsName );
+                    _mapFOED[name] = std::make_shared< FieldOnCellsReal >( dsName );
                 }
             } else if ( type == "MODE_MECA" ) {
                 if ( _mapMMC[name] == nullptr ) {
-                    _mapMMC[name] = boost::make_shared< ModeResult >( dsName );
+                    _mapMMC[name] = std::make_shared< ModeResult >( dsName );
                 }
             } else if ( type == "TABLE" ) {
                 if ( _mapT[name] == nullptr ) {
-                    _mapT[name] = boost::make_shared< Table >( dsName );
+                    _mapT[name] = std::make_shared< Table >( dsName );
                 }
             } else if ( type == "MAILLAGE" ) {
                 if ( _mapMesh[name] == nullptr ) {
-                    _mapMesh[name] = boost::make_shared< Mesh >( dsName );
+                    _mapMesh[name] = std::make_shared< Mesh >( dsName );
                 }
 #ifdef ASTER_HAVE_MPI
             } else if ( type == "MAILLAGE_P" ) {
                 if ( _mapPMesh[name] == nullptr ) {
-                    _mapPMesh[name] = boost::make_shared< ParallelMesh >( dsName );
+                    _mapPMesh[name] = std::make_shared< ParallelMesh >( dsName );
                 }
 #endif
             } else if ( type == "FONCTION" ) {
                 if ( _mapF[name] == nullptr ) {
-                    _mapF[name] = boost::make_shared< Function >( dsName );
+                    _mapF[name] = std::make_shared< Function >( dsName );
                 }
             } else if ( type == "FONCTION_C" ) {
                 if ( _mapFC[name] == nullptr ) {
-                    _mapFC[name] = boost::make_shared< FunctionComplex >( dsName );
+                    _mapFC[name] = std::make_shared< FunctionComplex >( dsName );
                 }
             } else if ( type == "NAPPE" ) {
                 if ( _mapS[name] == nullptr ) {
-                    _mapS[name] = boost::make_shared< Function2D >( dsName );
+                    _mapS[name] = std::make_shared< Function2D >( dsName );
                 }
             } else {
                 throw std::runtime_error( "Unsupported type '" + type + "' for '" + name + "'" );

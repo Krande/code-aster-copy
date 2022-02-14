@@ -3,7 +3,7 @@
  * @brief Interface python de GeneralizedResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,69 +21,41 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/GeneralizedResultInterface.h"
 
+#include "aster_pybind.h"
 
-void exportGeneralizedResultToPython()
-{
+void exportGeneralizedResultToPython( py::module_ &mod ) {
 
-
-    py::class_< GeneralizedResultReal,
-            GeneralizedResultRealPtr,
-            py::bases< DataStructure > >
-            ( "GeneralizedResultReal", py::no_init )
+    py::class_< GeneralizedResultReal, GeneralizedResultRealPtr, DataStructure >(
+        mod, "GeneralizedResultReal" )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-    ;
+        ;
 
-    py::class_< GeneralizedResultComplex,
-            GeneralizedResultComplexPtr,
-            py::bases< DataStructure > >
-            ( "GeneralizedResultComplex", py::no_init )
+    py::class_< GeneralizedResultComplex, GeneralizedResultComplexPtr, DataStructure >(
+        mod, "GeneralizedResultComplex" )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
-    ;
+        ;
 
-    py::class_< TransientGeneralizedResult,
-            TransientGeneralizedResultPtr,
-            py::bases< GeneralizedResultReal > >
-            ( "TransientGeneralizedResult", py::no_init )
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< TransientGeneralizedResult >) )
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< TransientGeneralizedResult,
-                             std::string >) )
+    py::class_< TransientGeneralizedResult, TransientGeneralizedResultPtr, GeneralizedResultReal >(
+        mod, "TransientGeneralizedResult" )
+        .def( py::init( &initFactoryPtr< TransientGeneralizedResult > ) )
+        .def( py::init( &initFactoryPtr< TransientGeneralizedResult, std::string > ) )
         .def( "setGeneralizedDOFNumbering",
               &TransientGeneralizedResult::setGeneralizedDOFNumbering )
         .def( "getGeneralizedDOFNumbering",
               &TransientGeneralizedResult::getGeneralizedDOFNumbering )
-        .def( "setDOFNumbering",
-              &TransientGeneralizedResult::setDOFNumbering )
-        .def( "getDOFNumbering",
-              &TransientGeneralizedResult::getDOFNumbering )
-    ;
+        .def( "setDOFNumbering", &TransientGeneralizedResult::setDOFNumbering )
+        .def( "getDOFNumbering", &TransientGeneralizedResult::getDOFNumbering );
 
-    py::class_< HarmoGeneralizedResult,
-            HarmoGeneralizedResultPtr,
-            py::bases< GeneralizedResultComplex > >
-            ( "HarmoGeneralizedResult", py::no_init )
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< HarmoGeneralizedResult >) )
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< HarmoGeneralizedResult,
-                             std::string >) )
-        .def( "getGeneralizedDOFNumbering",
-              &HarmoGeneralizedResult::getGeneralizedDOFNumbering )
-        .def( "setGeneralizedDOFNumbering",
-              &HarmoGeneralizedResult::setGeneralizedDOFNumbering )
-        .def( "setDOFNumbering",
-              &HarmoGeneralizedResult::setDOFNumbering )
-        .def( "getDOFNumbering",
-              &HarmoGeneralizedResult::getDOFNumbering )
-    ;
+    py::class_< HarmoGeneralizedResult, HarmoGeneralizedResultPtr, GeneralizedResultComplex >(
+        mod, "HarmoGeneralizedResult" )
+        .def( py::init( &initFactoryPtr< HarmoGeneralizedResult > ) )
+        .def( py::init( &initFactoryPtr< HarmoGeneralizedResult, std::string > ) )
+        .def( "getGeneralizedDOFNumbering", &HarmoGeneralizedResult::getGeneralizedDOFNumbering )
+        .def( "setGeneralizedDOFNumbering", &HarmoGeneralizedResult::setGeneralizedDOFNumbering )
+        .def( "setDOFNumbering", &HarmoGeneralizedResult::setDOFNumbering )
+        .def( "getDOFNumbering", &HarmoGeneralizedResult::getDOFNumbering );
 };

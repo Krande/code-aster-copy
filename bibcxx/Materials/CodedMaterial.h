@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe CodedMaterial
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,7 +55,7 @@ public:
      * @typedef CodedMaterialPtr
      * @brief Pointeur intelligent vers un CodedMaterial
      */
-    typedef boost::shared_ptr< CodedMaterial > CodedMaterialPtr;
+    typedef std::shared_ptr< CodedMaterial > CodedMaterialPtr;
 
     /**
      * @brief Constructeur
@@ -106,7 +106,7 @@ public:
  * @typedef CodedMaterialPtr
  * @brief Pointeur intelligent vers un CodedMaterial
  */
-typedef boost::shared_ptr< CodedMaterial > CodedMaterialPtr;
+typedef std::shared_ptr< CodedMaterial > CodedMaterialPtr;
 
 
 #endif /* CODEDMATERIAL_H_ */

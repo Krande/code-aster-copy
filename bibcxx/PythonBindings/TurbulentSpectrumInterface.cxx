@@ -3,7 +3,7 @@
  * @brief Interface python de TurbulentSpectrum
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,17 +23,14 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/TurbulentSpectrumInterface.h"
 
-void exportTurbulentSpectrumToPython() {
+#include "aster_pybind.h"
 
-    py::class_< TurbulentSpectrum, TurbulentSpectrum::TurbulentSpectrumPtr,
-            py::bases< DataStructure > >( "TurbulentSpectrum", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TurbulentSpectrum >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< TurbulentSpectrum, std::string >));
+void exportTurbulentSpectrumToPython( py::module_ &mod ) {
+
+    py::class_< TurbulentSpectrum, TurbulentSpectrum::TurbulentSpectrumPtr, DataStructure >(
+        mod, "TurbulentSpectrum" )
+        .def( py::init( &initFactoryPtr< TurbulentSpectrum > ) )
+        .def( py::init( &initFactoryPtr< TurbulentSpectrum, std::string > ) );
 };

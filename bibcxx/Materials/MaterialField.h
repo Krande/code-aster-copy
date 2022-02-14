@@ -26,6 +26,7 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
 
 #include "DataFields/ConstantFieldOnCells.h"
@@ -74,7 +75,7 @@ class PartOfMaterialField {
  * @typedef PartOfMaterialFieldPtr
  * @brief Smart pointer on PartOfMaterialField
  */
-typedef boost::shared_ptr< PartOfMaterialField > PartOfMaterialFieldPtr;
+typedef std::shared_ptr< PartOfMaterialField > PartOfMaterialFieldPtr;
 
 /**
  * @class MaterialField
@@ -88,7 +89,7 @@ class MaterialField : public DataStructure {
     // On redefinit le type MeshEntityPtr afin de pouvoir stocker les MeshEntity
     // dans la list
     /** @typedef Definition d'un pointeur intelligent sur un VirtualMeshEntity */
-    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+    typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
     /** @typedef std::list d'une std::pair de MeshEntityPtr */
     typedef std::list< std::pair< std::vector< MaterialPtr >, MeshEntityPtr > > listOfMatsAndGrps;
     /** @typedef Definition de la valeur contenue dans un listOfMatsAndGrps */
@@ -131,7 +132,7 @@ class MaterialField : public DataStructure {
      * @typedef MaterialFieldPtr
      * @brief Pointeur intelligent vers un MaterialField
      */
-    typedef boost::shared_ptr< MaterialField > MaterialFieldPtr;
+    typedef std::shared_ptr< MaterialField > MaterialFieldPtr;
 
     /**
      * @brief Constructeur
@@ -256,13 +257,13 @@ class MaterialField : public DataStructure {
     void setModel( ModelPtr model ) { _model = model; };
 
     /** @brief Add external state variables */
-    void addExternalStateVariables( PyObject *keywords );
+    void addExternalStateVariables( py::object &keywords );
 };
 
 /**
  * @typedef MaterialFieldPtr
  * @brief Pointeur intelligent vers un MaterialField
  */
-typedef boost::shared_ptr< MaterialField > MaterialFieldPtr;
+typedef std::shared_ptr< MaterialField > MaterialFieldPtr;
 
 #endif /* MATERIALONMESH_H_ */

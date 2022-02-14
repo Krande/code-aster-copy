@@ -64,7 +64,7 @@ class TimeStepper : public DataStructure, public GenericStepper {
      * @typedef TimeStepperPtr
      * @brief Pointeur intelligent vers un TimeStepper
      */
-    typedef boost::shared_ptr< TimeStepper > TimeStepperPtr;
+    typedef std::shared_ptr< TimeStepper > TimeStepperPtr;
 
     /**
      * @brief Constructeur
@@ -181,6 +181,6 @@ class TimeStepper : public DataStructure, public GenericStepper {
  * @typedef TimeStepperPtr
  * @brief Pointeur intelligent vers un TimeStepper
  */
-typedef boost::shared_ptr< TimeStepper > TimeStepperPtr;
+typedef std::shared_ptr< TimeStepper > TimeStepperPtr;
 
 #endif /* TIMESTEPPER_H_ */

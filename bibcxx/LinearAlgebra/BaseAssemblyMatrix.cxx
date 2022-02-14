@@ -33,7 +33,7 @@ BaseAssemblyMatrix::BaseAssemblyMatrix( const std::string &name, const std::stri
       _isEmpty( true ),
       _isFactorized( false ),
       _dofNum( nullptr ),
-      _listOfLoads( boost::make_shared< ListOfLoads >() ){};
+      _listOfLoads( std::make_shared< ListOfLoads >() ){};
 
 BaseAssemblyMatrix::BaseAssemblyMatrix( const PhysicalProblemPtr phys_prob,
                                         const std::string &type )

@@ -3,7 +3,7 @@
  * @brief Implementation de GenericParameter
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,8 +23,7 @@
 
 #include "Utilities/GenericParameter.h"
 
-SyntaxMapContainer
-buildSyntaxMapFromParamList( const ListGenParam &listParam ) {
+SyntaxMapContainer buildSyntaxMapFromParamList( const ListGenParam &listParam ) {
     SyntaxMapContainer dict;
     for ( const auto &listIter : listParam ) {
         if ( !listIter->isSet() && listIter->isMandatory() )

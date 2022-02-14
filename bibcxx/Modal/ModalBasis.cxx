@@ -29,8 +29,7 @@ bool GenericModalBasis::build() {
     CommandSyntax cmdSt( "DEFI_BASE_MODALE" );
     cmdSt.setResult( getName(), "MODE_MECA" );
 
-    PyObject *syntax = _solver->getKeywords();
-    cmdSt.define( syntax );
+    cmdSt.define( _solver->getKeywords() );
 
     try {
         ASTERINTEGER op = 99;
@@ -40,6 +39,5 @@ bool GenericModalBasis::build() {
     }
     _isEmpty = false;
 
-    Py_DECREF( syntax );
     return true;
 };

@@ -22,15 +22,15 @@ Exported methods
 Constructors
 ------------
 
-*DataStructure* objects must be wrapped by a ``boost::shared_ptr``.
+*DataStructure* objects must be wrapped by a ``std::shared_ptr``.
 
 The definition of the wrapper must reflect the inheritance of the underlying
-C++ DataStructures. In the following example, ``FunctionInstance`` is derivated
-from ``BaseFunctionInstance``. It is necessary to pass a Python ``Function``
+C++ DataStructures. In the following example, ``Function`` is derivated
+from ``BaseFunction``. It is necessary to pass a Python ``Function``
 object where a generic ``BaseFunction`` is expected.
 
-.. note:: The constructors of the underlying *Instance* should not be available
-    to the final user. That's why the definition should use ``no_init``.
+.. note:: The constructors of the underlying *instance* should not be available
+    to the final user. That's why the definition should use ``py::no_init``.
 
 To allow the serialization of the *DataStructure* objects using the Python
 pickling mechanism, we need a constructor that accepts the *Jeveux* name.
@@ -51,19 +51,19 @@ and the constructor used during unpickling that accepts the *Jeveux* name:
 
 .. code-block:: c++
 
-    void exportFunctionToPython()
+    void exportFunctionToPython( py::module_ &mod )
     {
-        using namespace boost::python;
+        namespace py = pybind11;
         ...
 
-        class_< FunctionInstance, FunctionInstance::FunctionPtr,
-                bases< BaseFunctionInstance > > ( "Function", no_init )
-            .def( "__init__", make_constructor(
-                &initFactoryPtr< FunctionInstance >) )
-            .def( "__init__", make_constructor(
-                &initFactoryPtr< FunctionInstance,
+        py::class_< Function, Function::FunctionPtr, BaseFunction > (
+            mod, "Function" )
+            .def( "__init__", py::make_constructor(
+                &initFactoryPtr< Function >) )
+            .def( "__init__", py::make_constructor(
+                &initFactoryPtr< Function,
                                  std::string >) )
-            .def( "setValues", &FunctionInstance::setValues )
+            .def( "setValues", &Function::setValues )
             ...
         ;
     }
@@ -74,17 +74,17 @@ and another that takes the *Jeveux* name and this pointer:
 
 .. code-block:: c++
 
-    void exportElementaryCharacteristicsToPython()
+    void exportElementaryCharacteristicsToPython( py::module_ &mod )
     {
-        using namespace boost::python;
+        using namespace pybind11;
 
-        class_< ElementaryCharacteristicsInstance, ElementaryCharacteristicsInstance::ElementaryCharacteristicsPtr,
+        class_< ElementaryCharacteristics, ElementaryCharacteristics::ElementaryCharacteristicsPtr,
                 bases< DataStructure > > ( "ElementaryCharacteristics", no_init )
             .def( "__init__", make_constructor(
-                &initFactoryPtr< ElementaryCharacteristicsInstance,
+                &initFactoryPtr< ElementaryCharacteristics,
                                  ModelPtr >) )
             .def( "__init__", make_constructor(
-                &initFactoryPtr< ElementaryCharacteristicsInstance,
+                &initFactoryPtr< ElementaryCharacteristics,
                                  std::string,
                                  ModelPtr >) )
         ;

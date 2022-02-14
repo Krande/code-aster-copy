@@ -3,7 +3,7 @@
  * @brief Interface python de Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,15 +22,12 @@
  */
 
 #include "PythonBindings/CrackInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportCrackToPython() {
+void exportCrackToPython( py::module_ &mod ) {
 
-    py::class_< Crack, Crack::CrackPtr, py::bases< DataStructure > >( "Crack",
-                                                                                       py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< Crack > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< Crack, std::string > ) );
+    py::class_< Crack, Crack::CrackPtr, DataStructure >( mod, "Crack" )
+        .def( py::init( &initFactoryPtr< Crack > ) )
+        .def( py::init( &initFactoryPtr< Crack, std::string > ) );
 };

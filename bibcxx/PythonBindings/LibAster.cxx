@@ -23,17 +23,13 @@
 
 #define CODEASTER_IMPORT_ARRAY 1
 
-#include "aster_numpy.h"
-
 #include "aster_init.h"
+#include "aster_numpy.h"
+#include "aster_pybind.h"
 #include "astercxx.h"
 
-#include <boost/python.hpp>
-
-#include "PythonBindings/Fortran.h"
-#include "Supervis/Exceptions.h"
-
 // Please keep '*Interface.h' files in alphabetical order to ease merging
+
 #include "PythonBindings/AcousticLoadInterface.h"
 #include "PythonBindings/AcousticModeResultInterface.h"
 #include "PythonBindings/AssemblyMatrixInterface.h"
@@ -54,20 +50,19 @@
 #include "PythonBindings/ContactNewInterface.h"
 #include "PythonBindings/ContactParametersInterface.h"
 #include "PythonBindings/ContactZoneInterface.h"
-#include "PythonBindings/ConvertersInterface.h"
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
 #include "PythonBindings/CrackInterface.h"
 #include "PythonBindings/CrackShapeInterface.h"
 #include "PythonBindings/CrackTipInterface.h"
 #include "PythonBindings/CreateEnthalpyInterface.h"
 #include "PythonBindings/CyclicSymmetryModeInterface.h"
+#include "PythonBindings/DOFNumberingInterface.h"
 #include "PythonBindings/DataFieldInterface.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/DebugInterface.h"
 #include "PythonBindings/DeleteTemporaryObjectsInterface.h"
 #include "PythonBindings/DirichletBCInterface.h"
 #include "PythonBindings/DiscreteComputationInterface.h"
-#include "PythonBindings/DOFNumberingInterface.h"
 #include "PythonBindings/DynamicMacroElementInterface.h"
 #include "PythonBindings/ElasticFourierResultInterface.h"
 #include "PythonBindings/ElasticResultInterface.h"
@@ -85,6 +80,7 @@
 #include "PythonBindings/FluidStructureInteractionInterface.h"
 #include "PythonBindings/FluidStructureModalBasisInterface.h"
 #include "PythonBindings/FormulaInterface.h"
+#include "PythonBindings/Fortran.h"
 #include "PythonBindings/FortranInterface.h"
 #include "PythonBindings/FullHarmonicAcousticResultInterface.h"
 #include "PythonBindings/FullHarmonicResultInterface.h"
@@ -95,8 +91,8 @@
 #include "PythonBindings/GeneralizedAssemblyMatrixInterface.h"
 #include "PythonBindings/GeneralizedAssemblyVectorInterface.h"
 #include "PythonBindings/GeneralizedDOFNumberingInterface.h"
-#include "PythonBindings/GeneralizedModelInterface.h"
 #include "PythonBindings/GeneralizedModeResultInterface.h"
+#include "PythonBindings/GeneralizedModelInterface.h"
 #include "PythonBindings/GeneralizedResultInterface.h"
 #include "PythonBindings/GenericFunctionInterface.h"
 #include "PythonBindings/GridInterface.h"
@@ -116,11 +112,11 @@
 #include "PythonBindings/MedCouplingConversionInterface.h"
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
 #include "PythonBindings/MeshEntitiesInterface.h"
-#include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/MeshInterface.h"
+#include "PythonBindings/MeshesMappingInterface.h"
 #include "PythonBindings/ModalBasisInterface.h"
-#include "PythonBindings/ModelInterface.h"
 #include "PythonBindings/ModeResultInterface.h"
+#include "PythonBindings/ModelInterface.h"
 #include "PythonBindings/MultipleElasticResultInterface.h"
 #include "PythonBindings/NonLinearResultInterface.h"
 #include "PythonBindings/ParallelDOFNumberingInterface.h"
@@ -148,192 +144,151 @@
 #include "PythonBindings/TransientResultInterface.h"
 #include "PythonBindings/TurbulentSpectrumInterface.h"
 #include "PythonBindings/UnitaryMechanicalLoadInterface.h"
-#include "PythonBindings/VariantModalBasisInterface.h"
-#include "PythonBindings/VariantStiffnessMatrixInterface.h"
 #include "PythonBindings/XfemCrackInterface.h"
+#include "Supervis/Exceptions.h"
 // Please keep '*Interface.h' files in alphabetical order to ease merging
 
-namespace py = boost::python;
-
-struct LibAsterInitializer {
-    LibAsterInitializer() { initAsterModules(); };
-
-    ~LibAsterInitializer() { jeveux_finalize(); };
-};
-
-BOOST_PYTHON_FUNCTION_OVERLOADS( raiseAsterError_overloads, raiseAsterError, 0, 1 )
-
-void *numpyInitialize()
-{
-  import_array();
-  return NULL;
+void *numpyInitialize() {
+    import_array();
+    return NULL;
 }
 
-BOOST_PYTHON_MODULE( libaster ) {
+PYBIND11_MODULE( libaster, mod ) {
     numpyInitialize();
+    initAsterModules();
 
     // hide c++ signatures
-    py::docstring_options doc_options( true, true, false );
+    // py::options options;
+    // options.disable_function_signatures();
 
-    boost::shared_ptr< LibAsterInitializer > libGuard( new LibAsterInitializer() );
-
-    py::class_< LibAsterInitializer, boost::shared_ptr< LibAsterInitializer >, boost::noncopyable >(
-        "LibAsterInitializer", py::no_init );
-
-    py::scope().attr( "__libguard" ) = libGuard;
+    auto cleanup_callback = []() { jeveux_finalize(); };
+    mod.add_object( "_cleanup", py::capsule( cleanup_callback ) );
 
     // Definition of exceptions, thrown from 'Exceptions.cxx'/uexcep
-    ErrorPy[ASTER_ERROR] = createPyException( "AsterError" );
-    py::register_exception_translator< ErrorCpp< ASTER_ERROR > >( &translateError< ASTER_ERROR > );
+    createExceptions( mod );
 
-    ErrorPy[ASTER_CONVERGENCE_ERROR] =
-        createPyException( "ConvergenceError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< ASTER_CONVERGENCE_ERROR > >(
-        &translateError< ASTER_CONVERGENCE_ERROR > );
-
-    ErrorPy[ASTER_INTEGRATION_ERROR] =
-        createPyException( "IntegrationError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< ASTER_INTEGRATION_ERROR > >(
-        &translateError< ASTER_INTEGRATION_ERROR > );
-
-    ErrorPy[ASTER_SOLVER_ERROR] = createPyException( "SolverError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< ASTER_SOLVER_ERROR > >(
-        &translateError< ASTER_SOLVER_ERROR > );
-
-    ErrorPy[ASTER_CONTACT_ERROR] = createPyException( "ContactError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< ASTER_CONTACT_ERROR > >(
-        &translateError< ASTER_CONTACT_ERROR > );
-
-    ErrorPy[ASTER_TIMELIMIT_ERROR] = createPyException( "TimeLimitError", ErrorPy[ASTER_ERROR] );
-    py::register_exception_translator< ErrorCpp< ASTER_TIMELIMIT_ERROR > >(
-        &translateError< ASTER_TIMELIMIT_ERROR > );
-
-    py::def( "raiseAsterError", &raiseAsterError, raiseAsterError_overloads() );
+    mod.def( "raiseAsterError", &raiseAsterError, py::arg( "idmess" ) = "VIDE_1" );
 
     // do not sort (compilation error)
-    exportStiffnessMatrixVariantToPython();
-    exportModalBasisVariantToPython();
-    exportConverters();
-    exportDataStructureToPython();
-    exportDebugToPython();
-    exportMeshEntitiesToPython();
-    exportBaseMeshToPython();
-    exportMeshToPython();
-    exportMedCouplingConversionToPython();
-    exportDiscreteComputationToPython();
-    exportBaseDOFNumberingToPython();
-    exportDOFNumberingToPython();
-    exportElementaryCharacteristicsToPython();
-    exportFiniteElementDescriptorToPython();
-    exportFiberGeometryToPython();
-    exportDataFieldToPython();
-    exportFieldOnCellsToPython();
-    exportFieldOnNodesToPython();
-    exportConstantFieldOnCellsToPython();
-    exportSimpleFieldOnCellsToPython();
-    exportSimpleFieldOnNodesToPython();
-    exportTableToPython();
-    exportTableContainerToPython();
-    exportTimeStepperToPython();
-    exportGeneralizedDOFNumberingToPython();
-    exportFluidStructureInteractionToPython();
-    exportTurbulentSpectrumToPython();
-    exportGenericFunctionToPython();
-    exportListOfLoadsToPython();
-    exportFunctionToPython();
-    exportFormulaToPython();
-    exportFortranToPython();
-    exportFunction2DToPython();
-    exportContactToPython();
-    exportContactEnumToPython();
-    exportContactParametersToPython();
-    exportContactNewToPython();
-    exportContactZoneToPython();
-    exportBaseAssemblyMatrixToPython();
-    exportAssemblyMatrixToPython();
-    exportElementaryTermToPython();
-    exportElementaryMatrixToPython();
-    exportElementaryVectorToPython();
-    exportGeneralizedAssemblyMatrixToPython();
-    exportGeneralizedAssemblyVectorToPython();
-    exportInterspectralMatrixToPython();
-    exportLinearSolverToPython();
-    exportModalBasisToPython();
-    exportStructureInterfaceToPython();
-    exportAcousticLoadToPython();
-    exportDirichletBCToPython();
-    exportMechanicalLoadToPython();
-    exportUnitaryMechanicalLoadToPython();
-    exportPhysicalQuantityToPython();
-    exportThermalLoadToPython();
-    exportBehaviourDefinitionToPython();
-    exportMaterialToPython();
-    exportBaseMaterialPropertyToPython();
-    exportMaterialPropertyToPython();
-    exportMaterialFieldToPython();
-    exportGridToPython();
-    exportMeshesMappingToPython();
-    exportSkeletonToPython();
-    exportDynamicMacroElementToPython();
-    exportStaticMacroElementToPython();
-    exportCrackShapeToPython();
-    exportCrackTipToPython();
-    exportCrackToPython();
-    exportGeneralizedModelToPython();
-    exportModelToPython();
-    exportPhysicsAndModelingsToPython();
-    exportPrestressingCableToPython();
-    exportXfemCrackToPython();
-    exportResultToPython();
-    exportTransientResultToPython();
-    exportLoadResultToPython();
-    exportThermalResultToPython();
-    exportCombinedFourierResultToPython();
-    exportElasticFourierResultToPython();
-    exportThermalFourierResultToPython();
-    exportMultipleElasticResultToPython();
-    exportNonLinearResultToPython();
-    exportPhysicalProblemToPython();
-    exportCppToFortranGlossaryToPython();
-    exportCyclicSymmetryModeToPython();
-    exportFullResultToPython();
-    exportModeResultToPython();
-    exportModeResultComplexToPython();
-    exportAcousticModeResultToPython();
-    exportBucklingModeResultToPython();
-    exportGeneralizedResultToPython();
-    exportElasticResultToPython();
-    exportMeshCoordinatesFieldToPython();
-    exportFullTransientResultToPython();
-    exportFullHarmonicResultToPython();
-    exportFullHarmonicAcousticResultToPython();
-    exportFluidStructureModalBasisToPython();
-    exportGeneralizedModeResultToPython();
+    exportDataStructureToPython( mod );
+    exportDebugToPython( mod );
+    exportMeshEntitiesToPython( mod );
+    exportBaseMeshToPython( mod );
+    exportMeshToPython( mod );
+    exportMedCouplingConversionToPython( mod );
+    exportDiscreteComputationToPython( mod );
+    exportBaseDOFNumberingToPython( mod );
+    exportDOFNumberingToPython( mod );
+    exportElementaryCharacteristicsToPython( mod );
+    exportFiniteElementDescriptorToPython( mod );
+    exportFiberGeometryToPython( mod );
+    exportDataFieldToPython( mod );
+    exportFieldOnCellsToPython( mod );
+    exportFieldOnNodesToPython( mod );
+    exportConstantFieldOnCellsToPython( mod );
+    exportSimpleFieldOnCellsToPython( mod );
+    exportSimpleFieldOnNodesToPython( mod );
+    exportTableToPython( mod );
+    exportTableContainerToPython( mod );
+    exportTimeStepperToPython( mod );
+    exportGeneralizedDOFNumberingToPython( mod );
+    exportFluidStructureInteractionToPython( mod );
+    exportTurbulentSpectrumToPython( mod );
+    exportGenericFunctionToPython( mod );
+    exportListOfLoadsToPython( mod );
+    exportFunctionToPython( mod );
+    exportFormulaToPython( mod );
+    exportFortranToPython( mod );
+    exportFunction2DToPython( mod );
+    exportContactToPython( mod );
+    exportContactEnumToPython( mod );
+    exportContactParametersToPython( mod );
+    exportContactNewToPython( mod );
+    exportContactZoneToPython( mod );
+    exportBaseAssemblyMatrixToPython( mod );
+    exportAssemblyMatrixToPython( mod );
+    exportElementaryTermToPython( mod );
+    exportElementaryMatrixToPython( mod );
+    exportElementaryVectorToPython( mod );
+    exportGeneralizedAssemblyMatrixToPython( mod );
+    exportGeneralizedAssemblyVectorToPython( mod );
+    exportInterspectralMatrixToPython( mod );
+    exportLinearSolverToPython( mod );
+    exportModalBasisToPython( mod );
+    exportStructureInterfaceToPython( mod );
+    exportAcousticLoadToPython( mod );
+    exportDirichletBCToPython( mod );
+    exportMechanicalLoadToPython( mod );
+    exportUnitaryMechanicalLoadToPython( mod );
+    exportPhysicalQuantityToPython( mod );
+    exportThermalLoadToPython( mod );
+    exportBehaviourDefinitionToPython( mod );
+    exportMaterialToPython( mod );
+    exportBaseMaterialPropertyToPython( mod );
+    exportMaterialPropertyToPython( mod );
+    exportMaterialFieldToPython( mod );
+    exportGridToPython( mod );
+    exportMeshesMappingToPython( mod );
+    exportSkeletonToPython( mod );
+    exportDynamicMacroElementToPython( mod );
+    exportStaticMacroElementToPython( mod );
+    exportCrackShapeToPython( mod );
+    exportCrackTipToPython( mod );
+    exportCrackToPython( mod );
+    exportGeneralizedModelToPython( mod );
+    exportModelToPython( mod );
+    exportPhysicsAndModelingsToPython( mod );
+    exportPrestressingCableToPython( mod );
+    exportXfemCrackToPython( mod );
+    exportResultToPython( mod );
+    exportTransientResultToPython( mod );
+    exportLoadResultToPython( mod );
+    exportThermalResultToPython( mod );
+    exportCombinedFourierResultToPython( mod );
+    exportElasticFourierResultToPython( mod );
+    exportThermalFourierResultToPython( mod );
+    exportMultipleElasticResultToPython( mod );
+    exportNonLinearResultToPython( mod );
+    exportPhysicalProblemToPython( mod );
+    exportCppToFortranGlossaryToPython( mod );
+    exportCyclicSymmetryModeToPython( mod );
+    exportFullResultToPython( mod );
+    exportModeResultToPython( mod );
+    exportModeResultComplexToPython( mod );
+    exportAcousticModeResultToPython( mod );
+    exportBucklingModeResultToPython( mod );
+    exportGeneralizedResultToPython( mod );
+    exportElasticResultToPython( mod );
+    exportMeshCoordinatesFieldToPython( mod );
+    exportFullTransientResultToPython( mod );
+    exportFullHarmonicResultToPython( mod );
+    exportFullHarmonicAcousticResultToPython( mod );
+    exportFluidStructureModalBasisToPython( mod );
+    exportGeneralizedModeResultToPython( mod );
 
 #ifdef ASTER_HAVE_MPI
     /* These objects must be declared in ObjectsExt/* as
        OnlyParallelObject for sequential version. */
-    exportParallelMeshToPython();
-    exportParallelDOFNumberingToPython();
-    exportParallelMechanicalLoadToPython();
-    exportParallelFiniteElementDescriptorToPython();
+    exportParallelMeshToPython( mod );
+    exportParallelDOFNumberingToPython( mod );
+    exportParallelMechanicalLoadToPython( mod );
+    exportParallelFiniteElementDescriptorToPython( mod );
 #endif /* ASTER_HAVE_MPI */
 
-    exportConnectionMeshToPython();
-    exportResultNamingToPython();
-    exportListOfFloatsToPython();
-    exportListOfIntegersToPython();
-    exportBaseExternalStateVariablesToPython();
-    exportListOfExternalStateVariablesToPython();
-    exportEmpiricalModeResultToPython();
-    exportExternalStateVariablesResultToPython();
-    exportExternalStateVariablesBuilderToPython();
-    exportMaterialFieldBuilderToPython();
-    exportCreateEnthalpyToPython();
-    exportDeleteTemporaryObjectsToPython();
-    exportMatrixToPetscToPython();
-    exportBehaviourPropertyToPython();
-    exportCodedMaterialToPython();
-    exportSetLoggingLevelToPython();
-
+    exportConnectionMeshToPython( mod );
+    exportResultNamingToPython( mod );
+    exportListOfFloatsToPython( mod );
+    exportListOfIntegersToPython( mod );
+    exportBaseExternalStateVariablesToPython( mod );
+    exportListOfExternalStateVariablesToPython( mod );
+    exportEmpiricalModeResultToPython( mod );
+    exportExternalStateVariablesResultToPython( mod );
+    exportExternalStateVariablesBuilderToPython( mod );
+    exportMaterialFieldBuilderToPython( mod );
+    exportCreateEnthalpyToPython( mod );
+    exportDeleteTemporaryObjectsToPython( mod );
+    exportMatrixToPetscToPython( mod );
+    exportBehaviourPropertyToPython( mod );
+    exportCodedMaterialToPython( mod );
+    exportSetLoggingLevelToPython( mod );
 };

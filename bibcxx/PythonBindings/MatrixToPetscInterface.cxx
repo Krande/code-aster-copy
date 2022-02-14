@@ -3,7 +3,7 @@
  * @brief Python bindings for Fortran interface.
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,29 +23,28 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-
 #include "PythonBindings/MatrixToPetscInterface.h"
+
+#include "aster_pybind.h"
+
 #include "Solvers/MatrixToPetsc.h"
 
-void exportMatrixToPetscToPython() {
+void exportMatrixToPetscToPython( py::module_ &mod ) {
 
-    py::def( "petscFinalize", petscFinalize, R"(
+    mod.def( "petscFinalize", petscFinalize, R"(
 Stops the PETSc interface.
         )" );
     //
-    py::def( "_petscInitializeWithOptions", petscInitializeWithOptions, R"(
+    mod.def( "_petscInitializeWithOptions", petscInitializeWithOptions, R"(
 Starts the PETSc interface with options.
 
 Arguments:
     options[str]: PETSc options
 
         )",
-             ( py::args( "options" ) ) );
+             py::arg( "options" ) );
 
-    py::def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >,
+    mod.def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >,
              R"(
 Convert a *AssemblyMatrix* object to a PETSc *Mat* object.
 
@@ -55,9 +54,9 @@ Arguments:
 Returns:
     *Mat*: PETSc matrix.
         )",
-             ( py::arg( "matr" ) ) );
+             py::arg( "matr" ) );
 
-    py::def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc< AssemblyMatrixTemperatureRealPtr >,
+    mod.def( "assemblyMatrixToPetsc", &assemblyMatrixToPetsc< AssemblyMatrixTemperatureRealPtr >,
              R"(
 Convert a *AssemblyMatrix* object to a PETSc *Mat* object.
 
@@ -67,5 +66,5 @@ Arguments:
 Returns:
     *Mat*: PETSc matrix.
         )",
-             ( py::arg( "matr" ) ) );
+             py::arg( "matr" ) );
 };

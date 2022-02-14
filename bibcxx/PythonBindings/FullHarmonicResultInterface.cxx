@@ -3,7 +3,7 @@
  * @brief Interface python de FullHarmonicResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,18 +22,12 @@
  */
 
 #include "PythonBindings/FullHarmonicResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportFullHarmonicResultToPython() {
+void exportFullHarmonicResultToPython( py::module_ &mod ) {
 
-    py::class_< FullHarmonicResult, FullHarmonicResultPtr,
-                py::bases< FullResult > >( "FullHarmonicResult",
-                                                             py::no_init )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< FullHarmonicResult, std::string >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FullHarmonicResult >));
+    py::class_< FullHarmonicResult, FullHarmonicResultPtr, FullResult >( mod, "FullHarmonicResult" )
+        .def( py::init( &initFactoryPtr< FullHarmonicResult, std::string > ) )
+        .def( py::init( &initFactoryPtr< FullHarmonicResult > ) );
 };

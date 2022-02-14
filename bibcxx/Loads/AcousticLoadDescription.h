@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org             */
+/* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
 /*                                                                      */
 /* code_aster is free software: you can redistribute it and/or modify   */
@@ -24,7 +24,7 @@
  * @brief Fichier entete de la classe AcousticLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -57,7 +57,7 @@ template< typename ConstantFieldOnCellsType>
 class AcousticLoadDescription : public DataStructure {
 
   public:
-    typedef boost::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
+    typedef std::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
 
   private:
 
@@ -82,7 +82,7 @@ class AcousticLoadDescription : public DataStructure {
      * @typedef AcousticLoadPtr
      * @brief Pointeur intelligent vers un AcousticLoad
      */
-    typedef boost::shared_ptr< AcousticLoadDescription > AcousticLoadDescriptionPtr;
+    typedef std::shared_ptr< AcousticLoadDescription > AcousticLoadDescriptionPtr;
 
     /**
      * @brief Constructeur
@@ -100,16 +100,16 @@ class AcousticLoadDescription : public DataStructure {
      */
     AcousticLoadDescription( const std::string name, const ModelPtr &model )
         : DataStructure( name, 13, "CHAR_CHAC" ), _model( model ),
-          _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
+          _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".LIGRE",
                                                                 model->getMesh() ) ),
           _modelName( JeveuxVectorChar8( getName() + ".MODEL.NOMO" ) ),
-          _imposedValues( boost::make_shared< ConstantFieldOnCellsType >(
+          _imposedValues( std::make_shared< ConstantFieldOnCellsType >(
                         getName() + ".CIMPO", _FEDesc ) ),
-          _multiplier( boost::make_shared< ConstantFieldOnCellsComplex >(
+          _multiplier( std::make_shared< ConstantFieldOnCellsComplex >(
                         getName() + ".CMULT", _FEDesc ) ),
-          _impedanceValues( boost::make_shared< ConstantFieldOnCellsType >(
+          _impedanceValues( std::make_shared< ConstantFieldOnCellsType >(
                         getName() + ".IMPED", _FEDesc ) ),
-          _speedValues( boost::make_shared< ConstantFieldOnCellsType >(
+          _speedValues( std::make_shared< ConstantFieldOnCellsType >(
                         getName() + ".VITFA", _FEDesc ) ){};
 
     /**
@@ -140,7 +140,7 @@ typedef AcousticLoadDescription< ConstantFieldOnCellsComplex >
 
 template< typename ConstantFieldOnCellsType >
 using AcousticLoadDescriptionPtr =
-    boost::shared_ptr<AcousticLoadDescription< ConstantFieldOnCellsType > >;
+    std::shared_ptr<AcousticLoadDescription< ConstantFieldOnCellsType > >;
 
 
 #endif /* ACOUSTICLOADDESCRIPTION_H_ */

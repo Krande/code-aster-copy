@@ -22,36 +22,24 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/BaseAssemblyMatrixInterface.h"
 
-#include <PythonBindings/factory.h>
+#include "aster_pybind.h"
 
-void exportBaseAssemblyMatrixToPython() {
+void exportBaseAssemblyMatrixToPython( py::module_ &mod ) {
 
-    void ( BaseAssemblyMatrix::*c1 )( const DirichletBCPtr &currentLoad ) =
-        &BaseAssemblyMatrix::addLoad;
-    void ( BaseAssemblyMatrix::*c2 )( const DirichletBCPtr &currentLoad, const FunctionPtr &func ) =
-        &BaseAssemblyMatrix::addLoad;
-
-    py::class_< BaseAssemblyMatrix, BaseAssemblyMatrixPtr, py::bases< DataStructure > >(
-        "BaseAssemblyMatrix", py::no_init )
+    py::class_< BaseAssemblyMatrix, BaseAssemblyMatrixPtr, DataStructure >( mod,
+                                                                            "BaseAssemblyMatrix" )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< BaseAssemblyMatrix, std::string > ) )
+        .def( py::init( &initFactoryPtr< BaseAssemblyMatrix, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< BaseAssemblyMatrix, std::string, std::string > ) )
+        .def( py::init( &initFactoryPtr< BaseAssemblyMatrix, std::string, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< BaseAssemblyMatrix, PhysicalProblemPtr, std::string > ) )
+        .def( py::init( &initFactoryPtr< BaseAssemblyMatrix, PhysicalProblemPtr, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c1 )
-        // -----------------------------------------------------------------------------------------
-        .def( "addDirichletBC", c2 )
+        .def( "addDirichletBC",
+              &BaseAssemblyMatrix::addLoad< const DirichletBCPtr &, const FunctionPtr & >,
+              py::arg( "currentLoad" ), py::arg( "func" ) = emptyRealFunction )
         // -----------------------------------------------------------------------------------------
         .def( "getDOFNumbering", &BaseAssemblyMatrix::getDOFNumbering )
         // -----------------------------------------------------------------------------------------
@@ -60,24 +48,21 @@ Return the model.
 
 Returns:
     Model: a pointer to the model
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         // -----------------------------------------------------------------------------------------
         .def( "getMesh", &BaseAssemblyMatrix::getMesh, R"(
 Return the mesh.
 
 Returns:
     Mesh: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         // -----------------------------------------------------------------------------------------
         .def( "getListOfLoads", &BaseAssemblyMatrix::getListOfLoads, R"(
 Return the list of loads.
 
 Returns:
     ListOfLoads: a pointer to the list of loads
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         // -----------------------------------------------------------------------------------------
         .def( "setListOfLoads", &BaseAssemblyMatrix::setListOfLoads, R"(
 Set the list of loads.
@@ -85,36 +70,22 @@ Set the list of loads.
 Arguments:
     ListOfLoads: a pointer to the list of loads to set
         )",
-              ( py::arg( "self" ), py::arg( "load" ) ) )
+              py::arg( "load" ) )
         // -----------------------------------------------------------------------------------------
         .def( "isEmpty", &BaseAssemblyMatrix::isEmpty, R"(
-Test if the matrix is empty.
+Tell if the matrix is empty.
 
 Returns:
     bool: *True* if the matrix is empty.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         // -----------------------------------------------------------------------------------------
-        .def( "isFactorized",
-              static_cast< bool ( BaseAssemblyMatrix::* )() const >(
-                  &BaseAssemblyMatrix::isFactorized ),
-              R"(
-Test if the matrix is factorized.
-
-Returns:
-    bool: *True* if the matrix is factorized.
-        )",
-              ( py::arg( "self" ) ) )
-        .def( "isFactorized",
-              static_cast< void ( BaseAssemblyMatrix::* )( const bool & ) >(
-                  &BaseAssemblyMatrix::isFactorized ),
+        .def( "isFactorized", &BaseAssemblyMatrix::isFactorized,
               R"(
 Tell if the matrix is factorized.
 
-Arguments:
-    bool: *True* if the matrix is factorized.
-        )",
-              ( py::arg( "self" ), py::arg( "facto" ) ) )
+Returns:
+    bool: *True* if the matrix is factorized, *False* otherwise.
+        )" )
         // -----------------------------------------------------------------------------------------
         .def( "setDOFNumbering", &BaseAssemblyMatrix::setDOFNumbering )
         // -----------------------------------------------------------------------------------------
@@ -145,43 +116,19 @@ Returns:
     are present.
         )" )
         // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( BaseAssemblyMatrix::* )() const >( &BaseAssemblyMatrix::print ),
+        .def( "print", &BaseAssemblyMatrix::print,
               R"(
-Print the matrix in code_aster format (with information on the DOF).
-        )",
-              ( py::arg( "self" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( BaseAssemblyMatrix::* )( const std::string ) const >(
-                  &BaseAssemblyMatrix::print ),
-              R"(
-Print the matrix in the given format format.
+            Print the matrix in code_aster or matlab format (with information on the DOF).
 
-Arguments:
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::arg( "format" ) ) )
-        // -----------------------------------------------------------------------------------------
-        .def( "print",
-              static_cast< void ( BaseAssemblyMatrix::* )( const ASTERINTEGER, const std::string )
-                               const >( &BaseAssemblyMatrix::print ),
-              R"(
-Print the matrix in the given format format and in the given logical unit.
-
-Arguments:
-    unit (int): logical unit to print
-    format (str): 'ASTER' or 'MATLAB'
-
-        )",
-              ( py::arg( "self" ), py::args( "unit", "format" ) ) )
+            Arguments:
+                format (str): 'ASTER' (default) or 'MATLAB'
+            )",
+              py::arg( "format" ) = "ASTER", py::arg( "unit" ) = 6 )
         // -----------------------------------------------------------------------------------------
         .def( "symmetrize", &BaseAssemblyMatrix::symmetrize,
               R"(
-Make the assembly matrix symmetric in place
-        )",
-              ( py::arg( "self" ) ) )
+            Make the assembly matrix symmetric in place
+            )" )
         // -----------------------------------------------------------------------------------------
         .def( "transpose", &BaseAssemblyMatrix::transpose );
 };

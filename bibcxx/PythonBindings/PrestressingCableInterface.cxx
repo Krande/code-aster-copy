@@ -3,7 +3,7 @@
  * @brief Interface python de PrestressingCable
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,25 +22,19 @@
  */
 
 #include "PythonBindings/PrestressingCableInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportPrestressingCableToPython() {
+void exportPrestressingCableToPython( py::module_ &mod ) {
 
-    py::class_< PrestressingCable,
-            PrestressingCable::PrestressingCablePtr,
-            py::bases< DataStructure > >( "PrestressingCable", py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< PrestressingCable,
-                                                 const ModelPtr &, const MaterialFieldPtr &,
-                                                 const ElementaryCharacteristicsPtr & > ) )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< PrestressingCable, std::string,
-                                   const ModelPtr &, const MaterialFieldPtr &,
-                                   const ElementaryCharacteristicsPtr & > ) )
+    py::class_< PrestressingCable, PrestressingCable::PrestressingCablePtr, DataStructure >(
+        mod, "PrestressingCable" )
+        .def( py::init(
+            &initFactoryPtr< PrestressingCable, const ModelPtr &, const MaterialFieldPtr &,
+                             const ElementaryCharacteristicsPtr & > ) )
+        .def( py::init(
+            &initFactoryPtr< PrestressingCable, std::string, const ModelPtr &,
+                             const MaterialFieldPtr &, const ElementaryCharacteristicsPtr & > ) )
         .def( "getModel", &PrestressingCable::getModel, R"(
 Return the Model.
 
@@ -48,6 +42,5 @@ Returns:
     *Model*: Model object.
         )" )
         .def( "getMaterialField", &PrestressingCable::getMaterialField )
-        .def( "getElementaryCharacteristics",
-              &PrestressingCable::getElementaryCharacteristics );
+        .def( "getElementaryCharacteristics", &PrestressingCable::getElementaryCharacteristics );
 };

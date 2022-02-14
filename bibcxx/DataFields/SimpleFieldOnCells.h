@@ -158,7 +158,7 @@ class SimpleFieldOnCells : public DataStructure {
      * @typedef SimpleFieldOnCellsPtr
      * @brief Pointeur intelligent vers un SimpleFieldOnCells
      */
-    typedef boost::shared_ptr< SimpleFieldOnCells > SimpleFieldOnCellsPtr;
+    typedef std::shared_ptr< SimpleFieldOnCells > SimpleFieldOnCellsPtr;
 
     /**
      * @brief Constructeur
@@ -388,7 +388,7 @@ typedef SimpleFieldOnCells< ASTERDOUBLE > SimpleFieldOnCellsReal;
  * @typedef SimpleFieldOnCellsPtrReal
  * @brief Definition d'un champ aux éléments de double
  */
-typedef boost::shared_ptr< SimpleFieldOnCellsReal > SimpleFieldOnCellsRealPtr;
+typedef std::shared_ptr< SimpleFieldOnCellsReal > SimpleFieldOnCellsRealPtr;
 
 /** @typedef SimpleFieldOnCellsLong Class d'une carte de long */
 typedef SimpleFieldOnCells< ASTERINTEGER > SimpleFieldOnCellsLong;
@@ -397,6 +397,6 @@ typedef SimpleFieldOnCells< ASTERINTEGER > SimpleFieldOnCellsLong;
  * @typedef SimpleFieldOnCellsPtrLong
  * @brief Definition d'un champ aux éléments de long
  */
-typedef boost::shared_ptr< SimpleFieldOnCellsLong > SimpleFieldOnCellsLongPtr;
+typedef std::shared_ptr< SimpleFieldOnCellsLong > SimpleFieldOnCellsLongPtr;
 
 #endif /* SIMPLEFIELDONCELLS_H_ */

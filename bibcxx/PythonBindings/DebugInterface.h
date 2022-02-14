@@ -5,7 +5,7 @@
  * @file DebugInterface.h
  * @brief Debugging utilities
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,22 +23,19 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
-
-template< typename T >
+template < typename T >
 static long libaster_debugRefCount( T &ptr ) {
     long value = ptr.use_count();
 #ifdef ASTER_DEBUG_CXX
-    std::cout << "DEBUG: use_count=" << value
-        << " addr=" << std::ios::hex << ptr.get()
-        << std::endl;
+    std::cout << "DEBUG: use_count=" << value << " addr=" << std::ios::hex << ptr.get()
+              << std::endl;
 #endif
     return value;
 }
 
-void exportDebugToPython();
+void exportDebugToPython( py::module_ &mod );
 
 #endif /* DEBUGINTERFACE_H_ */

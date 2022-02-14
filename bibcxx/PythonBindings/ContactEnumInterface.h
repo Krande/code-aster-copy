@@ -23,9 +23,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "Contact/ContactEnum.h"
 
-void exportContactEnumToPython();
+void exportContactEnumToPython( py::module_ &mod );
 
 #endif /* CONTACTENUMINTERFACE_H_ */

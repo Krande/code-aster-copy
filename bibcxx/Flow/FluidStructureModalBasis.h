@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FluidStructureModalBasis
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -60,7 +60,7 @@ class FluidStructureModalBasis : public DataStructure, public ListOfTables {
      * @typedef FluidStructureModalBasisPtr
      * @brief Pointeur intelligent vers un FluidStructureModalBasis
      */
-    typedef boost::shared_ptr< FluidStructureModalBasis > FluidStructureModalBasisPtr;
+    typedef std::shared_ptr< FluidStructureModalBasis > FluidStructureModalBasisPtr;
 
     /**
      * @brief Constructeur
@@ -86,6 +86,6 @@ class FluidStructureModalBasis : public DataStructure, public ListOfTables {
  * @typedef FluidStructureModalBasisPtr
  * @brief Pointeur intelligent vers un FluidStructureModalBasis
  */
-typedef boost::shared_ptr< FluidStructureModalBasis > FluidStructureModalBasisPtr;
+typedef std::shared_ptr< FluidStructureModalBasis > FluidStructureModalBasisPtr;
 
 #endif /* FLUIDSTRUCTMODALBASIS_H_ */

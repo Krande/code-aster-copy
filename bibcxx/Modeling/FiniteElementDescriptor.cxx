@@ -90,7 +90,7 @@ void FiniteElementDescriptor::transferDofDescriptorFrom( FiniteElementDescriptor
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
+        std::static_pointer_cast< ConnectionMesh >( getMesh() );
 
     // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
     //        "does not correspond to other FiniteElementDescriptor mesh"
@@ -142,7 +142,7 @@ void FiniteElementDescriptor::transferListOfGroupOfCellFrom( FiniteElementDescri
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
+        std::static_pointer_cast< ConnectionMesh >( getMesh() );
 
     // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
     //        "does not correspond to other FiniteElementDescriptor mesh"
@@ -235,7 +235,7 @@ void FiniteElementDescriptor::setFrom( FiniteElementDescriptorPtr &other ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
+        std::static_pointer_cast< ConnectionMesh >( getMesh() );
 
     // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
     //        "does not correspond to other FiniteElementDescriptor mesh"

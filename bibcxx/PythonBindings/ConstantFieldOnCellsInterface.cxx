@@ -3,7 +3,7 @@
  * @brief Interface python de ConstantFieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,30 +23,23 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
-#include "PythonBindings/DataStructureInterface.h"
-#include "PythonBindings/DataFieldInterface.h"
 #include "PythonBindings/ConstantFieldOnCellsInterface.h"
 
-void exportConstantFieldOnCellsToPython() {
-    py::class_< ConstantFieldOnCellsReal, ConstantFieldOnCellsRealPtr,
-            py::bases< DataField > >( "ConstantFieldOnCellsReal", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ConstantFieldOnCellsReal, BaseMeshPtr >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ConstantFieldOnCellsReal, std::string, BaseMeshPtr >))
+#include "aster_pybind.h"
+
+#include "PythonBindings/DataFieldInterface.h"
+#include "PythonBindings/DataStructureInterface.h"
+
+void exportConstantFieldOnCellsToPython( py::module_ &mod ) {
+    py::class_< ConstantFieldOnCellsReal, ConstantFieldOnCellsRealPtr, DataField >(
+        mod, "ConstantFieldOnCellsReal" )
+        .def( py::init( &initFactoryPtr< ConstantFieldOnCellsReal, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< ConstantFieldOnCellsReal, std::string, BaseMeshPtr > ) )
         .def( "getMesh", &ConstantFieldOnCellsReal::getMesh );
 
-    py::class_< ConstantFieldOnCellsChar16, ConstantFieldOnCellsChar16Ptr,
-            py::bases< DataField > >( "ConstantFieldOnCellsChar16", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ConstantFieldOnCellsChar16, BaseMeshPtr >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ConstantFieldOnCellsChar16, std::string, BaseMeshPtr >))
+    py::class_< ConstantFieldOnCellsChar16, ConstantFieldOnCellsChar16Ptr, DataField >(
+        mod, "ConstantFieldOnCellsChar16" )
+        .def( py::init( &initFactoryPtr< ConstantFieldOnCellsChar16, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< ConstantFieldOnCellsChar16, std::string, BaseMeshPtr > ) )
         .def( "getMesh", &ConstantFieldOnCellsChar16::getMesh );
 };

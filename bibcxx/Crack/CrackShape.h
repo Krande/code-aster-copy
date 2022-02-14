@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe XfemCrack
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -55,7 +55,7 @@ class CrackShape {
      * @typedef CrackShapePtr
      * @brief Pointeur intelligent vers un CrackShape
      */
-    typedef boost::shared_ptr< CrackShape > CrackShapePtr;
+    typedef std::shared_ptr< CrackShape > CrackShapePtr;
 
     /**
      * @brief Constructeur
@@ -145,6 +145,6 @@ class CrackShape {
  * @typedef CrackShapePtr
  * @brief Pointeur intelligent vers un CrackShape
  */
-typedef boost::shared_ptr< CrackShape > CrackShapePtr;
+typedef std::shared_ptr< CrackShape > CrackShapePtr;
 
 #endif /* CRACKSHAPE_H_ */

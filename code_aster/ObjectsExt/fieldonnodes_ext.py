@@ -19,10 +19,13 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`FieldOnNodesReal` --- Fields defined on nodes of elements (real)
-:py:class:`FieldOnNodesLong` --- Fields defined on nodes of elements (long)
-:py:class:`FieldOnNodesChar8` --- Fields defined on nodes of elements (char8)
-:py:class:`FieldOnNodesComplex` --- Fields defined on nodes of elements (complex)
+:py:class:`FieldOnNodesReal` --- Fields defined on nodes of elements
+********************************************************************
+
+The *Field On Nodes* object exists for real numbers (:py:class:`FieldOnNodesReal`),
+integers (:py:class:`FieldOnNodesLong`),
+strings (:py:class:`FieldOnNodesChar8`) and
+complex numbers (:py:class:`FieldOnNodesComplex`).
 """
 
 import numpy, functools

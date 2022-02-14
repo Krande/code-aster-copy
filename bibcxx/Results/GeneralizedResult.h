@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -119,14 +119,14 @@ public:
 template class GeneralizedResult< ASTERDOUBLE >;
 typedef GeneralizedResult< ASTERDOUBLE >
     GeneralizedResultReal;
-typedef boost::shared_ptr< GeneralizedResultReal >
+typedef std::shared_ptr< GeneralizedResultReal >
     GeneralizedResultRealPtr;
 
 /** @typedef Définition d'un résultat généralisé à valeurs complexes */
 template class GeneralizedResult< ASTERCOMPLEX >;
 typedef GeneralizedResult< ASTERCOMPLEX >
     GeneralizedResultComplex;
-typedef boost::shared_ptr< GeneralizedResultComplex >
+typedef std::shared_ptr< GeneralizedResultComplex >
     GeneralizedResultComplexPtr;
 
 class NonLinearDescriptor
@@ -178,7 +178,7 @@ public:
      * @typedef TransientGeneralizedResultPtr
      * @brief Pointeur intelligent vers un TransientGeneralizedResult
      */
-    typedef boost::shared_ptr< TransientGeneralizedResult >
+    typedef std::shared_ptr< TransientGeneralizedResult >
         TransientGeneralizedResultPtr;
 
     /**
@@ -203,7 +203,7 @@ public:
 
 
 };
-typedef boost::shared_ptr< TransientGeneralizedResult >
+typedef std::shared_ptr< TransientGeneralizedResult >
     TransientGeneralizedResultPtr;
 
 /**
@@ -222,7 +222,7 @@ public:
      * @typedef HarmoGeneralizedResultPtr
      * @brief Pointeur intelligent vers un HarmoGeneralizedResult
      */
-    typedef boost::shared_ptr< HarmoGeneralizedResult >
+    typedef std::shared_ptr< HarmoGeneralizedResult >
         HarmoGeneralizedResultPtr;
 
     /**
@@ -240,7 +240,7 @@ public:
     {};
 };
 
-typedef boost::shared_ptr< HarmoGeneralizedResult >
+typedef std::shared_ptr< HarmoGeneralizedResult >
     HarmoGeneralizedResultPtr;
 
 #endif /* GENERALIZEDRESULTSCONTAINER_H_ */

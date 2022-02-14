@@ -22,84 +22,70 @@
 
 #include "PythonBindings/ListOfLoadsInterface.h"
 
+#include "aster_pybind.h"
+
 #include "PythonBindings/LoadUtilities.h"
-#include "PythonBindings/factory.h"
 
-#include <boost/python.hpp>
+void exportListOfLoadsToPython( py::module_ &mod ) {
 
-namespace py = boost::python;
-
-void exportListOfLoadsToPython() {
-
-    py::class_< ListOfLoads, ListOfLoadsPtr, py::bases< DataStructure > > c1( "ListOfLoads",
-                                                                              py::no_init );
-    c1.def( "__init__", py::make_constructor( &initFactoryPtr< ListOfLoads > ) );
-    c1.def( "__init__", py::make_constructor( &initFactoryPtr< ListOfLoads, std::string > ) );
-    c1.def( "__init__", py::make_constructor( &initFactoryPtr< ListOfLoads, ModelPtr > ) );
-    c1.def( "__init__",
-            py::make_constructor( &initFactoryPtr< ListOfLoads, std::string, ModelPtr > ) );
+    py::class_< ListOfLoads, ListOfLoadsPtr, DataStructure > c1( mod, "ListOfLoads" );
+    c1.def( py::init( &initFactoryPtr< ListOfLoads > ) );
+    c1.def( py::init( &initFactoryPtr< ListOfLoads, std::string > ) );
+    c1.def( py::init( &initFactoryPtr< ListOfLoads, ModelPtr > ) );
+    c1.def( py::init( &initFactoryPtr< ListOfLoads, std::string, ModelPtr > ) );
     c1.def( "isEmpty", &ListOfLoads::isEmpty, R"(
             The list of loads is empty or not.
 
             Returns:
                 bool: True if empty
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
     c1.def( "hasDirichletBC", &ListOfLoads::hasDirichletBC, R"(
             Dirichlet BCs have been added or not ?
 
             Returns:
                 bool: True if Dirichlet BCs have been added
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
     c1.def( "hasExternalLoad", &ListOfLoads::hasExternalLoad, R"(
             External load (= not Dirichlet BCs) have been added or not ?
 
             Returns:
                 bool: True if External load have been added
-        )",
-            ( py::arg( "self" ) ) );
-    c1.def( "getDirichletBCs", &ListOfLoads::getDirichletBCs,
-            py::return_value_policy< py::copy_const_reference >(), R"(
+        )" );
+    c1.def( "getDirichletBCs", &ListOfLoads::getDirichletBCs, R"(
 Return list of DirichletBCs
 
 Returns:
     ListDiriBC: a list of DirichletBC
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
     c1.def( "getMechanicalLoadsReal", &ListOfLoads::getMechanicalLoadsReal,
-            py::return_value_policy< py::copy_const_reference >(), R"(
+            R"(
 Return list of real mechanical loads
 
 Returns:
     ListMecaLoadReal: a list of real mechanical loads
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
     c1.def( "getMechanicalLoadsFunction", &ListOfLoads::getMechanicalLoadsFunction,
-            py::return_value_policy< py::copy_const_reference >(), R"(
+            R"(
 Return list of Function mechanical loads
 
 Returns:
     ListMecaLoadFunction: a list of Function mechanical loads
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
 #ifdef ASTER_HAVE_MPI
     c1.def( "getParallelMechanicalLoadsReal", &ListOfLoads::getParallelMechanicalLoadsReal,
-            py::return_value_policy< py::copy_const_reference >(), R"(
+            R"(
 Return list of real parallel mechanical loads
 
 Returns:
     ListParaMecaLoadReal: a list of real parallel mechanical loads
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
     c1.def( "getParallelMechanicalLoadsFunction", &ListOfLoads::getParallelMechanicalLoadsFunction,
-            py::return_value_policy< py::copy_const_reference >(), R"(
+            R"(
 Return list of function parallel mechanical loads
 
 Returns:
     ListParaMecaLoadFunction: a list of function parallel mechanical loads
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
 #endif /* ASTER_HAVE_MPI */
 
     c1.def( "getModel", &ListOfLoads::getModel, R"(
@@ -107,6 +93,5 @@ Return the model used
 
 Returns:
     Model: model used
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
 };

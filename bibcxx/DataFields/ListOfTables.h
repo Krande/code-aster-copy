@@ -5,7 +5,7 @@
  * @file ListOfTables.h
  * @brief Fichier entete de la classe ListOfTables
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -25,13 +25,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <string>
-
 #include "astercxx.h"
 
+#include "DataFields/Table.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
-#include "DataFields/Table.h"
 
 /**
  * @class ListOfTables
@@ -59,7 +57,7 @@ class ListOfTables {
      * @typedef ListOfTablesPtr
      * @brief Definition of a smart pointer to a ListOfTables
      */
-    typedef boost::shared_ptr< ListOfTables > ListOfTablesPtr;
+    typedef std::shared_ptr< ListOfTables > ListOfTablesPtr;
 
     /**
      * @brief Constructeur
@@ -83,7 +81,6 @@ class ListOfTables {
      * @param id Table identifier
      */
     TablePtr getTable( const std::string id );
-
 };
 
 #endif /* LISTOFTABLES_H_ */

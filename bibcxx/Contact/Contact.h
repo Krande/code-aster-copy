@@ -6,7 +6,7 @@
  * @brief Fichier entete de la class Contact
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -49,7 +49,7 @@ class Contact : public DataStructure {
     * @typedef ContactPt
     * @brief Pointeur intelligent vers un Contact
     */
-    typedef boost::shared_ptr< Contact > ContactPtr;
+    typedef std::shared_ptr< Contact > ContactPtr;
     /**
      * @brief Constructeur
      */
@@ -60,7 +60,7 @@ class Contact : public DataStructure {
      */
     Contact( const std::string name, const ModelPtr model )
         : DataStructure( name, 8, "CHAR_CONTACT" ), _model( model ),
-            _FEDesc( boost::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
+            _FEDesc( std::make_shared< FiniteElementDescriptor >( getName() + ".CHME.LIGRE",
                                                                 _model->getMesh() ) ),
             _isEmpty( false ){};
 
@@ -85,6 +85,6 @@ class Contact : public DataStructure {
 * @typedef ContactPt
 * @brief Pointeur intelligent vers un Contact
 */
-typedef boost::shared_ptr< Contact > ContactPtr;
+typedef std::shared_ptr< Contact > ContactPtr;
 
 #endif /* CONTACT_H_ */

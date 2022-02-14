@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe TurbulentSpectrum
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,7 +53,7 @@ class TurbulentSpectrum : public DataStructure {
      * @typedef TurbulentSpectrumPtr
      * @brief Pointeur intelligent vers un TurbulentSpectrum
      */
-    typedef boost::shared_ptr< TurbulentSpectrum > TurbulentSpectrumPtr;
+    typedef std::shared_ptr< TurbulentSpectrum > TurbulentSpectrumPtr;
 
     /**
      * @brief Constructeur
@@ -75,6 +75,6 @@ class TurbulentSpectrum : public DataStructure {
  * @typedef TurbulentSpectrumPtr
  * @brief Pointeur intelligent vers un TurbulentSpectrum
  */
-typedef boost::shared_ptr< TurbulentSpectrum > TurbulentSpectrumPtr;
+typedef std::shared_ptr< TurbulentSpectrum > TurbulentSpectrumPtr;
 
 #endif /* TURBULENTSPECTRUM_H_ */

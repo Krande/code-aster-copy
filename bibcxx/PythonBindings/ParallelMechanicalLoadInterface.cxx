@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelMechanicalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,42 +21,34 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/ParallelMechanicalLoadInterface.h"
+
+#include "aster_pybind.h"
 
 #ifdef ASTER_HAVE_MPI
 
-void exportParallelMechanicalLoadToPython() {
+void exportParallelMechanicalLoadToPython( py::module_ &mod ) {
 
-    py::class_< ParallelMechanicalLoadReal,
-            ParallelMechanicalLoadReal::ParallelMechanicalLoadPtr,
-                py::bases< DataStructure > >( "ParallelMechanicalLoadReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadReal,
-                                                            MechanicalLoadRealPtr, ModelPtr >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadReal, std::string,
-                                                MechanicalLoadRealPtr, ModelPtr >))
+    py::class_< ParallelMechanicalLoadReal, ParallelMechanicalLoadReal::ParallelMechanicalLoadPtr,
+                DataStructure >( mod, "ParallelMechanicalLoadReal" )
+        .def( py::init(
+            &initFactoryPtr< ParallelMechanicalLoadReal, MechanicalLoadRealPtr, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ParallelMechanicalLoadReal, std::string,
+                                         MechanicalLoadRealPtr, ModelPtr > ) )
         .def( "getFiniteElementDescriptor",
               &ParallelMechanicalLoadReal::getFiniteElementDescriptor )
-        .def( "getModel",
-              &ParallelMechanicalLoadReal::getModel );
+        .def( "getModel", &ParallelMechanicalLoadReal::getModel );
 
     py::class_< ParallelMechanicalLoadFunction,
-            ParallelMechanicalLoadFunction::ParallelMechanicalLoadPtr,
-                py::bases< DataStructure > >( "ParallelMechanicalLoadFunction", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadFunction,
-                                                            MechanicalLoadFunctionPtr, ModelPtr >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ParallelMechanicalLoadFunction,
-                                                std::string,
-                                                MechanicalLoadFunctionPtr, ModelPtr >))
+                ParallelMechanicalLoadFunction::ParallelMechanicalLoadPtr, DataStructure >(
+        mod, "ParallelMechanicalLoadFunction" )
+        .def( py::init( &initFactoryPtr< ParallelMechanicalLoadFunction, MechanicalLoadFunctionPtr,
+                                         ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ParallelMechanicalLoadFunction, std::string,
+                                         MechanicalLoadFunctionPtr, ModelPtr > ) )
         .def( "getFiniteElementDescriptor",
               &ParallelMechanicalLoadFunction::getFiniteElementDescriptor )
-        .def( "getModel",
-              &ParallelMechanicalLoadFunction::getModel );
+        .def( "getModel", &ParallelMechanicalLoadFunction::getModel );
 };
 
 #endif /* ASTER_HAVE_MPI */

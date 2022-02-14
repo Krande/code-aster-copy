@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe StructureInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,12 +27,12 @@
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
+#include "Loads/PhysicalQuantity.h"
 #include "MemoryManager/JeveuxCollection.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Numbering/DOFNumbering.h"
-#include "Loads/PhysicalQuantity.h"
-#include "Utilities/CapyConvertibleValue.h"
 #include "Supervis/ResultNaming.h"
+#include "Utilities/CapyConvertibleValue.h"
 
 /**
  * @enum InterfaceTypeEnum
@@ -74,7 +74,9 @@ class StructureInterface : public DataStructure {
 
         InterfaceDefinition( const std::string &name, const InterfaceTypeEnum &type,
                              const VectorString &groupOfNodes, const VectorComponent &components )
-            : _name( name ), _type( type ), _components( components ),
+            : _name( name ),
+              _type( type ),
+              _components( components ),
               _container( CapyConvertibleContainer( "INTERFACE" ) ) {
             _container.add( new CapyConvertibleValue< std::string >( true, "NOM", _name, true ) );
             _container.add( new CapyConvertibleValue< InterfaceTypeEnum >(
@@ -99,7 +101,7 @@ class StructureInterface : public DataStructure {
      * @typedef StructureInterfacePtr
      * @brief Pointeur intelligent vers un StructureInterface
      */
-    typedef boost::shared_ptr< StructureInterface > StructureInterfacePtr;
+    typedef std::shared_ptr< StructureInterface > StructureInterfacePtr;
 
     /**
      * @brief Constructeur
@@ -111,8 +113,10 @@ class StructureInterface : public DataStructure {
      */
 
     StructureInterface( const std::string name )
-        : DataStructure( name, 8, "INTERF_DYNA_CLAS" ), _frequency( 1. ),
-          _isEmpty( true ), _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
+        : DataStructure( name, 8, "INTERF_DYNA_CLAS" ),
+          _frequency( 1. ),
+          _isEmpty( true ),
+          _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
           _numbering( JeveuxVectorLong( getName() + ".IDC_DEFO" ) ),
           _description( JeveuxVectorLong( getName() + ".IDC_DESC" ) ),
           _nodes( JeveuxCollectionLong( getName() + ".IDC_LINO" ) ),
@@ -132,15 +136,18 @@ class StructureInterface : public DataStructure {
      */
 
     StructureInterface( const std::string name, const DOFNumberingPtr &curDof )
-        : DataStructure( name, 8, "INTERF_DYNA_CLAS" ), _frequency( 1. ),
-          _isEmpty( true ), _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
+        : DataStructure( name, 8, "INTERF_DYNA_CLAS" ),
+          _frequency( 1. ),
+          _isEmpty( true ),
+          _codingNumbers( JeveuxCollectionLong( getName() + ".IDC_DDAC" ) ),
           _numbering( JeveuxVectorLong( getName() + ".IDC_DEFO" ) ),
           _description( JeveuxVectorLong( getName() + ".IDC_DESC" ) ),
           _nodes( JeveuxCollectionLong( getName() + ".IDC_LINO" ) ),
           _names( JeveuxVectorChar8( getName() + ".IDC_NOMS" ) ),
           _reference( JeveuxVectorChar24( getName() + ".IDC_REFE" ) ),
           _types( JeveuxVectorChar8( getName() + ".IDC_TYPE" ) ),
-          _frequencyValue( JeveuxVectorReal( getName() + ".IDC_DY_FREQ" ) ), _dofNum( curDof ) {
+          _frequencyValue( JeveuxVectorReal( getName() + ".IDC_DY_FREQ" ) ),
+          _dofNum( curDof ) {
         _container.add(
             new CapyConvertibleValue< DOFNumberingPtr >( true, "NUME_DDL", _dofNum, true ) );
         _container.add(
@@ -152,13 +159,13 @@ class StructureInterface : public DataStructure {
         _interfDefs.emplace_back( name, type, groupOfNodes, components );
     };
 
-    bool build() ;
+    bool build();
 };
 
 /**
  * @typedef StructureInterfacePtr
  * @brief Enveloppe d'un pointeur intelligent vers un StructureInterface
  */
-typedef boost::shared_ptr< StructureInterface > StructureInterfacePtr;
+typedef std::shared_ptr< StructureInterface > StructureInterfacePtr;
 
 #endif /* STRUCTUREINTERFACE_H_ */

@@ -26,12 +26,11 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include <boost/python/errors.hpp>
-namespace py = boost::python;
+#include "aster_pybind.h"
+#include "astercxx.h"
 
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "Loads/PhysicalQuantity.h"
-#include "astercxx.h"
 
 /** @brief Turns PETSc off */
 void petscFinalize();
@@ -74,24 +73,23 @@ typedef struct PyPetscKSPObject PyPetscKSPObject;
 #endif
 
 /** @brief Convert an AssemblyMatrix object to a PETSc Mat object */
-template < class T > PyObject *assemblyMatrixToPetsc( const T matr ) {
+template < class T >
+py::object assemblyMatrixToPetsc( const T matr ) {
 #ifdef ASTER_HAVE_PETSC4PY
-    PyObject *petsc4py = PyImport_ImportModule( "petsc4py.PETSc" );
-    PyObject *petsc_matr = PyObject_CallMethod( petsc4py, "Mat", NULL );
+    py::object petsc_matr = py::module_::import( "petsc4py.PETSC" ).attr( "Mat" )();
 
     Mat conv;
     PetscErrorCode ier;
     CALLO_MATASS2PETSC( matr->getName(), &conv, &ier );
 
-    struct PyPetscMatObject *pyx_mat = (struct PyPetscMatObject *)petsc_matr;
+    struct PyPetscMatObject *pyx_mat = (struct PyPetscMatObject *)( petsc_matr.ptr() );
     pyx_mat->mat = conv;
-    PyObject *result = (PyObject *)pyx_mat;
-    Py_DECREF( petsc4py );
+    py::object result = py::reinterpret_steal< py::object >( (PyObject *)pyx_mat );
+    petsc_matr.release();
     return result;
 #else
     PyErr_SetString( PyExc_NotImplementedError, "petsc4py is not available" );
-    py::throw_error_already_set();
-    return NULL;
+    throw py::error_already_set();
 #endif
 }
 

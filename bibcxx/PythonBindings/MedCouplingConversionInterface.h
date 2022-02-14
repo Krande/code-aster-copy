@@ -6,7 +6,7 @@
  * @brief Python bindings for MedCouplingConversion.
  * @author Francesco Bettonte
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,8 +26,8 @@
 
 /* person_in_charge: francesco.bettonte@edf.fr */
 
-#include "astercxx.h"
+#include "aster_pybind.h"
 
-void exportMedCouplingConversionToPython();
+void exportMedCouplingConversionToPython( py::module_ &mod );
 
 #endif /* MEDCOUPLINGCONVERSIONINTERFACE_H_ */

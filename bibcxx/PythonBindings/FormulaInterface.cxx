@@ -3,7 +3,7 @@
  * @brief Interface python de Formula
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,19 +23,15 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-
-#include <PythonBindings/factory.h>
 #include "PythonBindings/FormulaInterface.h"
 
-void exportFormulaToPython() {
+#include "aster_pybind.h"
 
-    py::class_< Formula, Formula::FormulaPtr, py::bases< GenericFunction > >
-        ( "Formula", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Formula >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Formula, std::string >))
+void exportFormulaToPython( py::module_ &mod ) {
+
+    py::class_< Formula, Formula::FormulaPtr, GenericFunction >( mod, "Formula" )
+        .def( py::init( &initFactoryPtr< Formula > ) )
+        .def( py::init( &initFactoryPtr< Formula, std::string > ) )
 
         .def( "setVariables", &Formula::setVariables, R"(
 Define the variables names.
@@ -43,7 +39,7 @@ Define the variables names.
 Arguments:
     varnames (list[str]): List of variables names.
         )",
-              ( py::arg( "self" ), py::arg( "varnames" ) ) )
+              py::arg( "varnames" ) )
 
         .def( "setExpression", &Formula::setExpression, R"(
 Define the expression of the formula.
@@ -54,12 +50,11 @@ defined using `:func:setContext`.
 Arguments:
     expression (str): Expression of the formula.
         )",
-              ( py::arg( "self" ), py::arg( "expression" ) ) )
+              py::arg( "expression" ) )
 
         .def( "setComplex", &Formula::setComplex, R"(
 Set the type of the formula as complex.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
 
         .def( "setContext", &Formula::setContext, R"(
 Define the context holding objects required to evaluate the expression.
@@ -67,7 +62,7 @@ Define the context holding objects required to evaluate the expression.
 Arguments:
     context (dict): Context for the evaluation.
         )",
-              ( py::arg( "self" ), py::arg( "context" ) ) )
+              py::arg( "context" ) )
 
         .def( "evaluate", &Formula::evaluate, R"(
 Evaluate the formula with the given variables values.
@@ -78,37 +73,33 @@ Arguments:
 Returns:
     float/complex: Value of the formula for these values.
         )",
-              ( py::arg( "self" ), py::arg( "*val" ) ) )
+              py::arg( "*val" ) )
 
         .def( "getVariables", &Formula::getVariables, R"(
 Return the variables names.
 
 Returns:
     list[str]: List of the names of the variables.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
 
         .def( "getExpression", &Formula::getExpression, R"(
 Return expression of the formula.
 
 Returns:
     str: Expression of the formula.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
 
         .def( "getContext", &Formula::getContext, R"(
 Return the context used to evaluate the formula.
 
 Returns:
     dict: Context used for evaluation.
-        )",
-              py::arg( "self" ) )
+        )" )
 
         .def( "getProperties", &Formula::getProperties, R"(
 Return the properties of the formula (for compatibility with function objects).
 
 Returns:
     list[str]: List of 6 strings as function objects contain.
-        )",
-              py::arg( "self" ) );
+        )" );
 };

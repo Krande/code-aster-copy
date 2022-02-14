@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ResultInterface
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,10 +23,10 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include "aster_pybind.h"
 
-#include "astercxx.h"
 #include "Results/Result.h"
 
-void exportResultToPython();
+void exportResultToPython( py::module_ &mod );
 
 #endif /* RESULTSCONTAINERINTERFACE_H_ */

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GenericFunction
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -58,7 +58,7 @@ class GenericFunction : public DataStructure {
      * @typedef GenericFunctionPtr
      * @brief Pointeur intelligent vers un GenericFunction
      */
-    typedef boost::shared_ptr< GenericFunction > GenericFunctionPtr;
+    typedef std::shared_ptr< GenericFunction > GenericFunctionPtr;
 
     /**
      * @brief Constructeur
@@ -118,6 +118,6 @@ class GenericFunction : public DataStructure {
  * @typedef GenericFunctionPtr
  * @brief Pointeur intelligent vers un GenericFunction
  */
-typedef boost::shared_ptr< GenericFunction > GenericFunctionPtr;
+typedef std::shared_ptr< GenericFunction > GenericFunctionPtr;
 
 #endif /* GENERICFUNCTION_H_ */

@@ -5,7 +5,7 @@
  * @file AcousticLoad.h
  * @brief Fichier entete de la classe AcousticLoad
  * @author Nicolas Sellenet
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,7 +48,7 @@ class AcousticLoad : public DataStructure {
      * @typedef AcousticLoadPtr
      * @brief Pointeur intelligent vers un AcousticLoad
      */
-    typedef boost::shared_ptr< AcousticLoad > AcousticLoadPtr;
+    typedef std::shared_ptr< AcousticLoad > AcousticLoadPtr;
 
     /**
      * @brief Constructeur
@@ -66,7 +66,7 @@ class AcousticLoad : public DataStructure {
      */
     AcousticLoad( const std::string name, const ModelPtr &model )
         : DataStructure( name, 8, "CHAR_ACOU" ),
-          _acouLoadDesc( boost::make_shared<
+          _acouLoadDesc( std::make_shared<
             AcousticLoadDescription< ConstantFieldOnCellsType > >(getName() + ".CHAC",
                                                                             model) ),
           _type( getName() + ".TYPE" ){};
@@ -98,9 +98,9 @@ typedef AcousticLoad< ConstantFieldOnCellsComplex > AcousticLoadComplex;
 /** @typedef AcousticLoad  */
 template< class ConstantFieldOnCellsType>
 using AcousticLoadPtr =
-    boost::shared_ptr< AcousticLoad< ConstantFieldOnCellsType > >;
+    std::shared_ptr< AcousticLoad< ConstantFieldOnCellsType > >;
 
-typedef boost::shared_ptr< AcousticLoadComplex > AcousticLoadComplexPtr;
+typedef std::shared_ptr< AcousticLoadComplex > AcousticLoadComplexPtr;
 
 
 /** @typedef std::list de AcousticLoad */

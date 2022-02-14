@@ -560,7 +560,7 @@ ConnectionMesh::ConnectionMesh( const std::string &name, const ParallelMeshPtr &
     build();
 };
 
-VectorString ConnectionMesh::getGroupsOfCells() const {
+VectorString ConnectionMesh::getGroupsOfCells( const bool ) const {
     auto size = _nameOfGrpCells->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
@@ -569,7 +569,7 @@ VectorString ConnectionMesh::getGroupsOfCells() const {
     return names;
 }
 
-VectorString ConnectionMesh::getGroupsOfNodes() const {
+VectorString ConnectionMesh::getGroupsOfNodes( const bool ) const {
     auto size = _nameOfGrpNodes->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
@@ -619,14 +619,14 @@ VectorLong ConnectionMesh::getCellsGlobalNumbering( const JeveuxVectorLong &rank
     return globalNum;
 };
 
-bool ConnectionMesh::hasGroupOfCells( const std::string &name ) const {
+bool ConnectionMesh::hasGroupOfCells( const std::string &name, const bool ) const {
     if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
         return false;
     }
     return _groupsOfCells->existsObject( name );
 }
 
-bool ConnectionMesh::hasGroupOfNodes( const std::string &name ) const {
+bool ConnectionMesh::hasGroupOfNodes( const std::string &name, const bool ) const {
     if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
         return false;
     }

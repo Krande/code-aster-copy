@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -38,7 +38,7 @@
 class DirichletBC : public DataStructure {
   protected:
     /** @typedef Pointeur intelligent sur un VirtualMeshEntity */
-    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+    typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
 
     /** @typedef std::list de DisplacementLoadReal */
     typedef std::list< DisplacementLoadReal > ListDispReal;
@@ -80,7 +80,7 @@ class DirichletBC : public DataStructure {
      * @typedef DirichletBCPtr
      * @brief Pointeur intelligent vers un DirichletBC
      */
-    typedef boost::shared_ptr< DirichletBC > DirichletBCPtr;
+    typedef std::shared_ptr< DirichletBC > DirichletBCPtr;
 
     /**
      * @brief Construction de la charge (appel a OP0101)
@@ -136,7 +136,7 @@ class MechanicalDirichletBC : public DirichletBC {
      * @typedef MechanicalDirichletBCPtr
      * @brief Pointeur intelligent vers un MechanicalDirichletBC
      */
-    typedef boost::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
+    typedef std::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
 
     virtual int getPhysics( void ) const {
         return Physics::Mechanics;
@@ -236,7 +236,7 @@ class ThermalDirichletBC : public DirichletBC {
      * @typedef ThermalDirichletBCPtr
      * @brief Pointeur intelligent vers un ThermalDirichletBC
      */
-    typedef boost::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
+    typedef std::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
 
     virtual int getPhysics( void ) const {
         return Physics::Thermal;
@@ -369,7 +369,7 @@ class AcousticDirichletBC : public DirichletBC {
      * @typedef AcousticDirichletBCPtr
      * @brief Pointeur intelligent vers un AcousticDirichletBC
      */
-    typedef boost::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
+    typedef std::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
 
     virtual int getPhysics( void ) const {
         return Physics::Acoustic;
@@ -402,25 +402,25 @@ class AcousticDirichletBC : public DirichletBC {
  * @typedef DirichletBC
  * @brief Pointeur intelligent vers un DirichletBC
  */
-typedef boost::shared_ptr< DirichletBC > DirichletBCPtr;
+typedef std::shared_ptr< DirichletBC > DirichletBCPtr;
 
 /**
  * @typedef MechanicalDirichletBCPtr
  * @brief Pointeur intelligent vers un MechanicalDirichletBC
  */
-typedef boost::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
+typedef std::shared_ptr< MechanicalDirichletBC > MechanicalDirichletBCPtr;
 
 /**
  * @typedef ThermalDirichletBCPtr
  * @brief Pointeur intelligent vers un ThermalDirichletBC
  */
-typedef boost::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
+typedef std::shared_ptr< ThermalDirichletBC > ThermalDirichletBCPtr;
 
 /**
  * @typedef AcousticDirichletBCPtr
  * @brief Pointeur intelligent vers un AcousticDirichletBC
  */
-typedef boost::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
+typedef std::shared_ptr< AcousticDirichletBC > AcousticDirichletBCPtr;
 
 /** @typedef std::list de DirichletBC */
 typedef std::list< DirichletBCPtr > ListDiriBC;

@@ -44,7 +44,7 @@ class ContactParameter {
      * @typedef ContactParameterPtr
      * @brief Pointeur intelligent vers un ContactParameter
      */
-    typedef boost::shared_ptr< ContactParameter > ContactParameterPtr;
+    typedef std::shared_ptr< ContactParameter > ContactParameterPtr;
 
     /**
      * @brief Constructeur
@@ -74,7 +74,7 @@ class ContactParameter {
  * @typedef ContactParameterPtr
  * @brief Pointeur intelligent vers un ContactParameter
  */
-typedef boost::shared_ptr< ContactParameter > ContactParameterPtr;
+typedef std::shared_ptr< ContactParameter > ContactParameterPtr;
 
 class FrictionParameter {
   private:
@@ -96,14 +96,14 @@ class FrictionParameter {
      * @typedef FrictionParameterPtr
      * @brief Pointeur intelligent vers un FrictionParameter
      */
-    typedef boost::shared_ptr< FrictionParameter > FrictionParameterPtr;
+    typedef std::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
     /**
      * @brief Constructeur
      */
 
     FrictionParameter()
-        : _friction(false), _algo( FrictionAlgo::Lagrangian ), 
+        : _friction(false), _algo( FrictionAlgo::Lagrangian ),
          _type( FrictionType::Without ), _coeff( 100. ), _tresca(-1.),
          _coulomb(-1.){};
 
@@ -136,7 +136,7 @@ class FrictionParameter {
  * @typedef FrictionParameterPtr
  * @brief Pointeur intelligent vers un FrictionParameter
  */
-typedef boost::shared_ptr< FrictionParameter > FrictionParameterPtr;
+typedef std::shared_ptr< FrictionParameter > FrictionParameterPtr;
 
 
 class PairingParameter {
@@ -146,7 +146,7 @@ class PairingParameter {
     /** @brief Additional pairing distance = DIST_APPA */
     ASTERDOUBLE _dist_appa;
     /** @brief initial contact state = CONTACT_INIT */
-    InitialState _cont_init; 
+    InitialState _cont_init;
     /** @brief initial threshold distance = SEUIL_INIT */
     ASTERDOUBLE _seuil;
     /** @brief fictive distance function = DIST_SUPP */
@@ -165,7 +165,7 @@ class PairingParameter {
      * @typedef PairingParameterPtr
      * @brief Pointeur intelligent vers un PairingParameter
      */
-    typedef boost::shared_ptr< PairingParameter > PairingParameterPtr;
+    typedef std::shared_ptr< PairingParameter > PairingParameterPtr;
 
     /**
      * @brief Constructeur
@@ -193,14 +193,14 @@ class PairingParameter {
 
     void setInitialState( const InitialState &cont_init ) { _cont_init = cont_init; };
 
-    void setThreshold( const ASTERDOUBLE &seuil ) { _seuil = seuil; };    
-    
-    void setDistanceFunction( const GenericFunctionPtr &dist_supp) { _dist_supp = dist_supp; };  
+    void setThreshold( const ASTERDOUBLE &seuil ) { _seuil = seuil; };
+
+    void setDistanceFunction( const GenericFunctionPtr &dist_supp) { _dist_supp = dist_supp; };
 
     void hasBeamDistance( const bool &beam ) { _beam = beam; }
 
-    bool hasBeamDistance() const { return _beam; }    
-    
+    bool hasBeamDistance() const { return _beam; }
+
     void hasShellDistance( const bool &shell ) { _shell = shell; }
 
     bool hasShellDistance() const { return _shell; }
@@ -213,6 +213,6 @@ class PairingParameter {
  * @typedef PairingParameterPtr
  * @brief Pointeur intelligent vers un PairingParameter
  */
-typedef boost::shared_ptr< PairingParameter > PairingParameterPtr;
+typedef std::shared_ptr< PairingParameter > PairingParameterPtr;
 
 #endif /* CONTACT_PARAM_H_ */

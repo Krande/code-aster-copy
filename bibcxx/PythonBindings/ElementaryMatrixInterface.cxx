@@ -23,17 +23,14 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/ElementaryMatrixInterface.h"
 
-#include <PythonBindings/factory.h>
+#include "aster_pybind.h"
 
-void exportElementaryMatrixToPython() {
+void exportElementaryMatrixToPython( py::module_ &mod ) {
 
-    py::class_< BaseElementaryMatrix, BaseElementaryMatrixPtr, py::bases< DataStructure > >(
-        "ElementaryMatrixDisplacementReal", py::no_init )
+    py::class_< BaseElementaryMatrix, BaseElementaryMatrixPtr, DataStructure >(
+        mod, "BaseElementaryMatrix" )
         // fake initFactoryPtr: not buildable
         // fake initFactoryPtr: not buildable
         .def( "getMaterialField", &BaseElementaryMatrix::getMaterialField )
@@ -45,53 +42,40 @@ void exportElementaryMatrixToPython() {
         .def( "setModel", &BaseElementaryMatrix::setModel );
 
     py::class_< ElementaryMatrixDisplacementReal,
-                ElementaryMatrixDisplacementReal::ElementaryMatrixPtr,
-                py::bases< BaseElementaryMatrix > >( "ElementaryMatrixDisplacementReal",
-                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryMatrixDisplacementReal > ) )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryMatrixDisplacementReal, std::string > ) )
+                ElementaryMatrixDisplacementReal::ElementaryMatrixPtr, BaseElementaryMatrix >(
+        mod, "ElementaryMatrixDisplacementReal" )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementReal, std::string > ) )
         .def( "build", &ElementaryMatrixDisplacementReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementReal::getFiniteElementDescriptors )
         .def( "getElementaryTerms", &ElementaryMatrixDisplacementReal::getElementaryTerms );
 
     py::class_< ElementaryMatrixDisplacementComplex,
-                ElementaryMatrixDisplacementComplex::ElementaryMatrixPtr,
-                py::bases< BaseElementaryMatrix > >( "ElementaryMatrixDisplacementComplex",
-                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryMatrixDisplacementComplex > ) )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ElementaryMatrixDisplacementComplex, std::string > ) )
+                ElementaryMatrixDisplacementComplex::ElementaryMatrixPtr, BaseElementaryMatrix >(
+        mod, "ElementaryMatrixDisplacementComplex" )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementComplex > ) )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixDisplacementComplex, std::string > ) )
         .def( "build", &ElementaryMatrixDisplacementComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixDisplacementComplex::getFiniteElementDescriptors )
         .def( "getElementaryTerms", &ElementaryMatrixDisplacementComplex::getElementaryTerms );
 
     py::class_< ElementaryMatrixTemperatureReal,
-                ElementaryMatrixTemperatureReal::ElementaryMatrixPtr,
-                py::bases< BaseElementaryMatrix > >( "ElementaryMatrixTemperatureReal",
-                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryMatrixTemperatureReal > ) )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryMatrixTemperatureReal, std::string > ) )
+                ElementaryMatrixTemperatureReal::ElementaryMatrixPtr, BaseElementaryMatrix >(
+        mod, "ElementaryMatrixTemperatureReal" )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixTemperatureReal, std::string > ) )
         .def( "build", &ElementaryMatrixTemperatureReal::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixTemperatureReal::getFiniteElementDescriptors )
         .def( "getElementaryTerms", &ElementaryMatrixTemperatureReal::getElementaryTerms );
 
     py::class_< ElementaryMatrixPressureComplex,
-                ElementaryMatrixPressureComplex::ElementaryMatrixPtr,
-                py::bases< BaseElementaryMatrix > >( "ElementaryMatrixPressureComplex",
-                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryMatrixPressureComplex > ) )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryMatrixPressureComplex, std::string > ) )
+                ElementaryMatrixPressureComplex::ElementaryMatrixPtr, BaseElementaryMatrix >(
+        mod, "ElementaryMatrixPressureComplex" )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixPressureComplex > ) )
+        .def( py::init( &initFactoryPtr< ElementaryMatrixPressureComplex, std::string > ) )
         .def( "build", &ElementaryMatrixPressureComplex::build )
         .def( "getFiniteElementDescriptors",
               &ElementaryMatrixPressureComplex::getFiniteElementDescriptors )

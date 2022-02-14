@@ -3,7 +3,7 @@
  * @brief Interface python de MPIInfos
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,15 +23,13 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-
 #include "PythonBindings/CreateEnthalpyInterface.h"
 
-void exportCreateEnthalpyToPython() {
+#include "aster_pybind.h"
 
-    py::def( "createEnthalpy", create_enthalpy, R"(
+void exportCreateEnthalpyToPython( py::module_ &mod ) {
+
+    mod.def( "createEnthalpy", create_enthalpy, R"(
 Integrate the rho_cp function by adding a point at T=0 K to be sure \\
 to always manipulate a positive enthalpy.
 
@@ -40,5 +38,5 @@ Arguments:
     beta_func[Function]: Function of BETA to modify (add value at T=0K)
 
         )",
-        ( py::args( "rho_cp_func", "beta_func" ) ) );
+             py::arg( "rho_cp_func" ), py::arg( "beta_func" ) );
 };

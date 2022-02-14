@@ -23,8 +23,10 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_pybind.h"
+
 #include "Messages/setLogginLevel.h"
 
-void exportSetLoggingLevelToPython();
+void exportSetLoggingLevelToPython( py::module_ &mod );
 
 #endif /* SET_LEVEL_LOG_INTERFACE_H_ */

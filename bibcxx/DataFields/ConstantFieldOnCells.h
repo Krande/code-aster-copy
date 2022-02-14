@@ -230,7 +230,7 @@ class ConstantFieldOnCells : public DataField {
      * @typedef ConstantFieldOnBaseMeshPtr
      * @brief Pointeur intelligent vers un ConstantFieldOnCells
      */
-    typedef boost::shared_ptr< ConstantFieldOnCells > ConstantFieldOnBaseMeshPtr;
+    typedef std::shared_ptr< ConstantFieldOnCells > ConstantFieldOnBaseMeshPtr;
 
     /**
      * @brief Constructeur
@@ -296,7 +296,7 @@ class ConstantFieldOnCells : public DataField {
         updateValuePointers();
     };
 
-    typedef boost::shared_ptr< ConstantFieldOnCells< ValueType > > ConstantFieldOnCellsValueTypePtr;
+    typedef std::shared_ptr< ConstantFieldOnCells< ValueType > > ConstantFieldOnCellsValueTypePtr;
 
     /**
      * @brief Destructeur
@@ -626,36 +626,36 @@ typedef ConstantFieldOnCells< JeveuxChar24 > ConstantFieldOnCellsChar24;
  * @typedef ConstantFieldOnBaseMeshPtrReal
  * @brief   Definition d'une carte de double
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
+typedef std::shared_ptr< ConstantFieldOnCellsReal > ConstantFieldOnCellsRealPtr;
 
 /**
  * @typedef ConstantFieldOnCellsLongPtr
  * @brief   Definition d'une carte de double
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsLong > ConstantFieldOnCellsLongPtr;
+typedef std::shared_ptr< ConstantFieldOnCellsLong > ConstantFieldOnCellsLongPtr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrComplex
  * @brief   Definition d'une carte de complexe
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsComplex > ConstantFieldOnCellsComplexPtr;
+typedef std::shared_ptr< ConstantFieldOnCellsComplex > ConstantFieldOnCellsComplexPtr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrChar8 Definition d'une carte de char[8]
  * @brief Pointeur intelligent vers un ConstantFieldOnCells
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsChar8 > ConstantFieldOnCellsChar8Ptr;
+typedef std::shared_ptr< ConstantFieldOnCellsChar8 > ConstantFieldOnCellsChar8Ptr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrChar16 Definition d'une carte de char[16]
  * @brief Pointeur intelligent vers un ConstantFieldOnCells
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsChar16 > ConstantFieldOnCellsChar16Ptr;
+typedef std::shared_ptr< ConstantFieldOnCellsChar16 > ConstantFieldOnCellsChar16Ptr;
 
 /**
  * @typedef ConstantFieldOnBaseMeshPtrChar16 Definition d'une carte de char[24]
  * @brief Pointeur intelligent vers un ConstantFieldOnCells
  */
-typedef boost::shared_ptr< ConstantFieldOnCellsChar24 > ConstantFieldOnCellsChar24Ptr;
+typedef std::shared_ptr< ConstantFieldOnCellsChar24 > ConstantFieldOnCellsChar24Ptr;
 
 #endif /* CONSTANTFIELDONCELLS_H_ */

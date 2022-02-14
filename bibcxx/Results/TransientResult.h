@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe TransientResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -56,6 +56,6 @@ class TransientResult : public Result {
  * @typedef TransientResultPtr
  * @brief Pointeur intelligent vers un TransientResult
  */
-typedef boost::shared_ptr< TransientResult > TransientResultPtr;
+typedef std::shared_ptr< TransientResult > TransientResultPtr;
 
 #endif /* TIMEDEPENDANTRESULTSCONTAINER_H_ */

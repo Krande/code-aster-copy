@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedModel
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -67,7 +67,7 @@ class GeneralizedModel : public DataStructure {
      * @typedef GeneralizedModelPtr
      * @brief Pointeur intelligent vers un GeneralizedModel
      */
-    typedef boost::shared_ptr< GeneralizedModel > GeneralizedModelPtr;
+    typedef std::shared_ptr< GeneralizedModel > GeneralizedModelPtr;
 
     /**
      * @brief Constructeur
@@ -103,6 +103,6 @@ class GeneralizedModel : public DataStructure {
  * @typedef GeneralizedModelPtr
  * @brief Pointeur intelligent vers un GeneralizedModel
  */
-typedef boost::shared_ptr< GeneralizedModel > GeneralizedModelPtr;
+typedef std::shared_ptr< GeneralizedModel > GeneralizedModelPtr;
 
 #endif /* GENERALIZEDMODEL_H_ */

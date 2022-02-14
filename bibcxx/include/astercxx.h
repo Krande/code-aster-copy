@@ -25,20 +25,16 @@
 #include "aster.h"
 #include "asterc_config.h"
 
-#ifdef __cplusplus
-
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/variant.hpp>
-
 #include <algorithm>
 #include <complex>
 #include <iostream>
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <stdexcept>
 #include <string>
+#include <variant>
 #include <vector>
 
 using ASTERBOOL = bool;
@@ -59,8 +55,6 @@ using SetString = std::set< std::string >;
     DEBUG_LOC;                                                                                     \
     std::cout << message << std::endl;                                                             \
     INTERRUPT( 17 );
-
-#endif
 
 // Exceptions identifiers - keep consistency with asterf.h
 #define ASTER_ERROR 1

@@ -23,45 +23,28 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/LinearSolverInterface.h"
-#include <PythonBindings/factory.h>
 
-void exportLinearSolverToPython() {
+#include "aster_pybind.h"
 
-    FieldOnNodesRealPtr ( LinearSolver::*c5 )( const FieldOnNodesRealPtr currentRHS ) const =
-        &LinearSolver::solve;
-    FieldOnNodesComplexPtr ( LinearSolver::*c6 )( const FieldOnNodesComplexPtr currentRHS ) const =
-        &LinearSolver::solve;
+void exportLinearSolverToPython( py::module_ &mod ) {
 
-    FieldOnNodesRealPtr ( LinearSolver::*c7 )( const FieldOnNodesRealPtr currentRHS,
-                                               const FieldOnNodesRealPtr dirichletBCField ) const =
-        &LinearSolver::solve;
-    FieldOnNodesComplexPtr ( LinearSolver::*c8 )( const FieldOnNodesComplexPtr currentRHS,
-                                                  const FieldOnNodesComplexPtr dirichletBCField )
-        const = &LinearSolver::solve;
-
-    py::class_< LinearSolver, LinearSolver::LinearSolverPtr, py::bases< DataStructure > >(
-        "LinearSolver", py::no_init )
-        // .def( "__init__", py::make_constructor( &initFactoryPtr< LinearSolver > ) )
-        // .def( "__init__", py::make_constructor( &initFactoryPtr< LinearSolver, std::string >
+    py::class_< LinearSolver, LinearSolver::LinearSolverPtr, DataStructure >( mod, "LinearSolver" )
+        // .def( py::init( &initFactoryPtr< LinearSolver > ) )
+        // .def( py::init( &initFactoryPtr< LinearSolver, std::string >
         // ) )
         .def( "getSolverName", &LinearSolver::getSolverName, R"(
 Get the name of the solver used between 'MUMPS', 'PETSC', 'MULT_FRONT' and 'PETSC'
 
 Returns:
      str: name of the solver used
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "supportParallelMesh", &LinearSolver::supportParallelMesh, R"(
 tell if the solver is enable in HPC
 
 Returns:
      bool: True if the solver support ParallelMesh, else False
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setKeywords", &LinearSolver::setKeywords )
         .def( "setCommandName", &LinearSolver::setCommandName, R"(
 Set the name of command where the solver is used internally. The behavior of the solver
@@ -70,22 +53,24 @@ can change between Aster's commds. It will be fixe in the future
 Arguments:
      command [str]: name of the command
         )",
-              ( py::arg( "self" ), py::arg( "command" ) ) )
+              py::arg( "command" ) )
         .def( "enableXfem", &LinearSolver::enableXfem, R"(
 Enable preconditionning for XFEM modeling.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "build", &LinearSolver::build, R"(
 build internal objects of the solver
 
 Returns:
      bool: True if the building is a success, else False
-        )",
-              ( py::arg( "self" ) ) )
-        .def( "solve", c5 )
-        .def( "solve", c6 )
-        .def( "solve", c7 )
-        .def( "solve", c8 )
+        )" )
+        .def( "solve",
+              py::overload_cast< const FieldOnNodesRealPtr, const FieldOnNodesRealPtr >(
+                  &LinearSolver::solve, py::const_ ),
+              py::arg( "rhs" ), py::arg( "dirichletBC" ) = nullptr )
+        .def( "solve",
+              py::overload_cast< const FieldOnNodesComplexPtr, const FieldOnNodesComplexPtr >(
+                  &LinearSolver::solve, py::const_ ),
+              py::arg( "rhs" ), py::arg( "dirichletBC" ) = nullptr )
         .def( "factorize", &LinearSolver::factorize, R"(
 Factorize the matrix.
 
@@ -95,50 +80,44 @@ Arguments:
 Returns:
     bool: True if factorization is a success, else False
         )",
-              ( py::arg( "self" ), py::arg( "matrix" ) ) )
+              py::arg( "matrix" ) )
         .def( "getMatrix", &LinearSolver::getMatrix, R"(
 return the factorized matrix
 
 Returns:
     BaseAssemblyMatrix: factorized matrix
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "getPrecondMatrix", &LinearSolver::getPrecondMatrix, R"(
 return the preconditionning matrix
 
 Returns:
     BaseAssemblyMatrix: preconditionning matrix
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "deleteFactorizedMatrix", &LinearSolver::deleteFactorizedMatrix, R"(
 delete the factorized matrix and its preconditionner if created.
 This is the case for Mumps and Petsc.
 
 Returns:
      bool: True if success, else False
-        )",
-              ( py::arg( "self" ) ) );
+        )" );
 
-    py::class_< MultFrontSolver, MultFrontSolverPtr, py::bases< LinearSolver > >( "MultFrontSolver",
-                                                                                  py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< MultFrontSolver > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< MultFrontSolver, std::string > ) );
+    py::class_< MultFrontSolver, MultFrontSolverPtr, LinearSolver >( mod, "MultFrontSolver" )
+        .def( py::init( &initFactoryPtr< MultFrontSolver > ) )
+        .def( py::init( &initFactoryPtr< MultFrontSolver, std::string > ) );
 
-    py::class_< LdltSolver, LdltSolverPtr, py::bases< LinearSolver > >( "LdltSolver", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< LdltSolver > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< LdltSolver, std::string > ) );
+    py::class_< LdltSolver, LdltSolverPtr, LinearSolver >( mod, "LdltSolver" )
+        .def( py::init( &initFactoryPtr< LdltSolver > ) )
+        .def( py::init( &initFactoryPtr< LdltSolver, std::string > ) );
 
-    py::class_< MumpsSolver, MumpsSolverPtr, py::bases< LinearSolver > >( "MumpsSolver",
-                                                                          py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< MumpsSolver > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< MumpsSolver, std::string > ) );
+    py::class_< MumpsSolver, MumpsSolverPtr, LinearSolver >( mod, "MumpsSolver" )
+        .def( py::init( &initFactoryPtr< MumpsSolver > ) )
+        .def( py::init( &initFactoryPtr< MumpsSolver, std::string > ) );
 
-    py::class_< PetscSolver, PetscSolverPtr, py::bases< LinearSolver > >( "PetscSolver",
-                                                                          py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< PetscSolver > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< PetscSolver, std::string > ) );
+    py::class_< PetscSolver, PetscSolverPtr, LinearSolver >( mod, "PetscSolver" )
+        .def( py::init( &initFactoryPtr< PetscSolver > ) )
+        .def( py::init( &initFactoryPtr< PetscSolver, std::string > ) );
 
-    py::class_< GcpcSolver, GcpcSolverPtr, py::bases< LinearSolver > >( "GcpcSolver", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< GcpcSolver > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< GcpcSolver, std::string > ) );
+    py::class_< GcpcSolver, GcpcSolverPtr, LinearSolver >( mod, "GcpcSolver" )
+        .def( py::init( &initFactoryPtr< GcpcSolver > ) )
+        .def( py::init( &initFactoryPtr< GcpcSolver, std::string > ) );
 };

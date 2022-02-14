@@ -6,7 +6,7 @@
  * @brief Fichier entete de la class GenericParameter
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,12 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <map>
-#include <string>
-#include <list>
-#include "boost/variant.hpp"
-#include <iostream>
-
 #include "astercxx.h"
 
 #include "Utilities/SyntaxDictionary.h"
@@ -39,7 +33,8 @@
  * @brief Classe template permettant de définir un mot-clé simple
  * @author Nicolas Sellenet
  */
-template < typename Type > class GenericParameter {
+template < typename Type >
+class GenericParameter {
   private:
     /** @brief Nom du mot-clé simple */
     std::string _name;
@@ -79,6 +74,12 @@ template < typename Type > class GenericParameter {
      * @return la valeur de type Type
      */
     const Type &getValue() const {
+        if ( !_isSet )
+            throw std::runtime_error( "Value of parameter " + _name + " is not set" );
+        return _valeur;
+    };
+
+    Type getValue() {
         if ( !_isSet )
             throw std::runtime_error( "Value of parameter " + _name + " is not set" );
         return _valeur;
@@ -137,14 +138,11 @@ template < typename Type > class GenericParameter {
     };
 };
 
-/** @typedef Definition d'un GenericParameter d'un type boost::variant */
-typedef GenericParameter<
-    boost::variant< ASTERDOUBLE, ASTERINTEGER, std::string, ASTERCOMPLEX, VectorReal,
-                    VectorLong, VectorComplex,
-                    VectorString > > GenParam;
+/** @typedef Definition d'un GenericParameter d'un type std::variant */
+typedef GenericParameter< SyntaxMapContainer::VariantSyntaxType > GenParam;
 
 /** @typedef Definition d'un shared_prt sur GenParam */
-typedef boost::shared_ptr< GenParam > GenParamPtr;
+typedef std::shared_ptr< GenParam > GenParamPtr;
 /** @typedef Definition d'une list de GenParam */
 typedef std::list< GenParamPtr > ListGenParam;
 /** @typedef Definition d'un itérateur sur ListGenParam */
@@ -157,7 +155,6 @@ typedef ListGenParam::const_iterator ListGenParamCIter;
  * @param lParam Liste servant de base au remplissage du SyntaxMapContainer
  * @return SyntaxMapContainer rempli avec les mots-clés fixés
  */
-SyntaxMapContainer
-buildSyntaxMapFromParamList( const ListGenParam &lParam ) ;
+SyntaxMapContainer buildSyntaxMapFromParamList( const ListGenParam &lParam );
 
 #endif /* GENERICPARAMETER_H_ */

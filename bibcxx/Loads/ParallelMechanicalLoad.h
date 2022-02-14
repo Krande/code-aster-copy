@@ -46,7 +46,7 @@
 template < typename ConstantFieldOnCellsType >
 class ParallelMechanicalLoad : public DataStructure {
   public:
-    using ConstantFieldOnCellsTypePtr = boost::shared_ptr< ConstantFieldOnCellsType >;
+    using ConstantFieldOnCellsTypePtr = std::shared_ptr< ConstantFieldOnCellsType >;
 
   private:
     template < typename ConstantFieldOnCellsType2Ptr >
@@ -122,13 +122,13 @@ class ParallelMechanicalLoad : public DataStructure {
                             const MechanicalLoadPtr< ConstantFieldOnCellsType > &load,
                             const ModelPtr &model )
         : DataStructure( name, 8, "CHAR_MECA" ),
-          _FEDesc( boost::make_shared< ParallelFiniteElementDescriptor >(
+          _FEDesc( std::make_shared< ParallelFiniteElementDescriptor >(
               getName() + ".CHME.LIGRE", load->getFiniteElementDescriptor(),
               load->getModel()->getConnectionMesh(), model ) ),
-          _cimpo( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".CHME.CIMPO",
-                                                                  _FEDesc ) ),
-          _cmult( boost::make_shared< ConstantFieldOnCellsReal >( getName() + ".CHME.CMULT",
-                                                                  _FEDesc ) ),
+          _cimpo(
+              std::make_shared< ConstantFieldOnCellsType >( getName() + ".CHME.CIMPO", _FEDesc ) ),
+          _cmult(
+              std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CHME.CMULT", _FEDesc ) ),
           _type( getName() + ".TYPE" ),
           _modelName( getName() + ".CHME.MODEL.NOMO" ),
           _model( model ) {
@@ -160,7 +160,7 @@ class ParallelMechanicalLoad : public DataStructure {
         return _model;
     };
 
-    using ParallelMechanicalLoadPtr = boost::shared_ptr< ParallelMechanicalLoad > ;
+    using ParallelMechanicalLoadPtr = std::shared_ptr< ParallelMechanicalLoad >;
 
     ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; };
 };
@@ -169,13 +169,13 @@ class ParallelMechanicalLoad : public DataStructure {
  * @typedef ParallelMechanicalLoadPtr
  * @brief Pointeur intelligent vers un ParallelMechanicalLoad
  */
-using  ParallelMechanicalLoadReal = ParallelMechanicalLoad< ConstantFieldOnCellsReal > ;
+using ParallelMechanicalLoadReal = ParallelMechanicalLoad< ConstantFieldOnCellsReal >;
 
-using  ParallelMechanicalLoadFunction = ParallelMechanicalLoad< ConstantFieldOnCellsChar24 >;
+using ParallelMechanicalLoadFunction = ParallelMechanicalLoad< ConstantFieldOnCellsChar24 >;
 
-using  ParallelMechanicalLoadRealPtr = boost::shared_ptr< ParallelMechanicalLoadReal > ;
+using ParallelMechanicalLoadRealPtr = std::shared_ptr< ParallelMechanicalLoadReal >;
 
-using ParallelMechanicalLoadFunctionPtr = boost::shared_ptr< ParallelMechanicalLoadFunction >;
+using ParallelMechanicalLoadFunctionPtr = std::shared_ptr< ParallelMechanicalLoadFunction >;
 
 /** @typedef std::list de ParallelMechanicalLoad */
 using ListParaMecaLoadReal = std::list< ParallelMechanicalLoadRealPtr >;
@@ -187,7 +187,7 @@ using ListParaMecaLoadRealCIter = ListParaMecaLoadReal::const_iterator;
 /** @typedef std::list de ParallelMechanicalLoad */
 using ListParaMecaLoadFunction = std::list< ParallelMechanicalLoadFunctionPtr >;
 /** @typedef Iterateur sur une std::list de ParallelMechanicalLoad */
-using ListParaMecaLoadFunctionIter =  ListParaMecaLoadFunction::iterator;
+using ListParaMecaLoadFunctionIter = ListParaMecaLoadFunction::iterator;
 /** @typedef Iterateur constant sur une std::list de ParallelMechanicalLoad */
 using ListParaMecaLoadFunctionCIter = ListParaMecaLoadFunction::const_iterator;
 

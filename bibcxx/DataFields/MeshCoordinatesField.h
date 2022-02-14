@@ -50,7 +50,7 @@ class MeshCoordinatesField : public DataField {
      * @typedef MeshCoordinatesFieldPtr
      * @brief Pointeur intelligent vers un MeshCoordinatesField
      */
-    typedef boost::shared_ptr< MeshCoordinatesField > MeshCoordinatesFieldPtr;
+    typedef std::shared_ptr< MeshCoordinatesField > MeshCoordinatesFieldPtr;
 
     /**
      * @brief Constructeur
@@ -132,12 +132,12 @@ class MeshCoordinatesField : public DataField {
  * @typedef MeshCoordinatesFieldPtr
  * @brief Definition d'un champ aux noeuds de double
  */
-using MeshCoordinatesFieldPtr = boost::shared_ptr< MeshCoordinatesField >;
+using MeshCoordinatesFieldPtr = std::shared_ptr< MeshCoordinatesField >;
 
 /**
  * @typedef MeshCoordinatesFieldPtr
  * @brief Definition d'un champ aux noeuds de double
  */
-using ConstMeshCoordinatesFieldPtr = boost::shared_ptr< const MeshCoordinatesField >;
+using ConstMeshCoordinatesFieldPtr = std::shared_ptr< const MeshCoordinatesField >;
 
 #endif /* MESHCOORDINATESFIELD_H_ */

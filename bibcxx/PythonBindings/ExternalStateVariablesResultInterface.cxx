@@ -3,7 +3,7 @@
  * @brief Interface python de ExternalStateVariablesResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,19 +22,13 @@
  */
 
 #include "PythonBindings/ExternalStateVariablesResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportExternalStateVariablesResultToPython() {
+void exportExternalStateVariablesResultToPython( py::module_ &mod ) {
 
-    py::class_< ExternalStateVariablesResult, ExternalStateVariablesResultPtr,
-            py::bases< TransientResult > >( "ExternalStateVariablesResult",
-                                                              py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ExternalStateVariablesResult > ) )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ExternalStateVariablesResult, std::string > ) );
+    py::class_< ExternalStateVariablesResult, ExternalStateVariablesResultPtr, TransientResult >(
+        mod, "ExternalStateVariablesResult" )
+        .def( py::init( &initFactoryPtr< ExternalStateVariablesResult > ) )
+        .def( py::init( &initFactoryPtr< ExternalStateVariablesResult, std::string > ) );
 };

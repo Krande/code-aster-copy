@@ -2,7 +2,7 @@
  * @file ResultNamingInterface.h
  * @brief Python bindings for ResultNaming class.
  * --------------------------------------------------------------------
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,17 @@
 /* person_in_charge: mathieu.courtois@edf.fr */
 
 #include "PythonBindings/ResultNamingInterface.h"
-#include <boost/python.hpp>
+
+#include "aster_pybind.h"
+
 #include "Supervis/ResultNaming.h"
 
-namespace py = boost::python;
+void exportResultNamingToPython( py::module_ &mod ) {
 
-void exportResultNamingToPython() {
-
-    py::class_< ResultNaming >( "ResultNaming", py::no_init )
+    py::class_< ResultNaming >( mod, "ResultNaming" )
         // fake initFactoryPtr: not a DataStructure
         // fake initFactoryPtr: not a DataStructure
-        .def( "initCounter", &ResultNaming::initCounter )
-        .staticmethod( "initCounter" )
-        .def( "getNewResultName", &ResultNaming::getNewResultName )
-        .staticmethod( "getNewResultName" )
-        .def( "getCurrentName", &ResultNaming::getCurrentName )
-        .staticmethod( "getCurrentName" );
-};
+        .def_static( "initCounter", &ResultNaming::initCounter, py::arg( "initValue" ) )
+        .def_static( "getNewResultName", &ResultNaming::getNewResultName )
+        .def_static( "getCurrentName", &ResultNaming::getCurrentName );
+}

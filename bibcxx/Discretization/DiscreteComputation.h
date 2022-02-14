@@ -48,7 +48,7 @@ class DiscreteComputation {
 
   public:
     /** @typedef DiscreteComputationPtr */
-    typedef boost::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
+    typedef std::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
 
     /** @brief Default constructor disabled */
     DiscreteComputation( void ) = delete;
@@ -144,6 +144,6 @@ class DiscreteComputation {
 };
 
 /** @typedef DiscreteComputationPtr */
-typedef boost::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
+typedef std::shared_ptr< DiscreteComputation > DiscreteComputationPtr;
 
 #endif /* DISCRETEPROBLEM_H_ */

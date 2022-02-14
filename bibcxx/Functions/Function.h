@@ -26,11 +26,6 @@
 #include "Functions/GenericFunction.h"
 #include "MemoryManager/JeveuxVector.h"
 
-#include <boost/shared_ptr.hpp>
-
-#include <string>
-#include <vector>
-
 /**
  * class BaseFunction
  *   Create a datastructure for a function with real values
@@ -47,7 +42,7 @@ class BaseFunction : public GenericFunction {
      * @typedef BaseFunctionPtr
      * @brief Pointeur intelligent vers un BaseFunction
      */
-    typedef boost::shared_ptr< BaseFunction > BaseFunctionPtr;
+    typedef std::shared_ptr< BaseFunction > BaseFunctionPtr;
 
     /**
      * Constructeur
@@ -126,22 +121,33 @@ class BaseFunction : public GenericFunction {
     /**
      * @brief Return the values of the function
      */
-    const JeveuxVectorReal getValues() const { return _value; }
+    const JeveuxVectorReal getValues() const {
+        return _value;
+    }
 
     /**
      * @brief Return a pointer to the vector of data
      */
-    const ASTERDOUBLE *getDataPtr() const { return _value->getDataPtr(); }
+    const ASTERDOUBLE *getDataPtr() const {
+        _value->updateValuePointer();
+        return _value->getDataPtr();
+    }
 
     /**
      * @brief Return the number of points of the function
      */
-    virtual ASTERINTEGER maximumSize() const { return _value->size() / 2; }
+    virtual ASTERINTEGER maximumSize() const {
+        _value->updateValuePointer();
+        return _value->size() / 2;
+    }
 
     /**
      * @brief Return the number of points of the function
      */
-    virtual ASTERINTEGER size() const { return _value->size() / 2; }
+    virtual ASTERINTEGER size() const {
+        _value->updateValuePointer();
+        return _value->size() / 2;
+    }
 
     /**
      * @brief Update the pointers to the Jeveux objects
@@ -166,7 +172,7 @@ class Function : public BaseFunction {
      * @typedef FunctionPtr
      * @brief Pointeur intelligent vers un Function
      */
-    typedef boost::shared_ptr< Function > FunctionPtr;
+    typedef std::shared_ptr< Function > FunctionPtr;
 
     /**
      * Constructeur
@@ -188,7 +194,7 @@ class FunctionComplex : public BaseFunction {
      * @typedef FunctionPtr
      * @brief Pointeur intelligent vers un FunctionComplex
      */
-    typedef boost::shared_ptr< FunctionComplex > FunctionComplexPtr;
+    typedef std::shared_ptr< FunctionComplex > FunctionComplexPtr;
 
     /**
      * Constructeur
@@ -235,19 +241,19 @@ class FunctionComplex : public BaseFunction {
  * @typedef BaseFunctionPtr
  * @brief  Pointer to a BaseFunction
  */
-typedef boost::shared_ptr< BaseFunction > BaseFunctionPtr;
+typedef std::shared_ptr< BaseFunction > BaseFunctionPtr;
 
 /**
  * @typedef FunctionPtr
  * @brief  Pointer to a Function
  */
-typedef boost::shared_ptr< Function > FunctionPtr;
+typedef std::shared_ptr< Function > FunctionPtr;
 
 /**
  * @typedef FunctionComplexPtr
  * @brief  Pointer to a FunctionComplex
  */
-typedef boost::shared_ptr< FunctionComplex > FunctionComplexPtr;
+typedef std::shared_ptr< FunctionComplex > FunctionComplexPtr;
 
 /**
  * @name emptyRealFunction

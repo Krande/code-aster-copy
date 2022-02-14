@@ -44,21 +44,21 @@ bool Mesh::readGmshFile( const std::string &fileName ) {
     return true;
 }
 
-bool Mesh::hasGroupOfCells( const std::string &name, const bool local ) const {
+bool Mesh::hasGroupOfCells( const std::string &name, const bool ) const {
     if ( _groupsOfCells->size() < 0 && !_groupsOfCells->build() ) {
         return false;
     }
     return _groupsOfCells->existsObject( name );
 }
 
-bool Mesh::hasGroupOfNodes( const std::string &name, const bool local ) const {
+bool Mesh::hasGroupOfNodes( const std::string &name, const bool ) const {
     if ( _groupsOfNodes->size() < 0 && !_groupsOfNodes->build() ) {
         return false;
     }
     return _groupsOfNodes->existsObject( name );
 }
 
-VectorString Mesh::getGroupsOfCells( const bool local ) const {
+VectorString Mesh::getGroupsOfCells( const bool ) const {
     ASTERINTEGER size = _nameOfGrpCells->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
@@ -67,7 +67,7 @@ VectorString Mesh::getGroupsOfCells( const bool local ) const {
     return names;
 }
 
-VectorString Mesh::getGroupsOfNodes( const bool local ) const {
+VectorString Mesh::getGroupsOfNodes( const bool ) const {
     ASTERINTEGER size = _nameOfGrpNodes->size();
     VectorString names;
     for ( auto i = 0; i < size; i++ ) {
@@ -87,8 +87,7 @@ VectorLong Mesh::getCells( const std::string name ) const {
     return _groupsOfCells->getObjectFromName( name ).toVector();
 }
 
-VectorLong Mesh::getNodes( const std::string name, const bool localNumbering,
-                           const bool same_rank ) const {
+VectorLong Mesh::getNodes( const std::string name, const bool, const bool ) const {
     if ( name.empty() ) {
         return irange( long( 1 ), long( getNumberOfNodes() ) );
     } else if ( !hasGroupOfNodes( name ) ) {
@@ -97,8 +96,7 @@ VectorLong Mesh::getNodes( const std::string name, const bool localNumbering,
     return _groupsOfNodes->getObjectFromName( name ).toVector();
 }
 
-VectorLong Mesh::getNodesFromCells( const std::string name, const bool localNumbering,
-                                    const bool same_rank ) const {
+VectorLong Mesh::getNodesFromCells( const std::string name, const bool, const bool ) const {
     CALL_JEMARQ();
     const auto cellsId = getCells( name );
 

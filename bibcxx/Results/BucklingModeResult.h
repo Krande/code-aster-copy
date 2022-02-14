@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe BucklingModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -218,6 +218,6 @@ class BucklingModeResult : public FullResult
  * @typedef BucklingModeResultPtr
  * @brief Pointeur intelligent vers un BucklingModeResult
  */
-typedef boost::shared_ptr< BucklingModeResult > BucklingModeResultPtr;
+typedef std::shared_ptr< BucklingModeResult > BucklingModeResultPtr;
 
 #endif /* BUCKLINGMODERESULT_H_ */

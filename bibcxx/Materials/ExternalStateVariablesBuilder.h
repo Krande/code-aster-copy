@@ -76,7 +76,7 @@ class ExternalStateVariablesBuilder : public DataStructure {
 
   public:
     /** @typedef ExternalStateVariablesPtr */
-    typedef boost::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
+    typedef std::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
 
     /** @brief Constructor */
     ExternalStateVariablesBuilder();
@@ -114,6 +114,6 @@ class ExternalStateVariablesBuilder : public DataStructure {
 };
 
 /** @typedef ExternalStateVariablesPtr*/
-typedef boost::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
+typedef std::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
 
 #endif /* CALCULATIONEXTERNALVARIABLE_H_ */

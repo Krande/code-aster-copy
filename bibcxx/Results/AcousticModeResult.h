@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe AcousticModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -65,6 +65,6 @@ class AcousticModeResult : public FullResult {
  * @typedef AcousticModeResultPtr
  * @brief Pointeur intelligent vers un AcousticModeResult
  */
-typedef boost::shared_ptr< AcousticModeResult > AcousticModeResultPtr;
+typedef std::shared_ptr< AcousticModeResult > AcousticModeResultPtr;
 
 #endif /* ACOUSTICMODERESULT_H_ */

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -76,9 +76,9 @@ if for_aster:
 all_nodes = comm.allgather(nodes)
 all_nodes = set(chain.from_iterable(all_nodes))
 print("List of all nodes:", all_nodes)
-assert len(all_nodes) == 10
+assert len(all_nodes) == 10, all_nodes
 empty = all_nodes.difference(range(8)).difference([998, 999])
-assert len(empty) == 0
+assert len(empty) == 0, empty
 
 print("All processes are terminating!")
 if superv:

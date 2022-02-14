@@ -3,7 +3,7 @@
  * @brief Interface python de DirichletBC
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,47 +22,12 @@
  */
 
 #include "PythonBindings/DirichletBCInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportDirichletBCToPython() {
+void exportDirichletBCToPython( py::module_ &mod ) {
 
-    bool ( MechanicalDirichletBC::*c1 )( const PhysicalQuantityComponent &,
-                                                    const ASTERDOUBLE &, const std::string & ) =
-        &MechanicalDirichletBC::addBCOnCells;
-    bool ( MechanicalDirichletBC::*c2 )(
-        const PhysicalQuantityComponent &, const ASTERDOUBLE &, const VectorString & ) =
-        &MechanicalDirichletBC::addBCOnCells;
-
-    bool ( MechanicalDirichletBC::*c3 )( const PhysicalQuantityComponent &,
-                                                    const ASTERDOUBLE &, const std::string & ) =
-        &MechanicalDirichletBC::addBCOnNodes;
-    bool ( MechanicalDirichletBC::*c4 )(
-        const PhysicalQuantityComponent &, const ASTERDOUBLE &, const VectorString & ) =
-        &MechanicalDirichletBC::addBCOnNodes;
-
-    bool ( ThermalDirichletBC::*c5 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
-                                                 const std::string & ) =
-        &ThermalDirichletBC::addBCOnCells;
-    bool ( ThermalDirichletBC::*c6 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
-                                                 const VectorString & ) =
-        &ThermalDirichletBC::addBCOnCells;
-
-    bool ( ThermalDirichletBC::*c7 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
-                                                 const std::string & ) =
-        &ThermalDirichletBC::addBCOnNodes;
-    bool ( ThermalDirichletBC::*c8 )( const PhysicalQuantityComponent &, const ASTERDOUBLE &,
-                                                 const VectorString & ) =
-        &ThermalDirichletBC::addBCOnNodes;
-    bool ( ThermalDirichletBC::*c9 )( const PhysicalQuantityComponent &,
-                                                 const FunctionPtr &,
-                                                 const VectorString & ) =
-        &ThermalDirichletBC::addBCOnNodes;
-
-    py::class_< DirichletBC, DirichletBC::DirichletBCPtr,
-                py::bases< DataStructure > >( "DirichletBC", py::no_init )
+    py::class_< DirichletBC, DirichletBC::DirichletBCPtr, DataStructure >( mod, "DirichletBC" )
         // fake initFactoryPtr: created by subclasses
         // fake initFactoryPtr: created by subclasses
         .def( "build", &DirichletBC::build )
@@ -71,46 +36,53 @@ Return the model
 
 Returns:
     ModelPtr: a pointer to the model
-        )",
-              ( py::arg( "self" ) )  )
+        )" )
         .def( "getPhysics", &DirichletBC::getPhysics, R"(
 To know the physics supported by the model
 
 Returns:
     str: Mechanics or Thermal or Acoustic
-        )",
-              ( py::arg( "self" ) )  );
+        )" );
 
-    py::class_< MechanicalDirichletBC,
-                MechanicalDirichletBC::MechanicalDirichletBCPtr,
-                py::bases< DirichletBC > >( "MechanicalDirichletBC", py::no_init )
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< MechanicalDirichletBC, ModelPtr >))
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< MechanicalDirichletBC, std::string, ModelPtr >))
-        .def( "addBCOnCells", c1 )
-        .def( "addBCOnCells", c2 )
-        .def( "addBCOnNodes", c3 )
-        .def( "addBCOnNodes", c4 );
+    py::class_< MechanicalDirichletBC, MechanicalDirichletBC::MechanicalDirichletBCPtr,
+                DirichletBC >( mod, "MechanicalDirichletBC" )
+        .def( py::init( &initFactoryPtr< MechanicalDirichletBC, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< MechanicalDirichletBC, std::string, ModelPtr > ) )
+        .def( "addBCOnCells",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const std::string & >( &MechanicalDirichletBC::addBCOnCells ) )
+        .def( "addBCOnCells",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const VectorString & >( &MechanicalDirichletBC::addBCOnCells ) )
+        .def( "addBCOnNodes",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const std::string & >( &MechanicalDirichletBC::addBCOnNodes ) )
+        .def( "addBCOnNodes",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const VectorString & >( &MechanicalDirichletBC::addBCOnNodes ) );
 
-    py::class_< ThermalDirichletBC,
-                ThermalDirichletBC::ThermalDirichletBCPtr,
-                py::bases< DirichletBC > >( "ThermalDirichletBC", py::no_init )
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< ThermalDirichletBC, ModelPtr >))
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< ThermalDirichletBC, std::string, ModelPtr >))
-        .def( "addBCOnCells", c5 )
-        .def( "addBCOnCells", c6 )
-        .def( "addBCOnNodes", c7 )
-        .def( "addBCOnNodes", c8 )
-        .def( "addBCOnNodes", c9 );
+    py::class_< ThermalDirichletBC, ThermalDirichletBC::ThermalDirichletBCPtr, DirichletBC >(
+        mod, "ThermalDirichletBC" )
+        .def( py::init( &initFactoryPtr< ThermalDirichletBC, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ThermalDirichletBC, std::string, ModelPtr > ) )
+        .def( "addBCOnCells",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const std::string & >( &ThermalDirichletBC::addBCOnCells ) )
+        .def( "addBCOnCells",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const VectorString & >( &ThermalDirichletBC::addBCOnCells ) )
+        .def( "addBCOnNodes",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const std::string & >( &ThermalDirichletBC::addBCOnNodes ) )
+        .def( "addBCOnNodes",
+              py::overload_cast< const PhysicalQuantityComponent &, const ASTERDOUBLE &,
+                                 const VectorString & >( &ThermalDirichletBC::addBCOnNodes ) )
+        .def( "addBCOnNodes",
+              py::overload_cast< const PhysicalQuantityComponent &, const FunctionPtr &,
+                                 const VectorString & >( &ThermalDirichletBC::addBCOnNodes ) );
 
-    py::class_< AcousticDirichletBC,
-                AcousticDirichletBC::AcousticDirichletBCPtr,
-                py::bases< DirichletBC > >( "AcousticDirichletBC", py::no_init )
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< AcousticDirichletBC, ModelPtr >))
-        .def( "__init__", py::make_constructor(
-            &initFactoryPtr< AcousticDirichletBC, std::string, ModelPtr >));
+    py::class_< AcousticDirichletBC, AcousticDirichletBC::AcousticDirichletBCPtr, DirichletBC >(
+        mod, "AcousticDirichletBC" )
+        .def( py::init( &initFactoryPtr< AcousticDirichletBC, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< AcousticDirichletBC, std::string, ModelPtr > ) );
 };

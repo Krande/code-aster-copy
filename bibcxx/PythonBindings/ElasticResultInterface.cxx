@@ -3,7 +3,7 @@
  * @brief Interface python de ElasticResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,19 +22,12 @@
  */
 
 #include "PythonBindings/ElasticResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportElasticResultToPython() {
+void exportElasticResultToPython( py::module_ &mod ) {
 
-    py::class_< ElasticResult,
-                ElasticResultPtr, py::bases< Result > >(
-        "ElasticResult", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ElasticResult >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ElasticResult, std::string >));
+    py::class_< ElasticResult, ElasticResultPtr, Result >( mod, "ElasticResult" )
+        .def( py::init( &initFactoryPtr< ElasticResult > ) )
+        .def( py::init( &initFactoryPtr< ElasticResult, std::string > ) );
 };

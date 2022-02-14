@@ -23,6 +23,8 @@
 
 #include "Studies/PhysicalProblem.h"
 
+#include "aster_pybind.h"
+
 #include "Supervis/Exceptions.h"
 
 PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPtr curMat,
@@ -31,7 +33,7 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _mesh( curModel->getMesh() ),
       _materialField( curMat ),
       _elemChara( cara ),
-      _listOfLoads( boost::make_shared< ListOfLoads >( _model ) ),
+      _listOfLoads( std::make_shared< ListOfLoads >( _model ) ),
       _dofNume( nullptr ),
       _codedMater( nullptr ),
       _varCom( nullptr ),
@@ -53,10 +55,10 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
             AS_ABORT( msg );
         }
 
-        _codedMater = boost::make_shared< CodedMaterial >( _materialField, _model );
+        _codedMater = std::make_shared< CodedMaterial >( _materialField, _model );
         _codedMater->allocate( true );
-        _varCom = boost::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
-                                                                       _elemChara, _codedMater );
+        _varCom = std::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
+                                                                     _elemChara, _codedMater );
     }
 };
 
@@ -88,10 +90,10 @@ bool PhysicalProblem::computeDOFNumbering() {
     // create dofNume
 #ifdef ASTER_HAVE_MPI
     if ( _mesh->isParallel() )
-        _dofNume = boost::make_shared< ParallelDOFNumbering >();
+        _dofNume = std::make_shared< ParallelDOFNumbering >();
     else
 #endif /* ASTER_HAVE_MPI */
-        _dofNume = boost::make_shared< DOFNumbering >();
+        _dofNume = std::make_shared< DOFNumbering >();
 
     _dofNume->setModel( _model );
     _dofNume->setListOfLoads( _listOfLoads );
@@ -99,26 +101,26 @@ bool PhysicalProblem::computeDOFNumbering() {
     return _dofNume->computeNumbering();
 };
 
-void PhysicalProblem::computeBehaviourProperty( PyObject *keywords, const std::string &initialState,
+void PhysicalProblem::computeBehaviourProperty( py::object &keywords,
+                                                const std::string &initialState,
                                                 const std::string &implex,
                                                 const ASTERINTEGER verbosity ) {
     // Create object for behaviour
-    _behavProp = boost::make_shared< BehaviourProperty >( _model, _materialField );
+    _behavProp = std::make_shared< BehaviourProperty >( _model, _materialField );
     _behavProp->setInitialState( initialState == "OUI" );
     _behavProp->setImplex( implex == "OUI" );
     _behavProp->setVerbosity( verbosity > 1 );
 
     // Check input PyObject
-    if ( !PyDict_Check( keywords ) && !PyList_Check( keywords ) && !PyTuple_Check( keywords ) )
+    if ( !PyDict_Check( keywords.ptr() ) && !PyList_Check( keywords.ptr() ) &&
+         !PyTuple_Check( keywords.ptr() ) )
         throw std::runtime_error( "Unexpected value for 'COMPORTEMENT'." );
 
     // Create syntax
     CommandSyntax cmdSt( "code_aster.Cata.Commons.c_comportement.C_COMPORTEMENT_SNL" );
-    PyObject *kwfact = PyDict_New();
-    PyDict_SetItemString( kwfact, "COMPORTEMENT", keywords );
+    py::dict kwfact( py::arg( "COMPORTEMENT" ) = keywords );
     cmdSt.define( kwfact );
 
     // Build objects
     AS_ASSERT( _behavProp->build() );
-    Py_DECREF( kwfact );
 };

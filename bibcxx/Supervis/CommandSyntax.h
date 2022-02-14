@@ -5,7 +5,7 @@
  * @file CommandSyntax.h
  * @brief Implementation of API to CommandSyntax Python object.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@
 #include "Python.h"
 #include "aster.h"
 
-#include "Utilities/SyntaxDictionary.h"
 #include "Utilities/CapyConvertibleValue.h"
+#include "Utilities/SyntaxDictionary.h"
 
 extern "C" PyObject *GetJdcAttr( _IN char * );
 
@@ -76,12 +76,11 @@ class CommandSyntax {
      */
     void define( SyntaxMapContainer &syntax );
 
-
     /**
      * @brief Fonction permettant de definir la syntaxe
      * @param syntax Objet de type pointeur sur PyObject
      */
-    void define( PyObject *keywords );
+    void define( py::object keywords );
 
     /**
      * @brief Fonction permettant de definir la syntax

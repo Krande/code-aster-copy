@@ -86,10 +86,37 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ContactAlgo` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ContactAlgo
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.ContactParameter` object
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ContactParameter
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ContactType` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ContactType
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.ContactVariant` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ContactVariant
    :show-inheritance:
    :members:
 
@@ -122,6 +149,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.EntityType` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.EntityType
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.EvolutionParameter` object
 ********************************************************************************
 
@@ -140,6 +176,15 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.FrictionAlgo` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.FrictionAlgo
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.FrictionParameter` object
 ********************************************************************************
 
@@ -149,10 +194,28 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.FrictionType` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.FrictionType
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.Glossary` object
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.Glossary
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.GraphPartitioner` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.GraphPartitioner
    :show-inheritance:
    :members:
 
@@ -185,10 +248,19 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.LibAsterInitializer` object
+:py:class:`~code_aster.Objects.InitialState` object
 ********************************************************************************
 
-.. autoclass:: code_aster.Objects.LibAsterInitializer
+.. autoclass:: code_aster.Objects.InitialState
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.InterfaceType` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.InterfaceType
    :show-inheritance:
    :members:
 
@@ -198,6 +270,15 @@ Documentation of all other types.
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.ListOfExternalStateVariables
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.Loads` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.Loads
    :show-inheritance:
    :members:
 
@@ -243,10 +324,37 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.ModelSplitingMethod` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.ModelSplitingMethod
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.Modelings` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.Modelings
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.NormalSpeedReal` object
 ********************************************************************************
 
 .. autoclass:: code_aster.Objects.NormalSpeedReal
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.PairingAlgo` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PairingAlgo
    :show-inheritance:
    :members:
 
@@ -279,6 +387,24 @@ Documentation of all other types.
 
 
 ********************************************************************************
+:py:class:`~code_aster.Objects.PhysicalQuantityComponent` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.PhysicalQuantityComponent
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
+:py:class:`~code_aster.Objects.Physics` object
+********************************************************************************
+
+.. autoclass:: code_aster.Objects.Physics
+   :show-inheritance:
+   :members:
+
+
+********************************************************************************
 :py:class:`~code_aster.Objects.PressureReal` object
 ********************************************************************************
 
@@ -306,68 +432,8 @@ Documentation of all other types.
 
 
 ********************************************************************************
-:py:class:`~code_aster.Objects.enum` subclasses
+:py:class:`~code_aster.Objects.pybind11_object` object
 ********************************************************************************
-
-.. autoclass:: code_aster.Objects.ContactAlgo
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ContactType
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ContactVariant
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.EntityType
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.FrictionAlgo
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.FrictionType
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.GraphPartitioner
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.InitialState
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.InterfaceType
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Loads
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.ModelSplitingMethod
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Modelings
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.PairingAlgo
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.PhysicalQuantityComponent
-   :show-inheritance:
-   :members:
-
-.. autoclass:: code_aster.Objects.Physics
-   :show-inheritance:
-   :members:
 
 
 ********************************************************************************

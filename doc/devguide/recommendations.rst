@@ -17,40 +17,68 @@ Others functions should be implemented in the ``.cxx`` file
 It avoids to rebuild everything for a small change.
 
 
-Default arguments in Boost Interface
-====================================
+Default arguments and overloaded methods in Python Interface
+============================================================
 
-When a C++ method has default arguments, the number of these arguments must be
-explicitly described by the boost wrapper.
+When a C++ method has default arguments, the default values must also be explicitly
+defined in the Python interface (because they are not part of the function’s type
+information).
 
-See as example :meth:`NonLinearStaticAnalysisInstance.addBehaviourOnCells`
-and its interface in :file:`bibcxx/PythonBindings/NonLinearStaticAnalysisInterface.cxx`.
-The macro generates a wrapper with between 1 and 2 arguments.
+Overloaded methods have to be described in the Python interface using
+``py::overload_cast< types... >( method )``.
+Define overloaded methods in the Python interface **only** if the types of the arguments
+differ.
+
+See as example :meth:`Mesh.getNodes` and its interface in
+:file:`bibcxx/PythonBindings/MeshInterface.cxx`.
 
 .. code-block:: c++
 
-    BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(addBehaviourOnCells_overloads,
-        addBehaviourOnCells, 1, 2)
+    #include "aster_pybind.h";
 
-    void exportNonLinearStaticAnalysisToPython()
+    void exportMeshToPython( py::module_ &mod )
     {
-        using namespace boost::python;
+        py::class_< Mesh, Mesh::MeshPtr, BaseMesh >( mod, "Mesh" )
+            .def( "getNodes",
+                py::overload_cast< const std::string, const bool, const bool >( &Mesh::getNodes,
+                                                                                py::const_ ),
+                R"(
+    ... docstring ...
 
-        class_< NonLinearStaticAnalysisInstance, NonLinearStaticAnalysisPtr >
-            ( "NonLinearStaticAnalysis", no_init )
-            .def( "addBehaviourOnCells",
-                  &NonLinearStaticAnalysisInstance::addBehaviourOnCells,
-                  addBehaviourOnCells_overloads())
+    Arguments:
+        group_name (str): Description
+        ...
 
+    Returns:
+        type: Description.
+            )",
+                py::arg( "group_name" ) = "", py::arg( "localNumbering" ) = true,
+                py::arg( "same_rank" ) = true )
+            .def( "getNodes",
+                py::overload_cast< const bool, const bool >( &Mesh::getNodes, py::const_ ),
+                py::arg( "localNumbering" ), py::arg( "same_rank" ) = true )
 
-Source: `Boost Python Overloads <http://www.boost.org/doc/libs/1_65_1/libs/python/doc/html/reference/function_invocation_and_creation/boost_python_overloads_hpp.html#function_invocation_and_creation.boost_python_overloads_hpp.macros>`_.
+Note:
+    - The docstring should not be repeated, or only if the arguments are very different
+      between overloaded methods.
+    - Default values must be consistent with those of the class header.
+    - ``const`` methods must the additional argumment ``py::const_``.
+
+**NEW**
+
+Voir :
+
+- remplacer les import par ``py::module_::import``
+- évaluation dans Function + autres usages de pybind11 hors PythonBindings
+- ajouter trim dans ``type_caster<JeveuxString>``
+- le C++ ne doit pas créer de py::object mais des map, vector...
 
 
 How to return different types from a single boost ``function::python``
 ======================================================================
 
 The situation is as follows: we want to return different types from a single
-``boost::python`` function.
+``pybind11`` function.
 
 On the C++ side, we have 2 member functions of the class ``MechanicalModeContainerInstance``
 with different names and which return different types:
@@ -89,13 +117,13 @@ must take as argument a ``MechanicalModeContainerPtr``.
     };
 
 
-In the boost::python interface of the ``MechanicalModeContainer`` class, we must add the function:
+In the pybind11 interface of the ``MechanicalModeContainer`` class, we must add the function:
 
 .. code-block:: c++
 
     .def( "getStiffnessMatrix", &getStiffnessMatrix )
 
-Finally, we add the following 3 lines that allow ``boost::python`` to perform type conversions between the variant and the underlying types:
+Finally, we add the following 3 lines that allow ``pybind11`` to perform type conversions between the variant and the underlying types:
 
 .. code-block:: c++
 

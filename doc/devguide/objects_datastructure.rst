@@ -128,6 +128,24 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.BaseElementaryMatrix` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.BaseElementaryMatrix
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.BaseElementaryVector` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.BaseElementaryVector
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.BaseFunction` object
 ================================================================================
 

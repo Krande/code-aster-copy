@@ -85,7 +85,7 @@ class TableContainer : public Table {
      * @typedef TableContainerPtr
      * @brief Definition of a smart pointer to a TableContainer
      */
-    typedef boost::shared_ptr< TableContainer > TableContainerPtr;
+    typedef std::shared_ptr< TableContainer > TableContainerPtr;
 
     /**
      * @brief Constructeur

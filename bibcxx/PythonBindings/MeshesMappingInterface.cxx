@@ -3,7 +3,7 @@
  * @brief Interface python de MeshesMapping
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,17 +22,14 @@
  */
 
 #include "PythonBindings/MeshesMappingInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportMeshesMappingToPython() {
+void exportMeshesMappingToPython( py::module_ &mod ) {
 
-    py::class_< MeshesMapping, MeshesMapping::MeshesMappingPtr,
-            py::bases< DataStructure > >( "MeshesMapping", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< MeshesMapping > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MeshesMapping, std::string > ) )
+    py::class_< MeshesMapping, MeshesMapping::MeshesMappingPtr, DataStructure >( mod,
+                                                                                 "MeshesMapping" )
+        .def( py::init( &initFactoryPtr< MeshesMapping > ) )
+        .def( py::init( &initFactoryPtr< MeshesMapping, std::string > ) )
         .def( "setFirstMesh", &MeshesMapping::setFirstMesh );
 };

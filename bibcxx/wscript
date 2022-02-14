@@ -23,117 +23,130 @@ from distutils.version import LooseVersion
 
 from waflib import Configure, Errors, Utils
 
+
 def options(self):
-    self.load('compiler_cxx')
-    self.load('boost')
+    self.load("compiler_cxx")
+    self.load("boost")
 
 
 def configure(self):
-    self.load('compiler_cxx')
+    self.load("compiler_cxx")
     self.check_cxx_compiler_flags()
-    if 'icc' not in self.env.CC_NAME:
+    if "icc" not in self.env.CC_NAME:
         self.check_bibcxx_depends()
     self.check_cxx_types()
     self.check_boost_aster()
 
     cxxpath = self.path.get_src().abspath()
-    self.env.append_value('INCLUDES_BIBCXX', cxxpath)
+    self.env.append_value("INCLUDES_BIBCXX", cxxpath)
 
-    incpath = osp.join(cxxpath, 'include')
-    self.env.append_value('INCLUDES_BIBCXX', incpath)
+    incpath = osp.join(cxxpath, "include")
+    self.env.append_value("INCLUDES_BIBCXX", incpath)
 
-    cpath = self.path.find_node('../bibc').abspath()
-    incpath = osp.join(cpath, 'include')
-    self.env.append_value('INCLUDES_BIBCXX', incpath)
+    cpath = self.path.find_node("../bibc").abspath()
+    incpath = osp.join(cpath, "include")
+    self.env.append_value("INCLUDES_BIBCXX", incpath)
+
 
 def build(self):
     env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
     if env.BUILD_MFRONT:
-        paths = get_srcs('mfront', src=True, dir=True)
+        paths = get_srcs("mfront", src=True, dir=True)
         paths = [d.abspath() for d in paths]
-        env.append_value('INCLUDES', paths)
+        env.append_value("INCLUDES", paths)
         self(
-            features = 'cxx',
-                name = 'astermfront',
-              source = get_srcs('mfront/*.cxx'),
-                 env = env.derive(),
-                 use = ['BIBCXX', 'MFRONT', 'BOOST', 'PYEXT', 'CXX'],
-            )
+            features="cxx",
+            name="astermfront",
+            source=get_srcs("mfront/*.cxx"),
+            env=env.derive(),
+            use=["BIBCXX", "MFRONT", "BOOST", "PYBIND11", "PYEXT", "CXX"],
+        )
 
     self(
-        features = 'cxx cxxshlib',
-            name = 'asterbibcxx',
-          source = get_srcs('**/*.cxx', excl='mfront/*.cxx'),
-          target = 'bibcxx',
-             use = ['BIBCXX', 'PETSC', 'BOOST', 'PYEXT', 'NUMPY', 'CXX'],
-             env = env.derive(),
-    install_path = env.ASTERLIBDIR
+        features="cxx cxxshlib",
+        name="asterbibcxx",
+        source=get_srcs("**/*.cxx", excl="mfront/*.cxx"),
+        target="bibcxx",
+        use=["BIBCXX", "PETSC", "BOOST", "PYBIND11", "PYEXT", "NUMPY", "CXX"],
+        env=env.derive(),
+        install_path=env.ASTERLIBDIR,
     )
+
 
 ###############################################################################
 @Configure.conf
 def check_bibcxx_depends(self):
     """check dependencies of bibcxx"""
-    self.check_cxx(uselib_store='CXX', lib='stdc++')
+    self.check_cxx(uselib_store="CXX", lib="stdc++")
+
 
 @Configure.conf
 def check_cxx_compiler_flags(self):
     """check C++ compiler flags"""
     # this option is compiler independent (ifort & g++)
-    self.check_cxx(cxxflags='-std=c++17', uselib_store='CXX', mandatory=False)
+    self.check_cxx(cxxflags="-std=c++17", uselib_store="CXX", mandatory=False)
+
 
 @Configure.conf
 def check_optimization_cxxflags(self):
-    self.setenv('debug')
-    self.define('ASTER_DEBUG_CXX', 1)
+    self.setenv("debug")
+    self.define("ASTER_DEBUG_CXX", 1)
     self.remove_optflags("CXXFLAGS")
-    flags = ['-g', '-O0'] + Utils.to_list(self.env['CXXFLAGS_ASTER_DEBUG'])
-    self.start_msg('Setting C++ debug flags')
-    self.env.append_unique('CXXFLAGS', flags)
+    flags = ["-g", "-O0"] + Utils.to_list(self.env["CXXFLAGS_ASTER_DEBUG"])
+    self.start_msg("Setting C++ debug flags")
+    self.env.append_unique("CXXFLAGS", flags)
     self.end_msg(flags)
 
-    self.setenv('release')
-    flags = ['-O2']
-    self.start_msg('Setting C++ optimization flags')
-    self.env.append_unique('CXXFLAGS', flags)
+    self.setenv("release")
+    flags = ["-O2"]
+    self.start_msg("Setting C++ optimization flags")
+    self.env.append_unique("CXXFLAGS", flags)
     self.end_msg(flags)
+
 
 @Configure.conf
 def check_boost_aster(self):
-    self.load('boost')
-    self.check_boost(includes=self.env.INCLUDES_BOOST,
-                     libs=self.env.LIBPATH_BOOST,
-                     lib="python",
-                     toolset='cxx')
+    self.load("boost")
+    self.check_boost(
+        includes=self.env.INCLUDES_BOOST, libs=self.env.LIBPATH_BOOST, lib="python", toolset="cxx"
+    )
     if self.env.BOOST_VERSION_NUMBER < 106000:
-        self.start_msg('Adding C++ flags (old boost version)')
-        flags = [
-            "-Wno-deprecated-declarations",
-            "-Wno-return-type",
-            "-Wplacement-new=0"
-        ]
+        self.start_msg("Adding C++ flags (old boost version)")
+        flags = ["-Wno-deprecated-declarations", "-Wno-return-type", "-Wplacement-new=0"]
         self.env.append_unique("CXXFLAGS", flags)
         self.end_msg(flags)
     self.env["STLIBPATH_BOOST"] = []
+
+    # FIXME: should globally add -fvisibility-hidden
+    self.start_msg("Adding C++ flag")
+    flags = ["-Wno-attributes"]
+    self.env.append_unique("CXXFLAGS", flags)
+    self.end_msg(flags)
+
 
 @Configure.conf
 def check_cxx_types(self):
     """Check C++ types"""
     self.check_sizeof_bool()
 
+
 @Configure.conf
 def check_sizeof_bool(self):
-    fragment = r'''
+    fragment = r"""
 #include <stdio.h>
 int main(void){
     bool logical;
     printf("%d", (int)sizeof(logical));
     return 0;
-}'''
-    self.code_checker(None, self.check_cxx, fragment,
-                      'Checking size of C++ bool',
-                      'unexpected value for sizeof(bool): %(size)s',
-                      into=(1, ))
+}"""
+    self.code_checker(
+        None,
+        self.check_cxx,
+        fragment,
+        "Checking size of C++ bool",
+        "unexpected value for sizeof(bool): %(size)s",
+        into=(1,),
+    )
     self.define("ASTER_C_FORTRAN_LOGICAL", "char", quote=False)

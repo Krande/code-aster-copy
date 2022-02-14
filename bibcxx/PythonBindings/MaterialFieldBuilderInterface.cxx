@@ -3,7 +3,7 @@
  * @brief Interface python de MaterialFieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,22 +22,16 @@
  */
 
 #include "PythonBindings/MaterialFieldBuilderInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( MaterialFieldBuilderbuild, MaterialFieldBuilder::build,
-                                 1, 2 )
+void exportMaterialFieldBuilderToPython( py::module_ &mod ) {
 
-void exportMaterialFieldBuilderToPython() {
+    py::class_< MaterialFieldBuilder, MaterialFieldBuilder::MaterialFieldBuilderPtr >(
+        mod, "MaterialFieldBuilder" )
+        // fake initFactoryPtr: no constructor
+        // fake initFactoryPtr: no constructor
 
-    py::class_< MaterialFieldBuilder,
-                MaterialFieldBuilder::MaterialFieldBuilderPtr >
-        c1( "MaterialFieldBuilder", py::no_init );
-    // fake initFactoryPtr: no constructor
-    // fake initFactoryPtr: no constructor
-
-    c1.def( "build", &MaterialFieldBuilder::build, MaterialFieldBuilderbuild() );
-    c1.staticmethod( "build" );
+        .def_static( "build", &MaterialFieldBuilder::build, py::arg( "mater" ),
+                     py::arg( "externalStateVariables" ) = nullptr );
 };

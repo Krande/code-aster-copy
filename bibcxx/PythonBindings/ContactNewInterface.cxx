@@ -20,71 +20,62 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/ContactNewInterface.h"
-#include <PythonBindings/factory.h>
 
-void exportContactNewToPython() {
+#include "aster_pybind.h"
 
-    py::class_< ContactNew, ContactNewPtr, py::bases< DataStructure > >( "ContactNew",
-                                                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ContactNew, std::string, ModelPtr > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< ContactNew, ModelPtr > ) )
+void exportContactNewToPython( py::module_ &mod ) {
+
+    py::class_< ContactNew, ContactNewPtr, DataStructure >( mod, "ContactNew" )
+        .def( py::init( &initFactoryPtr< ContactNew, std::string, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ContactNew, ModelPtr > ) )
         .def( "getModel", &ContactNew::getModel, R"(
 Return the model used in the contact definition
 
 Returns:
     Model: model.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "getMesh", &ContactNew::getMesh, R"(
 Return the mesh used in the contact definition
 
 Returns:
-    BaseMesh: mesh.
-        )",
-              ( py::arg( "self" ) ) )
+    Mesh: mesh.
+        )" )
         .def( "getFiniteElementDescriptor", &ContactNew::getFiniteElementDescriptor, R"(
 Return the finite element descriptor to define virtual cells for Lagrange multipliers
 
 Returns:
     FiniteElementDescriptor: fed.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "getNumberOfContactZones", &ContactNew::getNumberOfContactZones, R"(
 Return the number of contact zones used
 
 Returns:
     inter: number of contact zones.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "getContactZone", &ContactNew::getContactZone, R"(
 Return the specified contact zone
 
 Arguments:
-    int: index of the contact zone (0-based)
+    zone_id (int): index of the contact zone (0-based)
 
 Returns:
     ContactZone: contact zone.
         )",
-              ( py::arg( "self" ), py::arg( "zone_id" ) ) )
-       .def( "getContactZones", &ContactNew::getContactZones, R"(
+              py::arg( "zone_id" ) )
+        .def( "getContactZones", &ContactNew::getContactZones, R"(
 Return the list of contact zones
 
 Returns:
     List[ContactZone]: List of contact zones.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "appendContactZone", &ContactNew::appendContactZone, R"(
 Append a new contact zone to the contact definition
 
 Arguments:
-    ContactZone: contact zone to append
+    zone (ContactZone): contact zone to append
         )",
-              ( py::arg( "self" ), py::arg( "contact_zone" ) ) )
+              py::arg( "zone" ) )
         .def( "setVerbosity", &ContactNew::setVerbosity, R"(
 Set level of verbosity:
       0- without
@@ -92,9 +83,9 @@ Set level of verbosity:
       2- detailled
 
 Arguments:
-    integer: level of verbosity
+    level (int): level of verbosity
         )",
-              ( py::arg( "self" ), py::arg( "level" ) ) )
+              py::arg( "level" ) )
         .def( "getVerbosity", &ContactNew::getVerbosity, R"(
 Get level of verbosity:*
       0- without
@@ -103,43 +94,17 @@ Get level of verbosity:*
 
 Returns:
     integer: level of verbosity
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "build", &ContactNew::build, R"(
 Build and check internal objects
-        )",
-              ( py::arg( "self" ) ) )
-        .def( "hasFriction",
-              static_cast< void ( ContactNew::* )( const bool & ) >( &ContactNew::hasFriction ), R"(
-Set True if friction is present in at least one contact zone else False
-
-Arguments:
-      Bool: True if friction is present else False
-        )",
-              ( py::arg( "self" ), py::arg( "friction" ) ) )
-        .def( "hasFriction",
-              static_cast< bool ( ContactNew::* )() const >( &ContactNew::hasFriction ), R"(
-Reruen True if friction is present in at least one contact zone else False
-
-Returns:
-      Bool: True if friction is present else False
-        )",
-              ( py::arg( "self" ) ) )
-        .def( "hasSmoothing",
-              static_cast< void ( ContactNew::* )( const bool & ) >( &ContactNew::hasSmoothing ),
-              R"(
-Set True if smoothing is used to compute outward normals else False
-
-Arguments:
-      Bool: True if smoothing is used else False
-        )",
-              ( py::arg( "self" ), py::arg( "smoothing" ) ) )
-        .def( "hasSmoothing",
-              static_cast< bool ( ContactNew::* )() const >( &ContactNew::hasSmoothing ), R"(
-Reruen True if smoothing is used to compute outward normals else False
-
-Returns:
-      Bool: True if smoothing is used else False
-        )",
-              ( py::arg( "self" ) ) );
+        )" )
+        .def_property( "hasFriction", py::overload_cast<>( &ContactNew::hasFriction, py::const_ ),
+                       py::overload_cast< const bool & >( &ContactNew::hasFriction ), R"(
+bool: Attribute that holds the presence of friction.
+        )" )
+        .def_property( "hasSmoothing", py::overload_cast<>( &ContactNew::hasSmoothing, py::const_ ),
+                       py::overload_cast< const bool & >( &ContactNew::hasSmoothing ),
+                       R"(
+bool: Attribute that holds the use of smoothing.
+        )" );
 };

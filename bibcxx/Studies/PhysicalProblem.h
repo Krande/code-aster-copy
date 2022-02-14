@@ -23,6 +23,7 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
 
 #include "Behaviours/BehaviourProperty.h"
@@ -62,6 +63,9 @@ class PhysicalProblem {
     BaseDOFNumberingPtr _dofNume;
 
   public:
+    // FIXME: BREAK_POURSUITE: to be removed as soon as possible
+    const py::list allLoadsDict;
+
     // No default constructor
     PhysicalProblem( void ) = delete;
 
@@ -79,7 +83,8 @@ class PhysicalProblem {
      * @brief Add a load (mechanical or dirichlet) with function, formula...
      * @param Args... template list of arguments (load and function or formula)
      */
-    template < typename... Args > void addLoad( const Args &...a ) {
+    template < typename... Args >
+    void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
@@ -134,12 +139,9 @@ class PhysicalProblem {
     /**
      * @brief Create ConstantFieldOnCell for behaviours
      */
-    void computeBehaviourProperty( PyObject *keywords, const std::string &initialState,
-                                   const std::string &implex, const ASTERINTEGER verbosity );
-
-    void computeBehaviourProperty( PyObject *keywords ) {
-        computeBehaviourProperty( keywords, "NON", "NON", 1 );
-    };
+    void computeBehaviourProperty( py::object &keywords, const std::string &initialState = "NON",
+                                   const std::string &implex = "NON",
+                                   const ASTERINTEGER verbosity = 1 );
 
     /**
      * @brief Construction de la liste de chargements
@@ -152,6 +154,6 @@ class PhysicalProblem {
  * @typedef PhysicalProblemPtr
  * @brief Pointeur intelligent vers un PhysicalProblem
  */
-typedef boost::shared_ptr< PhysicalProblem > PhysicalProblemPtr;
+typedef std::shared_ptr< PhysicalProblem > PhysicalProblemPtr;
 
 #endif /* PHYSICALPROBLEM_H_ */

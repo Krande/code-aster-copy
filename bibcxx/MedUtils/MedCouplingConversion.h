@@ -5,7 +5,7 @@
  * @file MedCouplingConversion.h
  * @brief Fichier entete de MedCouplingConversion
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,14 +24,15 @@
  */
 
 #include "astercxx.h"
+
 #include "Meshes/BaseMesh.h"
 
 /**
  * @brief Recuperation donnes pour conversion medcoupling
- * @param 
+ * @param
  * @return PyObject
  */
 
-PyObject *getMedCouplingConversionData( const BaseMeshPtr &aster_mesh ) ;
+py::object getMedCouplingConversionData( const BaseMeshPtr &aster_mesh );
 
 #endif /* MEDCOUPLINGCONVERSION_H_ */

@@ -3,7 +3,7 @@
  * @brief Interface python de ElasticFourierResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,16 +22,13 @@
  */
 
 #include "PythonBindings/ElasticFourierResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportElasticFourierResultToPython() {
+void exportElasticFourierResultToPython( py::module_ &mod ) {
 
-    py::class_< ElasticFourierResult, ElasticFourierResultPtr,
-                py::bases< Result > >( "ElasticFourierResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ElasticFourierResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ElasticFourierResult, std::string >));
+    py::class_< ElasticFourierResult, ElasticFourierResultPtr, Result >( mod,
+                                                                         "ElasticFourierResult" )
+        .def( py::init( &initFactoryPtr< ElasticFourierResult > ) )
+        .def( py::init( &initFactoryPtr< ElasticFourierResult, std::string > ) );
 };

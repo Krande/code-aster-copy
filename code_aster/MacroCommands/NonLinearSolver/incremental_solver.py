@@ -26,7 +26,8 @@ from .elementary_computation import ElementaryComputation
 
 
 class ResiState:
-    """ Container to store intermediate field."""
+    """Container to store intermediate field."""
+
     resi = resi_int = resi_ext = resi_dual = resi_stress = resi_cont = None
     __setattr__ = no_new_attributes(object.__setattr__)
 
@@ -44,8 +45,10 @@ class ResiState:
         if self.resi_cont is not None:
             self.resi_cont.updateValuePointers()
 
+
 class IncrementalSolver:
     """Solve an iteration."""
+
     phys_state = phys_pb = convManager = None
     linear_solver = None
     elem_comp = None
@@ -110,8 +113,7 @@ class IncrementalSolver:
         displ_curr = self.phys_state.displ + self.phys_state.displ_incr
 
         # Compute internal forces (B^t.stress)
-        codret, variP, stress, r_stress = self.elem_comp.computeInternalForces(
-            time_prev, time_curr)
+        codret, variP, stress, r_stress = self.elem_comp.computeInternalForces(time_prev, time_curr)
 
         resi_state = ResiState()
         resi_state.resi_stress = r_stress
@@ -134,8 +136,7 @@ class IncrementalSolver:
 
             r_int += dualizedBC_forces + dualizedBC_disp - dualizedBC_impo
         else:
-            resi_state.resi_dual = self.phys_state.createDisplacement(
-                self.phys_pb, 0.0)
+            resi_state.resi_dual = self.phys_state.createDisplacement(self.phys_pb, 0.0)
 
         resi_state.resi_int = r_int
 

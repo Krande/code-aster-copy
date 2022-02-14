@@ -44,7 +44,7 @@ class Material: public DataStructure
          * @typedef MaterialPtr
          * @brief Pointeur intelligent vers un Material
          */
-        typedef boost::shared_ptr< Material > MaterialPtr;
+        typedef std::shared_ptr< Material > MaterialPtr;
 
         typedef std::vector< GenericMaterialPropertyPtr > VectorOfGenericMaterialProperty;
         typedef VectorOfGenericMaterialProperty::iterator VectorOfGeneralMaterialIter;
@@ -96,7 +96,7 @@ class Material: public DataStructure
             _materialBehaviourNames( JeveuxVectorChar32( getName() + ".MATERIAU.NOMRC " ) ),
             _nbMaterialProperty( 0 ),
             _nbUserMaterialProperty( 0 ),
-            _doubleValues( boost::make_shared< Function >( getName() + ".&&RDEP" ) ),
+            _doubleValues( std::make_shared< Function >( getName() + ".&&RDEP" ) ),
             _mater( nullptr )
         {};
 
@@ -213,7 +213,7 @@ class Material: public DataStructure
  * @typedef MaterialPtr
  * @brief Pointeur intelligent vers un Material
  */
-typedef boost::shared_ptr< Material > MaterialPtr;
+typedef std::shared_ptr< Material > MaterialPtr;
 
 
 #endif /* MATERIAL_H_ */

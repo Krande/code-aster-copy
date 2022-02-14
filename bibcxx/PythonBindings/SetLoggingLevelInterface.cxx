@@ -23,24 +23,22 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-
 #include "PythonBindings/SetLoggingLevelInterface.h"
 
-void exportSetLoggingLevelToPython() {
+#include "aster_pybind.h"
 
-    py::def( "setFortranLoggingLevel", setFortranLoggingLevel, R"(
+void exportSetLoggingLevelToPython( py::module_ &mod ) {
+
+    mod.def( "setFortranLoggingLevel", setFortranLoggingLevel, R"(
 Set level of logging for fortran code.
 
 Arguments:
     level[int]: Level of logging
 
         )",
-             ( py::arg( "level" ) ) );
+             py::arg( "level" ) );
 
-    py::def( "resetFortranLoggingLevel", resetFortranLoggingLevel, R"(
+    mod.def( "resetFortranLoggingLevel", resetFortranLoggingLevel, R"(
 Reset level of logging for fortran code (level = 0).
         )" );
 };

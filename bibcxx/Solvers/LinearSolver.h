@@ -24,17 +24,13 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <list>
-#include <set>
-#include <stdexcept>
-#include <string>
+#include "astercxx.h"
 
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
 #include "LinearAlgebra/BaseAssemblyMatrix.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Supervis/ResultNaming.h"
-#include "astercxx.h"
 
 /**
  * @class LinearSolver
@@ -53,7 +49,7 @@ class LinearSolver : public DataStructure {
     BaseAssemblyMatrixPtr _matrixPrec;
     std::string _commandName;
     bool _xfem;
-    PyObject *_keywords = NULL;
+    py::object _keywords;
 
     void _solve( const std::string &rhsName, const std::string &diriName,
                  const std::string &resultName ) const;
@@ -63,7 +59,7 @@ class LinearSolver : public DataStructure {
      * @typedef LinearSolverPtr
      * @brief Pointeur intelligent vers un LinearSolver
      */
-    typedef boost::shared_ptr< LinearSolver > LinearSolverPtr;
+    typedef std::shared_ptr< LinearSolver > LinearSolverPtr;
 
     /**
      * @brief Constructeur
@@ -79,16 +75,13 @@ class LinearSolver : public DataStructure {
     /**
      * @brief Destructor
      */
-    ~LinearSolver() {
-        deleteFactorizedMatrix();
-        Py_XDECREF( _keywords );
-    };
+    ~LinearSolver() { deleteFactorizedMatrix(); };
 
     /**
      * @brief Return the solver name.
      * @return string
      */
-    // can not be pure virtual because of boost wrapping
+    // can not be pure virtual because of Python wrapping
     virtual const std::string getSolverName() const { return ""; };
 
     /**
@@ -111,7 +104,7 @@ class LinearSolver : public DataStructure {
     /**
      * @brief Store user keywords for SOLVEUR.
      */
-    void setKeywords( PyObject *user_keywords );
+    void setKeywords( py::object &user_keywords );
 
     /**
      * @brief Set command name.
@@ -122,7 +115,7 @@ class LinearSolver : public DataStructure {
      * @brief Returns a dict containing the SOLVEUR keyword.
      * @return PyDict (new reference)
      */
-    PyObject *getKeywords() const;
+    py::dict getKeywords() const;
 
     /**
      * @brief Methode permettant de savoir si la matrice est vide
@@ -159,25 +152,17 @@ class LinearSolver : public DataStructure {
      * @return champ aux noeuds resultat
      */
     FieldOnNodesRealPtr solve( const FieldOnNodesRealPtr currentRHS,
-                               const FieldOnNodesRealPtr dirichletBCField ) const;
-
-    FieldOnNodesRealPtr solve( const FieldOnNodesRealPtr currentRHS ) const {
-        return solve( currentRHS, nullptr );
-    };
+                               const FieldOnNodesRealPtr dirichletBCField = nullptr ) const;
 
     FieldOnNodesComplexPtr solve( const FieldOnNodesComplexPtr currentRHS,
-                                  const FieldOnNodesComplexPtr dirichletBCField ) const;
-
-    FieldOnNodesComplexPtr solve( const FieldOnNodesComplexPtr currentRHS ) const {
-        return solve( currentRHS, nullptr );
-    };
+                                  const FieldOnNodesComplexPtr dirichletBCField = nullptr ) const;
 };
 
 /**
  * @typedef LinearSolverPtr
  * @brief Pointeur intelligent vers un LinearSolver
  */
-typedef boost::shared_ptr< LinearSolver > LinearSolverPtr;
+typedef std::shared_ptr< LinearSolver > LinearSolverPtr;
 
 class LdltSolver : public LinearSolver {
   public:
@@ -218,18 +203,18 @@ class GcpcSolver : public LinearSolver {
 };
 
 /** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< MultFront > */
-typedef boost::shared_ptr< MultFrontSolver > MultFrontSolverPtr;
+typedef std::shared_ptr< MultFrontSolver > MultFrontSolverPtr;
 
 /** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Ldlt > */
-typedef boost::shared_ptr< LdltSolver > LdltSolverPtr;
+typedef std::shared_ptr< LdltSolver > LdltSolverPtr;
 
 /** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Mumps > */
-typedef boost::shared_ptr< MumpsSolver > MumpsSolverPtr;
+typedef std::shared_ptr< MumpsSolver > MumpsSolverPtr;
 
 /** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Petsc > */
-typedef boost::shared_ptr< PetscSolver > PetscSolverPtr;
+typedef std::shared_ptr< PetscSolver > PetscSolverPtr;
 
 /** @brief Enveloppe d'un pointeur intelligent vers un LinearSolver< Gcpc > */
-typedef boost::shared_ptr< GcpcSolver > GcpcSolverPtr;
+typedef std::shared_ptr< GcpcSolver > GcpcSolverPtr;
 
 #endif /* LINEARSOLVER_H_ */

@@ -146,7 +146,7 @@ class Result : public DataStructure, public ListOfTables {
      * @typedef ResultPtr
      * @brief Pointeur intelligent vers un Result
      */
-    typedef boost::shared_ptr< Result > ResultPtr;
+    typedef std::shared_ptr< Result > ResultPtr;
 
     /**
      * @brief Constructeur
@@ -261,8 +261,6 @@ class Result : public DataStructure, public ListOfTables {
      */
     std::vector< ElementaryCharacteristicsPtr > getAllElementaryCharacteristics() const;
 
-    bool hasElementaryCharacteristics() const;
-
     /**
      * @brief Get elementary characteristics
      * @param rank
@@ -274,6 +272,8 @@ class Result : public DataStructure, public ListOfTables {
      * @param rank
      */
     bool hasElementaryCharacteristics( ASTERINTEGER rank ) const;
+
+    bool hasElementaryCharacteristics() const;
 
     /**
      * @brief Get material
@@ -384,9 +384,9 @@ class Result : public DataStructure, public ListOfTables {
 
     /**
      * @brief Get dict of access variables and their values
-     * @return PyObject
+     * @return py::dict
      */
-    PyObject *getAccessParameters() const;
+    py::dict getAccessParameters() const;
 
     /**
      * @brief Get the list of fields on nodes
@@ -445,18 +445,10 @@ class Result : public DataStructure, public ListOfTables {
      * @todo revoir la gestion des mot-clés par défaut (ex : TOUT_ORDRE)
      * @todo revoir la gestion des unités logiques (notamment si fort.20 existe déjà)
      */
-    bool printMedFile( const std::string fileName, std::string medName, bool local ) const;
+    bool printMedFile( const std::string fileName, std::string medName, bool local = true ) const;
 
-    bool printMedFile( const std::string fileName, std::string medName ) const {
-        return printMedFile( fileName, std::string(), true );
-    };
-
-    bool printMedFile( const std::string fileName, bool local ) const {
-        return printMedFile( fileName, std::string(), local );
-    };
-
-    bool printMedFile( const std::string fileName ) const {
-        return printMedFile( fileName, std::string(), true );
+    bool printMedFile( const std::string fileName, bool local = true ) const {
+        return printMedFile( fileName, "", local );
     };
 
     /**
@@ -506,6 +498,6 @@ class Result : public DataStructure, public ListOfTables {
  * @typedef ResultPtr
  * @brief Pointeur intelligent vers un Result
  */
-typedef boost::shared_ptr< Result > ResultPtr;
+typedef std::shared_ptr< Result > ResultPtr;
 
 #endif /* RESULTS_H_ */

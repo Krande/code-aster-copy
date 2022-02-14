@@ -3,7 +3,7 @@
  * @brief Definition of interface functions between C++ and Fortran
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,6 +24,7 @@
 /* person_in_charge: mathieu.courtois@edf.fr */
 
 #include "PythonBindings/Fortran.h"
+
 #include "Python.h"
 #include "aster_fort_ds.h"
 #include "aster_fort_superv.h"
@@ -35,7 +36,7 @@
 
 void jeveux_init( int fcomm ) {
     ASTERINTEGER dbg = 0;
-    aster_mpi_init( (MPI_Fint) fcomm );
+    aster_mpi_init( (MPI_Fint)fcomm );
     CALL_IBMAIN();
 
     // now Jeveux is available
@@ -51,11 +52,11 @@ void jeveux_finalize( const ASTERINTEGER options ) {
     register_sh_jeveux_status( 0 );
 }
 
-void call_oper( PyObject *syntax, int jxveri ) {
+void call_oper( py::object &syntax, int jxveri ) {
     ASTERINTEGER jxvrf = jxveri;
 
     // Add the new syntax object on the stack
-    register_sh_etape( append_etape( syntax ) );
+    register_sh_etape( append_etape( syntax.ptr() ) );
 
     try {
         CALL_EXPASS( &jxvrf );
@@ -75,11 +76,11 @@ void call_oper_init() {
     CALL_EXECOP( &op );
 }
 
-void call_ops( PyObject *syntax, int ops ) {
+void call_ops( py::object &syntax, int ops ) {
     ASTERINTEGER nops = ops;
 
     // Add the new syntax object on the stack
-    register_sh_etape( append_etape( syntax ) );
+    register_sh_etape( append_etape( syntax.ptr() ) );
 
     try {
         CALL_OPSEXE( &nops );
@@ -93,9 +94,9 @@ void call_ops( PyObject *syntax, int ops ) {
     register_sh_etape( pop_etape() );
 }
 
-void call_debut( PyObject *syntax ) { return call_ops( syntax, -1 ); }
+void call_debut( py::object &syntax ) { return call_ops( syntax, -1 ); }
 
-void call_poursuite( PyObject *syntax ) { return call_ops( syntax, -2 ); }
+void call_poursuite( py::object &syntax ) { return call_ops( syntax, -2 ); }
 
 void call_affich( const std::string &code, const std::string &text ) { CALL_AFFICH( code, text ); }
 

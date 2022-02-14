@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,9 @@ array.
 
 import numpy as np
 
-import aster
 from libaster import ListOfFloats
 
-from ..Utilities import accept_array, deprecated, injector
+from ..Utilities import deprecated, injector
 
 
 @injector(ListOfFloats)
@@ -45,8 +44,7 @@ class ExtendedListOfFloats:
         """Returns the attribute of the underlying :py:class:`numpy.array`
         object if it does not exist."""
         if attr in ("__getstate__", "__setstate__"):
-            raise AttributeError("'ListOfFloats' object has no attribute '{0}'"
-                                 .format(attr))
+            raise AttributeError("'ListOfFloats' object has no attribute '{0}'".format(attr))
         return getattr(np.array(self.getValues()), attr)
 
     def __len__(self):
@@ -57,7 +55,7 @@ class ExtendedListOfFloats:
         """
         return self.size
 
-    def getValuesAsArray(self) :
+    def getValuesAsArray(self):
         """Returns the values as a :py:class:`numpy.array`.
 
         Returns:
@@ -65,14 +63,6 @@ class ExtendedListOfFloats:
                 reference).
         """
         return np.array(self.getValues())
-
-    def setValues(self, array) :
-        """Returns the values as a :py:class:`numpy.array`.
-
-        Returns:
-            list: The :py:class:`numpy.array` containing the values (by
-                reference).
-        """
 
     @deprecated(case=3, help="Use 'getValues()' instead")
     def Valeurs(self):

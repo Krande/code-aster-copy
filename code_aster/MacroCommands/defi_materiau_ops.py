@@ -80,8 +80,7 @@ def defi_materiau_ops(self, **args):
             matBehav = materByName[fkwName]
             klassName = matBehav.getName()
         else:
-            raise NotImplementedError("Unsupported behaviour: '{0}'"
-                                      .format(fkwName))
+            raise NotImplementedError("Unsupported behaviour: '{0}'".format(fkwName))
 
         for skwName, skw in fkw.items():
             if skwName == "ORDRE_PARAM":
@@ -89,7 +88,7 @@ def defi_materiau_ops(self, **args):
                 continue
             iName = skwName.capitalize()
             if fkwName in ("MFRONT", "UMAT"):
-                matBehav.setValueVectorReal(iName, list(skw))
+                matBehav.setValue(iName, list(skw))
                 continue
             if fkwName in ("MFRONT_FO", "UMAT_FO"):
                 matBehav.setValue(iName, list(skw))
@@ -97,38 +96,37 @@ def defi_materiau_ops(self, **args):
 
             cRet = None
             if type(skw) in (float, int, numpy.float64):
-                cRet = matBehav.setValueReal(iName, float(skw))
+                cRet = matBehav.setValue(iName, float(skw))
                 if not cRet:
-                    ValueError("Can not assign keyword '{1}'/'{0}' "
-                               "(as '{3}'/'{2}') "
-                               .format(skwName, fkwName, iName,
-                                       klassName))
+                    ValueError(
+                        "Can not assign keyword '{1}'/'{0}' "
+                        "(as '{3}'/'{2}') ".format(skwName, fkwName, iName, klassName)
+                    )
             elif type(skw) in (complex, str, Table, Function, Function2D, Formula):
                 cRet = matBehav.setValue(iName, skw)
                 if not cRet:
-                    ValueError("Can not assign keyword '{1}'/'{0}' "
-                               "(as '{3}'/'{2}') "
-                               .format(skwName, fkwName, iName,
-                                       klassName))
+                    ValueError(
+                        "Can not assign keyword '{1}'/'{0}' "
+                        "(as '{3}'/'{2}') ".format(skwName, fkwName, iName, klassName)
+                    )
             elif type(skw) is tuple and type(skw[0]) is str:
                 if skw[0] == "RI":
                     comp = complex(skw[1], skw[2])
                     cRet = matBehav.setValue(iName, comp)
                 else:
-                    raise NotImplementedError("Unsupported type for keyword: "
-                                              "{0} <{1}>"
-                                              .format(skwName, type(skw)))
+                    raise NotImplementedError(
+                        "Unsupported type for keyword: " "{0} <{1}>".format(skwName, type(skw))
+                    )
             elif type(skw) in (list, tuple) and type(skw[0]) in (float, int, numpy.float64):
-                cRet = matBehav.setValueVectorReal(
-                    iName, list([float(x) for x in skw]))
+                cRet = matBehav.setValue(iName, list([float(x) for x in skw]))
             else:
-                raise NotImplementedError("Unsupported type for keyword: "
-                                          "{0} <{1}>"
-                                          .format(skwName, type(skw)))
+                raise NotImplementedError(
+                    "Unsupported type for keyword: " "{0} <{1}>".format(skwName, type(skw))
+                )
             if not cRet:
-                raise NotImplementedError("Unsupported keyword: "
-                                          "{0} <{1}>"
-                                          .format(iName, type(skw)))
+                raise NotImplementedError(
+                    "Unsupported keyword: " "{0} <{1}>".format(iName, type(skw))
+                )
         mater.addMaterialProperty(matBehav)
 
     mater.build()
@@ -140,6 +138,7 @@ def defi_materiau_ops(self, **args):
 
 
 # internal methods
+
 
 def _buildInstance(keywords):
     """Build a dict with MaterialProperty
@@ -157,7 +156,7 @@ def _buildInstance(keywords):
         mater = MaterialProperty(materName, asterNewName)
         # to build Traction function later
         if materName in ("TRACTION", "META_TRACTION"):
-            mater.hasTractionFunction(True)
+            mater.hasTractionFunction = True
 
         if type(skws) in (list, tuple):
             assert len(skws) == 1
@@ -174,31 +173,31 @@ def _buildInstance(keywords):
                     mater.addPropertyComplex(kwName, mandatory)
                 elif curType is str:
                     mater.addPropertyString(kwName, mandatory)
-                elif isinstance(kwValue, Function) or\
-                        isinstance(kwValue, Function2D) or\
-                        isinstance(kwValue, Formula):
+                elif (
+                    isinstance(kwValue, Function)
+                    or isinstance(kwValue, Function2D)
+                    or isinstance(kwValue, Formula)
+                ):
                     mater.addPropertyFunction(kwName, mandatory)
                 elif isinstance(kwValue, Table):
                     mater.addPropertyTable(kwName, mandatory)
                 elif type(kwValue) in (list, tuple):
                     if type(kwValue[0]) is float:
-                        mater.addPropertyVectorOfReal(
-                            kwName, mandatory)
+                        mater.addPropertyVectorOfReal(kwName, mandatory)
                     elif isinstance(kwValue[0], DataStructure):
-                        mater.addPropertyVectorOfFunction(
-                            kwName, mandatory)
-                    elif kwValue[0] == 'RI':
+                        mater.addPropertyVectorOfFunction(kwName, mandatory)
+                    elif kwValue[0] == "RI":
                         mater.addPropertyComplex(kwName, mandatory)
                     elif type(kwValue[0]) is str:
                         pass
                     else:
-                        raise NotImplementedError("Type not implemented for"
-                                                  " material property: '{0}'"
-                                                  .format(kwName))
+                        raise NotImplementedError(
+                            "Type not implemented for" " material property: '{0}'".format(kwName)
+                        )
                 else:
-                    raise NotImplementedError("Type not implemented for"
-                                              " material property: '{0}'"
-                                              .format(kwName))
+                    raise NotImplementedError(
+                        "Type not implemented for" " material property: '{0}'".format(kwName)
+                    )
         objects[materName] = mater
     return objects
 
@@ -210,14 +209,14 @@ def check_keywords(kwargs):
         kwargs (dict): User's keywords, changed in place.
     """
 
-    if 'DIS_ECRO_TRAC' in kwargs:
-        kwargs['DIS_ECRO_TRAC'] = check_dis_ecro_trac(kwargs['DIS_ECRO_TRAC'])
-    if 'DIS_CHOC_ENDO' in kwargs:
-        kwargs['DIS_CHOC_ENDO'] = check_dis_choc_endo(kwargs['DIS_CHOC_ENDO'])
-    if 'JONC_ENDO_PLAS' in kwargs:
-        kwargs['JONC_ENDO_PLAS'] = check_dis_jvp(kwargs['JONC_ENDO_PLAS'])
-    if 'THER_NL' in kwargs:
-        kwargs['THER_NL'] = add_enthalpy(kwargs['THER_NL'])
+    if "DIS_ECRO_TRAC" in kwargs:
+        kwargs["DIS_ECRO_TRAC"] = check_dis_ecro_trac(kwargs["DIS_ECRO_TRAC"])
+    if "DIS_CHOC_ENDO" in kwargs:
+        kwargs["DIS_CHOC_ENDO"] = check_dis_choc_endo(kwargs["DIS_CHOC_ENDO"])
+    if "JONC_ENDO_PLAS" in kwargs:
+        kwargs["JONC_ENDO_PLAS"] = check_dis_jvp(kwargs["JONC_ENDO_PLAS"])
+    if "THER_NL" in kwargs:
+        kwargs["THER_NL"] = add_enthalpy(kwargs["THER_NL"])
 
 
 def check_dis_ecro_trac(keywords):
@@ -234,21 +233,21 @@ def check_dis_ecro_trac(keywords):
     #
     # jean-luc.flejou@edf.fr
     #
-    def _message(num, mess=''):
-        UTMESS('F', 'DISCRETS_62',
-               valk=('DIS_ECRO_TRAC', 'FX=f(DX) | FTAN=f(DTAN)', mess),
-               vali=num)
+    def _message(num, mess=""):
+        UTMESS(
+            "F", "DISCRETS_62", valk=("DIS_ECRO_TRAC", "FX=f(DX) | FTAN=f(DTAN)", mess), vali=num
+        )
 
     precis = 1.0e-08
     #
     Clefs = keywords
     #
-    if 'FX' in Clefs:
+    if "FX" in Clefs:
         iffx = True
-        fct = Clefs['FX']
-    elif 'FTAN' in Clefs:
+        fct = Clefs["FX"]
+    elif "FTAN" in Clefs:
         iffx = False
-        fct = Clefs['FTAN']
+        fct = Clefs["FTAN"]
     else:
         _message(1)
     # Les vérifications sur la fonction
@@ -257,14 +256,14 @@ def check_dis_ecro_trac(keywords):
     #       paramètre 'DX' ou 'DTAN'
     OkFct = type(fct) is Function
     param = fct.Parametres()
-    OkFct = OkFct and param['INTERPOL'][0] == 'LIN'
-    OkFct = OkFct and param['INTERPOL'][1] == 'LIN'
-    OkFct = OkFct and param['PROL_DROITE'] == 'EXCLU'
-    OkFct = OkFct and param['PROL_GAUCHE'] == 'EXCLU'
+    OkFct = OkFct and param["INTERPOL"][0] == "LIN"
+    OkFct = OkFct and param["INTERPOL"][1] == "LIN"
+    OkFct = OkFct and param["PROL_DROITE"] == "EXCLU"
+    OkFct = OkFct and param["PROL_GAUCHE"] == "EXCLU"
     if iffx:
-        OkFct = OkFct and param['NOM_PARA'] == 'DX'
+        OkFct = OkFct and param["NOM_PARA"] == "DX"
     else:
-        OkFct = OkFct and param['NOM_PARA'] == 'DTAN'
+        OkFct = OkFct and param["NOM_PARA"] == "DTAN"
     if not OkFct:
         _message(2, "%s" % param)
     # avoir 3 points minimum ou exactement
@@ -272,9 +271,9 @@ def check_dis_ecro_trac(keywords):
     if iffx:
         OkFct = OkFct and len(absc) >= 3
     else:
-        if Clefs['ECROUISSAGE'] == 'ISOTROPE':
+        if Clefs["ECROUISSAGE"] == "ISOTROPE":
             OkFct = OkFct and len(absc) >= 3
-        elif Clefs['ECROUISSAGE'] == 'CINEMATIQUE':
+        elif Clefs["ECROUISSAGE"] == "CINEMATIQUE":
             OkFct = OkFct and len(absc) == 3
         else:
             raise RuntimeError("Unknown value")
@@ -299,13 +298,14 @@ def check_dis_ecro_trac(keywords):
     #           message 7 : xx[0] dfx[xx[0]] dfx[xx[0]+1]
     for ii in range(1, len(absc)):
         if absc[ii] <= dx or ordo[ii] <= fx:
-            _message(5, "Ddx, Dfx > 0 : p(i)[%s %s]  "
-                     "p(i+1)[%s %s]" % (dx, fx, absc[ii], ordo[ii]))
+            _message(
+                5, "Ddx, Dfx > 0 : p(i)[%s %s]  " "p(i+1)[%s %s]" % (dx, fx, absc[ii], ordo[ii])
+            )
         if ii == 1:
-            dfx = (ordo[ii] - fx)/(absc[ii] - dx)
+            dfx = (ordo[ii] - fx) / (absc[ii] - dx)
             raidex = dfx
         else:
-            dfx = (ordo[ii] - fx)/(absc[ii] - dx)
+            dfx = (ordo[ii] - fx) / (absc[ii] - dx)
             if dfx > raidex:
                 _message(6, "(%d) : %s > %s" % (ii, dfx, raidex))
 
@@ -329,10 +329,8 @@ def check_dis_choc_endo(keywords):
     #
     # jean-luc.flejou@edf.fr
     #
-    def _message(num, mess2='', mess3=''):
-        UTMESS('F', 'DISCRETS_63',
-               valk=('DIS_CHOC_ENDO', mess2, mess3),
-               vali=(num,))
+    def _message(num, mess2="", mess3=""):
+        UTMESS("F", "DISCRETS_63", valk=("DIS_CHOC_ENDO", mess2, mess3), vali=(num,))
 
     precis = 1.0e-08
     #
@@ -342,28 +340,27 @@ def check_dis_choc_endo(keywords):
     #   paramètre 'DX'
     #   interpolation LIN LIN
     #   prolongée à gauche et à droite : constant ou exclue (donc pas linéaire)
-    LesFcts = [Clefs['FX'], Clefs['RIGI_NOR'], Clefs['AMOR_NOR']]
+    LesFcts = [Clefs["FX"], Clefs["RIGI_NOR"], Clefs["AMOR_NOR"]]
     LesFctsName = []
     for fct in LesFcts:
         OkFct = type(fct) is Function
         param = fct.Parametres()
-        OkFct = OkFct and param['NOM_PARA'] == 'DX'
-        OkFct = OkFct and param['INTERPOL'][0] == 'LIN'
-        OkFct = OkFct and param['INTERPOL'][1] == 'LIN'
-        OkFct = OkFct and param['PROL_DROITE'] != 'LINEAIRE'
-        OkFct = OkFct and param['PROL_GAUCHE'] != 'LINEAIRE'
+        OkFct = OkFct and param["NOM_PARA"] == "DX"
+        OkFct = OkFct and param["INTERPOL"][0] == "LIN"
+        OkFct = OkFct and param["INTERPOL"][1] == "LIN"
+        OkFct = OkFct and param["PROL_DROITE"] != "LINEAIRE"
+        OkFct = OkFct and param["PROL_GAUCHE"] != "LINEAIRE"
         LesFctsName.append(fct.getName())
         if not OkFct:
             _message(2, fct.getName(), "%s" % param)
     # Même nombre de point, 5 points minimum
-    Fxx, Fxy = Clefs['FX'].Valeurs()
-    Rix, Riy = Clefs['RIGI_NOR'].Valeurs()
-    Amx, Amy = Clefs['AMOR_NOR'].Valeurs()
+    Fxx, Fxy = Clefs["FX"].Valeurs()
+    Rix, Riy = Clefs["RIGI_NOR"].Valeurs()
+    Amx, Amy = Clefs["AMOR_NOR"].Valeurs()
     OkFct = len(Fxx) == len(Rix) == len(Amx)
     OkFct = OkFct and (len(Fxx) >= 5)
     if not OkFct:
-        _message(3, "%s" % LesFctsName, "%d, %d, %d" %
-                 (len(Fxx), len(Rix), len(Amx)))
+        _message(3, "%s" % LesFctsName, "%d, %d, %d" % (len(Fxx), len(Rix), len(Amx)))
     # La 1ère abscisse c'est ZERO
     x1 = Fxx[0]
     if not (0.0 <= x1 <= precis):
@@ -382,19 +379,18 @@ def check_dis_choc_endo(keywords):
         x1 = Fxx[ii]
         x2 = Rix[ii]
         x3 = Amx[ii]
-        ddx = abs(x1-x2)+abs(x1-x3)
+        ddx = abs(x1 - x2) + abs(x1 - x3)
         if ddx > precis:
-            _message(5, "%s" % LesFctsName, "(%d) : %s, %s, %s" %
-                     (ii+1, x1, x2, x3))
+            _message(5, "%s" % LesFctsName, "(%d) : %s, %s, %s" % (ii + 1, x1, x2, x3))
         if xp1 >= x1:
-            _message(6, "%s" % LesFctsName, "(%d) : %s, %s" % (ii+1, xp1, x1))
+            _message(6, "%s" % LesFctsName, "(%d) : %s, %s" % (ii + 1, xp1, x1))
         xp1 = x1
     # FX : les 2 premiers points ont la même valeur à la précision relative près
-    if abs(Fxy[0]-Fxy[1]) > Fxy[0]*precis:
-        _message(7, Clefs['FX'].getName())
+    if abs(Fxy[0] - Fxy[1]) > Fxy[0] * precis:
+        _message(7, Clefs["FX"].getName())
     # RIGI_NOR : les 2 premiers points ont la même valeur à la précision relative près
-    if abs(Riy[0]-Riy[1]) > Riy[0]*precis:
-        _message(8, Clefs['RIGI_NOR'].getName())
+    if abs(Riy[0] - Riy[1]) > Riy[0] * precis:
+        _message(8, Clefs["RIGI_NOR"].getName())
     # RIGI_NOR : pente décroissante, à partir du 3ème point.
     #   Au lieu de la boucle, on peut faire :
     #       xx=np.where(np.diff(Riy[2:]) > 0.0 )[0]+2
@@ -402,30 +398,28 @@ def check_dis_choc_endo(keywords):
     #           message 9 : xx[0] Riy[xx[0]] Riy[xx[0]+1]
     pente = Riy[2]
     for ii in range(3, len(Riy)):
-        if Riy[ii]-pente > Riy[0]*precis:
-            _message(9, "%s" % Clefs['RIGI_NOR'].getName(),
-                     "(%d) : %s %s" % (ii, pente, Riy[ii]))
+        if Riy[ii] - pente > Riy[0] * precis:
+            _message(9, "%s" % Clefs["RIGI_NOR"].getName(), "(%d) : %s %s" % (ii, pente, Riy[ii]))
         pente = Riy[ii]
     # --------------------------------------------------------------- Fin des vérifications
     # Création des fonctions
     newFx = Function()
-    newFx.setResultName('Force   (plast cumulée)')
+    newFx.setResultName("Force   (plast cumulée)")
     newRi = Function()
-    newRi.setResultName('Raideur (plast cumulée)')
+    newRi.setResultName("Raideur (plast cumulée)")
     newAm = Function()
-    newAm.setResultName('Amort.  (plast cumulée)')
-    newFx.setExtrapolation('CC')
-    newRi.setExtrapolation('CC')
-    newAm.setExtrapolation('CC')
-    newFx.setInterpolation('LIN LIN')
-    newRi.setInterpolation('LIN LIN')
-    newAm.setInterpolation('LIN LIN')
-    newFx.setParameterName('PCUM')
-    newRi.setParameterName('PCUM')
-    newAm.setParameterName('PCUM')
+    newAm.setResultName("Amort.  (plast cumulée)")
+    newFx.setExtrapolation("CC")
+    newRi.setExtrapolation("CC")
+    newAm.setExtrapolation("CC")
+    newFx.setInterpolation("LIN LIN")
+    newRi.setInterpolation("LIN LIN")
+    newAm.setInterpolation("LIN LIN")
+    newFx.setParameterName("PCUM")
+    newRi.setParameterName("PCUM")
+    newAm.setParameterName("PCUM")
     # Modification des abscisses pour avoir la plasticité cumulée et plus le déplacement
-    pp9 = numpy.round(numpy.array(Fxx) - numpy.array(Fxy) /
-                      numpy.array(Riy), 10)
+    pp9 = numpy.round(numpy.array(Fxx) - numpy.array(Fxy) / numpy.array(Riy), 10)
     # Le 1er point a une abscisse négative et la valeur du 2ème point
     pp9[0] = -pp9[2]
     # Vérification que p est strictement croissant.
@@ -444,9 +438,9 @@ def check_dis_choc_endo(keywords):
     newRi.setValues(pp9, Riy)
     newAm.setValues(pp9, Amy)
     # Affectation des nouvelles fonctions
-    Clefs['FXP'] = newFx
-    Clefs['RIGIP'] = newRi
-    Clefs['AMORP'] = newAm
+    Clefs["FXP"] = newFx
+    Clefs["RIGIP"] = newRi
+    Clefs["AMORP"] = newAm
     #
     return Clefs
 
@@ -462,20 +456,20 @@ def check_dis_jvp(keywords):
 
         Raises '<F>' in case of error.
     """
+
     def _message(num):
-        UTMESS('F', 'DISCRETS_65',
-               valk=('JONC_ENDO_PLAS'),
-               vali=num)
+        UTMESS("F", "DISCRETS_65", valk=("JONC_ENDO_PLAS"), vali=num)
+
     #
     Clefs = keywords
-    ke = Clefs['KE']
-    kp = Clefs['KP']
-    kdp = Clefs['KDP']
-    kdm = Clefs['KDM']
-    myp = Clefs['MYP']
-    mym = Clefs['MYM']
-    rdp = Clefs['RDP']
-    rdm = Clefs['RDM']
+    ke = Clefs["KE"]
+    kp = Clefs["KP"]
+    kdp = Clefs["KDP"]
+    kdm = Clefs["KDM"]
+    myp = Clefs["MYP"]
+    mym = Clefs["MYM"]
+    rdp = Clefs["RDP"]
+    rdm = Clefs["RDM"]
     #
     if ke < kp:
         _message(1)
@@ -483,9 +477,9 @@ def check_dis_jvp(keywords):
         _message(2)
     elif kdm < kp or kdm > ke:
         _message(3)
-    elif myp < ke*rdp:
+    elif myp < ke * rdp:
         _message(4)
-    elif mym > ke*rdm:
+    elif mym > ke * rdm:
         _message(5)
     return Clefs
 

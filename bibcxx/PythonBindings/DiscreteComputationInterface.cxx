@@ -23,23 +23,15 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/DiscreteComputationInterface.h"
 
-#include <PythonBindings/factory.h>
+#include "aster_pybind.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeDualizedDirichlet_overloads, dualDisplacement, 1, 2 )
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( computeMassMatrix_overloads, massMatrix, 0, 1 )
-
-void exportDiscreteComputationToPython() {
+void exportDiscreteComputationToPython( py::module_ &mod ) {
 
     py::class_< DiscreteComputation, DiscreteComputation::DiscreteComputationPtr >(
-        "DiscreteComputation", py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< DiscreteComputation, PhysicalProblemPtr > ) )
+        mod, "DiscreteComputation" )
+        .def( py::init( &initFactoryPtr< DiscreteComputation, PhysicalProblemPtr > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( "imposedDisplacement", &DiscreteComputation::imposedDisplacement,
               R"(
@@ -51,7 +43,7 @@ void exportDiscreteComputationToPython() {
       Returns:
             FieldOnNodes: imposed displacement
         )",
-              ( py::arg( "self" ), py::arg( "time" ) ) )
+              py::arg( "time" ) )
         .def( "dualReaction", &DiscreteComputation::dualReaction,
               R"(
       Return the imposed displacement assembled vector
@@ -62,9 +54,18 @@ void exportDiscreteComputationToPython() {
       Returns:
             FieldOnNodes: dual reaction vector (B^T*lambda)
         )",
-              ( py::arg( "self" ), py::arg( "disp_curr" ) ) )
+              py::arg( "disp_curr" ) )
         .def( "dualDisplacement", &DiscreteComputation::dualDisplacement,
-              computeDualizedDirichlet_overloads() )
+              R"(
+      Return the Dirichlet load vector
+
+      Arguments:
+            disp_curr (FieldOnNodes): current displacement vector
+
+      Returns:
+            FieldOnNodes: Dirichlet load vector
+              )",
+              py::arg( "disp_curr" ), py::arg( "scaling" ) = 1.0 )
         .def( "neumann", &DiscreteComputation::neumann,
               R"(
       Return the Neumann load vector
@@ -75,7 +76,7 @@ void exportDiscreteComputationToPython() {
       Returns:
             FieldOnNodes: Neumann load vector
         )",
-              ( py::arg( "self" ), py::arg( "time" ) ) )
+              py::arg( "time" ) )
         .def( "externalStateVariables", &DiscreteComputation::externalStateVariables,
               R"(
       Return the external State Variables load vector
@@ -86,7 +87,7 @@ void exportDiscreteComputationToPython() {
       Returns:
             FieldOnNodes: external State Variables load vector
         )",
-              ( py::arg( "self" ), py::arg( "time" ) ) )
+              py::arg( "time" ) )
         .def( "dirichletBC", &DiscreteComputation::dirichletBC,
               R"(
       Return the imposed displacement vector used to remove imposed DDL
@@ -97,7 +98,7 @@ void exportDiscreteComputationToPython() {
       Returns:
             FieldOnNodes: imposed displacement vector
         )",
-              ( py::arg( "self" ), py::arg( "time" ) ) )
+              py::arg( "time" ) )
         .def( "incrementalDirichletBC", &DiscreteComputation::incrementalDirichletBC,
               R"(
       Return the incremental imposed displacement vector used to remove imposed DDL
@@ -112,32 +113,27 @@ void exportDiscreteComputationToPython() {
       Returns:
             FieldOnNodes: incremental imposed displacement vector
         )",
-              ( py::arg( "self" ), py::arg( "time" ), py::arg( "disp" ) ) )
-        .def( "elasticStiffnessMatrix_", &DiscreteComputation::elasticStiffnessMatrix_,
-              R"(
-      Return the elementary matices for elastic Stiffness matrix
+              py::arg( "time" ), py::arg( "disp" ) )
+        .def( "elasticStiffnessMatrix_", &DiscreteComputation::elasticStiffnessMatrix_, R"(
+            Return the elementary matices for elastic Stiffness matrix
 
-      Arguments:
-            time (float): current time
-            fourierMode (int): Fourier mode (>=0)
-            groupOfCells (list[str]): compute matrices on given groups of cells.
-            If it empty, the full model is used
+            Arguments:
+                  time (float): current time
+                  fourierMode (int): Fourier mode (>=0)
+                  groupOfCells (list[str]): compute matrices on given groups of cells.
+                  If it empty, the full model is used
 
-      Returns:
-            ElementaryMatrix: elementary elastic Stiffness matrices
-        )",
-              ( py::arg( "self" ), py::arg( "time" ), py::arg( "fourierMode" ),
-                py::arg( "groupOfCells" ) ) )
+            Returns:
+                  ElementaryMatrix: elementary elastic Stiffness matrices
+            )",
+              py::arg( "time" ), py::arg( "fourierMode" ), py::arg( "groupOfCells" ) )
         .def( "getPhysicalProblem", &DiscreteComputation::getPhysicalProblem )
         .def( "dualStiffnessMatrix", &DiscreteComputation::dualStiffnessMatrix,
               R"(
       Return elementary matrices for dual BC
 
-      Arguments:
-            None
-
       Returns:
             ElementaryMatrix: elementary matrices
         )" )
-        .def( "massMatrix", &DiscreteComputation::massMatrix, computeMassMatrix_overloads() );
+        .def( "massMatrix", &DiscreteComputation::massMatrix, py::arg( "time" ) = 0. );
 };

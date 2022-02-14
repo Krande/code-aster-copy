@@ -153,9 +153,7 @@ class Starter(ExecuteCommand):
         stop_with = "EXCEPTION"
         if ExecutionParameter().option & Options.Abort:
             stop_with = "ABORT"
-        if ExecutionParameter().option & Options.TestMode or self._code_enabled(
-            keywords
-        ):
+        if ExecutionParameter().option & Options.TestMode or self._code_enabled(keywords):
             ExecutionParameter().enable(Options.TestMode)
             stop_with = "ABORT"
             iwarn = True
@@ -180,10 +178,7 @@ class Starter(ExecuteCommand):
             ExecutionParameter().set_option("sdveri", int(sdveri))
             if sdveri:
                 UTMESS("I", "SUPERVIS_24")
-            dbgjeveux = (
-                debug.get("JEVEUX", "NON") == "OUI"
-                or debug.get("VERI_BASE") is not None
-            )
+            dbgjeveux = debug.get("JEVEUX", "NON") == "OUI" or debug.get("VERI_BASE") is not None
             ExecutionParameter().set_option("dbgjeveux", int(dbgjeveux))
             if dbgjeveux:
                 UTMESS("I", "SUPERVIS_12")

@@ -97,6 +97,6 @@ class FieldOnNodesDescription : public DataStructure {
     void updateValuePointers();
 };
 
-typedef boost::shared_ptr< FieldOnNodesDescription > FieldOnNodesDescriptionPtr;
+typedef std::shared_ptr< FieldOnNodesDescription > FieldOnNodesDescriptionPtr;
 
 #endif /* FIELDONNODESDESCRIPTION_H_ */

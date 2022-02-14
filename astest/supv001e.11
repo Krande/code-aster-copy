@@ -4,7 +4,7 @@ def funct3(x):
     return 3. * x
 
 def formula_def(mult2):
-    """Define tow formulas."""
+    """Define two formulas."""
     mult3 = FORMULE(NOM_PARA='INST', VALE="funct3(INST)", funct3=funct3)
 
     assert mult3(3.) == 9.

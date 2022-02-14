@@ -3,7 +3,7 @@
  * @brief Interface python de ModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,80 +22,62 @@
  */
 
 #include "PythonBindings/ModeResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
+
 #include "PythonBindings/VariantStiffnessMatrixInterface.h"
 
-void exportModeResultToPython() {
+void exportModeResultToPython( py::module_ &mod ) {
 
-    bool ( ModeResult::*c1 )( const AssemblyMatrixDisplacementRealPtr & ) =
-        &ModeResult::setStiffnessMatrix;
-    bool ( ModeResult::*c2 )( const AssemblyMatrixTemperatureRealPtr & ) =
-        &ModeResult::setStiffnessMatrix;
-    bool ( ModeResult::*c3 )( const AssemblyMatrixDisplacementComplexPtr & ) =
-        &ModeResult::setStiffnessMatrix;
-    bool ( ModeResult::*c4 )( const AssemblyMatrixPressureRealPtr & ) =
-        &ModeResult::setStiffnessMatrix;
-
-    bool ( ModeResult::*c5 )( const AssemblyMatrixDisplacementRealPtr & ) =
-        &ModeResult::setMassMatrix;
-    bool ( ModeResult::*c6 )( const AssemblyMatrixTemperatureRealPtr & ) =
-        &ModeResult::setMassMatrix;
-    bool ( ModeResult::*c7 )( const AssemblyMatrixDisplacementComplexPtr & ) =
-        &ModeResult::setMassMatrix;
-    bool ( ModeResult::*c8 )( const AssemblyMatrixPressureRealPtr & ) =
-        &ModeResult::setMassMatrix;
-
-    py::class_< ModeResult, ModeResultPtr,
-                py::bases< FullResult > >( "ModeResult",
-                                                             py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ModeResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ModeResult, std::string >))
+    py::class_< ModeResult, ModeResultPtr, FullResult >( mod, "ModeResult" )
+        .def( py::init( &initFactoryPtr< ModeResult > ) )
+        .def( py::init( &initFactoryPtr< ModeResult, std::string > ) )
         .def( "getDOFNumbering", &ModeResult::getDOFNumbering )
-        .def("getStiffnessMatrix", &getStiffnessMatrix< ModeResultPtr >)
-        .def( "setStiffnessMatrix", c1 )
-        .def( "setStiffnessMatrix", c2 )
-        .def( "setStiffnessMatrix", c3 )
-        .def( "setStiffnessMatrix", c4 )
-        .def("getMassMatrix", &getStiffnessMatrix< ModeResultPtr >)
-        .def( "setMassMatrix", c5 )
-        .def( "setMassMatrix", c6 )
-        .def( "setMassMatrix", c7 )
-        .def( "setMassMatrix", c8 )
+        .def( "getStiffnessMatrix", &getStiffnessMatrix< ModeResultPtr > )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixDisplacementRealPtr & >(
+                                        &ModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixTemperatureRealPtr & >(
+                                        &ModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix",
+              py::overload_cast< const AssemblyMatrixDisplacementComplexPtr & >(
+                  &ModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixPressureRealPtr & >(
+                                        &ModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixPressureRealPtr & >(
+                                        &ModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const GeneralizedAssemblyMatrixRealPtr & >(
+                                        &ModeResult::setStiffnessMatrix ) )
+        .def( "getMassMatrix", &getStiffnessMatrix< ModeResultPtr > )
+        .def( "setMassMatrix", py::overload_cast< const AssemblyMatrixDisplacementRealPtr & >(
+                                   &ModeResult::setMassMatrix ) )
+        .def( "setMassMatrix", py::overload_cast< const AssemblyMatrixTemperatureRealPtr & >(
+                                   &ModeResult::setMassMatrix ) )
+        .def( "setMassMatrix", py::overload_cast< const AssemblyMatrixDisplacementComplexPtr & >(
+                                   &ModeResult::setMassMatrix ) )
+        .def( "setMassMatrix", py::overload_cast< const GeneralizedAssemblyMatrixComplexPtr & >(
+                                   &ModeResult::setMassMatrix ) )
         .def( "setStructureInterface", &ModeResult::setStructureInterface );
 };
 
-void exportModeResultComplexToPython() {
+void exportModeResultComplexToPython( py::module_ &mod ) {
 
-    bool ( ModeResultComplex::*c1 )(
-        const AssemblyMatrixDisplacementRealPtr & ) =
-        &ModeResultComplex::setStiffnessMatrix;
-    bool ( ModeResultComplex::*c2 )(
-        const AssemblyMatrixDisplacementComplexPtr & ) =
-        &ModeResultComplex::setStiffnessMatrix;
-    bool ( ModeResultComplex::*c3 )(
-        const AssemblyMatrixDisplacementComplexPtr & ) =
-        &ModeResultComplex::setStiffnessMatrix;
-    bool ( ModeResultComplex::*c4 )(
-        const AssemblyMatrixPressureRealPtr & ) =
-        &ModeResultComplex::setStiffnessMatrix;
-
-    py::class_< ModeResultComplex, ModeResultComplexPtr,
-                py::bases< ModeResult > >( "ModeResultComplex",
-                                                                py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ModeResultComplex >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ModeResultComplex, std::string >))
+    py::class_< ModeResultComplex, ModeResultComplexPtr, ModeResult >( mod, "ModeResultComplex" )
+        .def( py::init( &initFactoryPtr< ModeResultComplex > ) )
+        .def( py::init( &initFactoryPtr< ModeResultComplex, std::string > ) )
         .def( "setDampingMatrix", &ModeResultComplex::setDampingMatrix )
-        .def( "setStiffnessMatrix", c1 )
-        .def( "setStiffnessMatrix", c2 )
-        .def( "setStiffnessMatrix", c3 )
-        .def( "setStiffnessMatrix", c4 )
-        .def( "setStructureInterface",
-              &ModeResultComplex::setStructureInterface );
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixDisplacementRealPtr & >(
+                                        &ModeResultComplex::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix",
+              py::overload_cast< const AssemblyMatrixDisplacementComplexPtr & >(
+                  &ModeResultComplex::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixTemperatureRealPtr & >(
+                                        &ModeResultComplex::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const AssemblyMatrixPressureRealPtr & >(
+                                        &ModeResultComplex::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix", py::overload_cast< const GeneralizedAssemblyMatrixRealPtr & >(
+                                        &ModeResultComplex::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix",
+              py::overload_cast< const GeneralizedAssemblyMatrixComplexPtr & >(
+                  &ModeResultComplex::setStiffnessMatrix ) )
+        .def( "setStructureInterface", &ModeResultComplex::setStructureInterface );
 };

@@ -48,7 +48,7 @@ class GenericModalBasis : public DataStructure {
      * @typedef GenericModalBasisPtr
      * @brief Pointeur intelligent vers un GenericModalBasis
      */
-    typedef boost::shared_ptr< GenericModalBasis > GenericModalBasisPtr;
+    typedef std::shared_ptr< GenericModalBasis > GenericModalBasisPtr;
 
     /**
      * @brief Constructeur
@@ -172,7 +172,7 @@ class GenericModalBasis : public DataStructure {
  * @typedef ModalBasisPtr
  * @brief Enveloppe d'un pointeur intelligent vers un GenericModalBasis
  */
-typedef boost::shared_ptr< GenericModalBasis > GenericModalBasisPtr;
+typedef std::shared_ptr< GenericModalBasis > GenericModalBasisPtr;
 
 class StandardModalBasis : public GenericModalBasis {
   public:
@@ -180,7 +180,7 @@ class StandardModalBasis : public GenericModalBasis {
      * @typedef StandardModalBasisPtr
      * @brief Pointeur intelligent vers un StandardModalBasis
      */
-    typedef boost::shared_ptr< StandardModalBasis > StandardModalBasisPtr;
+    typedef std::shared_ptr< StandardModalBasis > StandardModalBasisPtr;
 
     /**
      * @brief Constructeur
@@ -220,7 +220,7 @@ class RitzBasis : public GenericModalBasis {
      * @typedef RitzBasisPtr
      * @brief Pointeur intelligent vers un RitzBasis
      */
-    typedef boost::shared_ptr< RitzBasis > RitzBasisPtr;
+    typedef std::shared_ptr< RitzBasis > RitzBasisPtr;
 
     /**
      * @brief Constructeur
@@ -304,7 +304,7 @@ class OrthonormalizedBasis : public GenericModalBasis {
      * @typedef OrthonormalizedBasisPtr
      * @brief Pointeur intelligent vers un OrthonormalizedBasis
      */
-    typedef boost::shared_ptr< OrthonormalizedBasis > OrthonormalizedBasisPtr;
+    typedef std::shared_ptr< OrthonormalizedBasis > OrthonormalizedBasisPtr;
 
     /**
      * @brief Constructeur
@@ -349,7 +349,7 @@ class OrthogonalBasisWithoutMass : public GenericModalBasis {
      * @typedef OrthogonalBasisWithoutMassPtr
      * @brief Pointeur intelligent vers un OrthogonalBasisWithoutMass
      */
-    typedef boost::shared_ptr< OrthogonalBasisWithoutMass > OrthogonalBasisWithoutMassPtr;
+    typedef std::shared_ptr< OrthogonalBasisWithoutMass > OrthogonalBasisWithoutMassPtr;
 
     /**
      * @brief Constructeur
@@ -367,9 +367,9 @@ class OrthogonalBasisWithoutMass : public GenericModalBasis {
     };
 };
 
-typedef boost::shared_ptr< StandardModalBasis > StandardModalBasisPtr;
-typedef boost::shared_ptr< RitzBasis > RitzBasisPtr;
-typedef boost::shared_ptr< OrthonormalizedBasis > OrthonormalizedBasisPtr;
-typedef boost::shared_ptr< OrthogonalBasisWithoutMass > OrthogonalBasisWithoutMassPtr;
+typedef std::shared_ptr< StandardModalBasis > StandardModalBasisPtr;
+typedef std::shared_ptr< RitzBasis > RitzBasisPtr;
+typedef std::shared_ptr< OrthonormalizedBasis > OrthonormalizedBasisPtr;
+typedef std::shared_ptr< OrthogonalBasisWithoutMass > OrthogonalBasisWithoutMassPtr;
 
 #endif /* MODALBASISDEFINITION_H_ */

@@ -36,11 +36,11 @@
 
 /** @brief Create objects (maps) */
 void BehaviourProperty::createObjects() {
-    _COMPOR = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR    ", _mesh );
+    _COMPOR = std::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".COMPOR    ", _mesh );
 
-    _MULCOM = boost::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".MULCOM", _mesh );
+    _MULCOM = std::make_shared< ConstantFieldOnCellsChar16 >( getName() + ".MULCOM", _mesh );
 
-    _CARCRI = boost::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARCRI", _mesh );
+    _CARCRI = std::make_shared< ConstantFieldOnCellsReal >( getName() + ".CARCRI", _mesh );
 };
 
 /** @brief Constructor */

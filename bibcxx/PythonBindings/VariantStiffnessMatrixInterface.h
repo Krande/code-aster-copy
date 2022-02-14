@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe VairantStiffmessMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,44 +24,21 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "LinearAlgebra/AssemblyMatrix.h"
 #include "LinearAlgebra/GeneralizedAssemblyMatrix.h"
-#include <boost/variant.hpp>
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+typedef std::variant< AssemblyMatrixDisplacementRealPtr, AssemblyMatrixDisplacementComplexPtr,
+                      AssemblyMatrixTemperatureRealPtr, AssemblyMatrixPressureRealPtr >
+    MatrixVariant;
 
-typedef boost::variant< AssemblyMatrixDisplacementRealPtr,
-                        AssemblyMatrixDisplacementComplexPtr,
-                        AssemblyMatrixTemperatureRealPtr,
-                        AssemblyMatrixPressureRealPtr > MatrixVariant;
+typedef std::variant< GeneralizedAssemblyMatrixRealPtr, GeneralizedAssemblyMatrixComplexPtr >
+    GeneralizedMatrixVariant;
 
-
-typedef boost::variant< GeneralizedAssemblyMatrixRealPtr,
-                        GeneralizedAssemblyMatrixComplexPtr > GeneralizedMatrixVariant;
-
-struct variant_to_object : boost::static_visitor< PyObject * >
-{
-    static result_type convert( MatrixVariant const &v )
-    {
-        return apply_visitor( variant_to_object(), v );
-    };
-
-    static result_type convert( GeneralizedMatrixVariant const &v )
-    {
-        return apply_visitor( variant_to_object(), v );
-    };
-
-    template < typename T > result_type operator()( T const &t ) const
-    {
-        return py::incref( py::object( t ).ptr() );
-    };
-};
-
-template< typename ObjectPointer >
-MatrixVariant getStiffnessMatrix( ObjectPointer self )
-{
+template < typename ObjectPointer >
+MatrixVariant getStiffnessMatrix( ObjectPointer self ) {
     auto mat1 = self->getDisplacementRealStiffnessMatrix();
     if ( mat1 != nullptr )
         return MatrixVariant( mat1 );
@@ -75,16 +52,13 @@ MatrixVariant getStiffnessMatrix( ObjectPointer self )
     return MatrixVariant( mat2 );
 };
 
-template< typename ObjectPointer >
-GeneralizedMatrixVariant getGeneralizedStiffnessMatrix( ObjectPointer self)
-{
+template < typename ObjectPointer >
+GeneralizedMatrixVariant getGeneralizedStiffnessMatrix( ObjectPointer self ) {
     auto mat1 = self->getGeneralizedStiffnessMatrixReal();
     if ( mat1 != nullptr )
         return GeneralizedMatrixVariant( mat1 );
     auto mat2 = self->getGeneralizedStiffnessMatrixComplex();
-    return GeneralizedMatrixVariant( mat2);
+    return GeneralizedMatrixVariant( mat2 );
 };
-
-void exportStiffnessMatrixVariantToPython();
 
 #endif /* VARIANTSTIFFNESSMATRIX_H_ */

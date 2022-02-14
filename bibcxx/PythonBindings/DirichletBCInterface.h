@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DirichletBCInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,9 +24,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "Loads/DirichletBC.h"
 
-void exportDirichletBCToPython();
+void exportDirichletBCToPython( py::module_ &mod );
 
 #endif /* DIRICHLETBCSLOADINTERFACE_H_ */

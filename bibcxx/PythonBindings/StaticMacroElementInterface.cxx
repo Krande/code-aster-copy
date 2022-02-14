@@ -3,7 +3,7 @@
  * @brief Interface python de StaticMacroElement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,16 +22,13 @@
  */
 
 #include "PythonBindings/StaticMacroElementInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportStaticMacroElementToPython() {
+void exportStaticMacroElementToPython( py::module_ &mod ) {
 
-    py::class_< StaticMacroElement, StaticMacroElement::StaticMacroElementPtr,
-            py::bases< DataStructure > >( "StaticMacroElement", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< StaticMacroElement > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< StaticMacroElement, std::string > ) );
+    py::class_< StaticMacroElement, StaticMacroElement::StaticMacroElementPtr, DataStructure >(
+        mod, "StaticMacroElement" )
+        .def( py::init( &initFactoryPtr< StaticMacroElement > ) )
+        .def( py::init( &initFactoryPtr< StaticMacroElement, std::string > ) );
 };

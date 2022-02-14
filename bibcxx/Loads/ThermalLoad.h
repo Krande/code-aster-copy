@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ThermalLoad
  * @author Jean-Pierre Lefebvre
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -52,7 +52,7 @@ class ThermalLoad : public DataStructure {
      * @typedef ThermalLoadPtr
      * @brief Pointeur intelligent vers un ThermalLoad
      */
-    typedef boost::shared_ptr< ThermalLoad > ThermalLoadPtr;
+    typedef std::shared_ptr< ThermalLoad > ThermalLoadPtr;
 
     /**
      * @brief Constructeur
@@ -70,7 +70,7 @@ class ThermalLoad : public DataStructure {
      */
     ThermalLoad( const std::string name, const ModelPtr &currentModel )
         : DataStructure( name, 8, "CHAR_THER" ),
-        _therLoadDesc( boost::make_shared<
+        _therLoadDesc( std::make_shared<
             ThermalLoadDescription< ConstantFieldOnCellsType > >(getName() + ".CHTH",
                                                                             currentModel )),
           _type( getName() + ".TYPE" ){};
@@ -105,10 +105,10 @@ typedef ThermalLoad< ConstantFieldOnCellsChar24 > ThermalLoadFunction;
 /** @typedef ThermalLoad  */
 template< class ConstantFieldOnCellsType>
 using ThermalLoadPtr =
-    boost::shared_ptr< ThermalLoad< ConstantFieldOnCellsType > >;
+    std::shared_ptr< ThermalLoad< ConstantFieldOnCellsType > >;
 
-typedef boost::shared_ptr< ThermalLoadReal > ThermalLoadRealPtr;
-typedef boost::shared_ptr< ThermalLoadFunction > ThermalLoadFunctionPtr;
+typedef std::shared_ptr< ThermalLoadReal > ThermalLoadRealPtr;
+typedef std::shared_ptr< ThermalLoadFunction > ThermalLoadFunctionPtr;
 
 
 /** @typedef std::list de ThermalLoad */

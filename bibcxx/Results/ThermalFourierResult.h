@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ThermalFourierResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -48,6 +48,6 @@ class ThermalFourierResult : public Result {
  * @typedef ThermalFourierResultPtr
  * @brief Pointeur intelligent vers un ThermalFourierResult
  */
-typedef boost::shared_ptr< ThermalFourierResult > ThermalFourierResultPtr;
+typedef std::shared_ptr< ThermalFourierResult > ThermalFourierResultPtr;
 
 #endif /* FOURIERTHERCONTAINER_H_ */

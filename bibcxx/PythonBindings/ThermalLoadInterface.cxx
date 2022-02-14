@@ -3,7 +3,7 @@
  * @brief Interface python de ThermalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,32 +21,24 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/ThermalLoadInterface.h"
 
-void exportThermalLoadToPython() {
+#include "aster_pybind.h"
 
-    py::class_< ThermalLoadReal, ThermalLoadReal::ThermalLoadPtr,
-                py::bases< DataStructure > >( "ThermalLoadReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalLoadReal, ModelPtr & >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ThermalLoadReal, std::string, ModelPtr & >))
+void exportThermalLoadToPython( py::module_ &mod ) {
+
+    py::class_< ThermalLoadReal, ThermalLoadReal::ThermalLoadPtr, DataStructure >(
+        mod, "ThermalLoadReal" )
+        .def( py::init( &initFactoryPtr< ThermalLoadReal, ModelPtr & > ) )
+        .def( py::init( &initFactoryPtr< ThermalLoadReal, std::string, ModelPtr & > ) )
         .def( "getFiniteElementDescriptor", &ThermalLoadReal::getFiniteElementDescriptor )
         .def( "getMesh", &ThermalLoadReal::getMesh )
         .def( "getModel", &ThermalLoadReal::getModel );
 
-
-            py::class_< ThermalLoadFunction, ThermalLoadFunction::ThermalLoadPtr,
-                py::bases< DataStructure > >( "ThermalLoadFunction", py::no_init )
-        .def( "__init__", py::make_constructor(
-                &initFactoryPtr< ThermalLoadFunction, ModelPtr & >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ThermalLoadFunction, std::string, ModelPtr & >))
+    py::class_< ThermalLoadFunction, ThermalLoadFunction::ThermalLoadPtr, DataStructure >(
+        mod, "ThermalLoadFunction" )
+        .def( py::init( &initFactoryPtr< ThermalLoadFunction, ModelPtr & > ) )
+        .def( py::init( &initFactoryPtr< ThermalLoadFunction, std::string, ModelPtr & > ) )
         .def( "getFiniteElementDescriptor", &ThermalLoadFunction::getFiniteElementDescriptor )
         .def( "getMesh", &ThermalLoadFunction::getMesh )
         .def( "getModel", &ThermalLoadFunction::getModel );

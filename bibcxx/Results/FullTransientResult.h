@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullTransientResult
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -50,6 +50,6 @@ class FullTransientResult : public FullResult {
  * @typedef FullTransientResultPtr
  * @brief Pointeur intelligent vers un FullTransientResult
  */
-typedef boost::shared_ptr< FullTransientResult > FullTransientResultPtr;
+typedef std::shared_ptr< FullTransientResult > FullTransientResultPtr;
 
 #endif /* FULLTRANSIENTRESULTSCONTAINER_H_ */

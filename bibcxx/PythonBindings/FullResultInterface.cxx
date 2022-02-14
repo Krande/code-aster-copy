@@ -3,7 +3,7 @@
  * @brief Interface python de FullResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,21 +22,14 @@
  */
 
 #include "PythonBindings/FullResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportFullResultToPython() {
+void exportFullResultToPython( py::module_ &mod ) {
 
-
-    py::class_< FullResult, FullResultPtr,
-            py::bases< Result > >( "FullResult", py::no_init )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< FullResult, std::string, std::string > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FullResult, std::string > ) )
+    py::class_< FullResult, FullResultPtr, Result >( mod, "FullResult" )
+        .def( py::init( &initFactoryPtr< FullResult, std::string, std::string > ) )
+        .def( py::init( &initFactoryPtr< FullResult, std::string > ) )
         .def( "getDOFNumbering", &FullResult::getDOFNumbering )
         .def( "setDOFNumbering", &FullResult::setDOFNumbering )
 #ifdef ASTER_HAVE_MPI

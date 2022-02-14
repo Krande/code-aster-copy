@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,14 @@ and, optionally and in this order, *list of strings (valk)*,
 *list of ints (vali)* and *list of floats (valr)*.
 """
 
-import aster
-from libaster import (AsterError, ContactError, ConvergenceError,
-                      IntegrationError, SolverError, TimeLimitError)
+from libaster import (
+    AsterError,
+    ContactError,
+    ConvergenceError,
+    IntegrationError,
+    SolverError,
+    TimeLimitError,
+)
 
 from ..Messages import message_exception
 from ..Utilities import convert
@@ -76,6 +81,7 @@ def format(exc, code):
         txt = str(exc.args)
     return convert(txt)
 
+
 def format_exception(exc):
     """Return the text to show an exception.
 
@@ -85,7 +91,7 @@ def format_exception(exc):
     Returns;
         str: String representation of the exception.
     """
-    return format(exc, 'Z')
+    return format(exc, "Z")
 
 
 def get_idmess(exc):
@@ -97,7 +103,8 @@ def get_idmess(exc):
     Returns;
         str: Message identifier (example: ``CALCUL_12``).
     """
-    return len(exc.args) >=1 and exc.args[0] or ""
+    return len(exc.args) >= 1 and exc.args[0] or ""
+
 
 AsterError.__repr__ = format_exception
 AsterError.__str__ = format_exception

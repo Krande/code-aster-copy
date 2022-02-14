@@ -3,7 +3,7 @@
  * @brief Interface python de ParallelFiniteElementDescriptor
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,31 +23,25 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/ParallelFiniteElementDescriptorInterface.h"
-#include <PythonBindings/factory.h>
+
+#include "aster_pybind.h"
 
 #ifdef ASTER_HAVE_MPI
 
-void exportParallelFiniteElementDescriptorToPython() {
+void exportParallelFiniteElementDescriptorToPython( py::module_ &mod ) {
 
     py::class_< ParallelFiniteElementDescriptor,
                 ParallelFiniteElementDescriptor::ParallelFiniteElementDescriptorPtr,
-                py::bases< FiniteElementDescriptor > >( "ParallelFiniteElementDescriptor",
-                py::no_init )
-// fake initFactoryPtr: not directly created by user
-// fake initFactoryPtr: not directly created by user
-        .def( "getJoins",
-              &ParallelFiniteElementDescriptor::getJoins,
-              py::return_value_policy< py::return_by_value >(),
-        R"(
+                FiniteElementDescriptor >( mod, "ParallelFiniteElementDescriptor" )
+        // fake initFactoryPtr: not directly created by user
+        // fake initFactoryPtr: not directly created by user
+        .def( "getJoins", &ParallelFiniteElementDescriptor::getJoins, py::return_value_policy::copy,
+              R"(
 Return the vector of joins between the curent domain and the others subdomains.
 
 Returns:
     list: joins between subdomains.
-        )",
-            ( py::arg( "self" ) ) );
+        )" );
 };
 #endif /* ASTER_HAVE_MPI */

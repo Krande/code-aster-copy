@@ -24,9 +24,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "DataFields/ElementaryTerm.h"
 
-void exportElementaryTermToPython();
+void exportElementaryTermToPython( py::module_ &mod );
 
 #endif /* ELEMENTARYTERMINTERFACE_H_ */

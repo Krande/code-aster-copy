@@ -87,7 +87,7 @@ class BaseAssemblyMatrix : public DataStructure {
      * @typedef BaseAssemblyMatrixPtr
      * @brief Pointeur intelligent vers un BaseAssemblyMatrix
      */
-    typedef boost::shared_ptr< BaseAssemblyMatrix > BaseAssemblyMatrixPtr;
+    typedef std::shared_ptr< BaseAssemblyMatrix > BaseAssemblyMatrixPtr;
 
     /**
      * @brief Constructeur
@@ -115,8 +115,8 @@ class BaseAssemblyMatrix : public DataStructure {
      * @param Args... Liste d'arguments template
      */
     template < typename... Args >
-    void addLoad( const Args &...a ) {
-        _listOfLoads->addLoad( a... );
+    void addLoad( const Args &...args ) {
+        _listOfLoads->addLoad( args... );
     };
 
     /**
@@ -181,26 +181,9 @@ class BaseAssemblyMatrix : public DataStructure {
     void transposeConjugate() { CALLO_MATR_ASSE_TRANSPOSE_CONJUGATE( getName() ); };
 
     /**
-     * @brief Print the matrix in code_aster format
+     * @brief Print the matrix in code_aster or matlab format in given logical unit
      */
-    void print() const {
-        const ASTERINTEGER unit( 6 );
-        std::string format( " " );
-        CALLO_MATR_ASSE_PRINT( getName(), &unit, format );
-    };
-
-    /**
-     * @brief Print the matrix in matlab format
-     */
-    void print( const std::string format ) const {
-        const ASTERINTEGER unit( 6 );
-        CALLO_MATR_ASSE_PRINT( getName(), &unit, format );
-    };
-
-    /**
-     * @brief Print the matrix in matlab format in given logical unit
-     */
-    void print( const ASTERINTEGER unit, const std::string format ) const {
+    void print( const std::string format = "ASTER", const ASTERINTEGER unit = 6 ) const {
         CALLO_MATR_ASSE_PRINT( getName(), &unit, format );
     };
 
@@ -252,7 +235,7 @@ class BaseAssemblyMatrix : public DataStructure {
      */
     bool isFactorized() const { return _isFactorized; };
 
-    void isFactorized( const bool &facto ) { _isFactorized = facto; };
+    void setFactorized( const bool &facto ) { _isFactorized = facto; };
 
     /**
      * @brief Methode permettant de definir la numerotation
@@ -328,6 +311,6 @@ class BaseAssemblyMatrix : public DataStructure {
     }
 };
 
-typedef boost::shared_ptr< BaseAssemblyMatrix > BaseAssemblyMatrixPtr;
+typedef std::shared_ptr< BaseAssemblyMatrix > BaseAssemblyMatrixPtr;
 
 #endif /* BASEASSEMBLYMATRIX_H_ */

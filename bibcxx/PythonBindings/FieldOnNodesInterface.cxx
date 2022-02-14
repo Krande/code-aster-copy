@@ -21,30 +21,25 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
+/* person_in_charge: nicolas.sellenet at edf.fr */
+#include "PythonBindings/FieldOnNodesInterface.h"
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
 #include "DataFields/MeshCoordinatesField.h"
 #include "PythonBindings/DataStructureInterface.h"
-#include "PythonBindings/FieldOnNodesInterface.h"
 
-#include <PythonBindings/factory.h>
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( print_overloads, printMedFile, 1, 2 )
-
-void exportFieldOnNodesToPython() {
+void exportFieldOnNodesToPython( py::module_ &mod ) {
     /**
      * Object FieldOnNodesReal
      */
-    py::class_< FieldOnNodesReal, FieldOnNodesRealPtr, py::bases< DataField > >( "FieldOnNodesReal",
-                                                                                 py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesReal > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesReal, std::string > ) )
+
+    py::class_< FieldOnNodesReal, FieldOnNodesRealPtr, DataField >( mod, "FieldOnNodesReal" )
+        .def( py::init( &initFactoryPtr< FieldOnNodesReal > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesReal, std::string > ) )
         .def( py::init< const FieldOnNodesReal & >() )
+        .def( py::init( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
         .def( "duplicate", &FieldOnNodesReal::duplicate )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnNodesReal, BaseDOFNumberingPtr > ) )
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesReal::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def(
@@ -63,7 +58,8 @@ void exportFieldOnNodesToPython() {
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( -py::self )
-        .def( "printMedFile", &FieldOnNodesReal::printMedFile, print_overloads() )
+        .def( "printMedFile", &FieldOnNodesReal::printMedFile, py::arg( "fileName" ),
+              py::arg( "local" ) = true )
         .def( "setMesh", &FieldOnNodesReal::setMesh )
         .def( "setDescription", &FieldOnNodesReal::setDescription )
         .def( "build", &FieldOnNodesReal::build )
@@ -79,8 +75,7 @@ Arguments:
 
 Returns:
     float: euclidean norm
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "dot", &FieldOnNodesReal::dot,
               R"(
 Return the dot product of two fields
@@ -91,15 +86,14 @@ Arguments:
 Returns:
     float: dot product
         )",
-              ( py::arg( "self" ), py::arg( "other" ) ) )
+              py::arg( "other" ) )
         .def( "size", &FieldOnNodesReal::size,
               R"(
 Return the size of the field
 
 Returns:
     int: number of element in the field
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setValues", &FieldOnNodesReal::setValues,
               R"(
 Set values of the field
@@ -107,25 +101,22 @@ Set values of the field
 Arguments:
     value (float): value to set
         )",
-              ( py::arg( "self" ), py::arg( "value" ) ) )
-        .def( "getValues", &FieldOnNodesReal::getValues,
-              py::return_value_policy< py::copy_const_reference >(), R"(
+              py::arg( "value" ) )
+        .def( "getValues", &FieldOnNodesReal::getValues, py::return_value_policy::reference, R"(
 Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
 Returns:
     list[float]: List of values.
-        )",
-              ( py::arg( "self" ) ) );
+        )" );
     /**
      * Object FieldOnNodesComplex
      */
-    py::class_< FieldOnNodesComplex, FieldOnNodesComplexPtr, py::bases< DataField > >(
-        "FieldOnNodesComplex", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesComplex > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnNodesComplex, std::string > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
+    py::class_< FieldOnNodesComplex, FieldOnNodesComplexPtr, DataField >( mod,
+                                                                          "FieldOnNodesComplex" )
+        .def( py::init( &initFactoryPtr< FieldOnNodesComplex > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesComplex, std::string > ) )
+        .def( py::init< const FieldOnNodesComplex & >() )
+        .def( py::init( &initFactoryPtr< FieldOnNodesComplex, BaseDOFNumberingPtr > ) )
         .def( "exportToSimpleFieldOnNodes", &FieldOnNodesComplex::exportToSimpleFieldOnNodes )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def(
@@ -140,15 +131,13 @@ Returns:
         .def( "build", &FieldOnNodesComplex::build )
         .def( "getMesh", &FieldOnNodesComplex::getMesh )
         .def( "getDescription", &FieldOnNodesComplex::getDescription )
-        .def( "getValues", &FieldOnNodesComplex::getValues,
-              py::return_value_policy< py::copy_const_reference >(), R"(
+        .def( "getValues", &FieldOnNodesComplex::getValues, py::return_value_policy::reference, R"(
 Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...]
 (m is the total number of componenets)
 
 Returns:
     list[complex]: List of values.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "dot", &FieldOnNodesComplex::dot,
               R"(
 Return the dot product of two complex fields
@@ -159,7 +148,7 @@ Arguments:
 Returns:
     complex: dot product
         )",
-              ( py::arg( "self" ), py::arg( "other" ) ) )
+              py::arg( "other" ) )
         .def( "norm", &FieldOnNodesComplex::norm,
               R"(
 Return the euclidean norm of the field
@@ -169,26 +158,24 @@ Arguments:
 
 Returns:
     float: euclidean norm
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setValues", &FieldOnNodesComplex::setValues, R"(
 Set values of the field
 
 Argument:
     complex: value to set
         )",
-              ( py::arg( "self" ), py::arg( "value" ) ) )
+              py::arg( "value" ) )
         .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
 
     /**
      * Object FieldOnNodesLong
      */
-    py::class_< FieldOnNodesLong, FieldOnNodesLongPtr, py::bases< DataField > >( "FieldOnNodesLong",
-                                                                                 py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesLong > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesLong, std::string > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnNodesLong, BaseDOFNumberingPtr > ) )
+    py::class_< FieldOnNodesLong, FieldOnNodesLongPtr, DataField >( mod, "FieldOnNodesLong" )
+        .def( py::init( &initFactoryPtr< FieldOnNodesLong > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesLong, std::string > ) )
+        .def( py::init< const FieldOnNodesLong & >() )
+        .def( py::init( &initFactoryPtr< FieldOnNodesLong, BaseDOFNumberingPtr > ) )
         .def( "setDescription", &FieldOnNodesLong::setDescription )
         .def( "getDescription", &FieldOnNodesLong::getDescription )
         .def( "getMesh", &FieldOnNodesLong::getMesh )
@@ -197,13 +184,11 @@ Argument:
     /**
      * Object FieldOnNodesChar8
      */
-    py::class_< FieldOnNodesChar8, FieldOnNodesChar8Ptr, py::bases< DataField > >(
-        "FieldOnNodesChar8", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesChar8 > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnNodesChar8, std::string > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnNodesChar8, BaseDOFNumberingPtr > ) )
+    py::class_< FieldOnNodesChar8, FieldOnNodesChar8Ptr, DataField >( mod, "FieldOnNodesChar8" )
+        .def( py::init( &initFactoryPtr< FieldOnNodesChar8 > ) )
+        .def( py::init( &initFactoryPtr< FieldOnNodesChar8, std::string > ) )
+        .def( py::init< const FieldOnNodesChar8 & >() )
+        .def( py::init( &initFactoryPtr< FieldOnNodesChar8, BaseDOFNumberingPtr > ) )
         .def( "setDescription", &FieldOnNodesChar8::setDescription )
         .def( "getDescription", &FieldOnNodesChar8::getDescription )
         .def( "getMesh", &FieldOnNodesChar8::getMesh )

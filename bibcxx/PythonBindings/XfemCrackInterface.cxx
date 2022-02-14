@@ -3,7 +3,7 @@
  * @brief Interface python de XfemCrack
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,18 +22,14 @@
  */
 
 #include "PythonBindings/XfemCrackInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportXfemCrackToPython() {
+void exportXfemCrackToPython( py::module_ &mod ) {
 
-    py::class_< XfemCrack, XfemCrack::XfemCrackPtr, py::bases< DataStructure > >(
-        "XfemCrack", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< XfemCrack, MeshPtr >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< XfemCrack, std::string, MeshPtr >))
+    py::class_< XfemCrack, XfemCrack::XfemCrackPtr, DataStructure >( mod, "XfemCrack" )
+        .def( py::init( &initFactoryPtr< XfemCrack, MeshPtr > ) )
+        .def( py::init( &initFactoryPtr< XfemCrack, std::string, MeshPtr > ) )
         .def( "build", &XfemCrack::build )
         .def( "enrichModelWithXfem", &XfemCrack::enrichModelWithXfem )
         .def( "getMesh", &XfemCrack::getMesh )
@@ -48,10 +44,8 @@ void exportXfemCrackToPython() {
         .def( "setCrackLipsEntity", &XfemCrack::setCrackLipsEntity )
         .def( "getCrackTipEntity", &XfemCrack::getCrackTipEntity )
         .def( "setCrackTipEntity", &XfemCrack::setCrackTipEntity )
-        .def( "getCohesiveCrackTipForPropagation",
-              &XfemCrack::getCohesiveCrackTipForPropagation )
-        .def( "setCohesiveCrackTipForPropagation",
-              &XfemCrack::setCohesiveCrackTipForPropagation )
+        .def( "getCohesiveCrackTipForPropagation", &XfemCrack::getCohesiveCrackTipForPropagation )
+        .def( "setCohesiveCrackTipForPropagation", &XfemCrack::setCohesiveCrackTipForPropagation )
         .def( "getNormalLevelSetFunction", &XfemCrack::getNormalLevelSetFunction )
         .def( "setNormalLevelSetFunction", &XfemCrack::setNormalLevelSetFunction )
         .def( "getTangentialLevelSetFunction", &XfemCrack::getTangentialLevelSetFunction )
@@ -85,6 +79,5 @@ Arguments:
 Returns:
     Table: Table stored with the given identifier.
         )",
-              ( py::arg( "self" ), py::arg( "identifier" ) ) )
-        ;
+              py::arg( "identifier" ) );
 };

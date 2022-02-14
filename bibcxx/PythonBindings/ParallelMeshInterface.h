@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelMeshInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -30,11 +30,11 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
+#include "aster_pybind.h"
 
 #include "Meshes/ParallelMesh.h"
-#include "PythonBindings/DataStructureInterface.h"
 
-void exportParallelMeshToPython();
+void exportParallelMeshToPython( py::module_ &mod );
 
 #endif /* PARALLELMESHINTERFACE_H_ */
 

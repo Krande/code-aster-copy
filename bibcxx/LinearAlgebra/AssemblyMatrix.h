@@ -52,7 +52,7 @@
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class AssemblyMatrix : public BaseAssemblyMatrix {
   private:
-    typedef boost::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > >
+    typedef std::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > >
         ElementaryMatrixPtr;
 
     /** @brief Collection '.VALM' */
@@ -76,7 +76,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
      * @typedef AssemblyMatrixPtr
      * @brief Pointeur intelligent vers un AssemblyMatrix
      */
-    typedef boost::shared_ptr< AssemblyMatrix< ValueType, PhysicalQuantity > > AssemblyMatrixPtr;
+    typedef std::shared_ptr< AssemblyMatrix< ValueType, PhysicalQuantity > > AssemblyMatrixPtr;
 
     /**
      * @brief Constructeur
@@ -153,7 +153,7 @@ class AssemblyMatrix : public BaseAssemblyMatrix {
     ASTERINTEGER getNumberOfElementaryMatrix() const { return _elemMatrix.size(); };
 
     BaseAssemblyMatrixPtr getEmptyMatrix( const std::string &name ) const {
-        return boost::make_shared< AssemblyMatrix< ValueType, PhysicalQuantity > >( name );
+        return std::make_shared< AssemblyMatrix< ValueType, PhysicalQuantity > >( name );
     }
 };
 
@@ -189,12 +189,12 @@ typedef AssemblyMatrix< ASTERCOMPLEX, Temperature > AssemblyMatrixTemperatureCom
 template class AssemblyMatrix< ASTERCOMPLEX, Pressure >;
 typedef AssemblyMatrix< ASTERCOMPLEX, Pressure > AssemblyMatrixPressureComplex;
 
-typedef boost::shared_ptr< AssemblyMatrixDisplacementReal > AssemblyMatrixDisplacementRealPtr;
-typedef boost::shared_ptr< AssemblyMatrixDisplacementComplex > AssemblyMatrixDisplacementComplexPtr;
-typedef boost::shared_ptr< AssemblyMatrixTemperatureReal > AssemblyMatrixTemperatureRealPtr;
-typedef boost::shared_ptr< AssemblyMatrixTemperatureComplex > AssemblyMatrixTemperatureComplexPtr;
-typedef boost::shared_ptr< AssemblyMatrixPressureReal > AssemblyMatrixPressureRealPtr;
-typedef boost::shared_ptr< AssemblyMatrixPressureComplex > AssemblyMatrixPressureComplexPtr;
+typedef std::shared_ptr< AssemblyMatrixDisplacementReal > AssemblyMatrixDisplacementRealPtr;
+typedef std::shared_ptr< AssemblyMatrixDisplacementComplex > AssemblyMatrixDisplacementComplexPtr;
+typedef std::shared_ptr< AssemblyMatrixTemperatureReal > AssemblyMatrixTemperatureRealPtr;
+typedef std::shared_ptr< AssemblyMatrixTemperatureComplex > AssemblyMatrixTemperatureComplexPtr;
+typedef std::shared_ptr< AssemblyMatrixPressureReal > AssemblyMatrixPressureRealPtr;
+typedef std::shared_ptr< AssemblyMatrixPressureComplex > AssemblyMatrixPressureComplexPtr;
 
 template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
 AssemblyMatrix< ValueType, PhysicalQuantity >::AssemblyMatrix( const std::string &name )

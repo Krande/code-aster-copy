@@ -3,7 +3,7 @@
  * @brief Implementation de SyntaxMapContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,74 +27,70 @@ PyObject *SyntaxMapContainer::convertToPythonDictionnary( PyObject *returnDict )
     if ( returnDict == NULL )
         returnDict = PyDict_New();
 
-    for ( SyntaxMapCIter curIter = container.begin(); curIter != container.end(); ++curIter ) {
-        if ( ( *curIter ).second.type() == typeid( ASTERINTEGER ) ) {
-            const ASTERINTEGER &tmp = boost::get< ASTERINTEGER >( ( *curIter ).second );
+    for ( auto &[key, var] : container ) {
+        if ( std::holds_alternative< ASTERINTEGER >( var ) ) {
+            const ASTERINTEGER &tmp = std::get< ASTERINTEGER >( var );
             PyObject *value = PyLong_FromLong( tmp );
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), value );
+            PyDict_SetItemString( returnDict, key.c_str(), value );
             Py_DECREF( value );
-        } else if ( ( *curIter ).second.type() == typeid( VectorLong ) ) {
-            const VectorLong &currentList = boost::get< VectorLong >( ( *curIter ).second );
+        } else if ( std::holds_alternative< VectorLong >( var ) ) {
+            const VectorLong &currentList = std::get< VectorLong >( var );
             PyObject *listValues = PyList_New( currentList.size() );
             int count = 0;
-            for ( VectorLongCIter iter = currentList.begin(); iter != currentList.end(); ++iter ) {
-                PyList_SetItem( listValues, count, PyLong_FromLong( *iter ) );
+            for ( auto &val : currentList ) {
+                PyList_SetItem( listValues, count, PyLong_FromLong( val ) );
                 ++count;
             }
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), listValues );
+            PyDict_SetItemString( returnDict, key.c_str(), listValues );
             Py_DECREF( listValues );
-        } else if ( ( *curIter ).second.type() == typeid( std::string ) ) {
-            const std::string &tmp = boost::get< std::string >( ( *curIter ).second );
+        } else if ( std::holds_alternative< std::string >( var ) ) {
+            const std::string &tmp = std::get< std::string >( var );
             PyObject *value = PyUnicode_FromString( tmp.c_str() );
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), value );
+            PyDict_SetItemString( returnDict, key.c_str(), value );
             Py_DECREF( value );
-        } else if ( ( *curIter ).second.type() == typeid( VectorString ) ) {
-            const VectorString &currentList = boost::get< VectorString >( ( *curIter ).second );
+        } else if ( std::holds_alternative< VectorString >( var ) ) {
+            const VectorString &currentList = std::get< VectorString >( var );
             PyObject *listValues = PyList_New( currentList.size() );
             int count = 0;
-            for ( VectorStringCIter iter = currentList.begin(); iter != currentList.end();
-                  ++iter ) {
-                PyList_SetItem( listValues, count, PyUnicode_FromString( ( *iter ).c_str() ) );
+            for ( auto &val : currentList ) {
+                PyList_SetItem( listValues, count, PyUnicode_FromString( val.c_str() ) );
                 ++count;
             }
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), listValues );
+            PyDict_SetItemString( returnDict, key.c_str(), listValues );
             Py_DECREF( listValues );
-        } else if ( ( *curIter ).second.type() == typeid(double)) {
-            const ASTERDOUBLE &tmp = boost::get< ASTERDOUBLE >( ( *curIter ).second );
+        } else if ( std::holds_alternative< ASTERDOUBLE >( var ) ) {
+            const ASTERDOUBLE &tmp = std::get< ASTERDOUBLE >( var );
             PyObject *value = PyFloat_FromDouble( tmp );
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(),value );
+            PyDict_SetItemString( returnDict, key.c_str(), value );
             Py_DECREF( value );
-        } else if ( ( *curIter ).second.type() == typeid( VectorReal ) ) {
-            const VectorReal &currentList = boost::get< VectorReal >( ( *curIter ).second );
+        } else if ( std::holds_alternative< VectorReal >( var ) ) {
+            const VectorReal &currentList = std::get< VectorReal >( var );
             PyObject *listValues = PyList_New( currentList.size() );
             int count = 0;
-            for ( VectorRealCIter iter = currentList.begin(); iter != currentList.end();
-                  ++iter ) {
-                PyList_SetItem( listValues, count, PyFloat_FromDouble( *iter ) );
+            for ( auto &val : currentList ) {
+                PyList_SetItem( listValues, count, PyFloat_FromDouble( val ) );
                 ++count;
             }
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), listValues );
+            PyDict_SetItemString( returnDict, key.c_str(), listValues );
             Py_DECREF( listValues );
-        } else if ( ( *curIter ).second.type() == typeid( ASTERCOMPLEX ) ) {
-            const ASTERCOMPLEX &tmp = boost::get< ASTERCOMPLEX >( ( *curIter ).second );
+        } else if ( std::holds_alternative< ASTERCOMPLEX >( var ) ) {
+            const ASTERCOMPLEX &tmp = std::get< ASTERCOMPLEX >( var );
             PyObject *value = PyComplex_FromDoubles( tmp.real(), tmp.imag() );
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), value );
+            PyDict_SetItemString( returnDict, key.c_str(), value );
             Py_DECREF( value );
-        } else if ( ( *curIter ).second.type() == typeid( VectorComplex ) ) {
-            const VectorComplex &currentList = boost::get< VectorComplex >( ( *curIter ).second );
+        } else if ( std::holds_alternative< VectorComplex >( var ) ) {
+            const VectorComplex &currentList = std::get< VectorComplex >( var );
             PyObject *listValues = PyList_New( currentList.size() );
             int count = 0;
-            for ( VectorComplexCIter iter = currentList.begin(); iter != currentList.end();
-                  ++iter ) {
+            for ( auto &val : currentList ) {
                 PyList_SetItem( listValues, count,
-                                PyComplex_FromDoubles( iter->real(), iter->imag() ) );
+                                PyComplex_FromDoubles( val.real(), val.imag() ) );
                 ++count;
             }
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), listValues );
+            PyDict_SetItemString( returnDict, key.c_str(), listValues );
             Py_DECREF( listValues );
-        } else if ( ( *curIter ).second.type() == typeid( ListSyntaxMapContainer ) ) {
-            const ListSyntaxMapContainer &tmp =
-                boost::get< ListSyntaxMapContainer >( ( *curIter ).second );
+        } else if ( std::holds_alternative< ListSyntaxMapContainer >( var ) ) {
+            const ListSyntaxMapContainer &tmp = std::get< ListSyntaxMapContainer >( var );
             PyObject *list_F = PyList_New( tmp.size() );
             int count = 0;
             for ( ListSyntaxMapContainerCIter iter2 = tmp.begin(); iter2 != tmp.end(); ++iter2 ) {
@@ -102,7 +98,7 @@ PyObject *SyntaxMapContainer::convertToPythonDictionnary( PyObject *returnDict )
                 PyList_SetItem( list_F, count, currentDict );
                 ++count;
             }
-            PyDict_SetItemString( returnDict, ( *curIter ).first.c_str(), list_F );
+            PyDict_SetItemString( returnDict, key.c_str(), list_F );
             Py_DECREF( list_F );
         }
     }

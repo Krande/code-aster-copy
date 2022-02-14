@@ -23,34 +23,31 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
-#include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/SimpleFieldOnNodesInterface.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( getvalues_overloads, getValues, 0, 1 )
+#include "aster_pybind.h"
 
-void exportSimpleFieldOnNodesToPython() {
-    py::class_< SimpleFieldOnNodesReal, SimpleFieldOnNodesRealPtr,
-                py::bases< DataStructure > >( "SimpleFieldOnNodesReal", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< SimpleFieldOnNodesReal >))
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< SimpleFieldOnNodesReal, std::string >))
-        .def( "getValue", &SimpleFieldOnNodesReal::getValue,
-              py::return_value_policy< py::return_by_value >(), R"(
+#include "PythonBindings/DataStructureInterface.h"
+
+void exportSimpleFieldOnNodesToPython( py::module_ &mod ) {
+    py::class_< SimpleFieldOnNodesReal, SimpleFieldOnNodesRealPtr, DataStructure >(
+        mod, "SimpleFieldOnNodesReal" )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesReal, std::string > ) )
+        .def( "getValue", &SimpleFieldOnNodesReal::getValue, py::return_value_policy::copy,
+              R"(
 Returns the value of the `icmp` component of the field on the `ino` node.
 
-Args:
+Arguments:
         ino (int): Index of node.
         icmp (int): Index of component.
 
 Returns:
     (float): The field value. NaN is returned if the position is not allocated.
-        )", ( py::arg("self" ), py::arg("ino" ), py::arg("icmp")))
+        )",
+              py::arg( "ino" ), py::arg( "icmp" ) )
 
-        .def( "getValues", &SimpleFieldOnNodesReal::getValues, getvalues_overloads( R"(
+        .def( "getValues", &SimpleFieldOnNodesReal::getValues, R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
 The first array contains the field values while the second one is a mask
 which is `True` if the corresponding value exists, `False` otherwise.
@@ -63,7 +60,8 @@ Args:
 Returns:
     ndarray (float): Field values.
     ndarray (bool): Mask for the field values.
-        )", ( py::arg("self" ), py::arg("copy" ))))
+        )",
+              ( py::arg( "self" ), py::arg( "copy" ) = false ) )
 
         .def( "getNumberOfComponents", &SimpleFieldOnNodesReal::getNumberOfComponents )
         .def( "getNumberOfNodes", &SimpleFieldOnNodesReal::getNumberOfNodes )
@@ -71,26 +69,26 @@ Returns:
         .def( "getNameOfComponent", &SimpleFieldOnNodesReal::getNameOfComponent )
         .def( "getPhysicalQuantity", &SimpleFieldOnNodesReal::getPhysicalQuantity )
         .def( "updateValuePointers", &SimpleFieldOnNodesReal::updateValuePointers );
-    py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr,
-                py::bases< DataStructure > >( "SimpleFieldOnNodesComplex", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< SimpleFieldOnNodesComplex >))
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< SimpleFieldOnNodesComplex, std::string >))
+    py::class_< SimpleFieldOnNodesComplex, SimpleFieldOnNodesComplexPtr, DataStructure >(
+        mod, "SimpleFieldOnNodesComplex" )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnNodesComplex, std::string > ) )
 
-        .def( "getValue", &SimpleFieldOnNodesComplex::getValue,
-              py::return_value_policy< py::return_by_value >(), R"(
+        .def( "getValue", &SimpleFieldOnNodesComplex::getValue, py::return_value_policy::copy,
+              R"(
 Returns the value of the `icmp` component of the field on the `ino` node.
 
-Args:
-        ino (int): Index of node.
-        icmp (int): Index of component.
+Arguments:
+    ino (int): Index of node.
+    icmp (int): Index of component.
 
 Returns:
-    (complex): The field value. NaN is returned if the position is not allocated.
-        )", ( py::arg("self" ), py::arg("ino" ), py::arg("icmp")) )
+    complex: The field value. NaN is returned if the position is not allocated.
+        )",
+              py::arg( "ino" ), py::arg( "icmp" ) )
 
-        .def( "getValues", &SimpleFieldOnNodesComplex::getValues, getvalues_overloads( R"(
+        .def( "getValues", &SimpleFieldOnNodesComplex::getValues,
+              R"(
 Returns two numpy arrays with shape ( number_of_components, space_dimension )
 The first array contains the field values while the second one is a mask
 which is `True` if the corresponding value exists, `False` otherwise.
@@ -103,7 +101,8 @@ Args:
 Returns:
     ndarray (complex): Field values.
     ndarray (bool): Mask for the field values.
-        )", ( py::arg("self" ), py::arg("copy" ))))
+        )",
+              ( py::arg( "self" ), py::arg( "copy" ) = false ) )
 
         .def( "getNumberOfComponents", &SimpleFieldOnNodesComplex::getNumberOfComponents )
         .def( "getNumberOfNodes", &SimpleFieldOnNodesComplex::getNumberOfNodes )

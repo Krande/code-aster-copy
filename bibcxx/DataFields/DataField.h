@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe DataField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -40,7 +40,7 @@ class DataField : public DataStructure {
      * @typedef DataFieldPtr
      * @brief Pointeur intelligent vers un DataField
      */
-    typedef boost::shared_ptr< DataField > DataFieldPtr;
+    typedef std::shared_ptr< DataField > DataFieldPtr;
 
     /**
      * @brief Constructor
@@ -77,6 +77,6 @@ class DataField : public DataStructure {
 /**
  * @typedef DataFieldPtrReal
  */
-typedef boost::shared_ptr< DataField > DataFieldPtr;
+typedef std::shared_ptr< DataField > DataFieldPtr;
 
 #endif /* DATAFIELD_H_ */

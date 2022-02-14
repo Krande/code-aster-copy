@@ -3,7 +3,7 @@
  * @brief Interface python de ElementaryCharacteristics
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,21 +23,16 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/ElementaryCharacteristicsInterface.h"
 
-void exportElementaryCharacteristicsToPython() {
+#include "aster_pybind.h"
+
+void exportElementaryCharacteristicsToPython( py::module_ &mod ) {
 
     py::class_< ElementaryCharacteristics, ElementaryCharacteristics::ElementaryCharacteristicsPtr,
-                py::bases< DataStructure > >( "ElementaryCharacteristics", py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryCharacteristics, ModelPtr > ) )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< ElementaryCharacteristics, std::string, ModelPtr > ) )
+                DataStructure >( mod, "ElementaryCharacteristics" )
+        .def( py::init( &initFactoryPtr< ElementaryCharacteristics, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ElementaryCharacteristics, std::string, ModelPtr > ) )
         .def( "getModel", &ElementaryCharacteristics::getModel )
         .def( "getMesh", &ElementaryCharacteristics::getMesh );
 };

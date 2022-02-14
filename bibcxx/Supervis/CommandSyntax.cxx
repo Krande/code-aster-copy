@@ -2,7 +2,7 @@
  * @file CommandSyntax.cxx
  * @brief Implementation of API to CommandSyntax Python object.
  * @section LICENCE
- * Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,14 @@
  * person_in_charge: mathieu.courtois@edf.fr
  */
 
+#include "Supervis/CommandSyntax.h"
+
 #include "Python.h"
 #include "aster.h"
 #include "shared_vars.h"
 
-#include "Supervis/CommandSyntax.h"
-#include "Utilities/SyntaxDictionary.h"
 #include "Utilities/CapyConvertibleValue.h"
+#include "Utilities/SyntaxDictionary.h"
 
 PyObject *CommandSyntax::py = NULL;
 
@@ -85,8 +86,8 @@ void CommandSyntax::define( SyntaxMapContainer &syntax ) {
     Py_DECREF( keywords );
 }
 
-void CommandSyntax::define( PyObject *keywords ) {
-    PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"define", (char *)"O", keywords );
+void CommandSyntax::define( py::object keywords ) {
+    PyObject *res = PyObject_CallMethod( _pySyntax, (char *)"define", (char *)"O", keywords.ptr() );
     if ( res == NULL ) {
         throw std::runtime_error( "Error calling `CommandSyntax.define`." );
     }

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la struct SyntaxMapContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,17 +24,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <map>
-#include <string>
-#include <vector>
-#include <list>
-#include "boost/variant.hpp"
-#include <typeinfo>
-#include <iostream>
-
 #include "Python.h"
 #include "aster.h"
 #include "astercxx.h"
+
+#include <typeinfo>
 
 struct SyntaxMapContainer;
 
@@ -47,45 +41,20 @@ typedef ListSyntaxMapContainer::iterator ListSyntaxMapContainerIter;
 typedef ListSyntaxMapContainer::const_iterator ListSyntaxMapContainerCIter;
 
 /**
- * @typedef VectorLong
- * @brief Vecteur STL d'entiers
- */
-typedef VectorLong::iterator VectorLongIter;
-typedef VectorLong::const_iterator VectorLongCIter;
-
-/**
- * @typedef VectorString
- * @brief Vecteur STL de chaines
- */
-typedef VectorString::iterator VectorStringIter;
-typedef VectorString::const_iterator VectorStringCIter;
-
-/**
- * @typedef VectorReal
- * @brief Vecteur STL de doubles
- */
-typedef VectorReal::iterator VectorRealIter;
-typedef VectorReal::const_iterator VectorRealCIter;
-
-/**
- * @typedef VectorComplex
- * @brief Vecteur STL de doubles
- */
-typedef VectorComplex::iterator VectorComplexIter;
-typedef VectorComplex::const_iterator VectorComplexCIter;
-
-/**
  * @class SyntaxMapContainer
  * @brief Cette struct decrit un dictionnaire permettant de contenir la syntaxe des commandes Aster
  * @author Nicolas Sellenet
  */
 class SyntaxMapContainer {
   public:
+    /** @brief Typedef definissant divers types */
+
+    using VariantSyntaxType =
+        std::variant< ASTERINTEGER, ASTERDOUBLE, ASTERCOMPLEX, std::string, VectorLong,
+                      VectorString, VectorReal, VectorComplex, ListSyntaxMapContainer >;
+
     /** @brief Typedef definissant un map associant une chaine a divers types */
-    typedef std::map<
-        std::string,
-        boost::variant< ASTERINTEGER, std::string, double, ASTERCOMPLEX, VectorLong, VectorString,
-                        VectorReal, VectorComplex, ListSyntaxMapContainer > > SyntaxMap;
+    typedef std::map< std::string, VariantSyntaxType > SyntaxMap;
     typedef SyntaxMap::iterator SyntaxMapIter;
     typedef SyntaxMap::const_iterator SyntaxMapCIter;
 
@@ -93,10 +62,10 @@ class SyntaxMapContainer {
     SyntaxMap container;
 
     /**
-    * @brief Opérateur +=
-    * @param toAdd SyntaxMapContainer à ajouter
-    * @return reference to the current object
-    */
+     * @brief Opérateur +=
+     * @param toAdd SyntaxMapContainer à ajouter
+     * @return reference to the current object
+     */
     SyntaxMapContainer &operator+=( const SyntaxMapContainer &toAdd ) {
         container.insert( toAdd.container.begin(), toAdd.container.end() );
         return *this;
@@ -104,12 +73,12 @@ class SyntaxMapContainer {
 
   protected:
     /**
-        * @brief Convertisseur du conteneur en dictionnaire python
-        * @return un dict python contenant la syntaxe valorisable par l'objet CommandSyntax
-        * @todo Probleme de refcounting : ajouter un objet wrapper qui se chargera de la destruction
-        * @todo seul CommandSyntax devrait pouvoir appeler cette fonction ?
-        * @todo ajouter un const pour this
-        */
+     * @brief Convertisseur du conteneur en dictionnaire python
+     * @return un dict python contenant la syntaxe valorisable par l'objet CommandSyntax
+     * @todo Probleme de refcounting : ajouter un objet wrapper qui se chargera de la destruction
+     * @todo seul CommandSyntax devrait pouvoir appeler cette fonction ?
+     * @todo ajouter un const pour this
+     */
     PyObject *convertToPythonDictionnary( PyObject *returnDict = NULL ) const;
 
   private:

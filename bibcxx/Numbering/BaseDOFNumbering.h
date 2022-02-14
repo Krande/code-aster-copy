@@ -64,12 +64,12 @@
  */
 class BaseDOFNumbering : public DataStructure {
   private:
-    typedef boost::variant< ElementaryMatrixDisplacementRealPtr,
-                            ElementaryMatrixDisplacementComplexPtr,
-                            ElementaryMatrixTemperatureRealPtr, ElementaryMatrixPressureComplexPtr >
+    typedef std::variant< ElementaryMatrixDisplacementRealPtr,
+                          ElementaryMatrixDisplacementComplexPtr,
+                          ElementaryMatrixTemperatureRealPtr, ElementaryMatrixPressureComplexPtr >
         MatrElem;
 
-    class ElementaryMatrixGetModel : public boost::static_visitor< ModelPtr > {
+    class ElementaryMatrixGetModel {
       public:
         template < typename T >
         ModelPtr operator()( const T &operand ) const {
@@ -77,7 +77,7 @@ class BaseDOFNumbering : public DataStructure {
         };
     };
 
-    class ElementaryMatrixGetName : public boost::static_visitor< std::string > {
+    class ElementaryMatrixGetName {
       public:
         template < typename T >
         std::string operator()( const T &operand ) const {
@@ -85,8 +85,7 @@ class BaseDOFNumbering : public DataStructure {
         };
     };
 
-    class ElementaryMatrixGetFEDescrp
-        : public boost::static_visitor< std::vector< FiniteElementDescriptorPtr > > {
+    class ElementaryMatrixGetFEDescrp {
       public:
         template < typename T >
         std::vector< FiniteElementDescriptorPtr > operator()( const T &operand ) const {
@@ -172,7 +171,7 @@ class BaseDOFNumbering : public DataStructure {
               _supn( DOFNumName + ".SUPN" ){};
         friend class BaseDOFNumbering;
     };
-    typedef boost::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
+    typedef std::shared_ptr< MultFrontGarbage > MultFrontGarbagePtr;
 
     class GlobalEquationNumbering {
         /** @brief Objet Jeveux '.NEQU' */
@@ -199,7 +198,7 @@ class BaseDOFNumbering : public DataStructure {
 
         friend class BaseDOFNumbering;
     };
-    typedef boost::shared_ptr< GlobalEquationNumbering > GlobalEquationNumberingPtr;
+    typedef std::shared_ptr< GlobalEquationNumbering > GlobalEquationNumberingPtr;
 
     class LocalEquationNumbering {
         /** @brief Objet Jeveux '.NEQU' */
@@ -237,7 +236,7 @@ class BaseDOFNumbering : public DataStructure {
         const JeveuxVectorLong getGlobalToLocal() const { return _globalToLocal; }
         friend class BaseDOFNumbering;
     };
-    typedef boost::shared_ptr< LocalEquationNumbering > LocalEquationNumberingPtr;
+    typedef std::shared_ptr< LocalEquationNumbering > LocalEquationNumberingPtr;
 
     // !!! Classe succinte car on ne sait pas comment elle sera utiliser !!!
     /** @brief Objet Jeveux '.NSLV' */
@@ -285,7 +284,7 @@ class BaseDOFNumbering : public DataStructure {
      * @typedef BaseDOFNumberingPtr
      * @brief Pointeur intelligent vers un BaseDOFNumbering
      */
-    typedef boost::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
+    typedef std::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
 
     /**
      * @brief Add a FiniteElementDescriptor to elementary matrix
@@ -432,7 +431,7 @@ class BaseDOFNumbering : public DataStructure {
             return _model;
         else {
             if ( _matrix.size() != 0 )
-                return boost::apply_visitor( ElementaryMatrixGetModel(), _matrix[0] );
+                return std::visit( ElementaryMatrixGetModel(), _matrix[0] );
         }
         return ModelPtr( nullptr );
     };
@@ -543,6 +542,6 @@ class BaseDOFNumbering : public DataStructure {
  * @brief Enveloppe d'un pointeur intelligent vers un BaseDOFNumbering
  * @author Nicolas Sellenet
  */
-typedef boost::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
+typedef std::shared_ptr< BaseDOFNumbering > BaseDOFNumberingPtr;
 
 #endif /* BASEDOFNUMBERING_H_ */

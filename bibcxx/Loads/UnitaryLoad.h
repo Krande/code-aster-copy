@@ -6,7 +6,7 @@
  * @brief Fichier definissant la classe template UnitaryLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -37,7 +37,7 @@
 template < class PhysicalQuantityType > class UnitaryLoad {
   private:
     /** @typedef Definition d'un pointeur intelligent sur un VirtualMeshEntity */
-    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+    typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
 
     /** @typedef Definition du type informatique de la grandeur sur laquelle porte la charge */
     typedef typename PhysicalQuantityType::QuantityType ValueType;

@@ -25,15 +25,15 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-#include <set>
-
 #include "astercxx.h"
+
+#include <set>
 
 #ifdef ASTER_HAVE_MPI
 
+#include "MemoryManager/NamesMap.h"
 #include "Meshes/BaseMesh.h"
 #include "Supervis/ResultNaming.h"
-#include "MemoryManager/NamesMap.h"
 
 /**
  * @class ParallelMesh
@@ -63,14 +63,14 @@ class ParallelMesh : public BaseMesh {
     /** @brief List of opposite domain */
     JeveuxVectorLong _listOfOppositeDomain;
     /** @brief List of joints */
-    std::map<ASTERINTEGER, std::pair<JeveuxVectorLong, JeveuxVectorLong>> _joints;
+    std::map< ASTERINTEGER, std::pair< JeveuxVectorLong, JeveuxVectorLong > > _joints;
 
   public:
     /**
      * @typedef ParallelMeshPtr
      * @brief Pointeur intelligent vers un ParallelMesh
      */
-    typedef boost::shared_ptr< ParallelMesh > ParallelMeshPtr;
+    typedef std::shared_ptr< ParallelMesh > ParallelMeshPtr;
 
     /**
      * @brief Constructeur
@@ -81,9 +81,12 @@ class ParallelMesh : public BaseMesh {
      * @brief Constructeur
      */
     ParallelMesh( const std::string &name )
-        : BaseMesh( name, "MAILLAGE_P" ), _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
-          _globalGroupOfCells( getName() + ".PAR_GRPMAI" ), _outerNodes( getName() + ".NOEX" ),
-          _outerCells( getName() + ".MAEX" ), _globalNumbering( getName() + ".NULOGL" ),
+        : BaseMesh( name, "MAILLAGE_P" ),
+          _globalGroupOfNodes( getName() + ".PAR_GRPNOE" ),
+          _globalGroupOfCells( getName() + ".PAR_GRPMAI" ),
+          _outerNodes( getName() + ".NOEX" ),
+          _outerCells( getName() + ".MAEX" ),
+          _globalNumbering( getName() + ".NULOGL" ),
           _listOfOppositeDomain( getName() + ".DOMJOINTS" ){};
 
     /**
@@ -98,40 +101,15 @@ class ParallelMesh : public BaseMesh {
      */
     const JeveuxVectorLong getCellsRank() const { return _outerCells; };
 
-    bool hasGroupOfCells( const std::string &name, const bool local) const;
+    bool hasGroupOfCells( const std::string &name, const bool local = false ) const;
 
-    bool hasGroupOfCells( const std::string &name) const
-    {
-        return hasGroupOfCells(name, false);
-    };
+    bool hasGroupOfNodes( const std::string &name, const bool local = false ) const;
 
-    bool hasGroupOfNodes( const std::string &name, const bool local) const;
+    VectorString getGroupsOfCells( const bool local = false ) const;
 
-    bool hasGroupOfNodes( const std::string &name ) const
-    {
-        return hasGroupOfNodes(name, false);
-    };
+    VectorString getGroupsOfNodes( const bool local = false ) const;
 
-    VectorString getGroupsOfCells(const bool local) const;
-
-    VectorString getGroupsOfCells() const
-    {
-        return getGroupsOfCells(false);
-    };
-
-    VectorString getGroupsOfNodes(const bool local) const;
-
-    VectorString getGroupsOfNodes() const
-    {
-        return getGroupsOfNodes(false);
-    };
-
-    VectorLong getCells( const std::string name ) const;
-
-    VectorLong getCells( ) const
-    {
-        return getCells( std::string() );
-    }
+    VectorLong getCells( const std::string name = "" ) const;
 
     /**
      * @brief Return list of nodes
@@ -142,47 +120,29 @@ class ParallelMesh : public BaseMesh {
      */
 
     VectorLong getNodes( const std::string name, const bool localNumbering,
-                               const bool same_rank) const; // 0
+                         const bool same_rank ) const;
 
-    VectorLong getNodes( const std::string name, const bool localNumbering) const; // 0
-
-    VectorLong getNodes(  ) const
-    {
-        return getNodes ( std::string(), true);// ->0
+    VectorLong getNodes( const bool localNumbering, const bool same_rank ) const {
+        return getNodes( std::string(), localNumbering, same_rank );
     };
 
-    VectorLong getNodes( const std::string name ) const
-    {
-        return getNodes ( name, true);// ->0
-    };
+    VectorLong getNodes( const std::string name, const bool localNumbering = true ) const;
 
-    VectorLong getNodes( const bool localNumbering) const
-    {
-        return getNodes(std::string(), localNumbering); // ->0
-    };
-
-    VectorLong getNodes( const bool localNumbering, const bool same_rank) const
-    {
-        return getNodes(std::string(), localNumbering, same_rank); // ->0
-    };
+    VectorLong getNodes( const bool localNumbering = true ) const {
+        return getNodes( std::string(), localNumbering );
+    }
 
     /**
      * @brief Get inner nodes
      * @return list of node ids
      */
-    VectorLong getInnerNodes() const
-    {
-        return this->getNodes(std::string(), true, true);
-    };
+    VectorLong getInnerNodes() const { return this->getNodes( std::string(), true, true ); };
 
     /**
      * @brief Get outer nodes
      * @return list of node ids
      */
-    VectorLong getOuterNodes() const
-    {
-        return this->getNodes(std::string(), true, false);
-    };
+    VectorLong getOuterNodes() const { return this->getNodes( std::string(), true, false ); };
 
     /**
      * @brief Returns the nodes indexes of a group of cells
@@ -193,14 +153,6 @@ class ParallelMesh : public BaseMesh {
      */
     VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
                                   const bool same_rank ) const;
-
-    VectorLong getNodesFromCells( const std::string name) const {
-        return getNodesFromCells( name, true, true ) ;
-    };
-
-    VectorLong getNodesFromCells( const std::string name, const bool localNumbering) const {
-        return getNodesFromCells( name, localNumbering, true ) ;
-    };
 
     /**
      * @brief Fonction permettant de savoir si un maillage est parallel
@@ -225,7 +177,7 @@ class ParallelMesh : public BaseMesh {
  * @typedef ParallelMeshPtr
  * @brief Pointeur intelligent vers un ParallelMesh
  */
-typedef boost::shared_ptr< ParallelMesh > ParallelMeshPtr;
+typedef std::shared_ptr< ParallelMesh > ParallelMeshPtr;
 
 #endif /* ASTER_HAVE_MPI */
 

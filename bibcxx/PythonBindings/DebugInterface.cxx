@@ -2,7 +2,7 @@
  * @file DebugInterface.cxx
  * @brief Python interface for debugging
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,22 +20,20 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-#include <boost/python.hpp>
+#include "PythonBindings/DebugInterface.h"
 
-namespace py = boost::python;
-
-#include "astercxx.h"
 #include "aster_fort_jeveux.h"
+#include "aster_pybind.h"
+#include "astercxx.h"
 
+#include "LinearAlgebra/AssemblyMatrix.h"
+#include "LinearAlgebra/ElementaryMatrix.h"
 #include "MemoryManager/JeveuxUtils.h"
 #include "Meshes/Mesh.h"
 #include "Modeling/Model.h"
 #include "Numbering/DOFNumbering.h"
-#include "LinearAlgebra/AssemblyMatrix.h"
-#include "LinearAlgebra/ElementaryMatrix.h"
 
-#include "PythonBindings/DebugInterface.h"
+#include <string>
 
 static void libaster_debugJeveuxContent( const std::string message ) {
     ASTERINTEGER unit_out = 6;
@@ -43,22 +41,21 @@ static void libaster_debugJeveuxContent( const std::string message ) {
     CALLO_JEIMPR( &unit_out, base, message );
 };
 
+void exportDebugToPython( py::module_ &mod ) {
 
-void exportDebugToPython() {
-
-    py::def( "debugJeveuxContent", &libaster_debugJeveuxContent );
-    py::def( "debugJeveuxExists", &jeveuxExists );
-    py::def( "use_count", &libaster_debugRefCount< MeshPtr > );
-    py::def( "use_count", &libaster_debugRefCount< ModelPtr > );
-    py::def( "use_count", &libaster_debugRefCount< DOFNumberingPtr > );
-    py::def( "use_count", &libaster_debugRefCount< ElementaryMatrixDisplacementRealPtr > );
-    py::def( "use_count", &libaster_debugRefCount< ElementaryMatrixDisplacementComplexPtr > );
-    py::def( "use_count", &libaster_debugRefCount< ElementaryMatrixTemperatureRealPtr > );
-    py::def( "use_count", &libaster_debugRefCount< ElementaryMatrixPressureComplexPtr > );
-    py::def( "use_count", &libaster_debugRefCount< AssemblyMatrixDisplacementRealPtr > );
-    py::def( "use_count", &libaster_debugRefCount< AssemblyMatrixDisplacementComplexPtr > );
-    py::def( "use_count", &libaster_debugRefCount< AssemblyMatrixTemperatureRealPtr > );
-    py::def( "use_count", &libaster_debugRefCount< AssemblyMatrixTemperatureComplexPtr > );
-    py::def( "use_count", &libaster_debugRefCount< AssemblyMatrixPressureRealPtr > );
-    py::def( "use_count", &libaster_debugRefCount< AssemblyMatrixPressureComplexPtr > );
+    mod.def( "debugJeveuxContent", &libaster_debugJeveuxContent );
+    mod.def( "debugJeveuxExists", &jeveuxExists );
+    mod.def( "use_count", &libaster_debugRefCount< MeshPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< ModelPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< DOFNumberingPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< ElementaryMatrixDisplacementRealPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< ElementaryMatrixDisplacementComplexPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< ElementaryMatrixTemperatureRealPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< ElementaryMatrixPressureComplexPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< AssemblyMatrixDisplacementRealPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< AssemblyMatrixDisplacementComplexPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< AssemblyMatrixTemperatureRealPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< AssemblyMatrixTemperatureComplexPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< AssemblyMatrixPressureRealPtr > );
+    mod.def( "use_count", &libaster_debugRefCount< AssemblyMatrixPressureComplexPtr > );
 };

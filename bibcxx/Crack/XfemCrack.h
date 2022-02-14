@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe XfemCrack
  * @author Nicolas Tardieu
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -45,11 +45,11 @@ class XfemCrack : public DataStructure, public ListOfTables {
     /**
          * @brief kind of forward declaration
          */
-    typedef boost::shared_ptr< XfemCrack > XfemCrackPtr;
+    typedef std::shared_ptr< XfemCrack > XfemCrackPtr;
 
   private:
     /** @typedef Definition of a smart pointer on VirtualMeshEntity */
-    typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+    typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
 
     /** @brief Mesh supporting the crack */
     MeshPtr _mesh;
@@ -299,6 +299,6 @@ class XfemCrack : public DataStructure, public ListOfTables {
  * @typedef MaterialPtr
  * @brief Pointeur intelligent vers un XfemCrack
  */
-typedef boost::shared_ptr< XfemCrack > XfemCrackPtr;
+typedef std::shared_ptr< XfemCrack > XfemCrackPtr;
 
 #endif /* XFEMCRACK_H_ */

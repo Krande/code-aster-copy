@@ -23,17 +23,14 @@
 
  * person_in_charge: mathieu.courtois@edf.fr
  */
+#include "aster_pybind.h"
 #include "astercxx.h"
 #include "definition.h"
 
 #include "Functions/GenericFunction.h"
 #include "MemoryManager/JeveuxVector.h"
 
-#include <boost/shared_ptr.hpp>
-
 #include <cstdio>
-#include <string>
-#include <vector>
 
 /**
  * class Formula
@@ -49,9 +46,9 @@ class Formula : public GenericFunction {
     // Expression
     std::string _expression;
     // Compiled expression
-    PyObject *_code;
+    py::object _code;
     // Evaluation context
-    PyObject *_context;
+    py::object _context;
 
     void propertyAllocate() {
         // Create Jeveux vector ".PROL"
@@ -69,7 +66,7 @@ class Formula : public GenericFunction {
      * @typedef FormulaPtr
      * @brief Pointeur intelligent vers un Formula
      */
-    typedef boost::shared_ptr< Formula > FormulaPtr;
+    typedef std::shared_ptr< Formula > FormulaPtr;
 
     /**
      * Constructeur
@@ -77,8 +74,6 @@ class Formula : public GenericFunction {
     Formula();
 
     Formula( const std::string name );
-
-    ~Formula();
 
     /**
      * @brief Get the result name
@@ -96,7 +91,7 @@ class Formula : public GenericFunction {
      * @param name name of the parameter
      * @type  name string
      */
-    void setVariables( const VectorString &varnames );
+    void setVariables( const VectorString &names );
 
     /**
      * @brief Return the name of the variables
@@ -125,48 +120,26 @@ class Formula : public GenericFunction {
      */
     std::string getExpression() const { return _expression; }
 
-    VectorReal evaluate( const VectorReal &values ) const;
-
     /**
      * @brief Assign the context for evaluation
      * @param context context containing objects needed for evaluation.
      * @type  context dict object
      */
-    void setContext( PyObject *context ) {
-        if ( !PyDict_Check( context ) ) {
-            throw std::runtime_error( "Formula: 'dict' object is expected." );
-        }
-        Py_XDECREF( _context );
-        _context = context;
-        ( *_pointers )[1] = (long)_context;
-        Py_INCREF( _context );
-    }
+    void setContext( py::object context );
 
     /**
      * @brief Return the context needed to evaluate the formula.
      * @return context a dict object.
      */
-    PyObject *getContext() {
-        if ( !_context ) {
-            _context = PyDict_New();
-            ( *_pointers )[1] = (long)_context;
-        }
-        Py_INCREF( _context );
-        return _context;
-    }
+    py::object getContext() const { return _context; }
 
     /**
      * @brief Return the properties of the function
      * @return vector of strings
      */
-    VectorString getProperties() const {
-        _property->updateValuePointer();
-        VectorString prop;
-        for ( int i = 0; i < 6; ++i ) {
-            prop.push_back( ( *_property )[i].rstrip() );
-        }
-        return prop;
-    }
+    VectorString getProperties() const;
+
+    VectorReal evaluate( const VectorReal &values ) const;
 
     /**
      * @brief Update the pointers to the Jeveux objects
@@ -184,13 +157,14 @@ class Formula : public GenericFunction {
  * @brief  Pointer to a Formula
  * @author Mathieu Courtois
  */
-typedef boost::shared_ptr< Formula > FormulaPtr;
+typedef std::shared_ptr< Formula > FormulaPtr;
 
 /**
  * @brief Evaluate Python code of a Formula
  */
-VectorReal evaluate_formula( const PyObject *code, PyObject *globals, const VectorString &variables,
-                             const VectorReal &values, int *retcode );
+VectorReal evaluate_formula( const py::object &code, const py::object &globals,
+                             const VectorString &variables, const VectorReal &values,
+                             int *retcode );
 
 #ifdef __cplusplus
 extern "C" {

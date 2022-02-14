@@ -23,24 +23,18 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
-#include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/SimpleFieldOnCellsInterface.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( getvalues_overloads, getValues, 0, 1 )
+#include "aster_pybind.h"
 
-void exportSimpleFieldOnCellsToPython() {
-    py::class_< SimpleFieldOnCellsReal, SimpleFieldOnCellsRealPtr,
-                py::bases< DataStructure > >( "SimpleFieldOnCellsReal", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< SimpleFieldOnCellsReal >))
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< SimpleFieldOnCellsReal, std::string >))
-        .def( "getValue", &SimpleFieldOnCellsReal::getValue,
-              py::return_value_policy< py::return_by_value >(), R"(
+#include "PythonBindings/DataStructureInterface.h"
+
+void exportSimpleFieldOnCellsToPython( py::module_ &mod ) {
+    py::class_< SimpleFieldOnCellsReal, SimpleFieldOnCellsRealPtr, DataStructure >(
+        mod, "SimpleFieldOnCellsReal" )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal > ) )
+        .def( py::init( &initFactoryPtr< SimpleFieldOnCellsReal, std::string > ) )
+        .def( "getValue", &SimpleFieldOnCellsReal::getValue, py::return_value_policy::copy, R"(
 Returns the value of the `icmp` component of the field on the `ima` cell,
 at the `ipt` point, at the `ispt` sub-point.
 
@@ -51,11 +45,13 @@ Args:
     ispt (int): Index of sub-point.
 
 Returns:
-    (float): Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*;
+    float: Value of field at *ima*, of *icmp*, at *ipt*, at *ispt*;
              NaN if the position is not allocated.
-        )", (py::arg( "self" ), py::arg("ima"), py::arg("icmp"), py::arg("ipt"), py::arg("ispt")))
+        )",
+              py::arg( "ima" ), py::arg( "icmp" ), py::arg( "ipt" ), py::arg( "ispt" ) )
 
-        .def( "getValues", &SimpleFieldOnCellsReal::getValues, getvalues_overloads( R"(
+        .def( "getValues", &SimpleFieldOnCellsReal::getValues,
+              R"(
 Returns two numpy arrays with shape ( number_of_cells_with_components, number_of_components )
 The first array contains the field values while the second one is a mask
 which is `True` if the corresponding value exists, `False` otherwise.
@@ -68,14 +64,15 @@ Args:
 Returns:
     ndarray (float): Field values.
     ndarray (bool): Mask for the field values.
-        )", (py::arg( "self" ), py::arg("copy" ))))
+        )",
+              ( py::arg( "self" ), py::arg( "copy" ) = false ) )
 
         .def( "getCellsWithComponents", &SimpleFieldOnCellsReal::getCellsWithComponents, R"(
 Returns the list of cells where the field is defined.
 
 Returns:
     tuple (int): Indexes of cells where the field is defined.
-        )", (py::arg( "self" )) )
+        )" )
         .def( "getNumberOfComponents", &SimpleFieldOnCellsReal::getNumberOfComponents )
         .def( "getNameOfComponent", &SimpleFieldOnCellsReal::getNameOfComponent )
         .def( "getNameOfComponents", &SimpleFieldOnCellsReal::getNameOfComponents )

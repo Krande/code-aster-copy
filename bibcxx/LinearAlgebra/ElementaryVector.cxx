@@ -25,7 +25,6 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
-
 FieldOnNodesRealPtr
 BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
                                                  const ASTERDOUBLE &time ) {
@@ -35,8 +34,7 @@ BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofN
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
-    // Create field
-    FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
+    FieldOnNodesRealPtr field = std::make_shared< FieldOnNodesReal >( dofNume );
 
     // Elementary vector names
     std::string vectElemName = getName();
@@ -76,8 +74,7 @@ FieldOnNodesRealPtr BaseElementaryVector::assembleWithMask( const BaseDOFNumberi
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
-    // Create field
-    FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
+    FieldOnNodesRealPtr field = std::make_shared< FieldOnNodesReal >( dofNume );
 
     // Elementary vector names
     std::string vectElemName = getName();

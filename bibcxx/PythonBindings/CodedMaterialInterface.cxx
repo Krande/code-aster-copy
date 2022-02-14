@@ -21,23 +21,15 @@
  */
 
 #include "PythonBindings/CodedMaterialInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( exec_allocate, allocate, 0, 1 )
+void exportCodedMaterialToPython( py::module_ &mod ) {
 
-void exportCodedMaterialToPython() {
-
-    py::class_< CodedMaterial, CodedMaterialPtr > c1(
-        "CodedMaterial", py::no_init );
-    c1.def( "__init__",
-            py::make_constructor(
-                &initFactoryPtr< CodedMaterial, MaterialFieldPtr, ModelPtr >));
-    c1.def( "__init__",
-            py::make_constructor(&initFactoryPtr< CodedMaterial, std::string,
-                                              MaterialFieldPtr, ModelPtr >));
-    c1.def( "allocate", &CodedMaterial::allocate, exec_allocate() );
-    c1.def( "constant", &CodedMaterial::constant );
+    py::class_< CodedMaterial, CodedMaterialPtr >( mod, "CodedMaterial" )
+        .def( py::init( &initFactoryPtr< CodedMaterial, MaterialFieldPtr, ModelPtr > ) )
+        .def(
+            py::init( &initFactoryPtr< CodedMaterial, std::string, MaterialFieldPtr, ModelPtr > ) )
+        .def( "allocate", &CodedMaterial::allocate, py::arg( "force" ) = false )
+        .def( "constant", &CodedMaterial::constant );
 };

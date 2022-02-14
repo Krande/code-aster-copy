@@ -23,79 +23,58 @@
 
 #include "PythonBindings/MaterialFieldInterface.h"
 
-#include "PythonBindings/factory.h"
+#include "aster_pybind.h"
 
-#include <boost/python.hpp>
+void exportMaterialFieldToPython( py::module_ &mod ) {
 
-namespace py = boost::python;
-
-void exportMaterialFieldToPython() {
-
-    py::class_< PartOfMaterialField, PartOfMaterialFieldPtr >( "PartOfMaterialField", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< PartOfMaterialField > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< PartOfMaterialField,
-                                                     std::vector< MaterialPtr >, MeshEntityPtr > ) )
+    py::class_< PartOfMaterialField, PartOfMaterialFieldPtr >( mod, "PartOfMaterialField" )
+        .def( py::init( &initFactoryPtr< PartOfMaterialField > ) )
+        .def( py::init(
+            &initFactoryPtr< PartOfMaterialField, std::vector< MaterialPtr >, MeshEntityPtr > ) )
         .def( "getVectorOfMaterial", &PartOfMaterialField::getVectorOfMaterial )
         .def( "getMeshEntity", &PartOfMaterialField::getMeshEntity );
 
-    void ( MaterialField::*addmat1all )( std::vector< MaterialPtr > curMaters ) =
-        &MaterialField::addMaterialsOnMesh;
-    void ( MaterialField::*addmat2all )( MaterialPtr & curMater ) =
-        &MaterialField::addMaterialsOnMesh;
-
-    void ( MaterialField::*addmat1grp )( std::vector< MaterialPtr > curMaters,
-                                         VectorString namesOfGroup ) =
-        &MaterialField::addMaterialsOnGroupOfCells;
-    void ( MaterialField::*addmat2grp )( MaterialPtr & curMater, VectorString namesOfGroup ) =
-        &MaterialField::addMaterialsOnGroupOfCells;
-
-    bool ( MaterialField::*hasESV1 )() const = &MaterialField::hasExternalStateVariables;
-    bool ( MaterialField::*hasESV2 )( const std::string & ) =
-        &MaterialField::hasExternalStateVariables;
-
-    py::class_< MaterialField, MaterialField::MaterialFieldPtr, py::bases< DataStructure > >(
-        "MaterialField", py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MaterialField, const MeshPtr & > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MaterialField, const SkeletonPtr & > ) )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< MaterialField, const std::string &, const MeshPtr & > ) )
+    py::class_< MaterialField, MaterialField::MaterialFieldPtr, DataStructure >( mod,
+                                                                                 "MaterialField" )
+        .def( py::init( &initFactoryPtr< MaterialField, const MeshPtr & > ) )
+        .def( py::init( &initFactoryPtr< MaterialField, const SkeletonPtr & > ) )
+        .def( py::init( &initFactoryPtr< MaterialField, const std::string &, const MeshPtr & > ) )
 #ifdef ASTER_HAVE_MPI
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< MaterialField, const ParallelMeshPtr & > ) )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< MaterialField, const std::string &, const ParallelMeshPtr & > ) )
+        .def( py::init( &initFactoryPtr< MaterialField, const ParallelMeshPtr & > ) )
+        .def( py::init(
+            &initFactoryPtr< MaterialField, const std::string &, const ParallelMeshPtr & > ) )
 #endif /* ASTER_HAVE_MPI */
         .def( "addBehaviourOnMesh", &MaterialField::addBehaviourOnMesh )
         .def( "addBehaviourOnGroupOfCells", &MaterialField::addBehaviourOnGroupOfCells )
 
-        .def( "addMaterialsOnMesh", addmat1all )
-        .def( "addMaterialsOnMesh", addmat2all )
+        .def( "addMaterialsOnMesh", py::overload_cast< std::vector< MaterialPtr > >(
+                                        &MaterialField::addMaterialsOnMesh ) )
+        .def( "addMaterialsOnMesh",
+              py::overload_cast< MaterialPtr & >( &MaterialField::addMaterialsOnMesh ) )
 
-        .def( "addMaterialsOnGroupOfCells", addmat1grp )
-        .def( "addMaterialsOnGroupOfCells", addmat2grp )
+        .def( "addMaterialsOnGroupOfCells",
+              py::overload_cast< std::vector< MaterialPtr >, VectorString >(
+                  &MaterialField::addMaterialsOnGroupOfCells ) )
+        .def( "addMaterialsOnGroupOfCells", py::overload_cast< MaterialPtr &, VectorString >(
+                                                &MaterialField::addMaterialsOnGroupOfCells ) )
 
         .def( "buildWithoutExternalStateVariables",
               &MaterialField::buildWithoutExternalStateVariables )
         .def( "getMesh", &MaterialField::getMesh )
         .def( "getVectorOfMaterial", &MaterialField::getVectorOfMaterial )
         .def( "getVectorOfPartOfMaterialField", &MaterialField::getVectorOfPartOfMaterialField )
-        .def( "hasExternalStateVariables", hasESV1 )
-        .def( "hasExternalStateVariables", hasESV2 )
+        .def( "hasExternalStateVariables",
+              py::overload_cast<>( &MaterialField::hasExternalStateVariables, py::const_ ) )
+        .def( "hasExternalStateVariables", py::overload_cast< const std::string & >(
+                                               &MaterialField::hasExternalStateVariables ) )
         .def( "setModel", &MaterialField::setModel )
 
-        .def( "addExternalStateVariables",
-              static_cast< void ( MaterialField::* )( PyObject * ) >(
-                  &MaterialField::addExternalStateVariables ),
+        .def( "addExternalStateVariables", &MaterialField::addExternalStateVariables,
               R"(
 Add external state variables of material field
 
 Arguments:
     AFFE_VARC (list[dict]): keywords as provided to AFFE_MATERIAU/AFFE_VARC
         )",
-              ( py::arg( "self" ), py::arg( "AFFE_VARC" ) ) );
+              py::arg( "AFFE_VARC" ) );
 };

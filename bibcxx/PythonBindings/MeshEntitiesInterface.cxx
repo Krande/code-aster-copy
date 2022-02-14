@@ -2,7 +2,7 @@
  * @file MeshEntitiesInterface.cxx
  * @brief Interface python de MeshEntities
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -20,33 +20,30 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
 #include "PythonBindings/MeshEntitiesInterface.h"
-#include "PythonBindings/factory.h"
+
+#include "aster_pybind.h"
+
 #include <Meshes/MeshEntities.h>
 
-namespace py = boost::python;
+void exportMeshEntitiesToPython( py::module_ &mod ) {
 
-void exportMeshEntitiesToPython() {
-
-    py::enum_< EntityType >( "EntityType" )
+    py::enum_< EntityType >( mod, "EntityType" )
         .value( "GroupOfNodesType", GroupOfNodesType )
         .value( "GroupOfCellsType", GroupOfCellsType )
         .value( "AllMeshEntitiesType", AllMeshEntitiesType )
         .value( "CellType", CellType )
         .value( "NodeType", NodeType )
-        .value( "NoType", NoType );
+        .value( "NoType", NoType )
+        .export_values();
 
-    py::class_< VirtualMeshEntity, MeshEntityPtr >( "MeshEntity", py::no_init )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< VirtualMeshEntity, std::string, EntityType > ) )
+    py::class_< VirtualMeshEntity, MeshEntityPtr >( mod, "MeshEntity" )
+        .def( py::init( &initFactoryPtr< VirtualMeshEntity, std::string, EntityType > ) )
         // fake initFactoryPtr: created by subclass
         .def( "getType", &VirtualMeshEntity::getType )
         .def( "getNames", &VirtualMeshEntity::getNames );
 
-    py::class_< AllMeshEntities, AllMeshEntitiesPtr, py::bases< VirtualMeshEntity > >(
-        "AllMeshEntities", py::no_init )
+    py::class_< AllMeshEntities, AllMeshEntitiesPtr, VirtualMeshEntity >( mod, "AllMeshEntities" )
         // fake initFactoryPtr: created by subclass
         // fake initFactoryPtr: created by subclass
         ;

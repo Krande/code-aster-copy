@@ -25,8 +25,8 @@
 
 #include "astercxx.h"
 
-#include "DataFields/MeshCoordinatesField.h"
 #include "DataFields/ListOfTables.h"
+#include "DataFields/MeshCoordinatesField.h"
 #include "DataStructures/DataStructure.h"
 #include "MemoryManager/NamesMap.h"
 #include "Meshes/MeshExplorer.h"
@@ -102,7 +102,7 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @typedef BaseMeshPtr
      * @brief Pointeur intelligent vers un BaseMesh
      */
-    typedef boost::shared_ptr< BaseMesh > BaseMeshPtr;
+    typedef std::shared_ptr< BaseMesh > BaseMeshPtr;
 
     /**
      * @brief Get the connectivity
@@ -117,7 +117,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Return the connectivity
      */
     const JeveuxCollectionLong getConnectivity() const { return _connectivity; }
-
 
     const JeveuxCollectionLong getInverseConnectivity() const;
 
@@ -162,10 +161,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
      */
     const NamesMapChar8 &getNameOfNodesMap() const { return _nameOfNodes; };
 
-    std::string getNodeName( const ASTERINTEGER& index) const;
+    std::string getNodeName( const ASTERINTEGER &index ) const;
 
-    std::string getCellName( const ASTERINTEGER& index) const;
-
+    std::string getCellName( const ASTERINTEGER &index ) const;
 
     /**
      * @brief Recuperation de la dimension du maillage
@@ -176,48 +174,55 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Teste l'existence d'un groupe de mailles dans le maillage
      * @return true si le groupe existe
      */
-    virtual bool hasGroupOfCells( const std::string &name ) const {
-        throw std::runtime_error( "Not allowed" );
-    };
-
-    virtual bool hasGroupOfCells( const std::string &name, const bool local ) const {
-        throw std::runtime_error( "Not allowed" );
+    virtual bool hasGroupOfCells( const std::string &name, const bool local = false ) const {
+        AS_ASSERT( false );
+        return false;
     };
 
     /**
      * @brief Teste l'existence d'un groupe de noeuds dans le maillage
      * @return true si le groupe existe
      */
-    virtual bool hasGroupOfNodes( const std::string &name ) const {
-        throw std::runtime_error( "Not allowed" );
+    virtual bool hasGroupOfNodes( const std::string &name, const bool local = false ) const {
+        AS_ASSERT( false );
+        return false;
     };
 
     /**
      * @brief Returns the names of the groups of cells
      * @return VectorString
      */
-    virtual VectorString getGroupsOfCells() const { throw std::runtime_error( "Not allowed" ); };
+    virtual VectorString getGroupsOfCells( const bool local = false ) const {
+        AS_ASSERT( false );
+        return {};
+    };
 
     /**
      * @brief Returns the names of the groups of nodes
      * @return VectorString
      */
-    virtual VectorString getGroupsOfNodes() const { throw std::runtime_error( "Not allowed" ); };
+    virtual VectorString getGroupsOfNodes( const bool local = false ) const {
+        AS_ASSERT( false );
+        return {};
+    };
 
     /**
      * @brief Returns the cells indexes of a group of cells
      * @return VectorLong
      */
     virtual VectorLong getCells( const std::string name ) const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ASSERT( false );
+        return {};
     }
 
     /**
      * @brief Returns the nodes indexes of a group of nodes
      * @return VectorLong
      */
-    virtual VectorLong getNodes( const std::string name ) const {
-        throw std::runtime_error( "Not allowed" );
+    virtual VectorLong getNodes( const std::string name, const bool localNumbering = true,
+                                 const bool same_rank = true ) const {
+        AS_ASSERT( false );
+        return {};
     }
 
     /**
@@ -225,32 +230,36 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return VectorLong
      */
     virtual VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
-                                            const bool same_rank ) const {
-        throw std::runtime_error( "Not allowed" );
+                                          const bool same_rank ) const {
+        AS_ASSERT( false );
+        return {};
     }
 
     /**
      * @brief Returns the nodes indexes of inner nodes
      * @return VectorLong
      */
-    virtual VectorLong getInnerNodes(  ) const {
-        throw std::runtime_error( "Not allowed" );
+    virtual VectorLong getInnerNodes() const {
+        AS_ASSERT( false );
+        return {};
     }
 
     /**
      * @brief Returns the nodes indexes of outer nodes
      * @return VectorLong
      */
-    virtual VectorLong getOuterNodes( ) const {
-        throw std::runtime_error( "Not allowed" );
+    virtual VectorLong getOuterNodes() const {
+        AS_ASSERT( false );
+        return {};
     }
 
     /**
      * @brief Get the JeveuxVector for outer subdomain nodes
      * @return VectorLong
      */
-    virtual const JeveuxVectorLong getNodesRank(  ) const {
-        throw std::runtime_error( "Not allowed" );
+    virtual const JeveuxVectorLong getNodesRank() const {
+        AS_ASSERT( false );
+        return {};
     }
 
     /**
@@ -258,7 +267,8 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @return VectorLong
      */
     virtual const JeveuxVectorLong getCellsRank() const {
-        throw std::runtime_error( "Not allowed" );
+        AS_ASSERT( false );
+        return {};
     }
 
     /**
@@ -283,8 +293,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @brief Tester le maillage a des cells quadratiques
      * @return true si quadratique
      */
-    virtual bool isQuadratic( ) const {
-        throw std::runtime_error( "Not allowed" );
+    virtual bool isQuadratic() const {
+        AS_ASSERT( false );
+        return false;
     };
 
     /**
@@ -298,10 +309,9 @@ class BaseMesh : public DataStructure, public ListOfTables {
      * @param fileName Nom du fichier MED à imprimer
      * @return true
      */
-    bool printMedFile( const std::string fileName, bool local = true ) const ;
+    bool printMedFile( const std::string fileName, bool local = true ) const;
 
-    bool build()
-    {
+    bool build() {
         _groupsOfNodes->build();
         _groupsOfCells->build();
         return update_tables();
@@ -312,6 +322,6 @@ class BaseMesh : public DataStructure, public ListOfTables {
  * @typedef BaseMeshPtr
  * @brief Pointeur intelligent vers un BaseMesh
  */
-typedef boost::shared_ptr< BaseMesh > BaseMeshPtr;
+typedef std::shared_ptr< BaseMesh > BaseMeshPtr;
 
 #endif /* BASEMESH_H_ */

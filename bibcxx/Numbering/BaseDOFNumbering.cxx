@@ -21,11 +21,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Numbering/BaseDOFNumbering.h"
+
 #include "astercxx.h"
 
-#include "Numbering/BaseDOFNumbering.h"
 #include "Supervis/ResultNaming.h"
-
 
 BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &type )
     : DataStructure( name, 14, type ),
@@ -33,17 +33,19 @@ BaseDOFNumbering::BaseDOFNumbering( const std::string name, const std::string &t
       _globalNumbering( new GlobalEquationNumbering( getName() + ".NUME" ) ),
       _dofDescription( new FieldOnNodesDescription( getName() + ".NUME" ) ),
       _localNumbering( new LocalEquationNumbering( getName() + ".NUML" ) ),
-      _model( ModelPtr( nullptr ) ), _listOfLoads( new ListOfLoads() ),
+      _model( ModelPtr( nullptr ) ),
+      _listOfLoads( new ListOfLoads() ),
       _smos( new MorseStorage( getName() + ".SMOS" ) ),
       _slcs( new LigneDeCiel( getName() + ".SLCS" ) ),
-      _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ), _isEmpty( true ){};
+      _mltf( new MultFrontGarbage( getName() + ".MLTF" ) ),
+      _isEmpty( true ){};
 
 bool BaseDOFNumbering::computeNumbering() {
     if ( _model ) {
         if ( _model->isEmpty() )
             throw std::runtime_error( "Model is empty" );
 
-        _listOfLoads->build(_model);
+        _listOfLoads->build( _model );
 
         const std::string base( "GG" );
         const std::string null( " " );
@@ -51,24 +53,23 @@ bool BaseDOFNumbering::computeNumbering() {
                            _listOfLoads->getName() );
 
         const auto FEDescs = _listOfLoads->getFiniteElementDescriptors();
-        this->addFiniteElementDescriptors(FEDescs);
+        this->addFiniteElementDescriptors( FEDescs );
 
     } else if ( _matrix.size() != 0 ) {
         _model = this->getModel();
 
         ASTERINTEGER nb_matr = _matrix.size();
-        JeveuxVectorChar24 jvListOfMatr(ResultNaming::getNewResultName());
+        JeveuxVectorChar24 jvListOfMatr( ResultNaming::getNewResultName() );
         jvListOfMatr->allocate( nb_matr );
 
         int ind = 0;
-        for ( const auto &mat : _matrix )
-        {
-            (*jvListOfMatr)[ind++] = ( boost::apply_visitor( ElementaryMatrixGetName(), mat ) );
-            auto FEDescs = boost::apply_visitor( ElementaryMatrixGetFEDescrp(), mat );
-            this->addFiniteElementDescriptors(FEDescs);
+        for ( const auto &mat : _matrix ) {
+            ( *jvListOfMatr )[ind++] = std::visit( ElementaryMatrixGetName(), mat );
+            auto FEDescs = std::visit( ElementaryMatrixGetFEDescrp(), mat );
+            this->addFiniteElementDescriptors( FEDescs );
         }
 
-        CALLO_NUME_DDL_MATR(getName(), jvListOfMatr->getName(), &nb_matr);
+        CALLO_NUME_DDL_MATR( getName(), jvListOfMatr->getName(), &nb_matr );
 
         _matrix.clear();
     } else
@@ -84,13 +85,12 @@ std::string BaseDOFNumbering::getPhysicalQuantity() const {
     return physicalQuantity.rstrip();
 };
 
-VectorLong BaseDOFNumbering::getDirichletBCDOFs( void ) const
-{
+VectorLong BaseDOFNumbering::getDirichletBCDOFs( void ) const {
     JeveuxVectorLong ccid( "&&NUME_CCID" );
     std::string base( "V" );
 
     // Il faudrait eventuellement rajouter une liste de charge en plus donné par le user
-    CALLO_NUMCIMA(_listOfLoads->getName(), getName(), ccid->getName(), base);
+    CALLO_NUMCIMA( _listOfLoads->getName(), getName(), ccid->getName(), base );
 
     ccid->updateValuePointer();
     return ccid->toVector();

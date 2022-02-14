@@ -3,7 +3,7 @@
  * @brief Interface python de BehaviourProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,48 +21,44 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/BehaviourPropertyInterface.h"
 
-void exportBehaviourPropertyToPython() {
+#include "aster_pybind.h"
 
-    py::class_< BehaviourProperty, BehaviourProperty::BehaviourPropertyPtr,
-            py::bases< DataStructure > >( "BehaviourProperty", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< BehaviourProperty >))
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< BehaviourProperty, ModelPtr, MaterialFieldPtr >))
-        .def("getModel", &BehaviourProperty::getModel, R"(
+void exportBehaviourPropertyToPython( py::module_ &mod ) {
+
+    py::class_< BehaviourProperty, BehaviourProperty::BehaviourPropertyPtr, DataStructure >(
+        mod, "BehaviourProperty" )
+        .def( py::init( &initFactoryPtr< BehaviourProperty > ) )
+        .def( py::init( &initFactoryPtr< BehaviourProperty, ModelPtr, MaterialFieldPtr > ) )
+        .def( "getModel", &BehaviourProperty::getModel, R"(
 Return a pointer to the model.
 
 Returns:
     ModelPtr: model setted.
-        )", ( py::arg("self" )))
-        .def("getMaterialField", &BehaviourProperty::getMaterialField, R"(
+        )" )
+        .def( "getMaterialField", &BehaviourProperty::getMaterialField, R"(
 Return a pointer to the material field.
 
 Returns:
     MaterialFieldPtr: material field setted.
-        )", ( py::arg("self" )))
-        .def("getBehaviourField", &BehaviourProperty::getBehaviourField, R"(
+        )" )
+        .def( "getBehaviourField", &BehaviourProperty::getBehaviourField, R"(
 Return a pointer to the field for behaviour.
 
 Returns:
     ConstantFieldOnCellsChar16Ptr: behaviour.
-        )", ( py::arg("self" )))
-        .def("getConvergenceCriteria", &BehaviourProperty::getConvergenceCriteria, R"(
+        )" )
+        .def( "getConvergenceCriteria", &BehaviourProperty::getConvergenceCriteria, R"(
 Return a pointer to the field for convergence criteria.
 
 Returns:
     ConstantFieldOnCellsRealPtr: convergence criteria.
-        )", ( py::arg("self" )))
-        .def("getMultipleBehaviourField", &BehaviourProperty::getMultipleBehaviourField, R"(
+        )" )
+        .def( "getMultipleBehaviourField", &BehaviourProperty::getMultipleBehaviourField, R"(
 Return a pointer to the field for multiple behaviour like cristals.
 
 Returns:
     ConstantFieldOnCellsChar16Ptr: multiple behaviour.
-        )", ( py::arg("self" )));
+        )" );
 };

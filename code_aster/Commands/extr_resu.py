@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -23,8 +23,8 @@ from ..Supervis import ExecuteCommand
 
 
 class ExtrResu(ExecuteCommand):
-    """Command EXTR_RESU
-    """
+    """Command EXTR_RESU"""
+
     command_name = "EXTR_RESU"
 
     def create_result(self, keywords):
@@ -44,7 +44,7 @@ class ExtrResu(ExecuteCommand):
         resultat = keywords["RESULTAT"]
         restreint = keywords.get("RESTREINT")
         mesh, model, mate, cara_elem = None, None, None, None
-        if restreint is not None:
+        if restreint:
             if "MODELE" in restreint:
                 model = restreint["MODELE"]
                 mesh = model.getMesh()

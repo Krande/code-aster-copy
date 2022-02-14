@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullHarmonicAcousticResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -51,7 +51,7 @@ class FullHarmonicAcousticResult : public FullResult {
  * @typedef FullHarmonicAcousticResultPtr
  * @brief Pointeur intelligent vers un FullHarmonicAcousticResult
  */
-typedef boost::shared_ptr< FullHarmonicAcousticResult >
+typedef std::shared_ptr< FullHarmonicAcousticResult >
     FullHarmonicAcousticResultPtr;
 
 #endif /* FULLACOUSTICHARMONICRESULTSCONTAINER_H_ */

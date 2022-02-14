@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LocalizationManager
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,9 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
-#include <boost/shared_ptr.hpp>
-
 #include "Meshes/MeshEntities.h"
 #include "Utilities/CapyConvertibleValue.h"
 
@@ -34,7 +31,7 @@ extern const char GROUP_MA[];
 extern const char GROUP_NO[];
 
 typedef CapyConvertibleValue< VectorOfMeshEntityPtr > LocalizationCapyConvertibleValue;
-typedef boost::shared_ptr< LocalizationCapyConvertibleValue > LocalizationCapyConvertibleValuePtr;
+typedef std::shared_ptr< LocalizationCapyConvertibleValue > LocalizationCapyConvertibleValuePtr;
 
 class GenericLocalizationManager {
   private:
@@ -103,7 +100,7 @@ class AllMeshEntitiesManager : public GenericLocalizationManager {
     AllMeshEntitiesManager( const bool &mandatory = false )
         : GenericLocalizationManager( "TOUT", mandatory ), _on( false ) {
         _skw = CapyValuePtr( new CapyConvertibleValue< bool >(
-            mandatory, "TOUT", _on, {true, false}, {"OUI", "NON"}, false ) );
+            mandatory, "TOUT", _on, { true, false }, { "OUI", "NON" }, false ) );
     };
 
     void setOnAllMeshEntities() {
@@ -137,7 +134,8 @@ class CapyLocalizationManager : public EntityLocalization... {
 };
 
 typedef CapyLocalizationManager< GroupOfCellsManager<>, GroupOfNodesManager<>,
-                                 AllMeshEntitiesManager > AllNodesCellsLocalization;
+                                 AllMeshEntitiesManager >
+    AllNodesCellsLocalization;
 
 typedef CapyLocalizationManager< GroupOfCellsManager<>, AllMeshEntitiesManager >
     AllCellsLocalization;

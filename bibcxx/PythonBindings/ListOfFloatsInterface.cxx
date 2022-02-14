@@ -3,7 +3,7 @@
  * @brief Interface python de ListOfFloats
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,21 +23,16 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/ListOfFloatsInterface.h"
 
-void exportListOfFloatsToPython() {
+#include "aster_pybind.h"
 
-    py::class_< ListOfFloats, ListOfFloats::ListOfFloatsPtr,
-                py::bases< DataStructure > >( "ListOfFloats", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ListOfFloats >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ListOfFloats, std::string >))
+void exportListOfFloatsToPython( py::module_ &mod ) {
+
+    py::class_< ListOfFloats, ListOfFloats::ListOfFloatsPtr, DataStructure >( mod, "ListOfFloats" )
+        .def( py::init( &initFactoryPtr< ListOfFloats > ) )
+        .def( py::init( &initFactoryPtr< ListOfFloats, std::string > ) )
         .def( "getValues", &ListOfFloats::getValues )
         .def( "setVectorValues", &ListOfFloats::setVectorValues )
-        //         .def( "size", &ListOfFloats::size )
-        .add_property( "size", &ListOfFloats::size );
+        .def_property_readonly( "size", &ListOfFloats::size );
 };

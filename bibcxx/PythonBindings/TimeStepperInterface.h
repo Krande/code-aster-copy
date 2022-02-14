@@ -26,9 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "Steppers/TimeStepper.h"
 
-void exportTimeStepperToPython();
+void exportTimeStepperToPython( py::module_ &mod );
 
 #endif /* TIMESTEPPERINTERFACE_H_ */

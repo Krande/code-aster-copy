@@ -3,7 +3,7 @@
  * @brief Definition of code_aster exceptions
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,15 +23,16 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include <assert.h>
-#include <boost/python.hpp>
+#include "Supervis/Exceptions.h"
 
-namespace py = boost::python;
+#include "aster_pybind.h"
+
+#include "Utilities/Tools.h"
+
 #include <exception>
 #include <string>
 
-#include "Supervis/Exceptions.h"
-#include "Utilities/Tools.h"
+#include <assert.h>
 
 PyObject *AbstractErrorCpp::py_attrs() const {
     int idx = 0;
@@ -62,27 +63,54 @@ PyObject *AbstractErrorCpp::py_attrs() const {
     return py_err;
 }
 
-PyObject *createPyException( const char *name, PyObject *baseTypeObj ) {
-    namespace py = boost::python;
+void createExceptions( py::module_ &mod ) {
+    static py::exception< AsterErrorCpp > excAsterError( mod, "AsterError" );
+    PyObject *pyError = excAsterError.ptr();
+    static py::exception< ConvergenceErrorCpp > excConvergenceError( mod, "ConvergenceError",
+                                                                     pyError );
+    static py::exception< IntegrationErrorCpp > excIntegrationError( mod, "IntegrationError",
+                                                                     pyError );
+    static py::exception< SolverErrorCpp > excSolverError( mod, "SolverError", pyError );
+    static py::exception< ContactErrorCpp > excContactError( mod, "ContactError", pyError );
+    static py::exception< TimeLimitErrorCpp > excTimeLimitError( mod, "TimeLimitError", pyError );
 
-    std::string scopeName = py::extract< std::string >( py::scope().attr( "__name__" ) );
-    std::string qualifiedName0 = scopeName + "." + name;
-    char *qualifiedName1 = const_cast< char * >( qualifiedName0.c_str() );
-
-    PyObject *typeObj = PyErr_NewException( qualifiedName1, baseTypeObj, NULL );
-    if ( !typeObj ) {
-        py::throw_error_already_set();
-    }
-
-    py::scope().attr( name ) = py::handle<>( py::borrowed( typeObj ) );
-    return typeObj;
+    py::register_exception_translator( []( std::exception_ptr ptr ) {
+        try {
+            if ( ptr )
+                std::rethrow_exception( ptr );
+        } catch ( const ConvergenceErrorCpp &exc ) {
+            PyObject *args = exc.py_attrs();
+            PyErr_SetObject( excConvergenceError.ptr(), args );
+            Py_DECREF( args );
+        } catch ( const IntegrationErrorCpp &exc ) {
+            PyObject *args = exc.py_attrs();
+            PyErr_SetObject( excIntegrationError.ptr(), args );
+            Py_DECREF( args );
+        } catch ( const SolverErrorCpp &exc ) {
+            PyObject *args = exc.py_attrs();
+            PyErr_SetObject( excSolverError.ptr(), args );
+            Py_DECREF( args );
+        } catch ( const ContactErrorCpp &exc ) {
+            PyObject *args = exc.py_attrs();
+            PyErr_SetObject( excContactError.ptr(), args );
+            Py_DECREF( args );
+        } catch ( const TimeLimitErrorCpp &exc ) {
+            PyObject *args = exc.py_attrs();
+            PyErr_SetObject( excTimeLimitError.ptr(), args );
+            Py_DECREF( args );
+        } catch ( const AsterErrorCpp &exc ) {
+            PyObject *args = exc.py_attrs();
+            PyErr_SetObject( excAsterError.ptr(), args );
+            Py_DECREF( args );
+        }
+    } );
 }
 
 void raiseAsterError( const std::string idmess ) {
 #ifdef ASTER_DEBUG_CXX
-  std::cout << "Raising C++ AsterErrorCpp with id '" << idmess << "'..." << std::endl;
+    std::cout << "Raising C++ AsterError with id '" << idmess << "'..." << std::endl;
 #endif
-  throw AsterErrorCpp( idmess );
+    throw AsterErrorCpp( idmess );
 }
 
 extern "C" void DEFPSPSPPPP( UEXCEP, uexcep, _IN ASTERINTEGER *exc_id, _IN char *idmess,
@@ -93,7 +121,7 @@ extern "C" void DEFPSPSPPPP( UEXCEP, uexcep, _IN ASTERINTEGER *exc_id, _IN char 
     VectorLong argi = {};
     VectorReal argr = {};
     for ( int i = 0; i < *nbk; ++i ) {
-        argk.push_back( trim( std::string( valk + i*lvk, lvk ) ) );
+        argk.push_back( trim( std::string( valk + i * lvk, lvk ) ) );
     }
     for ( int i = 0; i < *nbi; ++i ) {
         argi.push_back( vali[i] );

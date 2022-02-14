@@ -23,19 +23,28 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/Function2DInterface.h"
 
-void exportFunction2DToPython() {
+#include "aster_pybind.h"
 
-    py::class_< Function2D, Function2D::Function2DPtr, py::bases< GenericFunction > >(
-        "Function2D", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Function2D >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Function2D, std::string >))
-        .def( "exportExtensionToPython", &Function2D::exportExtensionToPython )
-        .def( "exportValuesToPython", &Function2D::exportValuesToPython )
-        .def( "exportParametersToPython", &Function2D::exportParametersToPython );
+void exportFunction2DToPython( py::module_ &mod ) {
+
+    py::class_< Function2D, Function2D::Function2DPtr, GenericFunction >( mod, "Function2D" )
+        .def( py::init( &initFactoryPtr< Function2D > ) )
+        .def( py::init( &initFactoryPtr< Function2D, std::string > ) )
+        .def( "getParameters", &Function2D::getParameters, R"(
+Return a list of the values of the parameter as (x1, x2, ...)
+
+Returns:
+    list[float]: List of values (size = number of functions).
+
+        )" )
+        .def( "getValues", &Function2D::getValues, R"(
+Return a list of the values of the functions as [F1, F2, ...]
+where Fi is (x1, x2, ..., y1, y2, ...).
+
+Returns:
+    list[list [float]]: List of values (size = number of functions).
+        )" )
+        .def( "getProperties", &Function2D::getProperties );
 };

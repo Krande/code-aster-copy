@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ConstantFieldOnCellsInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,9 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "DataFields/ConstantFieldOnCells.h"
 
-void exportConstantFieldOnCellsToPython();
+void exportConstantFieldOnCellsToPython( py::module_ &mod );
 
 #endif /* CONSTANTFIELDONCELLSINTERFACE_H_ */

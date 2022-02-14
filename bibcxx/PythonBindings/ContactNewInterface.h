@@ -23,9 +23,11 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "Contact/ContactNew.h"
 
-void exportContactNewToPython();
+void exportContactNewToPython( py::module_ &mod );
 
 #endif /* CONTACTNEWINTERFACE_H_ */

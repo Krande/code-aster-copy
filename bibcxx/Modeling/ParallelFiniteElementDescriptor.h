@@ -84,14 +84,14 @@ class ParallelFiniteElementDescriptor : public FiniteElementDescriptor {
      * @typedef ParallelFiniteElementDescriptorPtr
      * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptor
      */
-    typedef boost::shared_ptr< ParallelFiniteElementDescriptor > ParallelFiniteElementDescriptorPtr;
+    typedef std::shared_ptr< ParallelFiniteElementDescriptor > ParallelFiniteElementDescriptorPtr;
 };
 
 /**
  * @typedef ParallelFiniteElementDescriptorPtr
  * @brief Pointeur intelligent vers un ParallelFiniteElementDescriptor
  */
-typedef boost::shared_ptr< ParallelFiniteElementDescriptor > ParallelFiniteElementDescriptorPtr;
+typedef std::shared_ptr< ParallelFiniteElementDescriptor > ParallelFiniteElementDescriptorPtr;
 
 #endif /* PARALLELFINITEELEMENTDESCRIPTOR_H_ */
 

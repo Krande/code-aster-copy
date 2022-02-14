@@ -24,27 +24,26 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <type_traits>
-#include <typeinfo>
-#include <map>
-#include <stdexcept>
 #include "astercxx.h"
 
 #include "DataStructures/DataStructure.h"
 #include "Meshes/MeshEntities.h"
 #include "Utilities/GenericParameter.h"
 
+#include <type_traits>
+#include <typeinfo>
+
 /**
  * @typedef Definition d'un shared_ptr sur une DataStructure
  * @todo à déplacer dans DataStructure.h
  */
-typedef boost::shared_ptr< DataStructure > DataStructurePtr;
+typedef std::shared_ptr< DataStructure > DataStructurePtr;
 
 /**
  * @typedef Definition d'un shared_ptr sur une VirtualMeshEntity
  * @todo à déplacer dans MeshEntity.h
  */
-typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
 
 /**
  * @typedef Definition d'un std::vector sur un MeshEntityPtr
@@ -57,13 +56,15 @@ typedef std::vector< MeshEntityPtr > VectorOfMeshEntityPtr;
  * @brief Classe template permettant de savoir si un type est un std::vector
  * @tparam T1 Type à tester
  */
-template < typename T1 > struct is_vector;
+template < typename T1 >
+struct is_vector;
 
 /**
  * @struct is_vector
  * @brief Spécialisation du template dans le cas  *général
  */
-template < class T > struct is_vector {
+template < class T >
+struct is_vector {
     static bool const value = false;
     typedef T value_type;
 };
@@ -72,57 +73,64 @@ template < class T > struct is_vector {
  * @struct is_vector
  * @brief Spécialisation du template dans le cas std::vector
  */
-template < class T > struct is_vector< std::vector< T > > {
+template < class T >
+struct is_vector< std::vector< T > > {
     static bool const value = true;
     typedef T value_type;
 };
 
 /**
  * @struct is_shared_ptr
- * @brief Classe template permettant de savoir si un type est un boost::shared_ptr
+ * @brief Classe template permettant de savoir si un type est un std::shared_ptr
  * @tparam T1 Type à tester
  */
-template < typename T1 > struct is_shared_ptr;
+template < typename T1 >
+struct is_shared_ptr;
 
 /**
  * @struct is_shared_ptr
  * @brief Spécialisation du template dans le cas général
  */
-template < class T > struct is_shared_ptr {
+template < class T >
+struct is_shared_ptr {
     static bool const value = false;
     typedef T value_type;
 };
 
 /**
  * @struct is_shared_ptr
- * @brief Spécialisation du template dans le cas boost::shared_ptr
+ * @brief Spécialisation du template dans le cas std::shared_ptr
  */
-template < class T > struct is_shared_ptr< boost::shared_ptr< T > > {
+template < class T >
+struct is_shared_ptr< std::shared_ptr< T > > {
     static bool const value = true;
     typedef T value_type;
 };
 
 /**
  * @struct is_vector_of_shared_ptr
- * @brief Classe template permettant de savoir si un type est un boost::shared_ptr
+ * @brief Classe template permettant de savoir si un type est un std::shared_ptr
  * @tparam T1 Type à tester
  */
-template < typename T1 > struct is_vector_of_shared_ptr;
+template < typename T1 >
+struct is_vector_of_shared_ptr;
 
 /**
  * @struct is_vector_of_shared_ptr
  * @brief Spécialisation du template dans le cas général
  */
-template < class T > struct is_vector_of_shared_ptr {
+template < class T >
+struct is_vector_of_shared_ptr {
     static bool const value = false;
     typedef T value_type;
 };
 
 /**
  * @struct is_vector_of_shared_ptr
- * @brief Spécialisation du template dans le cas boost::shared_ptr
+ * @brief Spécialisation du template dans le cas std::shared_ptr
  */
-template < class T > struct is_vector_of_shared_ptr< std::vector< boost::shared_ptr< T > > > {
+template < class T >
+struct is_vector_of_shared_ptr< std::vector< std::shared_ptr< T > > > {
     static bool const value = true;
     typedef T value_type;
 };
@@ -175,7 +183,7 @@ class GenericCapyConvertibleValue {
      */
     virtual GenParamPtr getValueOfKeyWord() const {
         throw std::runtime_error( "Programming error" );
-        return boost::make_shared<GenParam>( "Base class", true );
+        return std::make_shared< GenParam >( "Base class", true );
     };
 
   public:
@@ -214,17 +222,17 @@ template <
     // Pour le reste, le MatchingType sera un std::string
     typename MatchingType = typename std::conditional<
         std::is_same< Type, ASTERINTEGER >::value || std::is_same< Type, double >::value ||
-            std::is_same< Type, ASTERCOMPLEX >::value ||
-            std::is_same< Type, VectorReal >::value ||
-            std::is_same< Type, VectorComplex >::value ||
-            std::is_same< Type, VectorLong >::value,
-        Type, typename std::conditional< is_vector< Type >::value, VectorString,
-                                         std::string >::type >::type >
+            std::is_same< Type, ASTERCOMPLEX >::value || std::is_same< Type, VectorReal >::value ||
+            std::is_same< Type, VectorComplex >::value || std::is_same< Type, VectorLong >::value,
+        Type,
+        typename std::conditional< is_vector< Type >::value, VectorString,
+                                   std::string >::type >::type >
 class CapyConvertibleValue : public GenericCapyConvertibleValue {
   public:
     /** @typedef Definition du type de base de Type (dans le cas vecteur ::value_type) */
-    typedef typename std::conditional<
-        is_vector< Type >::value, typename is_vector< Type >::value_type, Type >::type BaseType;
+    typedef
+        typename std::conditional< is_vector< Type >::value, typename is_vector< Type >::value_type,
+                                   Type >::type BaseType;
 
     /** @typedef Definition du type correspondant au type de base de Type (entier, double ou chaine)
      */
@@ -293,31 +301,29 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
      * @return Pointeur vers un GenParam
      */
     template < typename T = Type, typename M = MatchingType >
-    typename std::enable_if< ( std::is_same< T, ASTERINTEGER >::value ||
-                               std::is_same< T, double >::value ||
-                               std::is_same< T, ASTERCOMPLEX >::value ||
-                               std::is_same< T, VectorReal >::value ||
-                               std::is_same< T, VectorComplex >::value ||
-                               std::is_same< T, VectorLong >::value ) &&
-                                 !std::is_same< M, std::string >::value,
-                             GenParamPtr >::type
+    typename std::enable_if<
+        ( std::is_same< T, ASTERINTEGER >::value || std::is_same< T, double >::value ||
+          std::is_same< T, ASTERCOMPLEX >::value || std::is_same< T, VectorReal >::value ||
+          std::is_same< T, VectorComplex >::value || std::is_same< T, VectorLong >::value ) &&
+            !std::is_same< M, std::string >::value,
+        GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         if ( _isSet )
-            return boost::make_shared<GenParam>( _name, _value, _isMandatory );
+            return std::make_shared< GenParam >( _name, _value, _isMandatory );
         else
-            return boost::make_shared<GenParam>( _name, _isMandatory );
+            return std::make_shared< GenParam >( _name, _isMandatory );
     };
 
     template < typename T = Type, typename M = MatchingType >
-    typename std::enable_if<
-        ( std::is_same< T, ASTERINTEGER >::value || std::is_same< T, double >::value ) &&
-            std::is_same< M, std::string >::value,
-        GenParamPtr >::type
+    typename std::enable_if< ( std::is_same< T, ASTERINTEGER >::value ||
+                               std::is_same< T, double >::value ) &&
+                                 std::is_same< M, std::string >::value,
+                             GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         MapConstIterator curIter = _matchingValues.find( _value );
         if ( curIter == _matchingValues.end() )
             throw std::runtime_error( "Programming error" );
-        return boost::make_shared<GenParam>( _name, ( *curIter ).second, _isMandatory );
+        return std::make_shared< GenParam >( _name, ( *curIter ).second, _isMandatory );
     };
 
     /**
@@ -327,8 +333,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if<
         is_vector< T >::value && !std::is_same< T, VectorReal >::value &&
-            !std::is_same< T, VectorComplex >::value &&
-            !std::is_same< T, VectorLong >::value &&
+            !std::is_same< T, VectorComplex >::value && !std::is_same< T, VectorLong >::value &&
             !( is_vector< T >::value &&
                std::is_base_of< DataStructure,
                                 typename is_vector_of_shared_ptr< T >::value_type >::value ) &&
@@ -344,9 +349,9 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
             toReturn.push_back( ( *curIter2 ).second );
         }
         if ( _isSet )
-            return boost::make_shared<GenParam>( _name, toReturn, _isMandatory );
+            return std::make_shared< GenParam >( _name, toReturn, _isMandatory );
         else
-            return boost::make_shared<GenParam>( _name, _isMandatory );
+            return std::make_shared< GenParam >( _name, _isMandatory );
     };
 
     /**
@@ -354,17 +359,16 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
      * @return Pointeur vers un GenParam
      */
     template < typename T = Type, typename M = MatchingType >
-    typename std::enable_if< std::is_same< T, VectorString >::value,
-                             GenParamPtr >::type
+    typename std::enable_if< std::is_same< T, VectorString >::value, GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         MatchingType toReturn;
         for ( const auto &curIter : _value )
             toReturn.push_back( curIter );
 
         if ( _isSet )
-            return boost::make_shared<GenParam>( _name, toReturn, _isMandatory );
+            return std::make_shared< GenParam >( _name, toReturn, _isMandatory );
         else
-            return boost::make_shared<GenParam>( _name, _isMandatory );
+            return std::make_shared< GenParam >( _name, _isMandatory );
     };
 
     /**
@@ -383,9 +387,9 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
             toReturn.push_back( ( curIter )->getName() );
 
         if ( _isSet )
-            return boost::make_shared<GenParam>( _name, toReturn, _isMandatory );
+            return std::make_shared< GenParam >( _name, toReturn, _isMandatory );
         else
-            return boost::make_shared<GenParam>( _name, _isMandatory );
+            return std::make_shared< GenParam >( _name, _isMandatory );
     };
 
     /**
@@ -400,9 +404,9 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
         GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
         if ( _isSet )
-            return boost::make_shared<GenParam>( _name, ( _value )->getName(), _isMandatory );
+            return std::make_shared< GenParam >( _name, ( _value )->getName(), _isMandatory );
         else
-            return boost::make_shared<GenParam>( _name, _isMandatory );
+            return std::make_shared< GenParam >( _name, _isMandatory );
     };
 
     /**
@@ -412,10 +416,9 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if<
         !std::is_same< T, ASTERINTEGER >::value && !std::is_same< T, double >::value &&
-            !std::is_same< T, ASTERCOMPLEX >::value &&
-            !std::is_same< T, VectorReal >::value &&
-            !std::is_same< T, VectorComplex >::value &&
-            !std::is_same< T, VectorLong >::value && !is_vector< T >::value &&
+            !std::is_same< T, ASTERCOMPLEX >::value && !std::is_same< T, VectorReal >::value &&
+            !std::is_same< T, VectorComplex >::value && !std::is_same< T, VectorLong >::value &&
+            !is_vector< T >::value &&
             !( is_vector< T >::value &&
                std::is_base_of< DataStructure,
                                 typename is_vector_of_shared_ptr< T >::value_type >::value ) &&
@@ -428,7 +431,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
         MapConstIterator curIter = _matchingValues.find( _value );
         if ( curIter == _matchingValues.end() )
             throw std::runtime_error( "Programming error" );
-        return boost::make_shared<GenParam>( _name, ( *curIter ).second, _isMandatory );
+        return std::make_shared< GenParam >( _name, ( *curIter ).second, _isMandatory );
     };
 
     /**
@@ -438,7 +441,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
     template < typename T = Type, typename M = MatchingType >
     typename std::enable_if< std::is_same< T, std::string >::value, GenParamPtr >::type
     virtualGetValueOfKeyWord() const {
-        return boost::make_shared<GenParam>( _name, _value, _isMandatory );
+        return std::make_shared< GenParam >( _name, _value, _isMandatory );
     };
 
     /**
@@ -451,7 +454,7 @@ class CapyConvertibleValue : public GenericCapyConvertibleValue {
 };
 
 /** @typedef Definition d'un shared_ptr sur un GenericCapyConvertibleValue */
-typedef boost::shared_ptr< GenericCapyConvertibleValue > CapyValuePtr;
+typedef std::shared_ptr< GenericCapyConvertibleValue > CapyValuePtr;
 
 /**
  * @class CapyConvertibleContainer
@@ -485,10 +488,10 @@ class CapyConvertibleContainer {
         : _nameOfFKW( name ), _isFKW( true ), _toAdd( list ){};
 
     /**
-    * @brief Opérateur +=
-    * @param toAdd SyntaxMapContainer à ajouter
-    * @return reference to the current object
-    */
+     * @brief Opérateur +=
+     * @param toAdd SyntaxMapContainer à ajouter
+     * @return reference to the current object
+     */
     CapyConvertibleContainer &operator+=( const CapyConvertibleContainer &toAdd ) {
         _container.insert( toAdd._container.begin(), toAdd._container.end() );
         return *this;

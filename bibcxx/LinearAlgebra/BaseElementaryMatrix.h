@@ -67,7 +67,7 @@ class BaseElementaryMatrix : public DataStructure {
           _model( nullptr ),
           _materialField( nullptr ),
           _elemChara( nullptr ),
-          _elemComp( boost::make_shared< ElementaryCompute >( getName() ) ){};
+          _elemComp( std::make_shared< ElementaryCompute >( getName() ) ){};
 
     /** @brief Constructor with automatic name */
     BaseElementaryMatrix( const std::string type = "MATR_ELEM" )
@@ -154,6 +154,6 @@ class BaseElementaryMatrix : public DataStructure {
 };
 
 /** @typedef BaseElementaryMatrixPtr */
-using BaseElementaryMatrixPtr = boost::shared_ptr< BaseElementaryMatrix >;
+using BaseElementaryMatrixPtr = std::shared_ptr< BaseElementaryMatrix >;
 
 #endif /* BASEELEMENTARYMATRIX_H_ */

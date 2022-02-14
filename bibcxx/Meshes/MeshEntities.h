@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MeshEntities
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -188,16 +188,16 @@ class Node : public VirtualMeshEntity {
     Node( const VectorString &names ) : VirtualMeshEntity( names, NodeType ){};
 };
 
-typedef boost::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
+typedef std::shared_ptr< VirtualMeshEntity > MeshEntityPtr;
 typedef std::vector< MeshEntityPtr > VectorOfMeshEntityPtr;
 
-typedef boost::shared_ptr< GroupOfNodes > GroupOfNodesPtr;
+typedef std::shared_ptr< GroupOfNodes > GroupOfNodesPtr;
 typedef std::vector< GroupOfNodesPtr > VectorOfGroupOfNodesPtr;
 
-typedef boost::shared_ptr< GroupOfCells > GroupOfCellsPtr;
+typedef std::shared_ptr< GroupOfCells > GroupOfCellsPtr;
 typedef std::vector< GroupOfCellsPtr > VectorOfGroupOfCellsPtr;
 
-typedef boost::shared_ptr< AllMeshEntities > AllMeshEntitiesPtr;
+typedef std::shared_ptr< AllMeshEntities > AllMeshEntitiesPtr;
 typedef std::vector< AllMeshEntitiesPtr > VectorOfAllMeshEntitiesPtr;
 
 #endif /* MESHENTITES_H_ */

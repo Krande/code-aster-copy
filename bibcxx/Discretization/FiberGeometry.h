@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FiberGeometry
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -63,7 +63,7 @@ class FiberGeometry : public DataStructure {
      * @typedef FiberGeometryPtr
      * @brief Pointeur intelligent vers un FiberGeometry
      */
-    typedef boost::shared_ptr< FiberGeometry > FiberGeometryPtr;
+    typedef std::shared_ptr< FiberGeometry > FiberGeometryPtr;
 
     /**
      * @brief Constructeur
@@ -99,6 +99,6 @@ class FiberGeometry : public DataStructure {
  * @typedef FiberGeometryPtr
  * @brief Pointeur intelligent vers un FiberGeometry
  */
-typedef boost::shared_ptr< FiberGeometry > FiberGeometryPtr;
+typedef std::shared_ptr< FiberGeometry > FiberGeometryPtr;
 
 #endif /* FIBERGEOMETRY_H_ */

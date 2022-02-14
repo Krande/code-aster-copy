@@ -5,7 +5,7 @@
  * @file ResultNamingInterface.h
  * @brief Python bindings for ResultNaming class.
  * --------------------------------------------------------------------
- * Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+ * Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
  * This file is part of code_aster.
  *
  * code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,11 @@
  * --------------------------------------------------------------------
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "Supervis/ResultNaming.h"
 
-void exportResultNamingToPython();
+void exportResultNamingToPython( py::module_ &mod );
 
 #endif /* RESULTNAMINGINTERFACE_H_ */

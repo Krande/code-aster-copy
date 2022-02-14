@@ -90,6 +90,6 @@ class ListOfExternalStateVariables {
  * @typedef ListOfExternalStateVariablesPtr
  * @brief Pointeur intelligent vers un ListOfExternalStateVariables
  */
-typedef boost::shared_ptr< ListOfExternalStateVariables > ListOfExternalStateVariablesPtr;
+typedef std::shared_ptr< ListOfExternalStateVariables > ListOfExternalStateVariablesPtr;
 
 #endif /* EXTERNALVARIABLEFIELD_H_ */

@@ -47,7 +47,7 @@ template < class ValueType >
 class FieldOnCells : public DataField {
   private:
     typedef SimpleFieldOnCells< ValueType > SimpleFieldOnCellsValueType;
-    typedef boost::shared_ptr< SimpleFieldOnCellsValueType > SimpleFieldOnCellsValueTypePtr;
+    typedef std::shared_ptr< SimpleFieldOnCellsValueType > SimpleFieldOnCellsValueTypePtr;
 
     /** @brief Vecteur Jeveux '.CELD' */
     JeveuxVectorLong _descriptor;
@@ -62,7 +62,7 @@ class FieldOnCells : public DataField {
 
   public:
     /** @typedef FieldOnCellsPtr */
-    typedef boost::shared_ptr< FieldOnCells > FieldOnCellsPtr;
+    typedef std::shared_ptr< FieldOnCells > FieldOnCellsPtr;
 
     /**
      * @brief Constructor
@@ -120,7 +120,7 @@ class FieldOnCells : public DataField {
 
         _model = model;
         _dofDescription = fed;
-        auto dcel = boost::make_shared< SimpleFieldOnCellsValueType >();
+        auto dcel = std::make_shared< SimpleFieldOnCellsValueType >();
         auto compor = behaviour->getBehaviourField();
         CALLO_CESVAR( carele, compor->getName(), fed->getName(), dcel->getName() );
         CALLO_ALCHML( fed->getName(), option, nompar, JeveuxMemoryTypesNames[Permanent], getName(),
@@ -250,8 +250,7 @@ class FieldOnCells : public DataField {
             const std::string ligrel = trim( ( *_reference )[0].toString() );
 
             if ( ligrel.substr( 0, 8 ) == getName().substr( 0, 8 ) ) {
-                _dofDescription =
-                    boost::make_shared< FiniteElementDescriptor >( ligrel, getMesh() );
+                _dofDescription = std::make_shared< FiniteElementDescriptor >( ligrel, getMesh() );
             } else {
                 _dofDescription = _model->getFiniteElementDescriptor();
             }
@@ -278,8 +277,8 @@ class FieldOnCells : public DataField {
     template < class type = ValueType >
     typename std::enable_if< std::is_same< type, ASTERDOUBLE >::value,
                              FieldOnCells< ValueType > >::type
-    transform( PyObject *func ) {
-        if ( !PyCallable_Check( func ) )
+    transform( py::object &func ) {
+        if ( !PyCallable_Check( func.ptr() ) )
             raiseAsterError( "Input parameter to the transform \
         method should be a callable Python object" );
 
@@ -288,7 +287,7 @@ class FieldOnCells : public DataField {
 
         ASTERINTEGER size = _valuesList->size();
         for ( auto i = 0; i < size; i++ ) {
-            PyObject *res = PyObject_CallFunction( func, "d", ( *_valuesList )[i] );
+            PyObject *res = PyObject_CallFunction( func.ptr(), "d", ( *_valuesList )[i] );
             if ( PyFloat_Check( res ) ) {
                 tmp[i] = (ASTERDOUBLE)PyFloat_AsDouble( res );
             } else {
@@ -305,8 +304,8 @@ class FieldOnCells : public DataField {
     template < class type = ValueType >
     typename std::enable_if< std::is_same< type, ASTERCOMPLEX >::value,
                              FieldOnCells< ValueType > >::type
-    transform( PyObject *func ) {
-        if ( !PyCallable_Check( func ) )
+    transform( py::object &func ) {
+        if ( !PyCallable_Check( func.ptr() ) )
             raiseAsterError( "Input parameter to the transform \
         method should be a callable Python object" );
 
@@ -319,7 +318,7 @@ class FieldOnCells : public DataField {
         for ( auto i = 0; i < size; i++ ) {
             val.real = ( *_valuesList )[i].real();
             val.imag = ( *_valuesList )[i].imag();
-            PyObject *res = PyObject_CallFunction( func, "D", val );
+            PyObject *res = PyObject_CallFunction( func.ptr(), "D", val );
             if ( PyComplex_Check( res ) ) {
                 ASTERDOUBLE re = (ASTERDOUBLE)PyComplex_RealAsDouble( res );
                 ASTERDOUBLE im = (ASTERDOUBLE)PyComplex_ImagAsDouble( res );
@@ -391,7 +390,7 @@ class FieldOnCells : public DataField {
      * @brief Plus overloading
      * @return New field
      */
-    FieldOnCells< ValueType > operator+( const FieldOnCells< ValueType > &rhs ) {
+    FieldOnCells< ValueType > operator+( const FieldOnCells< ValueType > &rhs ) const {
         FieldOnCells< ValueType > tmp( *this );
         _valuesList->updateValuePointer();
         rhs.updateValuePointers();
@@ -411,7 +410,7 @@ class FieldOnCells : public DataField {
      * @brief Minus overloading
      * @return New field
      */
-    FieldOnCells< ValueType > operator-( const FieldOnCells< ValueType > &rhs ) {
+    FieldOnCells< ValueType > operator-( const FieldOnCells< ValueType > &rhs ) const {
         FieldOnCells< ValueType > tmp( *this );
         _valuesList->updateValuePointer();
         rhs.updateValuePointers();
@@ -445,7 +444,7 @@ class FieldOnCells : public DataField {
      */
 
     friend FieldOnCells< ValueType > operator*( const ASTERDOUBLE &scal,
-                                                FieldOnCells< ValueType > &rhs ) {
+                                                const FieldOnCells< ValueType > &rhs ) {
         return rhs * scal;
     };
 
@@ -629,18 +628,18 @@ bool FieldOnCells< ValueType >::printMedFile( const std::string fileName, bool l
 
 /** @typedef FieldOnCellsReal */
 using FieldOnCellsReal = FieldOnCells< ASTERDOUBLE >;
-using FieldOnCellsRealPtr = boost::shared_ptr< FieldOnCellsReal >;
+using FieldOnCellsRealPtr = std::shared_ptr< FieldOnCellsReal >;
 
 /** @typedef FieldOnCellsLong */
 using FieldOnCellsLong = FieldOnCells< ASTERINTEGER >;
-using FieldOnCellsLongPtr = boost::shared_ptr< FieldOnCellsLong >;
+using FieldOnCellsLongPtr = std::shared_ptr< FieldOnCellsLong >;
 
 /** @typedef FieldOnCellsComplex */
 using FieldOnCellsComplex = FieldOnCells< ASTERCOMPLEX >;
-using FieldOnCellsComplexPtr = boost::shared_ptr< FieldOnCellsComplex >;
+using FieldOnCellsComplexPtr = std::shared_ptr< FieldOnCellsComplex >;
 
 /** @typedef FieldOnCellsChar8 */
 using FieldOnCellsChar8 = FieldOnCells< JeveuxChar8 >;
-using FieldOnCellsChar8Ptr = boost::shared_ptr< FieldOnCellsChar8 >;
+using FieldOnCellsChar8Ptr = std::shared_ptr< FieldOnCellsChar8 >;
 
 #endif /* FIELDONCELLS_H_ */

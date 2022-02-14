@@ -6,7 +6,7 @@
  * @brief Utilitaires pour convertir un vector en list et inversement
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,15 +24,14 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+template < typename T >
+struct ConstViewer {
+    ConstViewer( std::shared_ptr< const T > p ) : ptr( p ){};
 
-template < typename T > struct ConstViewer {
-    ConstViewer( boost::shared_ptr< const T > p ) : ptr( p ){};
-
-    boost::shared_ptr< const T > ptr;
+    std::shared_ptr< const T > ptr;
 };
 
 #endif /* CONSTVIEWERUTILITIES_H_ */

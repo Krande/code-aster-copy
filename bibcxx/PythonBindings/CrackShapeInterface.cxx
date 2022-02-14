@@ -3,7 +3,7 @@
  * @brief Interface python de CrackShape
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,15 +22,13 @@
  */
 
 #include "PythonBindings/CrackShapeInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportCrackShapeToPython() {
+void exportCrackShapeToPython( py::module_ &mod ) {
 
-    py::class_< CrackShape, CrackShape::CrackShapePtr >( "CrackShape", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< CrackShape >))
+    py::class_< CrackShape, CrackShape::CrackShapePtr >( mod, "CrackShape" )
+        .def( py::init( &initFactoryPtr< CrackShape > ) )
         // fake initFactoryPtr: not a DataStructure
         .def( "setEllipseCrackShape", &CrackShape::setEllipseCrackShape )
         .def( "setSquareCrackShape", &CrackShape::setSquareCrackShape )

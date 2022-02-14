@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ListOfIntegers
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,7 +53,7 @@ class ListOfIntegers : public DataStructure {
      * @typedef ListOfIntegersPtr
      * @brief Pointeur intelligent vers un ListOfIntegers
      */
-    typedef boost::shared_ptr< ListOfIntegers > ListOfIntegersPtr;
+    typedef std::shared_ptr< ListOfIntegers > ListOfIntegersPtr;
 
     /**
      * @brief Constructeur
@@ -75,6 +75,6 @@ class ListOfIntegers : public DataStructure {
  * @typedef ListOfIntegersPtr
  * @brief Pointeur intelligent vers un ListOfIntegers
  */
-typedef boost::shared_ptr< ListOfIntegers > ListOfIntegersPtr;
+typedef std::shared_ptr< ListOfIntegers > ListOfIntegersPtr;
 
 #endif /* LISTOFINTEGERS_H_ */

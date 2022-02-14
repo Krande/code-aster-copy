@@ -81,7 +81,7 @@ class SimpleFieldOnNodes : public DataStructure {
      * @typedef SimpleFieldOnNodesPtr
      * @brief Pointeur intelligent vers un SimpleFieldOnNodes
      */
-    typedef boost::shared_ptr< SimpleFieldOnNodes > SimpleFieldOnNodesPtr;
+    typedef std::shared_ptr< SimpleFieldOnNodes > SimpleFieldOnNodesPtr;
 
     /**
      * @brief Constructeur
@@ -151,50 +151,49 @@ class SimpleFieldOnNodes : public DataStructure {
     /**
      * @brief Get values with mask
      */
-    PyObject *getValues( bool copy = false ) {
-
+    py::object getValues( bool copy = false ) {
         PyObject *resu_tuple = PyTuple_New( 2 );
 
-        npy_intp dims[2] = { _values->size()/this->getNumberOfComponents(),
+        npy_intp dims[2] = { _values->size() / this->getNumberOfComponents(),
                              this->getNumberOfComponents() };
 
         PyObject *values = PyArray_SimpleNewFromData( 2, dims, npy_type< ValueType >::value,
                                                       _values->getDataPtr() );
-        PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL,
-                                                    _allocated->getDataPtr() );
+        PyObject *mask = PyArray_SimpleNewFromData( 2, dims, NPY_BOOL, _allocated->getDataPtr() );
         AS_ASSERT( values != NULL );
         AS_ASSERT( mask != NULL );
 
         if ( copy ) {
-          PyObject *values_copy = PyArray_NewLikeArray( (PyArrayObject *)values,
-                                                        NPY_ANYORDER, NULL, 0 );
-          PyArray_CopyInto( (PyArrayObject *)values_copy, (PyArrayObject *)values );
-          AS_ASSERT( values_copy != NULL );
+            PyObject *values_copy =
+                PyArray_NewLikeArray( (PyArrayObject *)values, NPY_ANYORDER, NULL, 0 );
+            PyArray_CopyInto( (PyArrayObject *)values_copy, (PyArrayObject *)values );
+            AS_ASSERT( values_copy != NULL );
 
-          PyObject *mask_copy = PyArray_NewLikeArray( (PyArrayObject *)mask,
-                                                      NPY_ANYORDER, NULL, 0 );
-          PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask );
-          AS_ASSERT( mask_copy != NULL );
+            PyObject *mask_copy =
+                PyArray_NewLikeArray( (PyArrayObject *)mask, NPY_ANYORDER, NULL, 0 );
+            PyArray_CopyInto( (PyArrayObject *)mask_copy, (PyArrayObject *)mask );
+            AS_ASSERT( mask_copy != NULL );
 
-          PyArray_ENABLEFLAGS( (PyArrayObject *)values_copy, NPY_ARRAY_OWNDATA );
-          PyArray_ENABLEFLAGS( (PyArrayObject *)mask_copy, NPY_ARRAY_OWNDATA );
+            PyArray_ENABLEFLAGS( (PyArrayObject *)values_copy, NPY_ARRAY_OWNDATA );
+            PyArray_ENABLEFLAGS( (PyArrayObject *)mask_copy, NPY_ARRAY_OWNDATA );
 
-          Py_XDECREF( values );
-          Py_XDECREF( mask );
+            Py_DECREF( values );
+            Py_DECREF( mask );
 
-          PyTuple_SetItem( resu_tuple, 0, values_copy );
-          PyTuple_SetItem( resu_tuple, 1, mask_copy );
+            PyTuple_SetItem( resu_tuple, 0, values_copy );
+            PyTuple_SetItem( resu_tuple, 1, mask_copy );
 
         } else {
-          PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_WRITEABLE );
-          PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_WRITEABLE );
-          PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
-          PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
-          PyTuple_SetItem( resu_tuple, 0, values );
-          PyTuple_SetItem( resu_tuple, 1, mask );
+            PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_WRITEABLE );
+            PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_WRITEABLE );
+            PyArray_CLEARFLAGS( (PyArrayObject *)values, NPY_ARRAY_OWNDATA );
+            PyArray_CLEARFLAGS( (PyArrayObject *)mask, NPY_ARRAY_OWNDATA );
+            PyTuple_SetItem( resu_tuple, 0, values );
+            PyTuple_SetItem( resu_tuple, 1, mask );
         }
-
-        return resu_tuple;
+        py::object tuple = py::reinterpret_steal< py::object >( resu_tuple );
+        tuple.inc_ref();
+        return tuple;
     }
 
     /**
@@ -254,7 +253,7 @@ typedef SimpleFieldOnNodes< ASTERDOUBLE > SimpleFieldOnNodesReal;
  * @typedef SimpleFieldOnNodesPtrReal
  * @brief Definition d'un champ simple de doubles
  */
-typedef boost::shared_ptr< SimpleFieldOnNodesReal > SimpleFieldOnNodesRealPtr;
+typedef std::shared_ptr< SimpleFieldOnNodesReal > SimpleFieldOnNodesRealPtr;
 
 /** @typedef SimpleFieldOnNodesLong Class d'un champ simple de long */
 typedef SimpleFieldOnNodes< long > SimpleFieldOnNodesLong;
@@ -263,7 +262,7 @@ typedef SimpleFieldOnNodes< long > SimpleFieldOnNodesLong;
  * @typedef SimpleFieldOnNodesPtrLong
  * @brief Definition d'un champ simple de long
  */
-typedef boost::shared_ptr< SimpleFieldOnNodesLong > SimpleFieldOnNodesLongPtr;
+typedef std::shared_ptr< SimpleFieldOnNodesLong > SimpleFieldOnNodesLongPtr;
 
 /** @typedef SimpleFieldOnNodesComplex
     @brief Class d'un champ simple de complexes */
@@ -273,5 +272,5 @@ typedef SimpleFieldOnNodes< ASTERCOMPLEX > SimpleFieldOnNodesComplex;
  * @typedef SimpleFieldOnNodesComplexPtr
  * @brief Definition d'un champ simple aux noeuds de complexes
  */
-typedef boost::shared_ptr< SimpleFieldOnNodesComplex > SimpleFieldOnNodesComplexPtr;
+typedef std::shared_ptr< SimpleFieldOnNodesComplex > SimpleFieldOnNodesComplexPtr;
 #endif /* SIMPLEFIELDONNODES_H_ */

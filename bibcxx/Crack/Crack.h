@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Crack
  * @author Nicolas Pignet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -82,7 +82,7 @@ class Crack : public DataStructure {
      * @typedef CrackPtr
      * @brief Pointeur intelligent vers un Crack
      */
-    typedef boost::shared_ptr< Crack > CrackPtr;
+    typedef std::shared_ptr< Crack > CrackPtr;
 
     /**
      * @brief Constructeur
@@ -94,6 +94,6 @@ class Crack : public DataStructure {
  * @typedef CrackPtr
  * @brief Pointeur intelligent vers un Crack
  */
-typedef boost::shared_ptr< Crack > CrackPtr;
+typedef std::shared_ptr< Crack > CrackPtr;
 
 #endif /* CRACK_H_ */

@@ -3,7 +3,7 @@
  * @brief Interface python de GeneralizedModeResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,32 +22,25 @@
  */
 
 #include "PythonBindings/GeneralizedModeResultInterface.h"
+
+#include "aster_pybind.h"
+
 #include "PythonBindings/VariantStiffnessMatrixInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+void exportGeneralizedModeResultToPython( py::module_ &mod ) {
 
-void exportGeneralizedModeResultToPython() {
-
-    bool ( GeneralizedModeResult::*c1 )( const GeneralizedAssemblyMatrixRealPtr & ) =
-        &GeneralizedModeResult::setStiffnessMatrix;
-    bool ( GeneralizedModeResult::*c2 )( const GeneralizedAssemblyMatrixComplexPtr & ) =
-        &GeneralizedModeResult::setStiffnessMatrix;
-
-    py::class_< GeneralizedModeResult, GeneralizedModeResultPtr,
-                py::bases< FullResult > >( "GeneralizedModeResult",
-                                                             py::no_init )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< GeneralizedModeResult, std::string >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< GeneralizedModeResult >))
+    py::class_< GeneralizedModeResult, GeneralizedModeResultPtr, FullResult >(
+        mod, "GeneralizedModeResult" )
+        .def( py::init( &initFactoryPtr< GeneralizedModeResult, std::string > ) )
+        .def( py::init( &initFactoryPtr< GeneralizedModeResult > ) )
         .def( "setDampingMatrix", &GeneralizedModeResult::setDampingMatrix )
-        .def( "getGeneralizedDOFNumbering",
-              &GeneralizedModeResult::getGeneralizedDOFNumbering )
-        .def( "setGeneralizedDOFNumbering",
-              &GeneralizedModeResult::setGeneralizedDOFNumbering )
-        .def( "setStiffnessMatrix", c1 )
-        .def( "setStiffnessMatrix", c2 )
+        .def( "getGeneralizedDOFNumbering", &GeneralizedModeResult::getGeneralizedDOFNumbering )
+        .def( "setGeneralizedDOFNumbering", &GeneralizedModeResult::setGeneralizedDOFNumbering )
+        .def( "setStiffnessMatrix", py::overload_cast< const GeneralizedAssemblyMatrixRealPtr & >(
+                                        &GeneralizedModeResult::setStiffnessMatrix ) )
+        .def( "setStiffnessMatrix",
+              py::overload_cast< const GeneralizedAssemblyMatrixComplexPtr & >(
+                  &GeneralizedModeResult::setStiffnessMatrix ) )
         .def( "getDampingMatrix", &GeneralizedModeResult::getDampingMatrix )
         .def( "getStiffnessMatrix", &getGeneralizedStiffnessMatrix< GeneralizedModeResultPtr > );
 };

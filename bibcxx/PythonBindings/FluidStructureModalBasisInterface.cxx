@@ -3,7 +3,7 @@
  * @brief Interface python de FluidStructureModalBasis
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,20 +23,16 @@
 
 /* person_in_charge: natacha.bereux at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/FluidStructureModalBasisInterface.h"
-#include <PythonBindings/factory.h>
 
-void exportFluidStructureModalBasisToPython() {
+#include "aster_pybind.h"
 
-    py::class_< FluidStructureModalBasis,
-                FluidStructureModalBasis::FluidStructureModalBasisPtr,
-                py::bases< DataStructure > >( "FluidStructureModalBasis", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< FluidStructureModalBasis >))
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< FluidStructureModalBasis, std::string >))
+void exportFluidStructureModalBasisToPython( py::module_ &mod ) {
+
+    py::class_< FluidStructureModalBasis, FluidStructureModalBasis::FluidStructureModalBasisPtr,
+                DataStructure >( mod, "FluidStructureModalBasis" )
+        .def( py::init( &initFactoryPtr< FluidStructureModalBasis > ) )
+        .def( py::init( &initFactoryPtr< FluidStructureModalBasis, std::string > ) )
 
         .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
@@ -47,6 +43,5 @@ Arguments:
 Returns:
     Table: Table stored with the given identifier.
         )",
-              ( py::arg( "self" ), py::arg( "identifier" ) ) )
-        ;
+              py::arg( "identifier" ) );
 };

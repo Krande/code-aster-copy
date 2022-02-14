@@ -6,7 +6,7 @@
  * @brief Fichier entete de MaterialFieldBuilder
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -53,7 +53,7 @@ class MaterialFieldBuilder : public DataStructure {
      * @typedef MaterialFieldBuilderPtr
      * @brief Pointeur intelligent vers un MaterialFieldBuilder
      */
-    typedef boost::shared_ptr< MaterialFieldBuilder > MaterialFieldBuilderPtr;
+    typedef std::shared_ptr< MaterialFieldBuilder > MaterialFieldBuilderPtr;
 
     /**
      * @brief Build MaterialFieldPtr

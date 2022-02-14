@@ -3,7 +3,7 @@
  * @brief Interface python de Contact
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,20 +23,15 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/ContactInterface.h"
 
-void exportContactToPython() {
+#include "aster_pybind.h"
 
-    py::class_< Contact, Contact::ContactPtr,
-            py::bases< DataStructure > >( "Contact", py::no_init )
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< Contact, std::string, ModelPtr >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< Contact, ModelPtr >))
+void exportContactToPython( py::module_ &mod ) {
+
+    py::class_< Contact, Contact::ContactPtr, DataStructure >( mod, "Contact" )
+        .def( py::init( &initFactoryPtr< Contact, std::string, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< Contact, ModelPtr > ) )
         .def( "getModel", &Contact::getModel )
         .def( "getFiniteElementDescriptor", &Contact::getFiniteElementDescriptor );
 };

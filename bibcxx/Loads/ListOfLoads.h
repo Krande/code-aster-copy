@@ -36,7 +36,6 @@
 #include "Loads/ThermalLoad.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Modeling/Model.h"
-#include "boost/variant.hpp"
 
 typedef std::vector< GenericFunctionPtr > ListOfLoadFunctions;
 
@@ -601,6 +600,6 @@ class ListOfLoads : public DataStructure {
  * @typedef ListOfLoad
  * @brief Pointeur intelligent vers un ListOfLoad
  */
-typedef boost::shared_ptr< ListOfLoads > ListOfLoadsPtr;
+typedef std::shared_ptr< ListOfLoads > ListOfLoadsPtr;
 
 #endif /* LISTOFLOADS_H_ */

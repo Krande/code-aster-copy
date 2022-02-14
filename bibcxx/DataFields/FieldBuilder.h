@@ -73,13 +73,13 @@ class FieldBuilder {
      * @brief Build a FieldOnCells with a FiniteElementDescriptor
      */
     template < typename ValueType >
-    boost::shared_ptr< FieldOnCells< ValueType > > buildFieldOnCells( const std::string &name,
+    std::shared_ptr< FieldOnCells< ValueType > > buildFieldOnCells( const std::string &name,
                                                                       const BaseMeshPtr mesh ) {
         typedef FiniteElementDescriptor FEDDesc;
         typedef FiniteElementDescriptorPtr FEDDescP;
 
-        boost::shared_ptr< FieldOnCells< ValueType > > field =
-            boost::make_shared< FieldOnCells< ValueType > >( name );
+        std::shared_ptr< FieldOnCells< ValueType > > field =
+            std::make_shared< FieldOnCells< ValueType > >( name );
         field->updateValuePointers();
 
         const std::string ligrel = trim( ( *( *field )._reference )[0].toString() );
@@ -89,7 +89,7 @@ class FieldBuilder {
         if ( curIter != _mapLigrel.end() ) {
             curDesc = curIter->second;
         } else {
-            curDesc = boost::make_shared< FEDDesc >( ligrel, mesh );
+            curDesc = std::make_shared< FEDDesc >( ligrel, mesh );
             _mapLigrel[ligrel] = curDesc;
         }
         field->setDescription( curDesc );
@@ -101,11 +101,11 @@ class FieldBuilder {
      * @brief Build a ConstantFieldOnCells with a FiniteElementDescriptor
      */
     template < typename ValueType >
-    boost::shared_ptr< ConstantFieldOnCells< ValueType > >
+    std::shared_ptr< ConstantFieldOnCells< ValueType > >
     buildConstantFieldOnCells( const std::string &name, const BaseMeshPtr mesh ) {
 
-        boost::shared_ptr< ConstantFieldOnCells< ValueType > > field =
-            boost::make_shared< ConstantFieldOnCells< ValueType > >( name, mesh );
+        std::shared_ptr< ConstantFieldOnCells< ValueType > > field =
+            std::make_shared< ConstantFieldOnCells< ValueType > >( name, mesh );
         field->updateValuePointers();
 
         return field;
@@ -115,12 +115,12 @@ class FieldBuilder {
      * @brief Build a FieldOnNodes with a FieldOnNodesDescription
      */
     template < typename ValueType >
-    boost::shared_ptr< FieldOnNodes< ValueType > > buildFieldOnNodes( std::string name ) {
+    std::shared_ptr< FieldOnNodes< ValueType > > buildFieldOnNodes( std::string name ) {
         typedef FieldOnNodesDescription FONDesc;
         typedef FieldOnNodesDescriptionPtr FONDescP;
 
-        boost::shared_ptr< FieldOnNodes< ValueType > > field =
-            boost::make_shared< FieldOnNodes< ValueType > >( name );
+        std::shared_ptr< FieldOnNodes< ValueType > > field =
+            std::make_shared< FieldOnNodes< ValueType > >( name );
         field->updateValuePointers();
 
         const std::string profchno = trim( ( *( *field )._reference )[1].toString() );
@@ -130,7 +130,7 @@ class FieldBuilder {
         if ( curIter != _mapProfChno.end() )
             curDesc = curIter->second;
         else {
-            curDesc = boost::make_shared< FONDesc >( profchno );
+            curDesc = std::make_shared< FONDesc >( profchno );
             _mapProfChno[profchno] = curDesc;
         }
         field->setDescription( curDesc );

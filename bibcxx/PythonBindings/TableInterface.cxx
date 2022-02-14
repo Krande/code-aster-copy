@@ -3,7 +3,7 @@
  * @brief Interface python de Table
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,24 +23,21 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/TableInterface.h"
+
+#include "aster_pybind.h"
+
 #include "PythonBindings/DataStructureInterface.h"
 
-void exportTableToPython() {
+void exportTableToPython( py::module_ &mod ) {
 
-    py::class_< Table, Table::TablePtr, py::bases< DataStructure > >( "Table",
-                                                                                      py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Table >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Table, std::string >));
-    py::class_< TableOfFunctions, TableOfFunctions::TableOfFunctionsPtr,
-                py::bases< Table > >( "TableOfFunctions", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< TableOfFunctions >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< TableOfFunctions, std::string >))
+    py::class_< Table, Table::TablePtr, DataStructure >( mod, "Table" )
+        .def( py::init( &initFactoryPtr< Table > ) )
+        .def( py::init( &initFactoryPtr< Table, std::string > ) );
+    py::class_< TableOfFunctions, TableOfFunctions::TableOfFunctionsPtr, Table >(
+        mod, "TableOfFunctions" )
+        .def( py::init( &initFactoryPtr< TableOfFunctions > ) )
+        .def( py::init( &initFactoryPtr< TableOfFunctions, std::string > ) )
         .def( "addFunction", &TableOfFunctions::addFunction )
         .def( "getFunction", &TableOfFunctions::getFunction )
         .def( "getNumberOfFunctions", &TableOfFunctions::getNumberOfFunctions );

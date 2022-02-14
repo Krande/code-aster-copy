@@ -25,27 +25,18 @@
 
 #include "PythonBindings/ListOfExternalStateVariablesInterface.h"
 
+#include "aster_pybind.h"
+
 #include "Materials/ListOfExternalStateVariables.h"
 
-#include <boost/python.hpp>
-
-#include <PythonBindings/factory.h>
-
-namespace py = boost::python;
-
-void exportListOfExternalStateVariablesToPython() {
+void exportListOfExternalStateVariablesToPython( py::module_ &mod ) {
 
     py::class_< ListOfExternalStateVariables, ListOfExternalStateVariablesPtr > c3(
-        "ListOfExternalStateVariables", py::no_init );
-    c3.def( "__init__", py::make_constructor(
-                            &initFactoryPtr< ListOfExternalStateVariables, const MeshPtr & > ) );
-    c3.def( "__init__",
-            py::make_constructor(
-                &initFactoryPtr< ListOfExternalStateVariables, const SkeletonPtr & > ) );
+        mod, "ListOfExternalStateVariables" );
+    c3.def( py::init( &initFactoryPtr< ListOfExternalStateVariables, const MeshPtr & > ) );
+    c3.def( py::init( &initFactoryPtr< ListOfExternalStateVariables, const SkeletonPtr & > ) );
 #ifdef ASTER_HAVE_MPI
-    c3.def( "__init__",
-            py::make_constructor(
-                &initFactoryPtr< ListOfExternalStateVariables, const ParallelMeshPtr & > ) );
+    c3.def( py::init( &initFactoryPtr< ListOfExternalStateVariables, const ParallelMeshPtr & > ) );
 #endif /* ASTER_HAVE_MPI */
     c3.def( "addExternalStateVariableOnMesh",
             &ListOfExternalStateVariables::addExternalStateVariableOnMesh<

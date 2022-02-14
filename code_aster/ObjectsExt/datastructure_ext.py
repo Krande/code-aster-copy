@@ -38,8 +38,6 @@ class ExtendedDataStructure:
     # Search for python reference guide at https://www.boost.org/doc/libs/
     __getstate_manages_dict__ = 1
     cata_sdj = None
-    ptr_class_sdj = None
-    ptr_sdj = None
     internalStateBuilder = InternalStateBuilder
 
     orig_getName = DataStructure.getName
@@ -93,12 +91,11 @@ class ExtendedDataStructure:
             cata_sdj = getattr(self, "cata_sdj", None)
             if not cata_sdj:
                 cata_sdj = DICT_SDJ.get(self.__class__.__name__)
-            assert cata_sdj, "The attribute 'cata_sdj' must be defined in " "the class {}".format(
+            assert cata_sdj, "The attribute 'cata_sdj' must be defined in the class {}".format(
                 self.__class__.__name__
             )
-            if self.ptr_class_sdj is None:
-                self.ptr_class_sdj = import_object("code_aster." + cata_sdj)
-            self.ptr_sdj = self.ptr_class_sdj(nomj=self.getName())
+            ptr_class_sdj = import_object("code_aster." + cata_sdj)
+            self.ptr_sdj = ptr_class_sdj(nomj=self.getName())
         return self.ptr_sdj
 
     def use_count(self):

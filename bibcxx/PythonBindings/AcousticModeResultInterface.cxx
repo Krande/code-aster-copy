@@ -3,7 +3,7 @@
  * @brief Interface python de AcousticModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,17 +22,13 @@
  */
 
 #include "PythonBindings/AcousticModeResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportAcousticModeResultToPython() {
+void exportAcousticModeResultToPython( py::module_ &mod ) {
 
-    py::class_< AcousticModeResult, AcousticModeResultPtr,
-            py::bases< FullResult > >( "AcousticModeResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< AcousticModeResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< AcousticModeResult, std::string >))
+    py::class_< AcousticModeResult, AcousticModeResultPtr, FullResult >( mod, "AcousticModeResult" )
+        .def( py::init( &initFactoryPtr< AcousticModeResult > ) )
+        .def( py::init( &initFactoryPtr< AcousticModeResult, std::string > ) )
         .def( "setStiffnessMatrix", &AcousticModeResult::setStiffnessMatrix );
 };

@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe Function2D
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -28,15 +28,14 @@
 
 #include "astercxx.h"
 
-#include "MemoryManager/JeveuxVector.h"
-#include "MemoryManager/JeveuxCollection.h"
-#include "Supervis/ResultNaming.h"
 #include "Functions/GenericFunction.h"
+#include "MemoryManager/JeveuxCollection.h"
+#include "MemoryManager/JeveuxVector.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class Function2D
- * @brief Cette classe correspond a une nappe
- * @author Nicolas Sellenet
+ * @brief Cette classe correspond à une nappe
  */
 class Function2D : public GenericFunction {
   private:
@@ -50,7 +49,7 @@ class Function2D : public GenericFunction {
      * @typedef Function2DPtr
      * @brief Pointeur intelligent vers un Function2D
      */
-    typedef boost::shared_ptr< Function2D > Function2DPtr;
+    typedef std::shared_ptr< Function2D > Function2DPtr;
 
     /**
      * @brief Constructeur
@@ -66,64 +65,36 @@ class Function2D : public GenericFunction {
           _value( JeveuxCollectionReal( getName() + ".VALE" ) ){};
 
     /**
-     * @brief Copy extension parameters to python list
-     * @return  return list of parameters
+     * @brief Return the parameters values of the function
      */
-    PyObject *exportExtensionToPython() const ;
+    const JeveuxVectorReal getParameters() const { return _parameters; }
 
     /**
-     * @brief Copy parameters to python list
-     * @return  return list of parameters
+     * @brief Return the values of the function
      */
-    PyObject *exportParametersToPython() const ;
-
-    /**
-     * @brief Copy values to python list [[[func1_abs],[func1_ord]],[[func2_abs],[func2_ord]],...]
-     * @return  return list of list of list of values
-     */
-    PyObject *exportValuesToPython() const ;
+    const JeveuxCollectionReal getValues() const { return _value; }
 
     /**
      * @brief Get the result name
      * @return  name of the result
      */
-    std::string getResultName() {
-        if ( !_property->exists() )
-            return "";
-        _property->updateValuePointer();
-        return ( *_property )[3].toString();
-    };
+    std::string getResultName();
 
     /**
-     * @brief Return the number of points of the function
+     * @brief Return the maximum number of points of the functions
      */
-    ASTERINTEGER maximumSize() const {
-        _value->build();
-        ASTERINTEGER toReturn = 0;
-        for ( const auto &curIter : *_value ) {
-            if ( curIter.size() > toReturn )
-                toReturn = curIter.size();
-        }
-        return toReturn;
-    };
+    ASTERINTEGER maximumSize() const;
 
     /**
-     * @brief Return the number of points of the function
+     * @brief Return the total number of points of the functions
      */
-    ASTERINTEGER size() const {
-        _value->build();
-        ASTERINTEGER toReturn = 0;
-        for ( const auto &curIter : *_value ) {
-            toReturn += curIter.size();
-        }
-        return toReturn;
-    };
+    ASTERINTEGER size() const;
 };
 
 /**
  * @typedef Function2DPtr
  * @brief Pointeur intelligent vers un Function2D
  */
-typedef boost::shared_ptr< Function2D > Function2DPtr;
+using Function2DPtr = std::shared_ptr< Function2D >;
 
 #endif /* FUNCTION2D_H_ */

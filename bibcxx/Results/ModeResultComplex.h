@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ModeResultComplex
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -245,7 +245,7 @@ class ModeResultComplex : public ModeResult {
  * @typedef ModeResultComplexPtr
  * @brief Pointeur intelligent vers un ModeResultComplex
  */
-typedef boost::shared_ptr< ModeResultComplex >
+typedef std::shared_ptr< ModeResultComplex >
     ModeResultComplexPtr;
 
 #endif /* MECHANICALMODECOMPLEXCONTAINER_H_ */

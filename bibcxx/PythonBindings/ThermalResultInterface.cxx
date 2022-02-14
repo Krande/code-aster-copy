@@ -3,7 +3,7 @@
  * @brief Interface python de ThermalResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,17 +22,12 @@
  */
 
 #include "PythonBindings/ThermalResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportThermalResultToPython() {
+void exportThermalResultToPython( py::module_ &mod ) {
 
-    py::class_< ThermalResult, ThermalResultPtr,
-                py::bases< TransientResult > >( "ThermalResult",
-                                                                      py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ThermalResult, std::string >));
+    py::class_< ThermalResult, ThermalResultPtr, TransientResult >( mod, "ThermalResult" )
+        .def( py::init( &initFactoryPtr< ThermalResult > ) )
+        .def( py::init( &initFactoryPtr< ThermalResult, std::string > ) );
 };

@@ -21,37 +21,24 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
+/* person_in_charge: nicolas.sellenet at edf.fr */
 
-namespace py = boost::python;
 #include "PythonBindings/ElementaryVectorInterface.h"
+
+#include "aster_pybind.h"
+
 #include "PythonBindings/FieldOnCellsInterface.h"
 
-#include <PythonBindings/factory.h>
+void exportElementaryVectorToPython( py::module_ &mod ) {
 
-void exportElementaryVectorToPython() {
-
-    FieldOnNodesRealPtr ( BaseElementaryVector::*c10 )( const BaseDOFNumberingPtr & ) =
-        &BaseElementaryVector::assembleWithLoadFunctions;
-    FieldOnNodesRealPtr ( BaseElementaryVector::*c11 )( const BaseDOFNumberingPtr &,
-                                                        const ASTERDOUBLE & ) =
-        &BaseElementaryVector::assembleWithLoadFunctions;
-    FieldOnNodesRealPtr ( BaseElementaryVector::*c12 )( const BaseDOFNumberingPtr &,
-                                                        const FieldOnCellsLongPtr &, const int & ) =
-        &BaseElementaryVector::assembleWithMask;
-
-    void ( BaseElementaryVector::*c3 )( const MechanicalLoadRealPtr & ) =
-        &BaseElementaryVector::addLoad;
-
-    py::class_< BaseElementaryVector, BaseElementaryVectorPtr, py::bases< DataStructure > >(
-        "BaseElementaryVector", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< BaseElementaryVector > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< BaseElementaryVector, std::string > ) )
-        .def( "addLoad", c3 )
-        .def( "assembleWithLoadFunctions", c10 )
-        .def( "assembleWithLoadFunctions", c11 )
-        .def( "assembleWithMask", c12 )
+    py::class_< BaseElementaryVector, BaseElementaryVectorPtr, DataStructure >(
+        mod, "BaseElementaryVector" )
+        .def( py::init( &initFactoryPtr< BaseElementaryVector > ) )
+        .def( py::init( &initFactoryPtr< BaseElementaryVector, std::string > ) )
+        .def( "addLoad", &BaseElementaryVector::addLoad< const MechanicalLoadRealPtr & > )
+        .def( "assembleWithLoadFunctions", &BaseElementaryVector::assembleWithLoadFunctions,
+              py::arg( "dofNume" ), py::arg( "time" ) = 0. )
+        .def( "assembleWithMask", &BaseElementaryVector::assembleWithMask )
         .def( "setType", &BaseElementaryVector::setType )
         .def( "setListOfLoads", &BaseElementaryVector::setListOfLoads )
         .def( "setMaterialField", &BaseElementaryVector::setMaterialField )
@@ -60,29 +47,20 @@ void exportElementaryVectorToPython() {
         .def( "build", &BaseElementaryVector::build );
 
     py::class_< ElementaryVectorDisplacementReal, ElementaryVectorDisplacementRealPtr,
-                py::bases< BaseElementaryVector > >( "ElementaryVectorDisplacementReal",
-                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) )
+                BaseElementaryVector >( mod, "ElementaryVectorDisplacementReal" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorDisplacementReal, std::string > ) )
         .def( "assemble", &ElementaryVectorDisplacementReal::assemble );
 
     py::class_< ElementaryVectorTemperatureReal, ElementaryVectorTemperatureRealPtr,
-                py::bases< BaseElementaryVector > >( "ElementaryVectorTemperatureReal",
-                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) )
+                BaseElementaryVector >( mod, "ElementaryVectorTemperatureReal" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorTemperatureReal, std::string > ) )
         .def( "assemble", &ElementaryVectorTemperatureReal::assemble );
 
     py::class_< ElementaryVectorPressureComplex, ElementaryVectorPressureComplexPtr,
-                py::bases< BaseElementaryVector > >( "ElementaryVectorPressureComplex",
-                                                     py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) )
+                BaseElementaryVector >( mod, "ElementaryVectorPressureComplex" )
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex > ) )
+        .def( py::init( &initFactoryPtr< ElementaryVectorPressureComplex, std::string > ) )
         .def( "assemble", &ElementaryVectorPressureComplex::assemble );
 };

@@ -38,12 +38,11 @@ template < typename ValueType, PhysicalQuantityEnum PhysicalQuantity >
 class ElementaryMatrix : public BaseElementaryMatrix {
   private:
     /** @brief Vectors of RESUELEM */
-    std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > _elemTerm;
+    std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > _elemTerm;
 
   public:
     /** @typedef ElementaryMatrixPtr */
-    typedef boost::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > >
-        ElementaryMatrixPtr;
+    typedef std::shared_ptr< ElementaryMatrix< ValueType, PhysicalQuantity > > ElementaryMatrixPtr;
 
     /** @brief Constructor with a name */
     ElementaryMatrix( const std::string name )
@@ -75,13 +74,12 @@ class ElementaryMatrix : public BaseElementaryMatrix {
                 const std::string name = trim( elemTerm.toString() );
                 elemKeep.insert( name );
                 if ( name != " " && elemSave.count( name ) == 0 ) {
-                    _elemTerm.push_back(
-                        boost::make_shared< ElementaryTerm< ValueType > >( name ) );
+                    _elemTerm.push_back( std::make_shared< ElementaryTerm< ValueType > >( name ) );
                 }
             }
 
             // clean ElementaryTerm
-            std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > elemTermNew;
+            std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > elemTermNew;
             elemTermNew.reserve( _elemTerm.size() );
             for ( auto &elemTerm : _elemTerm ) {
                 auto name = trim( elemTerm->getName() );
@@ -116,12 +114,12 @@ class ElementaryMatrix : public BaseElementaryMatrix {
     /**
      * @brief Add elementary term
      */
-    void addElementaryTerm( const boost::shared_ptr< ElementaryTerm< ValueType > > &elemTerm ) {
+    void addElementaryTerm( const std::shared_ptr< ElementaryTerm< ValueType > > &elemTerm ) {
         _elemComp->addElementaryTerm( elemTerm->getName() );
         _elemTerm.push_back( elemTerm );
     };
 
-    std::vector< boost::shared_ptr< ElementaryTerm< ValueType > > > getElementaryTerms() const {
+    std::vector< std::shared_ptr< ElementaryTerm< ValueType > > > getElementaryTerms() const {
         return _elemTerm;
     }
 
@@ -147,22 +145,22 @@ class ElementaryMatrix : public BaseElementaryMatrix {
 /** @typedef Elementary matrix for displacement-double */
 template class ElementaryMatrix< ASTERDOUBLE, Displacement >;
 typedef ElementaryMatrix< ASTERDOUBLE, Displacement > ElementaryMatrixDisplacementReal;
-typedef boost::shared_ptr< ElementaryMatrixDisplacementReal > ElementaryMatrixDisplacementRealPtr;
+typedef std::shared_ptr< ElementaryMatrixDisplacementReal > ElementaryMatrixDisplacementRealPtr;
 
 /** @typedef Elementary matrix for displacement-complex */
 template class ElementaryMatrix< ASTERCOMPLEX, Displacement >;
 typedef ElementaryMatrix< ASTERCOMPLEX, Displacement > ElementaryMatrixDisplacementComplex;
-typedef boost::shared_ptr< ElementaryMatrixDisplacementComplex >
+typedef std::shared_ptr< ElementaryMatrixDisplacementComplex >
     ElementaryMatrixDisplacementComplexPtr;
 
 /** @typedef Elementary matrix for temperature-double */
 template class ElementaryMatrix< ASTERDOUBLE, Temperature >;
 typedef ElementaryMatrix< ASTERDOUBLE, Temperature > ElementaryMatrixTemperatureReal;
-typedef boost::shared_ptr< ElementaryMatrixTemperatureReal > ElementaryMatrixTemperatureRealPtr;
+typedef std::shared_ptr< ElementaryMatrixTemperatureReal > ElementaryMatrixTemperatureRealPtr;
 
 /** @typedef Elementary matrix for pressure-complex */
 template class ElementaryMatrix< ASTERCOMPLEX, Pressure >;
 typedef ElementaryMatrix< ASTERCOMPLEX, Pressure > ElementaryMatrixPressureComplex;
-typedef boost::shared_ptr< ElementaryMatrixPressureComplex > ElementaryMatrixPressureComplexPtr;
+typedef std::shared_ptr< ElementaryMatrixPressureComplex > ElementaryMatrixPressureComplexPtr;
 
 #endif /* ELEMENTARYMATRIX_H_ */

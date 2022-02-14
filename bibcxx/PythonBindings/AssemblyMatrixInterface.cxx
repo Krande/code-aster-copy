@@ -22,26 +22,20 @@
  */
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/AssemblyMatrixInterface.h"
-#include <PythonBindings/factory.h>
 
-void exportAssemblyMatrixToPython() {
+#include "aster_pybind.h"
+
+void exportAssemblyMatrixToPython( py::module_ &mod ) {
 
     py::class_< AssemblyMatrixDisplacementReal, AssemblyMatrixDisplacementRealPtr,
-                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixDisplacementReal", py::no_init )
+                BaseAssemblyMatrix >( mod, "AssemblyMatrixDisplacementReal" )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< AssemblyMatrixDisplacementReal > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementReal > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< AssemblyMatrixDisplacementReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< AssemblyMatrixDisplacementReal, PhysicalProblemPtr > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementReal, PhysicalProblemPtr > ) )
         // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixDisplacementReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -68,14 +62,11 @@ Arguments:
         )" );
 
     py::class_< AssemblyMatrixDisplacementComplex, AssemblyMatrixDisplacementComplexPtr,
-                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixDisplacementComplex",
-                                                   py::no_init )
+                BaseAssemblyMatrix >( mod, "AssemblyMatrixDisplacementComplex" )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< AssemblyMatrixDisplacementComplex > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementComplex > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< AssemblyMatrixDisplacementComplex, std::string > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixDisplacementComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixDisplacementComplex::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -92,12 +83,11 @@ Arguments:
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureReal, AssemblyMatrixTemperatureRealPtr,
-                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixTemperatureReal", py::no_init )
+                BaseAssemblyMatrix >( mod, "AssemblyMatrixTemperatureReal" )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor( &initFactoryPtr< AssemblyMatrixTemperatureReal > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureReal > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< AssemblyMatrixTemperatureReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixTemperatureReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -125,13 +115,11 @@ Arguments:
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixTemperatureComplex, AssemblyMatrixTemperatureComplexPtr,
-                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixTemperatureComplex", py::no_init )
+                BaseAssemblyMatrix >( mod, "AssemblyMatrixTemperatureComplex" )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< AssemblyMatrixTemperatureComplex > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureComplex > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< AssemblyMatrixTemperatureComplex, std::string > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixTemperatureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixTemperatureComplex::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -146,13 +134,12 @@ Arguments:
         // -----------------------------------------------------------------------------------------
         .def( "transposeConjugate", &AssemblyMatrixTemperatureComplex::transposeConjugate );
 
-    py::class_< AssemblyMatrixPressureReal, AssemblyMatrixPressureRealPtr,
-                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixPressureReal", py::no_init )
+    py::class_< AssemblyMatrixPressureReal, AssemblyMatrixPressureRealPtr, BaseAssemblyMatrix >(
+        mod, "AssemblyMatrixPressureReal" )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor( &initFactoryPtr< AssemblyMatrixPressureReal > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixPressureReal > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< AssemblyMatrixPressureReal, std::string > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixPressureReal, std::string > ) )
         // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixPressureReal::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------
@@ -180,12 +167,11 @@ Arguments:
     // -----------------------------------------------------------------------------------------
 
     py::class_< AssemblyMatrixPressureComplex, AssemblyMatrixPressureComplexPtr,
-                py::bases< BaseAssemblyMatrix > >( "AssemblyMatrixPressureComplex", py::no_init )
+                BaseAssemblyMatrix >( mod, "AssemblyMatrixPressureComplex" )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor( &initFactoryPtr< AssemblyMatrixPressureComplex > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixPressureComplex > ) )
         // -----------------------------------------------------------------------------------------
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< AssemblyMatrixPressureComplex, std::string > ) )
+        .def( py::init( &initFactoryPtr< AssemblyMatrixPressureComplex, std::string > ) )
         // -----------------------------------------------------------------------------------------
         .def( "addElementaryMatrix", &AssemblyMatrixPressureComplex::addElementaryMatrix )
         // -----------------------------------------------------------------------------------------

@@ -209,7 +209,7 @@ void Model::addModelingOnGroupOfNodes( Physics phys, Modelings mod, std::string 
 
 void Model::setXfemModel() {
     const std::string modelName = getName();
-    _xfemModel = boost::make_shared< XfemModel >( modelName );
+    _xfemModel = std::make_shared< XfemModel >( modelName );
 };
 
 #ifdef ASTER_HAVE_MPI
@@ -217,7 +217,7 @@ bool Model::setFrom( const ModelPtr model ) {
     // "the mesh associated to finiteElementDescriptor is not a partial mesh"
     AS_ASSERT( getMesh()->isConnection() );
     const ConnectionMeshPtr connectionMesh =
-        boost::static_pointer_cast< ConnectionMesh >( getMesh() );
+        std::static_pointer_cast< ConnectionMesh >( getMesh() );
 
     // "parallel mesh associated to partial mesh of FiniteElementDescriptor \n"
     //        "does not correspond to other FiniteElementDescriptor mesh"

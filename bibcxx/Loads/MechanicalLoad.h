@@ -63,7 +63,7 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
      * @typedef MechanicalLoadPtr
      * @brief Pointeur intelligent vers un MechanicalLoad
      */
-    typedef boost::shared_ptr< MechanicalLoad > MechanicalLoadPtr;
+    typedef std::shared_ptr< MechanicalLoad > MechanicalLoadPtr;
 
     /**
      * @brief Constructor
@@ -83,7 +83,7 @@ class MechanicalLoad : public DataStructure, public ListOfTables {
         : DataStructure( name, 8, "CHAR_MECA" ),
           ListOfTables( name ),
           _mecaLoadDesc(
-              boost::make_shared< MechanicalLoadDescription< ConstantFieldOnCellsType > >(
+              std::make_shared< MechanicalLoadDescription< ConstantFieldOnCellsType > >(
                   getName() + ".CHME", currentModel ) ),
           _type( getName() + ".TYPE" ),
           _lisma01( getName() + ".LISMA01" ),
@@ -151,11 +151,11 @@ typedef MechanicalLoad< ConstantFieldOnCellsComplex > MechanicalLoadComplex;
 
 /** @typedef MechanicalLoad  */
 template < class ConstantFieldOnCellsType >
-using MechanicalLoadPtr = boost::shared_ptr< MechanicalLoad< ConstantFieldOnCellsType > >;
+using MechanicalLoadPtr = std::shared_ptr< MechanicalLoad< ConstantFieldOnCellsType > >;
 
-typedef boost::shared_ptr< MechanicalLoadReal > MechanicalLoadRealPtr;
-typedef boost::shared_ptr< MechanicalLoadFunction > MechanicalLoadFunctionPtr;
-typedef boost::shared_ptr< MechanicalLoadComplex > MechanicalLoadComplexPtr;
+typedef std::shared_ptr< MechanicalLoadReal > MechanicalLoadRealPtr;
+typedef std::shared_ptr< MechanicalLoadFunction > MechanicalLoadFunctionPtr;
+typedef std::shared_ptr< MechanicalLoadComplex > MechanicalLoadComplexPtr;
 
 /** @typedef std::list de MechanicalLoad */
 typedef std::list< MechanicalLoadRealPtr > ListMecaLoadReal;

@@ -23,12 +23,12 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
+#include "Solvers/MatrixToPetsc.h"
+
 #include "Python.h"
 #include "aster_fort_petsc.h"
 #include "aster_module.h"
 #include "astercxx.h"
-
-#include "Solvers/MatrixToPetsc.h"
 
 #ifdef ASTER_HAVE_PETSC
 void petscFinalize() {
@@ -50,14 +50,6 @@ void petscInitializeWithOptions( const std::string &options ) {
     std::cout << "PETSc library non available" << std::endl;
 }
 #endif
-
-template <>
-PyObject *assemblyMatrixToPetsc< AssemblyMatrixDisplacementRealPtr >(
-    const AssemblyMatrixDisplacementRealPtr matr );
-
-template <>
-PyObject *assemblyMatrixToPetsc< AssemblyMatrixTemperatureRealPtr >(
-    const AssemblyMatrixTemperatureRealPtr matr );
 
 #ifdef ASTER_HAVE_PETSC4PY
 void DEFPPP( CREATE_CUSTOM_KSP, create_custom_ksp, _OUT KSP *ksp, _IN Mat *mat,
@@ -83,7 +75,7 @@ void DEFPPP( CREATE_CUSTOM_KSP, create_custom_ksp, _OUT KSP *ksp, _IN Mat *mat,
     PyObject *pyKSP = PyObject_CallFunction( builder, "O", pyMat );
 
     /* extract KSP from petsc4py KSP */
-    struct PyPetscKSPObject *pyx_ksp = (struct PyPetscKSPObject*)pyKSP;
+    struct PyPetscKSPObject *pyx_ksp = (struct PyPetscKSPObject *)pyKSP;
     *ksp = pyx_ksp->ksp;
 
     // restore pyMat content to be safely destroyed by gc

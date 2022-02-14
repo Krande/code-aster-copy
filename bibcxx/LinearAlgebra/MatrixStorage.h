@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe MatrixStorage
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -87,7 +87,7 @@ class LigneDeCiel : public MatrixStorage {
  * @typedef LigneDeCielPtr
  * @brief Pointeur intelligent vers un LigneDeCiel
  */
-typedef boost::shared_ptr< LigneDeCiel > LigneDeCielPtr;
+typedef std::shared_ptr< LigneDeCiel > LigneDeCielPtr;
 
 /**
  * @class MorseStorage
@@ -117,7 +117,7 @@ class MorseStorage : public MatrixStorage {
  * @typedef MorseStoragePtr
  * @brief Pointeur intelligent vers un MorseStorage
  */
-typedef boost::shared_ptr< MorseStorage > MorseStoragePtr;
+typedef std::shared_ptr< MorseStorage > MorseStoragePtr;
 
 /**
  * @class MultFrontStorage
@@ -150,6 +150,6 @@ class MultFrontStorage : public MatrixStorage {
  * @typedef MultFrontStoragePtr
  * @brief Pointeur intelligent vers un MultFrontStorage
  */
-typedef boost::shared_ptr< MultFrontStorage > MultFrontStoragePtr;
+typedef std::shared_ptr< MultFrontStorage > MultFrontStoragePtr;
 
 #endif /* MATRIXSTORAGE_H_ */

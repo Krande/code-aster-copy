@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe SimpleFieldOnCellsInterface
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2020  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -26,9 +26,11 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
+#include "aster_pybind.h"
 #include "astercxx.h"
+
 #include "DataFields/SimpleFieldOnCells.h"
 
-void exportSimpleFieldOnCellsToPython();
+void exportSimpleFieldOnCellsToPython( py::module_ &mod );
 
 #endif /* SIMPLEFieldOnCellsINTERFACE_H_ */

@@ -20,33 +20,27 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
 #include "PythonBindings/ContactZoneInterface.h"
-#include <PythonBindings/factory.h>
 
-void exportContactZoneToPython() {
+#include "aster_pybind.h"
 
-    py::class_< ContactZone, ContactZone::ContactZonePtr, py::bases< DataStructure > >(
-        "ContactZone", py::no_init )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< ContactZone, std::string, ModelPtr > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< ContactZone, ModelPtr > ) )
+void exportContactZoneToPython( py::module_ &mod ) {
+
+    py::class_< ContactZone, ContactZone::ContactZonePtr, DataStructure >( mod, "ContactZone" )
+        .def( py::init( &initFactoryPtr< ContactZone, std::string, ModelPtr > ) )
+        .def( py::init( &initFactoryPtr< ContactZone, ModelPtr > ) )
         .def( "getModel", &ContactZone::getModel, R"(
 Return the model used in the contact zone definition
 
 Returns:
     Model: model.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "getMesh", &ContactZone::getMesh, R"(
 Return the mesh used in the contact zone definition
 
 Returns:
     BaseMesh: mesh.
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setVerbosity", &ContactZone::setVerbosity, R"(
 Set level of verbosity:
       0- without
@@ -56,7 +50,7 @@ Set level of verbosity:
 Arguments:
     integer: level of verbosity
         )",
-              ( py::arg( "self" ), py::arg( "level" ) ) )
+              py::arg( "level" ) )
         .def( "getVerbosity", &ContactZone::getVerbosity, R"(
 Get level of verbosity:
       0- without
@@ -65,153 +59,127 @@ Get level of verbosity:
 
 Returns:
     integer: level of verbosity
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "build", &ContactZone::build, R"(
 Build and check internal objects
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setContactParameter", &ContactZone::setContactParameter, R"(
 Set contact parameters defining method, coefficient...
 
 Arguments:
     ContactParameter: contact parameters
         )",
-              ( py::arg( "self" ), py::arg( "contact" ) ) )
+              py::arg( "contact" ) )
         .def( "getContactParameter", &ContactZone::getContactParameter, R"(
 Get contact parameters defining method, coefficient...
 
 Returns:
     ContactParameter: contact parameters
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setFrictionParameter", &ContactZone::setFrictionParameter, R"(
 Set friction parameters defining method, coefficient...
 
 Arguments:
     FrictionParameter: friction parameters
         )",
-              ( py::arg( "self" ), py::arg( "friction" ) ) )
+              py::arg( "friction" ) )
         .def( "getFrictionParameter", &ContactZone::getFrictionParameter, R"(
 Get friction parameters defining method, coefficient...
 
 Returns:
     FrictionParameter: friction parameters
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setPairingParameter", &ContactZone::setPairingParameter, R"(
 Set pairing parameters defining algorithm, distance...
 
 Arguments:
     PairingParameter: pairing parameters
         )",
-              ( py::arg( "self" ), py::arg( "pairing" ) ) )
+              py::arg( "pairing" ) )
         .def( "getPairingParameter", &ContactZone::getPairingParameter, R"(
 Get pairing parameters defining algorithm, distance...
 
 Returns:
     PairingParameter: pairing parameters
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setSlaveGroupOfCells", &ContactZone::setSlaveGroupOfCells, R"(
 Set slave's name of group of cells
 
 Arguments:
     str: slave's name
         )",
-              ( py::arg( "self" ), py::arg( "slave_name" ) ) )
+              py::arg( "slave_name" ) )
         .def( "getSlaveGroupOfCells", &ContactZone::getSlaveGroupOfCells, R"(
 Get slave's name of group of cells
 
 Returns:
     str: slave's name
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setMasterGroupOfCells", &ContactZone::setMasterGroupOfCells, R"(
 Set master's name of group of cells
 
 Arguments:
     str: master's name
         )",
-              ( py::arg( "self" ), py::arg( "master_name" ) ) )
+              py::arg( "master_name" ) )
         .def( "getMasterGroupOfCells", &ContactZone::getMasterGroupOfCells, R"(
 Get master's name of group of cells
 
 Returns:
     str: master's name
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "setExcludedSlaveGroupOfCells", &ContactZone::setExcludedSlaveGroupOfCells, R"(
 Set excluded groups of cells on slave side
 
 Arguments:
     str: excluded groups' names
         )",
-              ( py::arg( "self" ), py::arg( "master_name" ) ) )
+              py::arg( "master_name" ) )
         .def( "getExcludedSlaveGroupOfCells", &ContactZone::getExcludedSlaveGroupOfCells, R"(
 Get excluded groups of cells on slave side
 
 Returns:
     str: excluded groups' names
-        )",
-              ( py::arg( "self" ) ) )
-        .def( "checkNormals",
-              static_cast< void ( ContactZone::* )( const bool & ) >( &ContactZone::checkNormals ),
-              R"(
-Set True if there is check to verify that normals are outwards
-
-Arguments:
-      Bool: True if checking is performed else False
-        )",
-              ( py::arg( "self" ), py::arg( "check" ) ) )
-        .def( "checkNormals",
-              static_cast< bool ( ContactZone::* )() const >( &ContactZone::checkNormals ), R"(
-Reruen True if there is check to verify that normals are outwards
-
-Returns:
-      Bool: True if checking is performed else False
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
+        .def_property( "checkNormals",
+                       py::overload_cast<>( &ContactZone::checkNormals, py::const_ ),
+                       py::overload_cast< const bool & >( &ContactZone::checkNormals ), R"(
+        bool: Attribute that holds the checking of outwards normals.
+                )" )
         .def( "updateSlaveCells", &ContactZone::updateSlaveCells, R"(
 Returns:
       Bool: True if the slave cells are updated
-        )",
-              ( py::arg( "self" ) ) )
+        )" )
         .def( "updateMasterCells", &ContactZone::updateMasterCells, R"(
 Returns:
       Bool: True if checking is performed else False
-        )",
-              ( py::arg( "self" ) ) )
-        .def( "getMasterCellsFromNode",
-                        &ContactZone::getMasterCellsFromNode,R"(
+        )" )
+        .def( "getMasterCellsFromNode", &ContactZone::getMasterCellsFromNode, R"(
 Get the master cells associtaed with a node number
 
 Arguments:
     int: node number
         )",
-              ( py::arg( "self" ), py::arg( "node_number" ) ) )
-        .def( "getSlaveCellsFromNode",
-                        &ContactZone::getSlaveCellsFromNode, R"(
+              py::arg( "node_number" ) )
+        .def( "getSlaveCellsFromNode", &ContactZone::getSlaveCellsFromNode, R"(
 Get the slave cells associtaed with a node number
 
 Arguments:
     int: node number
         )",
-              ( py::arg( "self" ), py::arg( "node_number" ) )  )
-        .def( "getMasterCellNeighbors",
-                        &ContactZone::getMasterCellNeighbors, R"(
+              py::arg( "node_number" ) )
+        .def( "getMasterCellNeighbors", &ContactZone::getMasterCellNeighbors, R"(
 Get the master cells in the neighbor of a given master cell number
 
 Arguments:
     int: master cell number
         )",
-              ( py::arg( "self" ), py::arg( "cell_number" ) )  )
-        .def( "getSlaveCellNeighbors",
-                        &ContactZone::getSlaveCellNeighbors, R"(
+              py::arg( "cell_number" ) )
+        .def( "getSlaveCellNeighbors", &ContactZone::getSlaveCellNeighbors, R"(
 Get the slave cells in the neighbor of a given slave cell number
 
 Arguments:
     int: slave cell number
         )",
-              ( py::arg( "self" ), py::arg( "cell_number" ) )  );
+              py::arg( "cell_number" ) );
 };

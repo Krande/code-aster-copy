@@ -74,7 +74,7 @@ class Calcul {
 
   public:
     /** @typedef CalculPtr */
-    typedef boost::shared_ptr< Calcul > CalculPtr;
+    typedef std::shared_ptr< Calcul > CalculPtr;
 
     /** @brief Constructor */
     Calcul( const std::string &option );
@@ -166,6 +166,6 @@ class Calcul {
 };
 
 /**  @typedef CalculPtr */
-using CalculPtr = boost::shared_ptr< Calcul >;
+using CalculPtr = std::shared_ptr< Calcul >;
 
 #endif /* CALCUL_H_ */

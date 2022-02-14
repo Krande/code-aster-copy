@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe GeneralizedAssemblyMatrix
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -60,7 +60,7 @@ class GenericGeneralizedAssemblyMatrix: public DataStructure
      * @typedef GeneralizedAssemblyMatrixPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrix
      */
-    typedef boost::shared_ptr< GenericGeneralizedAssemblyMatrix >
+    typedef std::shared_ptr< GenericGeneralizedAssemblyMatrix >
         GenericGeneralizedAssemblyMatrixPtr;
 
     /**
@@ -182,7 +182,7 @@ class GeneralizedAssemblyMatrix : public GenericGeneralizedAssemblyMatrix
      * @typedef GeneralizedAssemblyMatrixPtr
      * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrix
      */
-    typedef boost::shared_ptr< GeneralizedAssemblyMatrix< ValueType > >
+    typedef std::shared_ptr< GeneralizedAssemblyMatrix< ValueType > >
         GeneralizedAssemblyMatrixPtr;
 
     /**
@@ -212,21 +212,21 @@ typedef GeneralizedAssemblyMatrix< ASTERCOMPLEX > GeneralizedAssemblyMatrixCompl
  * @typedef GenericGeneralizedAssemblyMatrixPtr
  * @brief Pointeur intelligent vers un GenericGeneralizedAssemblyMatrix
  */
-typedef boost::shared_ptr< GenericGeneralizedAssemblyMatrix >
+typedef std::shared_ptr< GenericGeneralizedAssemblyMatrix >
     GenericGeneralizedAssemblyMatrixPtr;
 
 /**
  * @typedef GeneralizedAssemblyMatrixRealPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixReal
  */
-typedef boost::shared_ptr< GeneralizedAssemblyMatrixReal >
+typedef std::shared_ptr< GeneralizedAssemblyMatrixReal >
     GeneralizedAssemblyMatrixRealPtr;
 
 /**
  * @typedef GeneralizedAssemblyMatrixComplexPtr
  * @brief Pointeur intelligent vers un GeneralizedAssemblyMatrixComplex
  */
-typedef boost::shared_ptr< GeneralizedAssemblyMatrixComplex >
+typedef std::shared_ptr< GeneralizedAssemblyMatrixComplex >
     GeneralizedAssemblyMatrixComplexPtr;
 
 #endif /* GENERALIZEDASSEMBLYMATRIX_H_ */

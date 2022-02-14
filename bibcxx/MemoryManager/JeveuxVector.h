@@ -693,7 +693,7 @@ class JeveuxVectorClass : public JeveuxObjectClass, private AllowedJeveuxType< V
 template < class ValueType >
 class JeveuxVector {
   public:
-    typedef boost::shared_ptr< JeveuxVectorClass< ValueType > > JeveuxVectorTypePtr;
+    typedef std::shared_ptr< JeveuxVectorClass< ValueType > > JeveuxVectorTypePtr;
 
   private:
     JeveuxVectorTypePtr _jeveuxVectorPtr;
@@ -705,10 +705,10 @@ class JeveuxVector {
     JeveuxVector() : _jeveuxVectorPtr( nullptr ){};
 
     JeveuxVector( std::string nom )
-        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ){};
+        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ){};
 
     JeveuxVector( std::string nom, const std::vector< ValueType > &vect )
-        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
+        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
         ( *_jeveuxVectorPtr ) = vect;
     };
 
@@ -716,7 +716,7 @@ class JeveuxVector {
         : JeveuxVector( ResultNaming::getNewResultName(), vect ){};
 
     JeveuxVector( std::string nom, const ASTERINTEGER &size )
-        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
+        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
         _jeveuxVectorPtr->allocate( size );
     };
 
@@ -724,7 +724,7 @@ class JeveuxVector {
         : JeveuxVector( ResultNaming::getNewResultName(), size ){};
 
     JeveuxVector( std::string nom, const ASTERINTEGER &size, const ValueType &val )
-        : _jeveuxVectorPtr( boost::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
+        : _jeveuxVectorPtr( std::make_shared< JeveuxVectorClass< ValueType > >( nom ) ) {
         _jeveuxVectorPtr->allocate( size, val );
     };
 

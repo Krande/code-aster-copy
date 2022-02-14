@@ -21,51 +21,39 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
+/* person_in_charge: nicolas.sellenet at edf.fr */
 
-namespace py = boost::python;
-
-#include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/FieldOnCellsInterface.h"
 
-#include <PythonBindings/factory.h>
+#include "aster_pybind.h"
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( print_overloads, printMedFile, 1, 2 )
+#include "PythonBindings/DataStructureInterface.h"
 
-void exportFieldOnCellsToPython() {
-    /**
-     * Object FieldOnCellsReal
-     */
-    py::class_< FieldOnCellsReal, FieldOnCellsRealPtr, py::bases< DataField > >( "FieldOnCellsReal",
-                                                                                 py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsReal > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
-        .def( "__init__", py::make_constructor(
-                              &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr,
-                                               std::string, ElementaryCharacteristicsPtr >,
-                              py::default_call_policies(),
-                              ( py::arg( "model" ), py::arg( "behaviour" ), py::arg( "typcham" ),
-                                py::arg( "carael" ) = py::object() ) ) )
+void exportFieldOnCellsToPython( py::module_ &mod ) {
+    py::class_< FieldOnCellsReal, FieldOnCellsRealPtr, DataField >( mod, "FieldOnCellsReal" )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, std::string > ) )
+        .def( py::init(
+            &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr, std::string > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsReal, ModelPtr, BehaviourPropertyPtr,
+                                         std::string, ElementaryCharacteristicsPtr > ) )
         .def( py::init< const FieldOnCellsReal & >() )
         .def( "duplicate", &FieldOnCellsReal::duplicate, R"(
                   Return a duplicated FieldOnCellsReal as a copy
                   Returns:
                   FieldOnCellsReal
-                  )",
-              ( py::arg( "self" ) ) )
+                  )" )
         .def( "exportToSimpleFieldOnCells", &FieldOnCellsReal::exportToSimpleFieldOnCells )
         .def( "getModel", &FieldOnCellsReal::getModel, R"(
                   Return the model associated with the FieldOnCellsReal object
                   Returns:
                   Model: Model Object
-                  )",
-              ( py::arg( "self" ) ) )
+                  )" )
         .def( "getMesh", &FieldOnCellsReal::getMesh, R"(
                   Return the Mesh associated with the FieldOnCellsReal object
                   Returns:
                   BaseMesh: Mesh object
-                  )",
-              ( py::arg( "self" ) ) )
+                  )" )
         .def( "setDescription", &FieldOnCellsReal::setDescription )
         .def( "setModel", &FieldOnCellsReal::setModel )
         .def( "build", &FieldOnCellsReal::build )
@@ -90,22 +78,19 @@ Set values of the field
 Arguments:
     float: value to set
                   )",
-              ( py::arg( "self" ), py::arg( "value" ) ) )
-        .def( "getValues", &FieldOnCellsReal::getValues,
-              py::return_value_policy< py::copy_const_reference >(), R"(
+              py::arg( "value" ) )
+        .def( "getValues", &FieldOnCellsReal::getValues, R"(
 Return a list of values as (x1, y1, z1, x2, y2, z2...)
 
 Returns:
     list[float]: List of values.
-                  )",
-              ( py::arg( "self" ) ) )
+                  )" )
         .def( "size", &FieldOnCellsReal::size, R"(
 Return the size of the field
 
 Returns:
     int: number of element in the field
-                        )",
-              ( py::arg( "self" ) ) )
+                        )" )
         .def( "transform", &FieldOnCellsReal::transform< ASTERDOUBLE >, R"(
 Apply Function to each value of _ValuesList of the FieldOnCells object.
 
@@ -115,9 +100,8 @@ Arguments:
 Returns:
     FieldOnCellsReal: New FieldOnCells object with the trasformed values
                         )",
-              ( py::arg( "self" ), py::arg( "func" ) ) )
-        .def( "printMedFile", &FieldOnCellsReal::printMedFile,
-              print_overloads( R"(
+              py::arg( "func" ) )
+        .def( "printMedFile", &FieldOnCellsReal::printMedFile, R"(
 Print the field in MED format.
 
 Arguments:
@@ -127,8 +111,7 @@ Arguments:
 Returns:
     bool: *True* if succeeds, *False* otherwise.
                         )",
-                               ( py::arg( "self" ), py::arg( "filename" ), py::arg( "local" ) ) ) )
-
+              py::arg( "filename" ), py::arg( "local" ) = true )
         .def( "norm", &FieldOnCellsReal::norm< ASTERDOUBLE >, R"(
 Return the euclidean norm of the field
 
@@ -147,29 +130,24 @@ Arguments:
 Returns:
     float: dot product
                               )",
-              ( py::arg( "self" ), py::arg( "other" ) ) );
+              py::arg( "other" ) );
 
-    /**
-     * Object FieldOnCellsComplex
-     */
-    py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, py::bases< DataField > >(
-        "FieldOnCellsComplex", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsComplex > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnCellsComplex, std::string > ) )
+    py::class_< FieldOnCellsComplex, FieldOnCellsComplexPtr, DataField >( mod,
+                                                                          "FieldOnCellsComplex" )
+        .def( py::init( &initFactoryPtr< FieldOnCellsComplex > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsComplex, std::string > ) )
         .def( py::init< const FieldOnCellsComplex & >() )
         .def( "duplicate", &FieldOnCellsComplex::duplicate )
         .def( "getModel", &FieldOnCellsComplex::getModel )
         .def( "setDescription", &FieldOnCellsComplex::setDescription )
         .def( "setModel", &FieldOnCellsComplex::setModel )
         .def( "build", &FieldOnCellsComplex::build )
-        .def( "getValues", &FieldOnCellsComplex::getValues,
-              py::return_value_policy< py::copy_const_reference >(), R"(
-                  Return a list of values as (x1, asy1, z1, x2, y2, z2...)
-                  Returns:
-                  list[complex]: List of values.
-                  )",
-              ( py::arg( "self" ) ) )
+        .def( "getValues", &FieldOnCellsComplex::getValues, R"(
+Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+Returns:
+    list[complex]: List of values.
+                  )" )
         .def(
             "__getitem__", +[]( const FieldOnCellsComplex &v, int i ) { return v[i]; } )
         .def(
@@ -188,8 +166,7 @@ Return the size of the field
 
 Returns:
     int: number of element in the field
-                        )",
-              ( py::arg( "self" ) ) )
+                        )" )
         .def( "transform", &FieldOnCellsComplex::transform< ASTERCOMPLEX >, R"(
 Apply Function to each value of _ValuesList of the FieldOnCells object.
 
@@ -199,7 +176,7 @@ Arguments:
 Returns:
     bool: New FieldOnCells object with the trasformed values
                         )",
-              ( py::arg( "self" ), py::arg( "func" ) ) )
+              py::arg( "func" ) )
         .def( "printMedFile", &FieldOnCellsComplex::printMedFile, R"(
 Print the field in MED format.
 
@@ -209,27 +186,23 @@ Arguments:
 Returns:
     bool: *True* if succeeds, *False* otherwise.
                         )",
-              ( py::arg( "self" ), py::arg( "filename" ) ) );
-    /**
-     * Object FieldOnCellsLong
-     */
-    py::class_< FieldOnCellsLong, FieldOnCellsLongPtr, py::bases< DataField > >( "FieldOnCellsLong",
-                                                                                 py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsLong > ) )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsLong, std::string > ) )
+              py::arg( "filename" ), py::arg( "local" ) = true );
+
+    py::class_< FieldOnCellsLong, FieldOnCellsLongPtr, DataField >( mod, "FieldOnCellsLong" )
+        .def( py::init( &initFactoryPtr< FieldOnCellsLong > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsLong, std::string > ) )
         .def( py::init< const FieldOnCellsLong & >() )
         .def( "duplicate", &FieldOnCellsLong::duplicate )
         .def( "getModel", &FieldOnCellsLong::getModel )
         .def( "setDescription", &FieldOnCellsLong::setDescription )
         .def( "setModel", &FieldOnCellsLong::setModel )
         .def( "build", &FieldOnCellsLong::build )
-        .def( "getValues", &FieldOnCellsLong::getValues,
-              py::return_value_policy< py::copy_const_reference >(), R"(
-                  Return a list of values as (x1, y1, z1, x2, y2, z2...)
-                  Returns:
-                  list[int]: List of values.
-                  )",
-              ( py::arg( "self" ) ) )
+        .def( "getValues", &FieldOnCellsLong::getValues, R"(
+Return a list of values as (x1, y1, z1, x2, y2, z2...)
+
+Returns:
+    list[int]: List of values.
+                  )" )
         .def(
             "__getitem__", +[]( const FieldOnCellsLong &v, int i ) { return v[i]; } )
         .def(
@@ -248,8 +221,7 @@ Return the size of the field
 
 Returns:
     int: number of element in the field
-                        )",
-              ( py::arg( "self" ) ) )
+                        )" )
         .def( "printMedFile", &FieldOnCellsLong::printMedFile, R"(
 Print the field in MED format.
 
@@ -259,15 +231,13 @@ Arguments:
 Returns:
     bool: *True* if succeeds, *False* otherwise.
                         )",
-              ( py::arg( "self" ), py::arg( "filename" ) ) );
+              py::arg( "filename" ), py::arg( "local" ) = true );
     /**
      * Object FieldOnCellsChar8
      */
-    py::class_< FieldOnCellsChar8, FieldOnCellsChar8Ptr, py::bases< DataField > >(
-        "FieldOnCellsChar8", py::no_init )
-        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnCellsChar8 > ) )
-        .def( "__init__",
-              py::make_constructor( &initFactoryPtr< FieldOnCellsChar8, std::string > ) )
+    py::class_< FieldOnCellsChar8, FieldOnCellsChar8Ptr, DataField >( mod, "FieldOnCellsChar8" )
+        .def( py::init( &initFactoryPtr< FieldOnCellsChar8 > ) )
+        .def( py::init( &initFactoryPtr< FieldOnCellsChar8, std::string > ) )
         .def( py::init< const FieldOnCellsChar8 & >() )
         .def( "setDescription", &FieldOnCellsChar8::setDescription )
         .def( "setModel", &FieldOnCellsChar8::setModel )
@@ -275,12 +245,10 @@ Returns:
                   Return the model associated with the FieldOnCellsChar8 object
                   Returns:
                   Model: Model Object
-                  )",
-              ( py::arg( "self" ) ) )
+                  )" )
         .def( "getMesh", &FieldOnCellsChar8::getMesh, R"(
                   Return the Mesh associated with the FieldOnCellsChar8 object
                   Returns:
                   BaseMesh: Mesh object
-                  )",
-              ( py::arg( "self" ) ) );
+                  )" );
 };

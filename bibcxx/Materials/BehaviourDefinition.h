@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe BehaviourDefinition
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -50,7 +50,7 @@ class BehaviourDefinition : public DataStructure {
      * @typedef BehaviourDefinitionPtr
      * @brief Pointeur intelligent vers un BehaviourDefinition
      */
-    typedef boost::shared_ptr< BehaviourDefinition > BehaviourDefinitionPtr;
+    typedef std::shared_ptr< BehaviourDefinition > BehaviourDefinitionPtr;
 
     /**
      * @brief Constructeur
@@ -72,6 +72,6 @@ class BehaviourDefinition : public DataStructure {
  * @typedef BehaviourDefinitionPtr
  * @brief Pointeur intelligent vers un BehaviourDefinition
  */
-typedef boost::shared_ptr< BehaviourDefinition > BehaviourDefinitionPtr;
+typedef std::shared_ptr< BehaviourDefinition > BehaviourDefinitionPtr;
 
 #endif /* BEHAVIOURDEFINITION_H_ */

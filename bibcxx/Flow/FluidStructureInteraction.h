@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FluidStructureInteraction
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -63,7 +63,7 @@ class FluidStructureInteraction : public DataStructure {
      * @typedef FluidStructureInteractionPtr
      * @brief Pointeur intelligent vers un FluidStructureInteraction
      */
-    typedef boost::shared_ptr< FluidStructureInteraction > FluidStructureInteractionPtr;
+    typedef std::shared_ptr< FluidStructureInteraction > FluidStructureInteractionPtr;
 
     /**
      * @brief Constructeur
@@ -90,6 +90,6 @@ class FluidStructureInteraction : public DataStructure {
  * @typedef FluidStructureInteractionPtr
  * @brief Pointeur intelligent vers un FluidStructureInteraction
  */
-typedef boost::shared_ptr< FluidStructureInteraction > FluidStructureInteractionPtr;
+typedef std::shared_ptr< FluidStructureInteraction > FluidStructureInteractionPtr;
 
 #endif /* FLUIDSTRUCTUREINTERACTION_H_ */

@@ -3,7 +3,7 @@
  * @brief Interface python de ThermalFourierResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,16 +22,13 @@
  */
 
 #include "PythonBindings/ThermalFourierResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportThermalFourierResultToPython() {
+void exportThermalFourierResultToPython( py::module_ &mod ) {
 
-    py::class_< ThermalFourierResult, ThermalFourierResultPtr,
-                py::bases< Result > >( "ThermalFourierResult", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< ThermalFourierResult >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< ThermalFourierResult, std::string >));
+    py::class_< ThermalFourierResult, ThermalFourierResultPtr, Result >( mod,
+                                                                         "ThermalFourierResult" )
+        .def( py::init( &initFactoryPtr< ThermalFourierResult > ) )
+        .def( py::init( &initFactoryPtr< ThermalFourierResult, std::string > ) );
 };

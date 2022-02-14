@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ModeResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -388,6 +388,6 @@ class ModeResult : public FullResult
  * @typedef ModeResultPtr
  * @brief Pointeur intelligent vers un ModeResult
  */
-typedef boost::shared_ptr< ModeResult > ModeResultPtr;
+typedef std::shared_ptr< ModeResult > ModeResultPtr;
 
 #endif /* MECHANICALMODERESULT_H_ */

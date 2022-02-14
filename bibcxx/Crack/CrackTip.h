@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe CrackTip
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -83,7 +83,7 @@ class CrackTip : public DataStructure {
      * @typedef CrackTipPtr
      * @brief Pointeur intelligent vers un CrackTip
      */
-    typedef boost::shared_ptr< CrackTip > CrackTipPtr;
+    typedef std::shared_ptr< CrackTip > CrackTipPtr;
 
     /**
      * @brief Constructeur
@@ -95,6 +95,6 @@ class CrackTip : public DataStructure {
  * @typedef CrackTipPtr
  * @brief Pointeur intelligent vers un CrackTip
  */
-typedef boost::shared_ptr< CrackTip > CrackTipPtr;
+typedef std::shared_ptr< CrackTip > CrackTipPtr;
 
 #endif /* CRACKTIP_H_ */

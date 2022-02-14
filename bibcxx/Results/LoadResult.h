@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LoadResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -49,6 +49,6 @@ class LoadResult : public TransientResult {
  * @typedef LoadResultPtr
  * @brief Pointeur intelligent vers un LoadResult
  */
-typedef boost::shared_ptr< LoadResult > LoadResultPtr;
+typedef std::shared_ptr< LoadResult > LoadResultPtr;
 
 #endif /* EVOLUTIVELOAD_H_ */

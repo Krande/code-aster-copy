@@ -38,7 +38,7 @@ class FiniteElementDescriptor;
  * @typedef FiniteElementDescriptor
  * @brief Pointeur intelligent vers un FiniteElementDescriptor
  */
-typedef boost::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
+typedef std::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
 
 /**
  * @class FiniteElementDescriptor
@@ -98,7 +98,7 @@ class FiniteElementDescriptor : public DataStructure {
      * @typedef FiniteElementDescriptorPtr
      * @brief Pointeur intelligent vers un FiniteElementDescriptor
      */
-    typedef boost::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
+    typedef std::shared_ptr< FiniteElementDescriptor > FiniteElementDescriptorPtr;
 
     const ConnectivityVirtualCellsExplorer &getVirtualCellsExplorer() const {
         _delayedNumberedConstraintElementsDescriptor->build();

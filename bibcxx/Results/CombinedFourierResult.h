@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe CombinedFourierResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -49,6 +49,6 @@ class CombinedFourierResult : public Result {
  * @typedef CombinedFourierResultPtr
  * @brief Pointeur intelligent vers un CombinedFourierResult
  */
-typedef boost::shared_ptr< CombinedFourierResult > CombinedFourierResultPtr;
+typedef std::shared_ptr< CombinedFourierResult > CombinedFourierResultPtr;
 
 #endif /* FOURIERCOMBINATION_H_ */

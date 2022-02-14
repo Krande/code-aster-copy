@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe FullResult
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -71,6 +71,6 @@ class FullResult : public Result {
  * @typedef FullResultPtr
  * @brief Pointeur intelligent vers un FullResult
  */
-typedef boost::shared_ptr< FullResult > FullResultPtr;
+typedef std::shared_ptr< FullResult > FullResultPtr;
 
 #endif /* FULLRESULTSCONTAINER_H_ */

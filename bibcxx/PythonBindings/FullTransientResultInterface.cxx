@@ -3,7 +3,7 @@
  * @brief Interface python de FullTransientResult
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,20 +22,14 @@
  */
 
 #include "PythonBindings/FullTransientResultInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportFullTransientResultToPython() {
+void exportFullTransientResultToPython( py::module_ &mod ) {
 
-    py::class_< FullTransientResult, FullTransientResultPtr,
-                py::bases< FullResult > >( "FullTransientResult",
-                                                             py::no_init )
-        .def( "__init__",
-              py::make_constructor(
-                  &initFactoryPtr< FullTransientResult, std::string >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< FullTransientResult >));
+    py::class_< FullTransientResult, FullTransientResultPtr, FullResult >( mod,
+                                                                           "FullTransientResult" )
+        .def( py::init( &initFactoryPtr< FullTransientResult, std::string > ) )
+        .def( py::init( &initFactoryPtr< FullTransientResult > ) );
 };
 //

@@ -40,7 +40,7 @@
 FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTime ) {
 
     ElementaryVectorDisplacementRealPtr elemVect =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::make_shared< ElementaryVectorDisplacementReal >();
 
     if ( _study->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -73,7 +73,7 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE currTi
 FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_curr ) {
 
     ElementaryVectorDisplacementRealPtr elemVect =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::make_shared< ElementaryVectorDisplacementReal >();
 
     if ( _study->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -111,7 +111,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
                                                            ASTERDOUBLE scaling ) {
 
     ElementaryVectorDisplacementRealPtr elemVect =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::make_shared< ElementaryVectorDisplacementReal >();
 
     if ( _study->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -148,7 +148,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
 FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameters ) {
 
     ElementaryVectorDisplacementRealPtr elemVect =
-        boost::make_shared< ElementaryVectorDisplacementReal >();
+        std::make_shared< ElementaryVectorDisplacementReal >();
 
     if ( _study->getModel()->isThermal() ) {
         AS_ABORT( "Not implemented for thermic" );
@@ -202,7 +202,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal timeParameter
 FieldOnNodesRealPtr DiscreteComputation::dirichletBC( const ASTERDOUBLE &time ) const {
 
     auto dofNume = _study->getDOFNumbering();
-    FieldOnNodesRealPtr vectAsse = boost::make_shared< FieldOnNodesReal >( dofNume );
+    FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
 
     // Prepare loads
     const auto &_listOfLoads = _study->getListOfLoads();
@@ -249,11 +249,11 @@ DiscreteComputation::incrementalDirichletBC( const ASTERDOUBLE &time,
                 diri_impo[ieq] = 0.0;
         }
 
-        return boost::make_shared< FieldOnNodesReal >( diri_impo );
+        return std::make_shared< FieldOnNodesReal >( diri_impo );
     }
 
     // Construct vect_asse object
-    FieldOnNodesRealPtr vectAsse = boost::make_shared< FieldOnNodesReal >( dofNume );
+    FieldOnNodesRealPtr vectAsse = std::make_shared< FieldOnNodesReal >( dofNume );
     vectAsse->setValues( 0.0 );
     vectAsse->build();
 
@@ -271,7 +271,7 @@ FieldOnNodesRealPtr DiscreteComputation::externalStateVariables( const ASTERDOUB
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix_(
     const ASTERDOUBLE &time, const ASTERINTEGER &modeFourier, const VectorString &groupOfCells ) {
 
-    auto elemMatr = boost::make_shared< ElementaryMatrixDisplacementReal >();
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
     // Get main parameters
     const std::string option( "RIGI_MECA" );
@@ -329,8 +329,8 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::elasticStiffnessMatrix_
     }
 
     // Add output elementary terms
-    _calcul->addOutputElementaryTerm( "PMATUUR", boost::make_shared< ElementaryTermReal >() );
-    _calcul->addOutputElementaryTerm( "PMATUNS", boost::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PMATUUR", std::make_shared< ElementaryTermReal >() );
+    _calcul->addOutputElementaryTerm( "PMATUNS", std::make_shared< ElementaryTermReal >() );
 
     // Compute elementary matrices for rigidity
     if ( currModel->existsFiniteElement() ) {
@@ -364,7 +364,7 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = boost::make_shared< ElementaryTermReal >();
+            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -380,7 +380,7 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMechanicalLoadDescription()->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = boost::make_shared< ElementaryTermReal >();
+            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -397,7 +397,7 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = boost::make_shared< ElementaryTermReal >();
+            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -413,7 +413,7 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
         auto FEDesc = curIter->getFiniteElementDescriptor();
         auto field = curIter->getMultiplicativeField();
         if ( field && field->exists() && FEDesc ) {
-            auto resuElem = boost::make_shared< ElementaryTermReal >();
+            auto resuElem = std::make_shared< ElementaryTermReal >();
             calcul->clearInputs();
             calcul->clearOutputs();
             calcul->setFiniteElementDescriptor( FEDesc );
@@ -429,7 +429,7 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
 
-    auto elemMatr = boost::make_shared< ElementaryMatrixDisplacementReal >();
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
     // Get main parameters
     ModelPtr currModel = _study->getModel();
@@ -443,7 +443,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
 
     // Prepare computing
     const std::string option( "MECA_DDLM_R" );
-    CalculPtr _calcul = boost::make_shared< Calcul >( option );
+    CalculPtr _calcul = std::make_shared< Calcul >( option );
     elemMatr->prepareCompute( option );
 
     // Compute elementary matrices
@@ -454,7 +454,7 @@ ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
 };
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::massMatrix( ASTERDOUBLE time ) {
-    auto elemMatr = boost::make_shared< ElementaryMatrixDisplacementReal >();
+    auto elemMatr = std::make_shared< ElementaryMatrixDisplacementReal >();
 
     return elemMatr;
 };

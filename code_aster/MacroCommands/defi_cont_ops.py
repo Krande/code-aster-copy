@@ -17,10 +17,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-from ..Objects import (ContactAlgo, ContactNew, ContactParameter, ContactType,
-                       ContactVariant, ContactZone, FrictionAlgo,
-                       FrictionParameter, FrictionType, InitialState,
-                       PairingAlgo, PairingParameter)
+from ..Objects import (
+    ContactAlgo,
+    ContactNew,
+    ContactParameter,
+    ContactType,
+    ContactVariant,
+    ContactZone,
+    FrictionAlgo,
+    FrictionParameter,
+    FrictionType,
+    InitialState,
+    PairingAlgo,
+    PairingParameter,
+)
 
 
 def defi_cont_ops(self, **keywords):
@@ -36,41 +46,55 @@ def defi_cont_ops(self, **keywords):
     verbosity = keywords["INFO"]
 
     # usefull dict
-    _algo_cont = {"LAGRANGIEN": ContactAlgo.Lagrangian, "NITSCHE": ContactAlgo.Nitsche,
-                    "PENALISATION": ContactAlgo.Penalization}
-    _type_cont = {"UNILATERAL": ContactType.Unilateral,
-                    "BILATERAL": ContactType.Bilateral, "COLLE": ContactType.Stick}
-    _vari_cont = {"RAPIDE": ContactVariant.Rapide,
-                    "ROBUSTE": ContactVariant.Robust}
-    _algo_frot = {"LAGRANGIEN": FrictionAlgo.Lagrangian, "NITSCHE": FrictionAlgo.Nitsche,
-                    "PENALISATION": FrictionAlgo.Penalization}
-    _type_frot = {"TRESCA": FrictionType.Tresca, "SANS": FrictionType.Without,
-                    "COULOMB": FrictionType.Coulomb, "COLLE": FrictionType.Stick}
+    _algo_cont = {
+        "LAGRANGIEN": ContactAlgo.Lagrangian,
+        "NITSCHE": ContactAlgo.Nitsche,
+        "PENALISATION": ContactAlgo.Penalization,
+    }
+    _type_cont = {
+        "UNILATERAL": ContactType.Unilateral,
+        "BILATERAL": ContactType.Bilateral,
+        "COLLE": ContactType.Stick,
+    }
+    _vari_cont = {"RAPIDE": ContactVariant.Rapide, "ROBUSTE": ContactVariant.Robust}
+    _algo_frot = {
+        "LAGRANGIEN": FrictionAlgo.Lagrangian,
+        "NITSCHE": FrictionAlgo.Nitsche,
+        "PENALISATION": FrictionAlgo.Penalization,
+    }
+    _type_frot = {
+        "TRESCA": FrictionType.Tresca,
+        "SANS": FrictionType.Without,
+        "COULOMB": FrictionType.Coulomb,
+        "COLLE": FrictionType.Stick,
+    }
     _algo_pair = {"MORTAR": PairingAlgo.Mortar}
-    _init_cont = {"INTERPENETRE": InitialState.Interpenetrated, "NON": InitialState.No,
-                    "OUI": InitialState.Yes}
+    _init_cont = {
+        "INTERPENETRE": InitialState.Interpenetrated,
+        "NON": InitialState.No,
+        "OUI": InitialState.Yes,
+    }
 
     # add global informations
     result.setVerbosity(verbosity)
-    result.hasFriction(keywords["FROTTEMENT"] == "OUI")
-    result.hasSmoothing(keywords["LISSAGE"] == "OUI")
+    result.hasFriction = keywords["FROTTEMENT"] == "OUI"
+    result.hasSmoothing = keywords["LISSAGE"] == "OUI"
 
     # add infomations for each ZONE
     list_zones = keywords["ZONE"]
     for zone in list_zones:
         contZone = ContactZone(model)
-        contZone.checkNormals(zone["VERI_NORM"] == "OUI")
+        contZone.checkNormals = zone["VERI_NORM"] == "OUI"
         contZone.setVerbosity(verbosity)
         contZone.setSlaveGroupOfCells(zone["GROUP_MA_ESCL"])
         contZone.setMasterGroupOfCells(zone["GROUP_MA_MAIT"])
-        if ( zone.get("SANS_GROUP_MA")) != None:
+        if (zone.get("SANS_GROUP_MA")) != None:
             contZone.setExcludedSlaveGroupOfCells(zone["SANS_GROUP_MA"])
 
         # contact parameters
         contParam = ContactParameter()
         contParam.setAlgorithm(_algo_cont[zone["ALGO_CONT"]])
-        if _algo_cont[zone["ALGO_CONT"]] in (ContactAlgo.Nitsche,
-                                                ContactAlgo.Lagrangian):
+        if _algo_cont[zone["ALGO_CONT"]] in (ContactAlgo.Nitsche, ContactAlgo.Lagrangian):
             contParam.setVariant(_vari_cont[zone["VARIANTE"]])
         else:
             contParam.setVariant(ContactVariant.Empty)
@@ -79,9 +103,9 @@ def defi_cont_ops(self, **keywords):
         contZone.setContactParameter(contParam)
 
         # friction parameters
-        if result.hasFriction():
+        if result.hasFriction:
             fricParam = FrictionParameter()
-            fricParam.hasFriction(keywords["FROTTEMENT"] == "OUI")
+            fricParam.hasFriction = keywords["FROTTEMENT"] == "OUI"
             fricParam.setAlgorithm(_algo_frot[zone["ALGO_FROT"]])
             fricParam.setType(_type_frot[zone["TYPE_FROT"]])
             if fricParam.getType() == FrictionType.Tresca:
@@ -97,13 +121,13 @@ def defi_cont_ops(self, **keywords):
         pairParam.setAlgorithm(_algo_pair[zone["APPARIEMENT"]])
         pairParam.setPairingDistance(zone["DIST_APPA"])
         pairParam.setInitialState(_init_cont[zone["CONTACT_INIT"]])
-        pairParam.hasBeamDistance(zone["DIST_POUTRE"] == "OUI")
-        pairParam.hasShellDistance(zone["DIST_COQUE"] == "OUI")
-        if (pairParam.hasBeamDistance() or pairParam.hasShellDistance() ):
+        pairParam.hasBeamDistance = zone["DIST_POUTRE"] == "OUI"
+        pairParam.hasShellDistance = zone["DIST_COQUE"] == "OUI"
+        if pairParam.hasBeamDistance or pairParam.hasShellDistance:
             pairParam.setElementaryCharacteristics(zone["CARA_ELEM"])
-        if ( zone.get("SEUIL_INIT")) != None:
+        if (zone.get("SEUIL_INIT")) != None:
             pairParam.setThreshold(zone["SEUIL_INIT"])
-        if ( zone.get("DIST_SUPP") ) != None:
+        if (zone.get("DIST_SUPP")) != None:
             pairParam.setDistanceFunction(zone["DIST_SUPP"])
 
         # build then append

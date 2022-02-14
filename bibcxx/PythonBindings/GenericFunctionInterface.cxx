@@ -3,7 +3,7 @@
  * @brief Interface python de GenericFunction
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,22 +23,19 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/GenericFunctionInterface.h"
 
-void exportGenericFunctionToPython() {
+#include "aster_pybind.h"
 
-    py::class_< GenericFunction, GenericFunction::GenericFunctionPtr,
-            py::bases< DataStructure > >( "GenericFunction", py::no_init )
-        //         .def( "__init__", py::make_constructor(
+void exportGenericFunctionToPython( py::module_ &mod ) {
+
+    py::class_< GenericFunction, GenericFunction::GenericFunctionPtr, DataStructure >(
+        mod, "GenericFunction" )
+        //         .def( py::init(
         //             &initFactoryPtr< GenericFunction >) )
-        //         .def( "__init__", py::make_constructor(
+        //         .def( py::init(
         //             &initFactoryPtr< GenericFunction,
         //                              std::string >) )
         .def( "getProperties", &GenericFunction::getProperties )
-        .def( "setExtrapolation", &GenericFunction::setExtrapolation )
-        ;
+        .def( "setExtrapolation", &GenericFunction::setExtrapolation );
 };

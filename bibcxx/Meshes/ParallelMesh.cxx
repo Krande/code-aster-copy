@@ -193,7 +193,6 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
 
 VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbering,
                                    const bool same_rank ) const {
-
     CALL_JEMARQ();
     VectorLong listOfNodes;
     if ( name.empty() ) {

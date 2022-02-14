@@ -4,7 +4,7 @@
  * @author Nicolas Sellenet
  * @todo autoriser le type Function pour les paramètres matériau
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,18 +23,17 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-#include "astercxx.h"
+#include "Materials/MaterialProperty.h"
 
 #include "aster_fort_material.h"
-#include <stdexcept>
-#include "Materials/MaterialProperty.h"
+#include "astercxx.h"
+
 #include "Materials/BaseMaterialProperty.h"
 
+#include <stdexcept>
 
-bool MaterialProperty::computeTractionFunction( FunctionPtr &doubleValues ) const
-{
-    if( this->hasTractionFunction( ))
-    {
+bool MaterialProperty::computeTractionFunction( FunctionPtr &doubleValues ) const {
+    if ( this->hasTractionFunction() ) {
         ASTERINTEGER maxSize = 0, maxSize2 = 0;
         std::string resName;
         for ( auto curIter : _mapOfFunctionMaterialProperties ) {

@@ -21,22 +21,18 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportCppToFortranGlossaryToPython() {
+void exportCppToFortranGlossaryToPython( py::module_ &mod ) {
 
-    py::class_< Glossary >( "Glossary", py::no_init )
+    py::class_< Glossary >( mod, "Glossary" )
         // fake initFactoryPtr: not a DataStructure
         // fake initFactoryPtr: not a DataStructure
         .def( "getComponent", &Glossary::getComponent )
         .def( "getModeling", &Glossary::getModeling )
         .def( "getPhysics", &Glossary::getPhysics );
 
-    def( "getGlossary", &getReferenceToGlossary,
-         py::return_value_policy< py::reference_existing_object >() );
+    mod.def( "getGlossary", &getReferenceToGlossary, py::return_value_policy::reference );
 };

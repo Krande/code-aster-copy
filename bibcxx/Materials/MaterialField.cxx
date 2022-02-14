@@ -31,7 +31,6 @@
 #include "Supervis/CommandSyntax.h"
 #include "Utilities/SyntaxDictionary.h"
 
-#include <stdexcept>
 #include <typeinfo>
 
 MaterialField::MaterialField( const std::string &name, const MeshPtr &mesh )
@@ -161,16 +160,16 @@ void MaterialField::addMaterialsOnGroupOfCells( MaterialPtr &curMater, VectorStr
     addMaterialsOnGroupOfCells( ( std::vector< MaterialPtr > ){ curMater }, namesOfGroup );
 }
 
-void MaterialField::addExternalStateVariables( PyObject *keywords ) {
+void MaterialField::addExternalStateVariables( py::object &keywords ) {
 
     // Check input PyObject
-    if ( !PyDict_Check( keywords ) && !PyList_Check( keywords ) && !PyTuple_Check( keywords ) )
+    if ( !PyDict_Check( keywords.ptr() ) && !PyList_Check( keywords.ptr() ) &&
+         !PyTuple_Check( keywords.ptr() ) )
         throw std::runtime_error( "Unexpected value for 'AFFE_VARC'." );
 
     // Create syntax
     CommandSyntax cmdSt( "code_aster.Cata.Commons.c_affe_varc.C_AFFE_VARC_EXTE" );
-    PyObject *kwfact = PyDict_New();
-    PyDict_SetItemString( kwfact, "AFFE_VARC", keywords );
+    py::dict kwfact( py::arg( "AFFE_VARC" ) = keywords );
     cmdSt.define( kwfact );
 
     // Get objects to create
@@ -188,6 +187,4 @@ void MaterialField::addExternalStateVariables( PyObject *keywords ) {
     // Add external state variables in material field
     CALLO_AFVARC( materialFieldName, meshName, modelName );
     CALLO_CMTREF( materialFieldName, meshName );
-
-    Py_DECREF( kwfact );
 };

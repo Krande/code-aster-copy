@@ -26,10 +26,8 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <iomanip>
-#include <map>
-#include <sstream>
-#include <string>
+#include "aster_utils.h"
+#include "astercxx.h"
 
 #include "DataFields/Table.h"
 #include "Functions/Formula.h"
@@ -37,12 +35,13 @@
 #include "Functions/Function2D.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Utilities/ConvertibleValue.h"
-#include "aster_utils.h"
-#include "astercxx.h"
+
+#include <iomanip>
+#include <map>
+#include <sstream>
+#include <string>
 
 typedef std::vector< FunctionPtr > VectorFunction;
-
-
 
 typedef ConvertibleValue< std::string, ASTERDOUBLE > StringToValueReal;
 
@@ -51,40 +50,55 @@ typedef ConvertibleValue< std::string, ASTERDOUBLE > StringToValueReal;
  * @brief Structure permettant de limiter le type instanciable de MaterialProperty
  * @author Nicolas Sellenet
  */
-template < typename T > struct AllowedMaterialPropertyType;
+template < typename T >
+struct AllowedMaterialPropertyType;
 
-template <> struct AllowedMaterialPropertyType< ASTERDOUBLE > {};
+template <>
+struct AllowedMaterialPropertyType< ASTERDOUBLE > {};
 
-template <> struct AllowedMaterialPropertyType< ASTERCOMPLEX > {};
+template <>
+struct AllowedMaterialPropertyType< ASTERCOMPLEX > {};
 
-template <> struct AllowedMaterialPropertyType< std::string > {};
+template <>
+struct AllowedMaterialPropertyType< std::string > {};
 
-template <> struct AllowedMaterialPropertyType< FunctionPtr > {};
+template <>
+struct AllowedMaterialPropertyType< FunctionPtr > {};
 
-template <> struct AllowedMaterialPropertyType< TablePtr > {};
+template <>
+struct AllowedMaterialPropertyType< TablePtr > {};
 
-template <> struct AllowedMaterialPropertyType< Function2DPtr > {};
+template <>
+struct AllowedMaterialPropertyType< Function2DPtr > {};
 
-template <> struct AllowedMaterialPropertyType< FormulaPtr > {};
+template <>
+struct AllowedMaterialPropertyType< FormulaPtr > {};
 
-template <> struct AllowedMaterialPropertyType< GenericFunctionPtr > {};
+template <>
+struct AllowedMaterialPropertyType< GenericFunctionPtr > {};
 
-template <> struct AllowedMaterialPropertyType< VectorReal > {};
+template <>
+struct AllowedMaterialPropertyType< VectorReal > {};
 
-template <> struct AllowedMaterialPropertyType< VectorFunction > {};
+template <>
+struct AllowedMaterialPropertyType< VectorFunction > {};
 
-template <> struct AllowedMaterialPropertyType< StringToValueReal > {};
+template <>
+struct AllowedMaterialPropertyType< StringToValueReal > {};
 
 class GenericMaterialProperty;
 
-template < typename T1 > struct is_convertible;
+template < typename T1 >
+struct is_convertible;
 
-template < class T > struct is_convertible {
+template < class T >
+struct is_convertible {
     typedef T value_type;
     typedef T init_value;
 };
 
-template <> struct is_convertible< StringToValueReal > {
+template <>
+struct is_convertible< StringToValueReal > {
     typedef typename StringToValueReal::ReturnValue value_type;
     typedef typename StringToValueReal::BaseValue init_value;
 };
@@ -137,8 +151,11 @@ class ElementaryMaterialProperty : private AllowedMaterialPropertyType< ValueTyp
      * @param description Description libre
      */
     ElementaryMaterialProperty( const std::string name, const ValueType &currentValue,
-                              const bool isMandatory )
-        : _name( name ), _isMandatory( isMandatory ), _description( "" ), _value( currentValue ),
+                                const bool isMandatory )
+        : _name( name ),
+          _isMandatory( isMandatory ),
+          _description( "" ),
+          _value( currentValue ),
           _existsValue( true ){};
 
     /**
@@ -222,8 +239,7 @@ typedef ElementaryMaterialProperty< Function2DPtr > ElementaryMaterialPropertyFu
 /** @typedef Definition d'une propriete materiau de type Formula */
 typedef ElementaryMaterialProperty< FormulaPtr > ElementaryMaterialPropertyFormula;
 /** @typedef Definition d'une propriete materiau de type DataStructure */
-typedef ElementaryMaterialProperty< GenericFunctionPtr >
-    ElementaryMaterialPropertyDataStructure;
+typedef ElementaryMaterialProperty< GenericFunctionPtr > ElementaryMaterialPropertyDataStructure;
 /** @typedef Definition d'une propriete materiau de type vector double */
 typedef ElementaryMaterialProperty< VectorReal > ElementaryMaterialPropertyVectorReal;
 /** @typedef Definition d'une propriete materiau de type vector Function */
@@ -343,20 +359,17 @@ class GenericMaterialProperty {
     /** @brief Has a traction function to build */
     bool _hasTractionFunction;
 
-
   public:
     /**
      * @brief Constructeur
      */
-    GenericMaterialProperty() : _asterNewName( "" ), _hasTractionFunction(false) {};
+    GenericMaterialProperty() : _asterNewName( "" ), _hasTractionFunction( false ){};
 
     /**
      * @brief Constructeur
      */
-    GenericMaterialProperty( const std::string asterName,
-                                      const std::string asterNewName = "" )
-        : _asterName( asterName ), _asterNewName( asterNewName ),
-          _hasTractionFunction(false){};
+    GenericMaterialProperty( const std::string asterName, const std::string asterNewName = "" )
+        : _asterName( asterName ), _asterNewName( asterNewName ), _hasTractionFunction( false ){};
 
     /**
      * @brief Recuperation du nom Aster du GenericMaterialProperty
@@ -381,80 +394,70 @@ class GenericMaterialProperty {
         return _mapOfVectorFunctionMaterialProperties.size();
     };
 
-    ASTERDOUBLE getValueReal( std::string nameOfProperty )
-    {
+    ASTERDOUBLE getValueReal( std::string nameOfProperty ) {
         auto curIter = _mapOfRealMaterialProperties.find( nameOfProperty );
         if ( curIter != _mapOfRealMaterialProperties.end() )
             return ( *curIter ).second.getValue();
         throw std::runtime_error( nameOfProperty + " is not a double value" );
     };
 
-    ASTERCOMPLEX getValueComplex( std::string nameOfProperty )
-    {
+    ASTERCOMPLEX getValueComplex( std::string nameOfProperty ) {
         auto curIter = _mapOfComplexMaterialProperties.find( nameOfProperty );
         if ( curIter != _mapOfComplexMaterialProperties.end() )
             return ( *curIter ).second.getValue();
         throw std::runtime_error( nameOfProperty + " is not a complex value" );
     };
 
-    std::string getValueString( std::string nameOfProperty )
-    {
+    std::string getValueString( std::string nameOfProperty ) {
         auto curIter = _mapOfStringMaterialProperties.find( nameOfProperty );
         if ( curIter != _mapOfStringMaterialProperties.end() )
             return ( *curIter ).second.getValue();
         throw std::runtime_error( nameOfProperty + " is not a string value" );
     };
 
-    GenericFunctionPtr getValueGenericFunction( std::string nameOfProperty )
-    {
+    GenericFunctionPtr getValueGenericFunction( std::string nameOfProperty ) {
         auto curIter = _mapOfFunctionMaterialProperties.find( nameOfProperty );
         if ( curIter != _mapOfFunctionMaterialProperties.end() )
             return ( *curIter ).second.getValue();
         throw std::runtime_error( nameOfProperty + " is not a function value" );
     };
 
-    TablePtr getValueTable( std::string nameOfProperty )
-    {
+    TablePtr getValueTable( std::string nameOfProperty ) {
         auto curIter = _mapOfTableMaterialProperties.find( nameOfProperty );
         if ( curIter != _mapOfTableMaterialProperties.end() )
             return ( *curIter ).second.getValue();
         throw std::runtime_error( nameOfProperty + " is not a table value" );
     };
 
-    bool hasValueReal( std::string nameOfProperty )
-    {
+    bool hasValueReal( std::string nameOfProperty ) {
         auto curIter = _mapOfRealMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfRealMaterialProperties.end() )
             return false;
         return true;
     };
 
-    bool hasValueComplex( std::string nameOfProperty )
-    {
+    bool hasValueComplex( std::string nameOfProperty ) {
         auto curIter = _mapOfComplexMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfComplexMaterialProperties.end() )
             return false;
         return true;
     };
 
-    bool hasValueString( std::string nameOfProperty )
-    {
+    bool hasValueString( std::string nameOfProperty ) {
         auto curIter = _mapOfStringMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfStringMaterialProperties.end() )
             return false;
         return true;
     };
 
-    bool hasValueGenericFunction( std::string nameOfProperty )
-    {
+    bool hasValueGenericFunction( std::string nameOfProperty ) {
         auto curIter = _mapOfFunctionMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfFunctionMaterialProperties.end() )
             return false;
         return true;
     };
 
-    bool hasValueTable( std::string nameOfProperty )
-    {
+    bool hasValueTable( std::string nameOfProperty ) {
         auto curIter = _mapOfTableMaterialProperties.find( nameOfProperty );
         if ( curIter == _mapOfTableMaterialProperties.end() )
             return false;
@@ -575,8 +578,7 @@ class GenericMaterialProperty {
      * @brief Function to know if ".RDEP" is necessary
      * @return true if ".RDEP" is necessary
      */
-    void hasTractionFunction(const bool has_traction)
-    { _hasTractionFunction = has_traction; };
+    void setHasTractionFunction( const bool has_traction ) { _hasTractionFunction = has_traction; };
 
     /**
      * @brief Function to know if behaviour own a list of double parameter
@@ -632,8 +634,7 @@ class GenericMaterialProperty {
         return true;
     };
 
-    bool addPropertyVectorOfReal( std::string key,
-                                    ElementaryMaterialPropertyVectorReal value ) {
+    bool addPropertyVectorOfReal( std::string key, ElementaryMaterialPropertyVectorReal value ) {
         _mapOfVectorRealMaterialProperties[key] = value;
         _vectKW.push_back( key );
         _vectKW.push_back( value.getName() );
@@ -657,6 +658,6 @@ class GenericMaterialProperty {
 };
 
 /** @typedef Pointeur intellignet vers un comportement materiau quelconque */
-typedef boost::shared_ptr< GenericMaterialProperty > GenericMaterialPropertyPtr;
+typedef std::shared_ptr< GenericMaterialProperty > GenericMaterialPropertyPtr;
 
 #endif

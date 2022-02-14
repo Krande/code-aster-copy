@@ -21,37 +21,29 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/ModelInterface.h"
 
-void exportModelToPython() {
+#include "aster_pybind.h"
 
-    py::enum_< ModelSplitingMethod >( "ModelSplitingMethod" )
+void exportModelToPython( py::module_ &mod ) {
+
+    py::enum_< ModelSplitingMethod >( mod, "ModelSplitingMethod" )
         .value( "Centralized", Centralized )
         .value( "SubDomain", SubDomain )
-        .value( "GroupOfCells", GroupOfCellsSplit );
+        .value( "GroupOfCells", GroupOfCellsSplit )
+        .export_values();
 
-    py::enum_< GraphPartitioner >( "GraphPartitioner" ).value( "Scotch", ScotchPartitioner ).value(
-        "Metis", MetisPartitioner );
+    py::enum_< GraphPartitioner >( mod, "GraphPartitioner" )
+        .value( "Scotch", ScotchPartitioner )
+        .value( "Metis", MetisPartitioner )
+        .export_values();
 
-
-    void ( Model::*split1 )( ModelSplitingMethod ) = &Model::setSplittingMethod;
-
-    void ( Model::*split2 )( ModelSplitingMethod, GraphPartitioner ) =
-        &Model::setSplittingMethod;
-
-    py::class_< Model, Model::ModelPtr, py::bases< DataStructure > >( "Model",
-                                                                                 py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, BaseMeshPtr>))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, std::string,
-                                                                BaseMeshPtr>))
+    py::class_< Model, Model::ModelPtr, DataStructure >( mod, "Model" )
+        .def( py::init( &initFactoryPtr< Model, BaseMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< Model, std::string, BaseMeshPtr > ) )
 #ifdef ASTER_HAVE_MPI
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, ConnectionMeshPtr>))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Model, std::string,
-                                                                            ConnectionMeshPtr>))
+        .def( py::init( &initFactoryPtr< Model, ConnectionMeshPtr > ) )
+        .def( py::init( &initFactoryPtr< Model, std::string, ConnectionMeshPtr > ) )
 #endif /* ASTER_HAVE_MPI */
         .def( "addModelingOnMesh", &Model::addModelingOnMesh )
         .def( "addModelingOnGroupOfCells", &Model::addModelingOnGroupOfCells )
@@ -65,50 +57,46 @@ Return the mesh
 
 Returns:
     MeshPtr: a pointer to the mesh
-        )",
-              ( py::arg( "self" ) )  )
+        )" )
         .def( "isMechanical", &Model::isMechanical, R"(
 To know if the model is mechanical or not
 
 Returns:
     Bool: True - if the model is mechanical
-        )",
-              ( py::arg( "self" ) )  )
+        )" )
         .def( "isThermal", &Model::isThermal, R"(
 To know if the model is thermal or not
 
 Returns:
     Bool: True - if the model is thermal
-        )",
-              ( py::arg( "self" ) )  )
+        )" )
         .def( "isAcoustic", &Model::isAcoustic, R"(
 To know if the model is acoustic or not
 
 Returns:
     Bool: True - if the model is acoustic
-        )",
-              ( py::arg( "self" ) )  )
+        )" )
         .def( "getPhysics", &Model::getPhysics, R"(
 To know the physics supported by the model
 
 Returns:
     str: Mechanics or Thermal or Acoustic
-        )",
-              ( py::arg( "self" ) )  )
+        )" )
         .def( "getGeometricDimension", &Model::getGeometricDimension, R"(
 To know the geometric dimension supported by the model
 
 Returns:
     int: geometric dimension
-        )",
-              ( py::arg( "self" ) )  )
+        )" )
         .def( "getSplittingMethod", &Model::getSplittingMethod )
         .def( "getGraphPartitioner", &Model::getGraphPartitioner )
         .def( "setSaneModel", &Model::setSaneModel )
         .def( "setXfemModel", &Model::setXfemModel )
         .def( "xfemPreconditioningEnable", &Model::xfemPreconditioningEnable )
-        .def( "setSplittingMethod", split1 )
-        .def( "setSplittingMethod", split2 )
+        .def( "setSplittingMethod", py::overload_cast< ModelSplitingMethod, GraphPartitioner >(
+                                        &Model::setSplittingMethod ) )
+        .def( "setSplittingMethod",
+              py::overload_cast< ModelSplitingMethod >( &Model::setSplittingMethod ) )
         .def( "getFiniteElementDescriptor", &Model::getFiniteElementDescriptor )
 #ifdef ASTER_HAVE_MPI
         .def( "setFrom", &Model::setFrom, R"(
@@ -118,7 +106,7 @@ Arguments:
     model (Model): Table identifier.
 
         )",
-              ( py::arg( "self" ), py::arg( "model" ) ) )
+              py::arg( "model" ) )
 #endif
         .def( "getTable", &ListOfTables::getTable, R"(
 Extract a Table from the datastructure.
@@ -129,6 +117,5 @@ Arguments:
 Returns:
     Table: Table stored with the given identifier.
         )",
-              ( py::arg( "self" ), py::arg( "identifier" ) ) )
-        ;
+              py::arg( "identifier" ) );
 };

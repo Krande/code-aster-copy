@@ -3,7 +3,7 @@
  * @brief Python bindings for Fortran interface.
  * @author Mathieu Courtois
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,93 +23,89 @@
 
 /* person_in_charge: mathieu.courtois@edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-
 #include "PythonBindings/FortranInterface.h"
 
-BOOST_PYTHON_FUNCTION_OVERLOADS( onFatalError_overloads, onFatalError, 0, 1 )
+#include "aster_pybind.h"
 
-void exportFortranToPython() {
+void exportFortranToPython( py::module_ &mod ) {
 
     // These functions are for internal use.
-    py::def( "jeveux_init", &jeveux_init, R"(
+    mod.def( "jeveux_init", &jeveux_init, R"(
 Initialize the memory manager (Jeveux).
 
 Arguments:
     mpi_comm (int): Identifier of MPI communicator (from ``py2f()``).
         )",
-             ( py::arg( "mpi_comm" ) ) );
+             py::arg( "mpi_comm" ) );
 
-    py::def( "jeveux_finalize", &jeveux_finalize, R"(
+    mod.def( "jeveux_finalize", &jeveux_finalize, R"(
 Finalize the memory manager (Jeveux).
         )" );
 
-    py::def( "call_oper", &call_oper, R"(
+    mod.def( "call_oper", &call_oper, R"(
 Call a Fortran operator ('op' subroutine).
 
 Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
     jxveri (int): If non null `JXVERI` is called after calling the operator.
         )",
-             ( py::arg( "syntax" ), py::arg( "jxveri" ) ) );
+             py::arg( "syntax" ), py::arg( "jxveri" ) );
 
-    py::def( "call_oper_init", &call_oper_init, R"(
+    mod.def( "call_oper_init", &call_oper_init, R"(
 Execute initializations before and after operator but without executing any
 operator.
         )" );
 
-    py::def( "call_ops", &call_ops, R"(
+    mod.def( "call_ops", &call_ops, R"(
 Call a Fortran 'ops' subroutine.
 
 Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
     ops (int): Number of the `ops00x` subroutine.
         )",
-             ( py::arg( "syntax" ), py::arg( "ops" ) ) );
+             py::arg( "syntax" ), py::arg( "ops" ) );
 
-    py::def( "call_debut", &call_debut, R"(
+    mod.def( "call_debut", &call_debut, R"(
 Call a Fortran 'debut' subroutine.
 
 Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
         )",
-             ( py::arg( "syntax" ) ) );
+             py::arg( "syntax" ) );
 
-    py::def( "call_poursuite", &call_poursuite, R"(
+    mod.def( "call_poursuite", &call_poursuite, R"(
 Call a Fortran 'poursuite' subroutine.
 
 Arguments:
     syntax (CommandSyntax): Object containing the user syntax.
         )",
-             ( py::arg( "syntax" ) ) );
+             py::arg( "syntax" ) );
 
-    py::def( "write", &call_print, R"(
+    mod.def( "write", &call_print, R"(
 Print a string using the fortran subroutine.
 
 Arguments:
     text (str): Text to be printed.
         )",
-             ( py::arg( "text" ) ) );
+             py::arg( "text" ) );
 
-    py::def( "affich", &call_affich, R"(
+    mod.def( "affich", &call_affich, R"(
 Print a string using the fortran subroutine on an internal file.
 
 Arguments:
     code (str): Code name of the internal file : 'MESSAGE' or 'CODE'.
     text (str): Text to be printed.
         )",
-             ( py::arg( "code" ), py::arg( "text" ) ) );
+             py::arg( "code" ), py::arg( "text" ) );
 
-    py::def( "jeveux_status", &get_sh_jeveux_status, R"(
+    mod.def( "jeveux_status", &get_sh_jeveux_status, R"(
 Return the status of the Jeveux memory manager.
 
 Returns:
     int: 0 after initialization and after shutdown, 1 during the execution.
         )" );
 
-    py::def( "jeveux_delete", &jeveux_delete, R"(
+    mod.def( "jeveux_delete", &jeveux_delete, R"(
 Force manual deletion of Jeveux objects.
 
 Warning: Use only for debugging usages, it is dangerous for objects integrity
@@ -118,23 +114,22 @@ and cpu consuming.
 Arguments:
     prefix (str): Root name of the Jeveux datastructure.
         )",
-             ( py::arg( "prefix" ) ) );
+             py::arg( "prefix" ) );
+    mod.def( "onFatalError", &onFatalError,
+             R"(
+Get/set the behavior in case of error.
 
-    //     py::def( "onFatalError", &onFatalError, R"(
-    // Get/set the behavior in case of error.
+Arguments:
+    value (str, optional): Set the new behavior in case of error (one of "ABORT",
+        "EXCEPTION", "EXCEPTION+VALID" or "INIT"). If `value` is not provided,
+        the current behavior is returned.
 
-    // Arguments:
-    //     value (str, optional): Set the new behavior in case of error (one of "ABORT",
-    //         "EXCEPTION", "EXCEPTION+VALID" or "INIT"). If `value` is not provided,
-    //         the current behavior is returned.
+Returns:
+    str: Current value
+    )",
+             py::arg( "value" ) = "" );
 
-    // Returns:
-    //     str: Current value
-    //         )",
-    //          ( py::arg( "value" ) ) );
-    py::def( "onFatalError", &onFatalError, onFatalError_overloads() );
-
-    py::def( "set_option", &set_option, R"(
+    mod.def( "set_option", &set_option, R"(
 Set an option value to be used from Fortran operators.
 
 Arguments:

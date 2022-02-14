@@ -6,7 +6,7 @@
  * @brief Definition of the  Physical Quantities used in Code_Aster
  * @author Natacha Béreux
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -433,7 +433,7 @@ template < class ValueType, PhysicalQuantityEnum PhysicalQuantityType > class Ph
      * @typedef PhysicalQuantityPtr
      * @brief Pointeur intelligent vers un PhysicalQuantity
      */
-    typedef boost::shared_ptr< PhysicalQuantity< ValueType, PhysicalQuantityType > >
+    typedef std::shared_ptr< PhysicalQuantity< ValueType, PhysicalQuantityType > >
         PhysicalQuantityPtr;
 
     /** @typedef Define the Traits type */
@@ -529,75 +529,75 @@ template < class ValueType, PhysicalQuantityEnum PhysicalQuantityType > class Ph
 /** @typedef ForceReal FORC_R */
 template class PhysicalQuantity< ASTERDOUBLE, Force >;
 typedef PhysicalQuantity< ASTERDOUBLE, Force > ForceReal;
-typedef boost::shared_ptr< ForceReal > ForceRealPtr;
+typedef std::shared_ptr< ForceReal > ForceRealPtr;
 
 /** @typedef StructuralForceReal  */
 template class PhysicalQuantity< ASTERDOUBLE, StructuralForce >;
 typedef PhysicalQuantity< ASTERDOUBLE, StructuralForce > StructuralForceReal;
-typedef boost::shared_ptr< StructuralForceReal > StructuralForceRealPtr;
+typedef std::shared_ptr< StructuralForceReal > StructuralForceRealPtr;
 
 /** @typedef LocalBeamForceReal  */
 template class PhysicalQuantity< ASTERDOUBLE, LocalBeamForce >;
 typedef PhysicalQuantity< ASTERDOUBLE, LocalBeamForce > LocalBeamForceReal;
-typedef boost::shared_ptr< LocalBeamForceReal > LocalBeamForceRealPtr;
+typedef std::shared_ptr< LocalBeamForceReal > LocalBeamForceRealPtr;
 
 /** @typedef LocalShellForceReal  */
 template class PhysicalQuantity< ASTERDOUBLE, LocalShellForce >;
 typedef PhysicalQuantity< ASTERDOUBLE, LocalShellForce > LocalShellForceReal;
-typedef boost::shared_ptr< LocalShellForceReal > LocalShellForceRealPtr;
+typedef std::shared_ptr< LocalShellForceReal > LocalShellForceRealPtr;
 
 /** @typedef DisplacementReal DEPL_R */
 template class PhysicalQuantity< ASTERDOUBLE, Displacement >;
 typedef PhysicalQuantity< ASTERDOUBLE, Displacement > DisplacementReal;
-typedef boost::shared_ptr< DisplacementReal > DisplacementRealPtr;
+typedef std::shared_ptr< DisplacementReal > DisplacementRealPtr;
 
 /** @typedef PressureReal Pression */
 template class PhysicalQuantity< ASTERDOUBLE, Pressure >;
 typedef PhysicalQuantity< ASTERDOUBLE, Pressure > PressureReal;
-typedef boost::shared_ptr< PressureReal > PressureRealPtr;
+typedef std::shared_ptr< PressureReal > PressureRealPtr;
 
 /** @typedef PressureComplex Pression */
 template class PhysicalQuantity< ASTERCOMPLEX, Pressure >;
 typedef PhysicalQuantity< ASTERCOMPLEX, Pressure > PressureComplex;
-typedef boost::shared_ptr< PressureComplex > PressureComplexPtr;
+typedef std::shared_ptr< PressureComplex > PressureComplexPtr;
 
 /** @typedef TemperatureReal Temperature */
 template class PhysicalQuantity< ASTERDOUBLE, Temperature >;
 typedef PhysicalQuantity< ASTERDOUBLE, Temperature > TemperatureReal;
-typedef boost::shared_ptr< TemperatureReal > TemperatureRealPtr;
+typedef std::shared_ptr< TemperatureReal > TemperatureRealPtr;
 
 /** @typedef TemperatureFunction Temperature */
 template class PhysicalQuantity< FunctionPtr, Temperature >;
 typedef PhysicalQuantity< FunctionPtr, Temperature > TemperatureFunction;
-typedef boost::shared_ptr< TemperatureFunction > TemperatureFunctionPtr;
+typedef std::shared_ptr< TemperatureFunction > TemperatureFunctionPtr;
 
 /** @typedef ImpedanceReal Impedance */
 template class PhysicalQuantity< ASTERDOUBLE, Impedance >;
 typedef PhysicalQuantity< ASTERDOUBLE, Impedance > ImpedanceReal;
-typedef boost::shared_ptr< ImpedanceReal > ImpedanceRealPtr;
+typedef std::shared_ptr< ImpedanceReal > ImpedanceRealPtr;
 
 /** @typedef ImpedanceComplex Impedance */
 template class PhysicalQuantity< ASTERCOMPLEX, Impedance >;
 typedef PhysicalQuantity< ASTERCOMPLEX, Impedance > ImpedanceComplex;
-typedef boost::shared_ptr< ImpedanceComplex > ImpedanceComplexPtr;
+typedef std::shared_ptr< ImpedanceComplex > ImpedanceComplexPtr;
 
 /** @typedef NormalSpeedReal Normal Speed  */
 template class PhysicalQuantity< ASTERDOUBLE, NormalSpeed >;
 typedef PhysicalQuantity< ASTERDOUBLE, NormalSpeed > NormalSpeedReal;
-typedef boost::shared_ptr< NormalSpeedReal > NormalSpeedRealPtr;
+typedef std::shared_ptr< NormalSpeedReal > NormalSpeedRealPtr;
 
 /** @typedef NormalSpeedComplex Normal Speed  */
 template class PhysicalQuantity< ASTERCOMPLEX, NormalSpeed >;
 typedef PhysicalQuantity< ASTERCOMPLEX, NormalSpeed > NormalSpeedComplex;
-typedef boost::shared_ptr< NormalSpeedComplex > NormalSpeedComplexPtr;
+typedef std::shared_ptr< NormalSpeedComplex > NormalSpeedComplexPtr;
 
 /** @typedef HeatFluxReal Normal Speed  */
 template class PhysicalQuantity< ASTERDOUBLE, HeatFlux >;
 typedef PhysicalQuantity< ASTERDOUBLE, HeatFlux > HeatFluxReal;
-typedef boost::shared_ptr< HeatFluxReal > HeatFluxRealPtr;
+typedef std::shared_ptr< HeatFluxReal > HeatFluxRealPtr;
 
 /** @typedef HydraulicFluxReal Normal Speed  */
 template class PhysicalQuantity< ASTERDOUBLE, HydraulicFlux >;
 typedef PhysicalQuantity< ASTERDOUBLE, HydraulicFlux > HydraulicFluxReal;
-typedef boost::shared_ptr< HydraulicFluxReal > HydraulicFluxRealPtr;
+typedef std::shared_ptr< HydraulicFluxReal > HydraulicFluxRealPtr;
 #endif /* PHYSICALQUANTITY_H_ */

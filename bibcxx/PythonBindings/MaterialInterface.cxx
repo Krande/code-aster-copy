@@ -3,7 +3,7 @@
  * @brief Interface python de Material
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -21,29 +21,23 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/MaterialInterface.h"
 
-void exportMaterialToPython() {
+#include "aster_pybind.h"
 
-    py::class_< Material, Material::MaterialPtr, py::bases< DataStructure > >(
-        "Material", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Material >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< Material, std::string >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< Material, std::string, VectorInt >))
+void exportMaterialToPython( py::module_ &mod ) {
+
+    py::class_< Material, Material::MaterialPtr, DataStructure >( mod, "Material" )
+        .def( py::init( &initFactoryPtr< Material > ) )
+        .def( py::init( &initFactoryPtr< Material, std::string > ) )
+        .def( py::init( &initFactoryPtr< Material, std::string, VectorInt > ) )
         .def( "addMaterialProperty", &Material::addMaterialProperty )
         .def( "build", &Material::build )
-        .def( "getNumberOfListOfPropertiesReal",
-              &Material::getNumberOfListOfPropertiesReal )
+        .def( "getNumberOfListOfPropertiesReal", &Material::getNumberOfListOfPropertiesReal )
         .def( "getNumberOfListOfPropertiesFunction",
               &Material::getNumberOfListOfPropertiesFunction )
         .def( "getNumberOfMaterialProperties", &Material::getNumberOfMaterialProperties )
-        .def( "getNumberOfUserMaterialProperties",
-              &Material::getNumberOfUserMaterialProperties )
+        .def( "getNumberOfUserMaterialProperties", &Material::getNumberOfUserMaterialProperties )
         .def( "getVectorOfMaterialProperties", &Material::getVectorOfMaterialProperties )
         .def( "setReferenceMaterial", &Material::setReferenceMaterial );
 };

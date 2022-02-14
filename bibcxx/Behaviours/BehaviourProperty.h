@@ -6,7 +6,7 @@
  * @brief Header for class BehaviourProperty
  * @author Mickaël Abas
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -74,7 +74,7 @@ class BehaviourProperty : public DataStructure {
   public:
 
     /** @typedef Smart-pointer to behaviour class */
-    typedef boost::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
+    typedef std::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
 
     /** @brief Constructor */
     BehaviourProperty( );
@@ -117,7 +117,7 @@ class BehaviourProperty : public DataStructure {
 };
 
 /** @typedef Smart-pointer to behaviour class */
-typedef boost::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
+typedef std::shared_ptr< BehaviourProperty > BehaviourPropertyPtr;
 
 
 #endif

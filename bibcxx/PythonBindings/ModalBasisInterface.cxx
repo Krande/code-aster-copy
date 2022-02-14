@@ -3,7 +3,7 @@
  * @brief Interface python de StandardModalBasis
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,27 +23,23 @@
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
 #include "PythonBindings/ModalBasisInterface.h"
 
-void exportModalBasisToPython() {
+#include "aster_pybind.h"
 
-    py::class_< GenericModalBasis, GenericModalBasis::GenericModalBasisPtr,
-            py::bases< DataStructure > >( "GenericModalBasis", py::no_init );
-        // fake initFactoryPtr: created by subclass
-        // fake initFactoryPtr: created by subclass
+void exportModalBasisToPython( py::module_ &mod ) {
 
-    py::class_< StandardModalBasis, StandardModalBasis::StandardModalBasisPtr,
-            py::bases< GenericModalBasis > >( "StandardModalBasis", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< StandardModalBasis >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< StandardModalBasis, std::string >));
+    py::class_< GenericModalBasis, GenericModalBasis::GenericModalBasisPtr, DataStructure >(
+        mod, "GenericModalBasis" );
+    // fake initFactoryPtr: created by subclass
+    // fake initFactoryPtr: created by subclass
 
-    py::class_< RitzBasis, RitzBasis::RitzBasisPtr,
-            py::bases< GenericModalBasis > >( "RitzBasis", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< RitzBasis >))
-        .def( "__init__", py::make_constructor(&initFactoryPtr< RitzBasis, std::string >));
+    py::class_< StandardModalBasis, StandardModalBasis::StandardModalBasisPtr, GenericModalBasis >(
+        mod, "StandardModalBasis" )
+        .def( py::init( &initFactoryPtr< StandardModalBasis > ) )
+        .def( py::init( &initFactoryPtr< StandardModalBasis, std::string > ) );
+
+    py::class_< RitzBasis, RitzBasis::RitzBasisPtr, GenericModalBasis >( mod, "RitzBasis" )
+        .def( py::init( &initFactoryPtr< RitzBasis > ) )
+        .def( py::init( &initFactoryPtr< RitzBasis, std::string > ) );
 };

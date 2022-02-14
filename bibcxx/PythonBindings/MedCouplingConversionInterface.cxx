@@ -3,7 +3,7 @@
  * @brief Python bindings for MedCouplingConversion.
  * @author Francesco Bettonte
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,17 +23,16 @@
 
 /* person_in_charge: francesco.bettonte@edf.fr */
 
-#include <boost/python.hpp>
+#include "aster_pybind.h"
+
 #include <MedUtils/MedCouplingConversion.h>
 
-namespace py = boost::python;
+void exportMedCouplingConversionToPython( py::module_ &mod ) {
 
-void exportMedCouplingConversionToPython() {
-
-  py::def( "getMedCouplingConversionData", &getMedCouplingConversionData, R"(
+    mod.def( "getMedCouplingConversionData", &getMedCouplingConversionData, R"(
 Return three dictionnaries containing data to create an equivalent MedCoupling unstructured mesh.
 
-MedCoupling needs a mesh splitted by dimension for what concerns cells and groups of cells. 
+MedCoupling needs a mesh splitted by dimension for what concerns cells and groups of cells.
 The group of nodes all belongs to an unique level so there is no need to split them.
 
  - The first dictionnary (cells) contains for each dimension (the keys) :
@@ -50,5 +49,5 @@ Arguments:
 Returns:
     tuple (cells, groups_c, groups_n) : The data to create the equivalent MedCoupling mesh.
         )",
-           ( py::arg( "mesh" )));
+             py::arg( "mesh" ) );
 }

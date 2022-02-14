@@ -3,7 +3,7 @@
  * @brief Interface python de DataField
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,23 +22,17 @@
  */
 
 /* person_in_charge: nicolas.sellenet at edf.fr */
-#include <boost/python.hpp>
-
-namespace py = boost::python;
-#include <PythonBindings/factory.h>
-
-#include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/DataFieldInterface.h"
 
-void exportDataFieldToPython() {
+#include "aster_pybind.h"
 
-    py::class_< DataField, DataFieldPtr, py::bases< DataStructure > >(
-        "DataField", py::no_init )
-        .def( "__init__", py::make_constructor(&initFactoryPtr< DataField >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DataField >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DataField, std::string >))
-        .def( "__init__",
-              py::make_constructor(&initFactoryPtr< DataField, std::string, std::string >));
+#include "PythonBindings/DataStructureInterface.h"
+
+void exportDataFieldToPython( py::module_ &mod ) {
+
+    py::class_< DataField, DataFieldPtr, DataStructure >( mod, "DataField" )
+        .def( py::init( &initFactoryPtr< DataField > ) )
+        .def( py::init( &initFactoryPtr< DataField > ) )
+        .def( py::init( &initFactoryPtr< DataField, std::string > ) )
+        .def( py::init( &initFactoryPtr< DataField, std::string, std::string > ) );
 };

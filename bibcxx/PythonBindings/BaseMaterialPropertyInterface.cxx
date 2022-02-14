@@ -3,7 +3,7 @@
  * @brief Interface python de MaterialProperty
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -22,50 +22,24 @@
  */
 
 #include "PythonBindings/BaseMaterialPropertyInterface.h"
-#include "PythonBindings/factory.h"
-#include <boost/python.hpp>
 
-namespace py = boost::python;
+#include "aster_pybind.h"
 
-void exportBaseMaterialPropertyToPython() {
+void exportBaseMaterialPropertyToPython( py::module_ &mod ) {
 
-    bool ( GenericMaterialProperty::*c1 )(  ) const =
-        &GenericMaterialProperty::hasTractionFunction;
-    void ( GenericMaterialProperty::*c2 )( const bool )=
-        &GenericMaterialProperty::hasTractionFunction;
-
-    // Candidates for setValue
-    bool ( GenericMaterialProperty::*d1 )( std::string, ASTERDOUBLE ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d2 )( std::string, ASTERCOMPLEX ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d3 )( std::string, std::string ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d4 )( std::string, FunctionPtr ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d5 )( std::string, TablePtr ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d6 )( std::string, Function2DPtr ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d7 )( std::string, VectorReal ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d8 )( std::string, VectorFunction ) =
-        &GenericMaterialProperty::setValue;
-    bool ( GenericMaterialProperty::*d9 )( std::string, FormulaPtr ) =
-        &GenericMaterialProperty::setValue;
-
-    py::class_< GenericMaterialProperty, GenericMaterialPropertyPtr >(
-        "GenericMaterialProperty", py::no_init )
+    py::class_< GenericMaterialProperty, GenericMaterialPropertyPtr >( mod,
+                                                                       "GenericMaterialProperty" )
         // fake initFactoryPtr: created by subclasses
-        .def( "__init__", py::make_constructor(&initFactoryPtr< GenericMaterialProperty >))
+        .def( py::init( &initFactoryPtr< GenericMaterialProperty > ) )
         .def( "getAsterName", &GenericMaterialProperty::getAsterName )
-        .def( "hasTractionFunction", c1 )
-        .def( "hasTractionFunction", c2 )
+        .def_property( "hasTractionFunction", &GenericMaterialProperty::hasTractionFunction,
+                       &GenericMaterialProperty::setHasTractionFunction, R"(
+bool: Attribute that holds the need of a traction function.
+                       )" )
         .def( "getValueComplex", &GenericMaterialProperty::getValueComplex )
         .def( "getValueReal", &GenericMaterialProperty::getValueReal )
         .def( "getValueString", &GenericMaterialProperty::getValueString )
-        .def( "getValueGenericFunction",
-              &GenericMaterialProperty::getValueGenericFunction )
+        .def( "getValueGenericFunction", &GenericMaterialProperty::getValueGenericFunction )
         .def( "getNumberOfListOfPropertiesReal",
               &GenericMaterialProperty::getNumberOfListOfPropertiesReal )
         .def( "getNumberOfListOfPropertiesFunction",
@@ -74,21 +48,28 @@ void exportBaseMaterialPropertyToPython() {
         .def( "hasValueComplex", &GenericMaterialProperty::hasValueComplex )
         .def( "hasValueReal", &GenericMaterialProperty::hasValueReal )
         .def( "hasValueString", &GenericMaterialProperty::hasValueString )
-        .def( "hasValueGenericFunction",
-              &GenericMaterialProperty::hasValueGenericFunction )
+        .def( "hasValueGenericFunction", &GenericMaterialProperty::hasValueGenericFunction )
         .def( "hasValueTable", &GenericMaterialProperty::hasValueTable )
-        // J'ai changé le nom pour setValueReal car il y a une conversion implite
-        // float -> complex sinon (à changer un jour)
-        .def( "setValueReal", d1 )
-        .def( "setValue", d2 )
-        .def( "setValue", d3 )
-        .def( "setValue", d4 )
-        .def( "setValue", d5 )
-        .def( "setValue", d6 )
-        .def( "setValueVectorReal", d7 )
-        .def( "setValue", d8 )
-        .def( "setValue", d9 )
-        .def( "setSortedListParameters",
-              &GenericMaterialProperty::setSortedListParameters );
+        // functions will be tried in sequence, order is important to avoid unexpected implicit
+        // conversions
+        .def( "setValue",
+              py::overload_cast< std::string, ASTERDOUBLE >( &GenericMaterialProperty::setValue ) )
+        .def( "setValue",
+              py::overload_cast< std::string, ASTERCOMPLEX >( &GenericMaterialProperty::setValue ) )
+        .def( "setValue",
+              py::overload_cast< std::string, std::string >( &GenericMaterialProperty::setValue ) )
+        .def( "setValue",
+              py::overload_cast< std::string, FunctionPtr >( &GenericMaterialProperty::setValue ) )
+        .def( "setValue",
+              py::overload_cast< std::string, TablePtr >( &GenericMaterialProperty::setValue ) )
+        .def( "setValue", py::overload_cast< std::string, Function2DPtr >(
+                              &GenericMaterialProperty::setValue ) )
+        .def( "setValue",
+              py::overload_cast< std::string, VectorReal >( &GenericMaterialProperty::setValue ) )
+        .def( "setValue", py::overload_cast< std::string, VectorFunction >(
+                              &GenericMaterialProperty::setValue ) )
+        .def( "setValue",
+              py::overload_cast< std::string, FormulaPtr >( &GenericMaterialProperty::setValue ) )
 
+        .def( "setSortedListParameters", &GenericMaterialProperty::setSortedListParameters );
 };

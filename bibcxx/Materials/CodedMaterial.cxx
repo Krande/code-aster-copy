@@ -36,7 +36,7 @@ CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &m
     : DataStructure( name, 19, "MATER_CODE" ),
       _mater( mater ),
       _model( model ),
-      _field( boost::make_shared< ConstantFieldOnCellsLong >( getName(), _model->getMesh() ) ),
+      _field( std::make_shared< ConstantFieldOnCellsLong >( getName(), _model->getMesh() ) ),
       _grp( JeveuxVectorChar8( getName() + ".GRP" ) ),
       _nGrp( JeveuxVectorLong( getName() + ".NGRP" ) ){};
 
