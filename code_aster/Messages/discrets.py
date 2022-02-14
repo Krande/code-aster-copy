@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,8 @@ Pour information :
 """),
 
     9 : _("""
-Il ne faut pas demander TR derrière CARA si le type d'élément discret ne prend pas en compte la rotation.
+Il ne faut pas demander TR derrière CARA si le type d'élément discret ne prend
+pas en compte la rotation.
 """),
 
     10 : _("""
@@ -103,7 +104,8 @@ Pour information :
 """),
 
     11 : _("""
-La loi <%(k4)s> doit être utilisée avec des éléments du type DIS_TR_L : élément SEG2 + modélisation DIS_TR
+La loi <%(k4)s> doit être utilisée avec des éléments du type DIS_TR_L :
+   élément SEG2 + modélisation DIS_TR
 
 Pour information :
    Modèle   : <%(k1)s>, Option   : <%(k2)s>
@@ -151,7 +153,8 @@ Il est interdit d'avoir des discrets sur une modélisation %(k1)s.
     21 : _("""
 AFFE_CARA_ELEM/RIGI_PARASOL
   Le nombre de valeurs fournies sous VALE ne correspond pas au nombre attendu.
-  Vous devez vérifier l'adéquation des dimensions des éléments sous CARA avec le nombre de valeur sous VALE.
+  Vous devez vérifier l'adéquation des dimensions des éléments sous CARA avec le
+  nombre de valeur sous VALE.
 """),
 
     22: _("""
@@ -216,7 +219,8 @@ Risques et conseils :
 
 
     40 : _("""
-L'utilisation des discrets non-symétriques n'est actuellement pas possible pour des calculs non-linéaires.
+L'utilisation des discrets non-symétriques n'est actuellement pas possible pour
+des calculs non-linéaires.
 """),
 
     41: _("""

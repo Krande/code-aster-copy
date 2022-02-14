@@ -58,7 +58,7 @@ real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
     integer, parameter :: ifx=7, ify=8, ifz=9, icalc=10
 !   État du discret : adhérent, glissant, décollé
     integer, parameter :: EtatAdher=0, EtatGliss=1, EtatDecol=2
-    integer, parameter :: EnVitesse=1, EnPlasticite=2
+    integer, parameter :: EnPlasticite=2
 !
     integer             :: indic, ii
     real(kind=8)        :: xl(6), xd(3), rignor, rigtan

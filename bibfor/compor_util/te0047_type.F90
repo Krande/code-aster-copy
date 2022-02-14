@@ -43,8 +43,12 @@ implicit none
         !   nno     : nombre de noeuds de l'élément
         !   nc      : nombre de composante par noeud
         !
-        !   ulm     : déplacement moins
-        !   dul     : incrément de déplacement
+        !   ugm     : déplacement moins dans le repère global
+        !   dug     : incrément de déplacement dans le repère global
+        !
+        !   ulm     : déplacement moins dans le repère local
+        !   dul     : incrément de déplacement dans le repère local
+        !
         !   pgl     : matrice de passage global vers local
         !
         aster_logical       :: lVect        = ASTER_FALSE
@@ -66,8 +70,8 @@ implicit none
         integer             :: nno
         integer             :: nc
         !
-        real(kind=8)        :: ulm(12)
-        real(kind=8)        :: dul(12)
+        real(kind=8)        :: ulm(12), ugm(12)
+        real(kind=8)        :: dul(12), dug(12)
         real(kind=8)        :: pgl(3, 3)
         real(kind=8)        :: TempsPlus, TempsMoins
         !

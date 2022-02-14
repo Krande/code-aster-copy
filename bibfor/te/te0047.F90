@@ -56,6 +56,7 @@ character(len=*) :: optioz, nomtez
 #include "asterfort/dibili.h"
 #include "asterfort/dis_contact_frot.h"
 #include "asterfort/dis_choc_frot.h"
+#include "asterfort/dis_elas_nosyme.h"
 #include "asterfort/dicora.h"
 #include "asterfort/didashpot.h"
 #include "asterfort/diecci.h"
@@ -78,20 +79,21 @@ character(len=*) :: optioz, nomtez
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/Behaviour_type.h"
-#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-integer :: neq, ideplm, ideplp, icompo, jtempsm, jtempsp
-integer :: ii, jcret, itype, lorien
-integer :: iadzi, iazk24, ibid, infodi, codret
-!
-real(kind=8) :: ang(3), ugm(12), dug(12), r8bid
-!
-character(len=8)  :: k8bid
-character(len=24) :: messak(5)
-!
-type(te0047_dscr) :: for_discret
+    integer :: neq, ideplm, ideplp, icompo, jtempsm, jtempsp
+    integer :: ii, jcret, itype, lorien
+    integer :: iadzi, iazk24, ibid, infodi, codret, IsSymetrique
+    !
+    real(kind=8) :: r8bid
+    !
+    aster_logical :: okelem
+    !
+    character(len=8)  :: k8bid
+    character(len=24) :: messak(5)
+    !
+    type(te0047_dscr) :: for_discret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -112,18 +114,15 @@ type(te0047_dscr) :: for_discret
         call utmess('A+', 'DISCRETS_27', sk=for_discret%nomte)
         call infdis('DUMP', ibid, r8bid, 'A+')
     endif
-    ! les discrets sont obligatoirement symétriques
-    call infdis('SYMK', infodi, r8bid, k8bid)
-    if (infodi .ne. 1) then
-        call utmess('F', 'DISCRETS_40')
-    endif
+    ! Discrets symétriques ou pas
+    call infdis('SYMK', IsSymetrique, r8bid, k8bid)
     ! informations sur les discrets :
     !     nbt   = nombre de coefficients dans k
     !     nno   = nombre de noeuds
     !     nc    = nombre de composante par noeud
     !     ndim  = dimension de l'élément
     !     itype = type de l'élément
-    call infted(for_discret%nomte, infodi, &
+    call infted(for_discret%nomte, IsSymetrique, &
                 for_discret%nbt, for_discret%nno, for_discret%nc, for_discret%ndim, itype)
     !
     ASSERT( (for_discret%ndim.eq.2).or.(for_discret%ndim.eq.3) )
@@ -145,6 +144,15 @@ type(te0047_dscr) :: for_discret
     for_discret%defo_comp = zk16(icompo-1+DEFO)
     for_discret%type_comp = zk16(icompo-1+INCRELAS)
     !
+    ! Discrets non-symétriques
+    if (IsSymetrique .ne. 1) then
+        ! Discrets non-symétriques, c'est ok si 'ELAS'
+        if (for_discret%rela_comp.eq.'ELAS') then
+            for_discret%rela_comp = 'ELAS_NOSYME'
+        else
+            call utmess('F', 'DISCRETS_40')
+        endif
+    endif
     ! Select objects to construct from option name
     !   lVari       : 'RAPH_MECA'  (1:9)'FULL_MECA'
     !   lSigm       : 'RAPH_MECA'  (1:9)'FULL_MECA'       'RIGI_MECA_TANG'
@@ -161,8 +169,9 @@ type(te0047_dscr) :: for_discret
     if (for_discret%defo_comp .ne. 'PETIT') then
         call utmess('A', 'DISCRETS_18')
     endif
-    ! si COMP_ELAS alors comportement elas
-    if ((for_discret%type_comp.eq.'COMP_ELAS') .and. (for_discret%rela_comp.ne.'ELAS')) then
+    ! si COMP_ELAS alors comportement ELAS | ELAS_NOSYME
+    if ((for_discret%type_comp.eq.'COMP_ELAS') .and. &
+        (for_discret%rela_comp(1:4).ne.'ELAS')) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
         messak(3) = for_discret%type_comp
@@ -173,7 +182,8 @@ type(te0047_dscr) :: for_discret
     endif
     ! dans les cas *_ELAS, les comportements qui ont une matrice de
     ! décharge sont : elas DIS_GRICRA. pour tous les autres cas : <f>
-    if ((for_discret%option(10:14).eq.'_ELAS') .and. (for_discret%rela_comp.ne.'ELAS') .and. &
+    if ((for_discret%option(10:14).eq.'_ELAS') .and. &
+        (for_discret%rela_comp.ne.'ELAS') .and. &
         (for_discret%rela_comp.ne.'DIS_GRICRA')) then
         messak(1) = for_discret%nomte
         messak(2) = for_discret%option
@@ -184,7 +194,7 @@ type(te0047_dscr) :: for_discret
         call utmess('F', 'DISCRETS_10', nk=5, valk=messak)
     endif
     !
-    ! récupération des orientations (angles nautiques -> vecteur ang)
+    ! récupération des orientations (angles nautiques)
     ! orientation de l'élément et déplacements dans les repères g et l
     call tecach('ONO', 'PCAORIE', 'L', codret, iad=lorien)
     if (codret .ne. 0) then
@@ -196,26 +206,29 @@ type(te0047_dscr) :: for_discret
         messak(5) = zk24(iazk24-1+3)
         call utmess('F', 'DISCRETS_6', nk=5, valk=messak)
     endif
-    call dcopy(3, zr(lorien), 1, ang, 1)
     ! déplacements dans le repère global :
     !     ugm = déplacement précédent
     !     dug = incrément de déplacement
     do ii = 1, neq
-        ugm(ii) = zr(ideplm+ii-1)
-        dug(ii) = zr(ideplp+ii-1)
+        for_discret%ugm(ii) = zr(ideplm+ii-1)
+        for_discret%dug(ii) = zr(ideplp+ii-1)
     enddo
     !
     ! matrice pgl de passage repère global -> repère local
-    call matrot(ang, for_discret%pgl)
+    call matrot(zr(lorien), for_discret%pgl)
     ! déplacements dans le repère local :
     !     ulm = déplacement précédent    = pgl * ugm
     !     dul = incrément de déplacement = pgl * dug
     if (for_discret%ndim .eq. 3) then
-        call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugm, for_discret%ulm)
-        call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, dug, for_discret%dul)
+        call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, &
+                    for_discret%ugm, for_discret%ulm)
+        call utpvgl(for_discret%nno, for_discret%nc, for_discret%pgl, &
+                    for_discret%dug, for_discret%dul)
     else
-        call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, ugm, for_discret%ulm)
-        call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, dug, for_discret%dul)
+        call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, &
+                    for_discret%ugm, for_discret%ulm)
+        call ut2vgl(for_discret%nno, for_discret%nc, for_discret%pgl, &
+                    for_discret%dug, for_discret%dul)
     endif
     !
     ! Temps + et - , calcul de dt
@@ -224,11 +237,19 @@ type(te0047_dscr) :: for_discret
     for_discret%TempsPlus  = zr(jtempsp)
     for_discret%TempsMoins = zr(jtempsm)
     !
+    ! Pour ELAS_NOSYME :
+    okelem = (for_discret%ndim.eq.3) .and. &
+             ( (for_discret%nomte.eq.'MECA_DIS_T_L') .or. &
+               (for_discret%nomte.eq.'MECA_DIS_T_N') )
+    !
     codret = 0
-    if (for_discret%rela_comp .eq. 'ELAS') then
+    if (for_discret%rela_comp.eq.'ELAS') then
         ! comportement élastique
         call dielas(for_discret, codret)
-    else if (for_discret%rela_comp .eq. 'DASHPOT') then
+    else if ((for_discret%rela_comp.eq.'ELAS_NOSYME').and.okelem) then
+        ! comportement élastique non-symétrique
+        call dis_elas_nosyme(for_discret, codret)
+    else if (for_discret%rela_comp.eq.'DASHPOT') then
         ! comportement dashpot
         call didashpot(for_discret, codret)
     else if (for_discret%rela_comp.eq.'DIS_VISC') then
