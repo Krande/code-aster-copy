@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 !
 interface
-    subroutine utpnlg(nno, ndim, pgl, matl, mate)
-      integer      :: nno, ndim
-      real(kind=8) :: mate(1), pgl(ndim, ndim), matl(nno*ndim,nno*ndim)
+    subroutine utpnlg(nno, nnc, pgl, matl, mate)
+      integer      :: nno, nnc
+      real(kind=8) :: mate(1), pgl(3,3), matl(nno*nnc,nno*nnc)
     end subroutine utpnlg
 end interface

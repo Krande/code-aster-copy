@@ -17,11 +17,12 @@
 ! --------------------------------------------------------------------
 
 subroutine dis_choc_frot_syme(for_discret, icodma, ulp, xg, klv, &
-                              dvl, dpe, dve, force, varmo, varpl)
+                              dvl, dpe, dve, Predic, force, varmo, varpl)
 !
 use te0047_type
 implicit none
 !
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/diraidklv.h"
 #include "asterfort/diklvraid.h"
@@ -31,11 +32,12 @@ implicit none
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer      :: icodma
-    real(kind=8) :: ulp(*), dvl(*)
-    real(kind=8) :: dpe(*), dve(*)
-    real(kind=8) :: klv(*), xg(*)
-    real(kind=8) :: varmo(*), varpl(*), force(*)
+    integer         :: icodma
+    real(kind=8)    :: ulp(*), dvl(*)
+    real(kind=8)    :: dpe(*), dve(*)
+    real(kind=8)    :: klv(*), xg(*)
+    real(kind=8)    :: varmo(*), varpl(*), force(*)
+    aster_logical   :: Predic
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,9 +67,10 @@ implicit none
     character(len=8)    :: nomre1(nbre1)
 !   Index des variables internes
     integer, parameter :: idepx=1, idepy=2, idepz=3, iidic=4, idepyp=5, idepzp=6
-    integer, parameter :: ifx=7, ify=8, ifz=9
+    integer, parameter :: ifx=7, ify=8, ifz=9, icalc = 10
 !   État du discret : adhérent, glissant, décollé
     integer, parameter :: EtatAdher=0, EtatGliss=1, EtatDecol=2
+    integer, parameter :: EnVitesse=1, EnPlasticite=2
 !
     integer      :: ii
     real(kind=8) :: xl(6), xd(3), dirl(6), raide(6), rignor, rigtan
@@ -98,6 +101,7 @@ implicit none
     rigtan = valre1(2)
     coulom = valre1(5)
 !
+    varpl(icalc) = EnVitesse
 !   Élément avec 2 noeuds
     if (for_discret%nno .eq. 2) then
         dist12 = valre1(6)+valre1(7)
@@ -124,7 +128,7 @@ implicit none
         endif
         call dcopy(for_discret%ndim, dve(1),                1, dirl,    1)
         call dcopy(for_discret%ndim, dve(1+for_discret%nc), 1, dirl(4), 1)
-!       Vitesse tangente
+        ! Vitesse tangente
         vity = vit2 + dirl(5) - dirl(2)
         vitz = 0.0
         if (for_discret%ndim .eq. 3) then
@@ -268,5 +272,19 @@ implicit none
     varpl(idepx)  = depx
     varpl(idepy)  = depy
     varpl(idepz)  = depz
+!
+!   Prédiction en dynamique, on retourne les efforts précédents
+!       Si on passe d'une formulation 'plastique' à une en 'vitesse'
+!       On le fait à la fin, la raideur doit être mise comme il faut
+    if ( Predic.and. (nint(varmo(icalc)).eq.EnPlasticite) ) then
+        ! Les efforts précédents
+        force(1) = varmo(ifx)
+        force(2) = varmo(ify)
+        force(3) = varmo(ifz)
+        ! On remet les varpl comme il faut. Elles ont peut-être été modifiées
+        varpl(ifx) = varmo(ifx)
+        varpl(ify) = varmo(ify)
+        varpl(ifz) = varmo(ifz)
+    endif
 !
 end subroutine

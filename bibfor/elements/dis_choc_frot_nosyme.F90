@@ -55,9 +55,10 @@ real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
     character(len=8)    :: nomre1(nbre1)
 !   Index des variables internes
     integer, parameter :: idepx=1, idepy=2, idepz=3, iidic=4, idepyp=5, idepzp=6
-    integer, parameter :: ifx=7, ify=8, ifz=9
+    integer, parameter :: ifx=7, ify=8, ifz=9, icalc=10
 !   État du discret : adhérent, glissant, décollé
     integer, parameter :: EtatAdher=0, EtatGliss=1, EtatDecol=2
+    integer, parameter :: EnVitesse=1, EnPlasticite=2
 !
     integer             :: indic, ii
     real(kind=8)        :: xl(6), xd(3), rignor, rigtan
@@ -112,6 +113,7 @@ real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
     varpl(idepx) = depx
     varpl(idepy) = depy
     varpl(idepz) = depz
+    varpl(icalc) = EnPlasticite
 !   Calcul des variables internes et efforts
     if ( for_discret%lVari .or. for_discret%lVect ) then
         if (depx .le. 0.0) then

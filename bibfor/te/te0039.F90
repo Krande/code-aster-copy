@@ -21,6 +21,7 @@ subroutine te0039(option, nomte)
 use te0047_type
 implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dis_choc_frot_syme.h"
@@ -73,6 +74,8 @@ implicit none
 !
     character(len=8)  :: k8bid
     character(len=16) :: kmess(5)
+!
+    aster_logical, parameter    :: Predic=ASTER_FALSE
 !
 ! --------------------------------------------------------------------------------------------------
     infodi = 1
@@ -197,7 +200,7 @@ implicit none
                 ilogic = 0; force(1:3) = 0.0
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, sip, fono, force)
                 call dis_choc_frot_syme(for_discret, zi(lmater), ulp, zr(igeom), klv, &
-                                        dvl, dpe, dve, force, varmo, varpl)
+                                        dvl, dpe, dve, Predic, force, varmo, varpl)
                 ilogic = 2
                 call discret_sief(for_discret, klv, ulp, sim, ilogic, sip, zr(ifono), force)
                 do ii = 1, neq

@@ -57,10 +57,10 @@ integer, intent(out)          :: iret
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip, fdnc
-    integer :: iretlc, ifono, icontm, icontp
+    integer :: iretlc, ifono, icontm, icontp, iiter, iterat
 !
 !   Les variables internes
-    integer, parameter  :: nbvari=9
+    integer, parameter  :: nbvari=10
     real(kind=8)        :: varmo(nbvari), varpl(nbvari)
 !
     real(kind=8) :: dvl(12), dpe(12), dve(12), ulp(12), fl(12), force(3)
@@ -72,7 +72,7 @@ integer, intent(out)          :: iret
     real(kind=8) :: valre1(1)
     integer      :: codre1(1)
 !
-    aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique
+    aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, Prediction
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,6 +80,9 @@ integer, intent(out)          :: iret
     call jevech('PCADISK', 'L', jdc)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCONTMR', 'L', icontm)
+!   on recupere le no de l'iteration de newton
+    call jevech('PITERAT', 'L', iiter)
+    iterat = zi(iiter)
 !
     call infdis('REPK', irep, r8bid, k8bid)
 !   absolu vers local ? ---
@@ -160,8 +163,10 @@ integer, intent(out)          :: iret
                                   varmo, force, varpl)
     else
         IsSymetrique = ASTER_TRUE
+        ! Prédiction en dynamique, on retourne les efforts précédents
+        Prediction = IsDynamique.and.(iterat.eq.1).and.(for_discret%option.eq.'RAPH_MECA')
         call dis_choc_frot_syme(for_discret, zi(imat), ulp, zr(igeom), klv, &
-                                dvl, dpe, dve, force, varmo, varpl)
+                                dvl, dpe, dve, Prediction, force, varmo, varpl)
     endif
 !   actualisation de la matrice tangente
     if ( for_discret%lMatr ) then
@@ -174,7 +179,7 @@ integer, intent(out)          :: iret
             endif
         else
             call jevech('PMATUNS', 'E', imat)
-            call utpnlg(for_discret%nno, for_discret%ndim, for_discret%pgl, klv, zr(imat))
+            call utpnlg(for_discret%nno, for_discret%nc, for_discret%pgl, klv, zr(imat))
         endif
     endif
 !
