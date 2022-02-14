@@ -60,6 +60,7 @@ class Calcul {
 
     /** @brief Input fields */
     listFields _inputFields;
+    listElemTerms _inputElemTerms;
 
     /** @brief Output fields */
     listFields _outputFields;
@@ -104,12 +105,18 @@ class Calcul {
     /** @brief Add output field */
     void addOutputField( const std::string parameterName, const DataStructurePtr field );
 
+    /** @brief Add input elementary term */
+    void addInputElementaryTerm( const std::string parameterName, const DataStructurePtr field );
+
     /** @brief Add output elementary term */
     void addOutputElementaryTerm( const std::string parameterName,
                                   const ElementaryTermRealPtr field );
 
     /** @brief Clear all input fields */
     void clearInputFields() { _inputFields.clear(); };
+
+    /** @brief Clear all input elementary term */
+    void clearInputElemTerms() { _inputElemTerms.clear(); };
 
     /** @brief Clear all output fields */
     void clearOutputFields() {
@@ -130,7 +137,10 @@ class Calcul {
     };
 
     /** @brief Clear all inputs  */
-    void clearInputs() { clearInputFields(); };
+    void clearInputs() {
+        clearInputFields();
+        clearInputElemTerms();
+    };
 
     /** @brief Is output if is elementary term */
     bool hasOutputElementaryTerm( const std::string parameterName ) const;

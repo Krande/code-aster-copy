@@ -141,10 +141,14 @@ void Calcul::compute() {
     std::string calculContinue, calculLigrel, calculMPI;
     FiniteElementDescriptorPtr calculFEDesc;
 
-    inputNb = _inputFields.size();
+    inputNb = _inputFields.size() + _inputElemTerms.size();
     for ( const auto &[parameterName, field] : _inputFields ) {
         inputParams.push_back( parameterName );
         inputFields.push_back( field->getName() );
+    }
+    for ( const auto &[parameterName, elemTerm] : _inputElemTerms ) {
+        inputParams.push_back( parameterName );
+        inputFields.push_back( elemTerm->getName() );
     }
 
     outputNb = _outputFields.size() + _outputElemTerms.size();
@@ -152,9 +156,9 @@ void Calcul::compute() {
         outputParams.push_back( parameterName );
         outputFields.push_back( field->getName() );
     }
-    for ( const auto &[parameterName, field] : _outputElemTerms ) {
+    for ( const auto &[parameterName, elemTerm] : _outputElemTerms ) {
         outputParams.push_back( parameterName );
-        outputFields.push_back( field->getName() );
+        outputFields.push_back( elemTerm->getName() );
     }
 
     calculContinue = "C";
