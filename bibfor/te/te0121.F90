@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,27 +15,11 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
-! This file is part of code_aster.
 !
-! code_aster is free software: you can redistribute it and/or modify
-! it under the terms of the GNU General Public License as published by
-! the Free Software Foundation, either version 3 of the License, or
-! (at your option) any later version.
-!
-! code_aster is distributed in the hope that it will be useful,
-! but WITHOUT ANY WARRANTY; without even the implied warranty of
-! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-! GNU General Public License for more details.
-!
-! You should have received a copy of the GNU General Public License
-! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
-! --------------------------------------------------------------------
-
 subroutine te0121(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -45,137 +29,174 @@ subroutine te0121(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/pmfmats.h"
+#include "asterfort/lteatt.h"
 !
-    character(len=16) :: option, nomte
-!
-! --------------------------------------------------------------------------------------------------
-!
-!    - fonction réalisée :  calcul des matrices élémentaires
-!                          option : 'AMOR_MECA'
-!        pour tous les types d'éléments (sauf les éléments discrets)
-!
-!    - arguments:
-!        données:      option       -->  option de calcul
-!                      nomte        -->  nom du type élément
+character(len=16), intent(in) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbres, nbpar
-    parameter  ( nbres=2 )
-    parameter  ( nbpar=3 )
+! Elementary computation
 !
-    integer :: jgano, iret, nbval, nbddl, idimge, npara
-    integer :: i, j, k, kns, ks, mater, irigi, imass
-    integer :: iresu, imate, ins, irns
-    integer :: idresu(5), idrigi(2), idmass(2), idgeo(5)
-    integer :: ipoids, ivf, idfdx, igeom
-    integer :: ndim, nno, nnos, npg1, ino
+! Elements: all except DIS_*
 !
-    real(kind=8) :: alpha, beta, valres(nbres), valpar(nbpar), vxyz
+! Option: AMOR_MECA
 !
-    integer :: icodre(nbres)
-    character(len=8) :: nompar(nbpar), nomat
-    character(len=16) :: nomres(nbres)
-    character(len=32) :: phenom
+! --------------------------------------------------------------------------------------------------
+!
+! In  option           : name of option to compute
+! In  nomte            : type of finite element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: nbPara = 3
+    character(len=8), parameter :: paraName(nbPara) = (/'X', 'Y', 'Z'/)
+    real(kind=8) :: paraVale(nbPara)
+    integer, parameter :: nbResu = 2
+    character(len=16), parameter :: resuName(nbResu) = (/'AMOR_ALPHA',&
+                                                         'AMOR_BETA '/)
+    real(kind=8) :: resuVale(nbResu)
+    integer :: icodre(nbResu)
+    integer :: iret, nbddl, geomDime, nbParaEff
+    integer :: i, j, iGeomDime, kns, ks
+    integer :: jvMate, jvMateCod, jvGeom
+    integer :: nbNode, iNode
+    real(kind=8) :: alpha, beta, vxyz
+    integer :: matrRigiSize, matrResuSize, matrMassSize
+    aster_logical :: lAbso
+    aster_logical :: lRigiSyme, lMatrRigi, lMatrMass, lMatrResuSyme
+    character(len=8) ::  materPMF
+    character(len=32) :: elasKeyword
+    integer, parameter :: tecachNbVal = 5
+    integer :: itab(tecachNbVal)
+    integer :: jvMass, jvRigi, jvResu
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option .eq. 'AMOR_MECA')
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-                     npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
-!
-!   récupération des champs paramètres et de leurs longueurs:
-    ins=0
-    irns=0
-!
-    call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
-    if (ins .eq. 0) then
-        call tecach('ONO', 'PMATUUR', 'E', iret, nval=5, itab=idresu)
-    else
-        call tecach('NNO', 'PMATUNS', 'E', irns, nval=5, itab=idresu)
-        if (irns .ne. 0) call tecach('ONO', 'PMATUUR', 'E', iret, 5, itab=idresu)
+    call elrefe_info(fami='RIGI', nno=nbNode)
+    lAbso = lteatt('ABSO', 'OUI')
+
+! - Get RIGI_MECA (symmetric)
+    call tecach('NNO', 'PRIGIEL', 'L', iret, nval=tecachNbVal, itab=itab)
+    lMatrRigi = iret .eq. 0
+    lRigiSyme = ASTER_FALSE
+    jvRigi = 0
+    matrRigiSize = 0
+    if (lMatrRigi) then
+        call tecach('OOO', 'PRIGIEL', 'L', iret, nval=tecachNbVal, itab=itab)
+        lRigiSyme = ASTER_TRUE
+        jvRigi = itab(1)
+        matrRigiSize = itab(2)
     endif
-!
-    nbval= idresu(2)
-!
-    nompar(1)='X'
-    nompar(2)='Y'
-    nompar(3)='Z'
-!
-    call tecach('ONO', 'PGEOMER', 'L', iret, nval=5, itab=idgeo)
-    igeom=idgeo(1)
-    idimge=idgeo(2)/nno
-!
-    ASSERT(idimge.eq.2 .or. idimge.eq.3)
-!
-    npara=idimge
-    do k = 1, idimge
+
+! - Get MASS_MECA
+    call tecach('ONO', 'PMASSEL', 'L', iret, nval=tecachNbVal, itab=itab)
+    lMatrMass = iret .eq. 0
+    jvMass = 0
+    matrMassSize = 0
+    if (lMatrMass) then
+        call tecach('OOO', 'PMASSEL', 'L', iret, nval=tecachNbVal, itab=itab)
+        jvMass = itab(1)
+        matrMassSize = itab(2)
+    endif
+
+! - Select output matrix (symmetric or not)
+    lMatrResuSyme = ASTER_TRUE
+    if (lRigiSyme) then
+        call tecach('ONO', 'PMATUUR', 'E', iret, nval=tecachNbVal, itab=itab)
+        lMatrResuSyme = ASTER_TRUE
+    else
+        call tecach('NNO', 'PMATUNS', 'E', iret, nval=tecachNbVal, itab=itab)
+        lMatrResuSyme = ASTER_FALSE
+        if (iret .ne. 0) then
+            lMatrResuSyme = ASTER_TRUE
+            call tecach('ONO', 'PMATUUR', 'E', iret,&
+                        nval=tecachNbVal, itab=itab)
+        endif
+    endif
+    jvResu = itab(1)
+    matrResuSize = itab(2)
+
+    if (.not.lMatrRigi .and. .not. lMatrResuSyme) then
+        call tecach('OOO', 'PRIGINS', 'L', iret, nval=tecachNbVal, itab=itab)
+        lMatrRigi = ASTER_TRUE
+        jvRigi = itab(1)
+        matrRigiSize = itab(2)
+    endif
+
+! - Access to geometry
+    call tecach('ONO', 'PGEOMER', 'L', iret, tecachNbVal, itab=itab)
+    jvGeom = itab(1)
+    geomDime = itab(2)/nbNode
+    ASSERT(geomDime .eq. 2 .or. geomDime .eq. 3)
+
+! - Get (average) coordinates of cell
+    nbParaEff = geomDime
+    do iGeomDime = 1, geomDime
         vxyz = 0.d0
-        do ino = 1, nno
-            vxyz = vxyz+zr(igeom + idimge*(ino-1) +k -1)
+        do iNode = 1, nbNode
+            vxyz = vxyz+zr(jvGeom + geomDime*(iNode-1)+iGeomDime -1)
         enddo
-        valpar(k) = vxyz/nno
+        paraVale(iGeomDime) = vxyz/nbNode
     enddo
-!
-    call jevech('PMATERC', 'L', imate)
-    mater=zi(imate)
-    call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
-    if(.not.(phenom .eq. 'ELAS'       .or. phenom .eq. 'ELAS_COQMU' .or. &
-             phenom .eq. 'ELAS_GLRC'  .or. phenom .eq. 'ELAS_DHRC'  .or. &
-             phenom .eq. 'ELAS_ORTH')) then
-        call utmess('F', 'PLATE1_1', nk=2, valk=[option, phenom])
+
+! - Get material parameters
+    call jevech('PMATERC', 'L', jvMate)
+    jvMateCod = zi(jvMate)
+    call rccoma(jvMateCod, 'ELAS', 1, elasKeyword, icodre(1))
+    if(.not.(elasKeyword .eq. 'ELAS'       .or. elasKeyword .eq. 'ELAS_COQMU' .or. &
+             elasKeyword .eq. 'ELAS_GLRC'  .or. elasKeyword .eq. 'ELAS_DHRC'  .or. &
+             elasKeyword .eq. 'ELAS_ORTH')) then
+        call utmess('F', 'PLATE1_1', nk=2, valk=[option, elasKeyword])
     endif
 
 !   si l'élément est multifibre, il faut prendre le materiau "section"
 !   pour récupérer les coefficients de dilatation :
-    call pmfmats(mater, nomat)
-!
-    if (ins .eq. 0) then
-        call tecach('ONO', 'PRIGIEL', 'L', iret, nval=2, itab=idrigi)
-        ASSERT(idrigi(2).eq.nbval)
-    else if (irns.eq.0) then
-        call tecach('ONO', 'PRIGINS', 'L', iret, nval=2, itab=idrigi)
-        ASSERT(idrigi(2).eq.nbval)
+    call pmfmats(jvMateCod, materPMF)
+    resuVale = 0.d0
+    call rcvalb('RIGI', 1, 1, '+', jvMateCod, materPMF, elasKeyword,&
+                nbParaEff, paraName, paraVale,&
+                nbResu, resuName, resuVale,&
+                icodre, 0, nan='NON')
+    alpha = resuVale(1)
+    beta = resuVale(2)
+
+! - Some checks
+    if (lMatrResuSyme) then
+        if (lMatrMass) then
+            ASSERT(matrMassSize .eq. matrResuSize)
+        endif
+    else
+        nbddl = int(sqrt(dble(matrResuSize)))
+        if (lMatrMass) then
+            ASSERT(matrMassSize .eq. nbddl*(nbddl+1)/2)
+        endif
     endif
-!
-!   récupération des coefficients fonctions de la géométrie :
-    nbddl = 0
-!
-    call tecach('ONO', 'PMASSEL', 'L', iret, nval=2, itab=idmass)
-    if (ins .eq. 0) then
-        ASSERT(idmass(2).eq.nbval)
-    else if (irns.eq.0) then
-        nbddl = int(sqrt(dble(nbval)))
-        ASSERT(idmass(2).eq. nbddl*(nbddl+1)/2)
+    if (lMatrRigi) then
+        ASSERT(matrRigiSize .eq. matrResuSize)
     endif
-!
-    nomres(1)='AMOR_ALPHA'
-    nomres(2)='AMOR_BETA'
-    valres(1) = 0.d0
-    valres(2) = 0.d0
-    call rcvalb('RIGI', 1, 1, '+', mater, nomat, phenom, npara, nompar, valpar, 2,&
-                nomres, valres, icodre, 0, nan='NON')
-!
-!   calcul proprement dit
-    iresu= idresu(1)
-    irigi= idrigi(1)
-!
-    alpha= valres(1)
-    beta = valres(2)
-    imass= idmass(1)
-!
-    if (ins .eq. 0 .or. irns .ne. 0) then
-        do i = 1, nbval
-            if (irigi .ne. 0) then
-                zr(iresu-1+i)=alpha*zr(irigi-1+i)+beta*zr(imass-1+i)
+    ASSERT(jvRigi .ne. 0 .or. jvMass .ne. 0)
+    if (jvMass .eq. 0 .and. .not. lAbso) then
+        call utmess('F', "MATRICE0_12")
+    endif
+
+! - Compute
+    if (lMatrResuSyme) then
+        do i = 1, matrResuSize
+            if (jvRigi .eq. 0) then
+                zr(jvResu-1+i) = beta*zr(jvMass-1+i)
             else
-                zr(iresu-1+i)=beta*zr(imass-1+i)
+                if (jvMass .eq. 0) then
+                    zr(jvResu-1+i) = alpha*zr(jvRigi-1+i)
+                else
+                    zr(jvResu-1+i) = alpha*zr(jvRigi-1+i) + beta*zr(jvMass-1+i)
+                endif
             endif
         enddo
     else
-!           Cas non symétrique
-        ASSERT(nbddl.gt.0)
+        ASSERT(jvRigi .ne. 0)
+        ASSERT(nbddl .gt. 0)
         do i = 1, nbddl
             kns = (i-1)*nbddl
             do j = 1, nbddl
@@ -184,7 +205,11 @@ subroutine te0121(option, nomte)
                 else
                     ks = (j-1)*j/2+i
                 endif
-                zr(iresu-1+kns+j)=alpha*zr(irigi-1+kns+j) +beta* zr(imass-1+ks)
+                if (jvMass .eq. 0) then
+                    zr(jvResu-1+kns+j) = alpha*zr(jvRigi-1+kns+j)
+                else
+                    zr(jvResu-1+kns+j) = alpha*zr(jvRigi-1+kns+j) + beta*zr(jvMass-1+ks)
+                endif
             enddo
         enddo
     endif
