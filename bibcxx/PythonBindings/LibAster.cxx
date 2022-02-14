@@ -50,6 +50,7 @@
 #include "PythonBindings/ContactNewInterface.h"
 #include "PythonBindings/ContactParametersInterface.h"
 #include "PythonBindings/ContactZoneInterface.h"
+#include "PythonBindings/ContactPairingInterface.h"
 #include "PythonBindings/CppToFortranGlossaryInterface.h"
 #include "PythonBindings/CrackInterface.h"
 #include "PythonBindings/CrackShapeInterface.h"
@@ -207,6 +208,7 @@ PYBIND11_MODULE( libaster, mod ) {
     exportContactParametersToPython( mod );
     exportContactNewToPython( mod );
     exportContactZoneToPython( mod );
+    exportContactPairingToPython( mod );
     exportBaseAssemblyMatrixToPython( mod );
     exportAssemblyMatrixToPython( mod );
     exportElementaryTermToPython( mod );

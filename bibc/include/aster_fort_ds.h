@@ -189,6 +189,14 @@ extern void DEFSPSSSS( VTGPLD, vtgpld, const char *, STRING_SIZE, ASTERDOUBLE *,
             STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, const char *,
                     STRING_SIZE);
 
+#define CALLO_APLCPGN( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q ) \
+     CALLOOOOPPPPPPPPPPPPP( APLCPGN, aplcpgn, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q )
+extern void DEFSSSSPPPPPPPPPPPPP( APLCPGN, aplcpgn, const char *, STRING_SIZE, const char *, 
+            STRING_SIZE, const char *, STRING_SIZE, const char *, STRING_SIZE, ASTERDOUBLE *, 
+            ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, 
+            ASTERINTEGER *,ASTERINTEGER *, ASTERINTEGER **, ASTERINTEGER **, ASTERDOUBLE ** , 
+            ASTERDOUBLE **, ASTERDOUBLE ** );
+
 #ifdef __cplusplus
 }
 #endif

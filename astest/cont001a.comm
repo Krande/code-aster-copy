@@ -81,6 +81,13 @@ DN = DEFI_NAPPE(
 
 DFO = FORMULE(NOM_PARA="INST", VALE="sin(INST)")
 
+MAT = DEFI_MATERIAU(ELAS=_F(E=20000, NU=0.3,
+                            ALPHA=0.01))
+CHMAT = AFFE_MATERIAU(MAILLAGE=Mail,
+                      AFFE=_F(
+                          TOUT='OUI',
+                          MATER=MAT))
+
 # tester la catalogue 2 zones :
 # global parameters and contactParameters
 DEFICO = DEFI_CONT(
@@ -122,6 +129,29 @@ test.assertEqual(DEFICO.getModel().getName(), MODI.getName())
 test.assertEqual(DEFICO.getMesh().getName(), Mail.getName())
 test.assertFalse(DEFICO.hasFriction)
 test.assertTrue(DEFICO.hasSmoothing)
+
+
+# Pairing checks
+from libaster import PhysicalProblem, FieldOnNodesReal, ContactPairing
+
+study = PhysicalProblem(MODI, CHMAT, CARAMECA)
+study.computeDOFNumbering()
+dofNumbering = study.getDOFNumbering()
+
+disp = FieldOnNodesReal(dofNumbering)
+disp.setValues(4)
+pair = ContactPairing(DEFICO.getContactZones(), Mail)
+pair.updateCoordinates(disp)
+
+nb_zones = DEFICO.getNumberOfContactZones()
+for i in range(nb_zones):
+    pair.computePairingQuantities(i)
+
+test.assertEqual(pair.getListOfPairs(1), [78, 31, 79, 32, 80, 33, 81, 34, 82, 35,
+                                          83, 36, 84, 37, 85, 38, 86, 39, 87, 40])
+
+test.assertEqual([pair.getNumberOfPairs(i) for i in range(nb_zones)], [26, 10])
+
 
 algo_cont = [code_aster.ContactAlgo.Lagrangian, code_aster.ContactAlgo.Nitsche]
 vari_cont = [code_aster.ContactVariant.Robust, code_aster.ContactVariant.Rapide]
