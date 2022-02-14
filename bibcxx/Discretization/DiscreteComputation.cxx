@@ -54,7 +54,7 @@ FieldOnNodesRealPtr DiscreteComputation::imposedDisplacement( ASTERDOUBLE time )
 
     // CORICH appel getres (use only result name and not command name)
     CommandSyntax cmdSt( "GENERIC" );
-    ElementaryVectorPtr vect_elem;
+    BaseElementaryVectorPtr vect_elem;
 
     if ( _study->getModel()->isMechanical() ) {
         vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();
@@ -97,7 +97,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualReaction( FieldOnNodesRealPtr lagr_
     const std::string base( "G" );
 
     std::string lagrName = lagr_curr->getName();
-    ElementaryVectorPtr vect_elem;
+    BaseElementaryVectorPtr vect_elem;
 
     if ( _study->getModel()->isMechanical() ) {
         vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();
@@ -132,7 +132,7 @@ FieldOnNodesRealPtr DiscreteComputation::dualDisplacement( FieldOnNodesRealPtr d
 
     const std::string base( "G" );
     const ASTERDOUBLE const_scaling = scaling;
-    ElementaryVectorPtr vect_elem;
+    BaseElementaryVectorPtr vect_elem;
 
     if ( _study->getModel()->isMechanical() ) {
         vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();
@@ -198,7 +198,7 @@ FieldOnNodesRealPtr DiscreteComputation::neumann( const VectorReal time ) {
 
     // CORICH appel getres
     CommandSyntax cmdSt( "GENERIC" );
-    ElementaryVectorPtr vect_elem;
+    BaseElementaryVectorPtr vect_elem;
 
     if ( curModel->isMechanical() ) {
         vect_elem = boost::make_shared< ElementaryVectorDisplacementReal >();

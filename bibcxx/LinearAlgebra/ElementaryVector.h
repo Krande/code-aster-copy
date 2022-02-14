@@ -3,7 +3,7 @@
 
 /**
  * @file ElementaryVector.h
- * @brief Fichier entete de la classe ElementaryVector
+ * @brief Definition of elementary vectors
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
@@ -31,173 +31,148 @@
 #include "DataFields/FieldOnNodes.h"
 #include "DataStructures/DataStructure.h"
 #include "Loads/ListOfLoads.h"
-#include "Loads/MechanicalLoad.h"
 #include "Loads/PhysicalQuantity.h"
 #include "MemoryManager/JeveuxVector.h"
 #include "Numbering/DOFNumbering.h"
-#include "Numbering/ParallelDOFNumbering.h"
 #include "Supervis/ResultNaming.h"
 
 /**
- * @class ElementaryVector
- * @brief Class definissant une sd_vect_elem
- * @author Nicolas Sellenet
+ * @class BaseElementaryVector
+ * @brief Generic class for sd_vect_elem
  */
-class ElementaryVector : public DataStructure {
-  private:
-    /** @typedef std::list de MechanicalLoad */
-    typedef ListMecaLoadReal ListMechanicalLoad;
-    /** @typedef Iterateur sur une std::list de MechanicalLoad */
-    typedef ListMechanicalLoad::iterator ListMechanicalLoadIter;
+class BaseElementaryVector : public DataStructure {
+  protected:
+    /** @brief Objects for computation of elementary terms */
+    JeveuxVectorChar24 _rerr;
+    JeveuxVectorChar24 _relr;
 
-    /** @brief Objet Jeveux '.RERR' */
-    JeveuxVectorChar24 _description;
-    /** @brief Objet Jeveux '.RELR' */
-    JeveuxVectorChar24 _listOfElementaryTerms;
-    /** @brief Booleen indiquant si la sd est vide */
+    /** @brief Flag for empty datastructure */
     bool _isEmpty;
+
     /** @brief Vectors of RESUELEM */
     std::vector< ElementaryTermRealPtr > _realVector;
 
     /** @brief Liste de charges */
     ListOfLoadsPtr _listOfLoads;
 
+    /** @brief Link betwwen load and vector */
     NamesMapChar24 _corichRept;
 
   public:
-    /**
-     * @typedef ElementaryVectorPtr
-     * @brief Pointeur intelligent vers un ElementaryVector
-     */
-    typedef boost::shared_ptr< ElementaryVector > ElementaryVectorPtr;
-
-    /**
-     * @brief Constructeur
-     */
-    ElementaryVector( const std::string name, const std::string type = "VECT_ELEM" )
+    /** @brief Constructor with a name */
+    BaseElementaryVector( const std::string name, const std::string type = "VECT_ELEM" )
         : DataStructure( name, 19, type ),
-          _description( JeveuxVectorChar24( getName() + ".RERR" ) ),
-          _listOfElementaryTerms( JeveuxVectorChar24( getName() + ".RELR" ) ),
+          _rerr( JeveuxVectorChar24( getName() + ".RERR" ) ),
+          _relr( JeveuxVectorChar24( getName() + ".RELR" ) ),
           _isEmpty( true ),
           _listOfLoads( new ListOfLoads() ),
           _corichRept( NamesMapChar24( "&&CORICH.REPT" ) ){};
 
-    /**
-     * @brief Constructeur
-     */
-    ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ){};
+    /** @brief Constructor with automatic name */
+    BaseElementaryVector() : BaseElementaryVector( ResultNaming::getNewResultName() ){};
 
-    /**
-     * @brief Function d'ajout d'un chargement
-     * @param Args... Liste d'arguments template
-     */
+  public:
+    /** @brief Add a load to elementary vector */
     template < typename... Args >
     void addLoad( const Args &...a ) {
         _listOfLoads->addLoad( a... );
     };
 
-    /**
-     * @brief Reset new type (double, complex, ...)
-     * @param newType
-     */
+    /** @brief Set type of vector */
     void setType( const std::string newType ) { DataStructure::setType( newType ); };
 
     /**
-     * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
-     * @param dofNume objet DOFNumbering
+     * @brief Assembly with dofNume and time (for load)
+     * @param dofNume object DOFNumbering
      */
     FieldOnNodesRealPtr assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
                                                    const ASTERDOUBLE &time );
 
     /**
-     * @brief Assembler les vecteurs elementaires en se fondant sur dofNume
-     * @param dofNume objet DOFNumbering
+     * @brief Assembly with dofNume and apply functions from loads
+     * @param dofNume object DOFNumbering
      */
     FieldOnNodesRealPtr assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume ) {
         return assembleWithLoadFunctions( dofNume, 0. );
     };
 
+    /**
+     * @brief Assembly with dofNume
+     * @param dofNume object DOFNumbering
+     */
     FieldOnNodesRealPtr assemble( const BaseDOFNumberingPtr dofNume ) const;
 
+    /**
+     * @brief Assembly with dofNume and mask on cells
+     * @param dofNume object DOFNumbering
+     * @param maskCell FieldOnCells to apply mask on each cell
+     * @param maskInve flag to inverse mask
+     */
     FieldOnNodesRealPtr assembleWithMask( const BaseDOFNumberingPtr &dofNume,
                                           const FieldOnCellsLongPtr &maskCell,
                                           const int &maskInve );
 
     /**
-     * @brief Methode permettant de savoir si les matrices elementaires sont vides
-     * @return true si les matrices elementaires sont vides
+     * @brief Detect state of datastructure
+     * @return true if empty datastructure
      */
     bool isEmpty() { return _isEmpty; };
 
     /**
-     * @brief Methode permettant de changer l'état de remplissage
-     * @param bEmpty booleen permettant de dire que l'objet est vide ou pas
+     * @brief Set state of datastructure
+     * @param bEmpty flag for state of datastructure
      */
     void isEmpty( bool bEmpty ) { _isEmpty = bEmpty; };
 
     /**
-     * @brief Methode permettant de definir la liste de charge
-     * @param currentList Liste charge
+     * @brief Set list of loads
+     * @param currentList list of loads
      */
     void setListOfLoads( const ListOfLoadsPtr &currentList ) { _listOfLoads = currentList; };
 
-    /**
-     * @brief function to build ElementaryTerm
-     */
+    /** @brief Function to build ElementaryTerm */
     bool build();
 
     friend class DiscreteComputation;
 };
 
-/**
- * @typedef ElementaryVectorPtr
- * @brief Pointeur intelligent vers un ElementaryVector
- */
-typedef boost::shared_ptr< ElementaryVector > ElementaryVectorPtr;
+/** @typedef BaseElementaryVectorPtr */
+typedef boost::shared_ptr< BaseElementaryVector > BaseElementaryVectorPtr;
 
 /**
- * @class TemplateElementaryVector
- * @brief Classe definissant une sd_vect_elem template
- * @author Nicolas Sellenet
+ * @class ElementaryVector
+ * @brief Class for sd_vect_elem template
  */
-template < class ValueType, PhysicalQuantityEnum PhysicalQuantity >
-class TemplateElementaryVector : public ElementaryVector {
+template < typename ValueType, PhysicalQuantityEnum PhysicalQuantity >
+class ElementaryVector : public BaseElementaryVector {
   public:
-    /**
-     * @typedef TemplateElementaryVectorPtr
-     * @brief Pointeur intelligent vers un TemplateElementaryVector
-     */
-    typedef boost::shared_ptr< TemplateElementaryVector< ValueType, PhysicalQuantity > >
-        TemplateElementaryVectorPtr;
+    /** @typedef ElementaryVectorPtr */
+    typedef boost::shared_ptr< ElementaryVector< ValueType, PhysicalQuantity > >
+        ElementaryVectorPtr;
 
-    /**
-     * @brief Constructor with a name
-     */
-    TemplateElementaryVector( const std::string name )
-        : ElementaryVector( name,
-                            "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
-                                ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ){};
+    /** @brief Constructor with a name */
+    ElementaryVector( const std::string name )
+        : BaseElementaryVector(
+              name, "VECT_ELEM_" + std::string( PhysicalQuantityNames[PhysicalQuantity] ) +
+                        ( typeid( ValueType ) == typeid( ASTERDOUBLE ) ? "_R" : "_C" ) ){};
 
-    /**
-     * @brief Constructor
-     */
-    TemplateElementaryVector() : TemplateElementaryVector( ResultNaming::getNewResultName() ){};
+    /** @brief Constructor with automatic name */
+    ElementaryVector() : ElementaryVector( ResultNaming::getNewResultName() ){};
 };
 
-/** @typedef Definition d'une matrice élémentaire de double */
-template class TemplateElementaryVector< ASTERDOUBLE, Displacement >;
-typedef TemplateElementaryVector< ASTERDOUBLE, Displacement > ElementaryVectorDisplacementReal;
-
-/** @typedef Definition d'une matrice élémentaire de double temperature */
-template class TemplateElementaryVector< ASTERDOUBLE, Temperature >;
-typedef TemplateElementaryVector< ASTERDOUBLE, Temperature > ElementaryVectorTemperatureReal;
-
-/** @typedef Definition d'une matrice élémentaire de ASTERCOMPLEX pression */
-template class TemplateElementaryVector< ASTERCOMPLEX, Pressure >;
-typedef TemplateElementaryVector< ASTERCOMPLEX, Pressure > ElementaryVectorPressureComplex;
-
+/** @typedef Elementary vector for displacement-double */
+template class ElementaryVector< ASTERDOUBLE, Displacement >;
+typedef ElementaryVector< ASTERDOUBLE, Displacement > ElementaryVectorDisplacementReal;
 typedef boost::shared_ptr< ElementaryVectorDisplacementReal > ElementaryVectorDisplacementRealPtr;
+
+/** @typedef Elementary vector for temperature-double */
+template class ElementaryVector< ASTERDOUBLE, Temperature >;
+typedef ElementaryVector< ASTERDOUBLE, Temperature > ElementaryVectorTemperatureReal;
 typedef boost::shared_ptr< ElementaryVectorTemperatureReal > ElementaryVectorTemperatureRealPtr;
+
+/** @typedef Elementary vector for pressure-complex */
+template class ElementaryVector< ASTERCOMPLEX, Pressure >;
+typedef ElementaryVector< ASTERCOMPLEX, Pressure > ElementaryVectorPressureComplex;
 typedef boost::shared_ptr< ElementaryVectorPressureComplex > ElementaryVectorPressureComplexPtr;
 
 #endif /* ELEMENTARYVECTOR_H_ */

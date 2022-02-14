@@ -25,21 +25,22 @@
 #include "Supervis/Exceptions.h"
 #include "Utilities/Tools.h"
 
-#include <stdexcept>
-
-FieldOnNodesRealPtr ElementaryVector::assemble( const BaseDOFNumberingPtr dofNume ) const {
+FieldOnNodesRealPtr BaseElementaryVector::assemble( const BaseDOFNumberingPtr dofNume ) const {
     if ( _isEmpty )
         raiseAsterError( "The ElementaryVector is empty" );
 
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
+    // Create field
     FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
 
-    VectorString vect_elem( 1, getName() );
+    // Elementary vector names
+    std::string vectElemName = getName();
+    VectorString vectElemVect( 1, vectElemName );
+    char *tabNames = vectorStringAsFStrArray( vectElemVect, 19 );
 
-    char *tabNames = vectorStringAsFStrArray( vect_elem, 19 );
-
+    // Assembling
     ASTERDOUBLE list_coef = 1.0;
     ASTERINTEGER typscal = 1;
     ASTERINTEGER nbElem = 1;
@@ -50,65 +51,70 @@ FieldOnNodesRealPtr ElementaryVector::assemble( const BaseDOFNumberingPtr dofNum
 
     FreeStr( tabNames );
 
-    field->build();
-
     return field;
 };
 
-FieldOnNodesRealPtr ElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
-                                                                 const ASTERDOUBLE &time ) {
+FieldOnNodesRealPtr
+BaseElementaryVector::assembleWithLoadFunctions( const BaseDOFNumberingPtr &dofNume,
+                                                 const ASTERDOUBLE &time ) {
     if ( _isEmpty )
         raiseAsterError( "The ElementaryVector is empty" );
 
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
+    // Create field
     FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
-    std::string name( " " );
-    name.resize( 24, ' ' );
 
-    _listOfLoads->build();
+    // Elementary vector names
+    std::string vectElemName = getName();
+
+    // Link between vector and load function
     if ( !_corichRept->exists() ) {
-        _listOfElementaryTerms->updateValuePointer();
-        auto size = _listOfElementaryTerms->size();
+        _relr->updateValuePointer();
+        auto size = _relr->size();
         for ( ASTERINTEGER i = 1; i <= size; ++i ) {
-            std::string vectElem( ( *_listOfElementaryTerms )[i - 1].toString() );
+            std::string vectElem( ( *_relr )[i - 1].toString() );
             vectElem.resize( 24, ' ' );
             CALLO_CORICHWRITE( vectElem, &i );
         }
     }
 
+    // Pre-assembling
     std::string typres( "R" );
-    CALLO_ASASVE( getName(), dofNume->getName(), typres, name );
+    std::string name( " " );
+    name.resize( 24, ' ' );
+    CALLO_ASASVE( vectElemName, dofNume->getName(), typres, name );
 
-    std::string detr( "D" );
+    // Get function for load
+    _listOfLoads->build();
     std::string fomult( " " );
-    const JeveuxVectorChar24 lOF = _listOfLoads->getListOfFunctions();
-    if ( !lOF.isEmpty() )
-        fomult = lOF->getName();
-    std::string param( "INST" );
+    const JeveuxVectorChar24 listOfLoadsFunc = _listOfLoads->getListOfFunctions();
+    if ( !listOfLoadsFunc.isEmpty() )
+        fomult = listOfLoadsFunc->getName();
 
+    // Final assembling with load function
     JeveuxVectorChar24 vectTmp2( name );
     vectTmp2->updateValuePointer();
     std::string name2( ( *vectTmp2 )[0].toString(), 0, 19 );
     FieldOnNodesRealPtr vectTmp3( new FieldOnNodesReal( name2 ) );
     field->allocateFrom( *vectTmp3 );
+
+    std::string detr( "D" );
     std::string base = "G";
-
+    std::string param( "INST" );
     CALLO_ASCOVA( detr, name, fomult, param, &time, typres, field->getName(), base );
-
-    field->build();
 
     return field;
 };
 
-bool ElementaryVector::build() {
-    _listOfElementaryTerms->updateValuePointer();
+bool BaseElementaryVector::build() {
+    _relr->updateValuePointer();
     _realVector.clear();
-    auto size = _listOfElementaryTerms->size();
+    auto size = _relr->size();
     _realVector.reserve( size );
     for ( int pos = 0; pos < size; ++pos ) {
-        const std::string name = ( *_listOfElementaryTerms )[pos].toString();
+        const std::string name = ( *_relr )[pos].toString();
         if ( trim( name ) != "" ) {
             ElementaryTermRealPtr toPush =
                 boost::make_shared< ElementaryTerm< ASTERDOUBLE > >( name );
@@ -118,19 +124,22 @@ bool ElementaryVector::build() {
     return true;
 };
 
-FieldOnNodesRealPtr ElementaryVector::assembleWithMask( const BaseDOFNumberingPtr &dofNume,
-                                                        const FieldOnCellsLongPtr &maskCell,
-                                                        const int &maskInve ) {
+FieldOnNodesRealPtr BaseElementaryVector::assembleWithMask( const BaseDOFNumberingPtr &dofNume,
+                                                            const FieldOnCellsLongPtr &maskCell,
+                                                            const int &maskInve ) {
 
     if ( ( !dofNume ) || dofNume->isEmpty() )
         raiseAsterError( "Numerotation is empty" );
 
+    // Create field
     FieldOnNodesRealPtr field = boost::make_shared< FieldOnNodesReal >( dofNume );
 
-    VectorString vectElem( 1, getName() );
+    // Elementary vector names
+    std::string vectElemName = getName();
+    VectorString vectElemVect( 1, vectElemName );
+    char *tabNames = vectorStringAsFStrArray( vectElemVect, 19 );
 
-    char *tabNames = vectorStringAsFStrArray( vectElem, 19 );
-
+    // Assembling with cell mask
     ASTERDOUBLE list_coef = 1.0;
     ASTERINTEGER typscal = 1;
     ASTERINTEGER nbElem = 1;
