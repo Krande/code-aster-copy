@@ -283,7 +283,9 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     ExternalStateVariablesBuilderPtr currExteVari = _study->getExternalStateVariables();
 
     // Compute external state variables
-    if ( currExteVari->hasExternalStateVariables() ) {
+    if ( currExteVari->hasExternalStateVariables() ||
+         currMater->hasExternalStateVariables( "NEUT1" ) ||
+         currMater->hasExternalStateVariables( "GEOM" ) ) {
         currExteVari->build( time );
     }
 
@@ -305,7 +307,7 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
 
     // Add input fields
     _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    //_calcul->addInputField( "PVARCPR", currExteVari->getExternalStateVariablesField() );
+    _calcul->addInputField( "PVARCPR", currExteVari->getExternalStateVariablesField() );
     _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
     _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
     if ( currElemChara ) {
