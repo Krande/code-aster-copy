@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe ExternalStateVariables
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -27,77 +27,93 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "astercxx.h"
-#include "Materials/MaterialField.h"
-#include "Materials/CodedMaterial.h"
-#include "Modeling/Model.h"
-#include "Discretization/ElementaryCharacteristics.h"
+
+#include "DataFields/ConstantFieldOnCells.h"
 #include "DataFields/FieldOnCells.h"
 #include "DataFields/FieldOnNodes.h"
-#include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
+#include "Discretization/ElementaryCharacteristics.h"
+#include "Materials/CodedMaterial.h"
+#include "Materials/MaterialField.h"
+#include "Modeling/Model.h"
 #include "Numbering/DOFNumbering.h"
 
 /**
  * @class ExternalStateVariable
- * @brief Calculation Input Variables
- * @author Nicolas Sellenet
+ * @brief Compute external state variables (AFFE_VARC)
  */
 class ExternalStateVariablesBuilder : public DataStructure {
   private:
+    /** @brief Model */
     ModelPtr _model;
-    MaterialFieldPtr _mater;
-    CodedMaterialPtr _codMater;
-    ElementaryCharacteristicsPtr _elemCara;
-    FieldOnCellsRealPtr _varRef;
-    FieldOnCellsRealPtr _varInst;
-    ConstantFieldOnCellsRealPtr _timeValue;
-    ASTERDOUBLE _currentTime;
+
+    /** @brief Field of material parameters */
+    MaterialFieldPtr _materialField;
+
+    /** @brief Elementary characteristics */
+    ElementaryCharacteristicsPtr _elemChara;
+
+    /** @brief Coded material */
+    CodedMaterialPtr _codedMaterial;
+
+    /** @brief Nodal field of references values for external state variables */
+    FieldOnCellsRealPtr _varcRefe;
+
+    /** @brief Nodal field of values for external state variables */
+    FieldOnCellsRealPtr _varcVale;
+
+    /** @brief Field of time */
+    ConstantFieldOnCellsRealPtr _timeField;
+
+    /** @brief Time */
+    ASTERDOUBLE _time;
+
+    /** @brief Flags to detect external state variables */
     bool _pTot;
     bool _hydr;
     bool _sech;
     bool _temp;
 
   public:
-    /**
-     * @typedef ExternalStateVariablesPtr
-     * @brief Pointeur intelligent vers un ExternalStateVariables
-     */
+    /** @typedef ExternalStateVariablesPtr */
     typedef boost::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
 
-    /**
-     * @brief Constructeur
-     */
-    ExternalStateVariablesBuilder( );
+    /** @brief Constructor */
+    ExternalStateVariablesBuilder();
+
+    /** @brief Constructor */
+    ExternalStateVariablesBuilder( const ModelPtr &currModel,
+                                   const MaterialFieldPtr &currMaterialField,
+                                   const ElementaryCharacteristicsPtr &currElemChara,
+                                   const CodedMaterialPtr &currCodedMaterial );
+
+    /** @brief Destructor */
+    ~ExternalStateVariablesBuilder(){};
 
     /**
-     * @brief Constructeur
-     */
-    ExternalStateVariablesBuilder( const ModelPtr &model, const MaterialFieldPtr &mater,
-                                       const ElementaryCharacteristicsPtr &cara,
-                                       const CodedMaterialPtr &codMater );
-
-    /**
-     * @brief Destructeur
-     */
-    ~ExternalStateVariablesBuilder() { return; };
-
-    /**
-     * @brief Compute Input Variables at a given time
+     * @brief Compute external state variables at a given time
+     * @param time Time
      */
     void build( const ASTERDOUBLE &time );
 
     /**
-     * @brief Compute Loads after computing of input variables
+     * @brief Compute nodal field for external state variables
+     * @param dofNUM DOF numbering
+     * @return Nodal field for external state variables
      */
     FieldOnNodesRealPtr computeExternalStateVariablesLoad( const BaseDOFNumberingPtr &dofNUM );
 
+    /** @brief Detect some external state variables */
     bool hasExternalStateVariables() { return _pTot || _hydr || _sech || _temp; };
+
+    /**
+     * @brief Get nodal field for external state variables
+     * @return Nodal field for external state variables
+     */
+    FieldOnCellsRealPtr getExternalStateVariablesField() { return _varcVale; }
 };
 
-/**
- * @typedef ExternalStateVariablesPtr
- * @brief Pointeur intelligent vers un ExternalStateVariable
- */
+/** @typedef ExternalStateVariablesPtr*/
 typedef boost::shared_ptr< ExternalStateVariablesBuilder > ExternalStateVariablesBuilderPtr;
 
 #endif /* CALCULATIONEXTERNALVARIABLE_H_ */
