@@ -1,0 +1,220 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'),
+                  DEBUG = _F( SDVERI = 'OUI'),);
+
+from math import *
+
+# INSTANT FINAL (IL FAUT AVOIR UN MULTIPLE DE 4)
+insfin = 4*20
+# REGULARISATION NORMALE DE LA COURBE FORCE-DEPLACEMENT
+k_n = 1.e12
+# REGULARISATION TANGENTIELLE DE LA COURBE FORCE-DEPLACEMENT
+k_t = 2.*k_n
+# COEFFICIENT DE FROTTEMENT
+mu = 1.
+# PARAMETRE DE LA FONCTION D'ENDOMMAGEMENT
+D1 = 1.
+# PARAMETRES MATERIAU DU CUBE
+young = 3.e12
+poiss = 0.0
+# PARAMETRE DE L'INCLINAISON DE JOINT (NE PAS MODIFIER, LIE AU MAILLAGE)
+angle=30./180*pi
+
+# CALCUL DE Bn ET Bt EN FONCTION DE CC ET TT
+#   Avec CC le Surplus de cohesion en cisaillement
+#   et TT la Resitance a la traction
+CC = 10000.0
+TT = 9000.0
+def CalcBnBt(CC, TT):
+    # m1 et m2 sont des paramètres en dur assurant une
+    # "bonne tête" de la partie endommagement
+    m1 = 3.
+    m2 = 0.5
+    alpha_max = (-m2+sqrt(m1*m2/(m1-m2+1)))/(m1-m2)
+    S_alpha_max = ((1-alpha_max)**m1)/(alpha_max**m2)
+    Sp_alpha_max = ((m2-m1)*alpha_max-m2)*((1-alpha_max)**(m1-1))/(alpha_max**(m2+1))
+    Bn = (-Sp_alpha_max*TT**2)/(2.*D1*S_alpha_max**2)
+    Bt = (-Sp_alpha_max*(CC**2-mu**2*TT**2))/(2.*D1*S_alpha_max**2)
+    return Bn, Bt
+
+Bn, Bt = CalcBnBt(CC, TT)
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# DEFINITION DU MODELE, DES MATERIAUX ET DE L'ENCASTREMENT
+#----------------------------------------------------------------------------------
+###################################################################################
+
+MA = LIRE_MAILLAGE( FORMAT = "MED");
+
+MO = AFFE_MODELE( MAILLAGE = MA,
+                  AFFE = (_F( TOUT = 'OUI',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'D_PLAN'),
+                          _F( GROUP_MA = 'JOINT',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'PLAN_JOINT'),),);
+
+# MATERIAU ELASTIQUE
+MAT_CUB = DEFI_MATERIAU( ELAS = _F( E = young, NU = poiss),);
+
+# MATERIAU JOINT
+MAT_JOI = DEFI_MATERIAU( JOINT_MECA_ENDO = _F( K_N = k_n,
+                                               K_T = k_t,
+                                               MU = mu,
+                                               PENA_RUPTURE = D1,
+                                               Bn = Bn,
+                                               Bt = Bt,
+                                               ALPHA = 1.e-7),);
+
+CM = AFFE_MATERIAU( MAILLAGE = MA,
+                    AFFE = (_F( GROUP_MA = 'CUBE', MATER = MAT_CUB),
+                            _F( GROUP_MA = 'JOINT', MATER = MAT_JOI),),);
+
+# ENCASTREMENT D'UNE DES LEVRES DU JOINT
+LIAISON = AFFE_CHAR_MECA( MODELE = MO,
+                          FACE_IMPO = (_F( GROUP_MA = 'ENCAS', DX = 0., DY = 0.),),);
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE I PURE
+#----------------------------------------------------------------------------------
+###################################################################################
+
+# CHARGEMENT MODE I PUR
+TRAC_1 = AFFE_CHAR_MECA( MODELE = MO,
+                         FACE_IMPO = (_F( GROUP_MA = 'DROITE', DX = cos(angle), DY = sin(angle),),),);
+
+# CREATION DE LISTE D'INSTANT
+LR = DEFI_LIST_REEL( VALE = list(range(insfin+1)),);
+L_INST = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST = LR),);
+
+# LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
+linst = [0, insfin/4, insfin/2, 3*insfin/4, insfin]
+FCT = DEFI_FONCTION( NOM_PARA = 'INST',
+                     VALE = ( linst[0], 0.,
+                              linst[1], 6E-6,
+                              linst[2], 1E-4,
+                              linst[3], 5E-4,
+                              linst[4], 4.9999E-4),
+                     PROL_DROITE = 'LINEAIRE');
+
+U_1 = STAT_NON_LINE( MODELE = MO,
+                     CHAM_MATER = CM,
+                     EXCIT = (_F( CHARGE = LIAISON ),
+                              _F( CHARGE = TRAC_1, FONC_MULT = FCT),),
+                     COMPORTEMENT = (_F( RELATION = 'JOINT_MECA_ENDO',
+                                         GROUP_MA = 'JOINT'),
+                                     _F( RELATION = 'ELAS',
+                                         GROUP_MA = 'CUBE'),),
+                     INCREMENT = _F( LIST_INST = L_INST, INST_FIN = insfin),
+                     SOLVEUR = _F( METHODE = 'MUMPS'),
+                     CONVERGENCE = _F( ITER_GLOB_MAXI = 25,
+                                       RESI_GLOB_RELA = 1.E-6),
+                     NEWTON = _F( MATRICE = 'TANGENTE', REAC_ITER = 1),);
+
+#----------------------------------------------------------------------------------
+# POST TRAITEMENT MODE I PURE
+#-----------------------------------------------------------------------------------
+# CALCUL DE LA FORCE NODALE
+U_1 = CALC_CHAMP( RESULTAT = U_1, reuse = U_1,
+                  VARI_INTERNE = 'VARI_NOEU');
+
+# RECUPERATION DE LA CONTRAINTE NORMALE
+TSIGMA_N = POST_RELEVE_T( ACTION = _F( OPERATION = 'EXTRACTION',
+                                       INTITULE = 'SIGMA_N',
+                                       RESULTAT = U_1,
+                                       NOM_CHAM = 'VARI_NOEU',
+                                       TOUT_ORDRE = 'OUI',
+                                       GROUP_NO = 'P1',
+                                       NOM_CMP = 'V11'),);
+
+# RECUPERATION DU DEPLACEMENT NORMAL
+TDELTA_N = POST_RELEVE_T( ACTION = _F( OPERATION='EXTRACTION',
+                                       INTITULE = 'DELTA_N',
+                                       RESULTAT = U_1,
+                                       NOM_CHAM = 'VARI_NOEU',
+                                       TOUT_ORDRE = 'OUI',
+                                       GROUP_NO = 'P1',
+                                       NOM_CMP = 'V7'),);
+
+SN = RECU_FONCTION( TABLE = TSIGMA_N,
+                    PARA_X = 'INST',
+                    PARA_Y = 'V11');
+
+#DN = RECU_FONCTION( TABLE = TDELTA_N,
+                    #PARA_X = 'INST',
+                    #PARA_Y = 'V7');
+
+#TAB_RESU = CALC_TABLE( TABLE = TSIGMA_N,
+                       #ACTION = _F( OPERATION = 'COMB',
+                                    #TABLE = TDELTA_N,
+                                    #NOM_PARA = ('INST'),
+                                    #RESTREINT = 'NON'),);
+
+#IMPR_TABLE( TABLE = TAB_RESU, FORMAT = 'TABLEAU', SEPARATEUR = ';', UNITE = 8);
+
+### EN MODE INTERACTIF SEULEMENT
+#IMPR_FONCTION( FORMAT = 'XMGRACE',
+               #PILOTE = 'INTERACTIF',
+               #COURBE = _F( FONC_X = DN,
+                            #FONC_Y = SN,
+                            #LEGENDE = 'F(U)'),
+               #LEGENDE_X = '\\xd\\s\\0n',
+               #LEGENDE_Y = 'F\\sn');
+
+TEST_FONCTION( VALEUR = (_F( VALE_CALC = 7334.217311155,
+                             VALE_REFE = 7333.481527163,
+                             VALE_PARA = linst[1],
+                             REFERENCE = 'ANALYTIQUE',
+                             NOM_PARA = 'INST',
+                             FONCTION = SN,
+                             CRITERE = 'RELATIF',
+                             PRECISION = 1.e-2),),)
+
+TEST_FONCTION( VALEUR = (_F( VALE_CALC = 2971.24028048,
+                             VALE_REFE = 2969.57717064,
+                             VALE_PARA = linst[2],
+                             REFERENCE = 'ANALYTIQUE',
+                             NOM_PARA = 'INST',
+                             FONCTION = SN,
+                             CRITERE = 'RELATIF',
+                             PRECISION = 1.e-2),),)
+
+TEST_FONCTION( VALEUR = (_F( VALE_CALC = 1403.89230536,
+                             VALE_REFE = 1404.71701949,
+                             VALE_PARA = 43,
+                             REFERENCE = 'ANALYTIQUE',
+                             NOM_PARA = 'INST',
+                             FONCTION = SN,
+                             CRITERE = 'RELATIF',
+                             PRECISION = 1.e-2),),)
+
+TEST_FONCTION( VALEUR = (_F( VALE_CALC = 172.4764139974,
+                             VALE_REFE = 172.0723055535,
+                             VALE_PARA = linst[3],
+                             REFERENCE = 'ANALYTIQUE',
+                             NOM_PARA = 'INST',
+                             FONCTION = SN,
+                             CRITERE = 'RELATIF',
+                             PRECISION = 1.e-2),),)
+
+FIN()

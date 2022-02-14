@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -130,6 +130,42 @@ cata_msg = {
   Le macro-élément est assemblé à partir de données mesurées.
   Le calcul des masses effectives est impossible. Ne pas en tenir
   compte dans les calculs postérieurs.
+"""),
+
+    33 : _("""
+  Le paramètre PENA_RUPTURE doit être strictement supérieur à une valeur minimale
+  selon les paramètres de la loi de comportement.
+   - Valeur de PENA_RUPTURE : %(r1)f
+   - Valeur minimale: %(r2)f
+"""),
+
+    34 : _("""
+  La cohésion C doit être dans l'intervalle : MU*T < C < sqrt(2)*MU*T
+  Où MU est le coefficient de frottement et T la résistance à la traction.
+  Pour modifier C, il faut modifier Bn, Bt ou encore PENA_RUPTURE.
+   - Valeur de MU*T : %(r1)f
+   - Valeur de C : %(r2)f
+   - Valeur de sqrt(2)*MU*T : %(r3)f
+"""),
+
+    35 : _("""
+  Le paramètre K_N doit être strictement supérieur à : Bn*R_max
+   - Valeur de K_N : %(r1)f
+   - Valeur de B_N*R_max : %(r2)f
+   - Valeur de R_max : %(r3)f
+"""),
+
+    36 : _("""
+  Le paramètre K_T doit être strictement supérieur à : (mu**2*Bn+Bt)*R_max
+   - Valeur de K_T : %(r1)f
+   - Valeur de (mu**2*Bn+Bt)*R_max : %(r2)f
+   - Valeur de R_max : %(r3)f
+"""),
+
+    37 : _("""
+  Les paramètres Bn et Bn doivent être tous deux strictement positifs.
+   - Valeur de Bn : %(r1)f
+   - Valeur de Bt : %(r2)f
 """),
 
     41 : _("""

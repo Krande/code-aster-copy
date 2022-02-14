@@ -117,6 +117,7 @@ def C_RELATION(COMMAND):
             "JOINT_BANDIS",
             "JOINT_MECA_RUPT",
             "JOINT_MECA_FROT",
+            "JOINT_MECA_ENDO",
             "KICHENIN_NL",
             "KIT_CG",
             "KIT_DDI",

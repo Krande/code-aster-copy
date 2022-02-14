@@ -140,6 +140,7 @@ implicit none
 #include "asterfort/lc7043.h"
 #include "asterfort/lc7045.h"
 #include "asterfort/lc7046.h"
+#include "asterfort/lc7047.h"
 #include "asterfort/lc7048.h"
 #include "asterfort/lc7049.h"
 #include "asterfort/lc7051.h"
@@ -1112,6 +1113,16 @@ integer :: codret
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
+
+    case (7047)
+!     JOINT_MECA_ENDO
+        call lc7047(BEHinteg,&
+                    fami, kpg, ksp, ndim, imate,&
+                    instam, instap, epsm,&
+                    deps, vim, option,&
+                    sigp, vip, typmod,&
+                    dsidep, codret)
+
     case (7048)
         call lc7048(BEHinteg,&
                     fami, kpg, ksp, ndim, imate,&

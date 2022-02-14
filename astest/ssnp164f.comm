@@ -1,0 +1,202 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'),
+                  DEBUG = _F( SDVERI = 'OUI'),);
+
+from math import *
+
+# INSTANT FINAL (IL FAUT AVOIR UN MULTIPLE DE 4)
+insfin = 4*5
+# REGULARISATION NORMALE DE LA COURBE FORCE-DEPLACEMENT
+k_n = 1.e12
+# REGULARISATION TANGENTIELLE DE LA COURBE FORCE-DEPLACEMENT
+k_t = 2.*k_n
+# COEFFICIENT DE FROTTEMENT
+mu = 1.
+# PARAMETRE DE LA FONCTION D'ENDOMMAGEMENT
+D1 = 1.
+# PARAMETRES MATERIAU DU CUBE
+young = 3.e12
+poiss = 0.0
+# PARAMETRE DE L'INCLINAISON DE JOINT (NE PAS MODIFIER, LIE AU MAILLAGE)
+angle=30./180*pi
+# PARAMETRE DE PRESSION
+press=1.e3
+
+# PARA qui donne un shift tangentiel pour un chargement en cisaillement au depart
+shift_z = 1.e-5
+
+# CALCUL DE Bn ET Bt EN FONCTION DE CC ET TT
+#   Avec CC le Surplus de cohesion en cisaillement
+#   et TT la Resitance a la traction
+CC = 10000.0
+TT = 9000.0
+def CalcBnBt(CC, TT):
+    # m1 et m2 sont des paramètres en dur assurant une
+    # "bonne tête" de la partie endommagement
+    m1 = 3.
+    m2 = 0.5
+    alpha_max = (-m2+sqrt(m1*m2/(m1-m2+1)))/(m1-m2)
+    S_alpha_max = ((1-alpha_max)**m1)/(alpha_max**m2)
+    Sp_alpha_max = ((m2-m1)*alpha_max-m2)*((1-alpha_max)**(m1-1))/(alpha_max**(m2+1))
+    Bn = (-Sp_alpha_max*TT**2)/(2.*D1*S_alpha_max**2)
+    Bt = (-Sp_alpha_max*(CC**2-mu**2*TT**2))/(2.*D1*S_alpha_max**2)
+    return Bn, Bt
+
+Bn, Bt = CalcBnBt(CC, TT)
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# DEFINITION DU MODELE, DES MATERIAUX ET DE L'ENCASTREMENT
+#----------------------------------------------------------------------------------
+###################################################################################
+
+MA_TMP = LIRE_MAILLAGE(FORMAT='ASTER',
+                   INFO=1,
+                   UNITE=20,
+                   VERI_MAIL=_F(APLAT=0.001,
+                                VERIF='NON'))
+
+MA=CREA_MAILLAGE(MAILLAGE  = MA_TMP, LINE_QUAD = _F(TOUT='OUI'),INFO=2)
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA='DROITE',
+                                NOM='DROITE',),
+                              _F(GROUP_MA='ENCAS',
+                                NOM='ENCAS',),
+                               ),)
+
+MO = AFFE_MODELE( MAILLAGE = MA,
+                  AFFE = (_F( GROUP_MA=('PRISM','DROITE'),
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = '3D'),
+                          _F( GROUP_MA = 'JOINT',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = '3D_JOINT'),),);
+
+# MATERIAU ELASTIQUE
+MAT_CUB = DEFI_MATERIAU( ELAS = _F( E = young, NU = poiss),);
+
+
+# PRESSION IMPOSEE AVEC UNE FONCTION ARBITRAIRE
+f_flu = FORMULE(NOM_PARA=('X','Y','Z','INST'),
+                VALE='INST*press*(X**2+Y**2+Z**2)/insfin',
+                press=press,insfin=insfin)
+
+# MATERIAU JOINT
+MAT_JOI = DEFI_MATERIAU( JOINT_MECA_ENDO = _F( K_N = k_n,
+                                               K_T = k_t,
+                                               MU = mu,
+                                               PENA_RUPTURE = D1,
+                                               Bn = Bn,
+                                               Bt = Bt,
+                                               ALPHA = 1.e-7,
+                                               PRES_FLUIDE=f_flu),);
+
+CM = AFFE_MATERIAU( MAILLAGE = MA,
+                    AFFE = (_F( GROUP_MA = 'PRISM', MATER = MAT_CUB),
+                            _F( GROUP_MA = 'JOINT', MATER = MAT_JOI),),);
+
+# ENCASTREMENT D'UNE DES LEVRES DU JOINT
+LIAISON = AFFE_CHAR_MECA( MODELE = MO,
+                          FACE_IMPO = (_F( GROUP_MA = 'ENCAS', DX = 0., DY = shift_z, DZ=shift_z),),);
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE I PURE
+#----------------------------------------------------------------------------------
+###################################################################################
+
+# CHARGEMENT MODE I PUR
+TRAC_1 = AFFE_CHAR_MECA( MODELE = MO,
+                         FACE_IMPO = (_F( GROUP_MA = 'DROITE', DX = cos(angle), DY = sin(angle), DZ=0.),),);
+
+# CREATION DE LISTE D'INSTANT
+LR = DEFI_LIST_REEL( VALE = list(range(insfin+1)),);
+L_INST = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST = LR),
+                         ECHEC=_F(ACTION='DECOUPE',
+                                 EVENEMENT='ERREUR',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_NIVEAU=2,
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI=0.1),);
+
+# LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
+linst = [0, insfin/4, insfin/2, 3*insfin/4, insfin]
+FCT = DEFI_FONCTION( NOM_PARA = 'INST',
+                     VALE = ( linst[0], 0.,
+                              linst[1], 6E-6,
+                              linst[2], 1E-4,
+                              linst[3], 5E-4,
+                              linst[4], 4.9999E-4),
+                     PROL_DROITE = 'LINEAIRE');
+
+U_1 = STAT_NON_LINE( MODELE = MO,
+                     CHAM_MATER = CM,
+                     EXCIT = (_F( CHARGE = LIAISON ),
+                              _F( CHARGE = TRAC_1, FONC_MULT = FCT),),
+                     COMPORTEMENT = (_F( RELATION = 'JOINT_MECA_ENDO',
+                                         GROUP_MA = 'JOINT'),
+                                     _F( RELATION = 'ELAS',
+                                         GROUP_MA = 'PRISM'),),
+                     INCREMENT = _F( LIST_INST = L_INST, INST_FIN = insfin),
+                     SOLVEUR = _F( METHODE = 'MUMPS'),
+                     CONVERGENCE = _F( ITER_GLOB_MAXI = 10,
+                                       RESI_GLOB_RELA = 1.E-6),
+                     NEWTON = _F( MATRICE = 'TANGENTE', REAC_ITER = 1),);
+
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_1,GROUP_MA='JOINT',NOM_CHAM='VARI_ELGA')))
+#NOM_CMP=('V3','V4','V5','V11','V19','V20','V7','V8','V9','V1','V2','V6')
+vari_list = ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V11','V18','V19','V20')
+
+# to recover from .resu
+vari_test = (9.499500E-05,  2.000000E+00,  9.499500E-05, -8.658659E-06, -9.998459E-06,  4.528776E-01,  9.499818E-05, -8.658804E-06, -9.998627E-06,  3.181649E+03,  4.168100E+02, -2.899767E+02, -3.348481E+02)
+
+value2check = dict(zip(vari_list,vari_test))
+# instant ou on teste les valeurs par non regression
+inst2check = insfin/2
+# numero du point Gauss
+gauss2print = 1
+
+FONC_DICT={}
+VAR_TABLE={}
+
+FONC_DICT_INIT = RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'VARI_ELGA',  NOM_CMP = vari_list[0],  GROUP_MA  = 'JOINT',POINT=gauss2print)
+ALL_TABLE = CREA_TABLE(FONCTION=_F(FONCTION=FONC_DICT_INIT))
+#IMPR_TABLE(TABLE=VAR_TABLE[vari_name])
+for vari_name in vari_list[1:]:
+    FONC_DICT[vari_name] = RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'VARI_ELGA',  NOM_CMP = vari_name,  GROUP_MA  = 'JOINT',POINT=gauss2print)
+    VAR_TABLE[vari_name] = CREA_TABLE(FONCTION=_F(FONCTION=FONC_DICT[vari_name]))
+    ALL_TABLE = CALC_TABLE( TABLE = ALL_TABLE,
+                            ACTION = _F( OPERATION = 'COMB',
+                                    TABLE = VAR_TABLE[vari_name],
+                                    NOM_PARA = ('INST'),
+                                    RESTREINT = 'NON'),);
+    TEST_TABLE(
+           VALE_CALC=value2check[vari_name],
+           NOM_PARA=vari_name,
+           FILTRE= (_F(NOM_PARA='INST',VALE=inst2check),),
+           TABLE=ALL_TABLE,)
+    
+IMPR_TABLE(TABLE=ALL_TABLE,SEPARATEUR=', ',FORMAT_R='E13.6',)
+
+
+FIN()

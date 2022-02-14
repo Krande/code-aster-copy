@@ -1,0 +1,338 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'),
+                  DEBUG = _F( SDVERI = 'OUI'),);
+
+from math import *
+
+# TEST de FRACTURATION HYDRAULIQUE
+
+# INSTANT FINAL (IL FAUT AVOIR UN MULTIPLE DE 4)
+insfin = 4*10
+# REGULARISATION NORMALE DE LA COURBE FORCE-DEPLACEMENT
+k_n = 1.e12
+# REGULARISATION TANGENTIELLE DE LA COURBE FORCE-DEPLACEMENT
+k_t = 2.*k_n
+# COEFFICIENT DE FROTTEMENT
+mu = 1.
+# PARAMETRE DE LA FONCTION D'ENDOMMAGEMENT
+D1 = 1.
+# PARAMETRES MATERIAU DU CUBE
+young = 3.e12
+poiss = 0.0
+# PARAMETRE DE L'INCLINAISON DE JOINT (NE PAS MODIFIER, LIE AU MAILLAGE)
+angle=30./180*pi
+L_cube = 1.
+
+# PARA HYDRO
+rho_fluide = 1000. #kg/m^3
+visc_fluide = 1.e-20 #pa.s fausse viscosite pour le meilleur scaling
+ouv_min=1.E-10     #m
+# PRESSION D'EAU DANS LE JOINT
+press=100.e6 # Pa
+
+# CALCUL DE Bn ET Bt EN FONCTION DE CC ET TT
+#   Avec CC le Surplus de cohesion en cisaillement
+#   et TT la Resitance a la traction
+CC = 10000.0
+TT = 9000.0
+def CalcBnBt(CC, TT):
+    # m1 et m2 sont des paramètres en dur assurant une
+    # "bonne tête" de la partie endommagement
+    m1 = 3.
+    m2 = 0.5
+    alpha_max = (-m2+sqrt(m1*m2/(m1-m2+1)))/(m1-m2)
+    S_alpha_max = ((1-alpha_max)**m1)/(alpha_max**m2)
+    Sp_alpha_max = ((m2-m1)*alpha_max-m2)*((1-alpha_max)**(m1-1))/(alpha_max**(m2+1))
+    Bn = (-Sp_alpha_max*TT**2)/(2.*D1*S_alpha_max**2)
+    Bt = (-Sp_alpha_max*(CC**2-mu**2*TT**2))/(2.*D1*S_alpha_max**2)
+    return Bn, Bt
+
+Bn, Bt = CalcBnBt(CC, TT)
+
+# FLUX_MIN (FLUX DU JOINT FERME)
+# flux_min = rho_fluide/12/visc_fluide*ouv_min**3*grad(p)
+flux_min =  rho_fluide/12./visc_fluide*ouv_min**3*press/L_cube
+# FLUX_MAX (JOINT_OUVERT)
+flux_max =  rho_fluide/12./visc_fluide*(TT/k_n)**3*press/L_cube
+# FLUX_REFE POUR RESI_REFE_RELA
+flux_refe = 10*sqrt(flux_min*flux_max)
+
+
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# DEFINITION DU MODELE, DES MATERIAUX ET DE L'ENCASTREMENT
+#----------------------------------------------------------------------------------
+###################################################################################
+#MA=LIRE_MAILLAGE(FORMAT="ASTER",)
+MA_TMP = LIRE_MAILLAGE(FORMAT='ASTER',
+                   INFO=1,
+                   UNITE=20,
+                   VERI_MAIL=_F(APLAT=0.001,
+                                VERIF='NON'))
+
+MA=CREA_MAILLAGE(MAILLAGE  = MA_TMP, LINE_QUAD = _F(TOUT='OUI'),INFO=2)
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA='JOINT'),
+                   INFO=2)
+
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA='DROITE', NOM='DROITE',),
+                             _F(GROUP_MA='ENCAS',  NOM='ENCAS',),
+                             _F( NOM = 'NO12', NOEUD = 'NO12'),
+                             _F( NOM = 'NS20', NOEUD = 'NS20'),
+                             _F( NOM = 'NS19', NOEUD = 'NS19'),
+                             _F( NOM = 'NS18', NOEUD = 'NS18'),
+                             _F( NOM = 'NS5', NOEUD = 'NS5'),
+                             _F( NOM = 'NS8', NOEUD = 'NS8'),
+                             _F( NOM = 'NS4', NOEUD = 'NS4'),
+                             _F( NOM = 'NS17', NOEUD = 'NS17'),
+                             _F( NOM = 'NS12', NOEUD = 'NS12'),
+                              ),
+              )
+
+MO = AFFE_MODELE( MAILLAGE = MA,
+                  AFFE = (_F( GROUP_MA=('CUBE','DROITE'),
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = '3D'),
+                          _F( GROUP_MA = 'JOINT',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = '3D_JOINT_HYME'),),);
+
+# MATERIAU ELASTIQUE
+MAT_CUB = DEFI_MATERIAU( ELAS = _F( E = young, NU = poiss),);
+
+# MATERIAU JOINT
+MAT_JOI = DEFI_MATERIAU( JOINT_MECA_ENDO = _F( K_N = k_n,
+                                               K_T = k_t,
+                                               MU = mu,
+                                               PENA_RUPTURE = D1,
+                                               Bn = Bn,
+                                               Bt = Bt,
+                                               ALPHA = 1.e-9,
+                                               RHO_FLUIDE=rho_fluide,
+                                               VISC_FLUIDE=visc_fluide,
+                                               OUV_MIN=ouv_min,),);
+
+CM = AFFE_MATERIAU( MAILLAGE = MA,
+                    AFFE = (_F( GROUP_MA = 'CUBE', MATER = MAT_CUB),
+                            _F( GROUP_MA = 'JOINT', MATER = MAT_JOI),),);
+
+# ENCASTREMENT D'UNE DES LEVRES DU JOINT
+LIAISON = AFFE_CHAR_CINE( MODELE = MO,
+                          MECA_IMPO = (_F( GROUP_MA = ('ENCAS','DROITE'), DX = 0., DY = 0., DZ=0),),);
+
+###################################################################################
+#----------------------------------------------------------------------------------
+# CALCUL AVEC CHARGEMENT EN MODE I PURE
+#----------------------------------------------------------------------------------
+###################################################################################
+
+# LE MAILLAGE COMPORTE QUATRE NOEUDS DE PRESSION : NS17-NS20, NS12, NS8, NS4, NS5
+# ON IMPOSE UNE PRESSION SUR LES DEUX FACES, PUIS TESTE LA PRESSION SUR NS5, NS8
+
+PAM_J = AFFE_CHAR_MECA(
+  MODELE = MO,
+  DDL_IMPO = (
+                _F(GROUP_NO='NS17', PRE1=press ),
+                _F(GROUP_NO='NS12', PRE1=press*1.0000001 ),
+                _F(GROUP_NO='NS18', PRE1=press ),
+                _F(GROUP_NO='NS19', PRE1=press*1.0000002 ),
+                _F(GROUP_NO='NS4' , PRE1=press*1.0000003 ),
+                _F(GROUP_NO='NS20', PRE1=press*1.0000004 ),
+              )
+  )
+
+# CREATION DE LISTE D'INSTANT
+LR = DEFI_LIST_REEL( VALE = list(range(insfin+1)),);
+L_INST = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST = LR),
+                         ECHEC=_F(ACTION='DECOUPE',
+                                 EVENEMENT='ERREUR',
+                                 SUBD_METHODE='MANUEL',
+                                 SUBD_NIVEAU=2,
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI=0.1),);
+
+# LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
+linst = [0, insfin/4, insfin/2, 3*insfin/4, insfin]
+
+RAMPE = DEFI_FONCTION( NOM_PARA = 'INST',
+                     VALE = ( linst[0], 0.,
+                              linst[1], 0.001,
+                              linst[2], 0.01,
+                              linst[3], 0.1,
+                              linst[4], 1.),
+                     PROL_DROITE = 'LINEAIRE');
+
+U_1 = STAT_NON_LINE( MODELE = MO,
+                     CHAM_MATER = CM,
+                     EXCIT = (_F( CHARGE = LIAISON),
+                              _F( CHARGE = PAM_J, FONC_MULT = RAMPE),),
+                     COMPORTEMENT = (_F( RELATION = 'JOINT_MECA_ENDO',
+                                         GROUP_MA = 'JOINT'),
+                                     _F( RELATION = 'ELAS',
+                                         GROUP_MA = 'CUBE'),),
+                     INCREMENT = _F( LIST_INST = L_INST, INST_FIN = insfin),
+                     SOLVEUR = _F( METHODE = 'MUMPS'),
+                     CONVERGENCE = _F( ITER_GLOB_MAXI = 20,
+                                       RESI_REFE_RELA = 1.E-4,
+                                       SIGM_REFE      = TT,
+                                       FLUX_HYD1_REFE = flux_refe,
+                                       #RESI_GLOB_RELA = 1.E-6,
+                                       ),
+                     NEWTON = _F( MATRICE = 'TANGENTE', REAC_ITER = 1),);
+
+#----------------------------------------------------------------------------------
+# POST TRAITEMENT MODE I PURE
+#-----------------------------------------------------------------------------------
+# CALCUL DE LA FORCE NODALE
+U_1 = CALC_CHAMP( RESULTAT = U_1, reuse = U_1,
+                  VARI_INTERNE = 'VARI_NOEU');
+
+# RECUPERATION DE LA CONTRAINTE NORMALE
+TSIGMA_N = POST_RELEVE_T( ACTION = _F( OPERATION = 'EXTRACTION',
+                                       INTITULE = 'SIGMA_N',
+                                       RESULTAT = U_1,
+                                       NOM_CHAM = 'VARI_NOEU',
+                                       TOUT_ORDRE = 'OUI',
+                                       GROUP_NO = 'P1',
+                                       NOM_CMP = 'V11'),);
+
+# RECUPERATION DU DEPLACEMENT NORMAL
+TDELTA_N = POST_RELEVE_T( ACTION = _F( OPERATION='EXTRACTION',
+                                       INTITULE = 'DELTA_N',
+                                       RESULTAT = U_1,
+                                       NOM_CHAM = 'VARI_NOEU',
+                                       TOUT_ORDRE = 'OUI',
+                                       GROUP_NO = 'P1',
+                                       NOM_CMP = 'V7'),);
+
+SN = RECU_FONCTION( TABLE = TSIGMA_N,
+                    PARA_X = 'INST',
+                    PARA_Y = 'V11');
+
+DN = RECU_FONCTION( TABLE = TDELTA_N,
+                    PARA_X = 'INST',
+                    PARA_Y = 'V7');
+
+TAB_RESU = CALC_TABLE( TABLE = TSIGMA_N,
+                       ACTION = _F( OPERATION = 'COMB',
+                                    TABLE = TDELTA_N,
+                                    NOM_PARA = ('INST'),
+                                    RESTREINT = 'NON'),);
+
+#IMPR_TABLE( TABLE = TAB_RESU, FORMAT = 'TABLEAU', SEPARATEUR = ';', UNITE = 8);
+
+## EN MODE INTERACTIF SEULEMENT
+IMPR_FONCTION( FORMAT = 'XMGRACE',
+               #PILOTE = 'INTERACTIF',
+               COURBE = _F( FONC_X = DN,
+                            FONC_Y = SN,
+                            LEGENDE = 'F(U)'),
+               LEGENDE_X = '\\xd\\s\\0n',
+               LEGENDE_Y = 'F\\sn',
+               TITRE = 'mode I fracturation hydraulique 3D');
+
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=(_F(RESULTAT=U_1,GROUP_MA='JOINT',NOM_CHAM='VARI_ELGA')))
+
+# ! V1 : INDICATEUR DE PLASTICITE CUMULEE AU COURS DU GLISSEMENT
+# ! V2 : INDICATEUR DE GLISSEMENT (0 : NON, 1 : OUI F, 2 : OUI G)
+# ! V3 : DEPLACEMENT NORM PLASTIQUE PAR RAPPORT AU POINT DE DEPART
+# ! V4-V5 : VECTEUR DE DEPLACEMENT TANG PLASTIQUE PAR RAPPORT AU POINT DE DEPART
+# !            (INDIQUE LA POSITION D'EQUILIBRE ACTUELLE)
+# ! V6 : VARIABLE D'ENDOMMAGEMENT
+# ! V7 A V9 : VALEURS DU DEPLACEMENT DANS LE REPERE LOCAL
+# ! V10 : PAS UTILISE
+# ! V11 : CONTRAINTE MECANIQUE NORMALE (SANS INFLUENCE PRESSION DE FLUIDE)
+# ! V12 A V14 : COMPOSANTES DU GRADIENT DE PRESSION DANS LE REPERE GLOBAL
+# ! V15 A V17 : COMPOSANTES DU FLUX HYDRO DANS LE REPERE GLOBAL
+# ! V18 : PRESSION DE FLUIDE IMPOSEE OU CALCULEE ET INTERPOLEE (EN HYME)
+# ! V19-V20 : CONTRAINTES MECANIQUE TANGENTIELLES
+vari_list = ('V1','V2','V3','V6','V7','V11','V12','V13','V14','V15','V16','V17','V18')
+# to recover from .resu
+vari_test =( 3.332230E-05,  2.000000E+00,  3.332230E-05,  1.316515E-01,  3.333058E-05,  8.275474E+03, -1.398259E+01,  2.421855E+01,  2.556416E+01,  4.314582E+09, -7.473075E+09, -7.888286E+09,  1.000000E+08)
+
+value2check = dict(zip(vari_list,vari_test))
+# instant ou on teste les valeurs par non regression
+inst2check = insfin
+# numero du point Gauss
+gauss2print = 1
+
+FONC_DICT={}
+VAR_TABLE={}
+
+FONC_DICT_INIT = RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'VARI_ELGA',  NOM_CMP = vari_list[0],  GROUP_MA  = 'JOINT',POINT=gauss2print)
+ALL_TABLE = CREA_TABLE(FONCTION=_F(FONCTION=FONC_DICT_INIT))
+#IMPR_TABLE(TABLE=VAR_TABLE[vari_name])
+for vari_name in vari_list[1:]:
+    FONC_DICT[vari_name] = RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'VARI_ELGA',  NOM_CMP = vari_name,  GROUP_MA  = 'JOINT',POINT=gauss2print)
+    VAR_TABLE[vari_name] = CREA_TABLE(FONCTION=_F(FONCTION=FONC_DICT[vari_name]))
+    ALL_TABLE = CALC_TABLE( TABLE = ALL_TABLE,
+                            ACTION = _F( OPERATION = 'COMB',
+                                    TABLE = VAR_TABLE[vari_name],
+                                    NOM_PARA = ('INST'),
+                                    RESTREINT = 'NON'),);
+    TEST_TABLE(
+           VALE_CALC=value2check[vari_name],
+           NOM_PARA=vari_name,
+           FILTRE= (_F(NOM_PARA='INST',VALE=inst2check),),
+           TABLE=ALL_TABLE,)
+    
+IMPR_TABLE(TABLE=ALL_TABLE,SEPARATEUR=', ',FORMAT_R='E13.6',)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=8.989156E+03,
+           VALE_REFE=TT,
+           NOM_PARA='V11',
+           TYPE_TEST='MAX',
+           TABLE=ALL_TABLE,)
+# TEST DE LA PRESSION SUR LE NOEUD (NS5, NS8)
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_1,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'PRE1',
+      VALE_REFE = press,
+      VALE_CALC = 100000016.59091175,
+      GROUP_NO     = 'NS5',
+      INST      = insfin,
+      ),
+    )
+  )
+# TEST DE LA PRESSION
+TEST_RESU(RESU=_F(INST=insfin,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U_1,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='NS8',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=100000013.4090926,
+                  VALE_REFE=press,),
+          )
+FIN()
