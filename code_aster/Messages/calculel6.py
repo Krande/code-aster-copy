@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -245,14 +245,6 @@ Risques et conseils :
   Le chargement doit être déclaré "suiveur".
   Il faut utiliser le mot clé : EXCIT / TYPE_CHARGE='SUIV'
 """),
-
-    80 : _("""
-  L'amortissement du MACR_ELEM %(k1)s n'a pas encore été calculé.
- """),
-
-    81 : _("""
-  Il manque des amortissements.
-  """),
 
     82: _("""
   Le groupe de noeuds %(k1)s n'appartient pas au maillage %(k2)s.

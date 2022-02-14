@@ -217,11 +217,16 @@ void DEFSP( RSAGSD, rsagsd, const char *, STRING_SIZE, ASTERINTEGER *);
 
 #define CALLO_CALCUL( a, b, c, d, e, f, g, h, i, j, k )                                           \
     CALLSSSPSSPSSSS( CALCUL_CWRAP, calcul_cwrap, a, b, c, d, e, f, g, h, i, j, k )
-void DEFSSSPSSPSSSS( CALCUL_CWRAP, calcul_cwrap, const char *, STRING_SIZE, 
+void DEFSSSPSSPSSSS( CALCUL_CWRAP, calcul_cwrap, const char *, STRING_SIZE,
               const char *, STRING_SIZE, const char *, STRING_SIZE,
               ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
               ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
               const char *, STRING_SIZE, const char *, STRING_SIZE );
+
+#define CALLO_CHECKSUPERELEMENT( a, b )                                                           \
+    CALLOO( CHECKSUPERELEMENT, checksuperelement, a, b )
+void DEFSS( CHECKSUPERELEMENT, checksuperelement, const char *, STRING_SIZE,
+            const char *, STRING_SIZE);
 
 #ifdef __cplusplus
 }

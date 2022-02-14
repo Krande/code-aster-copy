@@ -15,10 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "asterf_types.h"
 !
 interface
-    subroutine mecara(caraElem, chcara)
-        character(len=*), intent(in) :: caraElem
-        character(len=*), intent(inout) :: chcara(18)
-    end subroutine mecara
+    subroutine checkSuperElement(optionZ, modelZ)
+        character(len=*), intent(in) :: optionZ, modelZ
+    end subroutine checkSuperElement
 end interface
