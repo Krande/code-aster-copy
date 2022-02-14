@@ -1,5 +1,5 @@
 /**
- * @file PairingInterface.cxx
+ * @file ContactPairingInterface.cxx
  * @brief Interface python de ContactPairing
  * @author Nicolas Sellenet
  * @section LICENCE

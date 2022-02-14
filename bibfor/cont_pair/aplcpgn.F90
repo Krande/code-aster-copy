@@ -43,7 +43,8 @@ implicit none
 #include "asterfort/prjint.h"
 #include "asterfort/clpoma.h"
 #include "asterfort/assert.h"
-#include "asterfort/ap_infast.h"
+!#include "asterfort/ap_infast.h"
+#include "asterfort/ap_infast_n.h"
 #include "asterfort/apprin.h"
 #include "asterfort/codent.h"
 #include "asterfort/dctest.h"
@@ -209,10 +210,10 @@ real(kind=8), pointer :: li_ptgausma_ztmp(:) => null()
     do while (pair_exist)
         if (pair_method .eq. "RAPIDE") then
             ! - Search by computing the minimum distance between the barycenters
-            call ap_infast(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
+            call ap_infast_n(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
                            list_elem_mast , nb_elem_slav , list_elem_slav ,elem_slav_flag ,&
                            nb_mast_start, elem_mast_start, nb_slav_start  ,elem_slav_start,&
-                           zone, i_zone)
+                           zone, list_node_mast, nb_node_mast)
         elseif (pair_method .eq. "ROBUSTE") then
             call apprin(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
                         list_elem_mast , nb_elem_slav , list_elem_slav , elem_slav_flag ,&

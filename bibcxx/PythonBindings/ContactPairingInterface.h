@@ -2,7 +2,7 @@
 #define PairingINTERFACE_H_
 
 /**
- * @file NonLinearResultInterface.h
+ * @file ContactPairingInterface.h
  * @brief Fichier entete de la classe NonLinearResultInterface
  * @author Nicolas Sellenet
  * @section LICENCE

@@ -31,7 +31,7 @@ ContactPairing::ContactPairing( const std::string name, const std::vector< Conta
       _newCoordinates = boost::make_shared<MeshCoordinatesField>(*(_mesh->getCoordinates()));
 
      // be sure that zones is not empty and get size of zones and resize
-     if(_zones.empty()) throw std::runtime_error(" ContactZone object is empty ");
+     if(_zones.empty()) throw std::runtime_error(" Vector of ContactZone objects is empty ");
      int size_zones = zones.size();
 
       // resize pairing quantities
@@ -91,11 +91,6 @@ ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
      }else {
           pair_method = ljust( "ROBUSTE", 24, ' ' );
      }
-
-     // to remove later
-     if( variant != ContactVariant::Robust) std::cout << "WARNING: ONLY "
-                                   "ROBUST VARIANT IS AVAILBALE" << std::endl;
-     pair_method = ljust( "ROBUSTE", 24, ' ' );
 
      // tolerence
      ASTERDOUBLE pair_tole = 0.001;
