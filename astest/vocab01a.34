@@ -686,7 +686,6 @@ C_SY
 C_S_VP
 C_TZTZ
 C_VOLU
-Cohesion
 D
 D0
 D1
@@ -875,7 +874,6 @@ D_SIGM_EPSI_NORM
 D_VAN_A
 D_VAN_B
 D_VISC_TEMP
-DilatancyAngle
 E
 EA
 EAT
@@ -1395,7 +1393,6 @@ F_SER_FO
 F_T
 F_TTLT
 F_TTTT
-FrictionAngle
 G
 G1_0
 G2_0
@@ -1620,7 +1617,6 @@ HUJEUX
 HYDR
 HYDRAULIQUE
 HYDS
-HardeningCoef
 I
 IDENTIFICATION
 IERI
@@ -2274,8 +2270,6 @@ M_TTTT
 M_ULT
 MetaAcierEPIL_PT
 MetaAcierEPIL_PT_FO
-MohrCoulombAS
-MohrCoulombAS_FO
 N
 N1
 NAPPE
@@ -3575,8 +3569,6 @@ TYPE_TEST
 TYPE_VALE
 TYPE_VARI_COEF
 TYPE_VECT
-TensionCutOff
-TransitionAngle
 UI2
 UI3
 UI4
