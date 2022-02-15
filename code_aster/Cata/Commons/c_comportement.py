@@ -40,6 +40,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                         'CJS',
                                                         'MOHR_COULOMB',
                                                         'Iwan',
+                                                        'MohrCoulombAS',
                                                         'MFRONT')),
            b_mfront      = BLOC(condition = """equal_to('RELATION', 'MFRONT') """,
                                              fr=tr("Comportement utilisateur de type MFRONT"),

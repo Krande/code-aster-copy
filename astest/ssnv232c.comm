@@ -1,0 +1,163 @@
+# coding=utf-8
+# --------------------------------------------------------------------
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# This file is part of code_aster.
+#
+# code_aster is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# code_aster is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),)
+
+### >>>>>>>>>>>>>>>>
+### >>> Material <<<
+### <<<<<<<<<<<<<<<<
+
+### Moduli
+k = 516.2e6
+g = 238.2e6
+
+young = 9.*k*g /(3.*k+g)
+nu = (3.*k-2.*g) /(6.*k+2.*g)
+
+### Preconsolidation pressure
+pc0 = 50.e3
+
+### MC parameters
+cohe = 1.e3
+phi = 33.
+psi = 27.
+lodeT = 29.9
+a = .25*cohe/tan(phi*pi/180.)
+hC = 0.
+
+SOL = DEFI_MATERIAU(ELAS=_F(E=young,
+                            NU=nu,
+                            ALPHA=0.),
+                    MohrCoulombAS=_F(YoungModulus=young,
+                                     PoissonRatio=nu,
+                                     FrictionAngle=phi,
+                                     DilatancyAngle=psi,
+                                     Cohesion=cohe,
+                                     TransitionAngle=lodeT,
+                                     TensionCutOff=a,
+                                     HardeningCoef=hC,),)
+
+### >>>>>>>>>>>>>>>>>>>>
+### >>> List of time <<<
+### <<<<<<<<<<<<<<<<<<<<
+
+epzz_max = -3.e-4
+depzz = -pc0/3./k
+
+TEMPS1 = DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=(_F(JUSQU_A=1.,
+                                       NOMBRE=1),
+                                    _F(JUSQU_A=30.,
+                                       NOMBRE=100),),)
+
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS1,),
+                         ECHEC=_F(EVENEMENT='ERREUR',
+                                  ACTION='DECOUPE',
+                                  SUBD_METHODE='AUTO',),)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>
+### >>> Loading conditions <<<
+### <<<<<<<<<<<<<<<<<<<<<<<<<<
+
+COEF1 = DEFI_FONCTION(NOM_PARA='INST',
+                      PROL_DROITE='CONSTANT',
+                      VALE=(0.,0.,
+                            1.,0.,
+                            30.,0.,),)
+
+COEF2 = DEFI_FONCTION(NOM_PARA='INST',
+                      PROL_DROITE='CONSTANT',
+                      VALE=(0.,0.,
+                            1.,-pc0,
+                            30.,-pc0,),)
+
+COEF3 = DEFI_FONCTION(NOM_PARA='INST',
+                      PROL_DROITE='CONSTANT',
+                      VALE=(0.,0.,
+                            1.,depzz,
+                            30.,epzz_max,),)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### >>> Compute the numerical solution <<<
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+TSIMU = SIMU_POINT_MAT(INFO=2,
+                       COMPORTEMENT=_F(RELATION='MohrCoulombAS',
+                                       RESI_INTE_RELA=1.e-14,),
+                       MATER=SOL,
+                       INCREMENT=_F(LIST_INST=DEFLIST,
+                                    INST_INIT=0.,
+                                    INST_FIN=30.,),
+                       NEWTON=_F(MATRICE='TANGENTE',),
+                       CONVERGENCE=_F(RESI_GLOB_RELA=1.e-10,
+                                      ITER_GLOB_MAXI=10,),
+                       ARCHIVAGE=_F(LIST_INST=TEMPS1,),
+                       SIGM_IMPOSE=_F(SIXX=COEF2,
+                                      SIYY=COEF2,),
+                       EPSI_IMPOSE=_F(EPZZ=COEF3,
+                                      EPXY=COEF1,
+                                      EPXZ=COEF1,
+                                      EPYZ=COEF1,),)
+
+### >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+### >>> Non-hCression tests <<<
+### <<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+TEST_TABLE(NOM_PARA='SIXX',
+           TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.,
+                     CRITERE='ABSOLU',
+                     PRECISION=1e-7,),
+           VALE_CALC=-50000.00000615134,)
+
+TEST_TABLE(NOM_PARA='SIZZ',
+           TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.,
+                     CRITERE='ABSOLU',
+                     PRECISION=1e-7,),
+           VALE_CALC=-173077.28029053428,)
+
+TEST_TABLE(NOM_PARA='V7',
+           TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.,
+                     CRITERE='ABSOLU',
+                     PRECISION=1e-7,),
+           VALE_CALC=0.0002523646130019748,)
+
+TEST_TABLE(NOM_PARA='V8',
+           TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.,
+                     CRITERE='ABSOLU',
+                     PRECISION=1e-7,),
+           VALE_CALC=0.00011457113677334,)
+
+TEST_TABLE(NOM_PARA='V9',
+           TABLE=TSIMU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=30.,
+                     CRITERE='ABSOLU',
+                     PRECISION=1e-7,),
+           VALE_CALC=2.7623234303334216,)
+
+FIN()
