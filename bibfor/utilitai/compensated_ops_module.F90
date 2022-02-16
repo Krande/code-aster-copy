@@ -19,9 +19,10 @@
 module compensated_ops_module
 
   implicit none
+#include "asterc/fma_double.h"
 
   interface dot_product
-     module procedure dot2s
+     module procedure dot2FMA
   end interface dot_product
 
   interface sum
@@ -79,6 +80,16 @@ subroutine twoproduct(a, b, x, y)
 
 end subroutine twoproduct
 
+subroutine twoproductFMA(a, b, x, y)
+  implicit none
+  real(kind=8), intent(in) :: a, b
+  real(kind=8), intent(out) :: x, y
+
+  x = a * b
+  y = fma_double(a, b, -x)
+
+end subroutine twoproductFMA
+
 function sum2s(vt) result(t)
   implicit none
   real(kind=8), intent(in) :: vt(:)
@@ -114,6 +125,24 @@ function dot2s(vx, vy) result(t)
 
 end function dot2s
 
+function dot2FMA(vx, vy) result(t)
+  implicit none
+  real(kind=8), intent(in) :: vx(:)
+  real(kind=8), intent(in) :: vy(size(vx))
+  real(kind=8) :: p, s, h, r, q, pp, t
+  integer i
+
+  call twoproductFMA(vx(1), vy(1), p, s)
+  do i = 2, size(vx)
+     call twoproductFMA(vx(i), vy(i), h, r)
+     pp = p
+     call twosum(pp, h, p, q)
+     s = s + (q + r)
+  enddo
+  t = p + s
+
+end function dot2FMA
+
 function matmul2(A, B) result(C)
   implicit none
   real(kind=8), dimension(:,:), intent(in) :: A, B
@@ -122,7 +151,7 @@ function matmul2(A, B) result(C)
 
   do i = 1, size(A, 1)
      do j = 1, size(B, 2)
-        C(i, j) = dot2s(A(i, :), B(:, j))
+        C(i, j) = dot2FMA(A(i, :), B(:, j))
      end do
   end do
 
