@@ -308,7 +308,46 @@ Arguments:
 Returns:
     bool: *True* if succeeds, *False* otherwise.
         )",
-              ( py::arg( "self" ), py::arg("filename")) ) ;
+              ( py::arg( "self" ), py::arg("filename")) )
+// -------------------------------------------------------------------------------------------------
+        .def( "getNodesFromCells", static_cast<VectorLong (ParallelMesh::*)
+                   (const std::string) const> (&ParallelMesh::getNodesFromCells), R"(
+Returns the nodes indexes of a group of cells.
+
+Arguments:
+    name (str): name of the group of cells.
+
+Returns:
+    [int]: indexes of the nodes.
+        )",
+              ( py::arg( "self" ), py::args( "name" ) )  )
+// -------------------------------------------------------------------------------------------------
+        .def( "getNodesFromCells", static_cast<VectorLong (ParallelMesh::*)
+                   (const std::string, const bool) const> (&ParallelMesh::getNodesFromCells), R"(
+Returns the nodes indexes of a group of cells.
+
+Arguments:
+    name (str): name of the group of cells.
+    local (bool): node id in local or global numbering
+
+Returns:
+    [int]: indexes of the nodes.
+        )",
+              ( py::arg( "self" ), py::args( "name", "local" ) )  )
+// -------------------------------------------------------------------------------------------------
+        .def( "getNodesFromCells", static_cast<VectorLong (ParallelMesh::*)
+        (const std::string, const bool, const bool) const> (&ParallelMesh::getNodesFromCells), R"(
+Returns the nodes indexes of a group of cells.
+
+Arguments:
+    name (str): name of the group of cells.
+    local (bool): node id in local or global numbering
+    same_rank (bool): keep or not the nodes owned by the current domain
+
+Returns:
+    [int]: indexes of the nodes.
+        )",
+              ( py::arg( "self" ), py::args( "name", "local", "same_rank" ) )  );
 };
 
 #endif /* ASTER_HAVE_MPI */

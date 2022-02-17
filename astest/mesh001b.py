@@ -175,6 +175,21 @@ test.assertSequenceEqual(sorted(mesh.getNodes("Beton", False)),
 test.assertSequenceEqual(sorted(mesh.getNodes("Beton", False)),
     sorted(inter(mesh.getNodes("Beton", False), allNodes )))
 
+# rank-owned nodes in local numbering
+nodeLoc=[[59, 69, 70], [], [77, 86, 87]]
+test.assertSequenceEqual(mesh.getNodesFromCells("Cable0", True, True),
+                         nodeLoc[rank])
+test.assertSequenceEqual(mesh.getNodesFromCells("Cable0", False, True),
+                         sorted([globalNodesNum[i-1] for i in nodeLoc[rank]]))
+
+# nodes in local numbering
+nodeLocWithGhosts=[[59, 68, 69, 70],[61, 62],[77, 86, 87, 88]]
+test.assertSequenceEqual(mesh.getNodesFromCells("Cable0", True, False),
+                         nodeLocWithGhosts[rank])
+test.assertSequenceEqual(mesh.getNodesFromCells("Cable0", False, False),
+                         sorted([globalNodesNum[i-1] for i in nodeLocWithGhosts[rank]]))
+
+
 new_mesh = mesh.refine(2)
 
 # test mesh builder

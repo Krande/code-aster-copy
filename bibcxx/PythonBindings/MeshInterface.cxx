@@ -290,5 +290,44 @@ To know if the mesh contains quadratic cells
 Returns:
     bool: *True* if the mesh contains quadratic cells, *False* otherwise.
         )",
-              ( py::arg( "self" )  ) );
+              ( py::arg( "self" )  ) )
+// -------------------------------------------------------------------------------------------------
+        .def( "getNodesFromCells", static_cast<VectorLong (Mesh::*)
+                   (const std::string) const> (&Mesh::getNodesFromCells), R"(
+Returns the nodes indexes of a group of cells.
+
+Arguments:
+    name (str): name of the group of cells.
+
+Returns:
+    [int]: indexes of the nodes.
+        )",
+              ( py::arg( "self" ), py::args( "name" ) )  )
+// -------------------------------------------------------------------------------------------------
+        .def( "getNodesFromCells", static_cast<VectorLong (Mesh::*)
+                   (const std::string, const bool) const> (&Mesh::getNodesFromCells), R"(
+Returns the nodes indexes of a group of cells.
+
+Arguments:
+    name (str): name of the group of cells.
+    local (bool): node id in local or global numbering
+
+Returns:
+    [int]: indexes of the nodes.
+        )",
+              ( py::arg( "self" ), py::args( "name", "local" ) )  )
+// -------------------------------------------------------------------------------------------------
+        .def( "getNodesFromCells", static_cast<VectorLong (Mesh::*)
+                (const std::string, const bool, const bool) const> (&Mesh::getNodesFromCells), R"(
+Returns the nodes indexes of a group of cells.
+
+Arguments:
+    name (str): name of the group of cells.
+    local (bool): node id in local or global numbering
+    same_rank (bool): keep or not the nodes owned by the current domain
+
+Returns:
+    [int]: indexes of the nodes.
+        )",
+              ( py::arg( "self" ), py::args( "name", "local", "same_rank" ) )  );
 };

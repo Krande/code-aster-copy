@@ -120,10 +120,21 @@ class Mesh : public BaseMesh {
 
     /**
      * @brief Returns the nodes indexes of a group of cells
-     * @return VectorLong
+     * @param name name of group of cells
+     * @param local node id in local or global numbering
+     * @param same_rank keep or not the nodes owned by the current domain
+     * @return list of nodes indexes
      */
     VectorLong getNodesFromCells( const std::string name, const bool localNumbering,
                                   const bool same_rank ) const;
+
+    VectorLong getNodesFromCells( const std::string name) const {
+        return getNodesFromCells( name, true, true ) ;
+    };
+
+    VectorLong getNodesFromCells( const std::string name, const bool localNumbering) const {
+        return getNodesFromCells( name, localNumbering, true ) ;
+    };
 
     /**
      * @brief Get inner nodes

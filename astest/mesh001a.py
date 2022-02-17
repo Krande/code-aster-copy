@@ -244,6 +244,9 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
                              'S24','S26','S34','S37','S51','S56','S68','S75',\
                                  'S78','S84','TOP','VOLUME'])
 test.assertEqual(code_aster.Mesh.buildCube(refine=2).getNumberOfNodes(), 125)
+builder = code_aster.Mesh.buildCube()
+test.assertSequenceEqual(builder.getNodesFromCells('VOLUME'),
+                         [1, 2, 3, 4, 5, 6, 7, 8])
 
 # from mesh builder - Cylinder
 builder = code_aster.Mesh.buildCylinder(refine=3)
@@ -256,6 +259,9 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
                          ['BOTTOM', 'SURFEXT', 'TOP', 'VOLUME'])
 test.assertEqual(code_aster.Mesh.buildCylinder(refine=2).getNumberOfNodes(), 1881)
+builder = code_aster.Mesh.buildCylinder()
+test.assertSequenceEqual(builder.getNodesFromCells('BOTTOM'),
+                         [1, 4, 5, 8, 10, 11, 14, 15, 20, 24, 25, 27, 30, 35, 36, 40, 45])
 
 # from mesh builder -Square
 builder = code_aster.Mesh.buildSquare(refine=3)
@@ -267,6 +273,8 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
                          ['N1', 'N2', 'N3', 'N4'])
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
                          ['BOTTOM', 'LEFT', 'RIGHT', 'SURFACE', 'TOP'])
+test.assertSequenceEqual(builder.getNodesFromCells('BOTTOM'),
+                         [3, 4, 6, 15, 21, 42, 49, 59, 68])
 test.assertEqual(code_aster.Mesh.buildSquare(refine=2).getNumberOfNodes(), 25)
 
 # from mesh builder -  Disk
@@ -279,6 +287,10 @@ test.assertSequenceEqual(sorted(builder.getGroupsOfNodes()),
                          [])
 test.assertSequenceEqual(sorted(builder.getGroupsOfCells()),
                          ['CIRCLE', 'SURFACE'])
+test.assertSequenceEqual(builder.getNodesFromCells('CIRCLE'),
+[5, 6, 7, 8, 13, 14, 15, 16, 30, 31, 32, 33, 34, 35, 36, 37, 70, 71, 73, 74, 76, 77, 79, 80, 98,
+99, 101, 102, 104, 105, 107, 108, 222, 223, 225, 226, 228, 229, 231, 232, 250, 251, 253, 254, 256,
+257, 259, 260, 314, 315, 317, 318, 320, 321, 323, 324, 326, 327, 329, 330, 332, 333, 335, 336])
 test.assertEqual(code_aster.Mesh.buildDisk(refine=2).getNumberOfNodes(), 209)
 
 test.printSummary()
