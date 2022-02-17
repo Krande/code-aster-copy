@@ -141,7 +141,7 @@ test.assertEqual(zone.getSlaveGroupOfCells(), 'Group_4')
 test.assertEqual(zone.getMasterGroupOfCells(), 'Group_3')
 
 zone1 = DEFICO.getContactZone(0)
-print(zone1.getExcludedSlaveGroupOfCells())
+# print(zone1.getExcludedSlaveGroupOfCells())
 test.assertEqual(zone1.getExcludedSlaveGroupOfCells(), ['Group_0'])
 
 DEFICO.hasFriction(True)

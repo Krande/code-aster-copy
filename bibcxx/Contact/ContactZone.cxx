@@ -121,34 +121,39 @@ ASTERBOOL  ContactZone::buildCellsNeighbors() {
         ASTERINTEGER ind_max, ind_min;
         // get master neighbors
         ASTERINTEGER nbMaster = getMasterCells().size();
-        ind_max = *std::max_element(_masterCells.begin(), _masterCells.end());
-        ind_min = *std::min_element(_masterCells.begin(), _masterCells.end());
+        if (nbMaster > 0) {
+            ind_max = *std::max_element(_masterCells.begin(), _masterCells.end());
+            ind_min = *std::min_element(_masterCells.begin(), _masterCells.end());
+            
+
+            std::string invmcn_name = ljust( _masterInverseConnectivity->getName(), 24, ' ' );
+            std::string mn_name = ljust( _masterNeighbors->getName(), 24, ' ' );
+
         
-
-        std::string invmcn_name = ljust( _masterInverseConnectivity->getName(), 24, ' ' );
-        std::string mn_name = ljust( _masterNeighbors->getName(), 24, ' ' );
-
-      
-        CALL_CNVOIS(getMesh()->getName(), _masterCells.data(), invmcn_name, &nbMaster,
-                                &ind_min, &ind_max, mn_name);
+            CALL_CNVOIS(getMesh()->getName(), _masterCells.data(), invmcn_name, &nbMaster,
+                                    &ind_min, &ind_max, mn_name);
+            
+            _masterNeighbors->build();
+        }
         
-        _masterNeighbors->build();
-
+  
         // get slave neighbors
 
         ASTERINTEGER nbSlave = getSlaveCells().size();
-        ind_max = *std::max_element(_slaveCells.begin(), _slaveCells.end());
-        ind_min = *std::min_element(_slaveCells.begin(), _slaveCells.end());
-        
+        if (nbSlave > 0) {
+            ind_max = *std::max_element(_slaveCells.begin(), _slaveCells.end());
+            ind_min = *std::min_element(_slaveCells.begin(), _slaveCells.end());
+            
 
-        std::string invscn_name = ljust( _slaveInverseConnectivity->getName(), 24, ' ' );
-        std::string sn_name = ljust( _slaveNeighbors->getName(), 24, ' ' );
+            std::string invscn_name = ljust( _slaveInverseConnectivity->getName(), 24, ' ' );
+            std::string sn_name = ljust( _slaveNeighbors->getName(), 24, ' ' );
 
-      
-        CALL_CNVOIS(getMesh()->getName(), _slaveCells.data(), invscn_name, &nbSlave,
-                                &ind_min, &ind_max, sn_name);
         
-        _slaveNeighbors->build();
+            CALL_CNVOIS(getMesh()->getName(), _slaveCells.data(), invscn_name, &nbSlave,
+                                    &ind_min, &ind_max, sn_name);
+            
+            _slaveNeighbors->build();
+        }
 
 
         return true;

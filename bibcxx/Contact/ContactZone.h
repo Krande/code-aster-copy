@@ -132,7 +132,7 @@ class ContactZone : public DataStructure {
     const VectorLong& getMasterNodes() const {return _masterCells;};
     
     VectorLong&  getMasterNodes() { 
-      return const_cast<VectorLong&>(std::as_const(*this).getMasterCells());
+      return const_cast<VectorLong&>(std::as_const(*this).getMasterNodes());
     }
     
       /**
