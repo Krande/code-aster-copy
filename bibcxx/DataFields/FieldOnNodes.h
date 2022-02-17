@@ -173,9 +173,9 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
      */
     FieldOnNodes( MeshCoordinatesFieldPtr &toCopy )
         : DataField( "CHAM_NO" ),
-          _descriptor( toCopy->_descriptor ),
-          _reference( toCopy->_reference ),
-          _valuesList( toCopy->_valuesList ),
+          _descriptor( toCopy->getDescriptor() ),
+          _reference( toCopy->getReference() ),
+          _valuesList( toCopy->getValues() ),
           _dofDescription( nullptr ),
           _mesh( nullptr ){};
 

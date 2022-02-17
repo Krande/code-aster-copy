@@ -24,9 +24,11 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "PythonBindings/MeshCoordinatesFieldInterface.h"
+
 #include "DataFields/MeshCoordinatesField.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/factory.h"
+
 #include <boost/python.hpp>
 
 namespace py = boost::python;
@@ -38,8 +40,9 @@ void exportMeshCoordinatesFieldToPython() {
         // fake initFactoryPtr: no default constructor, only for restart
         .def( "__init__",
               py::make_constructor( &initFactoryPtr< MeshCoordinatesField, std::string > ) )
-        .def( "__getitem__",
-              +[]( const MeshCoordinatesField &v, int i ) { return v.operator[]( i ); }, R"(
+        .def(
+            "__getitem__",
+            +[]( const MeshCoordinatesField &v, int i ) { return v.operator[]( i ); }, R"(
 Return the coordinate at index *idx* in the vector.
 
 The value is the same as *getValues()[idx]* without creating the entire vector.
@@ -54,12 +57,23 @@ Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 Returns:
     list[float]: List of coordinates (size = 3 * number of nodes).
         )",
-            ( py::arg( "self" ) ) )
+              ( py::arg( "self" ) ) )
         .def( "duplicate", &MeshCoordinatesField::duplicate, R"(
 Return a copy of MeshCoordinatesField object
 
 Returns:
     MeshCoordinatesField : MeshCoordinatesField object
         )",
-            ( py::arg( "self" ) ) );
+              ( py::arg( "self" ) ) )
+        .def( "size", &MeshCoordinatesField::size, R"(
+Return the size of the field
+
+Returns:
+    int : number of values of MeshCoordinatesField object
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "updateValuePointers", &MeshCoordinatesField::updateValuePointers, R"(
+Update values of internal pointer.
+        )",
+              ( py::arg( "self" ) ) );
 };

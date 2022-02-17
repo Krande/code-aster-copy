@@ -28,21 +28,15 @@
 
 #include "astercxx.h"
 
-#include "DataStructures/DataStructure.h"
+#include "DataFields/DataField.h"
 #include "MemoryManager/JeveuxVector.h"
-
-/** @brief Forward declaration of FieldOnNodes */
-template < class ValueType >
-class FieldOnNodes;
-
-typedef FieldOnNodes< ASTERDOUBLE > FieldOnNodesReal;
 
 /**
  * @class MeshCoordinatesField
  * @brief Cette classe template permet de definir un champ aux noeuds Aster
  * @author Nicolas Sellenet
  */
-class MeshCoordinatesField : public DataStructure {
+class MeshCoordinatesField : public DataField {
   private:
     /** @brief Vecteur Jeveux '.DESC' */
     JeveuxVectorLong _descriptor;
@@ -50,8 +44,6 @@ class MeshCoordinatesField : public DataStructure {
     JeveuxVectorChar24 _reference;
     /** @brief Vecteur Jeveux '.VALE' */
     JeveuxVectorReal _valuesList;
-
-    friend FieldOnNodesReal;
 
   public:
     /**
@@ -65,35 +57,31 @@ class MeshCoordinatesField : public DataStructure {
      * @param name Nom Jeveux du champ aux noeuds
      */
     MeshCoordinatesField( const std::string &name )
-        : DataStructure( name, 19, "CHAM_NO" ),
+        : DataField( name, "CHAM_NO" ),
           _descriptor( JeveuxVectorLong( getName() + ".DESC" ) ),
           _reference( JeveuxVectorChar24( getName() + ".REFE" ) ),
-          _valuesList( JeveuxVectorReal( getName() + ".VALE" ) ) {
-        assert( name.size() == 19 );
-    };
+          _valuesList( JeveuxVectorReal( getName() + ".VALE" ) ){};
 
     /**
      * @brief copy constructeur
      * @param coordField MeshCoordinatesField
      */
-    MeshCoordinatesField(const MeshCoordinatesField  &coordField ):
-          MeshCoordinatesField(ResultNaming::getNewResultName())
-    {
-          *(_descriptor) = *(coordField._descriptor);
-          *(_reference)  = *(coordField._reference);
-          *(_valuesList) = *(coordField._valuesList);
+    MeshCoordinatesField( const MeshCoordinatesField &coordField )
+        : MeshCoordinatesField( ResultNaming::getNewResultName() ) {
+        *( _descriptor ) = *( coordField._descriptor );
+        *( _reference ) = *( coordField._reference );
+        *( _valuesList ) = *( coordField._valuesList );
     };
-
 
     /**
      * @brief Assignement operator
      * @param coordField MeshCoordinatesField
      */
-    MeshCoordinatesField& operator=(const MeshCoordinatesField  &coordField ){
-          *(_descriptor) = *(coordField._descriptor);
-          *(_reference)  = *(coordField._reference);
-          *(_valuesList) = *(coordField._valuesList);
-          return *this;
+    MeshCoordinatesField &operator=( const MeshCoordinatesField &coordField ) {
+        *( _descriptor ) = *( coordField._descriptor );
+        *( _reference ) = *( coordField._reference );
+        *( _valuesList ) = *( coordField._valuesList );
+        return *this;
     };
 
     /**
@@ -116,14 +104,18 @@ class MeshCoordinatesField : public DataStructure {
      * @param i Indice dans le tableau Jeveux
      * @return la valeur du tableau Jeveux a la position i
      */
-    ASTERDOUBLE operator[]( int i ) const { return _valuesList->operator[]( i ); };
+    ASTERDOUBLE operator[]( const ASTERINTEGER &i ) const { return _valuesList->operator[]( i ); };
+
+    /**
+     * @brief Size of the FieldOnNodes
+     */
+    ASTERINTEGER size( void ) const { return _valuesList->size(); }
 
     /**
      * @brief duplicate
      * @return MeshCoordinatesField
      */
-    MeshCoordinatesField duplicate( ){ return *this; };
-
+    MeshCoordinatesField duplicate() { return *this; };
 
     /**
      * @brief Mise a jour des pointeurs Jeveux
@@ -140,12 +132,12 @@ class MeshCoordinatesField : public DataStructure {
  * @typedef MeshCoordinatesFieldPtr
  * @brief Definition d'un champ aux noeuds de double
  */
-typedef boost::shared_ptr< MeshCoordinatesField > MeshCoordinatesFieldPtr;
+using MeshCoordinatesFieldPtr = boost::shared_ptr< MeshCoordinatesField >;
 
 /**
  * @typedef MeshCoordinatesFieldPtr
  * @brief Definition d'un champ aux noeuds de double
  */
-typedef boost::shared_ptr< const MeshCoordinatesField > ConstMeshCoordinatesFieldPtr;
+using ConstMeshCoordinatesFieldPtr = boost::shared_ptr< const MeshCoordinatesField >;
 
 #endif /* MESHCOORDINATESFIELD_H_ */
