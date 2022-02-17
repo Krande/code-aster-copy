@@ -39,7 +39,7 @@
  */
 class Calcul {
   private:
-    typedef std::map< std::string, DataStructurePtr > listFields;
+    typedef std::map< std::string, DataFieldPtr > listFields;
     typedef std::map< std::string, ElementaryTermRealPtr > listElemTerms;
     typedef std::map< std::string, bool > listExists;
 
@@ -100,10 +100,10 @@ class Calcul {
     void setModel( const ModelPtr &model );
 
     /** @brief Add input field */
-    void addInputField( const std::string parameterName, const DataStructurePtr field );
+    void addInputField( const std::string parameterName, const DataFieldPtr field );
 
     /** @brief Add output field */
-    void addOutputField( const std::string parameterName, const DataStructurePtr field );
+    void addOutputField( const std::string parameterName, const DataFieldPtr field );
 
     /** @brief Add input elementary term */
     void addInputElementaryTerm( const std::string parameterName, const DataStructurePtr field );
@@ -165,6 +165,6 @@ class Calcul {
 };
 
 /**  @typedef CalculPtr */
-typedef boost::shared_ptr< Calcul > CalculPtr;
+using CalculPtr = boost::shared_ptr< Calcul >;
 
 #endif /* CALCUL_H_ */

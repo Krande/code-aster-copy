@@ -54,12 +54,12 @@ void Calcul::setModel( const ModelPtr &model ) {
 }
 
 /** @brief Add input field */
-void Calcul::addInputField( const std::string parameterName, const DataStructurePtr field ) {
+void Calcul::addInputField( const std::string parameterName, const DataFieldPtr field ) {
     _inputFields.insert( listFields::value_type( parameterName, field ) );
 }
 
 /** @brief Add output field */
-void Calcul::addOutputField( const std::string parameterName, const DataStructurePtr field ) {
+void Calcul::addOutputField( const std::string parameterName, const DataFieldPtr field ) {
     _outputFields.insert( listFields::value_type( parameterName, field ) );
     _outputFieldsExist.insert( listExists::value_type( parameterName, false ) );
 }
