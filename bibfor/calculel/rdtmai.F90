@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -264,6 +264,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 ! --- OBJET .COORDO.VALE
     call jecreo(cooval, base//' V R')
     call jeecra(cooval, 'LONMAX', nbnoou*3)
+    call jeecra(cooval, 'LONUTI', nbnoou*3)
     call jelira(noma//'.COORDO    .VALE', 'DOCU', cval=docu)
     call jeecra(cooval, 'DOCU', cval=docu)
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
@@ -280,6 +281,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 ! --- OBJET COORDO.DESC
     call jecreo(coodsc, base//' V I')
     call jeecra(coodsc, 'LONMAX', 3)
+    call jeecra(coodsc, 'LONUTI', 3)
     call jeecra(coodsc, 'DOCU', cval='CHNO')
     call jeveuo(coodsc, 'E', iad)
     call jenonu(jexnom('&CATA.GD.NOMGD', 'GEOM_R'), ntgeo)
