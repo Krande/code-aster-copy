@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine xsolveurtria(coor_nod, x, y, z, D, indmax, solution )
   
 ! person_in_charge: patrick.massin at edf.fr
 
-    integer                           ::  i, j, Id(2)
-    real(kind=8)                      ::  valphi(2), term(3), delta, n(2), p, detT
+    integer                           ::  i, j
+    real(kind=8)                      ::  valphi(2), term(3), delta, n(2), p, detT, Id(2)
     real(kind=8),dimension(3,2)       ::  V
     real(kind=8),dimension(2,2)       ::  T, invT
 
@@ -53,8 +53,8 @@ subroutine xsolveurtria(coor_nod, x, y, z, D, indmax, solution )
         valphi(2) = D(j)
 
         !   vecteur unité
-        Id(1) = 1
-        Id(2) = 1
+        Id(1) = 1.d0
+        Id(2) = 1.d0
 
 
         !!!!!!!!!!!!!!!!!!!!!!!!!!!CALCUL DES TERMES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -69,7 +69,7 @@ subroutine xsolveurtria(coor_nod, x, y, z, D, indmax, solution )
         invT(2,2) = (1/detT)*T(1,1)
 
                                             
-        term(1)=dot_product(Id,matmul(invT,Id))
+        term(1)=dot_product(Id,matmul(invT, Id))
         term(2)=dot_product(Id,matmul(invT,valphi))
         term(3)=dot_product(valphi,matmul(invT,valphi))                
                                                                      

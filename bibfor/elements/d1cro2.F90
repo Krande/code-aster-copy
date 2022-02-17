@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 #include "asterfort/draac2.h"
 #include "asterfort/fplass.h"
 #include "asterfort/hplass.h"
-#include "asterfort/matmul.h"
 #include "asterfort/nmnet1.h"
 #include "asterfort/r8inir.h"
     integer :: bend, nbxx, i, j
@@ -82,41 +81,33 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     tdf(1,j) = df(j)
     10 end do
 !
-    call matmul(cdtg, cdeps, 6, 6, 1,&
-                ddeps)
+    ddeps = matmul(cdtg, cdeps)
 !
     do 20, j = 1,6
     tddeps(1,j) = ddeps(j)
     20 end do
 !
-    call matmul(dc, u, 6, 6, 1,&
-                dcu)
+    dcu = matmul(dc, u)
 !
     do 30, j = 1,6
     tdcu(1,j) = dcu(j)
     30 end do
 !
-    call matmul(h, dcu, 6, 6, 1,&
-                hdcu)
-    call matmul(tddeps, h, 1, 6, 6,&
-                cp1)
+    hdcu = matmul(h, dcu)
+    cp1 = matmul(tddeps, h)
 !
     do 40, j = 1,6
     cp1(1,j) = tdf(1,j) + 0.5d0*cp1(1,j)
     40 end do
 !
-    call matmul(cp1, ddeps, 1, 6, 1,&
-                cp0)
+    cp0 = matmul(cp1, ddeps)
 !
     a0(1) = fplass(nmnbn,nmplas,bend) + cp0(1)
 !
-    call matmul(tdf, dcu, 1, 6, 1,&
-                a1)
-    call matmul(tddeps, hdcu, 1, 6, 1,&
-                cp0)
+    a1 = matmul(tdf, dcu)
+    cp0 = matmul(tddeps, hdcu)
     a1(1) = -a1(1) - cp0(1)
-    call matmul(tdcu, hdcu, 1, 6, 1,&
-                cp0)
+    cp0 = matmul(tdcu, hdcu)
     a2(1) = 0.5d0 * cp0(1)
 !
 !     RESOLUTION DE L EQUATION DU SECOND DEGRE

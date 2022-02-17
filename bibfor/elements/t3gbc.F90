@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 
 subroutine t3gbc(xyzl, qsi, eta, bc)
     implicit  none
-#include "asterfort/matmul.h"
     real(kind=8) :: qsi, eta
     real(kind=8) :: bc(2, 9), xyzl(3, *)
 !
@@ -106,7 +105,6 @@ subroutine t3gbc(xyzl, qsi, eta, bc)
     bct2(3,8) = demi*c3
     bct2(3,9) = demi*s3
 !
-    call matmul(bct1, bct2, 2, 3, 9,&
-                bc)
+    bc = matmul(bct1, bct2)
 !
 end subroutine

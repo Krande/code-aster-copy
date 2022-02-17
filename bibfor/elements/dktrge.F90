@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine dktrge(nomte, xyzl, pgl, rig)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
-#include "asterfort/matmul.h"
 #include "asterfort/prmama.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/r8inir.h"
@@ -202,8 +201,7 @@ subroutine dktrge(nomte, xyzl, pgl, rig)
         call prmama(3, bnl, 2, 2, 9,&
                     normal, 2, 2, 2, bnli,&
                     9, 9, 2, ier)
-        call matmul(bnli, bnl, 9, 2, 9,&
-                    flexi)
+        flexi = matmul(bnli, bnl)
 !
         do 30 i = 1, 9
             do 40 j = 1, 9

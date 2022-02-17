@@ -19,10 +19,9 @@
 module compensated_ops_module
 
   implicit none
-#include "asterfort/assert.h"
 
   interface dot_product
-     module procedure dot2
+     module procedure dot2s
   end interface dot_product
 
   interface sum
@@ -97,13 +96,12 @@ function sum2s(vt) result(t)
 
 end function sum2s
 
-function dot2(vx, vy) result(t)
+function dot2s(vx, vy) result(t)
   implicit none
-  real(kind=8), intent(in) :: vx(:), vy(:)
+  real(kind=8), intent(in) :: vx(:)
+  real(kind=8), intent(in) :: vy(size(vx))
   real(kind=8) :: p, s, h, r, q, pp, t
   integer i
-
-  ASSERT(size(vx) .eq. size(vy))
 
   call twoproduct(vx(1), vy(1), p, s)
   do i = 2, size(vx)
@@ -114,7 +112,7 @@ function dot2(vx, vy) result(t)
   enddo
   t = p + s
 
-end function dot2
+end function dot2s
 
 function matmul2(A, B) result(C)
   implicit none
@@ -124,7 +122,7 @@ function matmul2(A, B) result(C)
 
   do i = 1, size(A, 1)
      do j = 1, size(B, 2)
-        C(i, j) = dot2(A(i, :), B(:, j))
+        C(i, j) = dot2s(A(i, :), B(:, j))
      end do
   end do
 

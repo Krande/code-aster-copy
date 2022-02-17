@@ -17,12 +17,15 @@
 ! --------------------------------------------------------------------
 
 subroutine ut3mlg(nno, nnc, pgl, matl, matg)
+!
+  use linalg_ops_module, only : as_matmul
+!
     implicit none
 !
 #include "asterfort/assert.h"
 !
     integer      :: nno, nnc
-    real(kind=8) :: matl(*), pgl(3, 3), matg(*)
+    real(kind=8) :: matl(nno*nnc, nno*nnc), pgl(3, 3), matg(nno*nnc, nno*nnc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,18 +48,13 @@ subroutine ut3mlg(nno, nnc, pgl, matl, matg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer         :: ii, jj, kk, nnoc, indx
-    real(kind=8)    :: MatPassGL(nno*nnc, nno*nnc), mattmp(nno*nnc, nno*nnc)
+    integer         :: ii, jj
+    real(kind=8)    :: MatPassGL(nno*nnc, nno*nnc)
 ! --------------------------------------------------------------------------------------------------
-!
-! Pour les index des matrices stockées en vecteur colonne
-!   klv(i,j) : klv( indx(i,j,n) )
-#define IndexMat(i,j,n) i+(j-1)*n
 !
 !   Pour l'instant cela ne marche qu'avec 3 composantes par noeuds
     ASSERT( nnc.eq.3 )
 ! --------------------------------------------------------------------------------------------------
-    nnoc = nno*nnc
 !   Matrice de passage Global vers Local
     MatPassGL(:,:) = 0.0
     if ( nno.eq.1 ) then
@@ -73,28 +71,7 @@ subroutine ut3mlg(nno, nnc, pgl, matl, matg)
            enddo
         enddo
     endif
-!
-!   Matg = Pgl(^-1) * Matl * Pgl
-!
-!   Calcul de : mattmp() = Matl() * Pgl()
-    mattmp(:,:) = 0.d0
-    do ii = 1, nnoc
-        do jj = 1, nnoc
-            do kk = 1, nnoc
-                indx = IndexMat(ii,kk,nnoc)
-                mattmp(ii,jj) = mattmp(ii,jj) + matl( indx )*MatPassGL(kk,jj)
-            enddo
-        enddo
-    enddo
-!   Calcul de : matg() = transpose(Pgl) * mattmp()
-    matg( nnoc*nnoc ) = 0.0
-    do ii = 1, nnoc
-        do jj = 1, nnoc
-            indx = IndexMat(ii,jj,nnoc)
-            do kk = 1, nnoc
-                matg( indx ) = matg( indx ) + MatPassGL(kk,ii)*mattmp(kk,jj)
-            enddo
-        enddo
-    enddo
-!
+
+    matg = as_matmul( transpose(MatPassGL) , as_matmul( Matl , MatPassGL ) )
+    
 end subroutine

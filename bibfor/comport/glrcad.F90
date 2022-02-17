@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,6 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
 #include "asterfort/dndiss.h"
 #include "asterfort/dxktan.h"
 #include "asterfort/fplass.h"
-#include "asterfort/matmul.h"
 #include "asterfort/mppffn.h"
 #include "asterfort/norrm6.h"
 #include "asterfort/r8inir.h"
@@ -317,8 +316,7 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara,&
             dfp2(j) = depste(j) - depspt(j)
 200     continue
 !
-        call matmul(dtg, dfp2, 6, 6, 1,&
-                    dfp)
+        dfp = matmul(dtg, dfp2)
 !
         do 210 j = 1, 6
             df(j) = df(j) + dfp(j)

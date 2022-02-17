@@ -21,6 +21,6 @@
 interface
     subroutine ut3mlg(nno, nnc, pgl, matl, matg)
       integer      :: nno, nnc
-      real(kind=8) :: matl(*), pgl(3,3), matg(*)
+      real(kind=8) :: matl(nno*nnc, nno*nnc), pgl(3,3), matg(nno*nnc, nno*nnc)
     end subroutine ut3mlg
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ subroutine d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
 #include "asterfort/dfplgl.h"
 #include "asterfort/dfuuss.h"
 #include "asterfort/fplass.h"
-#include "asterfort/matmul.h"
 #include "asterfort/nmnet1.h"
     integer :: bend, j, zimat, nmprox(2), cief, cier
 !
@@ -72,14 +71,10 @@ subroutine d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend,&
                 dfu)
 !
-    call matmul(cdtg, cdeps, 6, 6, 1,&
-                cp)
-    call matmul(tdf, cp, 1, 6, 1,&
-                a)
-    call matmul(dc, dfu, 6, 6, 1,&
-                cp)
-    call matmul(tdf, cp, 1, 6, 1,&
-                b)
+    cp = matmul(cdtg, cdeps)
+    a(1) = dot_product(df, cp)
+    cp = matmul(dc, dfu)
+    b(1) = dot_product(df, cp)
 !
 !     CALCUL DU MULTIPLICATEUR PLASTIQUE
     lambda = (fplass(nmnbn,nmplas,bend) + a(1)) / b(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,6 +54,7 @@ subroutine difondmatpetit(tirela,raidTang,vloc,vpara,nbVloc,nbPara,klr,errmax,du
 !
 ! --------------------------------------------------------------------------------------------------
 !
+use linalg_ops_module, only : as_matmul
 implicit none
 !
 #include "asterc/r8prem.h"
@@ -67,7 +68,7 @@ implicit none
 !   nombre et compteur de critères à vérifier
     integer :: nbDDL,nbDDLii,nbDDLjj
 !   Compteurs
-    integer :: compt, ii, jj, kk
+    integer :: compt, ii, jj
 !   numérotation pour savoir quels critères sont concernés H et H- pour le transfert
     integer :: etatG, etatHCP, etatMxCP, etatMyCP
 !   valeur avec le signe des moments et de l'effort horizontal pour le calcul
@@ -90,7 +91,7 @@ implicit none
 !   MatAinverser    : la matrice à inverser pour obtenir les avancements
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
-    real(kind =8), allocatable :: MatAinverser(:,:),fsInverse(:,:),dfOrdo(:,:),Mtmp(:,:)
+    real(kind =8), allocatable :: MatAinverser(:,:),fsInverse(:,:),dfOrdo(:,:)
 !   La partie plastique de la raideur
     real(kind = 8) :: Kplastique(5,5)
 !   factor  de linéarisation,reste dans des division euclidienne
@@ -583,7 +584,7 @@ implicit none
     Hslid(2)=vpara(5)*exp(-1.0*vpara(6)*vloc(20))
     !
     ! création de la matrice A inverser par la suite
-    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5),Mtmp(5,nbDDL))
+    allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5))
     nbDDLii=0
     do ii=1,16
         if (criteres(ii)) then
@@ -618,30 +619,8 @@ implicit none
     if (iret .NE. 0) then
         goto 999
     endif
-    !
     ! on reconstruit alors la matrice tangente plastique
-    !   Ca plante sur GAIA, on programme les opérations matricielles
-    !       Kplastique=matmul( matmul( transpose(dfOrdo),fsInverse ), dfOrdo )
-    !
-    ! Mtmp = matmul( transpose(dfOrdo),fsInverse )          C(i,j) = A(k,i)*B(k,j) : j, i, k
-    Mtmp(:,:) = 0.0
-    do jj=1,nbDDL
-        do ii=1,5
-            do kk=1,nbDDL
-                Mtmp(ii,jj) = Mtmp(ii,jj) + dfOrdo(kk,ii)*fsInverse(kk,jj)
-            enddo
-        enddo
-    enddo
-    ! Kplastique = matmul( Mtmp ,dfOrdo)                    C(i,j) = A(i,k)*B(k,j) : j, k, i
-    Kplastique(:,:) = 0.0
-    do jj=1,5
-        do kk=1,nbDDL
-            do ii=1,5
-                Kplastique(ii,jj) = Kplastique(ii,jj) + Mtmp(ii,kk)*dfOrdo(kk,jj)
-            enddo
-        enddo
-    enddo
-    !
+    Kplastique=as_matmul(as_matmul(transpose(dfOrdo),fsInverse ), dfOrdo )
     compt=0
     do ii=1,5
         do jj=1,ii
@@ -661,9 +640,6 @@ implicit none
     endif
     if (allocated(dfOrdo)) then
         deallocate(dfOrdo)
-    endif
-    if (allocated(Mtmp)) then
-        deallocate(Mtmp)
     endif
     !
 contains

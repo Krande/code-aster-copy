@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine calkce(nno, ndim, kbp, kbb, pm,&
     implicit none
 !
 #include "asterfort/matinv.h"
-#include "asterfort/matmul.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/transp.h"
     integer :: nno, ndim
@@ -45,7 +44,7 @@ subroutine calkce(nno, ndim, kbp, kbb, pm,&
 !
     integer :: i
     real(kind=8) :: kpb(nno, ndim), kbbi(ndim, ndim)
-    real(kind=8) :: det, pp(nno, 1), prod(ndim, nno)
+    real(kind=8) :: det, pp(nno), prod(ndim, nno)
 !-----------------------------------------------------------------------
 !
     call r8inir(nno*nno, 0.d0, kce, 1)
@@ -60,19 +59,16 @@ subroutine calkce(nno, ndim, kbp, kbb, pm,&
     call matinv('S', ndim, kbb, kbbi, det)
 !
 ! - PRODUIT DE L'INVERSE DE LA MATRICE KBB ET DE LA MATRICE KBP
-    call matmul(kbbi, kbp, ndim, ndim, nno,&
-                prod)
+    prod = matmul(kbbi, kbp)
 !
 ! - CALCUL DE KCE
-    call matmul(kpb, prod, nno, ndim, nno,&
-                kce)
+    kce = matmul(kpb, prod)
 !
 ! - CALCUL DU PRODUIT RCE
-    do 1 i = 1, nno
-        pp(i,1)=pm(i)+dp(i)
- 1  end do
+    do i = 1, nno
+        pp(i)=pm(i)+dp(i)
+    end do
 !
-    call matmul(kce, pp, nno, nno, 1,&
-                rce)
+    rce = matmul(kce, pp)
 !
 end subroutine

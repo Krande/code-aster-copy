@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,6 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
 #include "asterfort/d2crit.h"
 #include "asterfort/d2cro2.h"
 #include "asterfort/ddmpfn.h"
-#include "asterfort/matmul.h"
 #include "asterfort/mppffn.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/restzo.h"
@@ -84,12 +83,12 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
     newief = ipara(3)
     ier = ipara(4)
 !
-    do 20, j = 1,6
-    cdeps(j) = deps(j)
-    do 10, i = 1,6
-    cdtg(i,j) = dtg(i,j)
-10  continue
-    20 end do
+    do j = 1,6
+       cdeps(j) = deps(j)
+       do i = 1,6
+          cdtg(i,j) = dtg(i,j)
+       end do
+    end do
 !
     if (ncrit .eq. -1) then
 !     PREDICTEUR ELASTIQUE HORS CHAMP
@@ -98,8 +97,7 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
     else if (ncrit .eq. 0) then
 !     ELASTICITE = AUCUN CRITERE ACTIVE
         call r8inir(6, 0.0d0, despit, 1)
-        call matmul(dtg, deps, 6, 6, 1,&
-                    nmp)
+        nmp = matmul(dtg, cdeps)
 !
         do 30, j = 1,6
         newnbn(j) = nmnbn(j) + nmp(j)
@@ -371,8 +369,7 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl,&
     nmp(j) = 0.5d0*(nmnbn(j) + newnbn(j))
     270 end do
 !
-    call matmul(tdespi, nmp, 1, 6, 1,&
-                aux)
+    aux = matmul(tdespi, nmp)
 !
     ddisit = aux(1)
 !

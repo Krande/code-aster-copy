@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,21 +39,18 @@ subroutine nmnet1(zimat, nmnbn, cnbn, cplas, czef,&
 ! OUT NORMM : NORME SUR LA FONCTION MP = F(N)
 !
 #include "asterfort/gplass.h"
-#include "asterfort/matmul.h"
 #include "asterfort/mppffn.h"
     integer :: j, cief, zimat, cier
 !
     real(kind=8) :: nmnbn(6), cnbn(6), cplas(2, 3), czef, czeg, normm
     real(kind=8) :: cdeps(6), cdtg(6, 6), cdepsp(6), dc(6, 6), cp(6)
 !
-    call matmul(cdtg, cdeps, 6, 6, 1,&
-                cnbn)
-    call matmul(dc, cdepsp, 6, 6, 1,&
-                cp)
+    cnbn = matmul(cdtg, cdeps)
+    cp = matmul(dc, cdepsp)
 !
-    do 10, j = 1,6
-    cnbn(j) = nmnbn(j) + cnbn(j) - cp(j)
-    10 end do
+    do j = 1,6
+       cnbn(j) = nmnbn(j) + cnbn(j) - cp(j)
+    end do
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
 !     ET DES ZEROS DES CRITERES

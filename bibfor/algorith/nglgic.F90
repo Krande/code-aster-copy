@@ -31,6 +31,7 @@ use gdlog_module, only: GDLOG_DS, gdlog_init, gdlog_defo, gdlog_matb,  &
 use bloc_fe_module, only: prod_bd, prod_sb, prod_bkb, add_fint, add_matr
 use Behaviour_type
 use Behaviour_module
+use linalg_ops_module, only : as_matmul
 !
 implicit none
 !
@@ -328,16 +329,16 @@ integer,intent(out)            :: codret
             dgg = dsde(neu+1:neu+neg,neu+1:neu+neg)
 
             ! Construction des blocs de la matrice tangente EF
-            kefuu = matmul(matmul(dev,dee),dev) + rinco*dh
+            kefuu = as_matmul(as_matmul(dev,dee),dev) + rinco*dh
             kefug = matmul(dev,deg)
             kefuq(:,1) = kr
-            kefuq(:,2) = matmul(matmul(dev,dee),hyd)-rinco*kr
+            kefuq(:,2) = as_matmul(as_matmul(dev,dee),hyd)-rinco*kr
             kefgu = matmul(dge,dev)
             kefgg = dgg
             kefgq(:,1) = 0
             kefgq(:,2) = matmul(dge,hyd)
             kefqu(1,:) = kr
-            kefqu(2,:) = matmul(matmul(hyd,dee),dev) - rinco*kr
+            kefqu(2,:) = as_matmul(as_matmul(hyd,dee),dev) - rinco*kr
             kefqg(1,:) = 0
             kefqg(2,:) = matmul(hyd,deg)
             kefqq(1,1) = 0

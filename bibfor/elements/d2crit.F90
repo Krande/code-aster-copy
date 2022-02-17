@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
 #include "asterfort/dfplgl.h"
 #include "asterfort/dfuuss.h"
 #include "asterfort/fplass.h"
-#include "asterfort/matmul.h"
 #include "asterfort/nmnet2.h"
 #include "asterfort/r8inir.h"
     integer :: j, zimat, nmprox(2), cief, cier
@@ -69,12 +68,12 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
     call dfplgl(nmnbn, nmplas, nmdpla, 1, df1)
     call dfplgl(nmnbn, nmplas, nmdpla, 2, df2)
 !
-    do 10, j = 1,6
-    df(j,1) = df1(j)
-    df(j,2) = df2(j)
-    tdf(1,j) = df(j,1)
-    tdf(2,j) = df(j,2)
-    10 end do
+    do j = 1,6
+       df(j,1) = df1(j)
+       df(j,2) = df2(j)
+       tdf(1,j) = df(j,1)
+       tdf(2,j) = df(j,2)
+    end do
 !
 !     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 1,&
@@ -82,23 +81,17 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 2,&
                 dfu2)
 !
-    do 20, j = 1,6
-    dfu(j,1) = dfu1(j)
-    dfu(j,2) = dfu2(j)
-    20 end do
+    do j = 1,6
+       dfu(j,1) = dfu1(j)
+       dfu(j,2) = dfu2(j)
+    end do
 !
-    call matmul(cdtg, cdeps, 6, 6, 1,&
-                cp)
-    call matmul(tdf, cp, 2, 6, 1,&
-                a)
-    call matmul(dc1, dfu1, 6, 6, 1,&
-                cp)
-    call matmul(tdf, cp, 2, 6, 1,&
-                b1)
-    call matmul(dc2, dfu2, 6, 6, 1,&
-                cp)
-    call matmul(tdf, cp, 2, 6, 1,&
-                b2)
+    cp = matmul(cdtg, cdeps)
+    a = matmul(tdf, cp)
+    cp = matmul(dc1, dfu1)
+    b1 = matmul(tdf, cp)
+    cp = matmul(dc2, dfu2)
+    b2 = matmul(tdf, cp)
 !
     denom = b1(1)*b2(2)-b1(2)*b2(1)
     aux = b1(1)**2 + b2(1)**2 + b1(2)**2 + b2(2)**2
@@ -125,8 +118,7 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
         lambda(2,2) = (f2*b1(1)-f1*b1(2))/denom
     endif
 !
-    call matmul(dfu, lambda, 6, 2, 2,&
-                depsp2)
+    depsp2 = matmul(dfu, lambda)
 !
     do 30, j = 1,6
     cdepsp(j) = depsp2(j,1)+depsp2(j,2)

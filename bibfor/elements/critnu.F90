@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ function critnu(zimat, nmnbn, deps, dtg, normm)
 !
 #include "asterfort/fplass.h"
 #include "asterfort/gplass.h"
-#include "asterfort/matmul.h"
 #include "asterfort/mppffn.h"
 #include "asterfort/utmess.h"
     integer :: critnu, zimat, nmprif, j
@@ -41,13 +40,13 @@ function critnu(zimat, nmnbn, deps, dtg, normm)
     real(kind=8) :: cp(6)
 !
 !     PREDICTION ELASTIQUE
-    call matmul(dtg, deps, 6, 6, 1,&
-                cp)
+
+    cp = matmul(dtg, deps)
 !
 !     TENSEUR DES CONTRAINTES TESTS
-    do 10, j = 1,6
-    nprnbn(j) = nmnbn(j) + cp(j)
-    10 end do
+    do j = 1,6
+       nprnbn(j) = nmnbn(j) + cp(j)
+    end do
 !
 !     CALCUL DES MOMENTS LIMITES DE PLASTICITE
     call mppffn(zimat, nprnbn, nmprpl, nmprzf, nmprzg,&

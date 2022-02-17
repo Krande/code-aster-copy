@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,6 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
 #include "asterfort/dracs2.h"
 #include "asterfort/fplass.h"
 #include "asterfort/hplass.h"
-#include "asterfort/matmul.h"
 #include "asterfort/nmnet2.h"
 #include "asterfort/r8inir.h"
     integer :: i, j, zimat, nmprox(2)
@@ -82,12 +81,12 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     call dfplgl(nmnbn, nmplas, nmdpla, 1, df1)
     call dfplgl(nmnbn, nmplas, nmdpla, 2, df2)
 !
-    do 10, j = 1,6
-    df(j,1) = df1(j)
-    df(j,2) = df2(j)
-    tdf(1,j) = df(j,1)
-    tdf(2,j) = df(j,2)
-    10 end do
+    do j = 1,6
+       df(j,1) = df1(j)
+       df(j,2) = df2(j)
+       tdf(1,j) = df(j,1)
+       tdf(2,j) = df(j,2)
+    end do
 !
 !     CALUL DES DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 1,&
@@ -95,86 +94,65 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     call dfuuss(nmnbn, nmplas, nmdpla, nmprox, 2,&
                 dfu2)
 !
-    do 20, j = 1,6
-    dfu(j,1) = dfu1(j)
-    dfu(j,2) = dfu2(j)
-    20 end do
+    do j = 1,6
+       dfu(j,1) = dfu1(j)
+       dfu(j,2) = dfu2(j)
+    end do
 !
 !     CALCUL LA MATRICE HESSIENNE DES CRITERES DE PLASTICITE
     call hplass(nmnbn, nmplas, nmdpla, nmddpl, 1,&
                 h1)
     call hplass(nmnbn, nmplas, nmdpla, nmddpl, 2,&
                 h2)
-    call matmul(cdtg, cdeps, 6, 6, 1,&
-                ddeps)
+    ddeps = matmul(cdtg, cdeps)
 !
     do 30, j = 1,6
     tddeps(1,j) = ddeps(j)
     30 end do
 !
-    call matmul(tddeps, h1, 1, 6, 6,&
-                tdeph1)
-    call matmul(tddeps, h2, 1, 6, 6,&
-                tdeph2)
+    tdeph1 = matmul(tddeps, h1)
+    tdeph2 = matmul(tddeps, h2)
 !
-    do 40, j = 1,6
-    tdeph(1,j) = tdeph1(1,j)
-    40 end do
+    do j = 1,6
+       tdeph(1,j) = tdeph1(1,j)
+       tdeph(2,j) = tdeph2(1,j)
+    end do
 !
-    do 50, j = 1,6
-    tdeph(2,j) = tdeph2(1,j)
-    50 end do
+    dcfu1 = matmul(dc1, dfu1)
+    dcfu2 = matmul(dc2, dfu2)
 !
-    call matmul(dc1, dfu1, 6, 6, 1,&
-                dcfu1)
-    call matmul(dc2, dfu2, 6, 6, 1,&
-                dcfu2)
+    do j = 1,6
+       tdcfu1(1,j) = dcfu1(j)
+       tdcfu2(1,j) = dcfu2(j)
+    end do
 !
-    do 60, j = 1,6
-    tdcfu1(1,j) = dcfu1(j)
-    tdcfu2(1,j) = dcfu2(j)
-    60 end do
+    cp = matmul(h1, dcfu2)
+    auxd1(1) = dot_product(dcfu1, cp)
+    cp = matmul(h1, dcfu1)
+    auxe1(1) = dot_product(dcfu1, cp)
+    cp = matmul(h2, dcfu1)
+    auxe2(1) = dot_product(dcfu1, cp)
+    cp = matmul(h1, dcfu2)
+    auxf1(1) = dot_product(dcfu2, cp)
+    cp = matmul(h2, dcfu2)
+    auxf2(1) = dot_product(dcfu2, cp)
 !
-    call matmul(h1, dcfu2, 6, 6, 1,&
-                cp)
-    call matmul(tdcfu1, cp, 1, 6, 1,&
-                auxd1)
-    call matmul(h1, dcfu1, 6, 6, 1,&
-                cp)
-    call matmul(tdcfu1, cp, 1, 6, 1,&
-                auxe1)
-    call matmul(h2, dcfu1, 6, 6, 1,&
-                cp)
-    call matmul(tdcfu1, cp, 1, 6, 1,&
-                auxe2)
-    call matmul(h1, dcfu2, 6, 6, 1,&
-                cp)
-    call matmul(tdcfu2, cp, 1, 6, 1,&
-                auxf1)
-    call matmul(h2, dcfu2, 6, 6, 1,&
-                cp)
-    call matmul(tdcfu2, cp, 1, 6, 1,&
-                auxf2)
+    do j = 1,6
+       cp2(1,j) = tdf(1,j) + 0.5d0*tdeph(1,j)
+       cp2(2,j) = tdf(2,j) + 0.5d0*tdeph(2,j)
+    end do
 !
-    do 70, j = 1,6
-    cp2(1,j) = tdf(1,j) + 0.5d0*tdeph(1,j)
-    cp2(2,j) = tdf(2,j) + 0.5d0*tdeph(2,j)
-    70 end do
-!
-    call matmul(cp2, ddeps, 2, 6, 1,&
-                a)
+    a = matmul(cp2, ddeps)
     a(1)=a(1)+fplass(nmnbn,nmplas,1)
     a(2)=a(2)+fplass(nmnbn,nmplas,2)
 !
-    do 80, j = 1,6
-    cp2(1,j) = -tdf(1,j) - tdeph(1,j)
-    cp2(2,j) = -tdf(2,j) - tdeph(2,j)
-    80 end do
+    do j = 1,6
+       cp2(1,j) = -tdf(1,j) - tdeph(1,j)
+       cp2(2,j) = -tdf(2,j) - tdeph(2,j)
+    end do
 !
-    call matmul(cp2, dcfu1, 2, 6, 1,&
-                b)
-    call matmul(cp2, dcfu2, 2, 6, 1,&
-                c)
+    b = matmul(cp2, dcfu1)
+    c = matmul(cp2, dcfu2)
 !
     d(1) = auxd1(1)
     d(2) = d(1)
@@ -228,8 +206,7 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
             lambda(2,2)=lambda(1,1)
         endif
 !
-        call matmul(dfu, lambda, 6, 2, 2,&
-                    depsp2)
+        depsp2 = matmul(dfu, lambda)
 !
         do 90, j = 1,6
         cdepsp(j) = depsp2(j,1) + depsp2(j,2)

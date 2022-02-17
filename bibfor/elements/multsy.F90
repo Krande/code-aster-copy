@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,9 @@ subroutine multsy(u22, a3, v22, msym)
 !
     implicit  none
 !
-#include "asterfort/matmul.h"
-    real(kind=8) :: msym(*)
+    real(kind=8) :: msym(3)
 !
-    real(kind=8) :: u22(2, *), v22(2, *), a3(*), a22(2, 2), msym22(2, 2)
+    real(kind=8) :: u22(2, 2), v22(2, 2), a3(3), a22(2, 2), msym22(2, 2)
 !
     real(kind=8) :: cp(2, 2)
 ! Construction of the symetric matrix A
@@ -33,10 +32,8 @@ subroutine multsy(u22, a3, v22, msym)
     a22(2,1) = a3(3)
 !
 ! Multiplication: MSYM = U22 * A * V22
-    call matmul(a22, v22, 2, 2, 2,&
-                cp)
-    call matmul(u22, cp, 2, 2, 2,&
-                msym22)
+    cp = matmul(a22, v22)
+    msym22 = matmul(u22, cp)
 ! Construction of the rank-one result matrix
     msym(1) = msym22(1,1)
     msym(2) = msym22(2,2)

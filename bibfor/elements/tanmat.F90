@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 !
 #include "asterfort/d2diag.h"
 #include "asterfort/damage.h"
-#include "asterfort/matmul.h"
 #include "asterfort/xifonc.h"
     integer :: i, j
 !
@@ -127,14 +126,10 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 10      continue
 20      continue
 !
-        call matmul(cp, prp33, 3, 3, 3,&
-                    cp3)
-        call matmul(cp2, cp3, 3, 3, 3,&
-                    tanmad)
-        call matmul(tanmrp, prp33, 3, 3, 3,&
-                    cp3)
-        call matmul(cp2, cp3, 3, 3, 3,&
-                    tanmto)
+        cp3 = matmul(cp, prp33)
+        tanmad = matmul(cp2, cp3)
+        cp3 = matmul(tanmrp, prp33)
+        tanmto = matmul(cp2, cp3)
 !
 !
 !     MATRICE TANGENTE DANS LA BASE DES VECTEURS PROPRES (NOUVELLE DEF)
@@ -179,10 +174,8 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 30      continue
 31      continue
 !
-        call matmul(tanmrp, prp33, 3, 3, 3,&
-                    cp3)
-        call matmul(cp2, cp3, 3, 3, 3,&
-                    tanmtn)
+        cp3 = matmul(tanmrp, prp33)
+        tanmtn = matmul(cp2, cp3)
 !
         do 50, j = 1,3
         do 40, i = 1,3
@@ -197,10 +190,8 @@ subroutine tanmat(alpha, beta, gamma, k1, k2,&
 60      continue
 70      continue
 !
-        call matmul(cp, prp33, 3, 3, 3,&
-                    cp3)
-        call matmul(cp2, cp3, 3, 3, 3,&
-                    tanma2)
+        cp3 = matmul(cp, prp33)
+        tanma2 = matmul(cp2, cp3)
     endif
 !
 end subroutine

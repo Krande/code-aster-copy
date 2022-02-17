@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,6 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
 #include "asterfort/glrcdd.h"
-#include "asterfort/matmul.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
     integer :: i, zimat, kpg, spt
@@ -83,11 +82,10 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
 !     TRANSFORMATION DES DONNEES
 !
     if (ecr(12) .lt. 5.d0) then
-        do 10, i = 1,3
-        vglob(i) = ecr(10 + i)
-10      continue
-        call matmul(p, vglob, 3, 3, 1,&
-                    vloc)
+        do i = 1,3
+           vglob(i) = ecr(10 + i)
+        end do
+        vloc = matmul(p, vglob)
 !
         alphor = atan2(vloc(2),vloc(1))
 !
