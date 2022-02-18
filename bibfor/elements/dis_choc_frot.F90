@@ -76,6 +76,7 @@ integer, intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    iret = 0
 !   paramètres en entrée
     call jevech('PCADISK', 'L', jdc)
     call jevech('PGEOMER', 'L', igeom)

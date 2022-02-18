@@ -86,8 +86,8 @@ contains
         write(*,'(5(A16))')[character(16) ::'option','nomte','rela_comp','type_comp','defo_comp']
         write(*,'(5(A16))') D%option, D%nomte, D%rela_comp, D%type_comp, D%defo_comp
         !
-        write(*,'(A)')       'Vect Matr Vari Sigm Pred MPred '
-        write(*,'(6(L,4X))')  D%lVect, D%lMatr, D%lVari, D%lSigm, D%lPred, D%lMatrPred
+        write(*,'(A)')        'Vect Matr Vari Sigm Pred MPred '
+        write(*,'(6(L1,4X))')  D%lVect, D%lMatr, D%lVari, D%lSigm, D%lPred, D%lMatrPred
     end
 
 end module te0047_type
