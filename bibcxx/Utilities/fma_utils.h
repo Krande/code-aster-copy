@@ -1,3 +1,4 @@
+#pragma once
 /* -------------------------------------------------------------------- */
 /* Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org             */
 /* This file is part of code_aster.                                     */
@@ -16,22 +17,15 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#ifndef FMA_UTILS_H_
-#define FMA_UTILS_H_
-
-#ifdef __cplusplus
-
 #include "aster.h"
 
+#ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
-  ASTERDOUBLE DEFPPP(FMA_DOUBLE, fma_double,
-                     const ASTERDOUBLE *,
-                     const ASTERDOUBLE *,
-                     const ASTERDOUBLE *);
+
+ASTERDOUBLE DEFPPP( FMA_DOUBLE, fma_double, const ASTERDOUBLE *, const ASTERDOUBLE *,
+                    const ASTERDOUBLE * );
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-
-#endif // FMA_UTILS_H_

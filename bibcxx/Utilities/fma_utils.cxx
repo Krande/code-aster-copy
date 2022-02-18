@@ -16,10 +16,11 @@
 /* along with code_aster.  If not, see <http://www.gnu.org/licenses/>.  */
 /* -------------------------------------------------------------------- */
 
-#include <cmath>
-#include "fma_utils.h"
+#include "Utilities/fma_utils.h"
 
-extern "C" ASTERDOUBLE DEFPPP(FMA_DOUBLE, fma_double,
-                              const ASTERDOUBLE *a,
-                              const ASTERDOUBLE *b,
-                              const ASTERDOUBLE *c) { return fma(*a,*b,*c); }
+#include <cmath>
+
+extern "C" ASTERDOUBLE DEFPPP( FMA_DOUBLE, fma_double, const ASTERDOUBLE *a, const ASTERDOUBLE *b,
+                               const ASTERDOUBLE *c ) {
+    return fma( *a, *b, *c );
+}
