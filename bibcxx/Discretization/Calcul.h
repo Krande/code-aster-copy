@@ -53,9 +53,7 @@ class Calcul {
     bool _stopCompute;
 
     /** @brief Where to compute elementary terms */
-    bool _computeOnModel;
     BaseMeshPtr _mesh;
-    ModelPtr _model;
     FiniteElementDescriptorPtr _FEDesc;
 
     /** @brief Input fields */
@@ -100,16 +98,16 @@ class Calcul {
     void setModel( const ModelPtr &model );
 
     /** @brief Add input field */
-    void addInputField( const std::string parameterName, const DataFieldPtr field );
+    void addInputField( const std::string &parameterName, const DataFieldPtr field );
 
     /** @brief Add output field */
-    void addOutputField( const std::string parameterName, const DataFieldPtr field );
+    void addOutputField( const std::string &parameterName, const DataFieldPtr field );
 
     /** @brief Add input elementary term */
-    void addInputElementaryTerm( const std::string parameterName, const DataStructurePtr field );
+    void addInputElementaryTerm( const std::string &parameterName, const DataStructurePtr field );
 
     /** @brief Add output elementary term */
-    void addOutputElementaryTerm( const std::string parameterName,
+    void addOutputElementaryTerm( const std::string &parameterName,
                                   const ElementaryTermRealPtr field );
 
     /** @brief Clear all input fields */
@@ -143,25 +141,25 @@ class Calcul {
     };
 
     /** @brief Is output if is elementary term */
-    bool hasOutputElementaryTerm( const std::string parameterName ) const;
+    bool hasOutputElementaryTerm( const std::string &parameterName ) const;
 
     /** @brief Get output if is elementary term */
-    ElementaryTermRealPtr getOutputElementaryTerm( const std::string parameterName ) const;
+    ElementaryTermRealPtr getOutputElementaryTerm( const std::string &parameterName ) const;
 
     /** @brief Compute option */
     void compute();
 
     /** @brief Add input fields for elementary characteristics */
-    void addElementaryCharacteristicsField( const ElementaryCharacteristicsPtr &elemChara );
+    void addElementaryCharacteristicsField( const ElementaryCharacteristicsPtr elemChara );
 
     /** @brief Create and add input field for Fourier */
-    void addFourierModeField( const ASTERINTEGER nh );
+    void addFourierModeField( const ASTERINTEGER &nh );
 
     /** @brief Create and add input field for current time */
-    void addTimeField( const ASTERDOUBLE time );
+    void addTimeField( const ASTERDOUBLE &time );
 
     /** @brief Create and add input fields for XFEM */
-    void addXFEMField( const XfemModelPtr &xfemModel );
+    void addXFEMField( const XfemModelPtr xfemModel );
 };
 
 /**  @typedef CalculPtr */

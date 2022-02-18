@@ -33,46 +33,47 @@ Calcul::Calcul( const std::string &option )
     : _option( option ),
       _stopCompute( true ),
       _completeField( true ),
-      _model( nullptr ),
       _FEDesc( nullptr ),
       _mesh( nullptr ){};
 
 /** @brief Compute on partial model */
 void Calcul::setFiniteElementDescriptor( const FiniteElementDescriptorPtr &FEDesc ) {
     _FEDesc = FEDesc;
-    _model = nullptr;
-    _computeOnModel = false;
     _mesh = _FEDesc->getMesh();
+    if ( _mesh->isParallel() ) {
+        _completeField = false;
+    }
 }
 
 /** @brief Compute on all model */
 void Calcul::setModel( const ModelPtr &model ) {
-    _FEDesc = nullptr;
-    _model = model;
-    _computeOnModel = true;
-    _mesh = _model->getMesh();
+    _FEDesc = model->getFiniteElementDescriptor();
+    _mesh = model->getMesh();
+    if ( _mesh->isParallel() ) {
+        _completeField = false;
+    }
 }
 
 /** @brief Add input field */
-void Calcul::addInputField( const std::string parameterName, const DataFieldPtr field ) {
+void Calcul::addInputField( const std::string &parameterName, const DataFieldPtr field ) {
     _inputFields.insert( listFields::value_type( parameterName, field ) );
 }
 
 /** @brief Add output field */
-void Calcul::addOutputField( const std::string parameterName, const DataFieldPtr field ) {
+void Calcul::addOutputField( const std::string &parameterName, const DataFieldPtr field ) {
     _outputFields.insert( listFields::value_type( parameterName, field ) );
     _outputFieldsExist.insert( listExists::value_type( parameterName, false ) );
 }
 
 /** @brief Add output elementary term */
-void Calcul::addOutputElementaryTerm( const std::string parameterName,
+void Calcul::addOutputElementaryTerm( const std::string &parameterName,
                                       const ElementaryTermRealPtr elemTerm ) {
     _outputElemTerms.insert( listElemTerms::value_type( parameterName, elemTerm ) );
     _outputElemTermsExist.insert( listExists::value_type( parameterName, false ) );
 }
 
 /** @brief Add input fields for elementary characteristics */
-void Calcul::addElementaryCharacteristicsField( const ElementaryCharacteristicsPtr &elemChara ) {
+void Calcul::addElementaryCharacteristicsField( const ElementaryCharacteristicsPtr elemChara ) {
     AS_ASSERT( elemChara )
     addInputField( "PCAORIE", elemChara->getLocalBasis() );
     addInputField( "PCADISK", elemChara->getDiscreteRigidity() );
@@ -92,8 +93,8 @@ void Calcul::addElementaryCharacteristicsField( const ElementaryCharacteristicsP
 }
 
 /** @brief Create and add input field for Fourier */
-void Calcul::addFourierModeField( const ASTERINTEGER nh ) {
-    ConstantFieldOnCellsLongPtr _FourierField = boost::make_shared< ConstantFieldOnCellsLong >(
+void Calcul::addFourierModeField( const ASTERINTEGER &nh ) {
+    auto _FourierField = boost::make_shared< ConstantFieldOnCellsLong >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "HARMON" );
     _FourierField->allocate( physicalName );
@@ -104,8 +105,8 @@ void Calcul::addFourierModeField( const ASTERINTEGER nh ) {
 }
 
 /** @brief Create and add input field for current time */
-void Calcul::addTimeField( const ASTERDOUBLE time ) {
-    ConstantFieldOnCellsRealPtr _timeField = boost::make_shared< ConstantFieldOnCellsReal >(
+void Calcul::addTimeField( const ASTERDOUBLE &time ) {
+    auto _timeField = boost::make_shared< ConstantFieldOnCellsReal >(
         TemporaryDataStructureNaming::getNewTemporaryName( 19 ), _mesh );
     const std::string physicalName( "INST_R" );
     _timeField->allocate( physicalName );
@@ -116,7 +117,7 @@ void Calcul::addTimeField( const ASTERDOUBLE time ) {
 }
 
 /** @brief Create and add input fields for XFEM */
-void Calcul::addXFEMField( const XfemModelPtr &xfemModel ) {
+void Calcul::addXFEMField( const XfemModelPtr xfemModel ) {
     addInputField( "PPINTTO", xfemModel->getField( "PINTTO" ) );
     addInputField( "PCNSETO", xfemModel->getField( "CNSETO" ) );
     addInputField( "PHEAVTO", xfemModel->getField( "HEAVTO" ) );
@@ -134,14 +135,10 @@ void Calcul::addXFEMField( const XfemModelPtr &xfemModel ) {
 /** @brief Compute option */
 void Calcul::compute() {
 
-    ASTERINTEGER inputNb, outputNb;
+    ASTERINTEGER inputNb = _inputFields.size() + _inputElemTerms.size();
     VectorString inputFields, inputParams;
-    VectorString outputFields, outputParams;
-    std::string calculBase;
-    std::string calculContinue, calculLigrel, calculMPI;
-    FiniteElementDescriptorPtr calculFEDesc;
-
-    inputNb = _inputFields.size() + _inputElemTerms.size();
+    inputFields.reserve( inputNb );
+    inputParams.reserve( inputNb );
     for ( const auto &[parameterName, field] : _inputFields ) {
         inputParams.push_back( parameterName );
         inputFields.push_back( field->getName() );
@@ -151,7 +148,10 @@ void Calcul::compute() {
         inputFields.push_back( elemTerm->getName() );
     }
 
-    outputNb = _outputFields.size() + _outputElemTerms.size();
+    ASTERINTEGER outputNb = _outputFields.size() + _outputElemTerms.size();
+    VectorString outputFields, outputParams;
+    outputFields.reserve( outputNb );
+    outputParams.reserve( outputNb );
     for ( const auto &[parameterName, field] : _outputFields ) {
         outputParams.push_back( parameterName );
         outputFields.push_back( field->getName() );
@@ -161,20 +161,17 @@ void Calcul::compute() {
         outputFields.push_back( elemTerm->getName() );
     }
 
-    calculContinue = "C";
+    std::string calculContinue = "C";
     if ( _stopCompute )
         calculContinue = "S";
-    calculMPI = "NON";
+
+    std::string calculMPI = "NON";
     if ( _completeField )
         calculMPI = "OUI";
 
-    if ( _FEDesc ) {
-        calculLigrel = _FEDesc->getName();
-    } else {
-        calculLigrel = _model->getFiniteElementDescriptor()->getName();
-    }
+    std::string calculLigrel = _FEDesc->getName();
 
-    calculBase = JeveuxMemoryTypesNames[Permanent];
+    const std::string calculBase = JeveuxMemoryTypesNames[Permanent];
 
     char *inputFields_c = vectorStringAsFStrArray( inputFields, 19 );
     char *inputParams_c = vectorStringAsFStrArray( inputParams, 8 );
@@ -201,33 +198,37 @@ void Calcul::postCompute() {
     ASTERINTEGER repi = 0, ier = 0;
     JeveuxChar32 repk( " " );
     const std::string arret( "C" );
-    FieldBuilder fieldBuilder;
 
-    for ( auto it = _outputFields.begin(); it != _outputFields.end(); ++it ) {
-        std::string parameterName = it->first;
-        std::string fieldName = it->second->getName();
+    FieldBuilder fieldBuilder;
+    fieldBuilder.addFiniteElementDescriptor( _FEDesc );
+
+    for ( auto &[parameterName, field] : _outputFields ) {
+        std::string fieldName = field->getName();
         CALLO_DISMOI( questi1, fieldName, typeco, &repi, repk, arret, &ier );
+
         std::string fieldType( trim( repk.toString() ) );
         if ( fieldType == "ELEM" || fieldType == "ELNO" || fieldType == "ELGA" ) {
             CALLO_DISMOI( questi2, fieldName, typeco, &repi, repk, arret, &ier );
+
             std::string fieldScalar( trim( repk.toString() ) );
             if ( fieldScalar == "R" ) {
-                it->second = fieldBuilder.buildFieldOnCells< ASTERDOUBLE >( fieldName, _mesh );
+                field = fieldBuilder.buildFieldOnCells< ASTERDOUBLE >( fieldName, _mesh );
             } else if ( fieldScalar == "C" ) {
-                it->second = fieldBuilder.buildFieldOnCells< ASTERCOMPLEX >( fieldName, _mesh );
+                field = fieldBuilder.buildFieldOnCells< ASTERCOMPLEX >( fieldName, _mesh );
             } else {
                 AS_ASSERT( false );
             }
+
             _outputFieldsExist.at( parameterName ) = true;
         } else {
             _outputFieldsExist.at( parameterName ) = false;
         }
     }
 
-    for ( auto it = _outputElemTerms.begin(); it != _outputElemTerms.end(); ++it ) {
-        std::string parameterName = it->first;
-        std::string elemTermName = it->second->getName();
+    for ( auto &[parameterName, elemTerm] : _outputElemTerms ) {
+        std::string elemTermName = elemTerm->getName();
         CALLO_DISMOI( questi1, elemTermName, typeco, &repi, repk, arret, &ier );
+
         std::string fieldType( trim( repk.toString() ) );
         if ( fieldType == "RESL" ) {
             _outputElemTermsExist.at( parameterName ) = true;
@@ -238,12 +239,12 @@ void Calcul::postCompute() {
 }
 
 /** @brief Is output is elementary term */
-bool Calcul::hasOutputElementaryTerm( const std::string parameterName ) const {
+bool Calcul::hasOutputElementaryTerm( const std::string &parameterName ) const {
     return _outputElemTermsExist.at( parameterName );
 };
 
 /** @brief Get output if is elementary term */
-ElementaryTermRealPtr Calcul::getOutputElementaryTerm( const std::string parameterName ) const {
+ElementaryTermRealPtr Calcul::getOutputElementaryTerm( const std::string &parameterName ) const {
     AS_ASSERT( hasOutputElementaryTerm( parameterName ) );
     return _outputElemTerms.at( parameterName );
 };
