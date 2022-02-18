@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -124,15 +124,18 @@ integer, intent(out)          :: iret
 !       ==> récupération de la matrice tangente précédente, si possible
 !       ==> si pas possible, calcul d'une tangente pas trop mauvaise, après lecture des paramètres
     if (for_discret%lMatrPred) then
-!       tangente précédente
+!       tangente précédente si elle existe
         if (abs(zr(ivarim+3)) .gt. r8miem()) then
             raide(1) = zr(ivarim+3)
+            resu(1)  = zr(ivarim)
+            resu(2)  = zr(ivarim+1)
+            resu(4)  = zr(ivarim+2)
             goto 800
         endif
     endif
 !
 !   récupère tous les paramètres
-    valcar(:) = 0.0d0
+    valcar(:) = 0.0
     call rcvalb('FPG1', 1, 1, '+', zi(imat),&
                 ' ', 'DIS_VISC', 0, ' ', [0.0d0],&
                 nbcar, nomcar, valcar, codcar, 0)
@@ -148,7 +151,7 @@ integer, intent(out)          :: iret
 !
 !   cara 1 : souplesse = 1/raideur
     if (codcar(ie1) .eq. 0) then
-        ldcpar(1) = 1.0d0/valcar(ie1)
+        ldcpar(1) = 1.0/valcar(ie1)
     else
         ldcpar(1) = valcar(is1)
     endif
@@ -156,11 +159,11 @@ integer, intent(out)          :: iret
     if (codcar(ie2) .eq. 0) then
         ldcpar(2) = valcar(ie2)
     else
-        ldcpar(2) = 1.0d0/valcar(is2)
+        ldcpar(2) = 1.0/valcar(is2)
     endif
 !   cara 3 : souplesse = 1/raideur
     if (codcar(ie3) .eq. 0) then
-        ldcpar(3) = 1.0d0/valcar(ie3)
+        ldcpar(3) = 1.0/valcar(ie3)
     else
         ldcpar(3) = valcar(is3)
     endif
@@ -183,7 +186,10 @@ integer, intent(out)          :: iret
 !       ==> la récupération de la matrice tangente précédente a échouée
 !       ==> calcul d'une tangente pas trop mauvaise
     if (for_discret%lMatrPred) then
-        raide(1)=(1.0d0 + ldcpar(2)*ldcpar(3))/raideurDeno
+        raide(1) = (1.0 + ldcpar(2)*ldcpar(3))/raideurDeno
+        resu(1)  = zr(ivarim)
+        resu(2)  = zr(ivarim+1)
+        resu(4)  = zr(ivarim+2)
         goto 800
     endif
 !
@@ -228,7 +234,7 @@ integer, intent(out)          :: iret
         raide(1) = resu(nbequa + 1)
     endif
     if ( abs(raide(1)) .lt. precis ) then
-        raide(1)=(1.0d0 + ldcpar(2)*ldcpar(3))/raideurDeno
+        raide(1)=(1.0 + ldcpar(2)*ldcpar(3))/raideurDeno
     endif
 !
 800  continue
