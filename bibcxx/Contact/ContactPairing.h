@@ -99,6 +99,11 @@ class ContactPairing : public DataStructure {
             return _masterIntersectionPoints[i]; 
     }
 
+    /** @brief get gauss points of zone i */  
+    VectorReal getGaussPoints( ASTERINTEGER i ) const { 
+            return _gaussPoints[i]; 
+    }
+
 };
 
 

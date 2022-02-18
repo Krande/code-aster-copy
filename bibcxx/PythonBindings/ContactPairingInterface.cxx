@@ -38,9 +38,15 @@ void exportContactPairingToPython() {
     .def( "__init__", py::make_constructor(
                     &initFactoryPtr< ContactPairing, std::string, 
                             std::vector< ContactZonePtr >, BaseMeshPtr >))
-    .def( "getNewCoordinates", &ContactPairing::getNewCoordinates)
-    .def( "updateCoordinates", &ContactPairing::updateCoordinates)
-    .def( "computePairingQuantities", &ContactPairing::computePairingQuantities,  R"(
+    .def( "getNewCoordinates", &ContactPairing::getNewCoordinates, R"(
+Compute the new coordinates 
+Returns:
+    MeshCoordinatesFieldPtr: the new MeshCoordinatesField object
+)", ( py::arg( "self" ) ) )
+    .def( "updateCoordinates", &ContactPairing::updateCoordinates, R"(
+Update the mesh coordinates given a displacement field
+)", ( py::arg( "self" ),  py::arg( "disp" ) ) )
+    .def( "computePairingQuantities", &ContactPairing::computePairingQuantities, R"(
 Compute the pairing quantities associated with the zone izone
 Returns:
     bool: True if the pairing quantities are updated appropriately

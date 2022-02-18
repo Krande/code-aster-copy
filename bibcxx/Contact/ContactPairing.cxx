@@ -110,7 +110,7 @@ ASTERBOOL ContactPairing::computePairingQuantities( ASTERINTEGER i ){
                        pair_method, &pair_tole, &nbCellMaster, eleMaster.data(), &nbCellSlave, 
                        eleSlave.data(), NodesMaster.data(), &nbNodeMaster, &nb_pairs, &pairs, 
                        &nbInterPoints, &InterSlavePoints, &InterMasterPoints, &gaussPoints);
-     }catch(const std::exception& e){
+     } catch( const std::exception& e ){
            std::cout << e.what() << std::endl;
      }
      
