@@ -277,6 +277,7 @@ integer :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    codret = 0
     !ASSERT(nsig*neps .eq. ndsde)
     read (compor(DEFO_LDC),'(A16)') defo_ldc
     read (compor(DEFO),'(A16)') defo_comp

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine lceiex(fami, kpg, ksp, mat, option,&
                   mu, su, de, ddedt, vim,&
-                  vip, r, codret)
+                  vip, r, carcri, codret)
 !
 ! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
@@ -31,6 +31,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 
     character(len=16) :: option
     integer :: mat, kpg, ksp, i, codret
+    real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), bmin, bmax, res, deriv
     character(len=*) :: fami
 !
@@ -91,12 +92,16 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     aster_logical :: resi, rigi, elas
     integer :: regime
     real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap, r
-    real(kind=8) :: dn, tn, t(3), ddndtn
-    integer :: cod(4)
+    real(kind=8) :: dn, tn, t(3), ddndtn, resi_inte_rela
+    integer :: cod(4), iter_inte_maxi
     character(len=16) :: nom(4)
     character(len=1) :: poum
     data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
 
+    ! print*, 'resi_inte_rela=', carcri(3)
+    ! print*, 'iter_inte_maxi=', carcri(1)
+    iter_inte_maxi=abs(carcri(1))
+    resi_inte_rela=carcri(3)
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
@@ -184,10 +189,10 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !         QUE D UN POINT D INITIALISATION JUDICIEUX  (solution de la bi-lineaire)
 !         0.22 - approximation de 2/9 qui correspond au point de changement de pente
 !         dans la loi bi-linéaire par Petersson     
-        dc1=dc*0.22
+        dc1=dc*0.22 
         dn = (tn-sc)/(r-(sc*3)/(3.2*dc))
         if (dn >= dc1) then
-            dn=(tn-(3/7)*sc)/(r-(sc*3)/(7*3.2*(dc)))
+            dn=(tn-(3.0/7.0)*sc)/(r-(sc*3)/(7*3.2*(dc)))
             if (dn >= dc) then
                 dn=0.999*dc
             endif
@@ -199,10 +204,11 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 !     3 - BOUCLE DE CONVERGENCE DE L ALGORITHME DE NEWTON
         i = 0
+
 200     continue
 !         TEST DU CRITERE
         res = sc*exp(-sc*dn/gc) + r*dn-tn
-        if (abs(res) .lt. 1.d-8 .or. i > 1000) goto 210
+        if (abs(res) .lt. resi_inte_rela .or. i > iter_inte_maxi) goto 210
         i = i + 1
 !
 !         NOUVEL ESTIMATEUR
@@ -216,17 +222,13 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 210     continue
 !
-        if (abs(res) .lt. 1.d-6 .and. i > 20) then
+        if (abs(res) .lt. resi_inte_rela .and. i > iter_inte_maxi) then
             call utmess("I","RUPTURE2_6")
+            codret = 1
+            goto 9999
         endif
 !
-        if (abs(res) .lt. 1.d-6 .and. i> 30) then
-!          DIAGNOSTIC DE NON-CONVERGENCE
-            if (i .ge. 30) then
-                codret = 1
-                goto 9999
-            endif
-        endif
+
 !    SURFACE LIBRE FINALE (RUPTURE)
     else
         regime = 2
