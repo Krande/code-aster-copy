@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,6 +79,7 @@ real(kind=8) :: sigp, vip(*), dsidep
     pinto = .false.
     com1d = .false.
     codret = 0
+    sigp = 0.d0
 !
     if (rela_comp(1:16) .eq. 'GRILLE_ISOT_LINE') then
         isot = .true.

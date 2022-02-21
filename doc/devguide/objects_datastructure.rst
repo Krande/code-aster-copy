@@ -119,6 +119,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.BaseElementaryVector` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.BaseElementaryVector
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.BaseFunction` object
 ================================================================================
 
@@ -366,15 +375,6 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.ElementaryMatrixTemperatureReal
-   :show-inheritance:
-   :members:
-
-
-================================================================================
-:py:class:`~code_aster.Objects.ElementaryVector` object
-================================================================================
-
-.. autoclass:: code_aster.Objects.ElementaryVector
    :show-inheritance:
    :members:
 
