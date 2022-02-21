@@ -380,15 +380,15 @@ integer, intent(out)          :: iret
         if ( for_discret%option .ne. 'RAPH_MECA' ) then
             deplac = resu(1) - y0(1)
             if ( abs(deplac) > r8prem() ) then
-                raide(1) = min( raide(1), abs((resu(4) - y0(4))/deplac) )
+                raide(1) = abs((resu(4) - y0(4))/deplac)
             endif
             deplac = resu(2) - y0(2)
             if ( abs(deplac) > r8prem() ) then
-                raide(2) = min( raide(2), abs((resu(5) - y0(5))/deplac) )
+                raide(2) = abs((resu(5) - y0(5))/deplac)
             endif
             deplac = resu(3) - y0(3)
             if ( abs(deplac) > r8prem() ) then
-                raide(3) = min( raide(3), abs((resu(6) - y0(6))/deplac) )
+                raide(3) = abs((resu(6) - y0(6))/deplac)
             endif
         endif
     else
