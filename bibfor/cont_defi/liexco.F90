@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,9 @@ subroutine liexco(sdcont      , keywf       , mesh, model, nb_cont_zone,&
 !
 implicit none
 !
+#include "jeveux.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jedema.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
@@ -70,6 +73,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    call jemarq()
+
     i_surf      = 1
 !
 ! - Temporary datastructures
@@ -141,5 +146,7 @@ implicit none
     call jedetr(list_elem_mast)
     call jedetr(list_node_slav)
     call jedetr(list_node_mast)
+
+    call jedema()
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ implicit none
 ! - Datastructure for contact definition
 !
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
-    call jeveuo(sdcont_mailco, 'E', vi = v_sdcont_mailco)
+    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
 !
 ! - Temporary vectors
 !

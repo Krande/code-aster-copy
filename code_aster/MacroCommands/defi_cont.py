@@ -174,9 +174,9 @@ DEFI_CONT_CATA=MACRO(
                                         into=("NITSCHE",),),
                 ),
 
-                b_cont_pena = BLOC(condition = """equal_to("ALGO_CONT", 'PENALISE')""",
-                        ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="PENALISE",
-                                        into=("PENALISE",),),
+                b_cont_pena = BLOC(condition = """equal_to("ALGO_CONT", 'PENALISATION')""",
+                        ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="PENALISATION",
+                                        into=("PENALISATION",),),
                 ),
 
                 b_from_frot_colle = BLOC(condition = """equal_to("TYPE_CONT", 'COLLE')""",

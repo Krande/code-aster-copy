@@ -81,6 +81,17 @@ extern void DEFSPSPPPS( CNVOIS, cnvois, const char *, STRING_SIZE, ASTERINTEGER 
                      const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
                         ASTERINTEGER * , const char *, STRING_SIZE );
 
+
+#define CALL_AJELLT( a, b, c, d, e, f, g, h, i ) \
+        CALLSSPSSSSPS( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
+#define CALLO_AJELLT( a, b, c, d, e, f, g, h, i ) \
+        CALLOOPOOOOPO( AJELLT, ajellt, a, b, c, d, e, f, g, h, i )
+extern void DEFSSPSSSSPS( AJELLT, ajellt, const char *, STRING_SIZE, const char *, \
+                        STRING_SIZE, const ASTERINTEGER *, const char *, STRING_SIZE, \
+                        const char *, STRING_SIZE, const char *, STRING_SIZE, \
+                        const char *, STRING_SIZE, const ASTERINTEGER *, \
+                        const char *, STRING_SIZE );
+
 #ifdef __cplusplus
 }
 #endif

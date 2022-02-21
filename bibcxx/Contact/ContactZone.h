@@ -109,16 +109,30 @@ class ContactZone : public DataStructure {
 
     void setPairingParameter( const PairingParameterPtr pairParam ) { _pairParam = pairParam; };
 
-    void setSlaveGroupOfCells( const std::string &slave ) { _slave = slave; };
+    void setSlaveGroupOfCells( const std::string &slave ) { 
+              if ( getMesh()->hasGroupOfCells(slave) ) { _slave = slave;
+              } else {
+                  throw std::runtime_error( "The given group " + slave + " doesn't exist in mesh" );
+              } };
 
     std::string getSlaveGroupOfCells() const { return _slave; };
 
-    void setMasterGroupOfCells( const std::string &master ) { _master = master; };
+    void setMasterGroupOfCells( const std::string &master ) { 
+        if ( getMesh()->hasGroupOfCells(master) ) { _master = master;
+        } else {
+            throw std::runtime_error( "The given group " + master + " doesn't exist in mesh" );
+        }  };
 
     std::string getMasterGroupOfCells() const { return _master; };
 
-    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave ) {
-                                       _excluded_slave = excluded_slave; };
+    void setExcludedSlaveGroupOfCells( const VectorString &excluded_slave ) { 
+        for (long i = 0 ; i < excluded_slave.size() ; i++ ) {
+            if ( !( getMesh()->hasGroupOfCells(excluded_slave[i]) ) ){
+                throw std::runtime_error( "The group " + excluded_slave[0] 
+                                              + " doesn't exist in mesh" );   
+            }
+        }
+        _excluded_slave = excluded_slave; };
 
     VectorString getExcludedSlaveGroupOfCells() const { return _excluded_slave; };
 

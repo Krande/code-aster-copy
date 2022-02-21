@@ -95,6 +95,13 @@ Returns:
     str: Mechanics or Thermal or Acoustic
         )",
               ( py::arg( "self" ) )  )
+        .def( "getGeometricDimension", &Model::getGeometricDimension, R"(
+To know the geometric dimension supported by the model
+
+Returns:
+    int: geometric dimension
+        )",
+              ( py::arg( "self" ) )  )
         .def( "getSplittingMethod", &Model::getSplittingMethod )
         .def( "getGraphPartitioner", &Model::getGraphPartitioner )
         .def( "setSaneModel", &Model::setSaneModel )

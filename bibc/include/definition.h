@@ -241,6 +241,10 @@
 #define DEFSSSPSSP(UN,LN,a,la,b,lb,c,lc,d,e,le,f,lf,g)               STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb,lc,le,lf)
 #define CALLSSSPSSP(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b),strlen(c),strlen(e),strlen(f))
 #define CALLOOOPOOP(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)((a).c_str(),(b).c_str(),(c).c_str(),d,(e).c_str(),(f).c_str(),g,(a).size(),(b).size(),(c).size(),(e).size(),(f).size())
+#define DEFSSPSSSSPS(UN,LN,a,la,b,lb,c,d,ld,e,le,f,lf,g,lg,h,i,li)         STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,la,lb,ld,le,lf,lg,li)
+#define CALLSSPSSSSPS(UN,LN,a,b,c,d,e,f,g,h,i)                             F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,strlen(a),strlen(b),strlen(d),strlen(e),strlen(f),strlen(g),strlen(i))
+#define CALLOOPOOOOPO(UN,LN,a,b,c,d,e,f,g,h,i)                             F_FUNC(UN,LN)((a).c_str(),(b).c_str(),c,(d).c_str(),(e).c_str(),(f).c_str(),(g).c_str(),h,(i).c_str(),(a).size(),(b).size(),(d).size(),(e).size(),(f).size(),(g).size(),(i).size())
+
 #define DEFSSSSPPS(UN,LN,a,la,b,lb,c,lc,d,ld,e,f,g,lg)               STDCALL(UN,LN)(a,b,c,d,e,f,g,la,lb,lc,ld,lg)
 #define CALLSSSSPPS(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a),strlen(b),strlen(c),strlen(d),strlen(g))
 #define CALLOOOOPPO(UN,LN,a,b,c,d,e,f,g)                             F_FUNC(UN,LN)((a).c_str(),(b).c_str(),(c).c_str(),(d).c_str(),e,f,(g).c_str(),(a).size(),(b).size(),(c).size(),(d).size(),(g).size())

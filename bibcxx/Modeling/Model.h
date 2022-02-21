@@ -38,6 +38,7 @@
 #include "Modeling/XfemModel.h"
 #include "Supervis/ResultNaming.h"
 #include "Utilities/SyntaxDictionary.h"
+#include "aster_fort_utils.h"
 
 /**
  * @enum ModelSplitingMethod
@@ -329,6 +330,15 @@ class Model : public DataStructure, public ListOfTables {
     bool isAcoustic( void ) const { return this->getPhysics() == Physics::Acoustic; };
 
     int getPhysics( void ) const { return _ligrel->getPhysics(); }
+
+    int getGeometricDimension( void ) const { 
+        ASTERINTEGER nb_dim_;
+        ASTERINTEGER ier;
+        std::string repk;
+        CALL_DISMOI( "DIM_GEOM", this->getName().c_str(), "MODELE", &nb_dim_, 
+                  repk.c_str(), "F", &ier );
+        return nb_dim_; 
+    }
 
 #ifdef ASTER_HAVE_MPI
     bool setFrom( const ModelPtr model );

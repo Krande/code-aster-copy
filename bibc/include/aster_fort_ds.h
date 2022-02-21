@@ -83,6 +83,25 @@ void DEFSSSSPP( POSDDL, posddl, const char *, STRING_SIZE, const char *, STRING_
 #define CALLO_DETRSD( a, b ) CALLOO( DETRSD, detrsd, a, b )
 extern void DEFSS( DETRSD, detrsd, const char *, STRING_SIZE, const char *, STRING_SIZE );
 
+#define CALL_LGTLGR( a, b, c ) CALLSSS( LGTLGR, lgtlgr, a, b, c )
+#define CALLO_LGTLGR( a, b, c ) \
+    CALLOOO( LGTLGR, lgtlgr, a, b, c )
+extern void DEFSSS( LGTLGR, lgtlgr, const char *, STRING_SIZE,
+                    const char *, STRING_SIZE, const char *, STRING_SIZE);
+
+#define CALLO_COPISD( a, b, c, d ) CALLOOOO( COPISD, copisd, a, b, c, d )
+extern void DEFSSSS( COPISD, copisd, const char *, STRING_SIZE, const char *, STRING_SIZE, \
+                                     const char *, STRING_SIZE, const char *, STRING_SIZE);
+
+#define CALLO_ADALIG_WRAP( a ) CALLO( ADALIG_WRAP, adalig_wrap, a)
+extern void DEFS( ADALIG_WRAP, adalig_wrap, const char *, STRING_SIZE );
+
+#define CALLO_INITEL( a, b ) CALLOP( INITEL, initel, a, b)
+extern void DEFSP( INITEL, initel, const char *, STRING_SIZE, ASTERLOGICAL * );
+
+#define CALLO_CORMGI( a, b ) CALLOO( CORMGI, cormgi, a, b )
+extern void DEFSS( CORMGI, cormgi, const char *, STRING_SIZE, const char *, STRING_SIZE );
+
 #define CALLO_RGNDAS_WRAP( a, b, c, d, e, f ) \
                                 CALLOPOOOO( RGNDAS_WRAP, rgndas_wrap, a, b, c, d, e, f)
 void DEFSPSSSS( RGNDAS_WRAP, rgndas_wrap, const char *, STRING_SIZE, const ASTERINTEGER *, \
