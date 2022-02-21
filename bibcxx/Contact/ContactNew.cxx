@@ -86,11 +86,11 @@ bool ContactNew::build() {
     }
    
     // check the common slave nodes between les zones
+    VectorLong doublNodes;
     for ( auto it = noeuco.begin(); it != noeuco.end(); ++it) {
         VectorLong l_a = it->second ;
         for (auto itb = std::next(it,1) ; itb != noeuco.end(); ++itb){
             VectorLong l_b = itb->second ;
-            VectorLong doublNodes;
             if ( mesh->isParallel() ) {
 #ifdef ASTER_HAVE_MPI
                 VectorLong lg_a;
@@ -99,8 +99,17 @@ bool ContactNew::build() {
 #endif
             } else { 
                 doublNodes = set_intersection( l_a, l_b ); 
+            } 
+            ASTERINTEGER nb_doublNodes = doublNodes.size();
+// share error
+#ifdef ASTER_HAVE_MPI
+            if ( mesh->isParallel() ) {
+                ASTERINTEGER nb_doublNodes_lc = nb_doublNodes;
+                nb_doublNodes = 0;
+                AsterMPI::all_reduce( nb_doublNodes_lc, nb_doublNodes, MPI_MIN );
             }
-            if ( doublNodes.size() > 0 ) { 
+#endif
+            if ( nb_doublNodes > 0 ) { 
                 UTMESS( "F", "CONTACT1_3" ); 
             }
         }

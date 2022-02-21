@@ -107,5 +107,22 @@ except AsterError as err:
         is_ok = 1
 test.assertEqual(is_ok, 1)
 
+is_ok = 0
+try:
+    DEFICO = DEFI_CONT(MODELE=MODI,
+                       ZONE=(_F(GROUP_MA_MAIT='Group_1',
+                            VERI_NORM='NON',
+                             GROUP_MA_ESCL='Group_2',),
+                            _F(GROUP_MA_MAIT='Group_3',
+                            VERI_NORM='NON',
+                             GROUP_MA_ESCL='Group_2',),
+                       ),)
+except AsterError as err:
+    print(fmt_raison % str(err))
+    # on verifie que l'erreur fatale est bien celle que l'on attendait :
+    if err.id_message == "CONTACT1_3":
+        is_ok = 0
+
+test.assertEqual(is_ok, 0)
 
 FIN()
