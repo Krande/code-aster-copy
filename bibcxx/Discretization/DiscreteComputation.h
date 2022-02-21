@@ -42,12 +42,9 @@ class DiscreteComputation {
     /** @brief Physical problem */
     PhysicalProblemPtr _study;
 
-    /** @brief Create CommandSyntax (for CALC_MATR_ELEM) */
-    SyntaxMapContainer computeMatrixSyntax( const std::string &option );
-
     /** @brief Compute B elementary matrices fo dualized boundary conditions */
-    void baseComputeMechanicalDualBCMatrix( CalculPtr &calcul,
-                                            ElementaryMatrixDisplacementRealPtr &elemMatr );
+    void baseDualStiffnessMatrix( CalculPtr &calcul,
+                                  ElementaryMatrixDisplacementRealPtr &elemMatr );
 
   public:
     /** @typedef DiscreteComputationPtr */
@@ -66,7 +63,7 @@ class DiscreteComputation {
     ~DiscreteComputation(){};
 
     /**
-     * @brief Compute Dirichlet imposed displacement U_impo
+     * @brief Compute imposed displacement U_impo with Lagrange
      * @param time Time
      * @return Nodal field for imposed displacement
      */
@@ -109,6 +106,13 @@ class DiscreteComputation {
     ElementaryMatrixDisplacementRealPtr elasticStiffnessMatrix( ASTERDOUBLE time = 0. );
 
     /**
+     * @brief Compute elementary matrices for mass matrix (MASS_MECA)
+     * @param time Time
+     * @return Elementary matrices for mass matrix (MASS_MECA)
+     */
+    ElementaryMatrixDisplacementRealPtr massMatrix( ASTERDOUBLE time = 0. );
+
+    /**
      * @brief Compute nodal field for kinematic boundary condition
      * @param time Time
      * @return Nodal field for kinematic boundary condition
@@ -125,26 +129,10 @@ class DiscreteComputation {
                                                 const FieldOnNodesRealPtr disp_curr ) const;
 
     /**
-     * @brief Compute elementary matrices for mechanical damping (AMOR_MECA)
-     * @param rigiMatrElem Elementary matrices for rigidity (RIGI_MECA)
-     * @param massMatrElem Elementary matrices for mass (MASS_MECA)
-     * @return Elementary matrices for mechanical damping (AMOR_MECA)
-     */
-    ElementaryMatrixDisplacementRealPtr
-    computeMechanicalDampingMatrix( const ElementaryMatrixDisplacementRealPtr &rigiMatrElem,
-                                    const ElementaryMatrixDisplacementRealPtr &massMatrElem );
-
-    /**
-     * @brief Compute elementary matrices for mechanical stiffness (RIGI_MECA)
-     * @return Elementary matrices for mechanical stiffness (RIGI_MECA)
-     */
-    ElementaryMatrixDisplacementRealPtr computeMechanicalStiffnessMatrix();
-
-    /**
      * @brief Compute B elementary matrices for dualized boundary conditions
      * @return Elementary matrices for dualized boundary conditions
      */
-    ElementaryMatrixDisplacementRealPtr computeMechanicalDualBCMatrix();
+    ElementaryMatrixDisplacementRealPtr dualStiffnessMatrix();
 
     /**
      * @brief Get physical problem

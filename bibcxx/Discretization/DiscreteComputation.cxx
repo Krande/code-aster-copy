@@ -3,7 +3,7 @@
  * @brief Implementation de DiscreteComputation
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -271,12 +271,11 @@ FieldOnNodesRealPtr DiscreteComputation::externalStateVariables( const ASTERDOUB
 ElementaryMatrixDisplacementRealPtr
 DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
 
-    ElementaryMatrixDisplacementRealPtr elemMatr =
-        boost::make_shared< ElementaryMatrixDisplacementReal >();
+    auto elemMatr = boost::make_shared< ElementaryMatrixDisplacementReal >();
 
     // Get main parameters
     const std::string option( "RIGI_MECA" );
-    int nh = 0;
+    ASTERINTEGER nh = 0;
     ModelPtr currModel = _study->getModel();
     MaterialFieldPtr currMater = _study->getMaterialField();
     CodedMaterialPtr currCodedMater = _study->getCodedMaterial();
@@ -284,9 +283,9 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     ExternalStateVariablesBuilderPtr currExteVari = _study->getExternalStateVariables();
 
     // Compute external state variables
-    if ( currExteVari->hasExternalStateVariables() ||
-         currMater->hasExternalStateVariables( "NEUT1" ) ||
-         currMater->hasExternalStateVariables( "GEOM" ) ) {
+    if ( currMater && ( currExteVari->hasExternalStateVariables() ||
+                        currMater->hasExternalStateVariables( "NEUT1" ) ||
+                        currMater->hasExternalStateVariables( "GEOM" ) ) ) {
         currExteVari->build( time );
     }
 
@@ -308,9 +307,11 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
 
     // Add input fields
     _calcul->addInputField( "PGEOMER", currModel->getMesh()->getCoordinates() );
-    _calcul->addInputField( "PVARCPR", currExteVari->getExternalStateVariablesField() );
-    _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
-    _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+    if ( currMater ) {
+        _calcul->addInputField( "PVARCPR", currExteVari->getExternalStateVariablesField() );
+        _calcul->addInputField( "PMATERC", currCodedMater->getCodedMaterialField() );
+        _calcul->addInputField( "PCOMPOR", currMater->getBehaviourField() );
+    }
     if ( currElemChara ) {
         _calcul->addElementaryCharacteristicsField( currElemChara );
     }
@@ -322,10 +323,10 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     }
 
     // Add output elementary terms
-    ElementaryTermRealPtr resuElemSyme =
+    auto resuElemSyme =
         boost::make_shared< ElementaryTermReal >( elemMatr->generateNameOfElementaryTerm() );
     _calcul->addOutputElementaryTerm( "PMATUUR", resuElemSyme );
-    ElementaryTermRealPtr resuElemNSym =
+    auto resuElemNSym =
         boost::make_shared< ElementaryTermReal >( elemMatr->generateNameOfElementaryTerm() );
     _calcul->addOutputElementaryTerm( "PMATUNS", resuElemNSym );
 
@@ -339,127 +340,14 @@ DiscreteComputation::elasticStiffnessMatrix( ASTERDOUBLE time ) {
     };
 
     // Compute elementary matrices for dual BC
-    DiscreteComputation::baseComputeMechanicalDualBCMatrix( _calcul, elemMatr );
+    DiscreteComputation::baseDualStiffnessMatrix( _calcul, elemMatr );
 
     elemMatr->isEmpty( false );
     return elemMatr;
 };
 
-SyntaxMapContainer DiscreteComputation::computeMatrixSyntax( const std::string &option ) {
-    SyntaxMapContainer dict;
-
-    // Definition du mot cle simple MODELE
-    if ( ( !_study->getModel() ) || _study->getModel()->isEmpty() )
-        throw std::runtime_error( "Model is empty" );
-    dict.container["MODELE"] = _study->getModel()->getName();
-
-    // Definition du mot cle simple CHAM_MATER
-    if ( !_study->getMaterialField() )
-        throw std::runtime_error( "Material is empty" );
-    dict.container["CHAM_MATER"] = _study->getMaterialField()->getName();
-
-    auto listOfLoads = _study->getListOfLoads();
-
-    const auto listOfMechanicalLoadReal = listOfLoads->getMechanicalLoadsReal();
-    if ( listOfMechanicalLoadReal.size() != 0 ) {
-        VectorString tmp;
-        for ( const auto curIter : listOfMechanicalLoadReal )
-            tmp.push_back( curIter->getName() );
-        dict.container["CHARGE"] = tmp;
-    }
-
-    const auto listOfMechanicalLoadFunction = listOfLoads->getMechanicalLoadsFunction();
-    if ( listOfMechanicalLoadFunction.size() != 0 ) {
-        VectorString tmp;
-        for ( const auto curIter : listOfMechanicalLoadFunction )
-            tmp.push_back( curIter->getName() );
-        dict.container["CHARGE"] = tmp;
-    }
-#ifdef ASTER_HAVE_MPI
-    auto listParaMecaLoadReal = listOfLoads->getParallelMechanicalLoadsReal();
-    if ( listParaMecaLoadReal.size() != 0 ) {
-        VectorString tmp;
-        for ( const auto curIter : listParaMecaLoadReal )
-            tmp.push_back( curIter->getName() );
-        dict.container["CHARGE"] = tmp;
-    }
-
-    auto listParaMecaLoadFunction = listOfLoads->getParallelMechanicalLoadsFunction();
-    if ( listParaMecaLoadFunction.size() != 0 ) {
-        VectorString tmp;
-        for ( const auto curIter : listParaMecaLoadFunction )
-            tmp.push_back( curIter->getName() );
-        dict.container["CHARGE"] = tmp;
-    }
-#endif /* ASTER_HAVE_MPI */
-
-    // Definition du mot cle simple OPTION
-    dict.container["OPTION"] = option;
-
-    return dict;
-};
-
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::computeMechanicalDampingMatrix(
-    const ElementaryMatrixDisplacementRealPtr &rigiMatrElem,
-    const ElementaryMatrixDisplacementRealPtr &massMatrElem ) {
-    ElementaryMatrixDisplacementRealPtr elemMatr( new ElementaryMatrixDisplacementReal() );
-    elemMatr->setModel( rigiMatrElem->getModel() );
-
-    // Definition du bout de fichier de commande correspondant a CALC_MATR_ELEM
-    CommandSyntax cmdSt( "CALC_MATR_ELEM" );
-    cmdSt.setResult( elemMatr->getName(), elemMatr->getType() );
-
-    SyntaxMapContainer dict = computeMatrixSyntax( "AMOR_MECA" );
-    dict.container["RIGI_MECA"] = rigiMatrElem->getName();
-    dict.container["MASS_MECA"] = massMatrElem->getName();
-
-    cmdSt.define( dict );
-    try {
-        ASTERINTEGER op = 9;
-        CALL_EXECOP( &op );
-    } catch ( ... ) {
-        throw;
-    }
-    elemMatr->isEmpty( false );
-    elemMatr->build();
-    return elemMatr;
-};
-
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::computeMechanicalStiffnessMatrix() {
-
-    ASTERDOUBLE time = 0.0;
-    return elasticStiffnessMatrix( time );
-};
-
-ElementaryMatrixDisplacementRealPtr DiscreteComputation::computeMechanicalDualBCMatrix() {
-
-    ElementaryMatrixDisplacementRealPtr elemMatr =
-        boost::make_shared< ElementaryMatrixDisplacementReal >();
-
-    // Get main parameters
-    ModelPtr currModel = _study->getModel();
-    MaterialFieldPtr currMater = _study->getMaterialField();
-    ElementaryCharacteristicsPtr currElemChara = _study->getElementaryCharacteristics();
-
-    // Set parameters of elementary matrix
-    elemMatr->setModel( currModel );
-    elemMatr->setMaterialField( currMater );
-    elemMatr->setElementaryCharacteristics( currElemChara );
-
-    // Prepare computing
-    const std::string option( "MECA_DDLM_R" );
-    CalculPtr _calcul = boost::make_shared< Calcul >( option );
-    elemMatr->prepareCompute( option );
-
-    // Compute elementary matrices
-    DiscreteComputation::baseComputeMechanicalDualBCMatrix( _calcul, elemMatr );
-
-    elemMatr->isEmpty( false );
-    return elemMatr;
-};
-
-void DiscreteComputation::baseComputeMechanicalDualBCMatrix(
-    CalculPtr &calcul, ElementaryMatrixDisplacementRealPtr &elemMatr ) {
+void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
+                                                   ElementaryMatrixDisplacementRealPtr &elemMatr ) {
 
     // Prepare loads
     const auto &_listOfLoads = _study->getListOfLoads();
@@ -506,4 +394,36 @@ void DiscreteComputation::baseComputeMechanicalDualBCMatrix(
             elemMatr->addElementaryTerm( resuElem );
         }
     }
+};
+
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
+
+    auto elemMatr = boost::make_shared< ElementaryMatrixDisplacementReal >();
+
+    // Get main parameters
+    ModelPtr currModel = _study->getModel();
+    MaterialFieldPtr currMater = _study->getMaterialField();
+    ElementaryCharacteristicsPtr currElemChara = _study->getElementaryCharacteristics();
+
+    // Set parameters of elementary matrix
+    elemMatr->setModel( currModel );
+    elemMatr->setMaterialField( currMater );
+    elemMatr->setElementaryCharacteristics( currElemChara );
+
+    // Prepare computing
+    const std::string option( "MECA_DDLM_R" );
+    CalculPtr _calcul = boost::make_shared< Calcul >( option );
+    elemMatr->prepareCompute( option );
+
+    // Compute elementary matrices
+    DiscreteComputation::baseDualStiffnessMatrix( _calcul, elemMatr );
+
+    elemMatr->isEmpty( false );
+    return elemMatr;
+};
+
+ElementaryMatrixDisplacementRealPtr DiscreteComputation::massMatrix( ASTERDOUBLE time ) {
+    auto elemMatr = boost::make_shared< ElementaryMatrixDisplacementReal >();
+
+    return elemMatr;
 };

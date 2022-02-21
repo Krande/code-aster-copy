@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,8 @@ subroutine te0098(option, nomte)
 !
     okte =  ((nomte.eq.'MECABL2')   .and.(option.eq.'RIGI_MECA'))  .or. &
             ((nomte.eq.'MECA_BARRE').and.(option.eq.'RIGI_GEOM'))
-    okte = okte .and. cmd.eq.'CALC_MATR_ELEM'
+! Si la commande est vide c'est que c'est du python
+    okte = okte .and. (cmd.eq.' ' .or. cmd.eq.'CALC_MATR_ELEM')
     if ( .not. okte ) then
         vmessk(1) = cmd
         vmessk(2) = concep

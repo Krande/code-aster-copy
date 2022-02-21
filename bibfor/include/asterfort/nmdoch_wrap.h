@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoch_wrap(list_load0, l_load_user0, list_load_resu0, base)
+    subroutine nmdoch_wrap(list_load0, l_load_user0, l_calc_user0, list_load_resu0, base)
         character(len=*), intent(in) :: list_load0
-        integer, intent(in) :: l_load_user0
+        integer, intent(in) :: l_load_user0, l_calc_user0
         character(len=*), intent(in) :: list_load_resu0
         character(len=*), intent(in) :: base
     end subroutine nmdoch_wrap

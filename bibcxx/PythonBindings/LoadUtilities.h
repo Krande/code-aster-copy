@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LoadUtilities
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -76,6 +76,14 @@ void addMechanicalLoadToInterface( py::class_< first, Args... > myInstance ) {
     void ( my::*c12 )( const MechanicalLoadFunctionPtr &currentLoad, const Function2DPtr &func)
         = &my::addLoad;
 
+    void ( my::*c13 )( const MechanicalLoadComplexPtr & ) = &my::addLoad;
+    void ( my::*c14 )( const MechanicalLoadComplexPtr &currentLoad, const FunctionPtr &func )=
+        &my::addLoad;
+    void ( my::*c15 )( const MechanicalLoadComplexPtr &currentLoad, const FormulaPtr &func ) =
+        &my::addLoad;
+    void ( my::*c16 )( const MechanicalLoadComplexPtr &currentLoad, const Function2DPtr &func)
+        = &my::addLoad;
+
     myInstance.def( "addLoad", c5 );
     myInstance.def( "addLoad", c6 );
     myInstance.def( "addLoad", c7 );
@@ -84,6 +92,10 @@ void addMechanicalLoadToInterface( py::class_< first, Args... > myInstance ) {
     myInstance.def( "addLoad", c10 );
     myInstance.def( "addLoad", c11 );
     myInstance.def( "addLoad", c12 );
+    myInstance.def( "addLoad", c13 );
+    myInstance.def( "addLoad", c14 );
+    myInstance.def( "addLoad", c15 );
+    myInstance.def( "addLoad", c16 );
 };
 
 #ifdef ASTER_HAVE_MPI

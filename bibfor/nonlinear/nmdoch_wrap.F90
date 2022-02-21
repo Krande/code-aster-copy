@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine nmdoch_wrap(list_load0, l_load_user0, list_load_resu0, base)
+subroutine nmdoch_wrap(list_load0, l_load_user0, l_calc_user0, list_load_resu0, base)
 !
 implicit none
 !
@@ -27,7 +27,7 @@ implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
     character(len=*), intent(in) :: list_load0
-    integer, intent(in) :: l_load_user0
+    integer, intent(in) :: l_load_user0, l_calc_user0
     character(len=*), intent(in) :: list_load_resu0
     character(len=*), intent(in) :: base
 !
@@ -46,13 +46,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: list_load
-    aster_logical :: l_load_user
+    aster_logical :: l_load_user, l_calc_user
     character(len=19) :: list_load_resu
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_load_user = int_to_logical(l_load_user0)
+    l_calc_user = int_to_logical(l_calc_user0)
     list_load = list_load0
     list_load_resu = list_load_resu0
-    call nmdoch(list_load, l_load_user, list_load_resu, base)
+    call nmdoch(list_load, l_load_user, list_load_resu, base, l_calc_user)
 end subroutine

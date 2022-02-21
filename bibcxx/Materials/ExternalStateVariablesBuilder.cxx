@@ -47,19 +47,30 @@ ExternalStateVariablesBuilder::ExternalStateVariablesBuilder(
       _varcVale( new FieldOnCellsReal( getName() + ".TOUT" ) ),
       _timeField( new ConstantFieldOnCellsReal( getName() + ".INST", _model->getMesh() ) ),
       _time( -1.0 ),
-      _pTot( _materialField->hasExternalStateVariables( "PTOT" ) ),
-      _hydr( _materialField->hasExternalStateVariables( "HYDR" ) ),
-      _sech( _materialField->hasExternalStateVariables( "SECH" ) ),
-      _temp( _materialField->hasExternalStateVariables( "TEMP" ) ) {
-    std::string modelName( _model->getName(), 0, 8 ),
-        materialFieldName( _materialField->getName(), 0, 8 );
-    std::string elemCharaName( ' ', 8 );
-    if ( _elemChara != nullptr )
-        elemCharaName = std::string( _elemChara->getName(), 0, 8 );
-    CALLO_VRCREF( modelName, materialFieldName, elemCharaName, _varcRefe->getName() );
+      _pTot( false ),
+      _hydr( false ),
+      _sech( false ),
+      _temp( false )
+{
+    if ( _materialField ) {
+        _pTot = _materialField->hasExternalStateVariables( "PTOT" );
+        _hydr = _materialField->hasExternalStateVariables( "HYDR" );
+        _sech = _materialField->hasExternalStateVariables( "SECH" );
+        _temp = _materialField->hasExternalStateVariables( "TEMP" );
+        std::string modelName( _model->getName(), 0, 8 ),
+            materialFieldName( _materialField->getName(), 0, 8 );
+        std::string elemCharaName( ' ', 8 );
+        if ( _elemChara != nullptr )
+            elemCharaName = std::string( _elemChara->getName(), 0, 8 );
+        CALLO_VRCREF( modelName, materialFieldName, elemCharaName, _varcRefe->getName() );
+    }
 };
 
 void ExternalStateVariablesBuilder::build( const ASTERDOUBLE &time ) {
+    if(!_materialField){
+        raiseAsterError("MaterialField is empty");
+    }
+
     _time = time;
     _varcVale->deallocate();
     _timeField->deallocate();
@@ -82,6 +93,10 @@ void ExternalStateVariablesBuilder::build( const ASTERDOUBLE &time ) {
 
 FieldOnNodesRealPtr ExternalStateVariablesBuilder::computeExternalStateVariablesLoad(
     const BaseDOFNumberingPtr &dofNUM ) {
+    if(!_materialField){
+        raiseAsterError("MaterialField is empty");
+    }
+
     const auto &codedMaterial = _codedMaterial->getCodedMaterialField();
     std::string modelName( _model->getName(), 0, 8 );
     std::string elemCharaName( 8, ' ' );

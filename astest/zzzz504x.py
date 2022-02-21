@@ -72,7 +72,7 @@ study.computeDOFNumbering()
 dComputation = code_aster.DiscreteComputation(study)
 # compute Neumann
 retour = dComputation.neumann([0, 0, 0])
-matr_elem = dComputation.computeMechanicalStiffnessMatrix()
+matr_elem = dComputation.elasticStiffnessMatrix()
 
 monSolver = code_aster.MumpsSolver()
 

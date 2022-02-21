@@ -22,12 +22,16 @@
  */
 
 #include "Studies/PhysicalProblem.h"
+
 #include "Supervis/Exceptions.h"
 
 PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPtr curMat,
                                   const ElementaryCharacteristicsPtr cara )
-    : _model( curModel ), _mesh( curModel->getMesh() ), _materialField( curMat ),
-      _listOfLoads( boost::make_shared< ListOfLoads >(_model) ), _elemChara( cara ),
+    : _model( curModel ),
+      _mesh( curModel->getMesh() ),
+      _materialField( curMat ),
+      _listOfLoads( boost::make_shared< ListOfLoads >( _model ) ),
+      _elemChara( cara ),
       _codedMater( boost::make_shared< CodedMaterial >( _materialField, _model ) ),
       _varCom( boost::make_shared< ExternalStateVariablesBuilder >( _model, _materialField,
                                                                     _elemChara, _codedMater ) ),
@@ -38,8 +42,10 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
             raiseAsterError( "Inconsistent model" );
     }
 
-    if ( _mesh->getName() != _materialField->getMesh()->getName() )
-        raiseAsterError( "Inconsistent mesh" );
+    if ( _materialField ) {
+        if ( _mesh->getName() != _materialField->getMesh()->getName() )
+            raiseAsterError( "Inconsistent mesh" );
+    }
 
 // create dofNume
 #ifdef ASTER_HAVE_MPI
@@ -52,7 +58,8 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
     _dofNume->setModel( _model );
     _dofNume->setListOfLoads( _listOfLoads );
 
-    _codedMater->allocate(true);
+    if(_materialField)
+        _codedMater->allocate( true );
 };
 
 void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
@@ -64,7 +71,8 @@ void PhysicalProblem::setDOFNumbering( const BaseDOFNumberingPtr dofNume ) {
         raiseAsterError( "Incompatible models" );
 
     auto listOfLoads = dofNume->getListOfLoads();
-    if ( listOfLoads && !listOfLoads->isEmpty() && listOfLoads->getName()!= _listOfLoads->getName())
+    if ( listOfLoads && !listOfLoads->isEmpty() &&
+         listOfLoads->getName() != _listOfLoads->getName() )
         raiseAsterError( "Incompatible list of loads" );
 
     _dofNume = dofNume;

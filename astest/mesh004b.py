@@ -73,7 +73,7 @@ study.addDirichletBC(charCine)
 study.addLoad(CHT1)
 dComputation = code_aster.DiscreteComputation(study)
 #vect_elem = dComputation.computeElementaryMechanicalLoadsVector()
-matr_elem = dComputation.computeMechanicalStiffnessMatrix()
+matr_elem = dComputation.elasticStiffnessMatrix()
 
 monSolver = code_aster.PetscSolver( RENUM="SANS", PRE_COND="SANS" )
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 ! person_in_charge: mickael.abbas at edf.fr
 !
-subroutine nmdoch(list_load, l_load_user, list_load_resu_, base)
+subroutine nmdoch(list_load, l_load_user, list_load_resu_, base, l_calc_user)
 !
 implicit none
 !
@@ -49,6 +49,7 @@ implicit none
 !
 character(len=19), intent(in) :: list_load
 aster_logical, intent(in) :: l_load_user
+aster_logical, optional, intent(in) :: l_calc_user
 character(len=19), optional, intent(in) :: list_load_resu_
 character(len=1), optional, intent(in) :: base
 !
@@ -115,11 +116,15 @@ character(len=1), optional, intent(in) :: base
 !
 ! - Command for computation ?
 !
-    l_calc = nomcmd.eq.'DYNA_NON_LINE'.or.&
-             nomcmd.eq.'STAT_NON_LINE'.or.&
-             nomcmd.eq.'MECA_STATIQUE'.or.&
-             nomcmd.eq.'CALC_FORC_NONL'.or.&
-             nomcmd.eq.'DYNA_VIBRA'
+    if(present(l_calc_user)) then
+        l_calc = l_calc_user
+    else
+        l_calc = nomcmd.eq.'DYNA_NON_LINE'.or.&
+                nomcmd.eq.'STAT_NON_LINE'.or.&
+                nomcmd.eq.'MECA_STATIQUE'.or.&
+                nomcmd.eq.'CALC_FORC_NONL'.or.&
+                nomcmd.eq.'DYNA_VIBRA'
+    end if
 !
 ! - Get model
 !

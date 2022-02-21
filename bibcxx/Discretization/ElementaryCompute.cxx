@@ -25,17 +25,19 @@
 void ElementaryCompute::createDescriptor( const ModelPtr &currModel,
                                           const MaterialFieldPtr &currMaterialField,
                                           const ElementaryCharacteristicsPtr &currElemChara ) {
-    _rerr->reserve( 5 );
-    _rerr->push_back( currModel->getName() );
-    _rerr->push_back( _option );
+    _rerr->allocate( 5 );
+    ( *_rerr )[0] = currModel->getName();
+    ( *_rerr )[1] = _option;
     if ( currModel->nbSuperElement() == 0 ) {
-        _rerr->push_back( "NON_SOUS_STRUC" );
+        ( *_rerr )[2] = "NON_SOUS_STRUC";
     } else {
-        _rerr->push_back( "OUI_SOUS_STRUC" );
+        ( *_rerr )[2] = "OUI_SOUS_STRUC";
     }
-    _rerr->push_back( currMaterialField->getName() );
-    if ( currElemChara != nullptr ) {
-        _rerr->push_back( currElemChara->getName() );
+    if ( currMaterialField ) {
+        ( *_rerr )[3] = currMaterialField->getName();
+    }
+    if ( currElemChara ) {
+        ( *_rerr )[4] = currElemChara->getName();
     }
 };
 

@@ -21,55 +21,50 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdexcept>
-#include <typeinfo>
-#include "astercxx.h"
+#include "Loads/ListOfLoads.h"
 
 #include "aster_fort_calcul.h"
-#include "Loads/ListOfLoads.h"
+#include "astercxx.h"
+
 #include "Supervis/CommandSyntax.h"
 
+#include <typeinfo>
 
-ListOfLoads::ListOfLoads( const std::string& name, const ModelPtr model)
+ListOfLoads::ListOfLoads( const std::string &name, const ModelPtr model )
     : DataStructure( name, 19, "L_CHARGES" ),
       _loadInformations( JeveuxVectorLong( getName() + ".INFC" ) ),
       _list( JeveuxVectorChar24( getName() + ".LCHA" ) ),
-      _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ), _isEmpty( true ),
+      _listOfFunctions( JeveuxVectorChar24( getName() + ".FCHA" ) ),
+      _isEmpty( true ),
       _model( model ){};
 
 ListOfLoads::ListOfLoads( const ModelPtr model )
     : ListOfLoads( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD", model ){};
 
-ListOfLoads::ListOfLoads( const std::string& name )
-    : ListOfLoads(name, nullptr) {};
+ListOfLoads::ListOfLoads( const std::string &name ) : ListOfLoads( name, nullptr ){};
 
-ListOfLoads::ListOfLoads( )
-    : ListOfLoads(DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD") {};
+ListOfLoads::ListOfLoads() : ListOfLoads( DataStructureNaming::getNewName( 8 ) + ".LIST_LOAD" ){};
 
-bool ListOfLoads::checkModelConsistency( const ModelPtr& model ) const
-{
-    if( _model ){
-        if( _model->getName() != model->getName())
+bool ListOfLoads::checkModelConsistency( const ModelPtr &model ) const {
+    if ( _model ) {
+        if ( _model->getName() != model->getName() )
             return false;
     }
     return true;
 };
 
-bool ListOfLoads::setModel( const ModelPtr& model )
-{
-    if( _model ){
-        if( !this->checkModelConsistency( model ) )
-            throw std::runtime_error("Inconsistent model");
-    }
-    else
+bool ListOfLoads::setModel( const ModelPtr &model ) {
+    if ( _model ) {
+        if ( !this->checkModelConsistency( model ) )
+            throw std::runtime_error( "Inconsistent model" );
+    } else
         _model = model;
 
     return true;
 };
 
-int ListOfLoads::getPhysics( void ) const
-{
-    if( _model )
+int ListOfLoads::getPhysics( void ) const {
+    if ( _model )
         return _model->getPhysics();
 
     return -1;
@@ -80,12 +75,13 @@ bool ListOfLoads::build( ModelPtr model ) {
         return true;
 
     int physic;
-    if( model )
+    if ( model )
         physic = model->getPhysics();
     else
         physic = this->getPhysics();
 
     ASTERINTEGER iexcit = 1;
+    ASTERINTEGER icalc = 0;
     std::string name( getName().c_str() );
     name.resize( 19, ' ' );
     std::string blank( " " );
@@ -95,15 +91,24 @@ bool ListOfLoads::build( ModelPtr model ) {
     SyntaxMapContainer dict;
     ListSyntaxMapContainer listeExcit;
 
-    if( physic == Physics::Mechanics)
-    {
+    if ( physic == Physics::Mechanics ) {
         CommandSyntax cmdSt( "MECA_STATIQUE" );
+
         int pos = 0;
         for ( const auto &curIter : _listOfMechanicalLoadsReal ) {
             SyntaxMapContainer dict2;
             dict2.container["CHARGE"] = curIter->getName();
             if ( _listOfMechaFuncReal[pos]->getName() != emptyRealFunction->getName() )
                 dict2.container["FONC_MULT"] = _listOfMechaFuncReal[pos]->getName();
+            ++pos;
+            listeExcit.push_back( dict2 );
+        }
+        pos = 0;
+        for ( const auto &curIter : _listOfMechanicalLoadsComplex ) {
+            SyntaxMapContainer dict2;
+            dict2.container["CHARGE"] = curIter->getName();
+            if ( _listOfMechaFuncComplex[pos]->getName() != emptyRealFunction->getName() )
+                dict2.container["FONC_MULT"] = _listOfMechaFuncComplex[pos]->getName();
             ++pos;
             listeExcit.push_back( dict2 );
         }
@@ -149,11 +154,10 @@ bool ListOfLoads::build( ModelPtr model ) {
         dict.container["EXCIT"] = listeExcit;
         cmdSt.define( dict );
 
-        CALLO_NMDOCH_WRAP( name, &iexcit, blank, base );
-    }
-    else if( physic == Physics::Thermal)
-    {
+        CALLO_NMDOCH_WRAP( name, &iexcit, &icalc, blank, base );
+    } else if ( physic == Physics::Thermal ) {
         CommandSyntax cmdSt( "THER_NON_LINE" );
+
         int pos = 0;
         for ( const auto &curIter : _listOfThermalLoadsReal ) {
             SyntaxMapContainer dict2;
@@ -188,29 +192,26 @@ bool ListOfLoads::build( ModelPtr model ) {
         cmdSt.define( dict );
 
         CALLO_NTDOCH_WRAP( name, &iexcit, blank, base );
-    }
-    else if( physic == Physics::Acoustic)
-    {
-        throw std::runtime_error("Not Implemented AcousticLoad");
-    }
-    else{
-        throw std::runtime_error("Should not be here");
+    } else if ( physic == Physics::Acoustic ) {
+        throw std::runtime_error( "Not Implemented AcousticLoad" );
+    } else {
+        throw std::runtime_error( "Should not be here" );
     }
 
     _isEmpty = false;
     return true;
 };
 
-
-std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescriptors() const
-{
+std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescriptors() const {
     std::vector< FiniteElementDescriptorPtr > FEDesc;
 
     const int physic = this->getPhysics();
 
-    if( physic == Physics::Mechanics)
-    {
+    if ( physic == Physics::Mechanics ) {
         for ( const auto &curIter : _listOfMechanicalLoadsReal ) {
+            FEDesc.push_back( curIter->getFiniteElementDescriptor() );
+        }
+        for ( const auto &curIter : _listOfMechanicalLoadsComplex ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
         for ( const auto &curIter : _listOfMechanicalLoadsFunction ) {
@@ -224,18 +225,14 @@ std::vector< FiniteElementDescriptorPtr > ListOfLoads::getFiniteElementDescripto
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
 #endif /* ASTER_HAVE_MPI */
-    }
-    else if( physic == Physics::Thermal)
-    {
+    } else if ( physic == Physics::Thermal ) {
         for ( const auto &curIter : _listOfThermalLoadsReal ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
         for ( const auto &curIter : _listOfThermalLoadsFunction ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }
-    }
-    else if( physic == Physics::Acoustic)
-    {
+    } else if ( physic == Physics::Acoustic ) {
         for ( const auto &curIter : _listOfAcousticLoadsComplex ) {
             FEDesc.push_back( curIter->getFiniteElementDescriptor() );
         }

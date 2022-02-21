@@ -81,7 +81,7 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
                         iret)
             call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matas)
             call jeveuo(matas//'.LIME', 'L', vk24=lime)
-            call jeveuo(lime(1)(1:8)//'.ME001     .NOLI', 'L', vk24=noli)
+            call jeveuo(lime(1)(1:8)//'.0000000   .NOLI', 'L', vk24=noli)
             modele = noli(1) (1:8)
         else
 !         --- DEFORMEES MODALES PAR DES CHAM_NO MAIS AUCUNE INFORMATION

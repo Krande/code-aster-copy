@@ -3,7 +3,7 @@
  * @brief Implementation de CodedMaterial
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -24,21 +24,30 @@
 /* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "Materials/CodedMaterial.h"
+
 #include "aster_fort_jeveux.h"
 #include "aster_fort_material.h"
 #include "aster_fort_utils.h"
 
+#include "Supervis/Exceptions.h"
+
 CodedMaterial::CodedMaterial( const std::string &name, const MaterialFieldPtr &mater,
-                                        const ModelPtr &model )
-    : DataStructure( name, 19, "MATER_CODE" ), _mater( mater ), _model( model ),
-      _field( boost::make_shared< ConstantFieldOnCellsLong >
-        ( getName() , _model->getMesh()) ),
+                              const ModelPtr &model )
+    : DataStructure( name, 19, "MATER_CODE" ),
+      _mater( mater ),
+      _model( model ),
+      _field( boost::make_shared< ConstantFieldOnCellsLong >( getName(), _model->getMesh() ) ),
       _grp( JeveuxVectorChar8( getName() + ".GRP" ) ),
       _nGrp( JeveuxVectorLong( getName() + ".NGRP" ) ){};
 
 bool CodedMaterial::allocate( bool force ) {
     if ( !force && _field->exists() )
         return false;
+
+    if ( !_mater ) {
+        raiseAsterError( "MaterialField is empty" );
+    }
+
     if ( _field->exists() ) {
         _field->deallocate();
         _grp->deallocate();

@@ -105,8 +105,9 @@ void DEFSSPSSPP( MATRIX_FACTOR, matrix_factor, const char *, STRING_SIZE, const 
                  ASTERINTEGER *, const char *, STRING_SIZE, const char *, STRING_SIZE,
                  ASTERINTEGER *, ASTERINTEGER * );
 
-#define CALLO_NMDOCH_WRAP( a, b, c, d ) CALLOPOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d )
-void DEFSPSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, const char *,
+#define CALLO_NMDOCH_WRAP( a, b, c, d, e ) CALLOPPOO( NMDOCH_WRAP, nmdoch_wrap, a, b, c, d, e )
+void DEFSPPSS( NMDOCH_WRAP, nmdoch_wrap, const char *, STRING_SIZE, ASTERINTEGER *, ASTERINTEGER *,
+              const char *,
               STRING_SIZE, const char *, STRING_SIZE );
 
 #define CALLO_NTDOCH_WRAP( a, b, c, d ) CALLOPOO( NTDOCH_WRAP, ntdoch_wrap, a, b, c, d )

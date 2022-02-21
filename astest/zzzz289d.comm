@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -126,15 +126,15 @@ TEST_RESU(OBJET=_F(VALE_CALC=6278.2285714285999,
 #Test de non regression sur la matrice de rigidite (pour INCO_UPG, INCO_UPG et INCO_UP)
 
 TEST_RESU(OBJET=_F(VALE_CALC=2.6950725246896E+06,
-                   NOM=MATRUPG.getName()[:8] + '.ME001     .RESL',),
+                   NOM=MATRUPG.getName()[:8] + '.0000000   .RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=2.6950725246896E+06,
-                   NOM=MATRUPQ.getName()[:8] + '.ME001     .RESL',),
+                   NOM=MATRUPQ.getName()[:8] + '.0000000   .RESL',),
           )
 
 TEST_RESU(OBJET=_F(VALE_CALC=958359.5921090409,
-                   NOM=MATRUPL.getName()[:8] + '.ME001     .RESL',),
+                   NOM=MATRUPL.getName()[:8] + '.0000000   .RESL',),
           )
 
 FIN();

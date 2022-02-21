@@ -42,10 +42,8 @@ asse = ASSEMBLAGE(MODELE=MODELE,
 test.assertIsNone(asse, msg="returns nothing")
 
 # check for dependencies
-# expecting only nume_ddl (matr_elem removed by ASSE_MATRICE.add_dependencies)
 deps = K1.getDependencies()
-test.assertEqual(len(deps), 1, msg="K1 dependencies")
-test.assertIn(NUMEDDL, deps, msg="NUMEDDL is a dependency")
+test.assertEqual(len(deps), 0, msg="K1 dependencies")
 
 # 1. Calcul de reference avec les matrices "completes" :
 #--------------------------------------------------------

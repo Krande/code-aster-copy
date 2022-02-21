@@ -171,4 +171,7 @@ typedef ListMecaLoadFunction::iterator ListMecaLoadFunctionIter;
 /** @typedef Iterateur constant sur une std::list de MechanicalLoad */
 typedef ListMecaLoadFunction::const_iterator ListMecaLoadFunctionCIter;
 
+/** @typedef std::list de MechanicalLoad */
+typedef std::list< MechanicalLoadComplexPtr > ListMecaLoadComplex;
+
 #endif /* MECHANICALLOAD_H_ */

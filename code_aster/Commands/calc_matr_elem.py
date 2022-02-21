@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+# Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
 #
 # This file is part of Code_Aster.
 #
@@ -22,14 +22,51 @@
 from ..Objects import (ElementaryMatrixDisplacementComplex,
                        ElementaryMatrixDisplacementReal,
                        ElementaryMatrixPressureComplex,
-                       ElementaryMatrixTemperatureReal)
+                       ElementaryMatrixTemperatureReal,
+                       PhysicalProblem,
+                       MechanicalLoadComplex,
+                       DiscreteComputation)
 from ..Supervis import ExecuteCommand
+from ..Utilities import force_list
 
 
 class ComputeElementaryMatrix(ExecuteCommand):
 
     """Command that creates evolutive results."""
     command_name = "CALC_MATR_ELEM"
+
+    def use_cpp(self, keywords):
+        """ Use or not new c++ commands"""
+
+        # Case not yet supported - to fix
+
+        myOption = keywords["OPTION"]
+        if myOption not in ("RIGI_MECA",):
+            return False
+
+        group_ma = keywords.get("GROUP_MA")
+        if group_ma is not None:
+            return False
+
+        maille = keywords.get("MAILLE")
+        if maille is not None:
+            return False
+
+        fourier = keywords.get("MODE_FOURIER")
+        if fourier is not None and fourier != 0:
+            return False
+
+        macro = keywords.get("CALC_ELEM_MODELE")
+        if macro is not None and macro == "NON":
+            return False
+
+        loads = keywords.get("CHARGE")
+        if loads is not None:
+            for load in force_list(loads):
+                if isinstance(load, MechanicalLoadComplex):
+                    return False
+
+        return True
 
     def create_result(self, keywords):
         """Initialize the result.
@@ -50,6 +87,38 @@ class ComputeElementaryMatrix(ExecuteCommand):
         elif myOption in ("RIGI_ACOU", "MASS_ACOU", "AMOR_ACOU"):
             self._result = ElementaryMatrixPressureComplex()
 
+    def exec_(self, keywords):
+        """Override default _exec in case of some options
+        """
+        # Compute option
+        if self.use_cpp(keywords):
+            # Define problem
+            model = keywords["MODELE"]
+            mater = keywords.get("CHAM_MATER")
+            cara = keywords.get("CARA_ELEM")
+            phys_pb = PhysicalProblem(model, mater, cara)
+
+            loads = keywords.get("CHARGE")
+            if loads is not None:
+                for load in force_list(loads):
+                    phys_pb.addLoad(load)
+
+            phys_pb.computeListOfLoads()
+
+            disr_comp = DiscreteComputation(phys_pb)
+
+            time = keywords["INST"]
+            myOption = keywords["OPTION"]
+
+            if myOption == "RIGI_MECA":
+                self._result = disr_comp.elasticStiffnessMatrix(time)
+            elif myOption == "MASS_MECA":
+                self._result = disr_comp.massMatrix(time)
+            else:
+                raise RuntimeError("Option %s not implemented"%(myOption))
+        else:
+            super(ComputeElementaryMatrix, self).exec_(keywords)
+
     def post_exec(self, keywords):
         """Store references to ElementaryMatrix objects.
 
@@ -57,15 +126,33 @@ class ComputeElementaryMatrix(ExecuteCommand):
             keywords (dict): Keywords arguments of user's keywords, changed
                 in place.
         """
-        self._result.setModel(keywords['MODELE'])
-        charge = keywords.get("CHARGE")
-        if charge is not None:
-            for curLoad in charge:
-                curFED = curLoad.getFiniteElementDescriptor()
-                self._result.addFiniteElementDescriptor(curFED)
-        chamMater = keywords.get("CHAM_MATER")
-        if chamMater is not None:
-            self._result.setMaterialField(chamMater)
-        self._result.build()
+
+        if not self.use_cpp(keywords):
+            self._result.setModel(keywords['MODELE'])
+
+            charge = keywords.get("CHARGE")
+            if charge is not None:
+                for curLoad in charge:
+                    curFED = curLoad.getFiniteElementDescriptor()
+                    self._result.addFiniteElementDescriptor(curFED)
+
+            chamMater = keywords.get("CHAM_MATER")
+            if chamMater is not None:
+                self._result.setMaterialField(chamMater)
+
+            caraElem = keywords.get("CARA_ELEM")
+            if caraElem is not None:
+                self._result.setElementaryCharacteristics(caraElem)
+            self._result.build()
+
+    def add_dependencies(self, keywords):
+        """Register input *DataStructure* objects as dependencies.
+
+        Arguments:
+            keywords (dict): User's keywords.
+        """
+
+        # no dependencies to add
+
 
 CALC_MATR_ELEM = ComputeElementaryMatrix.run
