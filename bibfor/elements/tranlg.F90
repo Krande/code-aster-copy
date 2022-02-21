@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine tranlg(nb1, nddlx, nddlet, plg, matloc,&
                   xr)
     implicit none
 !
-    integer :: nb1, nddlet
+    integer :: nb1, nddlet, nddlx
     real(kind=8) :: xr(*)
     real(kind=8) :: matloc(nddlx, nddlx), plg(9, 3, 3)
     real(kind=8) :: matxp(48, 48), matx(51, 51)
@@ -28,7 +28,7 @@ subroutine tranlg(nb1, nddlx, nddlet, plg, matloc,&
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, ib, j, j1, j2
-    integer :: jb, k, k1, kompt, nb2, nddle, nddlx
+    integer :: jb, k, k1, kompt, nb2, nddle
 !
 !-----------------------------------------------------------------------
     nddle=6*nb1
@@ -48,44 +48,44 @@ subroutine tranlg(nb1, nddlx, nddlet, plg, matloc,&
 !
 !     CONSTRUCTION DE LA MATRICE MATXP = MATLOC *  PLG  : (NDDLE,NDDLE)
 !
-    do 30 i1 = 1, nddle
-        do 40 jb = 1, nb1
-            do 50 j = 1, 3
+    do i1 = 1, nddle
+        do jb = 1, nb1
+            do j = 1, 3
                 j1=3*(2*jb-2)+j
                 matxp(i1,j1)=matloc(i1,j1)
 !
                 j2=3*(2*jb-1)+j
                 matxp(i1,j2)=0.d0
-                do 60 k = 1, 3
+                do k = 1, 3
                     k1=3*(2*jb-1)+k
                     matxp(i1,j2)=matxp(i1,j2)+matloc(i1,k1)*plg(jb,k,&
                     j)
-60              end do
-50          end do
-40      end do
-30  end do
+                end do
+            end do
+        end do
+    end do
 !
 !   CONSTRUCTION DE LA MATRICE MATX = PLGT * MATLOC * PLG (NDDLET,NDDLE)
 !
 !   CONSTRUCTION EN PREMIER DE PT * KB11 * P (NDDLE,NDDLE)
 !
-    do 100 ib = 1, nb1
-        do 110 i = 1, 3
+    do ib = 1, nb1
+        do i = 1, 3
             i1=3*(2*ib-2)+i
 !
             i2=3*(2*ib-1)+i
-            do 120 j1 = 1, nddle
+            do j1 = 1, nddle
                 matx(i1,j1)=matxp(i1,j1)
 !
                 matx(i2,j1)=0.d0
-                do 130 k = 1, 3
+                do k = 1, 3
                     k1=3*(2*ib-1)+k
 !CC      MATX(I2,J1)=MATX(I2,J1)+PLGT(IB,I,K)*MATXP(K1,J1)
                     matx(i2,j1)=matx(i2,j1)+plg (ib,k,i)*matxp(k1,j1)
-130              end do
-120          end do
-110      end do
-100  end do
+                end do
+            end do
+        end do
+    end do
 !
     nb2=nb1+1
 !
@@ -93,95 +93,95 @@ subroutine tranlg(nb1, nddlx, nddlet, plg, matloc,&
 !
 !     CALCULS DE KB * LAMBDA
 !
-    do 200 i = 1, nddle
-        do 210 j = 1, 3
+    do i = 1, nddle
+        do j = 1, 3
             kb12pt(i,j)=0.d0
-            do 220 k = 1, 3
+            do k = 1, 3
                 k1=nddle+k
                 kb12pt(i,j)=kb12pt(i,j)+matloc(i,k1)*plg(nb2,k,j)
-220          end do
-210      end do
-200  end do
+            end do
+        end do
+    end do
 !
-    do 230 i = 1, 3
+    do i = 1, 3
         i1=nddle+i
-        do 240 jb = 1, nb1
-            do 250 j = 1, 3
+        do jb = 1, nb1
+            do j = 1, 3
                 j1=3*(2*jb-2)+j
                 kb21pg(i,j1)=matloc(i1,j1)
 !
                 j2=3*(2*jb-1)+j
                 kb21pg(i,j2)=0.d0
-                do 260 k = 1, 3
+                do k = 1, 3
                     k1=3*(2*jb-1)+k
                     kb21pg(i,j2)=kb21pg(i,j2)+matloc(i1,k1)*plg(jb,k,&
                     j)
-260              end do
-250          end do
-240      end do
-230  end do
+                end do
+            end do
+        end do
+    end do
 !
-    do 270 i = 1, 3
+    do i = 1, 3
         i1=nddle+i
-        do 280 j = 1, 3
+        do j = 1, 3
             kb22pt(i,j)=0.d0
-            do 290 k = 1, 3
+            do k = 1, 3
                 k1=nddle+k
                 kb22pt(i,j)=kb22pt(i,j)+matloc(i1,k1)*plg(nb2,k,j)
-290          end do
-280      end do
-270  end do
+            end do
+        end do
+    end do
 !
 !     CALCULS DE K = TLAMBDA * KB * LAMBDA
 !
-    do 300 ib = 1, nb1
-        do 310 i = 1, 3
+    do ib = 1, nb1
+        do i = 1, 3
             i1=3*(2*ib-2)+i
 !
             i2=3*(2*ib-1)+i
-            do 320 j = 1, 3
+            do j = 1, 3
                 j1=nddle+j
                 matx(i1,j1)=kb12pt(i1,j)
 !
                 matx(i2,j1)=0.d0
-                do 330 k = 1, 3
+                do k = 1, 3
                     k1=3*(2*ib-1)+k
                     matx(i2,j1)=matx(i2,j1)+plg(ib,k,i)*kb12pt(k1,j)
-330              end do
-320          end do
-310      end do
-300  end do
+                end do
+            end do
+        end do
+    end do
 !
-    do 340 i = 1, 3
+    do i = 1, 3
         i1=nddle+i
-        do 350 j = 1, nddle
+        do j = 1, nddle
             matx(i1,j)=0.d0
-            do 360 k = 1, 3
+            do k = 1, 3
                 matx(i1,j)=matx(i1,j)+plg(nb2,k,i)*kb21pg(k,j)
-360          end do
-350      end do
-340  end do
+            end do
+        end do
+    end do
 !
-    do 370 i = 1, 3
+    do i = 1, 3
         i1=nddle+i
-        do 380 j = 1, 3
+        do j = 1, 3
             j1=nddle+j
             matx(i1,j1)=0.d0
-            do 390 k = 1, 3
+            do k = 1, 3
                 matx(i1,j1)=matx(i1,j1)+plg(nb2,k,i)*kb22pt(k,j)
-390          end do
-380      end do
-370  end do
+            end do
+        end do
+    end do
 !
 !     STOCKAGE DE LA PARTIE TRIANGULAIRE SUPERIEURE DANS LE TABLEAU XR
 !
     kompt=0
-    do 140 j = 1, nddlet
-        do 150 i = 1, j
+    do j = 1, nddlet
+        do i = 1, j
             kompt=kompt+1
             xr(kompt)=matx(i,j)
 !        XR(KOMPT)=MATLOC(I,J)
-150      end do
-140  end do
+        end do
+    end do
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
                   nbbas)
     implicit none
@@ -41,19 +41,18 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 #include "asterfort/cvnorm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zconju.h"
+    integer :: nbbas, ndim, ndimax
     complex(kind=8) :: ca(*)
     complex(kind=8) :: cbas(ndimax, nbbas)
     complex(kind=8) :: cvec(ndim), ctrav1, ctrav2, cprod, cconj, cmodu
     real(kind=8) :: prea, pima
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
 ! CAS OU IL N'Y A PAS DE VECTEUR DE REFERENCE
 !
 !-----------------------------------------------------------------------
     integer :: i, ic, icdiag, il, ildiag, iretou, j
-    integer :: nbbas, ndim, ndimax
 !-----------------------------------------------------------------------
     if (nbbas .eq. 0) then
 !
@@ -64,22 +63,22 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
             call utmess('F', 'ALGORITH2_22')
         endif
 !
-        goto 9999
+        goto 999
     endif
 !
 !       BOUCLE SUR LES VECTEURS DE REFERENCE
 !
-    do 10 j = 1, nbbas
+    do j = 1, nbbas
 !
 !   MULTIPLICATION ET CALCUL PRODUIT ET NORMES
 !
         cprod=dcmplx(0.d0,0.d0)
         cmodu=dcmplx(0.d0,0.d0)
-        do 20 il = 1, ndim
+        do il = 1, ndim
             ctrav1=dcmplx(0.d0,0.d0)
             ctrav2=dcmplx(0.d0,0.d0)
             ildiag = il*(il-1)/2+1
-            do 30 ic = 1, ndim
+            do ic = 1, ndim
                 icdiag=ic*(ic-1)/2+1
                 if (ic .ge. il) then
                     ctrav1=ctrav1+(ca(icdiag+ic-il)*cvec(ic))
@@ -89,22 +88,22 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
                     ctrav2=ctrav2+(dconjg(ca(ildiag+il-ic))*cbas(ic,j)&
                     )
                 endif
-30          continue
+            end do
             call zconju(cbas(il, j), prea, pima)
             cconj=dcmplx(prea,-pima)
             cprod=cprod+(ctrav1*cconj)
             cmodu=cmodu+(ctrav2*cconj)
-20      continue
+        end do
 !
 !
 !
 !   ORTHOGONALISATION DE SCHMIT (LE POTE DE GRAM)
 !
-        do 40 i = 1, ndim
+        do i = 1, ndim
             cvec(i)=cvec(i)-(cprod*cbas(i,j)/cmodu)
-40      continue
+        end do
 !
-10  end do
+    end do
 !
     call cvnorm(ca, cvec, ndim, iretou)
     if (iretou .eq. 1) then
@@ -113,5 +112,5 @@ subroutine cschmi(ca, ndim, cvec, cbas, ndimax,&
 !
 !
 !
-9999  continue
+999 continue
 end subroutine

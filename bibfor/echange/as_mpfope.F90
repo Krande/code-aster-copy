@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,19 +15,18 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-subroutine as_mpfope(fid, nom, acces, comm, cret)
-! person_in_charge: nicolas.sellenet at edf.fr
 !
+! aslint: disable=W0104
+subroutine as_mpfope(fid, nom, acces, comm, cret)
 !
     implicit none
+#include "asterf.h"
 #include "asterf_types.h"
 #include "mpif.h"
-#include "asterf.h"
-#include "asterfort/utmess.h"
 #include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "med/mpfope.h"
-    med_idt, intent(out) :: fid
+    med_idt, intent(in) :: fid
     character(len=*), intent(in) :: nom
     aster_int, intent(in) :: acces
     aster_int, intent(in) :: comm
@@ -41,17 +40,19 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
     med_int :: acces4, comm4, info4, cret4
 #endif
     cret = 0
-    if (cret.eq.0) then
+    if (cret .eq. 0) then
 #ifdef ASTER_HAVE_MPI
 #if !ASTER_MED_SAME_INT_IDT
         acces4 = to_med_int(acces)
         comm4 = to_med_int(comm)
         info4 = 0
-        call mpfope(fidm, nom, acces4, comm4, info4, cret4)
+        call mpfope(fidm, nom, acces4, comm4, info4,&
+                    cret4)
         fid = to_med_idt(fidm)
         cret = to_aster_int(cret4)
 #else
-        call mpfope(fid, nom, acces, comm, 0, cret)
+        call mpfope(fid, nom, acces, comm, 0,&
+                    cret)
 #endif
 #endif
     endif

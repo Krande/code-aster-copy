@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dbudef(depl, b, d, nbsig, nbinco,&
                   sigma)
 !.======================================================================
@@ -41,6 +41,7 @@ subroutine dbudef(depl, b, d, nbsig, nbinco,&
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
+    integer :: nbsig
     real(kind=8) :: depl(1), b(nbsig, 1), d(nbsig, 1), sigma(1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: eps(6)
@@ -49,7 +50,7 @@ subroutine dbudef(depl, b, d, nbsig, nbinco,&
 ! --- INITIALISATION :
 !     ----------------
 !-----------------------------------------------------------------------
-    integer :: i, j, nbinco, nbsig
+    integer :: i, j, nbinco
     real(kind=8) :: s, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0
@@ -57,29 +58,29 @@ subroutine dbudef(depl, b, d, nbsig, nbinco,&
 ! --- CALCUL DU VECTEUR DES COMPOSANTES DU TENSEUR DES DEFORMATIONS
 ! --- AU POINT D'INTEGRATION COURANT
 !      -----------------------------
-    do 10 i = 1, nbsig
+    do i = 1, nbsig
 !
         s = zero
 !
-        do 20 j = 1, nbinco
+        do j = 1, nbinco
             s = s + depl(j)*b(i,j)
-20      continue
+        end do
 !
         eps(i) = s
-10  end do
+    end do
 !
 ! --- VECTEUR DES CONTRAINTES
 !      ----------------------
-    do 30 i = 1, nbsig
+    do i = 1, nbsig
 !
         s = zero
 !
-        do 40 j = 1, nbsig
+        do j = 1, nbsig
             s = s + eps(j)*d(i,j)
-40      continue
+        end do
 !
         sigma(i) = s
-30  end do
+    end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

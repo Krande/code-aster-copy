@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine stokma(amat, nlig, ncol, nmat, amatst)
 !
 ! FONCTION: COPIE LA MATRICE AMAT(I,J), A NLIG LIGNES ET NCOL COLONNES,
@@ -29,13 +29,14 @@ subroutine stokma(amat, nlig, ncol, nmat, amatst)
 !     OUT : AMATST    : TABLEAU DIMENSIONNE 9,6,6
 ! ------------------------------------------------------------------
     implicit none
+    integer :: ncol, nlig, nmat
     real(kind=8) :: amat(nlig, ncol), amatst(9, 6, 6)
-    integer :: i, j, ncol, nlig, nmat
+    integer :: i, j
 !-----------------------------------------------------------------------
 !
-    do 2 j = 1, ncol
-        do 1 i = 1, nlig
+    do j = 1, ncol
+        do i = 1, nlig
             amatst(i,j,nmat) = amat(i,j)
- 1      end do
- 2  end do
+        end do
+    end do
 end subroutine

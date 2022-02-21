@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine facint(nbpas, dim, longh, vec1, vec2,&
                   long, s, r, d, u,&
                   v, w)
@@ -34,46 +34,45 @@ subroutine facint(nbpas, dim, longh, vec1, vec2,&
 #include "jeveux.h"
 #include "asterfort/diaghr.h"
 #include "asterfort/utmess.h"
-    integer :: dim
+    integer :: dim, long, longh
     complex(kind=8) :: s(dim, dim), r(dim, dim), u(*), w(*)
     real(kind=8) :: d(dim), vec1(long), vec2(longh), v(*)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ico, icomp, ix, iy, j, k
-    integer :: l, long, longh, nbpas, nbpt1, nbpt2
+    integer :: l, nbpas, nbpt1, nbpt2
     real(kind=8) :: ai, ar, az, bz, si, sr, uu
 !
 !-----------------------------------------------------------------------
     nbpt1 = nbpas
     nbpt2 = nbpt1*2
-    do 10 l = 1, nbpt1
+    do l = 1, nbpt1
         icomp = 0
-        do 20 j = 1, dim
-            do 30 i = 1, dim
-                if (i .le. j) then
-                    icomp = icomp + 1
-                    ix = l + (icomp-1)*nbpt2 + nbpt1
-                    iy = ix + nbpt1
-                    s(i,j) = dcmplx(vec1(ix),vec1(iy))
-                    if (i .ne. j) then
-                        s(j,i) = dconjg (s(i,j))
-                    endif
+        do j = 1, dim
+            do i = 1, j
+                icomp = icomp + 1
+                ix = l + (icomp-1)*nbpt2 + nbpt1
+                iy = ix + nbpt1
+                s(i,j) = dcmplx(vec1(ix),vec1(iy))
+                if (i .ne. j) then
+                    s(j,i) = dconjg (s(i,j))
                 endif
-30          continue
-20      continue
+            end do
+        end do
         sr = dble(s(1,1))
         si = dimag(s(1,1))
         if (sr .eq. 0.d0 .and. si .eq. 0.d0) then
             r(1,1) = s(1,1)
-            do 40 i = 1, dim
-                do 40 j = 1, dim
+            do i = 1, dim
+                do j = 1, dim
                     sr = dble(s(i,j))
                     si = dimag(s(i,j))
                     if (sr .ne. 0.d0 .or. si .ne. 0.d0) then
                         call utmess('F', 'ALGORITH3_60')
                     endif
                     r(i,j) = s(i,j)
-40              continue
+                end do
+            end do
         else
 !
 !     --- FACTORISATION ---
@@ -81,38 +80,38 @@ subroutine facint(nbpas, dim, longh, vec1, vec2,&
             call diaghr(dim, s, dim, d, r,&
                         dim, u, v, w)
 !
-            do 200 j = 1, dim
+            do j = 1, dim
                 uu = 0.d0
-                do 210 i = 1, dim
+                do i = 1, dim
                     ar = dble(r(i,j))
                     ai =dimag(r(i,j))
                     uu = ar*ar + ai*ai + uu
-210              continue
+                end do
                 uu = sqrt(uu)
-                do 220 k = 1, dim
+                do k = 1, dim
                     az = dble(r(k,j))/uu
                     bz =dimag(r(k,j))/uu
                     r(k,j) = dcmplx(az,bz)
-220              continue
-200          continue
-            do 230 i = 1, dim
-                do 240 j = 1, dim
+                end do
+            end do
+            do i = 1, dim
+                do j = 1, dim
                     if (d(j) .lt. 0.d0) then
                         d(j) = 0.d0
                     endif
                     r(i,j)=r(i,j) * sqrt(d(j))
-240              continue
-230          continue
+                end do
+            end do
         endif
         ico = 0
-        do 100 j = 1, dim
-            do 110 i = 1, dim
+        do j = 1, dim
+            do i = 1, dim
                 ico = ico +1
                 ix = l + (ico-1)*nbpt2 + nbpt1
                 iy = ix + nbpt1
                 vec2(ix) = dble(r(i,j))
                 vec2(iy) =dimag(r(i,j))
-110          continue
-100      continue
-10  end do
+            end do
+        end do
+    end do
 end subroutine

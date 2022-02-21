@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,13 +15,13 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine wprest(a, x, n, m, y)
     implicit none
 !
+    integer :: n, m
     complex(kind=8) :: y(*)
     real(kind=8) :: a(n, *), x(*)
-    integer :: n, m
 !
 !     RESTITUTION DES VECTEUR PROPRES DU PB QUADRATIQUE
 !     IE :         Y := A*X
@@ -40,14 +40,14 @@ subroutine wprest(a, x, n, m, y)
     integer :: k
 !-----------------------------------------------------------------------
     czero = dcmplx(0.0d0,0.0d0)
-    do 100, i = 1, n, 1
-    cval = czero
-    k = 1
-    do 110, j = 1, m, 1
-    cval = cval + a(i,j)*dcmplx(x(k),x(k+1))
-    k = k+2
-110  continue
-    y(i) = cval
-    100 end do
+    do i = 1, n, 1
+        cval = czero
+        k = 1
+        do j = 1, m, 1
+            cval = cval + a(i,j)*dcmplx(x(k),x(k+1))
+            k = k+2
+        end do
+        y(i) = cval
+    end do
 !
 end subroutine

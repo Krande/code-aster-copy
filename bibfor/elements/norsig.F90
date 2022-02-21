@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,9 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 function norsig(sigma, nbsig)
     implicit none
+    integer :: nbsig
     real(kind=8) :: norsig
     real(kind=8) :: sigma(nbsig)
 !     BUT           : CALCUL DE LA NORME DU TENSEUR DE CONTRAINTES
@@ -30,7 +31,7 @@ function norsig(sigma, nbsig)
     real(kind=8) :: norsi2
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbsig
+    integer :: i
     real(kind=8) :: deux, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0
@@ -38,13 +39,13 @@ function norsig(sigma, nbsig)
     norsig = zero
     norsi2 = zero
 !
-    do 10 i = 1, 3
+    do i = 1, 3
         norsi2 = norsi2 + sigma(i)*sigma(i)
-10  end do
+    end do
 !
-    do 20 i = 4, nbsig
+    do i = 4, nbsig
         norsi2 = norsi2 + deux*sigma(i)*sigma(i)
-20  end do
+    end do
 !
     norsig = sqrt(norsi2)
 !

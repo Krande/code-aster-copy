@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,17 +15,17 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pctrii(tab, ltab)
     implicit none
-    integer :: tab(ltab)
+    integer :: ltab, tab(ltab)
 !
 !-----------------------------------------------------------------------
-    integer :: i, indic, ip1, itab, k, ltab
+    integer :: i, indic, ip1, itab, k
 !-----------------------------------------------------------------------
-    do 20 k = ltab, 2, -1
+    do k = ltab, 2, -1
         indic = 0
-        do 10 i = 1, k - 1
+        do i = 1, k - 1
             ip1 = i + 1
             if (tab(i) .gt. tab(ip1)) then
                 indic = 1
@@ -33,8 +33,8 @@ subroutine pctrii(tab, ltab)
                 tab(i) = tab(ip1)
                 tab(ip1) = itab
             endif
-10      continue
+        end do
         if (indic .eq. 0) goto 30
-20  end do
-30  continue
+    end do
+ 30 continue
 end subroutine

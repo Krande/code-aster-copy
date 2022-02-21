@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                   n2, i, j, fac, npar,&
                   nsym)
@@ -44,7 +44,9 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !
 !-----------------------------------------------------------------------
 !
+    integer :: n1, n2, nb1, nb2, i, j, npar, nsym
     real(kind=8) :: bmat(n1, n2)
+    real(kind=8) :: fac
     complex(kind=8) :: cmat(*)
 !
 !-----------------------------------------------------------------------
@@ -52,11 +54,9 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !   CAS SANS TRANSPOSITION
 !
 !-----------------------------------------------------------------------
-    integer :: i, icol, ideb, ifin, ii, iideb, iifin
-    integer :: ilig, iterme, j, jdeb, jfin, jj, jjdeb
-    integer :: jjfin, n1, n2, nb1, nb2, npar, nsym
+    integer :: icol, ideb, ifin, ii, iideb, iifin, jjfin
+    integer :: ilig, iterme, jdeb, jfin, jj, jjdeb
 !
-    real(kind=8) :: fac
 !-----------------------------------------------------------------------
     if (nsym .eq. 1) then
 !
@@ -65,7 +65,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
         if ((j+n2-1) .gt. nb2) then
             call utmess('F', 'ALGORITH11_88')
         endif
-        if (jfin .lt. jdeb) goto 9999
+        if (jfin .lt. jdeb) goto 999
         jjdeb=jdeb-j+1
         jjfin=jfin-j+1
 !
@@ -74,7 +74,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
             call utmess('F', 'ALGORITH11_88')
         endif
         ifin=min(i+n1-1,nb1)
-        if (ifin .lt. ideb) goto 9999
+        if (ifin .lt. ideb) goto 999
         iideb=ideb-i+1
         iifin=ifin-i+1
 !
@@ -82,8 +82,8 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !
         if (npar .eq. 1) then
 !
-            do 10 ii = iideb, iifin
-                do 20 jj = jjdeb, jjfin
+            do ii = iideb, iifin
+                do jj = jjdeb, jjfin
                     ilig = i+ii-1
                     icol = j+jj-1
                     if (icol .ge. ilig) then
@@ -91,15 +91,15 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                         cmat(iterme)=cmat(iterme)+dcmplx(bmat(ii,jj)*&
                         fac,0.d0)
                     endif
-20              continue
-10          continue
+                end do
+            end do
 !
         else
 !
 !    PARTIE IMAGINAIRE
 !
-            do 30 ii = iideb, iifin
-                do 40 jj = jjdeb, jjfin
+            do ii = iideb, iifin
+                do jj = jjdeb, jjfin
                     ilig = i+ii-1
                     icol = j+jj-1
                     if (icol .ge. ilig) then
@@ -107,8 +107,8 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                         cmat(iterme)=cmat(iterme)+dcmplx(0.d0,bmat(ii,&
                         jj)*fac)
                     endif
-40              continue
-30          continue
+                end do
+            end do
 !
         endif
     endif
@@ -123,7 +123,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
         if ((j+n1-1) .gt. nb2) then
             call utmess('F', 'ALGORITH11_90')
         endif
-        if (jfin .lt. jdeb) goto 9999
+        if (jfin .lt. jdeb) goto 999
         jjdeb=jdeb-j+1
         jjfin=jfin-j+1
 !
@@ -132,7 +132,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
         if ((i+n2-1) .gt. nb1) then
             call utmess('F', 'ALGORITH11_88')
         endif
-        if (ifin .lt. ideb) goto 9999
+        if (ifin .lt. ideb) goto 999
         iideb=ideb-i+1
         iifin=ifin-i+1
 !
@@ -140,8 +140,8 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
 !
         if (npar .eq. 1) then
 !
-            do 50 ii = iideb, iifin
-                do 60 jj = jjdeb, jjfin
+            do ii = iideb, iifin
+                do jj = jjdeb, jjfin
                     ilig = i+ii-1
                     icol = j+jj-1
                     if (icol .ge. ilig) then
@@ -149,15 +149,15 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                         cmat(iterme)=cmat(iterme)+dcmplx(bmat(jj,ii)*&
                         fac,0.d0)
                     endif
-60              continue
-50          continue
+                end do
+            end do
 !
         else
 !
 !    PARTIE IMAGINAIRE
 !
-            do 70 ii = iideb, iifin
-                do 80 jj = jjdeb, jjfin
+            do ii = iideb, iifin
+                do jj = jjdeb, jjfin
                     ilig = i+ii-1
                     icol = j+jj-1
                     if (icol .ge. ilig) then
@@ -165,12 +165,12 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                         cmat(iterme)=cmat(iterme)+dcmplx(0.d0,bmat(jj,&
                         ii)*fac)
                     endif
-80              continue
-70          continue
+                end do
+            end do
 !
         endif
     endif
 !
 !
-9999  continue
+999 continue
 end subroutine

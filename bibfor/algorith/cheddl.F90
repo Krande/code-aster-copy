@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine cheddl(ideeq, neq, ino, ityp, iran,&
                   nbran)
     implicit none
@@ -69,29 +69,29 @@ subroutine cheddl(ideeq, neq, ino, ityp, iran,&
 !
 !-----------------------------------------------------------------------
 !
+    integer :: nbran, neq
     integer :: ideeq(2, neq), iran(nbran)
     integer :: i, icomp, ino, inobis, itybis, ityp, k
-    integer :: nbran, neq
 !-----------------------------------------------------------------------
 !
 !    MISE A ZERO PREALABLE DES RANGS
 !
-    do 20 i = 1, nbran
+    do i = 1, nbran
         iran(i)=0
-20  end do
+    end do
 !
 !
     i=0
     icomp=0
-10  continue
+ 10 continue
     i=i+1
     inobis=ideeq(1,i)
     itybis=ideeq(2,i)
     if (inobis .eq. ino .and. itybis .eq. ityp) then
         icomp=icomp+1
-        do 30 k = icomp, nbran
+        do k = icomp, nbran
             iran(k)=i
-30      continue
+        end do
     endif
     if (i .lt. neq .and. icomp .lt. nbran) goto 10
 !

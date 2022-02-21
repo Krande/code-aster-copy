@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine dstrig(nomte, xyzl, option, pgl, rig,&
                   ener)
     implicit none
@@ -127,9 +127,9 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     call utbtab('ZERO', 3, 6, dm, bm,&
                 xab1, memb)
     aire = carat3(8)
-    do 10 k = 1, 36
+    do k = 1, 36
         memb(k) = memb(k)*aire
- 10 end do
+    end do
 !
 !     ------------------------------------------------------------------
 !     CALCUL DES MATRICES DE RIGIDITE DE L'ELEMENT EN FLEXION ET
@@ -170,15 +170,16 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
     call utbtab('ZERO', 2, 3, dci, bca,&
                 xab3, kaa)
 !
-    do 20 k = 1, 81
+    do k = 1, 81
         flex(k) = 0.d0
- 20 end do
-    do 30 i = 1, 6
-        do 30 j = 1, 9
+    end do
+    do i = 1, 6
+        do j = 1, 9
             mefl(i,j) = 0.d0
- 30     continue
+        end do
+    end do
 !
-    do 170 int = 1, npg
+    do int = 1, npg
 !
 ! ---   COORDONNEES DU POINT D'INTEGRATION COURANT :
 !       ------------------------------------------
@@ -232,35 +233,35 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
 ! ---   CALCUL DE LA SOMME KF22 + KAA :
 !       -----------------------------
-        do 40 k = 1, 9
+        do k = 1, 9
             ka(k) = kf22(k) + kaa(k) + kfc21(k) + kfc21(perm(k))
- 40     continue
+        end do
 !
 ! ---   CALCUL DU PRODUIT PBT.KA.PB :
 !       ---------------------------
         call utbtab('ZERO', 3, 9, ka, pb,&
                     xab2, flexi)
-        do 50 k1 = 1, 81
+        do k1 = 1, 81
             kfb(k1) = 0.d0
- 50     continue
-        do 80 i = 1, 9
-            do 70 j = 1, 9
+        end do
+        do i = 1, 9
+            do j = 1, 9
                 k1 = 9* (j-1) + i
                 k2 = 9* (i-1) + j
-                do 60 k = 1, 3
+                do k = 1, 3
                     kfb(k1) = kfb(k1) + (kf12(i,k)+kfc11(i,k))*pb(k,j)
- 60             continue
+                end do
                 kfc(k2) = kfb(k1)
- 70         continue
- 80     continue
-        do 90 k = 1, 81
+            end do
+        end do
+        do k = 1, 81
             flexi(k) = flexi(k) + kf11(k) + kfb(k) + kfc(k)
- 90     continue
+        end do
 !
         wgt = zr(ipoids+int-1)*carat3(7)
-        do 100 k = 1, 81
+        do k = 1, 81
             flex(k) = flex(k) + flexi(k)*wgt
-100     continue
+        end do
 !
         if (coupmf .or. exce) then
 !
@@ -294,9 +295,9 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 ! ---     AJOUT DE CES NOUVELLES RIGIDITES DE MEMBRANE A LA
 ! ---     RIGIDITE DE MEMBRANE CLASSIQUE :
 !         -----------------------------
-            do 110 i = 1, 36
+            do i = 1, 36
                 memb(i) = memb(i) + (memexc(i)+kmf12a(i)+kmf12a(perm2( i)))*wgt
-110         continue
+            end do
 !
         endif
 !
@@ -309,9 +310,7 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 !
         if (coupmf .or. exce) then
 !
-            do 120 k = 1, 54
-                kmf(k,1) = 0.d0
-120         continue
+            kmf = 0.d0
 !
             if (exce) then
 !
@@ -326,22 +325,23 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
 ! ---     AJOUT DANS LA RIGIDITE DE COUPLAGE MEMBRANE-FLEXION
 ! ---     DES TERMES [PM]T*[KF12]T + [KMF12]*[PB]   :
 !         --------------------------------------
-            do 130 i = 1, 9
-                do 140 j = 1, 6
-                    do 150 k = 1, 3
+            do i = 1, 9
+                do j = 1, 6
+                    do k = 1, 3
                         kmf(j,i) = kmf(j,i) + (kmf12(j,k)+kmc(j,k))* pb(k,i) + pm(k,j)*kf12(i,k)
-150                 continue
+                    end do
                     k = 6* (i-1) + j
                     mefli(j,i) = kmf11(j,i) + kmf(j,i)
-140             continue
-130         continue
-            do 160 i = 1, 6
-                do 160 j = 1, 9
+                end do
+            end do
+            do i = 1, 6
+                do j = 1, 9
                     mefl(i,j) = mefl(i,j) + mefli(i,j)*wgt
-160             continue
+                end do
+            end do
         endif
 !
-170 end do
+    end do
 !
     if (option .eq. 'RIGI_MECA') then
         call dxtloc(flex, memb, mefl, ctor, rig)
@@ -353,9 +353,9 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig,&
                     depl, ener)
         call bsthpl(nomte, bsigth, indith)
         if (indith) then
-            do 180 i = 1, 18
+            do i = 1, 18
                 enerth = enerth + depl(i)*bsigth(i)
-180         continue
+            end do
             ener(1) = ener(1) - enerth
         endif
     endif

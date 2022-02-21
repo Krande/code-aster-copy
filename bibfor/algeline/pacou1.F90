@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine pacou1(x, fvec, df, work, eps,&
                   vecr1, vecr2, typflu, vecr3, amor,&
                   masg, vecr4, vecr5, veci1, vg,&
@@ -25,16 +25,16 @@ subroutine pacou1(x, fvec, df, work, eps,&
 ! ---------
 #include "jeveux.h"
 #include "asterfort/pacouf.h"
+    integer :: i, indic, j, n, nbm, nmode
+    integer :: veci1(*)
     real(kind=8) :: x(*), fvec(*), df(n, *), work(*), eps
     real(kind=8) :: amor(*), vg, masg(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
-    integer :: veci1(*)
     character(len=8) :: typflu
-    integer :: i, indic, j, n, nbm, nmode
     real(kind=8) :: h, temp
 ! ---------------------------------------------------------------------
 !
-    do 12 j = 1, n
+    do j = 1, n
         temp = x(j)
         h = eps*abs(temp)
         if (abs(h) .le. 1.0d-30) h = eps
@@ -44,9 +44,9 @@ subroutine pacou1(x, fvec, df, work, eps,&
                     vecr3, amor, masg, vecr4, vecr5,&
                     veci1, vg, indic, nbm, nmode)
         x(j) = temp
-        do 11 i = 1, n
+        do i = 1, n
             df(i,j) = (work(i)-fvec(i))/h
-11      continue
-12  end do
+        end do
+    end do
 !
 end subroutine
