@@ -16,198 +16,497 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine cafelu(typco, alphacc, effm, effn, ht, enrobs,&
-                  enrobi, facier, fbeton, gammas, gammac,&
-                  clacier, uc, dnsinf, dnssup, ierr)
+subroutine cafelu(typco, alphacc, effm, effn, ht, bw,&
+                  enrobi, enrobs, facier, fbeton, gammas, gammac,&
+                  clacier, eys, typdiag, ferrcomp, ferrsyme, slsyme, uc,&
+                  dnsinf, dnssup, sigmsi, sigmss, ecinf, ecsup,&
+                  alpha, pivot, etat, ierr)
 !______________________________________________________________________
 !
-!     CC_ELU
+!      CAFELU
+
+!      CALCUL DES ACIERS EN FLEXION COMPOSEE A L'ELU
+!      CRITERE = LIMITATION DES DEFORMATIONS
 !
-!      DETERMINATION DES ARMATURES EN FLEXION COMPOSEE, CONDITIONS ELU
-!
-!      I TYPCO    CODIFICATION UTILISEE (1 = BAEL91, 2 = EC2)
-!      I ALPHACC  COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                 DE CALCUL DU BETON EN COMPRESSION
-!      I EFFM     MOMENT DE FLEXION
-!      I EFFN     EFFORT NORMAL
-!      I HT       EPAISSEUR DE LA COQUE
-!      I ENROBS   ENROBAGE DES ARMATURES SUPERIEURES
-!      I ENROBI   ENROBAGE DES ARMATURES INFERIEURES
-!      I FACIER   LIMITE D'ELASTICITE DES ACIERS (CONTRAINTE)
-!      I FBETON   RESISTANCE EN COMPRESSION DU BETON (CONTRAINTE)
-!      I GAMMAS   COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                 DE CALCUL DES ACIERS
-!      I GAMMAC   COEFFICIENT DE SECURITE SUR LA RESISTANCE
-!                 DE CALCUL DU BETON
-!      I CLACIER  CLASSE DE DUCTILITE DES ACIERS (UTILISE POUR EC2) :
+!      I TYPCO     CODIFICATION UTILISEE (1 = BAEL91, 2 = EC2)
+!      I ALPHACC   COEFFICIENT DE SECURITE SUR LA RESISTANCE
+!                  DE CALCUL DU BETON EN COMPRESSION
+!      I EFFM      MOMENT DE FLEXION
+!      I EFFN      EFFORT NORMAL
+!      I HT        HAUTEUR DE LA SECTION
+!      I BW        LARGEUR DE LA SECTION
+!      I ENROBI    ENROBAGE DES ARMATURES INFERIEURES
+!      I ENROBS    ENROBAGE DES ARMATURES SUPERIEURES
+!      I FACIER    LIMITE D'ELASTICITE DES ACIERS (CONTRAINTE)
+!      I FBETON    RESISTANCE EN COMPRESSION DU BETON (CONTRAINTE)
+!      I GAMMAS    COEFFICIENT DE SECURITE SUR LA RESISTANCE
+!                  DE CALCUL DES ACIERS
+!      I GAMMAC    COEFFICIENT DE SECURITE SUR LA RESISTANCE
+!                  DE CALCUL DU BETON
+!      I CLACIER   CLASSE DE DUCTILITE DES ACIERS (UTILISE POUR EC2) :
 !                     CLACIER = 0 ACIER PEU DUCTILE (CLASSE A)
 !                     CLACIER = 1 ACIER MOYENNEMENT DUCTILE (CLASSE B)
 !                     CLACIER = 3 ACIER FORTEMENT DUCTILE (CLASSE C)
-!      I ES       MODULE D'YOUNG DE L'ACIER
-!      I UC       UNITE DES CONTRAINTES :
+!      I EYS       MODULE D'YOUNG DE L'ACIER
+!      I TYPDIAG   TYPE DE DIAGRAMME UTILISÉ POUR L'ACIER
+!                     TYPDIAG = 1 ("B1" ==> PALIER INCLINÉ)
+!                     TYPDIAG = 2 ("B2" ==> PALIER HORIZONTAL)
+!      I FERRCOMP  PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
+!                     FERRCOMP = 0 (NON)
+!                     FERRCOMP = 1 (OUI)
+!      I FERRSYME  FERRAILLAGE SYMETRIQUE?
+!                     FERRSYME = 0 (NON)
+!                     FERRSYME = 1 (OUI)
+!      I SLSYME    SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE 
+!      I UC        UNITE DES CONTRAINTES :
 !                     UC = 0 CONTRAINTES EN Pa
 !                     UC = 1 CONTRAINTES EN MPa
 !
-!      O DNSINF   DENSITE DE L'ACIER INFERIEUR
-!      O DNSSUP   DENSITE DE L'ACIER SUPERIEUR
-!      O IERR     CODE RETOUR (0 = OK)
+!      O DNSINF    DENSITE DE L'ACIER INFERIEUR
+!      O DNSSUP    DENSITE DE L'ACIER SUPERIEUR
+!      O SIGMSI    CONTRAINTE AU NIVEAU DE L'ACIER INFERIEUR
+!      O SIGMSS    CONTRAINTE AU NIVEAU DE L'ACIER SUPERIEUR
+!      O ECINF     DEFORMATION DU BETON EN FIBRE INFÉRIEURE
+!      O ECSUP     DEFORMATION DU BETON EN FIBRE SUPERIEURE
+!      O ALPHA     COEFFICIENT DE PROFONDEUR DE L'AN
+!      O PIVOT     PIVOT DE FONCTIONNEMENT DE LA SECTION
+!      O ETAT      ETAT DE FONCTIONNEMENT DE LA SECTION
+!      O IERR      CODE RETOUR (0 = OK)
 !
 !______________________________________________________________________
 !
-!
-    implicit none
-!
-!
-!
+implicit none
+#include "asterfort/cafeluiter.h"
 !
     integer :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: effm
     real(kind=8) :: effn
     real(kind=8) :: ht
-    real(kind=8) :: enrobs
+    real(kind=8) :: bw
     real(kind=8) :: enrobi
+    real(kind=8) :: enrobs
     real(kind=8) :: facier
     real(kind=8) :: fbeton
     real(kind=8) :: gammas
     real(kind=8) :: gammac
     integer :: clacier
+    real(kind=8) :: eys
+    integer :: typdiag
+    integer :: ferrcomp
+    integer :: ferrsyme
+    real(kind=8) :: slsyme
     integer :: uc
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
+    real(kind=8) :: sigmsi
+    real(kind=8) :: sigmss
+    real(kind=8) :: ecinf
+    real(kind=8) :: ecsup
+    real(kind=8) :: alpha
+    integer :: pivot
+    integer :: etat
     integer :: ierr
-!
-!
-!       ENROBAGE A CONSIDERER (C_SUP OU C_INF)
-    real(kind=8) :: enrob
-!       HAUTEUR UTILE (H/2 - C)
-    real(kind=8) :: hu
-!       BRAS DE LEVIER PAR RAPPORT A LA FIBRE SUPERIEURE
-    real(kind=8) :: d
-!       COEFFICIENT LIE A L'UNITE CHOISIE (Pa OU MPa)
-    real(kind=8) :: unite_pa, unite_m
-!       MOMENTS REDUITS
-    real(kind=8) :: m_inf, mu_inf
-!       PARAMETRES DU DIAGRAMME RECTANGULAIRE SIMPLIFIE
-    real(kind=8) :: eta, lambda
-!       DEFORMATION DE CONCEPTION DES ACIERS QUI CONDITIONNE LE PIVOT A
-!       (REPRESENTE EPSI_UD = 0.9*EPSI_UK POUR L'EC2)
-    real(kind=8) :: piv_a
-!       DEFORMATION EN % DE CONCEPTION EN COMPRESSION DU BETON QUI
-!       CONDITIONNE LE PIVOT B (REPRESENTE EPSI_CU3 POUR L'EC2)
-    real(kind=8) :: piv_b
-!       CONTRAINTE DE CONCEPTION DES ACIERS
-    real(kind=8) :: sigm_acier
-!       CONTRAINTE DE CONCEPTION DE COMPRESSION DU BETON
-    real(kind=8) :: sigm_beton
-!       RATIO DE HAUTEUR COMPRIMEE DE LA SECTION AU PIVOT A
-    real(kind=8) :: alpha_ab
-!       MOMENT REDUIT LIMITE AU PIVOT C
-    real(kind=8) :: mu_bc
-!       VARIABLES DE CALCUL
-    real(kind=8) :: alpha, N, force
-!
-!
+
+!-----------------------------------------------------------------------
+!!!!VARIABLES DE CALCUL
+!-----------------------------------------------------------------------
+
+    real(kind=8) :: enrob,d,d0,fctm,fctd
+    real(kind=8) :: unite_pa
+    real(kind=8) :: fyd,fcd,nC,ktys,xC,yC,xCt,D00,m1,m2
+    real(kind=8) :: Mu,MccMAX,NccMAX,NccMIN,MuC,NuC
+    real(kind=8) :: MuBC,MuBC_sup,MuBC_inf,MuAB,MuR,MuLIM
+    real(kind=8) :: eta,lambda,Esu,Euk,Ecu,Ec2,Ese
+    real(kind=8) :: Xsup
+    real(kind=8) :: piv_a,piv_b,piv_c,alphaAB,alphaR,alphaBC
+    real(kind=8) :: V,COEF,VAR_COEF
+    logical :: COND_ITER, COND_NS
+    real(kind=8) :: Calc,DELTA
+    real(kind=8) :: Ec,EcTEND,EsCOMP,EsTEND
+    real(kind=8) :: SigmAsCOMP,SigmAsTEND,AsCOMP,AsTEND
+    real(kind=8) :: a00,b00,c00,alpha_1,alpha_2
+
+    !Significations des pointeurs :
+    !PIVOT = 0 ==> "?"
+    !PIVOT = 1 ==> "A"
+    !PIVOT = 2 ==> "B"
+    !PIVOT = 3 ==> "C"
+    
+    !ETAT = 0 ==> "EQUILIBRE IMPOSSIBLE"   
+    !ETAT = 1 ==> "BETON RESISTANT SEUL"
+    !ETAT = 2 ==> "TRACTION PURE"
+    !ETAT = 3 ==> "PARTIELLEMENT COMPRIMEE"
+    !ETAT = 4 ==> "ENTIEREMENT TENDUE"
+    !ETAT = 5 ==> "PARTIELLEMENT COMPRIMEE AVEC ACIER DE COMPRESSION"
+    !ETAT = 6 ==> "ENTIEREMENT COMPRIMEE"
+    !ETAT = 7 ==> "COMPRESSION PURE"
+
 !   INITIALISATION DU CODE RETOUR
     ierr = 0
-!   INITIALISATION DES DENSITES DE FERRAILLAGE
-    dnsinf = 0d0
-    dnssup = 0d0
-!
-!   CALCULS PRELIMINAIRES
-!
+    etat = 0
+    pivot = 0
+    alpha = -1000
+    dnssup = -1
+    dnsinf = -1
+    sigmss = -1
+    sigmsi = -1
+    ecsup = -1
+    ecinf = -1
+    
+!   CONVENTION D'ORIENTATION
+
     if (effm.ge.0.) then
         enrob = enrobi
+        d = ht - enrob
+        d0 = enrobs
     else
         enrob = enrobs
+        d = ht - enrob
+        d0 = enrobi
     endif
-    hu = 0.5*ht - enrob
-    d = ht - enrob
-    m_inf = abs(effm) - effn*hu
+
     if (typco.eq.1) then
 !       CALCUL DES PARAMETRES POUR CODIFICATION = 'BAEL91'
+       
         eta = 1.d0
         lambda = 0.8
         piv_a = 10.0E-3
         piv_b = 3.5E-3
-        sigm_acier = facier/gammas
-        sigm_beton = fbeton*alphacc/gammac
-        unite_m = 1.
+        piv_c = 2.0E-3
+        nC = 2
+        fyd = facier/gammas
+        fcd = fbeton*alphacc/gammac
+
     else if (typco.eq.2) then
 !       CALCUL DES PARAMETRES POUR CODIFICATION = 'EC2'
+
         if (uc.eq.0) then
-            unite_pa = 1.e6
-            unite_m = 1.
-        else if (uc.eq.1) then
-            unite_pa = 1.
-            unite_m = 1.e-3
+        unite_pa = 1.e-6
+        elseif (uc.eq.1) then
+        unite_pa = 1.
         endif
-        eta = min(1.d0,1.d0-(fbeton-(50.d0*unite_pa))/(200.d0*unite_pa))
-        lambda = min(0.8,0.8-(fbeton-(50.d0*unite_pa))/(400.d0*unite_pa))
+        eta = min(1.d0,1.d0-(fbeton*unite_pa-50.d0)/200.d0)
+        lambda = min(0.8,0.8-(fbeton*unite_pa-50.d0)/400.d0)
         if (clacier.eq.0) then
-            piv_a = 0.9*2.5e-2
+        piv_a = 0.9*2.5e-2
+        ktys = 1.05
         else if (clacier.eq.1) then
-            piv_a = 0.9*5.e-2
+        piv_a = 0.9*5.e-2
+        ktys = 1.08
         else
-            piv_a = 0.9*7.5e-2
+        piv_a = 0.9*7.5e-2
+        ktys = 1.15
+        endif 
+        piv_b = min(3.5E-3,0.26*0.01+3.5*0.01*(((90.d0-fbeton*unite_pa)/100.d0)**4))
+        piv_c = 2.0E-3
+        if ((fbeton*unite_pa).ge.(50.d0)) then
+        piv_c = 0.2*0.01+0.0085*0.01*((fbeton*unite_pa - 50.d0)**(0.53))
         endif
-        piv_b = min(3.5E-3,0.26+3.5*0.01*(((90.d0*unite_pa-fbeton)/100.d0)**4))
-        sigm_acier = facier/gammas
-        sigm_beton = fbeton*alphacc/gammac
+        nC = min(2.0,1.4+23.4*(((90.d0-fbeton*unite_pa)/100.d0)**4))
+        fyd = facier/gammas
+        fcd = fbeton*alphacc/gammac
+        if ((fbeton*unite_pa).le.50) then
+        fctm = 0.7*0.3*(fbeton**(2./3.))
+        else
+        fctm = 0.7*2.12*log(1+0.1*(fbeton+8))
+        endif
+        fctd = fctm/gammac
+    
     endif
-    alpha_ab = piv_b/(piv_a+piv_b)
-    mu_inf = m_inf/(d**2.d0*sigm_beton*eta)
-    mu_bc = lambda*(1.d0-lambda/2.d0)
-!
-!   CALCULS DES DENSITES DE FERRAILLAGE A L'ELU
-!
-    if (mu_inf.lt.0.d0) then
-!       SECTION ENTIEREMENT TENDUE
-        dnssup = (effn*hu+effm)/(2.d0*hu)*unite_m
-        dnsinf = (effn*hu-effm)/(2.d0*hu)*unite_m
+
+!   Paramètres de calcul
+    Xsup = piv_b/piv_c
+    xC = (1-piv_c/piv_b)*ht
+    yC = ht-xC
+    xCt = xC/ht
+    D00 = (ht-d0)/ht
+    m1 = (((1-xCt)**(nC+1))/(2.d0*(nC+1)))*(1-(2.d0*(1-xCt))/(nC+2))
+    m2 = -((1-xCt)**(nC+1))/(nC+1)
+    MuC = abs(effm)/(bw*(ht**2)*fcd)
+    NuC = effn/(bw*ht*fcd)
+    NccMAX = (bw*ht*fcd)
+    NccMIN = (1+m2*((Xsup)**(nC)))*bw*ht*fcd
+    MccMAX = m1*((Xsup)**(nC))*bw*(ht**2)*fcd
+    Mu = (abs(effm) + effn*(d-0.5*ht))/(bw*(d**2)*eta*fcd)
+    Esu = piv_a
+    Euk = Esu/0.9
+    Ecu = piv_b
+    Ec2 = piv_c
+    Ese = fyd/eys
+    alphaAB = 1./(1+Esu/Ecu)
+    alphaR = 1./(1+Ese/Ecu)
+    alphaBC = 1.
+    MuAB = lambda*alphaAB*(1-0.5*lambda*alphaAB)
+    MuR = lambda*alphaR*(1-0.5*lambda*alphaR)
+    MuBC_inf = lambda*alphaBC*(1-0.5*lambda*alphaBC)
+    if (ferrcomp.eq.0) then
+    MuLIM = MuBC_inf
+    elseif (ferrcomp.eq.1) then
+    MuLIM = MuR
+    endif 
+    V = Ecu/Ec2
+    COEF = (1 - (V/ht)*yC)
+    !if (COEF.ne.0) then
+    if (abs(COEF).gt.epsilon(COEF)) then
+    VAR_COEF = Abs(COEF)/COEF
     else
-!       SECTION A MINIMA PARTIELLEMENT COMPRIMEE
-        if (mu_inf.lt.mu_bc) then
-!           SECTION PARTIELLEMENT TENDUE : PIVOT A ET B
-            alpha = 1.d0-sqrt(1.d0-2.d0*mu_inf)
-            N = (alpha*d*eta*sigm_beton + effn)*unite_m
-            if (N.le.0.d0) then
-!               PIVOT B : SECTION COMPRIMEE
-                N = 0.d0
-            endif
-            if (effm.ge.0.d0) then
-!               TEST SUR LE SIGNE DU MOMENT DE FLEXION
-                dnssup = N
-            else
-                dnsinf = N
-            endif
-            if (effn.ne.0.d0) then
-!               POUR EVITER LE FLOATING POINT EXCEPTION SI EFFN = 0
-                force = effn/(1.d0-(2.d0*effm)/(ht*effn))
-            else
-                force = 0.d0
-            endif
-            if (force.lt.-1.d0*eta*sigm_beton*ht) then
-!               PIVOT B : SECTION TROP COMPRIMEE
-                ierr = 1010
-                goto 998
-            endif
-        else
-!           PIVOT C
-            ierr = 1020
-            dnssup = 0.0d0
-            dnsinf = 0.0d0
-            if (effn.lt.-1.d0*lambda*eta*sigm_beton*ht) then
-!               PIVOT C : SECTION TROP COMPRIMEE
-                ierr = 1030
-                goto 998
-            else
-                goto 998
-            endif
-        endif
+    VAR_COEF = 1
     endif
-    dnsinf = dnsinf / sigm_acier
-    dnssup = dnssup / sigm_acier
-!
-998  continue
+    MuBC_sup = xC*(d-0.5*xC) + 0.5*yC*yC + (d-ht)*yC &
+               & +(ht/V)*(1/(nC+1))*yC*(VAR_COEF*(Abs(COEF))**(nC+1)) &
+               & +(1./((nC + 1)*(nC + 2)))*((ht/V)**2)*(VAR_COEF*(Abs(COEF))**(nC+2)-1) &
+               & +(d-ht)*(1./(nC+1))*(ht/V)*(VAR_COEF*(Abs(COEF))**(nC+1)-1)
+    MuBC_sup = MuBC_sup/(d*d*Eta)
+    MuBC = Max(MuBC_inf, MuBC_sup)
+    COND_ITER = .false.
+    COND_NS = .false.
+
+!!!!Traitement des CAS TRIVIAUX (PIVOTS A et B sans armatures de compression)
+!!!--------------------------------------------------------------------------
+!!!--------------------------------------------------------------------------
+
+    if ((effm.eq.0) .and. (effn.ge.0)) then
+
+         etat = 7
+         pivot = 3
+         Ec = Ec2
+         EcTEND = Ec2
+         EsTEND = Ec2
+         EsCOMP = Ec2
+         alpha = -1
+         if (typdiag.eq.1) then
+         if (Abs(EsTEND).lt.Ese) then
+         SigmAsTEND = eys*(Abs(EsTEND))
+         else
+         SigmAsTEND = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(EsTEND)-Ese)
+         endif
+         if (Abs(EsCOMP).lt.Ese) then
+         SigmAsCOMP = eys*(Abs(EsCOMP))
+         else
+         SigmAsCOMP = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(EsCOMP)-Ese)
+         endif
+         else
+         if (Abs(EsTEND).lt.Ese) then
+         SigmAsTEND = eys*(Abs(EsTEND))
+         else
+         SigmAsTEND = fyd
+         endif
+         if (Abs(EsCOMP).lt.Ese) then
+         SigmAsCOMP = eys*(Abs(EsCOMP))
+         else
+         SigmAsCOMP = fyd
+         endif
+         endif
+  
+         if (EsTEND.lt.0) then
+         SigmAsTEND = -SigmAsTEND
+         endif
+         if (EsCOMP.lt.0) then
+         SigmAsCOMP = -SigmAsCOMP
+         endif
+
+         if (effn.le.NccMAX) then
+         etat = 1
+         pivot = 3
+         alpha = -1000
+         Ec = 0
+         EcTEND = -1
+         EsTEND = -1
+         EsCOMP = -1
+         SigmAsCOMP = -1
+         SigmAsTEND = -1
+         AsCOMP = 0
+         AsTEND = 0
+         else
+         AsTEND = (0.5*(effn - NccMAX))/SigmAsTEND
+         AsCOMP = (0.5*(effn - NccMAX))/SigmAsCOMP
+         endif
+
+    elseif ((effm.eq.0) .and. (effn.lt.0)) then
+
+         etat = 2
+         pivot = 1
+         Ec = -Esu
+         EcTEND = -Esu
+         EsTEND = -Esu
+         EsCOMP = -Esu
+
+         if (typdiag.eq.1) then
+         if (Abs(EsTEND).lt.Ese) then
+         SigmAsTEND = eys*(Abs(EsTEND))
+         else
+         SigmAsTEND = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(EsTEND)-Ese)
+         endif
+         if (Abs(EsCOMP).lt.Ese) Then
+         SigmAsCOMP = eys*(Abs(EsCOMP))
+         else
+         SigmAsCOMP = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(EsCOMP)-Ese)
+         endif
+         else
+         if (Abs(EsTEND).lt.Ese) then
+         SigmAsTEND = eys*(Abs(EsTEND))
+         else
+         SigmAsTEND = fyd
+         endif
+         if (Abs(EsCOMP).lt.Ese) then
+         SigmAsCOMP = eys*(Abs(EsCOMP))
+         else
+         SigmAsCOMP = fyd
+         endif
+         endif
+   
+         if (EsTEND.lt.0) then
+         SigmAsTEND = -SigmAsTEND
+         endif
+         if (EsCOMP.lt.0) then
+         SigmAsCOMP = -SigmAsCOMP
+         endif
+   
+         AsTEND = -(0.5*effn)/Abs(SigmAsTEND)
+         AsCOMP = -(0.5*effn)/Abs(SigmAsCOMP)
+
+    elseif ((Mu.gt.0) .and. (Mu.le.MuLIM)) then
+         
+         etat = 3
+         a00 = lambda*lambda*0.5
+         b00 = -lambda
+         c00 = Mu
+         DELTA = b00 * b00 - 4 * a00 * c00
+
+         if (DELTA.ge.0) then
+         alpha_1 = (-b00+(DELTA)**0.5)/(2*a00)
+         alpha_2 = (-b00-(DELTA)**0.5)/(2*a00)
+         if ((alpha_1.ge.0) .and. (alpha_1.le.1)) then
+         alpha = alpha_1
+         elseif ((alpha_2.ge.0) .and. (alpha_2.le.1)) then
+         alpha = alpha_2
+         else
+         COND_ITER = .true.
+         goto 998
+         endif
+         else
+         COND_ITER = .true.
+         goto 998
+         endif
+   
+         if (alpha.lt.alphaAB) then
+         pivot = 1
+         EsTEND = -Esu
+         Ec = Esu*alpha/(1-alpha)
+         elseif (alpha.gt.alphaAB) Then
+         pivot = 2
+         Ec = Ecu
+         EsTEND = -Ecu*(1-alpha)/alpha
+         else
+         pivot = 1
+         Ec = Ecu
+         EsTEND = -Esu
+         endif
+   
+         EsCOMP = ((EsTEND-Ec)/d)*(d0)+Ec
+         EcTEND = ((EsTEND-Ec)/d)*(ht)+Ec
+   
+         if (typdiag.eq.1) then
+         if (Abs(EsTEND).lt.Ese) then
+         SigmAsTEND = eys*(Abs(EsTEND))
+         else
+         SigmAsTEND = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(EsTEND)-Ese)
+         endif
+         if (Abs(EsCOMP).lt.Ese) Then
+         SigmAsCOMP = eys*(Abs(EsCOMP))
+         else
+         SigmAsCOMP = fyd+((ktys*fyd-fyd)/(Euk-Ese))*(Abs(EsCOMP)-Ese)
+         endif
+         else
+         if (Abs(EsTEND).lt.Ese) then
+         SigmAsTEND = eys*(Abs(EsTEND))
+         else
+         SigmAsTEND = fyd
+         endif
+         if (Abs(EsCOMP).lt.Ese) then
+         SigmAsCOMP = eys*(Abs(EsCOMP))
+         else
+         SigmAsCOMP = fyd
+         endif
+         endif
+   
+         if (EsTEND.lt.0) then
+         SigmAsTEND = -SigmAsTEND
+         endif
+         if (EsCOMP.lt.0) then
+         SigmAsCOMP = -SigmAsCOMP
+         endif
+   
+         AsCOMP = 0
+         AsTEND = (lambda*Eta*bw*fcd*alpha*d-effn)/Abs(SigmAsTEND)
+
+         if ((AsTEND.lt.0) .or. (AsCOMP.lt.0)) then
+         COND_ITER = .true.
+         goto 998
+         else
+         COND_NS = .true.
+         endif
+         
+         if (ferrsyme.eq.1) then
+             Calc = abs(AsCOMP-AsTEND)
+             if (Calc.gt.slsyme) then
+             COND_ITER = .true.
+             goto 998
+             endif
+         endif
+
+    else
+
+         COND_ITER = .true.
+   
+    endif
+
+998 Continue
+
+If (COND_ITER.eqv.(.true.)) Then
+    call cafeluiter(typco, alphacc, effm, effn, ht, bw,&
+                    enrobi, enrobs, facier, fbeton, gammas, gammac,&
+                    clacier, eys, typdiag, ferrsyme, slsyme, uc, &
+                    COND_NS, AsTEND, AsCOMP, SigmAsTEND, SigmAsCOMP, EcTEND, Ec,&
+                    alpha, pivot, etat, ierr)
+
+endif
+!!!Pour les cas où COND_ITER = TRUE
+
+!------------------------------------------------------------------
+!Distinction Ferr Sup et Inf ET Prise en compte COMPRESSION
+!------------------------------------------------------------------
+
+if (effm.gt.0) then
+    dnssup = AsCOMP
+    dnsinf = AsTEND
+    sigmss = SigmAsCOMP
+    sigmsi = SigmAsTEND
+    ecsup = Ec
+    ecinf = EcTEND
+else
+    dnssup = AsTEND
+    dnsinf = AsCOMP
+    sigmss = SigmAsTEND
+    sigmsi = SigmAsCOMP
+    ecsup = EcTEND
+    ecinf = Ec
+endif
+
+if (ferrcomp.eq.0) then
+    if (((sigmss.gt.0) .and. (dnssup.gt.0)) &
+          & .or. ((sigmsi.gt.0) .and. (dnsinf.gt.0))) then
+         etat = 0
+         pivot = 0
+         dnssup = -1
+         dnsinf = -1
+         sigmsi = -1
+         sigmss = -1
+         ecinf = -1
+         ecsup = -1
+         ierr = 1
+    endif
+endif
+
 end subroutine

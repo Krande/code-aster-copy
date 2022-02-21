@@ -37,18 +37,18 @@ FEMLin=AFFE_MODELE(MAILLAGE=MeshLin,
                             MODELISATION='DKT',),
                          _F(GROUP_MA='BASEN',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='DIS_T',),),)
+                            MODELISATION='DIS_T',),),);
 
 # Caracteristiques de Materiaux
 beton=DEFI_MATERIAU(ELAS=_F(E=3.0E10,
                             NU=0.15,
-                            RHO=2500.0,),)
+                            RHO=2500.0,),);
 
 # Association des materiaux au modele
 Mat=AFFE_MATERIAU(MAILLAGE=MeshLin,
                   MODELE=FEMLin,
                   AFFE=_F(TOUT='OUI',
-                          MATER=beton,),)
+                          MATER=beton,),);
 
 # Proprietes autres (notamment raideur de sol)
 AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
@@ -68,7 +68,7 @@ AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
                                         COEF_GROUP=1.0,
                                         CARA='K_T_D_N',
                                         VALE=(1250E6,1250E6,1250E6,),
-                                        COOR_CENTRE=(0.0,0.0,0.0,),),)
+                                        COOR_CENTRE=(0.0,0.0,0.0,),),);
 # Calcul de la raideur
 #   raideur unitaire = 50E6 N/m3
 #   surface = 10*10
@@ -78,7 +78,7 @@ AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
 # gradient de Pression
 eauPlus=DEFI_FONCTION(NOM_PARA='Z',VALE=(0.0,-49050.0,
                             5.0,0.0,
-                            ),)
+                            ),);
 
 # definition de la gravite
 Grav=AFFE_CHAR_MECA(MODELE=FEMLin,
@@ -87,21 +87,21 @@ Grav=AFFE_CHAR_MECA(MODELE=FEMLin,
 # definition de pression verticale
 pressRep=AFFE_CHAR_MECA(MODELE=FEMLin,
                         PRES_REP=_F(GROUP_MA='BASE',
-                                    PRES=49050.0,),)
+                                    PRES=49050.0,),);
 # definition de pression verticale
 pressXY=AFFE_CHAR_MECA_F(MODELE=FEMLin,
                         FORCE_COQUE=_F(GROUP_MA=('COTEX','COTEY'),
-                                      PRES=eauPlus,),)
+                                      PRES=eauPlus,),);
 # definition de forces nodales sur contour haut
 surchrep=AFFE_CHAR_MECA(MODELE=FEMLin,
                         FORCE_ARETE=_F(GROUP_MA='HAUT',
-                                        FZ=-20E3,),)
+                                        FZ=-20E3,),);
 # definition des symétries
 sym=AFFE_CHAR_MECA(MODELE=FEMLin,
                         DDL_IMPO=(_F(GROUP_NO='SYMX',
                                         DY=0.0,),
                                   _F(GROUP_NO='SYMY',
-                                        DX=0.0,),),)
+                                        DX=0.0,),),);
 
 # Calcul des efforts :
 
@@ -112,7 +112,7 @@ Solution=MECA_STATIQUE(MODELE=FEMLin,
                               _F(CHARGE=sym,),
                               _F(CHARGE=pressRep,),
                               _F(CHARGE=Grav,),
-                              _F(CHARGE=surchrep,),),)
+                              _F(CHARGE=surchrep,),),);
 
 # calculs elementaires, en complement de resultats
 Solution=CALC_CHAMP(reuse=Solution,RESULTAT=Solution,CONTRAINTE=('EFGE_ELNO','SIGM_ELNO'))
@@ -123,13 +123,16 @@ Solution = CALC_FERRAILLAGE( reuse = Solution, RESULTAT = Solution,
                              TYPE_COMB = 'ELS',
                              INST = (0.),
                              AFFE = (_F( GROUP_MA = ('COTEY','BASE'),
+                                         TYPE_STRUCTURE = '2D',
                                          C_INF = 0.04,
                                          C_SUP = 0.04,
                                          FCK = 35e6,
                                          ALPHA_E = 15.,
                                          SIGS_ELS = 2.8E8,
-                                         SIGC_ELS = 3.5E7,
-                                         UNITE_CONTRAINTE = 'Pa'),),)
+                                         SIGC_INF_ELS = 3.5E7,
+                                         SIGC_SUP_ELS = 3.5E7,
+                                         UNITE_CONTRAINTE = 'Pa',
+                                         UNITE_DIMENSION = 'm'),),);
 
 IMPR_RESU(FORMAT='MED', UNITE = 80,
                 RESU=(_F(RESULTAT=Solution),),)
@@ -143,8 +146,8 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='FERRAILLAGE',
                    NOM_CMP='DNSXI',
                    TYPE_TEST ='MAX',
-                   VALE_CALC= 0.00141579837594,
-                   VALE_REFE=14.0E-4,
+                   VALE_CALC= 0.002565846271067156,
+                   VALE_REFE=0.002565846271067156,
                    CRITERE='ABSOLU',
                    PRECISION=2E-4,
                    ),
@@ -154,8 +157,8 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='FERRAILLAGE',
                    NOM_CMP='DNSXS',
                    TYPE_TEST ='MAX',
-                   VALE_CALC= 0.00104007191058,
-                   VALE_REFE=9.0E-4,
+                   VALE_CALC= 0.0006622874216179028,
+                   VALE_REFE= 0.0006622874216179028,
                    CRITERE='ABSOLU',
                    PRECISION=4E-4,
                    ),
@@ -165,8 +168,8 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='FERRAILLAGE',
                    NOM_CMP='DNSYI',
                    TYPE_TEST ='MAX',
-                   VALE_CALC= 0.00165857792205,
-                   VALE_REFE=7.0E-4,
+                   VALE_CALC= 0.027772398190928242,
+                   VALE_REFE=0.027772398190928242,
                    CRITERE='ABSOLU',
                    PRECISION=10E-4,
                    ),
@@ -176,8 +179,8 @@ TEST_RESU(RESU=(_F(INST=0.0,
                    NOM_CHAM='FERRAILLAGE',
                    NOM_CMP='DNSYS',
                    TYPE_TEST ='MAX',
-                   VALE_CALC= 0.00104007191058,
-                   VALE_REFE=6.0E-4,
+                   VALE_CALC= 0.011205133611860508,
+                   VALE_REFE=0.011205133611860508,
                    CRITERE='ABSOLU',
                    PRECISION=5E-4,
                    ),
@@ -193,7 +196,7 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                         NOM_CMP='DNSXI',
                         GROUP_MA='M748',
                         CHAM_GD=FERMAX,
-                        VALE_CALC=0.00130323479922,),
+                        VALE_CALC=0.0013328367450619418,),
                      _F(CRITERE='RELATIF',
                         POINT=1,
                         NOM_CMP='DNSXS',
@@ -206,7 +209,7 @@ TEST_RESU(CHAM_ELEM=(_F(CRITERE='RELATIF',
                         NOM_CMP='DNSYI',
                         GROUP_MA='M748',
                         CHAM_GD=FERMAX,
-                        VALE_CALC=4.23403596532E-05,),
+                        VALE_CALC=3.956965949153138E-05,),
                      _F(CRITERE='RELATIF',
                         POINT=1,
                         NOM_CMP='DNSYS',
@@ -280,14 +283,14 @@ TEST_RESU(RESU=(
                    NOM_CHAM='UT01_ELEM',
                    NOM_CMP='X1',
                    TYPE_TEST='MAX',
-                   VALE_CALC=0.00165857792205,
+                   VALE_CALC=0.027772398190928242,
                    ),
                 _F(RESULTAT=ferUtil,
                    INST=0.0,
                    NOM_CHAM='UT01_ELEM',
                    NOM_CMP='X1',
                    TYPE_TEST='MIN',
-                   VALE_CALC=0.000101286161289,
+                   VALE_CALC=-1.0,
                    ),
                 ),)
 
@@ -298,16 +301,16 @@ TEST_RESU(CHAM_ELEM=(
                    NOM_CMP='X1',
                    TYPE_TEST='MAX',
                    REFERENCE='AUTRE_ASTER',
-                   VALE_REFE=0.00165857792205,
-                   VALE_CALC=0.00165857792205,
+                   VALE_REFE=0.027772398190928242,
+                   VALE_CALC=0.027772398190928242,
                    ),
                 _F(CHAM_GD=ferMax,
                    NOM_CMP='X1',
                    TYPE_TEST='MIN',
                    GROUP_MA='CALC_FER',
                    REFERENCE='AUTRE_ASTER',
-                   VALE_REFE=0.000101286161289,
-                   VALE_CALC=0.000101286161289,
+                   VALE_REFE=-1.0 ,
+                   VALE_CALC=-1.0 ,
                    ),
                 ),)
 

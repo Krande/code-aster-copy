@@ -1,7 +1,5 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 2018 Aether Engineering Solutions - www.aethereng.com
-# Copyright (C) 2018 Kobe Innovation Engineering - www.kobe-ie.com
 # Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
@@ -18,8 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
-# aslint: disable=W4004
 
+import string
+import sys
+import aster
 from ..Cata.Syntax import _F
 from ..Commands import CALC_FERRAILLAGE, CREA_CHAMP, CREA_RESU, FORMULE
 from ..Messages import UTMESS
@@ -28,7 +28,7 @@ from ..Messages import UTMESS
 def combinaison_ferraillage_ops(self, **args):
     """Command to combine results to estimate reinforcement of the structure."""
 
-    resu         = args.get('RESULTAT')
+    resu         = args.get('reuse')
     combinaison  = args.get('COMBINAISON')
     affe         = args.get('AFFE')
     codification = args.get('CODIFICATION')
@@ -90,12 +90,9 @@ def combinaison_ferraillage_ops(self, **args):
                 for Ma in i_affe.get('GROUP_MA'):
                     g.append(Ma)
                 count_2D = count_2D + 1
-        elif structure_type == 'POUTRE' :
+        elif structure_type == '1D' :
             # Algorithm un available
             algo_POUTRE()
-        elif structure_type == 'POTEAU' :
-            # Algorithm un available
-            algo_POTEAU()
         else:
             UTMESS('F', 'COMBFERR_14', valk=structure_type)
 
@@ -147,12 +144,13 @@ def combinaison_ferraillage_ops(self, **args):
     # Build result type EVOL_ELAS from MULTI_ELAS and combo type list in order
     #
     # resu = multiFromEvolElas(nmb_cas, resu_nom_cas, lst_inst_index, lst_inst_value, __resfer, resu, modele, caraelem)
-    # The reinforcement has 7 components
+    # The reinforcement has 8 components
     #  DNSXI :
     #  DNSXS :
     #  DNSYI :
     #  DNSYS :
-    #   DNST :
+    #  DNSXT :
+    #  DNSYT :
     # EPSIBE :
     # SIGMBE :
 
@@ -160,8 +158,8 @@ def combinaison_ferraillage_ops(self, **args):
         groupSelection = lGroupSelec[0]
 
     # Workaround to Bug: "ELEM_NEUT_R can use only X1"
-    __CHP = [None] * 7
-    for cmp_index, cmp_name in enumerate(['DNSXI','DNSXS','DNSYI','DNSYS','DNST','DNSVOL','CONSTRUC']):
+    __CHP = [None] * 8
+    for cmp_index, cmp_name in enumerate(['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC']):
 
         # Renaming component(s) in COMB_DIME_ORDRE to avoid overlapping with COMB_DIME_ACIER
         if TEST_TOUT :
@@ -169,7 +167,7 @@ def combinaison_ferraillage_ops(self, **args):
                               MODELE=modele,
                               TYPE_CHAM='ELEM_NEUT_R',
                               ASSE=(
-                                    # ~ _F(CHAM_GD=CHORD,TOUT='OUI',NOM_CMP=('DNSXI','DNSXS','DNSYI','DNSYS','DNST','SIGMBE','EPSIBE'),NOM_CMP_RESU=('X8','X9','X10','X11','X12','X13','X14')),
+                                    # ~ _F(CHAM_GD=CHORD,TOUT='OUI',NOM_CMP=('DNSXI','DNSXS','DNSYI','DNSYS','DNSXT', 'DNSYT','SIGMBE','EPSIBE'),NOM_CMP_RESU=('X9','X10','X11','X12','X13','X14','X15','X16')),
                                     _F(CHAM_GD=__instfer,TOUT='OUI',NOM_CMP=cmp_name,NOM_CMP_RESU='X1'),
                                   ),
                                   PROL_ZERO='OUI',
@@ -225,6 +223,7 @@ def combinaison_ferraillage_ops(self, **args):
                                 _F(TOUT='OUI',CHAM_GD=__CHP[4],NOM_CMP=('X1',), NOM_CMP_RESU=('X5',),),
                                 _F(TOUT='OUI',CHAM_GD=__CHP[5],NOM_CMP=('X1',), NOM_CMP_RESU=('X6',),),
                                 _F(TOUT='OUI',CHAM_GD=__CHP[6],NOM_CMP=('X1',), NOM_CMP_RESU=('X7',),),
+                                _F(TOUT='OUI',CHAM_GD=__CHP[7],NOM_CMP=('X1',), NOM_CMP_RESU=('X8',),),
                               )
                               )
     else:
@@ -241,6 +240,7 @@ def combinaison_ferraillage_ops(self, **args):
                                 _F(**groupSelection,CHAM_GD=__CHP[4],NOM_CMP=('X1',), NOM_CMP_RESU=('X5',),),
                                 _F(**groupSelection,CHAM_GD=__CHP[5],NOM_CMP=('X1',), NOM_CMP_RESU=('X6',),),
                                 _F(**groupSelection,CHAM_GD=__CHP[6],NOM_CMP=('X1',), NOM_CMP_RESU=('X7',),),
+                                _F(**groupSelection,CHAM_GD=__CHP[7],NOM_CMP=('X1',), NOM_CMP_RESU=('X8',),),
                               )
                               )
 
@@ -291,6 +291,8 @@ def algo_2D (_resfer, affe, lst_nume_ordre, code, type_combo):
         dic_type_comb = {}
         if type_combo [idx]  == 'ELS_CARACTERISTIQUE':
            dic_type_comb['TYPE_COMB'] = 'ELS'
+        elif type_combo [idx] == 'ELS_QUASIPERMANENT':
+           dic_type_comb['TYPE_COMB'] = 'ELS_QP'        
         else:
            dic_type_comb['TYPE_COMB'] = 'ELU'
 
@@ -303,7 +305,7 @@ def algo_2D (_resfer, affe, lst_nume_ordre, code, type_combo):
 
                 # saving dict_affe
                 i_affe_for_cf = dict_i_affe.copy();
-                i_affe_for_cf.pop('TYPE_STRUCTURE')
+                #i_affe_for_cf.pop('TYPE_STRUCTURE')
 
                 if type_combo [idx]  == 'ELU_FONDAMENTAL':
                     i_affe_for_cf.update({'GAMMA_S':i_affe_for_cf['GAMMA_S_FOND']})
@@ -324,22 +326,18 @@ def algo_2D (_resfer, affe, lst_nume_ordre, code, type_combo):
         dic_type_comb['AFFE']=tuple(lst_tmp_affe)
 
         dic_type_comb['CODIFICATION'] = code
-
+        
         _resfer = CALC_FERRAILLAGE (
             reuse = _resfer,
             RESULTAT = _resfer,
             NUME_ORDRE = nume_ordre,
             **dic_type_comb
         )
-
+        
     return _resfer
 
 def algo_POUTRE ():
     UTMESS('A', 'COMBFERR_2', valk='POUTRE')
-    return None
-
-def algo_POTEAU ():
-    UTMESS('A', 'COMBFERR_2', valk='POTEAU')
     return None
 
 

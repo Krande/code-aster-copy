@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,27 +19,50 @@
 !
 !
 interface
-    subroutine clcplq(typcmb, typco, compress, cequi, enrobs, enrobi, sigaci,&
-                      sigbet, alphacc, gammas, gammac, facier,&
-                      fbeton, clacier, uc, ht, effrts, dnsits, ierr)
+    subroutine clcplq(typcmb, typco, ferrsyme, slsyme, ferrcomp, epucisa,&
+                      ferrmin, rholmin, rhotmin, compress, cequi,&
+                      enrobi, enrobs, sigs, sigci, sigcs,&
+                      alphacc, gammas, gammac, facier, eys, typdiag,&
+                      fbeton, clacier, uc, um,&
+                      wmaxi, wmaxs, sigelsqp, kt, phixi, phixs, phiyi, phiys,&
+                      ht, effrts, dnsits, ierr)
         integer :: typcmb
         integer :: typco
+        integer :: ferrsyme
+        real(kind=8) :: slsyme
+        integer :: ferrcomp
+        integer :: epucisa
+        integer :: ferrmin
+        real(kind=8) :: rholmin
+        real(kind=8) :: rhotmin
         integer :: compress
         real(kind=8) :: cequi
-        real(kind=8) :: enrobs
         real(kind=8) :: enrobi
-        real(kind=8) :: sigaci
-        real(kind=8) :: sigbet
+        real(kind=8) :: enrobs
+        real(kind=8) :: sigs
+        real(kind=8) :: sigci
+        real(kind=8) :: sigcs    
         real(kind=8) :: alphacc
         real(kind=8) :: gammas
         real(kind=8) :: gammac
         real(kind=8) :: facier
+        real(kind=8) :: eys
+        integer :: typdiag
         real(kind=8) :: fbeton
-        integer :: clacier
-        integer :: uc
+        integer ::  clacier
+        integer ::  uc
+        integer :: um
+        real(kind=8) :: wmaxi
+        real(kind=8) :: wmaxs
+        real(kind=8) :: sigelsqp
+        real(kind=8) :: kt
+        real(kind=8) :: phixi
+        real(kind=8) :: phixs
+        real(kind=8) :: phiyi
+        real(kind=8) :: phiys
         real(kind=8) :: ht
         real(kind=8) :: effrts(8)
-        real(kind=8) :: dnsits(5)
+        real(kind=8) :: dnsits(6)
         integer :: ierr
     end subroutine clcplq
 end interface

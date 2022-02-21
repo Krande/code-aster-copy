@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,8 +17,6 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-# person_in_charge: jacques.pellet at edf.fr
-
 
 
 from cataelem.Tools.base_objects import InputParameter, OutputParameter, Option, CondCalcul
@@ -34,18 +32,20 @@ comment=""" PEFFORR : EFFORTS GENERALISES (EFGE_ELNO) """)
 
 
 FERRAILLAGE = Option(
-    para_in=(
-        SP.PCACOQU,
-           PEFFORR,
-        SP.PFERRA1,
-    ),
-    para_out=(
-        SP.PFERRA2,
-    ),
-    condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),(AT.EFGE,'OUI'),(AT.DIM_TOPO_MODELI,'2'),)),
-    ),
-    comment="""  FERRAILLAGE : CALCUL DES TAUX DE FERRAILLAGE
-           A PARTIR DES EFFORTS GENERALISES (COQUE).
+     para_in=(
+        SP.PCACOQU, #codeaster-civilengine%  Caracteristiques des coques
+           PEFFORR, # Etat de contrainte (ou d'effort interne)
+        SP.PFERRA1, # DONNEES UTILISATEUR POUR LE CALCUL DE FERRAILLAGE
+        SP.PCAGEPO, # Caracteristiques des poutre
+     ),
+     para_out=(
+        SP.PFERRA2, # Component fields DNSXI, DNSXS in FERRAILLAGE
+     ),
+     condition=(
+       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.COQUE,'OUI'),(AT.EFGE,'OUI'),(AT.DIM_TOPO_MODELI,'2'),)),
+       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.POUTRE,'OUI'),(AT.EFGE,'OUI'),(AT.DIM_TOPO_MODELI,'1'),)),
+     ),
+     comment="""  FERRAILLAGE : CALCUL DES TAUX DE FERRAILLAGE
+           A PARTIR DES EFFORTS GENERALISES (COQUE&POUTRE).
            LICITE EN LINEAIRE SEULEMENT. """,
-)
+ )

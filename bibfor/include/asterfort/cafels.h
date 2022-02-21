@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,19 +19,35 @@
 !
 !
 interface
-    subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
-                      sigbet, uc, dnsinf, dnssup, ierr)
-        real(kind=8) :: cequi
-        real(kind=8) :: effm
-        real(kind=8) :: effn
-        real(kind=8) :: ht
-        real(kind=8) :: enrobs
-        real(kind=8) :: enrobi
-        real(kind=8) :: sigaci
-        real(kind=8) :: sigbet
-        integer :: uc
-        real(kind=8) :: dnsinf
-        real(kind=8) :: dnssup
-        integer :: ierr
+    subroutine cafels(cequi, effm, effn, ht, bw,&
+                      enrobi, enrobs, scmaxi, scmaxs, ssmax,&
+                      ferrcomp, ferrsyme, slsyme, uc,&
+                      dnsinf, dnssup, sigmsi, sigmss,&
+                      sigmci, sigmcs,&
+                      alpha, pivot, etat, ierr)
+       real(kind=8) :: cequi
+       real(kind=8) :: effm
+       real(kind=8) :: effn
+       real(kind=8) :: ht
+       real(kind=8) :: bw
+       real(kind=8) :: enrobi
+       real(kind=8) :: enrobs
+       real(kind=8) :: scmaxi
+       real(kind=8) :: scmaxs
+       real(kind=8) :: ssmax
+       integer :: ferrcomp
+       integer :: ferrsyme
+       real(kind=8) :: slsyme
+       integer :: uc
+       real(kind=8) :: dnsinf
+       real(kind=8) :: dnssup
+       real(kind=8) :: sigmsi
+       real(kind=8) :: sigmss
+       real(kind=8) :: sigmci
+       real(kind=8) :: sigmcs
+       real(kind=8) :: alpha
+       integer :: pivot
+       integer :: etat
+       integer :: ierr
     end subroutine cafels
 end interface

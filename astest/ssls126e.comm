@@ -217,11 +217,15 @@ ferrDatSlu = dict(
     GAMMA_S_ACCI = 1.15,
     GAMMA_C_ACCI  = 1.5,
     SIGS_ELS = 0.8*fyk,
-    SIGC_ELS = 0.6*fck,
+    SIGC_INF_ELS = 0.6*fck,
+    SIGC_SUP_ELS = 0.6*fck,
     ALPHA_E  =  15,
+    TYPE_DIAGRAMME = 'B2',
+    EYS = 210.e9,
     CLASSE_ACIER = 'B',
     ALPHA_CC = 1.0 ,
     UNITE_CONTRAINTE = 'Pa',
+    UNITE_DIMENSION = 'm',
     TYPE_STRUCTURE = '2D',
 )
 

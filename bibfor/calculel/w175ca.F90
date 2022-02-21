@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,12 +33,12 @@ subroutine w175ca(modele, carele, chfer1, chefge, chfer2)
 ! IN  CHEFGE  : CHAMP DE EFGE_ELNO
 ! OUT CHFER2  : RESULTAT DU CALCUL DE FERRAILLAGE
 !
-    character(len=8) :: lpain(5), lpaout(1)
+    character(len=8) :: lpain(5), lpaout(2)
     character(len=16) :: option
     character(len=19) :: chcara(18)
-    character(len=19) :: lchin(15), lchout(1), ligrel
+    character(len=19) :: lchin(15), lchout(2), ligrel
 !
-    call exlim3('AFFE', 'G', modele, ligrel)
+    call exlim3('AFFE', 'G', modele, ligrel) 
     option = 'FERRAILLAGE'
 !
     call mecara(carele, chcara)
@@ -49,12 +49,14 @@ subroutine w175ca(modele, carele, chfer1, chefge, chfer2)
     lchin(2) = chfer1
     lpain(3) = 'PEFFORR'
     lchin(3) = chefge
+    lpain(4) = 'PCAGEPO'
+    lchin(4) = chcara(5)
 !
 !
     lpaout(1) = 'PFERRA2'
     lchout(1) = chfer2
 !
-    call calcul('S', option, ligrel, 3, lchin,&
+    call calcul('S', option, ligrel, 4, lchin,&
                 lpain, 1, lchout, lpaout, 'G',&
                 'OUI')
 !

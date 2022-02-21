@@ -98,8 +98,6 @@ NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
                             components=('X', 'Y', 'Z',))
 
 
-
-
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
                              components=('X', 'Y', 'Z', 'W',))
 
@@ -143,6 +141,10 @@ EEFGEGA = LocatedComponents(phys=PHY.SIEF_R, type='ELGA', location='RIGI',
 EEFGENO = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
                             components=('N', 'VY', 'VZ', 'MT', 'MFY',
                                         'MFZ',))
+
+EEFGENOR = LocatedComponents(phys=PHY.SIEF_R, type='ELNO',
+                             components=('N', 'VY', 'VZ', 'MT', 'MFY',
+                                         'MFZ',))
 
 
 ESTRAUX = LocatedComponents(phys=PHY.STRX_R, type='ELGA', location='RIGI',
@@ -337,6 +339,17 @@ class MECA_POU_D_E(Element):
                        (SP.PMATERC, LC.CMATERC), (OP.EPOT_ELEM.PVARCPR, LC.ZVARCPG), 
                        (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=( (OP.EPOT_ELEM.PENERDR, EENERR), ),
+        ),
+
+         OP.FERRAILLAGE(te=265,
+                        para_in=(
+                            (OP.FERRAILLAGE.PEFFORR, EEFGENOR),
+                            (SP.PFERRA1, LC.CFER1_R),
+                            (SP.PCAGEPO, LC.CCAGRPO),
+                            ),
+                        para_out=(
+                            (SP.PFERRA2, LC.CFER3_R),
+                        ),
         ),
 
         OP.FORC_NODA(te=347,

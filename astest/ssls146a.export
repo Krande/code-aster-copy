@@ -5,5 +5,5 @@ P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
 
-F comm ssls146a.comm D  1
-F libr ssls146a.mmed D  2
+F comm ssls146a.comm D 1
+F mmed ssls146a.mmed D 2

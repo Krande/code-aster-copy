@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,21 +19,42 @@
 !
 !
 interface
-    subroutine cftels(typco, effn, effm, efft, ht, fbeton, sigbet,&
-                      sigaci, enrobs, enrobi, uc, compress, dnstra, ierr)
-        integer :: typco
-        real(kind=8) :: effn
+    subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt,&
+                      dnsinf, dnssup,&
+                      sigmsi, sigmss, sigmci, sigmcs, alpha,&
+                      ht, bw, enrobi, enrobs, facier, fbeton,&
+                      scmaxi, scmaxs, ssmax, uc, um,&
+                      compress, dnstra, thetab, ak, uk, ierr)
+        integer ::typco
+        integer :: typstru
+        real(kind=8) :: effrts(8)
         real(kind=8) :: effm
+        real(kind=8) :: effn
         real(kind=8) :: efft
+        real(kind=8) :: effmt
+        real(kind=8) :: dnsinf
+        real(kind=8) :: dnssup
+        real(kind=8) :: sigmsi
+        real(kind=8) :: sigmss
+        real(kind=8) :: sigmci
+        real(kind=8) :: sigmcs
+        real(kind=8) :: alpha
         real(kind=8) :: ht
-        real(kind=8) :: fbeton
-        real(kind=8) :: sigbet
-        real(kind=8) :: sigaci
-        real(kind=8) :: enrobs
+        real(kind=8) :: bw
         real(kind=8) :: enrobi
+        real(kind=8) :: enrobs
+        real(kind=8) :: facier
+        real(kind=8) :: fbeton
+        real(kind=8) :: scmaxi
+        real(kind=8) :: scmaxs
+        real(kind=8) :: ssmax
         integer :: uc
+        integer :: um
         integer :: compress
         real(kind=8) :: dnstra
+        real(kind=8) :: thetab
+        real(kind=8) :: ak
+        real(kind=8) :: uk
         integer :: ierr
     end subroutine cftels
 end interface

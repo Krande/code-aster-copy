@@ -17,106 +17,94 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'OUI'),)
+DEBUT( CODE = _F( NIV_PUB_WEB = 'INTERNET'), DEBUG = _F( SDVERI = 'OUI'),);
 
-MA = LIRE_MAILLAGE( FORMAT = "MED")
-
-MA = DEFI_GROUP( reuse = MA, MAILLAGE = MA,
-                      CREA_GROUP_MA= (
-                                        _F( NOM = 'M1', MAILLE = 'M1'),
-                                     ),
-         )
+MA = LIRE_MAILLAGE( FORMAT = "MED",
+                    UNITE = 20);
 
 MODEL = AFFE_MODELE( MAILLAGE = MA,
                      AFFE = _F( GROUP_MA = 'PLAQUE',
                                 PHENOMENE = 'MECANIQUE',
-                                MODELISATION = 'DKT'),)
+                                MODELISATION = 'DKT'),);
 
 CARA = AFFE_CARA_ELEM( MODELE = MODEL,
-                       COQUE = _F( GROUP_MA = 'PLAQUE', EPAIS = 0.2),)
+                       COQUE = _F( GROUP_MA = 'PLAQUE', EPAIS = 0.2),);
 
 # on cree une sd evol_elas avec des champs d'efforts imposes :
 #-------------------------------------------------------------
 #compression uniforme + effort transversal
 CHEFF1 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                VALE     = ( 0.0, -1.e6, 0.0,  0.0,  0.0,  0.0,  0.0, 1.e5),),)
+                                NOM_CMP  = ('NXX','NYY',    'NXY','MXX','MYY','MXY','QX','QY'),
+                                VALE     = ( 0.0, -1.e6, 0.0,  0.0,  0.0,  0.0,  0.0, 1.e5),),);
 #section totalement tendue en X (pivot A "vertical") + effort transversal
 CHEFF2 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX', 'QY'),
-                                VALE     = ( 1.e6, 0.0,  0.0,  0.0,  0.0,  0.0, -6.e5, 0.0),),)
+                                NOM_CMP  = ('NXX',    'NYY','NXY','MXX','MYY','MXY','QX',     'QY'),
+                                VALE     = ( 1.e6, 0.0,  0.0,  0.0,  0.0,  0.0, -6.e5, 0.0),),);
 #section totalement tendue en Y (pivot A "vertical") + effort transversal
 CHEFF3 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX', 'QY'),
-                                VALE     = ( 0.0,  1.e6, 0.0,  0.0,  0.0,  0.0, -2.e4, 8.e4),),)
+                                NOM_CMP  = ('NXX','NYY',    'NXY','MXX','MYY','MXY','QX',     'QY'),
+                                VALE     = ( 0.0,  1.e6, 0.0,  0.0,  0.0,  0.0, -2.e4, 8.e4),),);
 #fibre supérieure tendue en Y
 CHEFF4 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                VALE     = ( 0.0,  0.0,  0.0,  0.0,  1.e5, 0.0,  0.0, 0.0),),)
+                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY',    'MXY','QX','QY'),
+                                VALE     = ( 0.0,  0.0,  0.0,  0.0,  1.e5, 0.0,  0.0, 0.0),),);
 #fibre supérieure tendue en X
 CHEFF5 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                VALE     = ( 0.0,  0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),)
+                                NOM_CMP  = ('NXX','NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
+                                VALE     = ( 0.0,  0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),);
 #section partiellement tendue
 CHEFF6 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                VALE     = (-1.e5, 0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),)
+                                NOM_CMP  = ('NXX',    'NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
+                                VALE     = (-1.e5, 0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),);
 #section partiellement tendue
 CHEFF7 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                VALE     = ( 1.e5, 0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),)
+                                NOM_CMP  = ('NXX',    'NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
+                                VALE     = ( 1.e5, 0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),);
 #section totalement tendue
 CHEFF8 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                VALE     = (2.e6,  0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),)
+                                NOM_CMP  = ('NXX',    'NYY','NXY','MXX',    'MYY','MXY','QX','QY'),
+                                VALE     = (2.e6, 0.0,  0.0,  1.e5, 0.0,  0.0,  0.0, 0.0),),);
 
 CHEFF9 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                NOM_CMP  = ('NXX','NYY','NXY','MXX', 'MYY', 'MXY','QX','QY'),
-                                VALE     = ( 0.0,  0.0,  0.0,  1.e5, -75.E3, 0.0,  0.0, 0.0),),)
+                                NOM_CMP  = ('NXX','NYY','NXY','MXX',     'MYY',     'MXY','QX','QY'),
+                                VALE     = ( 0.0,  0.0,  0.0,  1.e5, -75.e3, 0.0,  0.0, 0.0),),);
 
 CHEFF10 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
-                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,'MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -150e3, 0.0,  0.0, 0.0),),)
-#configuration 10 à l'ELS
-CHEFF11 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
-                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -1.e5, 0.0,  0.0, 0.0),),)
-#configuration 6 à l'ELS
-CHEFF12 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
-                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY','MXY','QX','QY'),
-                                 VALE     = (-20e3, 0.0,  0.0,  1e5,  0.0,  0.0,  0.0, 0.0),),)
-#pivot B
-CHEFF13 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
-                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,'MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -26.e4, 0.0,  0.0, 0.0),),)
-# vrai pivot C avec compression totale d'une facette sur la section entière
-CHEFF14 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
-                      AFFE = _F( GROUP_MA = 'PLAQUE',
-                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,'MXY','QX','QY'),
-                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -38.e4, 0.0,  0.0, 0.0),),)
-
+                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,    'MXY','QX','QY'),
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -150e3, 0.0,  0.0, 0.0),),);
+#
+#pivot B 
 CHEFF15 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
-                                 NOM_CMP  = ('NXX','NYY', 'NXY','MXX','MYY','MXY','QX','QY'),
-                                 VALE     = ( 0.0, -15.e5, 0.0,  0.0,  0.0,  0.0,  0.0, 8.e5),),)
-# Pivot C avec compression totale d'une facette sur la section entière
+                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,    'MXY','QX','QY'),
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -26.e4, 0.0,  0.0, 0.0),),);
+
+# vrai pivot C avec compression totale d'une facette sur la section entière
 CHEFF16 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
                       AFFE = _F( GROUP_MA = 'PLAQUE',
-                                 NOM_CMP  = ('NXX', 'NYY','NXY','MXX', 'MYY','MXY','QX','QY'),
-                                 VALE     = (-45.e5, 0.0,  0.0,  38.e4, 0.0,  0.0,  0.0, 1.e5),),)
+                                 NOM_CMP  = ('NXX','NYY','NXY','MXX','MYY' ,    'MXY','QX','QY'),
+                                 VALE     = ( 0.0,  0.0,  0.0,  0.0, -38.e4, 0.0,  0.0, 0.0),),);
+
+CHEFF17 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
+                      AFFE = _F( GROUP_MA = 'PLAQUE',
+                                 NOM_CMP  = ('NXX','NYY',     'NXY','MXX','MYY','MXY','QX','QY'),
+                                 VALE     = ( 0.0, -15.e5, 0.0,  0.0,  0.0,  0.0,  0.0, 8.e5),),);
+
+# Pivot C avec compression totale d'une facette sur la section entière
+CHEFF18 = CREA_CHAMP( MAILLAGE = MA, OPERATION = 'AFFE', TYPE_CHAM = 'CART_SIEF_R',
+                      AFFE = _F( GROUP_MA = 'PLAQUE',
+                                 NOM_CMP  = ('NXX',     'NYY','NXY','MXX',     'MYY','MXY','QX','QY'),
+                                 VALE     = (-45.e5, 0.0,  0.0,  38.e4, 0.0,  0.0,  0.0, 1.e5),),);
 
 RESUELU = CREA_RESU( OPERATION = 'AFFE',
                      TYPE_RESU = 'EVOL_ELAS',
@@ -131,188 +119,802 @@ RESUELU = CREA_RESU( OPERATION = 'AFFE',
                              _F( CHAM_GD = CHEFF8, INST = 8., MODELE = MODEL, CARA_ELEM = CARA,),
                              _F( CHAM_GD = CHEFF9, INST = 9., MODELE = MODEL, CARA_ELEM = CARA,),
                              _F( CHAM_GD = CHEFF10, INST = 10., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF13, INST = 11., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF14, INST = 12., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF15, INST = 13., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF16, INST = 14., MODELE = MODEL, CARA_ELEM = CARA),),)
+                             _F( CHAM_GD = CHEFF15, INST = 11., MODELE = MODEL, CARA_ELEM = CARA,),
+                             _F( CHAM_GD = CHEFF16, INST = 12., MODELE = MODEL, CARA_ELEM = CARA,),
+                             _F( CHAM_GD = CHEFF17, INST = 13., MODELE = MODEL, CARA_ELEM = CARA,),
+                             _F( CHAM_GD = CHEFF18, INST = 14., MODELE = MODEL, CARA_ELEM = CARA),),);
 
-RESUELS = CREA_RESU( OPERATION = 'AFFE',
-                     TYPE_RESU = 'EVOL_ELAS',
-                     NOM_CHAM = 'EFGE_ELNO',
-                     AFFE = (_F( CHAM_GD = CHEFF1, INST = 1., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF2, INST = 2., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF3, INST = 3., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF4, INST = 4., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF5, INST = 5., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF12, INST = 6., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF7, INST = 7., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF8, INST = 8., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF9, INST = 9., MODELE = MODEL, CARA_ELEM = CARA,),
-                             _F( CHAM_GD = CHEFF11, INST = 10., MODELE = MODEL, CARA_ELEM = CARA),),)
+# CAS 1 - calcul du ferraillage :
+#--------------------------------
 
-# calcul du ferraillage :
-#------------------------
-RESUELU = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
-                            CODIFICATION = 'BAEL91',
+RESUELU1 = CALC_FERRAILLAGE(RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
                             TYPE_COMB = 'ELU',
-                            INST = (1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14.),
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
                             AFFE = (_F( TOUT = 'OUI',
-                                        C_INF = 0.04,
+                                        TYPE_STRUCTURE = '2D',
                                         C_SUP = 0.04,
-                                        FE = 500.e6,
-                                        FCJ = 35.e6,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        FCK = 35.e6,
                                         GAMMA_S = 1.15,
                                         GAMMA_C = 1.5,
-                                        ALPHA_CC = 0.85,
-                                        RHO_ACIER = 7800,
-                                        UNITE_CONTRAINTE = 'Pa'),),)
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
 
-RESUELS = CALC_FERRAILLAGE( RESULTAT = RESUELS, reuse = RESUELS,
-                            CODIFICATION = 'BAEL91',
-                            TYPE_COMB = 'ELS',
-                            INST = (1., 2., 3., 4., 5., 6., 7., 8., 9.,10.),
-                            AFFE = (_F( TOUT = 'OUI',
-                                        C_INF = 0.04,
-                                        C_SUP = 0.04,
-                                        SIGS_ELS = 400.0E6,
-                                        SIGC_ELS = 21E6,
-                                        N = 15.1,
-                                        RHO_ACIER = 7800,
-                                        UNITE_CONTRAINTE = 'Pa'),),)
-
-COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNST','DNSVOL','CONSTRUC']
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
 #-----------------------------------------------------
-# Tests pour l'ELU
+# Tests pour CAS 1
 #-----------------------------------------------------
-# valeurs de référence DNSXI,DNSXS,DNSYI,DNSYS,DNSVOL,CONSTRUC
 D_ref = [
-    [0.,            0.,            0.,            0.,            0.00159722222, 12.4583333333, 0.12706790123],
-    [0.00115,       0.00115,       0.,            0.,            0.00958333333, 164.45,        0.96174074074],
-    [0.,            0.,            0.00115,       0.00115,       0.00131710318, 99.9734048505, 0.30411620901],
-    [0.,            0.,            0.,            0.00161651316, 0.,            63.0440133391, 0.14009780742],
-    [0.,            0.00161651316, 0.,            0.,            0.,            63.0440133391, 0.14009780742],
-    [0.,            0.00149840200, 0.,            0.,            0.,            58.437678043,  0.12986150676],
-    [0.,            0.00173678541, 0.,            0.,            0.,            67.7346311478, 0.15052140255],
-    [0.00038333333, 0.00421666666, 0.,            0.,            0.,            179.4,         0.39866666666],
-    [0,             0.00161651316, 0.00117226600, 0.,            0.,            108.762387395, 0.24169419421],
-    [0.,            0.,            0.00263015136, 0.,            0.,            102.57590328,  0.22794645173],
-    [-1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.          ],
-    [-1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.          ],
-    [0.,            0.,            0.,            0.,            0.01277777777, 99.6666666667, 1.01654320988],
-    [-1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.          ],
-]
+    [0.,            0.,            0.,            0.,            0.,            0.,            0.,            0.,          ], # 1
+    [0.00115,       0.00115,       0.,            0.,            4.0113556E-03, 1.4094096E-03, 1.3198190E+02, 0.5444913831519799], # 2
+    [0.,            0.,            0.00115,       0.00115,       0.,            0.,            8.9700000E+01, 1.9933333E-01], # 3
+    [0.,            0.,            0.,            0.00158351182, 0.,            0.,            6.1756961E+01, 1.3723769E-01], # 4
+    [0.,            0.00158351182, 0.,            0.,            0.,            0.,            6.1756961E+01, 1.3723769E-01], # 5
+    [0.,            0.00146007491, 0.,            0.,            0.,            0.,            5.6942921E+01, 1.2653982E-01], # 6
+    [0.,            0.00170854611, 0.,            0.,            0.,            0.,            6.6633298E+01, 1.4807399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.,            0.,            0.,            0.,            1.7940000E+02, 3.9866666E-01], # 8
+    [0.,            0.00158351182, 0.00115593019, 0.,            0.,            0.,            1.0683823E+02, 2.3741830E-01], # 9
+    [0.,            0.,            0.00252854447, 0.,            0.,            0.,            9.8613234E+01, 2.1914052E-01], # 10
+    [0.,            0.,            0.01302618694, 0.,            0.,            0.,            5.0802129E+02, 1.1289362E+00], # 11
+    [-1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.          ], # 12
+    [0.,            0.,            0.,            0.,            1.3021073E-03, 6.3151712E-03, 5.9414772E+01, 0.24735887552409078], # 13
+    [-1.,           -1.,           -1.,           -1.,           -1.,           -1           , -1.,           -1.          ], # 14
+];
 
-# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS,DNSVOL,CONSTRUC
 D_calc = [
-    [0.,            0.,            0.,            0.,            0.00159722222, 12.4583333333, 0.12706790123],
-    [0.00115,       0.00115,       0.,            0.,            0.00958333333, 164.45,        0.96174074074],
-    [0.,            0.,            0.00115,       0.00115,       0.00131710318, 99.9734048505, 0.30411620901],
-    [0.,            0.,            0.,            0.00161651316, 0.,            63.0440133391, 0.14009780742],
-    [0.,            0.00161651316, 0.,            0.,            0.,            63.0440133391, 0.14009780742],
-    [0.,            0.00149840200, 0.,            0.,            0.,            58.437678043,  0.12986150676],
-    [0.,            0.00173678541, 0.,            0.,            0.,            67.7346311478, 0.15052140255],
-    [0.00038333333, 0.00421666666, 0.,            0.,            0.,            179.4,         0.39866666666],
-    [0.,            0.00161651316, 0.00117226600, 0.,            0.,            108.762387395, 0.24169419421],
-    [0.,            0.,            0.00263015136, 0.,            0.,            102.57590328,  0.22794645173],
-    [-1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.          ],
-    [-1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.          ],
-    [0.,            0.,            0.,            0.,            0.01277777777, 99.6666666667, 1.01654320988],
-    [-1.,           -1.,           -1.,           -1.,           -1.          , -1.,           -1.          ],
-]
+    [0.,            0.,            0.,            0.,            0.,            0.,            0.,            0.,          ], # 1
+    [0.00115,       0.00115,       0.,            0.,            4.0113556E-03, 1.4094096E-03, 1.3198190E+02, 0.5444913831519799], # 2
+    [0.,            0.,            0.00115,       0.00115,       0.,            0.,            8.9700000E+01, 1.9933333E-01], # 3
+    [0.,            0.,            0.,            0.00158351182, 0.,            0.,            6.1756961E+01, 1.3723769E-01], # 4
+    [0.,            0.00158351182, 0.,            0.,            0.,            0.,            6.1756961E+01, 1.3723769E-01], # 5
+    [0.,            0.00146007491, 0.,            0.,            0.,            0.,            5.6942921E+01, 1.2653982E-01], # 6
+    [0.,            0.00170854611, 0.,            0.,            0.,            0.,            6.6633298E+01, 1.4807399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.,            0.,            0.,            0.,            1.7940000E+02, 3.9866666E-01], # 8
+    [0.,            0.00158351182, 0.00115593019, 0.,            0.,            0.,            1.0683823E+02, 2.3741830E-01], # 9
+    [0.,            0.,            0.00252854447, 0.,            0.,            0.,            9.8613234E+01, 2.1914052E-01], # 10
+    [0.,            0.,            0.01302618694, 0.,            0.,            0.,            5.0802129E+02, 1.1289362E+00], # 11
+    [-1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.,           -1.          ], # 12
+    [0.,            0.,            0.,            0.,            1.3021073E-03, 6.3151712E-03, 5.9414772E+01, 0.24735887552409078], # 13
+    [-1.,           -1.,           -1.,           -1.,           -1.,           -1           , -1.,           -1.          ], # 14
+];
 
 for j in range(len(D_ref)) :
     for i,ncmp in enumerate(COMP) :
         if (D_ref[j][i] == 0):
-            TEST_RESU( RESU = _F( RESULTAT = RESUELU,
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU1,
                                   INST = j+1.0,
                                   NOM_CHAM = 'FERRAILLAGE',
                                   NOM_CMP = ncmp,
-                                  GROUP_MA = 'M1',
+                                  MAILLE = 'M1',
                                   LEGENDE = 'ELU',
                                   VALE_REFE = D_ref[j][i],
                                   VALE_CALC = D_calc[j][i],
                                   REFERENCE = 'ANALYTIQUE',
-                                  ORDRE_GRANDEUR = 1.e-6,
-                                  CRITERE = 'ABSOLU',),)
-        else:
-            TEST_RESU( RESU = _F( RESULTAT = RESUELU,
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU1,
                                   INST = j+1.0,
                                   NOM_CHAM = 'FERRAILLAGE',
                                   NOM_CMP = ncmp,
-                                  GROUP_MA = 'M1',
+                                  MAILLE = 'M1',
                                   LEGENDE = 'ELU',
                                   VALE_REFE = D_ref[j][i],
                                   REFERENCE = 'ANALYTIQUE',
-                                  PRECISION = 1e-6,
-                                  VALE_CALC = D_calc[j][i],),)
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
 
+
+# CAS 2 - calcul du ferraillage avec acier de compression :
+#----------------------------------------------------------
+
+RESUELU2 = CALC_FERRAILLAGE(RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        FERR_COMP = 'OUI',
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        FCK = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
+
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
 #-----------------------------------------------------
-# Tests pour l'ELS
+# Tests pour CAS 2
 #-----------------------------------------------------
 D_ref = [
-    [0.,            0.,            0.,            0.           , -1.,           0.,            0.           ],
-    [0.00125,       0.00125,       0.,            0.           , -1.,           97.5,          0.21666666666],
-    [0.,            0.,            0.00125,       0.00125      , -1.,           97.5,          0.21666666666],
-    [0.,            0.,            0.,            0.00183101891, -1.,           71.4097375612, 0.15868830569],
-    [0.,            0.00183101891, 0.,            0.           , -1.,           71.4097375612, 0.15868830569],
-    [0.,            0.00180444738, 0.,            0.           , -1.,           70.3734480748, 0.15638544016],
-    [0.,            0.00196422897, 0.,            0.           , -1.,           76.6049301585, 0.17023317813],
-    [0.00041666666, 0.00458333333, 0.,            0.           , -1.,           195.,          0.43333333333],
-    [0.,            0.00183101891, 0.00134856130, 0.           , -1.,           124.003628557, 0.27556361901],
-    [0.,            0.,            0.00183101891, 0.           , -1.,           71.4097375612, 0.15868830569],
-]
+    [0.,            0.,            0.,            0.,            0.,            0.,            0.,            0.,          ], # 1
+    [0.00115,       0.00115,       0.,            0.,            4.0113556E-03, 1.4094096E-03, 1.3198190E+02, 0.5444913831519799], # 2
+    [0.,            0.,            0.00115,       0.00115,       0.,            0.,            8.9700000E+01, 1.9933333E-01], # 3
+    [0.,            0.,            0.,            0.00158351182, 0.,            0.,            6.1756961E+01, 1.3723769E-01], # 4
+    [0.,            0.00158351182, 0.,            0.,            0.,            0.,            6.1756961E+01, 1.3723769E-01], # 5
+    [0.,            0.00146007491, 0.,            0.,            0.,            0.,            5.6942921E+01, 1.2653982E-01], # 6
+    [0.,            0.00170854611, 0.,            0.,            0.,            0.,            6.6633298E+01, 1.4807399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.,            0.,            0.,            0.,            1.7940000E+02, 3.9866666E-01], # 8
+    [0.,            0.00158351182, 0.00115593019, 0.,            0.,            0.,            1.0683823E+02, 2.3741830E-01], # 9
+    [0.,            0.,            0.00252854447, 0.,            0.,            0.,            9.8613234E+01, 2.1914052E-01], # 10
+    [0.,            0.,            0.00505733482, 0.00068338051, 0.,            0.,            223.887898353, 0.49752866300], # 11
+    [0.,            0.,            7.3807163E-03, 2.9833805E-03, 0.,            0.,            4.0419977E+02, 8.9822172E-01], # 12
+    [0.,            0.,            0.,            0.,            1.3021073E-03, 6.3151712E-03, 5.9414772E+01, 0.24735887552409078], # 13
+    [8.1583805E-03, 2.1736782E-03, 0.,            6.5344961E-05, 0.,            0.,            4.0549874E+02, 9.0110832E-01], # 14
+];
 
-# valeurs de non-regression DNSXI,DNSXS,DNSYI,DNSYS
 D_calc = [
-    [0.,            0.,            0.,            0.           , -1.,           0.,            0.           ],
-    [0.00125,       0.00125,       0.,            0.           , -1.,           97.5,          0.21666666666],
-    [0.,            0.,            0.00125,       0.00125      , -1.,           97.5,          0.21666666666],
-    [0.,            0.,            0.,            0.00183101891, -1.,           71.4097375612, 0.15868830569],
-    [0.,            0.00183101891, 0.,            0.           , -1.,           71.4097375612, 0.15868830569],
-    [0.,            0.00180444738, 0.,            0.           , -1.,           70.3734480748, 0.15638544016],
-    [0.,            0.00196422897, 0.,            0.           , -1.,           76.6049301585, 0.17023317813],
-    [0.00041666666, 0.00458333333, 0.,            0.           , -1.,           195.,          0.43333333333],
-    [0.,            0.00183101891, 0.00134856130, 0.           , -1.,           124.003628557, 0.27556361901],
-    [0.,            0.,            0.00183101891, 0.           , -1.,           71.4097375612, 0.15868830569],
-    ]
+    [0.,            0.,            0.,            0.,            0.,            0.,            0.,            0.,          ], # 1
+    [0.00115,       0.00115,       0.,            0.,            4.0113556E-03, 1.4094096E-03, 1.3198190E+02, 0.5444913831519799], # 2
+    [0.,            0.,            0.00115,       0.00115,       0.,            0.,            8.9700000E+01, 1.9933333E-01], # 3
+    [0.,            0.,            0.,            0.00158351182, 0.,            0.,            6.1756961E+01, 1.3723769E-01], # 4
+    [0.,            0.00158351182, 0.,            0.,            0.,            0.,            6.1756961E+01, 1.3723769E-01], # 5
+    [0.,            0.00146007491, 0.,            0.,            0.,            0.,            5.6942921E+01, 1.2653982E-01], # 6
+    [0.,            0.00170854611, 0.,            0.,            0.,            0.,            6.6633298E+01, 1.4807399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.,            0.,            0.,            0.,            1.7940000E+02, 3.9866666E-01], # 8
+    [0.,            0.00158351182, 0.00115593019, 0.,            0.,            0.,            1.0683823E+02, 2.3741830E-01], # 9
+    [0.,            0.,            0.00252854447, 0.,            0.,            0.,            9.8613234E+01, 2.1914052E-01], # 10
+    [0.,            0.,            0.00505733482, 0.00068338051, 0.,            0.,            223.887898353, 0.49752866300], # 11
+    [0.,            0.,            7.3807163E-03, 2.9833805E-03, 0.,            0.,            4.0419977E+02, 8.9822172E-01], # 12
+    [0.,            0.,            0.,            0.,            1.3021073E-03, 6.3151712E-03, 5.9414772E+01, 0.24735887552409078], # 13
+    [8.1583805E-03, 2.1736782E-03, 0.,            6.5344961E-05, 0.,            0.,            4.0549874E+02, 9.0110832E-01], # 14
+];
 
 for j in range(len(D_ref)) :
     for i,ncmp in enumerate(COMP) :
         if (D_ref[j][i] == 0):
-            TEST_RESU( RESU = _F( RESULTAT = RESUELS,
-                       INST = j+1.0,
-                       NOM_CHAM = 'FERRAILLAGE',
-                       NOM_CMP = ncmp,
-                       LEGENDE = 'ELS',
-                       GROUP_MA = 'M1',
-                       VALE_CALC = D_calc[j][i],
-                       VALE_REFE = D_ref[j][i],
-                       REFERENCE = 'ANALYTIQUE',
-                       ORDRE_GRANDEUR = 1.e-3,
-                       CRITERE = 'ABSOLU',),)
-        else:
-            TEST_RESU( RESU = _F( RESULTAT = RESUELS,
-                       INST = j+1.0,
-                       NOM_CHAM = 'FERRAILLAGE',
-                       NOM_CMP = ncmp,
-                       LEGENDE = 'ELS',
-                       GROUP_MA = 'M1',
-                       VALE_REFE = D_ref[j][i],
-                       REFERENCE = 'ANALYTIQUE',
-                       VALE_CALC = D_calc[j][i],),)
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU2,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU2,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
 
-Telu = CREA_TABLE( RESU = _F( RESULTAT = RESUELU,
-                              NOM_CHAM = 'FERRAILLAGE',
-                              TOUT_CMP = 'OUI',
-                              GROUP_MA = 'M1'),)
+# CAS 3 - calcul du ferraillage avec ferraillage minimum:
+#--------------------------------------------------------
 
-IMPR_TABLE( UNITE = 8,TABLE = Telu, FORMAT = 'TABLEAU', SEPARATEUR = ';', TITRE ='')
+RESUELU3 = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        FERR_COMP = 'OUI',
+                                        FERR_MIN = 'CODE',
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        FCK = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
 
-Tels = CREA_TABLE( RESU = _F( RESULTAT = RESUELS,
-                              NOM_CHAM = 'FERRAILLAGE',
-                              TOUT_CMP = 'OUI',
-                              GROUP_MA = 'M1'),)
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
+#-----------------------------------------------------
+# Tests pour CAS 3
+#-----------------------------------------------------
+D_ref = [
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.,            0.,            3.2448000E+01, 7.2106666E-02], # 1
+    [0.00115,       0.00115,       0.000208,      0.000208,      4.0113556E-03, 1.4094096E-03, 1.4820596E+02, 0.5805447164853131], # 2
+    [0.000208,      0.000208,      0.00115,       0.00115,       0.,            0.,            1.0592400E+02, 2.3538666E-01], # 3
+    [0.000208,      0.000208,      0.000208,      0.00158351182, 0.,            0.,            8.6092961E+01, 1.9131769E-01], # 4
+    [0.000208,      0.00158351182, 0.000208,      0.000208,      0.,            0.,            8.6092961E+01, 1.9131769E-01], # 5
+    [0.000208,      0.00146007491, 0.000208,      0.000208,      0.,            0.,            8.1278921E+01, 1.8061982E-01], # 6
+    [0.000208,      0.00170854611, 0.000208,      0.000208,      0.,            0.,            9.0969298E+01, 2.0215399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.000208,      0.000208,      0.,            0.,            1.9562400E+02, 4.3472000E-01], # 8
+    [0.000208,      0.00158351182, 0.00115593019, 0.000208,      0.,            0.,            1.2306223E+02, 2.7347169E-01], # 9
+    [0.000208,      0.000208,      0.00252854447, 0.000208,      0.,            0.,            1.2294923E+02, 2.7322052E-01], # 10
+    [0.000208,      0.000208,      0.005048678295026455, 0.00068338051, 0.,            0.,            2.3977429E+02, 5.3283176E-01], # 11
+    [0.000208,      0.000208,      0.007348678295026455, 2.9833805E-03, 0.,            0.,            4.1917429E+02, 9.3149843E-01], # 12
+    [0.000208,      0.000208,      0.000208,      0.000208,      1.3021073E-03, 6.3151712E-03, 9.1862772E+01, 0.3194655421907574], # 13
+    [8.1583805E-03, 2.1736782E-03, 0.000208,      0.000208,      0.,            0.,            4.1917429E+02, 9.3149843E-01], # 14
+];
 
-IMPR_TABLE( UNITE = 8, TABLE = Tels, FORMAT = 'TABLEAU', SEPARATEUR = ';', TITRE = '')
+D_calc = [
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.,            0.,            3.2448000E+01, 7.2106666E-02], # 1
+    [0.00115,       0.00115,       0.000208,      0.000208,      4.0113556E-03, 1.4094096E-03, 1.4820596E+02, 0.5805447164853131], # 2
+    [0.000208,      0.000208,      0.00115,       0.00115,       0.,            0.,            1.0592400E+02, 2.3538666E-01], # 3
+    [0.000208,      0.000208,      0.000208,      0.00158351182, 0.,            0.,            8.6092961E+01, 1.9131769E-01], # 4
+    [0.000208,      0.00158351182, 0.000208,      0.000208,      0.,            0.,            8.6092961E+01, 1.9131769E-01], # 5
+    [0.000208,      0.00146007491, 0.000208,      0.000208,      0.,            0.,            8.1278921E+01, 1.8061982E-01], # 6
+    [0.000208,      0.00170854611, 0.000208,      0.000208,      0.,            0.,            9.0969298E+01, 2.0215399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.000208,      0.000208,      0.,            0.,            1.9562400E+02, 4.3472000E-01], # 8
+    [0.000208,      0.00158351182, 0.00115593019, 0.000208,      0.,            0.,            1.2306223E+02, 2.7347169E-01], # 9
+    [0.000208,      0.000208,      0.00252854447, 0.000208,      0.,            0.,            1.2294923E+02, 2.7322052E-01], # 10
+    [0.000208,      0.000208,      0.005048678295026455, 0.00068338051, 0.,            0.,            2.3977429E+02, 5.3283176E-01], # 11
+    [0.000208,      0.000208,      0.007348678295026455, 2.9833805E-03, 0.,            0.,            4.1917429E+02, 9.3149843E-01], # 12
+    [0.000208,      0.000208,      0.000208,      0.000208,      1.3021073E-03, 6.3151712E-03, 9.1862772E+01, 0.3194655421907574], # 13
+    [8.1583805E-03, 2.1736782E-03, 0.000208,      0.000208,      0.,            0.,            4.1917429E+02, 9.3149843E-01], # 14
+];
 
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(COMP) :
+        if (D_ref[j][i] == 0):
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU3,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU3,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
+
+# CAS 4 - calcul du ferraillage avec changement TYPE_DIAG :
+#----------------------------------------------------------
+
+RESUELU4 = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        FERR_COMP = 'OUI',
+                                        FERR_MIN = 'CODE',
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B1',
+                                        FCK = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
+
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
+#-----------------------------------------------------
+# Tests pour CAS 4
+#-----------------------------------------------------
+D_ref = [
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.,            0.,            3.2448000E+01, 7.2106666E-02], # 1
+    [0.0010731071232788366,      0.0010731071232788366,      0.000208,      0.000208,      4.0113556E-03, 1.4094096E-03, 142.20832521698676, 0.5672166178536449], # 2
+    [0.000208,      0.000208,      0.0010731071232788366,      0.0010731071232788366,      0.,            0.,            99.92635561574924, 0.22205856803499832], # 3
+    [0.000208,      0.000208,      0.000208,      0.0015585059698770087,     0.,            0.,            85.11773282520333, 0.18915051738934074], # 4
+    [0.000208,      0.0015585059698770087,     0.000208,      0.000208,      0.,            0.,            85.11773282520333, 0.18915051738934074], # 5
+    [0.000208,      0.0014392818081603884,    0.000208,      0.000208,      0.,            0.,            80.46799051825514, 0.17881775670723363], # 6
+    [0.000208,      0.00167859349, 0.000208,      0.000208,      0.,            0.,            89.80114638719077, 0.19955810308264613], # 7
+    [0.00035770237, 0.00393472611, 0.000208,      0.000208,      0.,            0.,            183.6287112314984, 0.40806380273666326], # 8
+    [0.000208,      0.00155850596, 0.001127276,   0.000208,      0.,            0.,            120.9694968842802, 0.2688211041872895], # 9
+    [0.000208,      0.000208,      0.002512032507840575, 0.000208,      0.,            0.,            122.3052678057824, 0.2717894840128498], # 10
+    [0.000208,      0.000208,      0.00504865423628703, 0.0006833391207600863, 0.,            0.,            239.77174092483753, 0.5328260909440834], # 11
+    [0.000208,      0.000208,      0.007348643275972779, 0.002983199795857845, 0.,            0.,            419.1658798013943, 0.9314797328919874], # 12
+    [0.000208,      0.000208,      0.000208,      0.000208,      1.3021073E-03, 6.3151712E-03, 9.1862772E+01, 0.3194655421907574], # 13
+    [0.0081578863148278, 0.0021736679366798468, 0.000208,      0.000208,      0.,            0.,            419.15461580879827, 0.9314547017973295], # 14
+];
+
+D_calc = [
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.,            0.,            3.2448000E+01, 7.2106666E-02], # 1
+    [0.0010731071232788366,      0.0010731071232788366,      0.000208,      0.000208,      4.0113556E-03, 1.4094096E-03, 142.20832521698676, 0.5672166178536449], # 2
+    [0.000208,      0.000208,      0.0010731071232788366,      0.0010731071232788366,      0.,            0.,            99.92635561574924, 0.22205856803499832], # 3
+    [0.000208,      0.000208,      0.000208,      0.0015585059698770087,     0.,            0.,            85.11773282520333, 0.18915051738934074], # 4
+    [0.000208,      0.0015585059698770087,     0.000208,      0.000208,      0.,            0.,            85.11773282520333, 0.18915051738934074], # 5
+    [0.000208,      0.0014392818081603884,    0.000208,      0.000208,      0.,            0.,            80.46799051825514, 0.17881775670723363], # 6
+    [0.000208,      0.00167859349, 0.000208,      0.000208,      0.,            0.,            89.80114638719077, 0.19955810308264613], # 7
+    [0.00035770237, 0.00393472611, 0.000208,      0.000208,      0.,            0.,            183.6287112314984, 0.40806380273666326], # 8
+    [0.000208,      0.00155850596, 0.001127276,   0.000208,      0.,            0.,            120.9694968842802, 0.2688211041872895], # 9
+    [0.000208,      0.000208,      0.002512032507840575, 0.000208,      0.,            0.,            122.3052678057824, 0.2717894840128498], # 10
+    [0.000208,      0.000208,      0.00504865423628703, 0.0006833391207600863, 0.,            0.,            239.77174092483753, 0.5328260909440834], # 11
+    [0.000208,      0.000208,      0.007348643275972779, 0.002983199795857845, 0.,            0.,            419.1658798013943, 0.9314797328919874], # 12
+    [0.000208,      0.000208,      0.000208,      0.000208,      1.3021073E-03, 6.3151712E-03, 9.1862772E+01, 0.3194655421907574], # 13
+    [0.0081578863148278, 0.0021736679366798468, 0.000208,      0.000208,      0.,            0.,            419.15461580879827, 0.9314547017973295], # 14
+];
+
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(COMP) :
+        if (D_ref[j][i] == 0):
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU4,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU4,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
+
+# CAS 5 - calcul du ferraillage avec UTIL_COMPR = 'OUI' :
+#-------------------------------------------------------
+
+RESUELU5 = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        FERR_COMP = 'OUI',
+                                        FERR_MIN = 'CODE',
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        UTIL_COMPR = 'OUI',
+                                        FCK = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
+
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
+#-----------------------------------------------------
+# Tests pour CAS 5
+#-----------------------------------------------------
+D_ref = [
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.,            0.,            3.2448000E+01, 7.2106666E-02], # 1
+    [0.00115,       0.00115,       0.000208,      0.000208,      4.0113556E-03, 1.4094096E-03, 1.4820596E+02, 0.5805447164853131], # 2
+    [0.000208,      0.000208,      0.00115,       0.00115,       0.,            0.,            1.0592400E+02, 2.3538666E-01], # 3
+    [0.000208,      0.000208,      0.000208,      0.00158351182, 0.,            0.,            8.6092961E+01, 1.9131769E-01], # 4
+    [0.000208,      0.00158351182, 0.000208,      0.000208,      0.,            0.,            8.6092961E+01, 1.9131769E-01], # 5
+    [0.000208,      0.00146007491, 0.000208,      0.000208,      0.,            0.,            8.1278921E+01, 1.8061982E-01], # 6
+    [0.000208,      0.00170854611, 0.000208,      0.000208,      0.,            0.,            9.0969298E+01, 2.0215399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.000208,      0.000208,      0.,            0.,            1.9562400E+02, 4.3472000E-01], # 8
+    [0.000208,      0.00158351182, 0.00115593019, 0.000208,      0.,            0.,            1.2306223E+02, 2.7347169E-01], # 9
+    [0.000208,      0.000208,      0.00252854447, 0.000208,      0.,            0.,            1.2294923E+02, 2.7322052E-01], # 10
+    [0.000208,      0.000208,      0.005048678295026455, 0.00068338051, 0.,            0.,            2.3977429E+02, 5.3283176E-01], # 11
+    [0.000208,      0.000208,      0.007348678295026455, 2.9833805E-03, 0.,            0.,            4.1917429E+02, 9.3149843E-01], # 12
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.0017208263673295359, 0.005506860743993114, 88.82395946831667, 0.3314511600827858], # 13
+    [8.1583805E-03, 2.1736782E-03, 0.000208,      0.000208,      0.,            0.,            4.1917429E+02, 9.3149843E-01], # 14
+];
+
+D_calc = [
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.,            0.,            3.2448000E+01, 7.2106666E-02], # 1
+    [0.00115,       0.00115,       0.000208,      0.000208,      4.0113556E-03, 1.4094096E-03, 1.4820596E+02, 0.5805447164853131], # 2
+    [0.000208,      0.000208,      0.00115,       0.00115,       0.,            0.,            1.0592400E+02, 2.3538666E-01], # 3
+    [0.000208,      0.000208,      0.000208,      0.00158351182, 0.,            0.,            8.6092961E+01, 1.9131769E-01], # 4
+    [0.000208,      0.00158351182, 0.000208,      0.000208,      0.,            0.,            8.6092961E+01, 1.9131769E-01], # 5
+    [0.000208,      0.00146007491, 0.000208,      0.000208,      0.,            0.,            8.1278921E+01, 1.8061982E-01], # 6
+    [0.000208,      0.00170854611, 0.000208,      0.000208,      0.,            0.,            9.0969298E+01, 2.0215399E-01], # 7
+    [0.00038333333, 0.00421666666, 0.000208,      0.000208,      0.,            0.,            1.9562400E+02, 4.3472000E-01], # 8
+    [0.000208,      0.00158351182, 0.00115593019, 0.000208,      0.,            0.,            1.2306223E+02, 2.7347169E-01], # 9
+    [0.000208,      0.000208,      0.00252854447, 0.000208,      0.,            0.,            1.2294923E+02, 2.7322052E-01], # 10
+    [0.000208,      0.000208,      0.005048678295026455, 0.00068338051, 0.,            0.,            2.3977429E+02, 5.3283176E-01], # 11
+    [0.000208,      0.000208,      0.007348678295026455, 2.9833805E-03, 0.,            0.,            4.1917429E+02, 9.3149843E-01], # 12
+    [0.000208,      0.000208,      0.000208,      0.000208,      0.0017208263673295359, 0.005506860743993114, 88.82395946831667, 0.3314511600827858], # 13
+    [8.1583805E-03, 2.1736782E-03, 0.000208,      0.000208,      0.,            0.,            4.1917429E+02, 9.3149843E-01], # 14
+];
+
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(COMP) :
+        if (D_ref[j][i] == 0):
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU5,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU5,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
+
+# CAS 6 - calcul du ferraillage avec changement EPURE_CISA = 'OUI' :
+#-------------------------------------------------------------------
+
+RESUELU6 = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        FERR_COMP = 'OUI',
+                                        FERR_MIN = 'CODE',
+                                        EPURE_CISA = 'OUI',
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        FCK = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
+
+
+
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
+#-----------------------------------------------------
+# Tests pour CAS 6
+#-----------------------------------------------------
+D_ref = [
+    [2.08000000000000E-04,  2.08000000000000E-04,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 3.24480000000000E+01,  7.21066666666667E-02], # 1
+    [4.76073513960142E-03,  1.15000000000000E-03,  1.26864966545178E-03,  2.08000000000000E-04,  4.01135566371042E-03,  1.40940966978157E-03, 3.30389976998312E+02,  0.9853980662565908], # 2
+    [2.08000000000000E-04,  2.08000000000000E-04,  1.03240553516279E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00, 1.01337815871349E+02,  2.25195146380775E-01], # 3
+    [2.08000000000000E-04,  2.08000000000000E-04,  2.08000000000000E-04,  1.58351182204287E-03,  0.00000000000000E+00,  0.00000000000000E+00, 8.60929610596718E+01,  1.91317691243715E-01], # 4
+    [2.08000000000000E-04,  1.58351182204287E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 8.60929610596718E+01,  1.91317691243715E-01], # 5
+    [2.08000000000000E-04,  1.46007491582497E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 8.12789217171737E+01,  1.80619826038164E-01], # 6
+    [2.08000000000000E-04,  1.70854611494712E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 9.09692984829377E+01,  2.02153996628750E-01], # 7
+    [3.83333333333332E-04,  4.21666666666667E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 1.95624000000000E+02,  4.34720000000000E-01], # 8
+    [2.08000000000000E-04,  1.58351182204287E-03,  1.15593019950243E-03,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 1.23062238840267E+02,  2.73471641867259E-01], # 9
+    [2.08000000000000E-04,  2.08000000000000E-04,  2.52854447869089E-03,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 1.22949234668945E+02,  2.73220521486543E-01], # 10
+    [2.08000000000000E-04,  2.08000000000000E-04,  5.04867829502645E-03,  6.83380517248678E-04,  0.00000000000000E+00,  0.00000000000000E+00, 2.39774293678730E+02,  5.32831763730511E-01], # 11
+    [2.08000000000000E-04,  2.08000000000000E-04,  7.34867829502645E-03,  2.98338051724868E-03,  0.00000000000000E+00,  0.00000000000000E+00, 4.19174293678730E+02,  9.31498430397178E-01], # 12
+    [1.54896467792191E-03,  2.08000000000000E-04,  4.95688172881571E-03,  2.08000000000000E-04,  1.30210730266157E-03,  6.31517122943701E-03, 3.29366782413136E+02,  0.847252230774684], # 13
+    [8.15838051724868E-03,  2.17367829502645E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 4.19174293678730E+02,  9.31498430397178E-01], # 14
+];
+
+D_calc = [
+    [2.08000000000000E-04,  2.08000000000000E-04,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 3.24480000000000E+01,  7.21066666666667E-02], # 1
+    [4.76073513960142E-03,  1.15000000000000E-03,  1.26864966545178E-03,  2.08000000000000E-04,  4.01135566371042E-03,  1.40940966978157E-03, 3.30389976998312E+02,  0.9853980662565908], # 2
+    [2.08000000000000E-04,  2.08000000000000E-04,  1.03240553516279E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00, 1.01337815871349E+02,  2.25195146380775E-01], # 3
+    [2.08000000000000E-04,  2.08000000000000E-04,  2.08000000000000E-04,  1.58351182204287E-03,  0.00000000000000E+00,  0.00000000000000E+00, 8.60929610596718E+01,  1.91317691243715E-01], # 4
+    [2.08000000000000E-04,  1.58351182204287E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 8.60929610596718E+01,  1.91317691243715E-01], # 5
+    [2.08000000000000E-04,  1.46007491582497E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 8.12789217171737E+01,  1.80619826038164E-01], # 6
+    [2.08000000000000E-04,  1.70854611494712E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 9.09692984829377E+01,  2.02153996628750E-01], # 7
+    [3.83333333333332E-04,  4.21666666666667E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 1.95624000000000E+02,  4.34720000000000E-01], # 8
+    [2.08000000000000E-04,  1.58351182204287E-03,  1.15593019950243E-03,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 1.23062238840267E+02,  2.73471641867259E-01], # 9
+    [2.08000000000000E-04,  2.08000000000000E-04,  2.52854447869089E-03,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 1.22949234668945E+02,  2.73220521486543E-01], # 10
+    [2.08000000000000E-04,  2.08000000000000E-04,  5.04867829502645E-03,  6.83380517248678E-04,  0.00000000000000E+00,  0.00000000000000E+00, 2.39774293678730E+02,  5.32831763730511E-01], # 11
+    [2.08000000000000E-04,  2.08000000000000E-04,  7.34867829502645E-03,  2.98338051724868E-03,  0.00000000000000E+00,  0.00000000000000E+00, 4.19174293678730E+02,  9.31498430397178E-01], # 12
+    [1.54896467792191E-03,  2.08000000000000E-04,  4.95688172881571E-03,  2.08000000000000E-04,  1.30210730266157E-03,  6.31517122943701E-03, 3.29366782413136E+02,  0.847252230774684], # 13
+    [8.15838051724868E-03,  2.17367829502645E-03,  2.08000000000000E-04,  2.08000000000000E-04,  0.00000000000000E+00,  0.00000000000000E+00, 4.19174293678730E+02,  9.31498430397178E-01], # 14
+];
+
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(COMP) :
+        if (D_ref[j][i] == 0):
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU6,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU6,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
+
+# CAS 7 - calcul du ferraillage avec FERR_SYME = 'OUI' :
+#-------------------------------------------------------
+
+RESUELU7 = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        FERR_COMP = 'OUI',
+                                        FERR_SYME = 'OUI',
+                                        SEUIL_SYME = 1.e-4,
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        FCK = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
+
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
+#-----------------------------------------------------
+# Tests pour CAS 7
+#-----------------------------------------------------
+D_ref = [
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 0.00000000000000E+00,  0.00000000000000E+00], # 1
+           [1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  4.01135566371042E-03,  1.40940966978157E-03, 1.31981969601238E+02,  0.5444913831519799], # 2
+           [2.56033126806839E-34,  2.56033126806839E-34,  1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00, 8.97000000000000E+01,  1.99333333333333E-01], # 3
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 4
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 5
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 6
+           [1.70411160946313E-03,  1.69956726687831E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 1.32743476177316E+02,  2.94985502616258E-01], # 7
+           [3.87857926406379E-03,  3.91475553354497E-03,  0.00000000000000E+00,  5.40550026675057E-06,  0.00000000000000E+00,  0.00000000000000E+00, 3.04150871617145E+02,  6.75890825815878E-01], # 8
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 9
+           [0.00000000000000E+00, -5.67170845062065E-34,  2.52756247703704E-03,  2.54750812895182E-03,  0.00000000000000E+00,  0.00000000000000E+00, 1.97927753633565E+02,  4.39839452519034E-01], # 10
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 11
+           [0.00000000000000E+00, -1.53400600363201E-33,  6.96817544634921E-03,  6.89015099795158E-03,  0.00000000000000E+00,  0.00000000000000E+00, 5.40474731327731E+02,  1.20105495850607E+00], # 12
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.30210730266157E-03,  6.31517122943701E-03, 5.94147725503689E+01,  0.24735887552409078], # 13
+           [7.45958531724868E-03,  7.37834459005967E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 5.78679266385026E+02,  1.28595392530006E+00], # 14
+];
+
+D_calc = [
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 0.00000000000000E+00,  0.00000000000000E+00], # 1
+           [1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  4.01135566371042E-03,  1.40940966978157E-03, 1.31981969601238E+02,  0.5444913831519799], # 2
+           [2.56033126806839E-34,  2.56033126806839E-34,  1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00, 8.97000000000000E+01,  1.99333333333333E-01], # 3
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 4
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 5
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 6
+           [1.70411160946313E-03,  1.69956726687831E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 1.32743476177316E+02,  2.94985502616258E-01], # 7
+           [3.87857926406379E-03,  3.91475553354497E-03,  0.00000000000000E+00,  5.40550026675057E-06,  0.00000000000000E+00,  0.00000000000000E+00, 3.04150871617145E+02,  6.75890825815878E-01], # 8
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 9
+           [0.00000000000000E+00, -5.67170845062065E-34,  2.52756247703704E-03,  2.54750812895182E-03,  0.00000000000000E+00,  0.00000000000000E+00, 1.97927753633565E+02,  4.39839452519034E-01], # 10
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 11
+           [0.00000000000000E+00, -1.53400600363201E-33,  6.96817544634921E-03,  6.89015099795158E-03,  0.00000000000000E+00,  0.00000000000000E+00, 5.40474731327731E+02,  1.20105495850607E+00], # 12
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.30210730266157E-03,  6.31517122943701E-03, 5.94147725503689E+01,  0.24735887552409078], # 13
+           [7.45958531724868E-03,  7.37834459005967E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 5.78679266385026E+02,  1.28595392530006E+00], # 14
+];
+
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(COMP) :
+        if (D_ref[j][i] == 0):
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU7,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU7,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
+
+# CAS 8 - calcul du ferraillage avec variation de SEUIL_SYME :
+#-------------------------------------------------------------
+
+RESUELU8 = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'EC2',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        FERR_COMP = 'OUI',
+                                        FERR_SYME = 'OUI',
+                                        SEUIL_SYME = 10.e-4,
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FYK = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        FCK = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
+
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
+#-----------------------------------------------------
+# Tests pour CAS 8
+#-----------------------------------------------------
+D_ref = [
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00], # 1
+           [1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  4.01135566371042E-03,  1.40940966978157E-03,  1.31981969601238E+02,  0.5444913831519799], # 2
+           [2.56033126806839E-34,  2.56033126806839E-34,  1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  8.97000000000000E+01,  1.99333333333333E-01], # 3
+           [0.00000000000000E+00,  0.00000000000000E+00,  6.83069618997778E-04,  1.58407375746032E-03,  0.00000000000000E+00,  0.00000000000000E+00,  8.84185916818657E+01,  1.96485759293035E-01], # 4
+           [6.83069618997778E-04,  1.58407375746032E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  8.84185916818657E+01,  1.96485759293035E-01], # 5
+           [6.73281105010919E-04,  1.46497914412698E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  8.33921497163782E+01,  1.85315888258618E-01], # 6
+           [7.70611531716292E-04,  1.70323772613757E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  9.64801210563005E+01,  2.14400269014001E-01], # 7
+           [2.94866809594078E-03,  3.92450971428571E-03,  0.00000000000000E+00,  9.73856507936506E-05,  0.00000000000000E+00,  0.00000000000000E+00,  2.71851974979786E+02,  6.04115499955079E-01], # 8
+           [6.83069618997778E-04,  1.58407375746032E-03,  1.14534304761905E-03,  1.61019575177010E-04,  0.00000000000000E+00,  0.00000000000000E+00,  1.39366733970912E+02,  3.09703853268693E-01], # 9
+           [0.00000000000000E+00,  0.00000000000000E+00,  2.52686031746032E-03,  1.56708778749595E-03,  0.00000000000000E+00,  0.00000000000000E+00,  1.59663976093295E+02,  3.54808835762877E-01], # 10
+           [0.00000000000000E+00,  0.00000000000000E+00,  4.65601676529100E-03,  3.66877833643920E-03,  0.00000000000000E+00,  0.00000000000000E+00,  3.24667008967478E+02,  7.21482242149951E-01], # 11
+           [0.00000000000000E+00,  0.00000000000000E+00,  6.98841447280423E-03,  6.00918054624016E-03,  0.00000000000000E+00,  0.00000000000000E+00,  5.06906205742731E+02,  1.12645823498385E+00], # 12
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.30210730266157E-03,  6.31517122943701E-03,  5.94147725503689E+01,  0.24735887552409078], # 13
+           [7.50498308232804E-03,  6.54064723884273E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  5.47779582525660E+02,  1.21728796116813E+00], # 14
+];
+
+D_calc = [
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00], # 1
+           [1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  4.01135566371042E-03,  1.40940966978157E-03,  1.31981969601238E+02,  0.5444913831519799], # 2
+           [2.56033126806839E-34,  2.56033126806839E-34,  1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  8.97000000000000E+01,  1.99333333333333E-01], # 3
+           [0.00000000000000E+00,  0.00000000000000E+00,  6.83069618997778E-04,  1.58407375746032E-03,  0.00000000000000E+00,  0.00000000000000E+00,  8.84185916818657E+01,  1.96485759293035E-01], # 4
+           [6.83069618997778E-04,  1.58407375746032E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  8.84185916818657E+01,  1.96485759293035E-01], # 5
+           [6.73281105010919E-04,  1.46497914412698E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  8.33921497163782E+01,  1.85315888258618E-01], # 6
+           [7.70611531716292E-04,  1.70323772613757E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  9.64801210563005E+01,  2.14400269014001E-01], # 7
+           [2.94866809594078E-03,  3.92450971428571E-03,  0.00000000000000E+00,  9.73856507936506E-05,  0.00000000000000E+00,  0.00000000000000E+00,  2.71851974979786E+02,  6.04115499955079E-01], # 8
+           [6.83069618997778E-04,  1.58407375746032E-03,  1.14534304761905E-03,  1.61019575177010E-04,  0.00000000000000E+00,  0.00000000000000E+00,  1.39366733970912E+02,  3.09703853268693E-01], # 9
+           [0.00000000000000E+00,  0.00000000000000E+00,  2.52686031746032E-03,  1.56708778749595E-03,  0.00000000000000E+00,  0.00000000000000E+00,  1.59663976093295E+02,  3.54808835762877E-01], # 10
+           [0.00000000000000E+00,  0.00000000000000E+00,  4.65601676529100E-03,  3.66877833643920E-03,  0.00000000000000E+00,  0.00000000000000E+00,  3.24667008967478E+02,  7.21482242149951E-01], # 11
+           [0.00000000000000E+00,  0.00000000000000E+00,  6.98841447280423E-03,  6.00918054624016E-03,  0.00000000000000E+00,  0.00000000000000E+00,  5.06906205742731E+02,  1.12645823498385E+00], # 12
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.30210730266157E-03,  6.31517122943701E-03,  5.94147725503689E+01,  0.24735887552409078], # 13
+           [7.50498308232804E-03,  6.54064723884273E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  5.47779582525660E+02,  1.21728796116813E+00], # 14
+];
+
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(COMP) :
+        if (D_ref[j][i] == 0):
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU8,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU8,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
+
+# CAS 9 - calcul du ferraillage avec BAEL :
+#------------------------------------------
+
+RESUELU9 = CALC_FERRAILLAGE( RESULTAT = RESUELU, reuse = RESUELU,
+                            CODIFICATION = 'BAEL91',
+                            TYPE_COMB = 'ELU',
+                            INST = (1.,2.,3.,4.,5.,6.,7.,8.,9.,10.,11.,12.,13.,14.),
+                            AFFE = (_F( TOUT = 'OUI',
+                                        TYPE_STRUCTURE = '2D',
+                                        C_SUP = 0.04,
+                                        C_INF = 0.04,
+                                        FE = 500.e6,
+                                        EYS = 210.e9,
+                                        TYPE_DIAGRAMME = 'B2',
+                                        FCJ = 35.e6,
+                                        GAMMA_S = 1.15,
+                                        GAMMA_C = 1.5,
+                                        ALPHA_CC = 1.0,
+                                        UNITE_CONTRAINTE = 'Pa',
+                                        UNITE_DIMENSION = 'm',
+                                        RHO_ACIER = 7800.),),);
+
+COMP = ['DNSXI','DNSXS','DNSYI','DNSYS','DNSXT','DNSYT','DNSVOL','CONSTRUC'];
+#-----------------------------------------------------
+# Tests pour CAS 9
+#-----------------------------------------------------
+D_ref = [
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.0014375,  0.0014375, 22.425,  0.1432473244171866], # 1
+           [1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.008624999999999999,  0.008624999999999999, 224.25,  1.058817279836453], # 2
+           [2.56033126806839E-34,  2.56033126806839E-34,  1.15000000000000E-03,  1.15000000000000E-03,  0.0011853928673650773,  0.0011853928673650773, 108.1921287308952,  0.31745810316516937], # 3
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.58351182204287E-03,  0.00000000000000E+00,  0.00000000000000E+00, 6.17569610596718E+01,  1.37237691243715E-01], # 4
+           [0.00000000000000E+00,  1.58351182204287E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 6.17569610596718E+01,  1.37237691243715E-01], # 5
+           [0.00000000000000E+00,  1.46007491582497E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 5.69429217171737E+01,  1.26539826038164E-01], # 6
+           [0.00000000000000E+00,  1.70854611494712E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 6.66332984829377E+01,  1.48073996628750E-01], # 7
+           [3.83333333333332E-04,  4.21666666666667E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 1.79400000000000E+02,  3.98666666666667E-01], # 8
+           [0.00000000000000E+00,  1.58351182204287E-03,  1.15593019950243E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 1.06838238840267E+02,  2.37418308533926E-01], # 9
+           [0.00000000000000E+00,  0.00000000000000E+00,  2.52854447869089E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 9.86132346689446E+01,  2.19140521486544E-01], # 10
+           [0.00000000000000E+00,  0.00000000000000E+00,  1.30261869478650E-02,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 5.08021290966736E+02,  1.12893620214830E+00], # 11
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 12
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.0115,  0.0115, 179.4,  1.1459785953374928], # 13
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 14
+];
+
+D_calc = [
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.0014375,  0.0014375, 22.425,  0.1432473244171866], # 1
+           [1.15000000000000E-03,  1.15000000000000E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.008624999999999999,  0.008624999999999999, 224.25,  1.058817279836453], # 2
+           [2.56033126806839E-34,  2.56033126806839E-34,  1.15000000000000E-03,  1.15000000000000E-03,  0.0011853928673650773,  0.0011853928673650773, 108.1921287308952,  0.31745810316516937], # 3
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  1.58351182204287E-03,  0.00000000000000E+00,  0.00000000000000E+00, 6.17569610596718E+01,  1.37237691243715E-01], # 4
+           [0.00000000000000E+00,  1.58351182204287E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 6.17569610596718E+01,  1.37237691243715E-01], # 5
+           [0.00000000000000E+00,  1.46007491582497E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 5.69429217171737E+01,  1.26539826038164E-01], # 6
+           [0.00000000000000E+00,  1.70854611494712E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 6.66332984829377E+01,  1.48073996628750E-01], # 7
+           [3.83333333333332E-04,  4.21666666666667E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 1.79400000000000E+02,  3.98666666666667E-01], # 8
+           [0.00000000000000E+00,  1.58351182204287E-03,  1.15593019950243E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 1.06838238840267E+02,  2.37418308533926E-01], # 9
+           [0.00000000000000E+00,  0.00000000000000E+00,  2.52854447869089E-03,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 9.86132346689446E+01,  2.19140521486544E-01], # 10
+           [0.00000000000000E+00,  0.00000000000000E+00,  1.30261869478650E-02,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00, 5.08021290966736E+02,  1.12893620214830E+00], # 11
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 12
+           [0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.00000000000000E+00,  0.0115,  0.0115, 179.4,  1.1459785953374928], # 13
+           [-1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00, -1.00000000000000E+00], # 14
+];
+
+for j in range(len(D_ref)) :
+    for i,ncmp in enumerate(COMP) :
+        if (D_ref[j][i] == 0):
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU9,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  VALE_CALC = D_calc[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  ORDRE_GRANDEUR = 1.e-3,
+                                  CRITERE = 'ABSOLU'),);
+        else: 
+            TEST_RESU( RESU = _F( RESULTAT = RESUELU9,
+                                  INST = j+1.0,
+                                  NOM_CHAM = 'FERRAILLAGE',
+                                  NOM_CMP = ncmp,
+                                  MAILLE = 'M1',
+                                  LEGENDE = 'ELU',
+                                  VALE_REFE = D_ref[j][i],
+                                  REFERENCE = 'ANALYTIQUE',
+                                  PRECISION = 1e-4,
+                                  VALE_CALC=D_calc[j][i]),);
 FIN()

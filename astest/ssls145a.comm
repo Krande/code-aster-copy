@@ -45,7 +45,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 
 mesh = LIRE_MAILLAGE(
     FORMAT = 'MED',
-    UNITE=2
+    UNITE=20
 )
 
 mesh = DEFI_GROUP(
@@ -168,6 +168,32 @@ tractLd2 = AFFE_CHAR_MECA(
     ),
 )
 
+tractLd3 = AFFE_CHAR_MECA(
+    MODELE=model,
+    FORCE_NODALE = _F(
+        GROUP_NO = (
+            #'MED01',
+            #'MED02',
+            #'MED03',
+            'END',
+        ),
+        FY = +1000E+3/11
+    ),
+)
+
+tractLd4 = AFFE_CHAR_MECA(
+    MODELE=model,
+    FORCE_NODALE = _F(
+        GROUP_NO = (
+            #'MED01',
+            #'MED02',
+            #'MED03',
+            'END',
+        ),
+        FY = +2000E+3/11
+    ),
+)
+
 comprLd1 = AFFE_CHAR_MECA(
     MODELE=model,
     FORCE_NODALE = _F(
@@ -225,6 +251,18 @@ reslin = MACRO_ELAS_MULT (
                 OPTION = 'SANS',
         ),
         _F(
+               NOM_CAS = 'tractLd3',
+            SOUS_TITRE = 'nodal load FY = +10E+3 [KN]',
+             CHAR_MECA = tractLd3,
+                OPTION = 'SANS',
+        ),
+        _F(
+               NOM_CAS = 'tractLd4',
+            SOUS_TITRE = 'nodal load FY = +20E+3 [KN]',
+             CHAR_MECA = tractLd4,
+                OPTION = 'SANS',
+        ),
+        _F(
                NOM_CAS = 'comprLd1',
             SOUS_TITRE = 'nodal load FY = -15E+3 [KN]',
              CHAR_MECA = comprLd1,
@@ -235,35 +273,6 @@ reslin = MACRO_ELAS_MULT (
             SOUS_TITRE = 'nodal load FY = -30E+3 [KN]',
              CHAR_MECA = comprLd2,
                 OPTION = 'SANS',
-        ),
-    ),
-)
-
-TEST_RESU(
-    RESU = (
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd1',
-            NOM_CHAM = 'DEPL',
-            CRITERE='RELATIF',
-            NOM_CMP='DZ',
-            GROUP_NO='N2',
-            VALE_CALC = -4.43388814176537E+01,
-            VALE_REFE = -4.266E+01,
-            PRECISION = 4.E-2,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd2',
-            NOM_CHAM = 'DEPL',
-            CRITERE='RELATIF',
-            NOM_CMP='DZ',
-            GROUP_NO='N2',
-            VALE_CALC = 2*(-4.43388814176537E+01),
-            VALE_REFE = 2*(-4.266E+01),
-            PRECISION = 4.E-2,
-            REFERENCE='ANALYTIQUE',
         ),
     ),
 )
@@ -309,35 +318,6 @@ postres = CALC_CHAMP(
      ),
 )
 
-TEST_RESU(
-    RESU = (
-        _F(
-            RESULTAT=postres,
-            NOM_CAS = 'shearLd1',
-            NOM_CHAM = 'SIEF_NOEU',
-            CRITERE='RELATIF',
-            NOM_CMP='SIYY',
-            GROUP_NO='N1',
-            VALE_CALC = 3.01492627573424E+01,
-            VALE_REFE = 2.997E+01,
-            PRECISION = 1.E-2,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=postres,
-            NOM_CAS = 'shearLd2',
-            NOM_CHAM = 'SIEF_NOEU',
-            CRITERE='RELATIF',
-            NOM_CMP='SIYY',
-            GROUP_NO='N1',
-            VALE_CALC = 2*3.01492627573424E+01,
-            VALE_REFE = 2*2.997E+01,
-            PRECISION = 1.E-2,
-            REFERENCE='ANALYTIQUE',
-        ),
-    ),
-)
-
 #~ Units
 Pa = 1.
 MPa = 1.E6
@@ -350,22 +330,39 @@ E   = 210000 * MPa; # Young Modulus
 fyk = 450 * MPa
 
 ferrDatSlu = dict(
+    TYPE_STRUCTURE = '2D',
     TOUT = 'OUI',
     C_INF = 30,
     C_SUP = 30,
     FCK = fck,
     FYK = fyk,
+    EYS = E,
+    TYPE_DIAGRAMME = 'B2',
     GAMMA_S_FOND = 1.15,
     GAMMA_C_FOND = 1.5,
     GAMMA_S_ACCI = 1.15,
     GAMMA_C_ACCI = 1.5,
     SIGS_ELS = 0.8 * fyk,
-    SIGC_ELS = 0.6 * fck,
+    SIGC_INF_ELS = 0.6 * fck,
+    SIGC_SUP_ELS = 0.6 * fck,
+    SIGC_ELS_QP = 0.45*fck,
     ALPHA_E  =  15,
     CLASSE_ACIER = 'B',
     ALPHA_CC = 1.0 ,
     UNITE_CONTRAINTE = 'Pa',
-    TYPE_STRUCTURE = '2D',
+    UNITE_DIMENSION = 'mm',
+    FERR_SYME = 'NON',
+    FERR_COMP = 'OUI',
+    EPURE_CISA = 'NON',
+    FERR_MIN = 'NON',
+    RHO_ACIER = 7800.,
+    WMAX_INF = 0.4,
+    WMAX_SUP = 0.4,
+    KT = 0.6,
+    PHI_INF_X = 25.,
+    PHI_SUP_X = 25.,
+    PHI_INF_Y = 25.,
+    PHI_SUP_Y = 25.,
     UTIL_COMPR = 'OUI',
 )
 
@@ -386,338 +383,178 @@ reslin = COMBINAISON_FERRAILLAGE (
             TYPE = 'ELS_CARACTERISTIQUE',
             NOM_CAS = ('tractLd1','tractLd2')
          ),
-    ),
-    AFFE = ( _F ( **ferrDatSlu ), ),
-    )
-
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd1',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 1.06670257901892E-05,
-            VALE_REFE = 1.06670257901892E-05,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd2',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 2.13340515803783E-05,
-            VALE_REFE = 2.13340515803783E-05,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'COMB_DIME_ACIER',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 2.13340515803783E-05,
-            VALE_REFE = 2.13340515803783E-05,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'tractLd2',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 5.E-3,
-            VALE_CALC = 1.38216121564E-06,
-            VALE_REFE = 1.38888888888E-06,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'tractLd1',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 5.E-3,
-            VALE_CALC = 1.38216121564E-06/2.0,
-            VALE_REFE = 1.38888888888E-06/2.0,
-            REFERENCE='ANALYTIQUE',
-        ),
-    )
-)
-
-TOTEST = CREA_CHAMP (
-    OPERATION ='EXTR',
-    RESULTAT = reslin,
-    TYPE_CHAM = 'CART_NEUT_R',
-    NOM_CHAM ='UT01_ELEM',
-    NOM_CAS = 'COMB_DIME_ORDRE',
-)
-
-TEST_RESU(
-    CARTE =
-        _F(
-            CHAM_GD = TOTEST,
-            GROUP_MA='M230',
-            NOM_CMP='X4',
-            REFERENCE='ANALYTIQUE',
-            PRECISION=1.E-6,
-            VALE_CALC=2.,
-            VALE_REFE=2.,
-        ),
-)
-
-TEST_RESU(
-    CARTE =
-        _F(
-            CHAM_GD = TOTEST,
-            GROUP_MA='M221',
-            NOM_CMP='X4',
-            REFERENCE='ANALYTIQUE',
-            PRECISION=1.E-6,
-            VALE_CALC=4.,
-            VALE_REFE=4.,
-        ),
-)
-
-IMPR_RESU(
-    UNITE=8,
-    FORMAT='RESULTAT',
-    RESU= (
-        _F(
-            RESULTAT=reslin,
-            NOM_CHAM = ('DEPL',),
-            GROUP_NO = ('N1','N2'),
-        ),
-        _F(
-            RESULTAT=postres,
-            NOM_CHAM = ('SIEF_NOEU',),
-            GROUP_NO = ('N1','N2'),
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CHAM = ('FERRAILLAGE',),
-        ),
-    )
-)
-
-IMPR_RESU(
-    FORMAT='MED',
-    RESU = (
-        _F(
-            RESULTAT = reslin,
-            GROUP_MA = ('ELEMENTS',),
-        ),
-        _F(
-            RESULTAT = postres,
-            GROUP_MA = ('ELEMENTS',),
-            NOM_CHAM = ('SIEF_NOEU',),
-        ),
-    ),
-    UNITE=3
-)
-
-IMPR_CONCEPT(
-    FORMAT='MED',
-    # Display local ref
-    CONCEPT =_F(
-        CARA_ELEM = elemprop,
-        REPERE_LOCAL = 'ELEM',
-        MODELE = model,
-        ),
-    UNITE=4
-)
-
-ferrDatSlu['CLASSE_ACIER'] = 'A'
-
-ferrDatSlu.pop('TOUT')
-ferrDatSlu.update(GROUP_MA = 'ELEMENTS')
-
-print(ferrDatSlu)
-
-reslin = COMBINAISON_FERRAILLAGE (
-    reuse = reslin,
-    RESULTAT = reslin,
-    CODIFICATION = 'EC2',
-    COMBINAISON = (
         _F (
-            TYPE = 'ELU_FONDAMENTAL',
-            NOM_CAS = ('shearLd1','shearLd2')
+            TYPE = 'ELS_QUASIPERMANENT',
+            NOM_CAS = ('tractLd3','tractLd4')
          ),
     ),
     AFFE = ( _F ( **ferrDatSlu ), ),
     )
 
 TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd1',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 1.06670257901892E-05,
-            VALE_REFE = 1.06670257901892E-05,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd2',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 2.13340515803783E-05,
-            VALE_REFE = 2.13340515803783E-05,
-            REFERENCE='ANALYTIQUE',
-        ),
-    )
-)
-
-ferrDatSlu['CLASSE_ACIER'] = 'C'
-
-reslin = COMBINAISON_FERRAILLAGE (
-    reuse = reslin,
-    RESULTAT = reslin,
-    CODIFICATION = 'EC2',
-    COMBINAISON = (
-        _F (
-            TYPE = 'ELU_FONDAMENTAL',
-            NOM_CAS = ('shearLd1','shearLd2')
+     RESU = (
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'shearLd1',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DZ',
+             GROUP_NO='N2',
+             VALE_CALC = -4.43388814175830E+01,
+             VALE_REFE = -4.43388814175830E+01,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
          ),
-    ),
-    AFFE = ( _F ( **ferrDatSlu ), ),
-    )
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'shearLd2',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DZ',
+             GROUP_NO='N2',
+             VALE_CALC = -8.86777628351659E+01,
+             VALE_REFE = -8.86777628351659E+01,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'tractLd1',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DZ',
+             GROUP_NO='N1',
+             VALE_CALC = -2.52251848040595E-02,
+             VALE_REFE = -2.52251848040595E-02,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'tractLd2',
+             NOM_CHAM = 'DEPL',
+             CRITERE='RELATIF',
+             NOM_CMP='DZ',
+             GROUP_NO='N1',
+             VALE_CALC = -5.04503696081190E-02,
+             VALE_REFE = -5.04503696081190E-02,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+     ),
+ )
 
 TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd1',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 1.06670257901892E-05,
-            VALE_REFE = 1.06670257901892E-05,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd2',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 2.13340515803783E-05,
-            VALE_REFE = 2.13340515803783E-05,
-            REFERENCE='ANALYTIQUE',
-        ),
-    )
-)
-
-ferrDatSlu['UNITE_CONTRAINTE'] = 'MPa'
-ferrDatSlu['FCK'] = 35 * Pa
-ferrDatSlu['FYK'] = 450 * Pa
-ferrDatSlu['SIGS_ELS'] = 0.8 * ferrDatSlu['FYK']
-ferrDatSlu['SIGC_ELS'] = 0.6 * ferrDatSlu['FCK']
-
-reslin = COMBINAISON_FERRAILLAGE (
-    reuse = reslin,
-    RESULTAT = reslin,
-    CODIFICATION = 'EC2',
-    COMBINAISON = (
-        _F (
-            TYPE = 'ELU_FONDAMENTAL',
-            NOM_CAS = ('shearLd1','shearLd2')
+     RESU = (
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'shearLd1',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 5.72702539722572E-07,
+             VALE_REFE = 5.72702539722572E-07,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
          ),
-    ),
-    AFFE = ( _F ( **ferrDatSlu ), ),
-    )
-
-TEST_RESU(
-    RESU=(
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd1',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 1.06670257901892E-05 * 1E+03,
-            VALE_REFE = 1.06670257901892E-05 * 1E+03,
-            REFERENCE='ANALYTIQUE',
-        ),
-        _F(
-            RESULTAT=reslin,
-            NOM_CAS = 'shearLd2',
-            NOM_CHAM = 'FERRAILLAGE',
-            CRITERE='RELATIF',
-            NOM_CMP='DNSYS',
-            GROUP_MA='M230',
-            POINT=1,
-            PRECISION = 1.E-6,
-            VALE_CALC = 2.13340515803783E-05 * 1E+03,
-            VALE_REFE = 2.13340515803783E-05 * 1E+03,
-            REFERENCE='ANALYTIQUE',
-        ),
-    )
-)
-
-ferrDatSlu = dict(
-    TOUT = 'OUI',
-    CEQUI = 15,
-    TYPE_STRUCTURE = '2D',
-    ENROBG = 30,
-    SIGM_ACIER = 0.8 * fyk,
-    SIGM_BETON = 0.6 * fck,
-    PIVA  =  10.0E-3,
-    PIVB  =  3.5E-3,
-)
-
-import aster
-from libaster import AsterError
-
-try:
-    reslin = COMBINAISON_FERRAILLAGE (
-        reuse = reslin,
-        RESULTAT = reslin,
-        CODIFICATION = 'UTILISATEUR',
-        COMBINAISON = (
-            _F (
-                TYPE = 'ELU_FONDAMENTAL',
-                NOM_CAS = ('shearLd1','shearLd2')
-             ),
-        ),
-        AFFE = ( _F ( **ferrDatSlu ), ),
-        )
-except AsterError as message:
-    if message.id_message == 'COMBFERR_1':
-        print("COMBFERR_1 intercepted")
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'shearLd2',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 1.14540507944514E-06,
+             VALE_REFE = 1.14540507944514E-06,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'tractLd1',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 1.08820767110885E-06,
+             VALE_REFE = 1.08820767110885E-06,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'tractLd2',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 2.17641534221769E-06,
+             VALE_REFE = 2.17641534221769E-06,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'tractLd3',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 7.27550544157707E-07,
+             VALE_REFE = 7.27550544157707E-07,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'tractLd4',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 1.45510108831541E-06,
+             VALE_REFE = 1.45510108831541E-06,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'comprLd1',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 0.00000000000000E+00,
+             VALE_REFE = 0.00000000000000E+00,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'comprLd2',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 0.00000000000000E+00,
+             VALE_REFE = 0.00000000000000E+00,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+         _F(
+             RESULTAT=reslin,
+             NOM_CAS = 'COMB_DIME_ACIER',
+             NOM_CHAM = 'FERRAILLAGE',
+             CRITERE='RELATIF',
+             NOM_CMP='DNSYI',
+             MAILLE='M530',
+             VALE_CALC = 2.17641534221769E-06,
+             VALE_REFE = 2.17641534221769E-06,
+             PRECISION = 4.E-2,
+             REFERENCE='ANALYTIQUE',
+         ),
+     ),
+ )
 
 FIN()

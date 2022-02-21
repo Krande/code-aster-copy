@@ -15,157 +15,350 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+    
+subroutine cafels(cequi, effm, effn, ht, bw,&
+                  enrobi, enrobs, scmaxi, scmaxs, ssmax,&
+                  ferrcomp, ferrsyme, slsyme, uc,&
+                  dnsinf, dnssup, sigmsi, sigmss,&
+                  sigmci, sigmcs,&
+                  alpha, pivot, etat, ierr)
 
-subroutine cafels(cequi, effm, effn, ht, enrobs, enrobi, sigaci,&
-                  sigbet, uc, dnsinf, dnssup, ierr)
-!______________________________________________________________________
+!_______________________________________________________________________________________________
 !
-!     CAFELS
+!      CAFELS
 !
-!      CALCUL DES ACIERS EN FLEXION COMPOSEE A L'ELS
+!      CALCUL DES ACIERS EN FLEXION COMPOSEE A L'ELS CARACTERISTIQUE
+!      CRITERE = LIMITATION DES CONTRAINTES ELASTIQUES
 !
-!      I CEQUI   COEFFICIENT D'EQUIVALENCE ACIER/BETON
-!      I EFFM    MOMENT DE FLEXION
-!      I EFFN    EFFORT NORMAL
-!      I HT      EPAISSEUR DE LA COQUE
-!      I ENROBS  ENROBAGE DES ARMATURES SUPERIEURES
-!      I ENROBI  ENROBAGE DES ARMATURES INFERIEURES
-!      I SIGACI  CONTRAINTE ADMISSIBLE DANS L'ACIER
-!      I SIGBET  CONTRAINTE ADMISSIBLE DANS LE BETON
+!      I CEQUI        COEFFICIENT D'EQUIVALENCE ACIER/BETON
+!      I EFFM         MOMENT DE FLEXION
+!      I EFFN         EFFORT NORMAL
+!      I HT           HAUTEUR DE LA SECTION
+!      I BW           LARGEUR DE LA SECTION
+!      I ENROBI       ENROBAGE DES ARMATURES INFERIEURES
+!      I ENROBS       ENROBAGE DES ARMATURES SUPERIEURES
+!      I SCMAXI       CONTRAINTE DE COMPRESSION MAXI DU BETON EN FIBRE INF
+!      I SCMAXS       CONTRAINTE DE COMPRESSION MAXI DU BETON EN FIBRE SUP
+!      I SSMAX        CONTRAINTE MAXI DE L'ACIER DE FLEXION
+!      I FERRCOMP     PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
+!                         FERRCOMP = 0 (NON)
+!                         FERRCOMP = 1 (OUI)
+!      I FERRSYME  FERRAILLAGE SYMETRIQUE?
+!                     FERRSYME = 0 (NON)
+!                     FERRSYME = 1 (OUI)
+!      I SLSYME    SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE 
+!      I UC        UNITE DES CONTRAINTES :
+!                     UC = 0 CONTRAINTES EN Pa
+!                     UC = 1 CONTRAINTES EN MPa
+
+!      O DNSINF       DENSITE DE L'ACIER INFERIEUR
+!      O DNSSUP       DENSITE DE L'ACIER SUPERIEUR
+!      O SIGMSI       CONTRAINTE AU NIVEAU DE L'ACIER INFERIEUR
+!      O SIGMSS       CONTRAINTE AU NIVEAU DE L'ACIER SUPERIEUR
+!      O SIGMCI       CONTRAINTE AU NIVEAU DE LA FIBRE SUPERIEURE DE BETON
+!      O SIGMCS       CONTRAINTE AU NIVEAU DE LA FIBRE INFERIEURE DE BETON
+!      O ALPHA        COEFFICIENT DE PROFONDEUR DE L'AN
+!      O PIVOT        PIVOT DE FONCTIONNEMENT DE LA SECTION
+!      O ETAT         ETAT DE FONCTIONNEMENT DE LA SECTION
+!      O IERR         CODE RETOUR (0 = OK)
+!_______________________________________________________________________________________________
 !
-!      O DNSINF  DENSITE DE L'ACIER INFERIEUR
-!      O DNSSUP  DENSITE DE L'ACIER SUPERIEUR
-!      O IERR    CODE RETOUR (0 = OK)
-!______________________________________________________________________
-!
-    implicit none
-!
-!
-!
-!
-    real(kind=8) :: cequi
-    real(kind=8) :: effm
-    real(kind=8) :: effn
-    real(kind=8) :: ht
-    real(kind=8) :: enrobs
-    real(kind=8) :: enrobi
-    real(kind=8) :: sigaci
-    real(kind=8) :: sigbet
-    integer :: uc
-    real(kind=8) :: dnsinf
-    real(kind=8) :: dnssup
-    integer :: ierr
-!
-!
-!       COEFFICIENT LIE A L'UNITE CHOISIE (Pa OU MPa)
-    real(kind=8) :: unite_m
-!       ENROBAGE A CONSIDERER
-    real(kind=8) :: enrob
-!       BRAS DE LEVIER PAR RAPPORT A LA FIBRE SUPERIEURE
-    real(kind=8) :: d
-!       HAUTEUR UTILE (H/2 - C)
-    real(kind=8) :: hu
-!       MOMENTS REDUITS
-    real(kind=8) :: m_inf, mu
-!       MOMENT REDUIT DU PASSAGE PIVOT A PIVOT B
-    real(kind=8) :: mu_ab
-!       MOMENT REDUIT LIMITE AU PIVOT C
-    real(kind=8) :: mu_bc
-!       RATIO DE HAUTEUR COMPRIMEE DE LA SECTION AU PIVOT A
-    real(kind=8) :: alpha_ab
-!       RACINE DE L'EQUATION D'EQUILIBRE EN FLEXION
-    real(kind=8) :: alpha
-!       DENSITE DE FERRAILLAGE INTERMEDIAIRE
-    real(kind=8) :: dns
-!       VARIABLE INTERMEDIAIRE DE CALCUL POUR LE PIVOT A
-    real(kind=8) :: phi
-!       VARIABLE INTERMEDIAIRE DE CALCU POUR LE PIVOT B
-    real(kind=8) :: sigma_s
-!       CONSTANTE PI
-    real(kind=8) :: pi
-!       VARIABLES DE CALCUL
-    real(kind=8) :: force
+
+implicit none
+#include "asterfort/cafelsiter.h"
 !
 !
-!   INITIALISATION DU CODE RETOUR
-    ierr = 0
-!   INITIALISATION DES DENSITES DE FERRAILLAGE
-    dnsinf = 0d0
-    dnssup = 0d0
-    dns = 0.d0
-!
-!   CALCULS INTERMEDIAIRES
-!
-    if (uc.eq.0) then
-        unite_m = 1.
-    else if (uc.eq.1) then
-        unite_m = 1.e-3
-    endif
-    if (effm.ge.0.) then
-        enrob = enrobi
-    else
-        enrob = enrobs
-    endif
-    d = ht - enrob
-    hu = ht/2 - enrob
-    alpha_ab = cequi*sigbet/(cequi*sigbet+sigaci)
-    mu_ab = 0.5*alpha_ab*(1.d0-alpha_ab/3.d0)
-    mu_bc = 1.d0/3.d0
-    m_inf = (abs(effm) - effn*hu)
-    mu = m_inf/(d**2.d0*sigbet)
-!
-!   CALCUL DES DENSITES DE FERRAILLAGE A L'ELS
-!
-    if (mu.lt.0) then
-!       PIVOT A : SECTION ENTIEREMENT TENDUE
-        dnssup = (m_inf+effn*(d-enrob))/(sigaci*(d-enrob))*unite_m
-        dnsinf = (-m_inf)/(sigaci*(d-enrob))*unite_m
-    else
-        if (mu.lt.mu_ab) then
-!           PIVOT A : SECTION PARTIELLEMENT TENDUE
-            pi = 2.d0*asin(1.d0)
-            phi = acos(-1.d0/(1.d0+2.d0*cequi*mu*sigbet/sigaci)**(1.5))
-            alpha = 1.d0+2.d0*(1.d0+2.d0*cequi*mu*sigbet/sigaci)**(0.5)*&
-                    cos(pi/3.d0+phi/3.d0)
-            dns = (m_inf/((1.d0-alpha/3.d0)*sigaci*d)+effn/sigaci)*unite_m
-            if (dns.le.0.d0) then
-                dns = 0.d0
-            endif
-        else if (mu.lt.mu_bc) then
-!           PIVOT B : SECTION PARTIELLEMENT TENDUE
-            alpha = (3.d0-sqrt(3.d0*(3.d0-8.d0*mu)))/2.d0
-            sigma_s = (1.d0-alpha)/alpha*cequi*sigbet
-            dns = (m_inf/((1.d0-alpha/3.d0)*(d*sigma_s))+effn/sigma_s)*unite_m
-            if (dns.le.0.d0) then
-                dns = 0.d0
-            endif
-!           force = effn/(3.d0/4.d0 - 2.d0*effm/(2.d0*ht*effn))
-            force = ((8.d0*ht*effn**2)/(6.d0*ht*effn-12.d0*effm))*unite_m
-            if (force.lt.-1.d0*sigbet*ht) then
-!               PIVOT B : SECTION TROP COMPRIMEE
-                ierr = 1050
-                goto 996
-            endif
-        else
-!           PIVOT C
-            ierr = 1060
-            dnssup = 0.0d0
-            dnsinf = 0.0d0
-            force = ((ht*effn**2)/(ht*effn+6.d0*effm))*unite_m
-            if (force.lt.-1.d0*sigbet*ht) then
-!               PIVOT C : SECTION TROP COMPRIMEE
-                ierr = 1070
-                goto 996
-            else
-                goto 996
-            endif
-        endif
-        if (effm.ge.0.d0) then
-            dnssup = dns
-        else
-            dnsinf = dns
-        endif
-    endif
-!
-996  continue
+!-----------------------------------------------------------------------
+!!!!TERMES PRINCIPAUX D'ENTREE
+!-----------------------------------------------------------------------
+       real(kind=8) :: cequi
+       real(kind=8) :: effm
+       real(kind=8) :: effn
+       real(kind=8) :: ht
+       real(kind=8) :: bw
+       real(kind=8) :: enrobi
+       real(kind=8) :: enrobs
+       real(kind=8) :: scmaxi
+       real(kind=8) :: scmaxs
+       real(kind=8) :: ssmax
+       integer :: ferrcomp
+       integer :: ferrsyme
+       real(kind=8) :: slsyme
+       integer :: uc
+       real(kind=8) :: dnsinf
+       real(kind=8) :: dnssup
+       real(kind=8) :: sigmsi
+       real(kind=8) :: sigmss
+       real(kind=8) :: sigmci
+       real(kind=8) :: sigmcs
+       real(kind=8) :: alpha
+       integer :: pivot
+       integer :: etat
+       integer :: ierr
+
+!-----------------------------------------------------------------------
+!!!!VARIABLES DE CALCUL
+!-----------------------------------------------------------------------
+       real(kind=8) :: d, d0, a00, b00, c00, Del, var
+       real(kind=8) :: Mcalc, Ncalc, scmax, scmaxc
+       real(kind=8) :: unite_pa, mu, mu_12, alpha_12, mu_max, mu_lim
+       real(kind=8) :: AsTEND, AsCOMP, SsTEND, SsCOMP, ScTEND, ScCOMP
+       real(kind=8) :: alpha_A, alpha_B, alpha_MED, RESIDU_A, RESIDU_B, RESIDU_MED, DIFF
+       real(kind=8) :: X, Ncc, Mcc, Calc
+       logical :: COND_ITER
+       logical :: COND_NS
+
+       !Significations des pointeurs :
+       !PIVOT = 1 ==> "A"
+       !PIVOT = 2 ==> "B"
+       !PIVOT = 3 ==> "C"
+       
+       !ETAT = 1 ==> "BETON RESISTANT SEUL"
+       !ETAT = 2 ==> "TRACTION PURE"
+       !ETAT = 3 ==> "PARTIELLEMENT COMPRIMEE"
+       !ETAT = 4 ==> "ENTIEREMENT TENDUE"
+       !ETAT = 5 ==> "PARTIELLEMENT COMPRIMEE AVEC ACIER DE COMPRESSION"
+       !ETAT = 6 ==> "ENTIEREMENT COMPRIMEE"
+
+!-----------------------------------------------------------------------
+!!!!LANCEMENT DU CALCUL
+!-----------------------------------------------------------------------
+!      INITIALISATION DU CODE RETOUR
+       ierr = 0
+       etat = 0
+       pivot = 0
+       alpha = -1000
+       dnssup = -1
+       dnsinf = -1
+       sigmss = -1
+       sigmsi = -1
+       sigmcs = -1
+       sigmci = -1
+
+       Mcalc = abs(effm)
+       Ncalc = effn
+
+       if (uc.eq.0) then
+       unite_pa = 1.e-6
+       elseif (uc.eq.1) then
+       unite_pa = 1.
+       endif
+
+       if (effm.ge.0) then
+       d = ht - enrobi
+       d0 = ht - enrobs
+       scmax = scmaxs
+       else
+       d = ht - enrobs
+       d0 = ht - enrobi
+       scmax = scmaxi
+       endif
+       scmaxc = min(scmaxs,scmaxi)
+
+       alpha_12 = 1.0/(1.0+(ssmax/cequi)/scmax)
+       mu_12 = 0.5*alpha_12*(1.0-alpha_12/3.0)
+       mu_max = 0.5*1.0*(1.0-1.0/3.0)
+       if (ferrcomp.eq.1) then
+       mu_lim = mu_12
+       else
+       mu_lim = mu_max
+       endif
+       
+       mu = (Mcalc+Ncalc*(d-ht/2.0))/(d*d*bw*ScMAX)
+       COND_ITER = .false.
+       COND_NS = .false.
+    
+       if ((Mcalc.eq.0) .AND. (Ncalc.ge.0)) then
+
+          ScCOMP = scmaxc
+          ScTEND = scmaxc
+          SsCOMP = scmaxc*cequi
+          SsTEND = scmaxc*cequi
+          Ncc = scmaxc*ht*bw
+          Mcc = 0 
+          if (Ncc.ge.Ncalc) then
+          etat = 1
+          pivot = 2
+          alpha = -1000
+          ScCOMP = Ncalc/(ht*bw)
+          ScTEND = Ncalc/(ht*bw)
+          SsCOMP = 0
+          SsTEND = 0
+          AsTEND = 0
+          AsCOMP = 0
+          else
+          AsTEND = 0.5*(Ncalc-Ncc)/SsTEND
+          AsCOMP = 0.5*(Ncalc-Ncc)/SsCOMP
+          endif
+
+       elseif ((Mcalc.eq.0) .AND. (Ncalc.lt.0)) then
+
+          ScCOMP = -ssmax/cequi
+          ScTEND = -ssmax/cequi
+          SsCOMP = -ssmax
+          SsTEND = -ssmax
+          alpha = -1000
+          pivot = 1
+          etat = 2
+          AsTEND = 0.5*Ncalc/SsTEND
+          AsCOMP = 0.5*Ncalc/SsCOMP
+
+       elseif ((mu.gt.0) .AND. (mu.le.mu_lim)) then
+
+          etat = 3
+
+          if (mu.le.mu_12) then
+
+              pivot = 1
+              !Calc pour alpha = 0
+              alpha_A = 0
+              alpha = alpha_A
+              RESIDU_A = Mcalc + Ncalc*(d-0.5*ht)
+              var = bw*(d**2)*(ssmax/cequi)*0.5*(alpha**2)*((1.-alpha/3.)/(1.-alpha))
+              RESIDU_A = RESIDU_A - var
+              !Calc pour alpha = alpha_12
+              alpha_B = alpha_12
+              alpha = alpha_B
+              RESIDU_B = Mcalc + Ncalc*(d-0.5*ht)
+              var = bw*(d**2)*(ssmax/cequi)*0.5*(alpha**2)*((1.-alpha/3.)/(1.-alpha))
+              RESIDU_B = RESIDU_B - var
+              !Iteration
+              DIFF = alpha_12
+              do while (DIFF.gt.0.01)
+              alpha_MED = 0.5*(alpha_A + alpha_B)
+              alpha = alpha_MED
+              RESIDU_MED = Mcalc + Ncalc*(d-0.5*ht)
+              var = bw*(d**2)*(ssmax/cequi)*0.5*(alpha**2)*((1.-alpha/3.)/(1.-alpha))
+              RESIDU_MED = RESIDU_MED - var
+              if ((RESIDU_MED*RESIDU_B).gt.0) then
+              alpha_B = alpha_MED
+              RESIDU_B = RESIDU_MED
+              else
+              alpha_A = alpha_MED
+              RESIDU_A = RESIDU_MED
+              endif
+              DIFF = abs(alpha_B - alpha_A)
+              end do
+              alpha = 0.5*(alpha_A + alpha_B)
+              X = alpha*d
+              SsTEND = -ssmax
+              ScCOMP = (X/(d-X))*(ssmax/cequi)
+              ScTEND = ScCOMP*(1-ht/X)
+              SsCOMP = ScCOMP*(1-(ht-d0)/X)*cequi
+              AsTEND = (0.5*ScCOMP*X*bw - Ncalc)/(-SsTEND)
+              AsCOMP = 0
+              
+              if ((AsTEND.lt.0) .or. (AsCOMP.lt.0)) then
+              COND_ITER = .true.
+              goto 998
+              else
+              COND_NS = .true.
+              endif
+         
+              if (ferrsyme.eq.1) then
+              Calc = abs(AsCOMP-AsTEND)
+              if (Calc.gt.slsyme) then
+              COND_ITER = .true.
+              goto 998
+              endif
+              endif
+
+          else
+              
+              pivot = 2
+              a00 = (1./2.)*(-1./3.)
+              b00 = 1./2.
+              c00 = -(Mcalc + Ncalc*(d-0.5*ht))/(d*d*bw*scmax)
+              Del = b00*b00-4.0*a00*c00
+              if (Del.ge.0) Then
+              alpha_A = (-b00+(Del)**(0.5))/(2.0*a00)
+              alpha_B = (-b00-(Del)**(0.5))/(2.0*a00)
+              if ((alpha_A.gt.0) .And. (alpha_A.le.1)) Then
+              alpha = alpha_A
+              elseif ((alpha_B.gt.0) .And. (alpha_B.le.1)) Then
+              alpha = alpha_B
+              else
+              COND_ITER = .True.
+              endif
+              else
+              COND_ITER = .True.
+              endif
+              if (COND_ITER.eqv.(.False.)) Then
+              X = alpha*d
+              ScCOMP = scmax
+              SsTEND = -cequi*scmax*(d-X)/X
+              ScTEND = ScCOMP*(1-ht/X)
+              SsCOMP = ScCOMP*(1-(ht-d0)/X)*cequi
+              AsTEND = (0.5*ScCOMP*X*bw-Ncalc)/(-SsTEND)
+              AsCOMP = 0
+              endif
+              
+              if ((AsTEND.lt.0) .or. (AsCOMP.lt.0)) then
+              COND_ITER = .true.
+              goto 998
+              else
+              COND_NS = .true.
+              endif
+         
+              if (ferrsyme.eq.1) then
+              Calc = abs(AsCOMP-AsTEND)
+              if (Calc.gt.slsyme) then
+              COND_ITER = .true.
+              goto 998
+              endif
+              endif
+
+          endif
+
+       else
+          COND_ITER = .TRUE.
+       
+       endif
+
+998    continue 
+
+       if (COND_ITER.eqv.(.TRUE.)) then
+           call cafelsiter(cequi, effm, effn, ht, bw,&
+                           enrobi, enrobs, scmaxi, scmaxs, ssmax,&
+                           ferrsyme, slsyme, uc, COND_NS,&
+                           AsTEND, AsCOMP, SsTEND, SsCOMP,&
+                           ScTEND, ScCOMP,&
+                           alpha, pivot, etat, ierr)
+       endif
+
+!------------------------------------------------------------------
+!Distinction Ferr Sup et Inf
+!------------------------------------------------------------------
+
+       if (effm.ge.0) then
+           dnssup = AsCOMP
+           dnsinf = AsTEND
+           sigmss = SsCOMP
+           sigmsi = SsTEND
+           sigmcs = ScCOMP
+           sigmci = ScTEND
+       else
+           dnssup = AsTEND
+           dnsinf = AsCOMP
+           sigmss = SsTEND
+           sigmsi = SsCOMP
+           sigmcs = ScTEND
+           sigmci = ScCOMP
+       endif
+
+       if (ferrcomp.eq.0) then
+           if (((sigmss.gt.0) .and. (dnssup.gt.0)) &
+                 & .or. ((sigmsi.gt.0) .and. (dnsinf.gt.0))) then
+                etat = 0
+                pivot = 0
+                dnssup = -1
+                dnsinf = -1
+                sigmss = -1
+                sigmsi = -1
+                sigmcs = -1
+                sigmci = -1
+                ierr = 1
+           endif
+       endif
+
 end subroutine

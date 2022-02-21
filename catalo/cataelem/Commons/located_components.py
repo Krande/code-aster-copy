@@ -197,13 +197,21 @@ CDECENT = LocatedComponents(phys=PHY.NEUT_K24, type='ELEM',
                             components=('Z1',))
 
 CFER1_R = LocatedComponents(phys=PHY.FER1_R, type='ELEM',
-                            components=('TYPCOMB', 'CODIF', 'COMPRESS', 'CEQUI', 'ENROBS', 'ENROBI',
-                                        'SIGMACI', 'SIGMBET', 'ALPHACC', 'GAMMAS', 'GAMMAC', 'FACIER',
-                                        'FBETON', 'CLACIER', 'UC', 'RHOACIER', 'AREINF', 'ASHEAR',
-                                        'ASTIRR', 'RHOCRIT', 'DATCRIT', 'LCRIT'))
+                            components=('TYPCOMB','CODIF','TYPSTRU','FERRSYME','SLSYME','FERRCOMP','EPUCISA',
+                                        'FERRMIN','RHOLMIN','RHOTMIN','COMPRESS','CEQUI',
+                                        'ENROBI','ENROBS','ENROBYI','ENROBYS',
+                                        'ENROBZI','ENROBZS','SIGS','SIGCI','SIGCS','SIGCYI','SIGCYS',
+                                        'SIGCZI','SIGCZS','ALPHACC','GAMMAS','GAMMAC','FACIER','EYS',
+                                        'TYPDIAG','FBETON','CLACIER','UC','UM','RHOACIER','AREINF',
+                                        'ASHEAR','ASTIRR','RHOCRIT','DATCRIT','LCRIT','WMAXI','WMAXS',
+                                        'WMAXYI','WMAXYS','WMAXZI','WMAXZS','SIGELSQP','KT',
+                                        'PHIXI','PHIXS','PHIYI','PHIYS','PHIZI','PHIZS',))
 
 CFER2_R = LocatedComponents(phys=PHY.FER2_R, type='ELEM',
-                            components=('DNSXI', 'DNSXS', 'DNSYI', 'DNSYS', 'DNST', 'DNSVOL', 'CONSTRUC'))
+                            components=('DNSXI', 'DNSXS', 'DNSYI', 'DNSYS', 'DNSXT', 'DNSYT', 'DNSVOL', 'CONSTRUC'))
+
+CFER3_R = LocatedComponents(phys=PHY.FER2_R, type='ELEM',
+                            components=('AYI', 'AYS', 'AZI', 'AZS', 'AST', 'ATOT', 'DNSVOL', 'CONSTRUC'))
 
 CFISSR = LocatedComponents(phys=PHY.FISS_R, type='ELEM',
                            components=('XA', 'YA', 'XTAN', 'YTAN', 'XNORM', 'YNORM',))

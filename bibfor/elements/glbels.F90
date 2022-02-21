@@ -1,0 +1,378 @@
+! --------------------------------------------------------------------
+! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! This file is part of code_aster.
+!
+! code_aster is free software: you can redistribute it and/or modify
+! it under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! code_aster is distributed in the hope that it will be useful,
+! but WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
+! --------------------------------------------------------------------
+
+subroutine glbels(typco, cequi, effrts, ht, bw,&
+                  enrobyi, enrobys, enrobzi, enrobzs,&
+                  facier, fbeton, sigcyi, sigcys, sigczi, sigczs, sigs,&
+                  ferrsyme, slsyme, ferrcomp,&
+                  epucisa, ferrmin, rholmin, rhotmin, compress, uc, um, &
+                  dnsits, ierr)
+!______________________________________________________________________
+!
+!      GLBELS
+
+!      CALCUL GLOBAL DU FERRAILLAGE DES POUTRES A L'ELS
+!
+!      I TYPCO     CODIFICATION UTILISEE (1 = BAEL91, 2 = EC2)
+!      I CEQUI     COEFFICIENT D'EQUIVALENCE ACIER/BETON
+!      I EFFM      MOMENT DE FLEXION
+!      I EFFN      EFFORT NORMAL
+!      I HT        HAUTEUR DE LA SECTION
+!      I BW        LARGEUR DE LA SECTION
+!      I ENROBYI   ENROBAGE DES ARMATURES INF SUIVANT L'AXE Y
+!      I ENROBYS   ENROBAGE DES ARMATURES SUP SUIVANT L'AXE Y
+!      I ENROBZI   ENROBAGE DES ARMATURES INF SUIVANT L'AXE Z
+!      I ENROBZS   ENROBAGE DES ARMATURES SUP SUIVANT L'AXE Z
+!      I FACIER    LIMITE D'ELASTICITE DES ACIERS (CONTRAINTE)
+!      I FBETON    RESISTANCE EN COMPRESSION DU BETON (CONTRAINTE)
+!      I SGICYI    CONTRAINTE ULTIME DU BÉTON COMPRIME
+!                     EN FIBRE INFERIEURE SUIVANT L'AXE Y À L'ELS 
+!      I SGICYS    CONTRAINTE ULTIME DU BÉTON COMPRIME
+!                     EN FIBRE SUPERIEURE SUIVANT L'AXE Y À L'ELS 
+!      I SGICZI    CONTRAINTE ULTIME DU BÉTON COMPRIME
+!                     EN FIBRE INFERIEURE SUIVANT L'AXE Z À L'ELS 
+!      I SGICZS    CONTRAINTE ULTIME DU BÉTON COMPRIME
+!                     EN FIBRE SUPERIEURE SUIVANT L'AXE Z À L'ELS 
+!      I SGIS      CONTRAINTE ULTIME DE L'ACIER À L'ELS
+!      I FERRSYME  FERRAILLAGE SYMETRIQUE?
+!                     FERRSYME = 0 (NON)
+!                     FERRSYME = 1 (OUI)
+!      I SLSYME    SECTION SEUIL DE TOLERANCE POUR UN FERRAILLAGE SYMETRIQUE 
+!      I FERRCOMP  PRISE EN COMPTE DU FERRAILLAGE DE COMPRESSION
+!                     FERRCOMP = 0 (NON)
+!                     FERRCOMP = 1 (OUI)
+!      I UC        UNITE DES CONTRAINTES :
+!                     UC = 0 CONTRAINTES EN Pa
+!                     UC = 1 CONTRAINTES EN MPa
+!      I UM          UNITE DES DIMENSIONS :
+!                     UM = 0 DIMENSIONS EN m
+!                     UM = 1 DIMENSIONS EN mm
+!
+!      O DNSITS    DENSITE DES ACIERS CALCULES :
+!                     DNSITS(1) = AYI
+!                     DNSITS(2) = AYS
+!                     DNSITS(3) = AZI
+!                     DNSITS(4) = AZS
+!                     DNSITS(5) = AST
+!                     DNSITS(6) = ATOT = AYI+AYS+AZI+AZS
+!      O IERR      CODE RETOUR (0 = OK)
+!
+!______________________________________________________________________
+!
+implicit none
+#include "asterfort/bresels.h"
+#include "asterfort/cftels.h"
+!
+    integer :: typco
+    real(kind=8) :: cequi
+    real(kind=8) :: effrts(6)
+    real(kind=8) :: ht
+    real(kind=8) :: bw
+    real(kind=8) :: enrobyi
+    real(kind=8) :: enrobys
+    real(kind=8) :: enrobzi
+    real(kind=8) :: enrobzs    
+    real(kind=8) :: facier
+    real(kind=8) :: fbeton
+    real(kind=8) :: sigcyi
+    real(kind=8) :: sigcys
+    real(kind=8) :: sigczi
+    real(kind=8) :: sigczs
+    real(kind=8) :: sigs
+    integer :: ferrsyme
+    real(kind=8) :: slsyme
+    integer :: ferrcomp
+    integer :: epucisa
+    integer :: ferrmin
+    real(kind=8) :: rholmin
+    real(kind=8) :: rhotmin
+    integer :: compress
+    integer :: uc
+    integer :: um
+    real(kind=8) :: dnsits(6)
+    integer :: ierr
+    
+!   DEFINITION DES EFFORTS 1D
+    real(kind=8) :: effn,effmy,effmz,effty,efftz,effmt
+!   DEFINITION DES TERMES DE FERRAILLAGE
+    real(kind=8) :: dnsyi, dnsys, dnszi, dnszs, dnstra
+!   DEFINITION VARIABLES INTERMEDIAIRES
+    real(kind=8) :: sigmsyi, sigmsys, sigmcyi, sigmcys
+    real(kind=8) :: sigmszi, sigmszs, sigmczi, sigmczs
+    real(kind=8) :: alphay, alphaz
+    integer :: pivoty, pivotz, etaty, etatz
+    real(kind=8) :: dnstray, thetaby, aky, uky
+    real(kind=8) :: dnstraz, thetabz, akz, ukz
+    integer :: ierry, ierrz
+    real(kind=8) :: Asl, thetab, ak, uk, unite_pa, unite_m
+    real(kind=8) :: d, Smoy, fctm
+    real(kind=8) :: effrts_fake(8)
+    integer :: i
+    
+    do i=1,8
+    effrts_fake(i) = 0.0
+    end do
+
+    dnsyi = 0
+    dnsys = 0
+    dnszi = 0
+    dnszs = 0
+    dnstray = 0
+    dnstraz = 0
+    
+    effn = effrts(1) 
+    effmy = effrts(2)
+    effmz = effrts(3)
+    effty = effrts(4)
+    efftz = effrts(5)
+    effmt = effrts(6)
+
+    call bresels(cequi, effmy, effmz, effn,&
+                 ht, bw, enrobyi, enrobys, enrobzi, enrobzs,&
+                 sigcyi, sigcys, sigczi, sigczs, sigs,&
+                 ferrcomp, ferrsyme, slsyme, uc,&
+                 dnsyi, dnsys, dnszi, dnszs,& 
+                 sigmsyi, sigmsys, sigmcyi, sigmcys,&
+                 sigmszi, sigmszs, sigmczi, sigmczs,&
+                 alphay, alphaz, pivoty, pivotz, etaty, etatz, ierr)
+                 
+!           GESTION DES ALARMES EMISES POUR LES ACIERS DE FLEXION A L'ELS
+            if (ierr.eq.1) then
+!               Facette en pivot B trop comprimée !
+!               Alarme dans te0265 + on sort de la boucle + densité = -1 pour l'élément
+                ierr = 1003
+                goto 998
+            endif
+            if (ierr.eq.2) then
+!               Ferraillage symétrique non possible
+!               Alarme dans te0265 + on sort de la boucle + densité = -1 pour l'élément
+                ierr = 10011
+                goto 998
+            endif
+            if (ierr.eq.4) then
+!               Resolution itérative par la methode de Bresler non possible pour FCD
+!               Alarme dans te0265 + on sort de la boucle + densité = -1 pour l'élément
+                ierr = 10012
+                goto 998
+            endif
+        
+    !Calcul du ferraillage transversal
+    if (ierr.eq.0) then
+    
+            !1e calcul avec MFY et VZ
+            call cftels(typco, 1, effrts_fake, effmy, effn, efftz, effmt,&
+                        dnsyi, dnsys,&
+                        sigmsyi, sigmsys, sigmcyi, sigmcys, alphay,&
+                        ht, bw, enrobyi, enrobys, facier, fbeton,&
+                        sigcyi, sigcys, sigs, uc, um,&
+                        compress, dnstray, thetaby, aky, uky, ierry)
+!               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELS
+                if (ierry.eq.1) then
+!                   Béton trop cisaillé !
+!                   Alarme dans te0265 + on sort de la boucle + dnstra = -1 pour l'élément
+                    ierr = 1004
+                    goto 998
+                endif
+                
+            !2e calcul avec MFZ et VY
+            call cftels(typco, 1, effrts_fake, effmz, effn, effty, effmt,&
+                        dnszi, dnszs,&
+                        sigmszi, sigmszs, sigmczi, sigmczs, alphaz,&
+                        bw, ht, enrobzi, enrobzs, facier, fbeton,&
+                        sigczi, sigczs, sigs, uc, um,&
+                        compress, dnstraz, thetabz, akz, ukz, ierrz)
+!               GESTION DES ALARMES EMISES POUR LE FERRAILLAGE TRANSVERSAL A L'ELS
+                if (ierrz.eq.1) then
+!                   Béton trop cisaillé !
+!                   Alarme dans te0265 + on sort de la boucle + dnstra = -1 pour l'élément
+                    ierr = 1004
+                    goto 998
+                endif
+                
+       !Prise en compte de l'impact de l'effort tranchant sur le ferraillage longitudinal
+        if ((ierry.eq.0) .and. (dnstray.gt.0) .and. (epucisa.eq.1)) then
+             Asl = abs(efftz)/(tan(thetaby))
+             if (effmy.ge.0) then
+                 if (sigmsyi.ne.(-1)) then
+                     Asl = Asl/(-sigmsyi)
+                 else
+                     Asl = Asl/sigs
+                 endif
+                 dnsyi = dnsyi + Asl
+             else
+                 if (sigmsys.ne.(-1)) then
+                     Asl = Asl/sigmsys
+                 else
+                     Asl = Asl/sigs            
+                 endif
+                 dnsys = dnsys + Asl
+             endif
+        endif
+               
+        if ((ierrz.eq.0) .and. (dnstraz.gt.0) .and. (epucisa.eq.1)) then
+             Asl = abs(effty)/(tan(thetabz))
+             if (effmz.ge.0) then
+                 if (sigmszi.ne.(-1)) then
+                     Asl = Asl/(-sigmszi)
+                 else
+                     Asl = Asl/sigs
+                 endif
+                 dnszi = dnszi + Asl
+             else
+                 if (sigmszs.ne.(-1)) then
+                     Asl = Asl/sigmszs
+                 else
+                     Asl = Asl/sigs           
+                 endif
+                 dnszs = dnszs + Asl
+             endif
+        endif
+
+       !Choix final du ferraillage transversal
+       !Prise en compte de l'impact de la torsion sur le ferraillage longitudinal
+            
+        if ((ierry.eq.0) .and. (ierrz.eq.0)) then
+           
+             if (dnstray.ge.dnstraz) then
+             dnstra = dnstray
+             thetab = thetaby
+             ak = aky
+             uk = uky
+             else
+             dnstra = dnstraz
+             thetab = thetabz
+             ak = akz
+             uk = ukz
+             endif
+               
+             if (epucisa.eq.1) then
+                 Asl = (abs(effmt)/(2*ak))*(1/(tan(thetab)))*uk
+                 if ((effmy.ne.0) .and. (effmz.ne.0)) then
+                      dnsyi = dnsyi + Asl/(4.0*sigmsyi)
+                      dnsys = dnsys + Asl/(4.0*sigmsys)
+                      dnszi = dnszi + Asl/(4.0*sigmszi)
+                      dnszs = dnszs + Asl/(4.0*sigmszs)
+                 elseif (effmy.ne.0) then
+                      dnsyi = dnsyi + Asl/(2.0*sigmsyi)
+                      dnsys = dnsys + Asl/(2.0*sigmsys)
+                 elseif (effmz.ne.0) then
+                      dnszi = dnszi + Asl/(2.0*sigmszi)
+                      dnszs = dnszs + Asl/(2.0*sigmszs)
+                 else
+                      Smoy = sigs
+                      dnsyi = dnsyi + Asl/(4.0*Smoy)
+                      dnsys = dnsys + Asl/(4.0*Smoy)
+                      dnszi = dnszi + Asl/(4.0*Smoy)
+                      dnszs = dnszs + Asl/(4.0*Smoy)
+                 endif
+             endif
+                    
+        else
+           
+             dnstra = -1
+             thetab = -1
+                
+        endif
+           
+    endif
+   !Calcul du ferraillage transversal
+
+998 continue
+
+!  -- VERIFICATION DU FERRAILLAGE MINIMUM :
+!  ----------------------------------------
+
+    if ((ferrmin.eq.1) .or. (ferrmin.eq.2)) then
+
+         if (uc.eq.0) then
+         unite_pa = 1.e6
+         unite_m = 1.
+         elseif (uc.eq.1) then
+         unite_pa = 1.
+         unite_m = 1.e-3
+         endif
+
+         if (fbeton.le.(50*unite_pa)) then
+         fctm = 0.30*((fbeton/unite_pa)**(2.0/3.0))
+         else
+         fctm = 2.12*LOG(1.0+((fbeton/unite_pa)+8.0)/10.0)
+         endif
+
+         if (ferrmin.eq.2) then
+         rholmin = max(0.26*(fctm/facier),0.0013)
+         rhotmin = 0.08*(fbeton**(0.5))/facier
+         endif
+         
+         !ASYI
+         d = ht - enrobyi
+         if ((dnsyi.lt.(rholmin*d*bw)) .and. (ierr.ne.1001) &
+              & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
+              & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
+              & .and. (ierr.ne.1006)) then
+         dnsyi = rholmin*d*bw
+         endif
+
+         !ASYS
+         d = ht - enrobys
+         if ((dnsys.lt.(rholmin*d)) .and. (ierr.ne.1001) &
+              & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
+              & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
+              & .and. (ierr.ne.1006)) then
+         dnsys = rholmin*d*bw
+         endif
+         
+         !ASZI
+         d = bw - enrobzi
+         if ((dnszi.lt.(rholmin*d*ht)) .and. (ierr.ne.1001) &
+              & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
+              & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
+              & .and. (ierr.ne.1006)) then
+         dnszi = rholmin*d*ht
+         endif
+
+         !ASYS
+         d = bw - enrobzs
+         if ((dnszs.lt.(rholmin*d*ht)) .and. (ierr.ne.1001) &
+              & .and. (ierr.ne.10011) .and. (ierr.ne.10012) &
+              & .and. (ierr.ne.1003) .and. (ierr.ne.1005) &
+              & .and. (ierr.ne.1006)) then
+         dnszs = rholmin*d*ht
+         endif
+
+         !AST
+         if ((dnstra.lt.(rhotmin*max(bw,ht))) .and. (ierry.eq.0) .and. (ierrz.eq.0)) then
+         dnstra = rhotmin*max(bw,ht)
+         endif
+
+    endif
+    
+!   RESTITUTION FINALE DES SECTIONS DE FERRAILLAGE
+!  -----------------------------------------------
+    dnsits(1) = dnsyi
+    dnsits(2) = dnsys
+    dnsits(3) = dnszi
+    dnsits(4) = dnszs
+    dnsits(5) = dnstra
+    if ((dnsits(1).ne.(-1)) .and. (dnsits(2).ne.(-1)) &
+         & .and. (dnsits(3).ne.(-1)) .and. (dnsits(4).ne.(-1))) then
+    dnsits(6) = dnsyi+dnsys+dnszi+dnszs
+    else
+    dnsits(6)=-1
+    endif
+
+end subroutine
