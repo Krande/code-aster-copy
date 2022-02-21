@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -83,6 +83,7 @@ cata_msg = {
    - Réactualisez plus souvent la matrice tangente.
    - Raffinez votre discrétisation temporelle.
    - Essayez d'activer la gestion des événements (découpe du pas de temps par exemple) dans la commande DEFI_LIST_INST.
+   - Vérifier la cohérence des paramètres entre code_aster et MFRONT si vous utilisez une loi MFRONT.
 """),
 
     8  : _("""
