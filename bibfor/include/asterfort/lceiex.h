@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine lceiex(fami, kpg, ksp, mat, option,&
                       mu, su, de, ddedt, vim,&
-                      vip, r,codret)
+                      vip, r, carcri, codret)
         character(len=*) :: fami
         integer :: kpg,codret
         integer :: ksp
@@ -34,5 +34,6 @@ interface
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: r
+        real(kind=8), intent(in) :: carcri(*)
     end subroutine lceiex
 end interface
