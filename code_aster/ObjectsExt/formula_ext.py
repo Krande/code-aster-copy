@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 """
 
 import traceback
-from pickle import PicklingError, dumps, loads
 
 from libaster import Formula
 
@@ -47,16 +46,16 @@ class FormulaStateBuilder(InternalStateBuilder):
         super().save(form)
         init = initial_context()
         user_ctxt = {}
+        # use 'Serializer._filteringContext'?
         for key, val in form.getContext().items():
+            # objects defined in *main* could not be restored/reimported
+            if getattr(val, "__module__", "") == "__main__":
+                logger.warning(f"can not pickle object: {key} {type(val)}")
+                continue
             if val is not init.get(key):
                 user_ctxt[key] = val
         self._st["expr"] = form.getExpression()
-        try:
-            self._st["ctxt"] = dumps(user_ctxt)
-        except PicklingError as exc:
-            logger.warning("Can not pickle the formula context:")
-            logger.warning(str(exc))
-            self._st["ctxt"] = dumps({})
+        self._st["ctxt"] = user_ctxt
         return self
 
     def restore(self, form):
@@ -71,7 +70,8 @@ class FormulaStateBuilder(InternalStateBuilder):
         # try to load the context
         try:
             ctxt = initial_context()
-            ctxt.update(loads(self._st["ctxt"]))
+            logger.debug(f"restoring formula context: {self._st['ctxt']}")
+            ctxt.update(self._st["ctxt"])
             form.setContext(ctxt)
         except:
             logger.warning(f"can not restore context of formula '{form.getName()}'")
@@ -110,10 +110,10 @@ class ExtendedFormula:
             dict: Dict of properties.
         """
         dico = {
-            'INTERPOL': ['LIN', 'LIN'],
-            'NOM_PARA': self.getVariables(),
-            'NOM_RESU': self.getProperties()[3],
-            'PROL_DROITE': "EXCLU",
-            'PROL_GAUCHE': "EXCLU",
+            "INTERPOL": ["LIN", "LIN"],
+            "NOM_PARA": self.getVariables(),
+            "NOM_RESU": self.getProperties()[3],
+            "PROL_DROITE": "EXCLU",
+            "PROL_GAUCHE": "EXCLU",
         }
         return dico

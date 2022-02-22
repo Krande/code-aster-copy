@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -24,25 +24,22 @@ code_aster.init("--test", debug=True)
 
 from supv001b_imp import one
 
-form_one = FORMULE(NOM_PARA='INST', VALE="one(INST)", one=one)
+form_one = FORMULE(NOM_PARA="INST", VALE="one(INST)", one=one)
 
-three = DEFI_CONSTANTE(VALE=3.)
+three = DEFI_CONSTANTE(VALE=3.0)
 
-four = FORMULE(NOM_PARA='INST',
-               VALE="three(INST) + one(INST)",
-               one=one,
-               three=three,)
+four = FORMULE(NOM_PARA="INST", VALE="three(INST) + one(INST)", one=one, three=three)
 
-feval = CALC_FONC_INTERP(NOM_PARA='INST', FONCTION=four, VALE_PARA=0.)
+feval = CALC_FONC_INTERP(NOM_PARA="INST", FONCTION=four, VALE_PARA=0.0)
 
 COUCHE = 1
 
-__five = DEFI_CONSTANTE(VALE=5.)
+__five = DEFI_CONSTANTE(VALE=5.0)
 
-const_context = { 'func': [__five] }
+const_context = {"func": [__five]}
 
-six = FORMULE(NOM_PARA='INST',
-               VALE="func[0](INST) + 1",
-               **const_context)
+six = FORMULE(NOM_PARA="INST", VALE="func[0](INST) + 1", **const_context)
+
+assert four(0.0) == 4.0, "evaluate four"
 
 FIN()

@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,15 @@ from code_aster.Commands import *
 
 code_aster.init("--test", "--continue")
 
-test.assertIn("one", globals())
+ctxt = globals()
+
+test.assertIn("one", ctxt)
 test.assertEqual(one, 1)
-test.assertNotIn("SIYYp", globals())
-test.assertIn("func", globals())
-test.assertIn("SIYY", globals())
+test.assertIn("two", ctxt)
+test.assertIn("form_two", ctxt)
+test.assertNotIn("SIYYp", ctxt)
+test.assertIn("SIYY", ctxt)
+del ctxt
 
 # User defined functions can not be unpickled.
 test.assertRaises(RuntimeError, SIYY, 0., 0., 0.)
@@ -39,7 +43,10 @@ def SIYYp(x,y,z):
     return (a0 + ax*x + ay*y + az*z)*1.0E+6
 
 SIYY.setContext(dict(SIYYp=SIYYp))
+
 test.assertEqual(SIYY(0, 0, 0), 2.0e6)
+test.assertEqual(two(0), 2.0)
+test.assertEqual(form_two(0), 2.0)
 
 code_aster.saveObjects()
 

@@ -7,4 +7,5 @@ P testlist submit ci verification sequential
 
 F comm supv001b.comm D 1
 F comm supv001b.com1 D 1
+F comm supv001b.com2 D 1
 F nom supv001b_imp.py D 0

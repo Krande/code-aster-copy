@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,17 +17,17 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
-from code_aster.Commands import FORMULE
+import code_aster
+from code_aster.Commands import *
 
-def F_FORMULE(NAP):
+code_aster.init("--test", "--continue", debug=True)
 
-   PARA1=5.
-#
-   NAP1 = FORMULE(VALE='NAP(INST,PARA1,AMOR) ',
-                  NAP=NAP,
-                  PARA1=PARA1,
-                  NOM_PARA=['INST', 'AMOR'],)
-   aaa=NAP1(2.,3.)
+# 'four' needs 'one' (imported from supv001b_imp) and 'three'
+# 'three' was deleted in .com1
+# here, one checks that 'three' is properly restored from the formula context
 
-   DETRUIRE(NOM=NAP1)
-return aaa
+test = code_aster.TestCase()
+test.assertEqual(four(0.0), 4.0, msg="evaluate four")
+test.printSummary()
+
+FIN()

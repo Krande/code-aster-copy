@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -576,6 +576,7 @@ class AsterUnpickler(pickle.Unpickler):
                         for i in self.args]
                 logger.debug(f"initargs: {args}")
                 self._inst = getattr(Objects, self.classname)(*args)
+                logger.debug(f"new object: {self._inst}")
                 logger.debug(f"setting state: {self.state}")
                 _restore(f"{self._name} .state", self.state)
                 getattr(self._inst, "__setstate__")(self.state)
