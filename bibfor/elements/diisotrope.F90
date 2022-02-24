@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -209,6 +209,9 @@ integer, intent(out)          :: iret
                 raide(3) = zr(ivarim-1+16)
             endif
         endif
+        resu(1) = zr(icontm)
+        resu(2) = zr(icontm+1)
+        resu(3) = zr(icontm+2)
         goto 800
     endif
     !
