@@ -27,7 +27,7 @@ from ..Objects import (ElementaryMatrixDisplacementComplex,
                        MechanicalLoadComplex,
                        DiscreteComputation)
 from ..Supervis import ExecuteCommand
-from ..Utilities import force_list
+from ..Utilities import force_list, haveMPI
 
 
 class ComputeElementaryMatrix(ExecuteCommand):
@@ -39,6 +39,8 @@ class ComputeElementaryMatrix(ExecuteCommand):
         """ Use or not new c++ commands"""
 
         # Case not yet supported - to fix
+        if haveMPI():
+            return False
 
         myOption = keywords["OPTION"]
         if myOption not in ("RIGI_MECA",):
