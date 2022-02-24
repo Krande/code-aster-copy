@@ -18,10 +18,16 @@
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from ..Objects import (FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsComplex,
-                       FieldOnNodesReal, FieldOnNodesComplex,
-                       FullResult, ModeResult,
-                       ConstantFieldOnCellsReal)
+from ..Objects import (
+    FieldOnCellsReal,
+    FieldOnCellsLong,
+    FieldOnCellsComplex,
+    FieldOnNodesReal,
+    FieldOnNodesComplex,
+    FullResult,
+    ModeResult,
+    ConstantFieldOnCellsReal,
+)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
 
@@ -30,6 +36,7 @@ class FieldCreator(ExecuteCommand):
     """Command that creates fields that may be
     :class:`~code_aster.Objects.FieldOnNodesReal` or
     :class:`~code_aster.Objects.ConstantFieldOnCellsReal`."""
+
     command_name = "CREA_CHAMP"
 
     def create_result(self, keywords):
@@ -38,16 +45,8 @@ class FieldCreator(ExecuteCommand):
         Arguments:
             keywords (dict): Keywords arguments of user's keywords.
         """
-        location = keywords["TYPE_CHAM"][:5]
-        typ = keywords["TYPE_CHAM"][10:]
-
-# c'est très sale, à corriger, voir 31791
-        if keywords["TYPE_CHAM"] == "ELNO_SIEFMX_R":
-            location = "ELNO"
-            typ = "R"
-        if keywords["TYPE_CHAM"] == "ELEM_DCEL_I":
-            location = "ELEM"
-            typ = "R"
+        # Analysis of type of field
+        location, quantity, typ = keywords["TYPE_CHAM"].split("_")
 
         mesh = keywords.get("MAILLAGE")
         model = keywords.get("MODELE")
@@ -71,15 +70,15 @@ class FieldCreator(ExecuteCommand):
             elif fiss is not None:
                 mesh = fiss.getMesh()
 
-        if location == "CART_":
+        if location == "CART":
             if mesh is None:
                 raise NotImplementedError("Must have Mesh, Model or ElementaryCharacteristics")
             self._result = ConstantFieldOnCellsReal(mesh)
-        elif location == "NOEU_":
+        elif location == "NOEU":
             if typ == "C":
                 self._result = FieldOnNodesComplex()
             else:
-# c'est très sale, à corriger, voir 31788
+                # c'est très sale, à corriger, voir 31762
                 self._result = FieldOnNodesReal()
             if mesh is not None:
                 self._result.setMesh(mesh)
@@ -93,7 +92,7 @@ class FieldCreator(ExecuteCommand):
             elif typ == "C":
                 self._result = FieldOnCellsComplex()
             elif typ == "F":
-# c'est très sale, à corriger, voir 31788
+                # c'est très sale, à corriger, voir 31762
                 self._result = FieldOnCellsReal()
             else:
                 raise NotImplementedError("Output for CREA_CHAMP not defined")
@@ -134,13 +133,13 @@ class FieldCreator(ExecuteCommand):
         if isinstance(self._result, FieldOnNodesReal):
             if not self._result.getDescription():
                 for comb in force_list(keywords.get("COMB", [])):
-                    desc = comb['CHAM_GD'].getDescription()
+                    desc = comb["CHAM_GD"].getDescription()
                     if desc:
                         self._result.setDescription(desc)
                         break
             if not self._result.getMesh():
                 for comb in force_list(keywords.get("COMB", [])):
-                    mesh = comb['CHAM_GD'].getMesh()
+                    mesh = comb["CHAM_GD"].getMesh()
                     if mesh:
                         self._result.setMesh(mesh)
                         break
