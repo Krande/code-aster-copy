@@ -70,7 +70,7 @@ void exportFieldOnNodesToPython() {
         .def( "getMesh", &FieldOnNodesReal::getMesh )
         .def( "getDescription", &FieldOnNodesReal::getDescription )
         .def( "updateValuePointers", &FieldOnNodesReal::updateValuePointers )
-        .def( "norm", &FieldOnNodesReal::norm< ASTERDOUBLE >,
+        .def( "norm", &FieldOnNodesReal::norm,
               R"(
 Return the euclidean norm of the field
 
@@ -81,7 +81,7 @@ Returns:
     float: euclidean norm
         )",
               ( py::arg( "self" ) ) )
-        .def( "dot", &FieldOnNodesReal::dot< ASTERDOUBLE >,
+        .def( "dot", &FieldOnNodesReal::dot,
               R"(
 Return the dot product of two fields
 
@@ -147,6 +147,28 @@ Return a list of complex values as [x11, x21, ..., xm1, x12, x22, ..., xm2...]
 
 Returns:
     list[complex]: List of values.
+        )",
+              ( py::arg( "self" ) ) )
+        .def( "dot", &FieldOnNodesComplex::dot,
+              R"(
+Return the dot product of two complex fields
+
+Arguments:
+    other (FieldOnNodes): other field
+
+Returns:
+    complex: dot product
+        )",
+              ( py::arg( "self" ), py::arg( "other" ) ) )
+        .def( "norm", &FieldOnNodesComplex::norm,
+              R"(
+Return the euclidean norm of the field
+
+Arguments:
+    normType (str): "NORM_1", "NORM_2", "NORM_INFINITY"
+
+Returns:
+    float: euclidean norm
         )",
               ( py::arg( "self" ) ) )
         .def( "setValues", &FieldOnNodesComplex::setValues, R"(

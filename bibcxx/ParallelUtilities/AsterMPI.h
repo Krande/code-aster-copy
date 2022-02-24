@@ -6,7 +6,7 @@
  * @brief Fichier entete contenant des utilitaires de manipulation de containers STL en parallèle
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -126,6 +126,9 @@ template <> inline MPI_Datatype AsterMPI::mpi_type< unsigned long int >() {
 }
 template <> inline MPI_Datatype AsterMPI::mpi_type< long long >() { return MPI_LONG_LONG; }
 template <> inline MPI_Datatype AsterMPI::mpi_type< bool >() { return MPI_CXX_BOOL; }
+template <> inline MPI_Datatype AsterMPI::mpi_type< ASTERCOMPLEX >() { 
+    return MPI_C_DOUBLE_COMPLEX ; 
+}
 //---------------------------------------------------------------------------
 inline void AsterMPI::all_gather( const std::string &in_values, VectorString &out_values,
                                   aster_comm_t *_commCurrent ) {

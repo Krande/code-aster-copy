@@ -42,15 +42,15 @@ elno = CREA_CHAMP(TYPE_CHAM='ELGA_DEPL_R',
                   OPERATION='AFFE',
                   MODELE=model,
                   AFFE=_F(TOUT='OUI',
-                           NOM_CMP=('DX', 'DY', 'DZ'),
+                          NOM_CMP=('DX', 'DY', 'DZ'),
                           VALE=(-1.0, 2.0, 3.0)))
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=elno,
-                     REFERENCE='ANALYTIQUE',
-                     VALE_CALC=-1.0,
-                     VALE_REFE=-1.0,
-                     NOM_CMP='DX',
-                     TYPE_TEST='MIN', )
+                       REFERENCE='ANALYTIQUE',
+                       VALE_CALC=-1.0,
+                       VALE_REFE=-1.0,
+                       NOM_CMP='DX',
+                       TYPE_TEST='MIN', )
           )
 
 field = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -207,7 +207,6 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=ftest,
                      TYPE_TEST='SOMM_ABS', )
           )
 
-
 # TEST EXTR_COMP for FieldOnNodesReal
 f_real = code_aster.FieldOnNodesReal(dofNume)
 f_real.setValues(1.0)
@@ -221,13 +220,29 @@ test.assertEqual(sf_real_mask.all(), True)
 
 # TEST EXTR_COMP for FieldOnNodesComplex
 f_complex = code_aster.FieldOnNodesComplex(dofNume)
-f_complex.setValues(1+2j)
+f_complex.setValues(1 + 2j)
 vals_complex = f_complex.EXTR_COMP('DX').valeurs
-test.assertEqual(vals_complex[0], 1+2j)
+test.assertEqual(vals_complex[0], 1 + 2j)
+
+f2_complex = code_aster.FieldOnNodesComplex(dofNume)
+f2_complex.setValues(1 + 5j)
+dot_f_f2 = sum(f_complex.getValues()[p] *
+               f2_complex.getValues()[p].conjugate()
+               for p in range(len(f_complex.getValues())))
+test.assertEqual(f_complex.dot(f2_complex), dot_f_f2)
+test.assertEqual(f_complex.norm("NORM_1"),
+                 sum(map(abs, f_complex.getValues())))
+test.assertEqual(f_complex.norm("NORM_2"),
+                 sqrt(sum(map(lambda x: abs(x) ** 2,
+                    f_complex.getValues()))))
+test.assertEqual(f_complex.norm("NORM_INFINITY"),
+                 max(map(abs, f_complex.getValues())))
 
 sf_complex = f_complex.exportToSimpleFieldOnNodes()
 sf_complex_values, sf_complex_mask = sf_complex.getValues()
-test.assertEqual(sf_complex_values[0][0], 1+2j)
+test.assertEqual(sf_complex_values[0][0], 1 + 2j)
 test.assertEqual(sf_complex_mask.all(), True)
+
+#
 
 code_aster.close()
