@@ -169,13 +169,16 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     if ( name.empty() ) {
         listOfNodes = irange( long( 1 ), long( getNumberOfNodes() ) );
     } else if ( !hasGroupOfNodes( name, true ) ) {
+        CALL_JEDEMA();
         return VectorLong();
     } else {
         listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
     }
 
-    if ( localNumbering )
+    if ( localNumbering ) {
+        CALL_JEDEMA();
         return listOfNodes;
+    }
 
     VectorLong newNumbering;
     newNumbering.reserve( listOfNodes.size() );
@@ -196,6 +199,7 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     if ( name.empty() ) {
         listOfNodes = irange( long( 1 ), long( getNumberOfNodes() ) );
     } else if ( !hasGroupOfNodes( name, true ) ) {
+        CALL_JEDEMA();
         return VectorLong();
     } else {
         listOfNodes = _groupsOfNodes->getObjectFromName( name ).toVector();
@@ -222,8 +226,10 @@ VectorLong ParallelMesh::getNodes( const std::string name, const bool localNumbe
     }
     newRank.resize( size );
 
-    if ( localNumbering )
+    if ( localNumbering ) {
+        CALL_JEDEMA();
         return newRank;
+    }
 
     VectorLong newNumbering;
     newNumbering.reserve( newRank.size() );
@@ -241,8 +247,10 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
     CALL_JEMARQ();
     const auto cellsId = getCells( name );
 
-    if ( cellsId.empty() )
+    if ( cellsId.empty() ) {
+        CALL_JEDEMA();
         return VectorLong();
+    }
 
     const auto &connecExp = getConnectivityExplorer();
 
@@ -273,6 +281,7 @@ VectorLong ParallelMesh::getNodesFromCells( const std::string name, const bool l
         for ( auto &node : nodes )
             v_nodes.push_back( ( *_globalNumbering )[node - 1] );
 
+        CALL_JEDEMA();
         return v_nodes;
     }
 

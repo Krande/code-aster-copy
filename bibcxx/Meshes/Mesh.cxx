@@ -102,8 +102,11 @@ VectorLong Mesh::getNodesFromCells( const std::string name, const bool localNumb
     CALL_JEMARQ();
     const auto cellsId = getCells( name );
 
-    if ( cellsId.empty() )
+    if ( cellsId.empty() ) {
+        CALL_JEDEMA();
+
         return VectorLong();
+    }
 
     const auto &connecExp = getConnectivityExplorer();
 
@@ -125,7 +128,7 @@ bool Mesh::isQuadratic() const {
     auto cellsType = getMedCellsTypes();
     cellsType->updateValuePointer();
 
-    for ( auto& cellType : cellsType ) {
+    for ( auto &cellType : cellsType ) {
         if ( cellType == 103 || cellType == 104 || cellType == 206 || cellType == 207 ||
              cellType == 208 || cellType == 209 || cellType == 310 || cellType == 315 ||
              cellType == 318 || cellType == 313 || cellType == 320 || cellType == 327 ) {

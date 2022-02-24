@@ -38,13 +38,19 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
       _behavProp( boost::make_shared< BehaviourProperty >( _model, _materialField ) ) {
     // Add checks
     if ( _elemChara ) {
-        if ( _model->getName() != _elemChara->getModel()->getName() )
-            raiseAsterError( "Inconsistent model" );
+        if ( _model != _elemChara->getModel() ) {
+            const std::string msg = "Inconsistent model: " + _model->getName() + " vs " +
+                                    _elemChara->getModel()->getName();
+            raiseAsterError( msg );
+        }
     }
 
     if ( _materialField ) {
-        if ( _mesh->getName() != _materialField->getMesh()->getName() )
-            raiseAsterError( "Inconsistent mesh" );
+        if ( _mesh != _materialField->getMesh() ) {
+            const std::string msg = "Inconsistent mesh: " + _mesh->getName() + " vs " +
+                                    _materialField->getMesh()->getName();
+            raiseAsterError( msg );
+        }
     }
 
 // create dofNume
@@ -58,7 +64,7 @@ PhysicalProblem::PhysicalProblem( const ModelPtr curModel, const MaterialFieldPt
     _dofNume->setModel( _model );
     _dofNume->setListOfLoads( _listOfLoads );
 
-    if(_materialField)
+    if ( _materialField )
         _codedMater->allocate( true );
 };
 

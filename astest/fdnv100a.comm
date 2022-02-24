@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -149,6 +149,18 @@ CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
 ),
                         COQUE=_F( GROUP_MA = 'FONDS',
                         EPAIS = 0.00001 ),)
+
+CARAELEMST=AFFE_CARA_ELEM(MODELE=MODELEST,
+                        DISCRET=(
+                                _F(GROUP_MA='POI1',
+                                   CARA='M_T_D_N',
+                                   VALE=(0.05896,),),
+                                _F(GROUP_MA='POI1',
+                                   CARA='K_T_D_N',
+                                   VALE=(0.0,0.0,0.0,),),
+),
+                        COQUE=_F( GROUP_MA = 'FONDS',
+                        EPAIS = 0.00001 ),)
 #
 TABL_MAS=POST_ELEM(MASS_INER= _F(GROUP_MA=('FLUID1','FLUID2','FACELATE','IFLUSTRU','PLAQUE','FONDS',)),
                    MODELE=MODELE, CHAM_MATER=CHMAT, CARA_ELEM=CARAELEM,)
@@ -281,7 +293,7 @@ ASSEMBLAGE (MODELE = MODELE,
 #
 ASSEMBLAGE (MODELE = MODELEST,
                   CHAM_MATER=CHMATST,
-                  CARA_ELEM=CARAELEM,
+                  CARA_ELEM=CARAELEMST,
                   CHARGE     = (PESAST,),
                   CHAR_CINE = CONDSTCS,
                   NUME_DDL   = CO('NUMSTAST'),
