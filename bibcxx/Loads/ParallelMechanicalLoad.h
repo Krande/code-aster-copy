@@ -11,7 +11,7 @@
  * @brief Fichier entete de la classe ParallelMechanicalLoad
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2021  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -31,88 +31,77 @@
 
 #include "DataFields/ConstantFieldOnCells.h"
 #include "DataStructures/DataStructure.h"
-#include "DataFields/ConstantFieldOnCells.h"
-#include "Modeling/Model.h"
-#include "Modeling/FiniteElementDescriptor.h"
-#include "Modeling/ParallelFiniteElementDescriptor.h"
 #include "Loads/MechanicalLoad.h"
-#include "Supervis/ResultNaming.h"
-#include "ParallelUtilities/AsterMPI.h"
 #include "Meshes/MeshExplorer.h"
-
+#include "Modeling/FiniteElementDescriptor.h"
+#include "Modeling/Model.h"
+#include "Modeling/ParallelFiniteElementDescriptor.h"
+#include "ParallelUtilities/AsterMPI.h"
+#include "Supervis/ResultNaming.h"
 
 /**
  * @class ParallelMechanicalLoad
  * @brief Classe definissant une charge dualisée parallèle
- * @author Nicolas Sellenet
  */
-template< typename ConstantFieldOnCellsType>
-class ParallelMechanicalLoad: public DataStructure
-{
+template < typename ConstantFieldOnCellsType >
+class ParallelMechanicalLoad : public DataStructure {
   public:
-    typedef boost::shared_ptr< ConstantFieldOnCellsType > ConstantFieldOnCellsTypePtr;
+    using ConstantFieldOnCellsTypePtr = boost::shared_ptr< ConstantFieldOnCellsType >;
 
-private:
-
-    template< typename ConstantFieldOnCellsType2Ptr >
-    void transferConstantFieldOnCells( const ConstantFieldOnCellsType2Ptr& fieldIn,
-                                ConstantFieldOnCellsType2Ptr& fieldOut )
-    {
-        const auto& toKeep = _FEDesc->getVirtualCellsToKeep();
+  private:
+    template < typename ConstantFieldOnCellsType2Ptr >
+    void transferConstantFieldOnCells( const ConstantFieldOnCellsType2Ptr &fieldIn,
+                                       ConstantFieldOnCellsType2Ptr &fieldOut ) {
+        const auto &toKeep = _FEDesc->getVirtualCellsToKeep();
 
         std::string savedName( "" );
         fieldOut->allocate( fieldIn );
-        const auto sizeFieldIn = (*fieldIn).size();
+        const auto sizeFieldIn = ( *fieldIn ).size();
         const auto vect_resu = fieldIn->getValues();
 
         fieldIn->updateValuePointers();
-        for( int pos = 0; pos < sizeFieldIn; ++pos )
-        {
-            const auto& zone = fieldIn->getZoneDescription( pos );
-            const auto& curFEDesc = zone.getFiniteElementDescriptor();
-            if( curFEDesc->getName() != savedName && savedName != "" )
-            {
-                std::string a(
-                    "Different FiniteElementDescriptor in one ConstantFieldOnCells is not allowed");
+        for ( int pos = 0; pos < sizeFieldIn; ++pos ) {
+            const auto &zone = fieldIn->getZoneDescription( pos );
+            const auto &curFEDesc = zone.getFiniteElementDescriptor();
+            if ( curFEDesc->getName() != savedName && savedName != "" ) {
+                std::string a( "Different FiniteElementDescriptor in one ConstantFieldOnCells is "
+                               "not allowed" );
                 throw std::runtime_error( a );
             }
             savedName = curFEDesc->getName();
 
-            const auto& listCells = zone.getListOfCells();
+            const auto &listCells = zone.getListOfCells();
             VectorLong toCopy;
-            toCopy.reserve(listCells.size());
-            for( const auto& num : listCells )
-            {
-                if( toKeep[ -num - 1 ] != 1 )
-                    toCopy.push_back( toKeep[ -num - 1 ] );
+            toCopy.reserve( listCells.size() );
+            for ( const auto &num : listCells ) {
+                if ( toKeep[-num - 1] != 1 )
+                    toCopy.push_back( toKeep[-num - 1] );
             }
 
-            if( toCopy.size() != 0 )
-            {
+            if ( toCopy.size() != 0 ) {
                 const auto newZone =
                     ConstantFieldOnZone( zone.getFiniteElementDescriptor(), toCopy );
                 const auto resu = vect_resu[pos];
                 fieldOut->setValueOnZone( newZone, resu );
             }
         }
-
     };
 
-protected:
+  protected:
     /** @brief Modele */
-    ModelPtr                           _model;
+    ModelPtr _model;
     /** @brief Vecteur Jeveux '.LIGRE' */
     ParallelFiniteElementDescriptorPtr _FEDesc;
     /** @brief Carte '.CIMPO' */
-    ConstantFieldOnCellsTypePtr        _cimpo;
+    ConstantFieldOnCellsTypePtr _cimpo;
     /** @brief Carte '.CMULT' */
-    ConstantFieldOnCellsRealPtr        _cmult;
+    ConstantFieldOnCellsRealPtr _cmult;
     /** @brief Vecteur Jeveux '.TYPE' */
-    JeveuxVectorChar8                  _type;
+    JeveuxVectorChar8 _type;
     /** @brief Vecteur Jeveux '.MODEL.NOMO' */
-    JeveuxVectorChar8                  _modelName;
+    JeveuxVectorChar8 _modelName;
 
-public:
+  public:
     /**
      * @brief Constructeur
      */
@@ -122,38 +111,37 @@ public:
      *
      * @brief Constructeur
      */
-    ParallelMechanicalLoad(
-        const MechanicalLoadPtr< ConstantFieldOnCellsType >& load,
-        const ModelPtr& model ):
-        ParallelMechanicalLoad( ResultNaming::getNewResultName(), load, model )
-    {};
+    ParallelMechanicalLoad( const MechanicalLoadPtr< ConstantFieldOnCellsType > &load,
+                            const ModelPtr &model )
+        : ParallelMechanicalLoad( ResultNaming::getNewResultName(), load, model ){};
 
     /**
      * @brief Constructeur
      */
-    ParallelMechanicalLoad( const std::string& name,
-                                const MechanicalLoadPtr< ConstantFieldOnCellsType >& load,
-                                const ModelPtr& model ):
-    DataStructure( name, 8, "CHAR_MECA" ),
-    _FEDesc( boost::make_shared<ParallelFiniteElementDescriptor>
-                    ( getName() + ".CHME.LIGRE", load->getFiniteElementDescriptor(),
-                      load->getModel()->getConnectionMesh(), model ) ),
-    _cimpo(boost::make_shared<ConstantFieldOnCellsType>( getName() + ".CHME.CIMPO", _FEDesc )),
-    _cmult(boost::make_shared<ConstantFieldOnCellsReal>( getName() + ".CHME.CMULT", _FEDesc )),
-    _type( getName() + ".TYPE" ),
-    _modelName( getName() + ".CHME.MODEL.NOMO" ),
-    _model( model )
-    {
+    ParallelMechanicalLoad( const std::string &name,
+                            const MechanicalLoadPtr< ConstantFieldOnCellsType > &load,
+                            const ModelPtr &model )
+        : DataStructure( name, 8, "CHAR_MECA" ),
+          _FEDesc( boost::make_shared< ParallelFiniteElementDescriptor >(
+              getName() + ".CHME.LIGRE", load->getFiniteElementDescriptor(),
+              load->getModel()->getConnectionMesh(), model ) ),
+          _cimpo( boost::make_shared< ConstantFieldOnCellsType >( getName() + ".CHME.CIMPO",
+                                                                  _FEDesc ) ),
+          _cmult( boost::make_shared< ConstantFieldOnCellsReal >( getName() + ".CHME.CMULT",
+                                                                  _FEDesc ) ),
+          _type( getName() + ".TYPE" ),
+          _modelName( getName() + ".CHME.MODEL.NOMO" ),
+          _model( model ) {
         auto typeLoadStd = load->getType();
         typeLoadStd->updateValuePointer();
 
         _type->allocate( 1 );
-        (*_type)[0] = (*typeLoadStd)[0];
+        ( *_type )[0] = ( *typeLoadStd )[0];
         _modelName->allocate( 1 );
-        (*_modelName)[0] = model->getName();
+        ( *_modelName )[0] = model->getName();
 
-        transferConstantFieldOnCells(
-            load->getMechanicalLoadDescription()->getImpositionField(), _cimpo );
+        transferConstantFieldOnCells( load->getMechanicalLoadDescription()->getImpositionField(),
+                                      _cimpo );
         transferConstantFieldOnCells(
             load->getMechanicalLoadDescription()->getMultiplicativeField(), _cmult );
     };
@@ -172,37 +160,36 @@ public:
         return _model;
     };
 
-    typedef boost::shared_ptr< ParallelMechanicalLoad > ParallelMechanicalLoadPtr;
+    using ParallelMechanicalLoadPtr = boost::shared_ptr< ParallelMechanicalLoad > ;
 
+    ConstantFieldOnCellsRealPtr getMultiplicativeField() const { return _cmult; };
 };
 
 /**
  * @typedef ParallelMechanicalLoadPtr
  * @brief Pointeur intelligent vers un ParallelMechanicalLoad
  */
-typedef ParallelMechanicalLoad< ConstantFieldOnCellsReal >
-    ParallelMechanicalLoadReal;
+using  ParallelMechanicalLoadReal = ParallelMechanicalLoad< ConstantFieldOnCellsReal > ;
 
-typedef ParallelMechanicalLoad< ConstantFieldOnCellsChar24 >
-    ParallelMechanicalLoadFunction;
+using  ParallelMechanicalLoadFunction = ParallelMechanicalLoad< ConstantFieldOnCellsChar24 >;
 
-typedef boost::shared_ptr< ParallelMechanicalLoadReal > ParallelMechanicalLoadRealPtr;
+using  ParallelMechanicalLoadRealPtr = boost::shared_ptr< ParallelMechanicalLoadReal > ;
 
-typedef boost::shared_ptr< ParallelMechanicalLoadFunction > ParallelMechanicalLoadFunctionPtr;
+using ParallelMechanicalLoadFunctionPtr = boost::shared_ptr< ParallelMechanicalLoadFunction >;
 
 /** @typedef std::list de ParallelMechanicalLoad */
-typedef std::list< ParallelMechanicalLoadRealPtr > ListParaMecaLoadReal;
+using ListParaMecaLoadReal = std::list< ParallelMechanicalLoadRealPtr >;
 /** @typedef Iterateur sur une std::list de ParallelMechanicalLoad */
-typedef ListParaMecaLoadReal::iterator ListParaMecaLoadRealIter;
+using ListParaMecaLoadRealIter = ListParaMecaLoadReal::iterator;
 /** @typedef Iterateur constant sur une std::list de ParallelMechanicalLoad */
-typedef ListParaMecaLoadReal::const_iterator ListParaMecaLoadRealCIter;
+using ListParaMecaLoadRealCIter = ListParaMecaLoadReal::const_iterator;
 
 /** @typedef std::list de ParallelMechanicalLoad */
-typedef std::list< ParallelMechanicalLoadFunctionPtr > ListParaMecaLoadFunction;
+using ListParaMecaLoadFunction = std::list< ParallelMechanicalLoadFunctionPtr >;
 /** @typedef Iterateur sur une std::list de ParallelMechanicalLoad */
-typedef ListParaMecaLoadFunction::iterator ListParaMecaLoadFunctionIter;
+using ListParaMecaLoadFunctionIter =  ListParaMecaLoadFunction::iterator;
 /** @typedef Iterateur constant sur une std::list de ParallelMechanicalLoad */
-typedef ListParaMecaLoadFunction::const_iterator ListParaMecaLoadFunctionCIter;
+using ListParaMecaLoadFunctionCIter = ListParaMecaLoadFunction::const_iterator;
 
 #endif /* PARALLELMECHANICALLOAD_H_ */
 

@@ -394,6 +394,45 @@ void DiscreteComputation::baseDualStiffnessMatrix( CalculPtr &calcul,
             elemMatr->addElementaryTerm( resuElem );
         }
     }
+
+#ifdef ASTER_HAVE_MPI
+    ListParaMecaLoadReal mecaParaLoadReal = _listOfLoads->getParallelMechanicalLoadsReal();
+    for ( const auto &curIter : mecaParaLoadReal ) {
+        FiniteElementDescriptorPtr FEDesc = curIter->getFiniteElementDescriptor();
+        ConstantFieldOnCellsRealPtr field = curIter->getMultiplicativeField();
+        if ( field && field->exists() && FEDesc ) {
+            std::string elemTermName = elemMatr->generateNameOfElementaryTerm();
+            ElementaryTermRealPtr resuElem =
+                boost::make_shared< ElementaryTermReal >( elemTermName );
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->setFiniteElementDescriptor( FEDesc );
+            calcul->addInputField( "PDDLMUR", field );
+            calcul->addOutputElementaryTerm( "PMATUUR", resuElem );
+            calcul->compute();
+            elemMatr->addElementaryTerm( resuElem );
+        }
+    }
+
+    ListParaMecaLoadFunction mecaParaLoadFunc = _listOfLoads->getParallelMechanicalLoadsFunction();
+    for ( const auto &curIter : mecaParaLoadFunc ) {
+        FiniteElementDescriptorPtr FEDesc = curIter->getFiniteElementDescriptor();
+        ConstantFieldOnCellsRealPtr field = curIter->getMultiplicativeField();
+        if ( field && field->exists() && FEDesc ) {
+            std::string elemTermName = elemMatr->generateNameOfElementaryTerm();
+            ElementaryTermRealPtr resuElem =
+                boost::make_shared< ElementaryTermReal >( elemTermName );
+            calcul->clearInputs();
+            calcul->clearOutputs();
+            calcul->setFiniteElementDescriptor( FEDesc );
+            calcul->addInputField( "PDDLMUR", field );
+            calcul->addOutputElementaryTerm( "PMATUUR", resuElem );
+            calcul->compute();
+            elemMatr->addElementaryTerm( resuElem );
+        }
+    }
+
+#endif
 };
 
 ElementaryMatrixDisplacementRealPtr DiscreteComputation::dualStiffnessMatrix() {
