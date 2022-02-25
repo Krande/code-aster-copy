@@ -107,7 +107,6 @@ subroutine nmcjs(typmod, imat, crit, &
 #include "asterfort/cjstid.h"
 #include "asterfort/cjstis.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_varc.h"
     integer :: imat, ndt, ndi, nvi, iret
@@ -407,14 +406,14 @@ subroutine nmcjs(typmod, imat, crit, &
 !
 !          MECANISME DEVIATOIRE SEUL
             if ((mecanf .eq. 'DEVIAT')) then
-                call lcsove(epsdth, depsth, epsf)
+                epsf(1:ndt) = epsdth(1:ndt) + depsth(1:ndt)
                 call cjstde(mod, materf, nvi, epsf, sigf,&
                             vinf, dsde)
             endif
 !
 !          MECANISMES ISOTROPE ET DEVIATOIRE
             if (mecanf .eq. 'ISODEV') then
-                call lcsove(epsdth, depsth, epsf)
+                epsf(1:ndt) = epsdth(1:ndt) + depsth(1:ndt)
                 call cjstid(mod, materf, nvi, epsf, sigf,&
                             vinf, dsde)
             endif

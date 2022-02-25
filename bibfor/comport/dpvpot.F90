@@ -29,7 +29,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi
     integer :: nbmat
@@ -202,8 +201,8 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- CALCUL DE Df/ DSIG ----------------------------------------------
 ! =====================================================================
-        call lcsove(dqdsig, adidsi, cdidsi)
-        call lcsove(cdidsi, bdidsi, dfdsig)
+        cdidsi(1:ndt) = dqdsig(1:ndt) + adidsi(1:ndt)
+        dfdsig(1:ndt) = cdidsi(1:ndt) + bdidsi(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE DfDp --------------------------------------------------
 ! =====================================================================
@@ -311,7 +310,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- CALCUL DE dI1/dEPS ----------------------------------------------
 ! =====================================================================
-        call lcsove(di1ede, vect2, di1de)
+        di1de(1:ndt) = di1ede(1:ndt) + vect2(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE I * dI/dEPS -------------------------------------------
 ! =====================================================================

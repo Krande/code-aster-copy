@@ -63,7 +63,6 @@ subroutine srcomp(mod, imate, instam, instap, &
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/srcrip.h"
 #include "asterfort/srcriv.h"
 #include "asterfort/srdgde.h"
@@ -355,7 +354,7 @@ subroutine srcomp(mod, imate, instam, instap, &
             end do
             
             !!! maj des contraintes
-            call lcsove(depsv,depsp,irrev)
+            irrev(1:ndt) = depsv(1:ndt) + depsp(1:ndt)
             vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
             call lcprmv(de,vecd,dsig)
             
@@ -398,7 +397,7 @@ subroutine srcomp(mod, imate, instam, instap, &
             endif
             
             !!!maj des contraintes
-            call lcsove(depsv,depsp,irrev)
+            irrev(1:ndt) = depsv(1:ndt) + depsp(1:ndt)
             vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
             call lcprmv(de,vecd,dsig)
             

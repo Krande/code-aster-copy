@@ -52,7 +52,6 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcsomh.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/rsliso.h"
 #include "asterfort/rslphi.h"
 #include "asterfort/utmess.h"
@@ -94,6 +93,8 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 !
     character(len=*) :: fami
     character(len=16) :: loi
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
 !
 !       ---------------------------------------------------------------
 !
@@ -177,7 +178,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     rigdmo = rigdmo *(theta*troisk+(un-theta)*troikm)/troikm
 !CCCCCCCCCCCCCCCCCCCCCCCCCCC
     call lcprsv(demuth, depsdv, rigel)
-    call lcsove(rigddv, rigel, rigel)
+    rigel(1:ndt) = rigddv(1:ndt) + rigel(1:ndt)
     rieleq = lcnrts(rigel)
 !
 ! ---CAS DU MATERIAU A POROSITE ACCELEREE--
@@ -373,7 +374,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
  20 continue
 ! -- CALCUL DE RIELEQ AVEC THETA =1----
     call lcprsv(deuxmu, depsdv, rigel)
-    call lcsove(rigddv, rigel, rigel)
+    rigel(1:ndt) = rigddv(1:ndt) + rigel(1:ndt)
     rieleq = lcnrts(rigel)
     dp=p-pi
     rigeq = rieleq - troimu*dp

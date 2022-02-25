@@ -38,7 +38,6 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsomh.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/rsliso.h"
     integer :: kpg, ksp, imat, nmat
 !
@@ -186,11 +185,11 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
             call lcprsm(a3, i4, m1)
             call lcprsv((a1-a3)/trois, i2, v1)
             call lcprsv(a2, rigdv, v2)
-            call lcsove(v1, v2, v1)
+            v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
             call lcprte(i2, v1, m2)
             call lcprsv(a4, rigdv, v1)
             call lcprsv(a5/trois, i2, v2)
-            call lcsove(v1, v2, v1)
+            v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
             call lcprte(rigdv, v1, m3)
             dsde(1:ndt,1:ndt) = m1(1:ndt,1:ndt) + m2(1:ndt,1:ndt) + m3(1:ndt,1:ndt)
 !
@@ -199,7 +198,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 !
             call lcprsv(a1-troisk, i2, v1)
             call lcprsv(trois*y5/y4, rigdv, v2)
-            call lcsove(v1, v2, v1)
+            v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
             call lcprte(rig, v1, m1)
             call lcprsm(y4/troisk, m1, m1)
             dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) + m1(1:ndt,1:ndt)

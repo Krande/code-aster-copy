@@ -28,7 +28,6 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/majsig.h"
 #include "asterfort/resdp1.h"
 #include "asterfort/trace.h"
@@ -82,7 +81,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
     call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
     call lcopil('ISOTROPE', mod, materf(1, 1), dkooh)
     call lcprmv(dkooh, sigm, epsm2)
-    call lcsove(epsm2, deps, epsp)
+    epsp(1:ndt) = epsm2(1:ndt) + deps(1:ndt)
 ! =====================================================================
 ! --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
 ! =====================================================================

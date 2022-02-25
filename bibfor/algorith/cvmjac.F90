@@ -72,7 +72,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsove.h"
     integer :: ndt, ndi, nmat, nmod
     integer :: ioptio, idnr, nopt
 !
@@ -286,7 +285,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     xx = x1df * zz - c1 * 2.d0/3.d0
     call lcprsv(xx, dfds, vtmp)
     call lcprsv(yy, x1, dldp)
-    call lcsove(dldp, vtmp, dldp)
+    dldp(1:ndt) = dldp(1:ndt) + vtmp(1:ndt)
 !
 ! - DLDR(T+DT)
     dldr(:) = 0.d0
@@ -342,7 +341,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     xx = x2df * zz - c2 * 2.d0/3.d0
     call lcprsv(xx, dfds, vtmp)
     call lcprsv(yy, x2, djdp)
-    call lcsove(djdp, vtmp, djdp)
+    djdp(1:ndt) = djdp(1:ndt) + vtmp(1:ndt)
 !
 ! - DJDR(T+DT)
     djdr(:) = 0.d0
@@ -676,7 +675,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 ! ---- EPSP
         call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
         call lcprmv(fkooh, sig, vtmp)
-        call lcsove(epsd, deps, epsp)
+        epsp(1:ndt) = epsd(1:ndt) + deps(1:ndt)
         epsp(1:ndt) = epsp(1:ndt) - vtmp(1:ndt)
 ! ---- JEPXI
         epxi(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
@@ -703,10 +702,10 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             xx = zz * dp
             vtmp(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
             call lcprsv(dp, dfds, vtmp1)
-            call lcsove(vtmp1, vtmp, vtmp)
+            vtmp(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             yy = -dp * nnet * (3.d0/2.d0) / jepxi
             call lcprsv(yy, epxi, vtmp1)
-            call lcsove(vtmp1, vtmp, vtmp)
+            vtmp(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             call lcprsv(xx, vtmp, vtmp1)
 !
 ! - DTDS(T+DT)
@@ -727,7 +726,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 ! - DTDXXI(T+DT)
             yy = -nnet * (3.d0/2.d0) / jepxi
             call lcprsv(yy, epxi, vtmp)
-            call lcsove(vtmp, dfds, vtmp)
+            vtmp(1:ndt) = vtmp(1:ndt) + dfds(1:ndt)
             call lcprsv(-xx, vtmp, dtdxxi)
 !
 !
@@ -736,7 +735,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             xx = 3.d0/2.d0 * ( 1.d0 - eta ) * dp / jepxi
             call lcprsv(-zz*dp, epxi, vtmp)
             call lcprsv(-xx*dp, dfds, vtmp1)
-            call lcsove(vtmp, vtmp1, vtmp)
+            vtmp(1:ndt) = vtmp(1:ndt) + vtmp1(1:ndt)
             call lcprmv(ddfdds, vtmp, vtmp1)
             call lcprte(vtmp1, epxi, mtmp)
             call lcprsm(-xx*dp*nnet, ddfdds, mtmp1)

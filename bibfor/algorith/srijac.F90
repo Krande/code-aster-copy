@@ -54,7 +54,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/srbpri.h"
 #include "asterfort/srcalg.h"
 #include "asterfort/srcaln.h"
@@ -477,7 +476,7 @@ subroutine srijac(nmat,materf,timed,timef,&
         
         call lcprsv(dphidx,gv,dphdxg)
         call lcprsv(phiv,dgvdxi,phdgdx)
-        call lcsove(dphdxg,phdgdx,vetemp)
+        vetemp(1:ndt) = dphdxg(1:ndt) + phdgdx(1:ndt)
         call lcprmv(dsdenl,vetemp,dr1dy4)
         
         do i=1,ndt

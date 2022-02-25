@@ -54,7 +54,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
@@ -100,7 +99,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
         call lcopil('ORTHOTRO', mod, materf(1, 1), dkooh)
     endif
     call lcprmv(dkooh, sigd, epsed)
-    call lcsove(epsed, deps, epstr)
+    epstr(1:ndt) = epsed(1:ndt) + deps(1:ndt)
 !
     if (typess .eq. 0) then
         call vecini(nr, 0.d0, dy)

@@ -25,7 +25,6 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), dp, beta, se(6), seq, dsde(6, 6)
     real(kind=8) :: plas, alpha, pplus, dpdeno
@@ -123,7 +122,7 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
                 call lcprsv(param1, se, vect1)
                 param1 = troisk * alpha
                 call lcprsv(param1, vunite, vect2)
-                call lcsove(vect1, vect2, vect3)
+                vect3(1:ndt) = vect1(1:ndt) + vect2(1:ndt)
                 param1 = - un/dpdeno
                 call lcprsv(param1, vect3, ddpde)
 !
@@ -131,7 +130,7 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
                 betam = betaps (beta, pmoins, pult)
                 param1 = troisk * betam - deux*troisk*beta*dp/pult
                 call lcprsv(param1, vunite, vect4)
-                call lcsove(vect1, vect4, vect5)
+                vect5(1:ndt) = vect1(1:ndt) + vect4(1:ndt)
                 call lcprte(ddpde, vect5, pmat4)
 ! =====================================================================
 ! --- CALCUL DE L OPERATEUR TANGENT -----------------------------------

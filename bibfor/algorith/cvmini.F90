@@ -53,7 +53,6 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/vecini.h"
     integer :: ndt, ndi, typess, nmat
     integer :: ioptio, idnr, nopt
@@ -166,7 +165,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 ! - DSIG
         call lcprsv(-dp, dfds, vtmp)
-        call lcsove(deps, vtmp, vtmp)
+        vtmp(1:ndt) = deps(1:ndt) + vtmp(1:ndt)
         call lcprmv(hook, vtmp, dsig)
 !
 ! - DX1
@@ -188,7 +187,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
         if (c1 .ne. 0.d0) then
             difc1 = (c1-c1d)/c1
             call lcprsv(difc1, x1, vtmp)
-            call lcsove(dx1, vtmp, dx1)
+            dx1(1:ndt) = dx1(1:ndt) + vtmp(1:ndt)
         endif
 !
 ! - DX2
@@ -210,7 +209,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
         if (c2 .ne. 0.d0) then
             difc2 = (c2-c2d)/c2
             call lcprsv(difc2, x2, vtmp)
-            call lcsove(dx2, vtmp, dx2)
+            dx2(1:ndt) = dx2(1:ndt) + vtmp(1:ndt)
         endif
 !
 ! - DR
@@ -246,9 +245,9 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 ! - EPSP
             call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
-            call lcsove(sig, dsig, vtmp)
+            vtmp(1:ndt) = sig(1:ndt) + dsig(1:ndt)
             call lcprmv(fkooh, vtmp, vtmp1)
-            call lcsove(epsd, deps, epsp)
+            epsp(1:ndt) = epsd(1:ndt) + deps(1:ndt)
             epsp(1:ndt) = epsp(1:ndt) - vtmp1(1:ndt)
 !
 ! N-ETOILE

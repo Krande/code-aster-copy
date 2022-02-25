@@ -38,7 +38,6 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsove.h"
     integer :: nmat
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -52,6 +51,8 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
 !
     character(len=8) :: mod
     character(len=3) :: matcst
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
 !       ----------------------------------------------------------------
 !
 ! --    CALCUL DE RHO
@@ -67,7 +68,7 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
         call lcprsv(theta, deps, thde)
         call lcprmv(hookf, thde, sigf)
         call lcprsv(rho, sigf, sigf)
-        call lcsove(sigd, sigf, sigf)
+        sigf(1:ndt) = sigd(1:ndt) + sigf(1:ndt)
     else
 !                                                  -1
 ! --DEFORMATION ELASTIQUE A T ET T+DT : EPSEF = HOOKD/RHO  SIGD + DEPS
@@ -79,7 +80,7 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
         call lcprsv(theta, deps, thde)
         call lcprmv(hookf, thde, dsig)
         call lcprsv(rho, dsig, dsig)
-        call lcsove(sigf, dsig, sigf)
+        sigf(1:ndt) = sigf(1:ndt) + dsig(1:ndt)
     endif
 !
 end subroutine

@@ -44,7 +44,6 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, codret
@@ -169,7 +168,7 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 ! --- ON CALCULE DE TOUTES FACONS UNE PREDICTION ELASTIQUE -------------
 ! ======================================================================
     call lcprmv(hooknl, deps, dsig)
-    call lcsove(sigd, dsig, sige)
+    sige(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
     i1e = trace(ndi, sige)
     if ((i1e +qinit) .eq. zero) then
         i1e = -qinit+1.d-12*pa

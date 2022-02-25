@@ -50,7 +50,6 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsove.h"
     integer :: ndt, ndi, nmat
     integer :: ioptio, idnr, nopt
 !
@@ -150,7 +149,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
     call lcprsv(dp, dfds, depsp)
     call lcprmv(dkooh, sigd, epsed)
     depse(1:ndt) = deps(1:ndt) - depsp(1:ndt)
-    call lcsove(epsed, depse, epsef)
+    epsef(1:ndt) = epsed(1:ndt) + depse(1:ndt)
     call lcprmv(hookf, epsef, gf)
     gf(1:ndt) = gf(1:ndt) - sigf(1:ndt)
 !
@@ -169,7 +168,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
     if (c1d .ne. 0.d0) then
         difc1 = (c1-c1d)/c1
         call lcprsv(difc1, x1, vtmp)
-        call lcsove(lf, vtmp, lf)
+        lf(1:ndt) = lf(1:ndt) + vtmp(1:ndt)
     endif
 !
 ! - JF (T+DT)
@@ -189,7 +188,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
     if (c2 .ne. 0.d0) then
         difc2 = (c2-c2d)/c2
         call lcprsv(difc2, x2, vtmp)
-        call lcsove(jf, vtmp, jf)
+        jf(1:ndt) = jf(1:ndt) + vtmp(1:ndt)
     endif
 !
 ! - KF (T+DT)
@@ -233,7 +232,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
         call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
         call lcprmv(fkooh, sigf, vtmp1)
-        call lcsove(epsd, deps, epsp)
+        epsp(1:ndt) = epsd(1:ndt) + deps(1:ndt)
         epsp(1:ndt) = epsp(1:ndt) - vtmp1(1:ndt)
 !
 ! N-ETOILE

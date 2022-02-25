@@ -45,7 +45,6 @@ implicit none
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     type(Behaviour_Integ), intent(in) :: BEHinteg
@@ -125,7 +124,7 @@ implicit none
         coef2 = a / (trois * b)
         call lcprsv(coef1, dev, trav1)
         call lcprsv(coef2, pi0, trav2)
-        call lcsove(trav1, trav2, dfcds)
+        dfcds(1:ndt) = trav1(1:ndt) + trav2(1:ndt)
     endif
 !
 ! --- DERIVEES DU CRITERE EN TRACTION
@@ -136,7 +135,7 @@ implicit none
         coef2 = c / (trois * d)
         call lcprsv(coef1, dev, trav1)
         call lcprsv(coef2, pi0, trav2)
-        call lcsove(trav1, trav2, dftds)
+        dftds(1:ndt) = trav1(1:ndt) + trav2(1:ndt)
     endif
 !
 ! --- DERIVEES DU CRITERE EN TRACTION AVEC PROJECTION AU SOMMET DES

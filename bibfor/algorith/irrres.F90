@@ -28,7 +28,6 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsove.h"
     character(len=8) :: mod
     character(len=*) :: fami
     integer :: nmat, kpg, ksp
@@ -109,8 +108,8 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 !
 !   RESIDU EN SIGMA, HOMOGENE A DES DEFORMATIONS
     rs(1:ndt) = epsef(1:ndt) - epsed(1:ndt)
-    call lcsove(rs, depsa, rs)
-    call lcsove(rs, depsg, rs)
+    rs(1:ndt) = rs(1:ndt) + depsa(1:ndt)
+    rs(1:ndt) = rs(1:ndt) + depsg(1:ndt)
     rs(1:ndt) = rs(1:ndt) - deps(1:ndt)
     call lcprsv(-1.d0, rs, rs)
 !

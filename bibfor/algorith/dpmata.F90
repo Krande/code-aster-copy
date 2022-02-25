@@ -24,7 +24,6 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), dp, dpdeno, se(6), seq, dsde(6, 6)
     real(kind=8) :: plas, alpha, pplus
@@ -122,7 +121,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
                 call lcprsv(param1, se, vect1)
                 param1 = troisk * alpha
                 call lcprsv(param1, vunite, vect2)
-                call lcsove(vect1, vect2, vect3)
+                vect3(1:ndt) = vect1(1:ndt) + vect2(1:ndt)
                 param1 = - un / dpdeno
                 call lcprte(vect3, vect3, bidon)
                 call lcprsm(param1, bidon, pmat4)

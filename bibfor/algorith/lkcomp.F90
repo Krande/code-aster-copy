@@ -28,7 +28,6 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/lkcrip.h"
 #include "asterfort/lkcriv.h"
 #include "asterfort/Behaviour_type.h"
@@ -453,7 +452,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 ! =================================================================
 ! --- DEFORMATIONS IRREVERSIBLES ----------------------------------
 !
-            call lcsove(depsv, depsp, irrev)
+            irrev(1:ndt) = depsv(1:ndt) + depsp(1:ndt)
 !
             vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
 !

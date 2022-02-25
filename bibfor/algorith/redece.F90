@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/lc0000.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 !
@@ -279,7 +278,7 @@ character(len=*) :: fami
             ca_td1_=td
             tf = tf + deltat
             ca_tf1_=tf
-            call lcsove(eps, deps, eps)
+            eps(1:ndt) = eps(1:ndt) + deps(1:ndt)
             sd(1:ndt) = sigf(1:ndt)
             vind(1:nvi) = vinf(1:nvi)
         endif

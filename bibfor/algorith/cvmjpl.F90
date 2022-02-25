@@ -61,7 +61,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcptmv.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/mgauss.h"
 #include "blas/daxpy.h"
     integer :: ndt, ndi, nmat, nr, nvi, iret
@@ -377,19 +376,19 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
             call lcptmv(dxids, vtmp2, vtmp)
             vtmp1(1:ndt) = dtds(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkds, vtmp)
-            call lcsove(vtmp1, vtmp, vtmp1)
+            vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             call lcprsv(const2, vtmp1, dkdset)
 !
             call lcptmv(dxidx1, vtmp2, vtmp)
             vtmp1(1:ndt) = dtdx1(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkdx1, vtmp)
-            call lcsove(vtmp1, vtmp, vtmp1)
+            vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             call lcprsv(const2, vtmp1, dkdx1e)
 !
             call lcptmv(dxidx2, vtmp2, vtmp)
             vtmp1(1:ndt) = dtdx2(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkdx2, vtmp)
-            call lcsove(vtmp1, vtmp, vtmp1)
+            vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             call lcprsv(const2, vtmp1, dkdx2e)
 !
         else
@@ -472,8 +471,8 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
     call lcptmv(matd, dkdx2e, vtmp2)
     call lcptmv(matc, dkdx1e, vtmp1)
-    call lcsove(vtmp1, vtmp2, vtmp2)
-    call lcsove(dkds, vtmp2, vtmp2)
+    vtmp2(1:ndt) = vtmp1(1:ndt) + vtmp2(1:ndt)
+    vtmp2(1:ndt) = dkds(1:ndt) + vtmp2(1:ndt)
 !
 ! - VTMP1 = DQDS + DQDX1 * C + DQDX2 * D - DQDP * VTMP2
 !
@@ -482,9 +481,9 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
         call lcprsv(dqdp, vtmp2, vtmp)
         vtmp1(1:ndt) = dqds(1:ndt) - vtmp(1:ndt)
         call lcptmv(matc, dqdx1, vtmp)
-        call lcsove(vtmp1, vtmp, vtmp1)
+        vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
         call lcptmv(matd, dqdx2, vtmp2)
-        call lcsove(vtmp1, vtmp, vtmp1)
+        vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
     endif
 !
 ! - MTMP  = DGDS + DGDX1 * C + DGDX2 * D - DGDP * VTMP2 - DGDE3 * VTMP1

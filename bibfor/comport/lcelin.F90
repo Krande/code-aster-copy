@@ -31,13 +31,14 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcsove.h"
     integer :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: dkooh(6, 6), hookf(6, 6)
     real(kind=8) :: epsed(6), epsef(6), deps(6)
     character(len=8) :: mod
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
 ! ----------------------------------------------------------------
     if (int(materf(nmat,1)) .eq. 0) then
 !
@@ -58,7 +59,7 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
 ! --  DEFORMATION ELASTIQUE A T ET T+DT : EPSEF = HOOKD  SIGD + DEPS
 !
     call lcprmv(dkooh, sigd, epsed)
-    call lcsove(epsed, deps, epsef)
+    epsef(1:ndt) = epsed(1:ndt) + deps(1:ndt)
 !
 ! --  CONTRAINTES PLANES
 !     DEPS3 = - ( H31 EPSEF1 + H32 EPSEF2 + H34 EPSEF4 )/H33 - EPSED3
@@ -69,7 +70,7 @@ subroutine lcelin(mod, nmat, materd, materf, deps,&
                   &okf(3,&
                   3) - epsed(3&
                   )
-        call lcsove(epsed, deps, epsef)
+        epsef(1:ndt) = epsed(1:ndt) + deps(1:ndt)
     endif
 !
 ! --  INTEGRATION ELASTIQUE : SIGF = HOOKF EPSEF (EPSEF MODIFIE EN CP)

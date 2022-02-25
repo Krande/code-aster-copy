@@ -33,7 +33,6 @@ subroutine hujela(mod, mater, deps, sigd, sigf, iret)
 #include "asterfort/assert.h"
 #include "asterfort/hujci1.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, iret, i, j
     real(kind=8) :: coef, e, nu, al, demu, i1, n, pref
@@ -229,7 +228,7 @@ subroutine hujela(mod, mater, deps, sigd, sigf, iret)
 !--->   INCREMENTATION DES CONTRAINTES  SIGF = SIGD + HOOK DEPS
     sigf(:) = 0.d0
     call lcprmv(hook, deps, dsig)
-    call lcsove(sigd, dsig, sigf)
+    sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
 !
 999 continue
 end subroutine

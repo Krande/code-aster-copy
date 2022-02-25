@@ -42,7 +42,6 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_varc.h"
@@ -170,7 +169,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 ! --- INTEGRATION ELASTIQUE : SIGE = HOOKF EPSP + SIP -----------------
 ! =====================================================================
     call lcprmv(hookf, deps, sigeb)
-    call lcsove(sigeb, sigm, sige)
+    sige(1:ndt) = sigeb(1:ndt) + sigm(1:ndt)
     do ii = 1, ndi
         sige(ii) = sige(ii)+sipp
     end do

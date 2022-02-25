@@ -42,7 +42,6 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
 #include "asterfort/cos3t.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsove.h"
 #include "asterc/r8pi.h"
 #include "asterfort/utmess.h"
 
@@ -109,7 +108,7 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
     
     call lcprsv(1.d0/sii**3.d0,t,fact1)
     call lcprsv(-3.d0*dets/sii**5.d0,s,fact2)
-    call lcsove(fact1,fact2,dcosds)
+    dcosds(1:ndt) = fact1(1:ndt) + fact2(1:ndt)
     
     !!!
     !!! Calcul final

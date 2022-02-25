@@ -40,7 +40,6 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
 #include "asterfort/cjst.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/srd2de.h"
 
@@ -95,7 +94,7 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
     call cjst(devsig,ddetds)
     call lcprsv(fact3,ddetds,dcds1)
     call lcprsv(fact4,devsig,dcds2)
-    call lcsove(dcds1,dcds2,dcosds)
+    dcosds(1:ndt) = dcds1(1:ndt) + dcds2(1:ndt)
     call lcprte(dcosds,dcosds,pdcds)
     
     !!!

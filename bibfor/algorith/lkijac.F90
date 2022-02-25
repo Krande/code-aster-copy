@@ -49,7 +49,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
 #include "asterfort/lkcaln.h"
@@ -365,7 +364,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         dphidx = dphiv*dfdxiv
         call lcprsv(dphidx, gv, dphdxg)
         call lcprsv(phiv, dgvdxi, phdgdx)
-        call lcsove(dphdxg, phdgdx, vetemp)
+        vetemp(1:ndt) = dphdxg(1:ndt) + phdgdx(1:ndt)
         call lcprmv(dsdenl, vetemp, dr1dy4)
         do i = 1, ndt
             drdy(i,ndt+3)= dr1dy4(i)/mu*dt

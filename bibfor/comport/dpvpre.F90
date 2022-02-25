@@ -34,7 +34,6 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcsove.h"
 #include "asterfort/trace.h"
     integer :: iret, nvi, nbmat
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
@@ -101,7 +100,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 !
 !
     call lcprmv(hookf, deps, inte)
-    call lcsove(sigm, inte, sige)
+    sige(1:ndt) = sigm(1:ndt) + inte(1:ndt)
 !
     call lcdevi(sige, se)
     call lcprsc(se, se, siie)
