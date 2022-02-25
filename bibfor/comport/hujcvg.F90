@@ -55,7 +55,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 #include "asterc/r8prem.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/hujpxd.h"
-#include "asterfort/lcnrvn.h"
+
     integer :: nvi, nr, nmat
     real(kind=8) :: mater(nmat, 2), vind(nvi), vinf(nvi), vins(nvi)
     real(kind=8) :: yd(nr), dy(nr), r(nr), toler, ye(nr)
@@ -118,7 +118,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         yet(ndt+1+i) = ye(ndt+1+i)*e0/abs(pref)
     end do
 ! --- CONTROLE DU NIVEAU DE CONVERGENCE ATTEINT
-    call lcnrvn(nr, r, err)
+    err = norm2(r)
 !
 ! --- INCREMENT DU NOMBRE D'INTEGRATION COURANTE TENTEE
     if(iter.eq.1)intg = intg + 1

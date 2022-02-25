@@ -51,7 +51,6 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/lcnrvn.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utlcal.h"
 !
@@ -382,7 +381,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             goto 9999
         endif
     end do
-    call lcnrvn(nr, r, err)
+    err = norm2(r)
     if (debug) write(6,*) 'ERREUR =',err
 !
     if (iter .le. nitimp) then

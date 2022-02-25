@@ -44,7 +44,6 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 #include "asterfort/cjsncv.h"
 #include "asterfort/cjsnor.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/lcnrvn.h"
 #include "asterfort/mgauss.h"
     integer :: ndt, ndi, nvi, nr, nmod, niter, iret
     integer :: nitimp
@@ -261,8 +260,8 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 ! -> VERIFICATION DE LA CONVERGENCE : ERREUR = !!DDY!!/!!DY!! < TOLER
 !
 !
-    call lcnrvn(nr, ddy, err1)
-    call lcnrvn(nr, dy, err2)
+    err1 = norm2(ddy(1:nr))
+    err2 = norm2(dy(1:nr))
     if (err2 .eq. 0.d0) then
         err = err1
     else

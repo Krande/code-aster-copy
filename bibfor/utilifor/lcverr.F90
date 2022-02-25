@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine lcverr(dy, ddy, nr, typ, err)
 !       OUT ERR    :    VECTEUR ERREUR
 !       ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-#include "asterfort/lcnrvn.h"
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     integer :: i
@@ -59,8 +58,8 @@ subroutine lcverr(dy, ddy, nr, typ, err)
 !       ERREUR = !!DDY!!/!!DY!! < EPS
 !
     else if (typ .eq. 1) then
-        call lcnrvn(nr, ddy, e(1))
-        call lcnrvn(nr, dy, e(2))
+        e(1) = norm2(ddy(1:nr))
+        e(2) = norm2(dy(1:nr))
         if (e(2) .eq. zero) then
             err(1) = e(1)
         else
@@ -77,7 +76,7 @@ subroutine lcverr(dy, ddy, nr, typ, err)
                 e(i) = ddy(i) / dy(i)
             endif
  2      continue
-        call lcnrvn(nr, e, err(1))
+        err(1) = norm2(e(1:nr))
 !
     endif
 !
