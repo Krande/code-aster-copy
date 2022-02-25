@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,7 +108,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/hujres.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
@@ -399,13 +398,13 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! ---> INCREMENT TOTAL DE DEFORMATION A APPLIQUER
 ! -----------------------------------------------
 ! ENREGISTREMENT DE L'ETAT DE CONTRAINTES A T
-        call lceqve(sigd, sigd0)
+        sigd0(1:ndt) = sigd(1:ndt)
 !
 ! ENREGISTREMENT DE L'INCREMENT TOTAL DEPS0
-        call lceqve(depsth, deps0)
+        deps0(1:ndt) = depsth(1:ndt)
 !
 ! INITIALISATION DES DEFORMATIONS RESTANTES
-        call lceqve(depsth, depsq)
+        depsq(1:ndt) = depsth(1:ndt)
         call lceqvn(nvi, vind, vind0)
 !
 ! INITIALISATION DU COMPTEUR D'ITERATIONS LOCALES
@@ -421,7 +420,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 100     continue
 !
         inc = inc + 1
-        call lceqve(depsq, depsr)
+        depsr(1:ndt) = depsq(1:ndt)
         call hujpre(fami, kpg, ksp, etatd, mod,&
                     imat, materf, depsr, sigd,&
                     sigf, vind0, iret)
@@ -485,7 +484,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         endif
 !
         if (.not.conv) then
-            call lceqve(sigf, sigd)
+            sigd(1:ndt) = sigf(1:ndt)
             call lceqvn(nvi, variTmp, vind)
             goto 100
         endif
@@ -623,8 +622,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 call lcprsv(det, dsig, dsig)
 
                 call lcsovn(6, sigd0, dsig, sigf)
-! semble moins performant que + haut:
-!                 call lceqve(sigd0, sigf)
 !
 ! y-a-t-il traction?
                 conv = ASTER_TRUE
@@ -666,8 +663,8 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 iret = 0
             endif
         endif
-        call lceqve(sigd0, sigd)
-        call lceqve(deps0, deps)
+        sigd(1:ndt) = sigd0(1:ndt)
+        deps(1:ndt) = deps0(1:ndt)
         call lceqvn(50, vind0, vind)
 ! debut ---new dvp 23/01/2019---
 ! sauvegarde d'une estimation de l'erreur cumulee

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 #include "asterfort/cjsmis.h"
 #include "asterfort/cjssmd.h"
 #include "asterfort/cjssmi.h"
-#include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
     integer :: ndt, ndi, nvi, niter, ndec, iret
     integer :: nvimax
@@ -83,9 +82,9 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     trac = .false.
 !
 !  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
-    call lceqve(sigf, predi0)
-    call lceqve(sigd, sigd0)
-    call lceqve(deps, deps0)
+    predi0(1:ndt) = sigf(1:ndt)
+    sigd0(1:ndt) = sigd(1:ndt)
+    deps0(1:ndt) = deps(1:ndt)
     call lceqvn(nvi, vind, vind0)
 !
 !
@@ -144,7 +143,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !   RESTAURATION DE SIGD VIND DEPS ET PREDIC ELAS SIGF
 !   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
 !
-    call lceqve(sigd0, sigd)
+    sigd(1:ndt) = sigd0(1:ndt)
     call lceqvn(nvi, vind0, vind)
 !
     do 10 i = 1, ndt
@@ -161,7 +160,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 ! SAUVEGARDE PREDIC ELASTIQUE POUR EVENTUEL CHANGEMENT
 ! DE MECANISME
 !
-        call lceqve(sigf, predic)
+        predic(1:ndt)= sigf(1:ndt)
 !
         i1f = zero
         do 20 i = 1, ndi
@@ -284,11 +283,11 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !
         if (chgmec .and. (.not.noconv)) then
             chgmec=.false.
-            call lceqve(predic, sigf)
+            sigf(1:ndt) = predic(1:ndt)
             goto 100
         else
             if (idec .lt. ndec) then
-                call lceqve(sigf, sigd)
+                sigd(1:ndt) = sigf(1:ndt)
                 do 32 i = 1, nvi-1
                     vind(i) = vinf(i)
  32             continue

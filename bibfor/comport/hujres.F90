@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 #include "asterfort/hujpre.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, ndec, iret, kpg, ksp
@@ -92,9 +91,9 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
     call infniv(ifm, niv)
 !
 ! ----  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
-    call lceqve(sigf, predi0)
-    call lceqve(sigd, sigd0)
-    call lceqve(deps, deps0)
+    predi0(1:ndt) = sigf(1:ndt)
+    sigd0(1:ndt) = sigd(1:ndt)
+    deps0(1:ndt) = deps(1:ndt)
     call lceqvn(nvi, vind, vind0)
 !
 !  ARRET OU NON EN NON CONVERGENCE INTERNE
@@ -165,7 +164,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 !
 !   RESTAURATION DE SIGD VIND DEPS ET PREDIC ELAS SIGF
 !   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
-    call lceqve(sigd0, sigd)
+    sigd(1:ndt) = sigd0(1:ndt)
     call lceqvn(nvi, vind0, vind)
 !
     do i = 1, ndt
@@ -224,7 +223,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
         endif
 !
         maj = 0
-        call lceqve(sigf, predic)
+        predic(1:ndt) = sigf(1:ndt)
 !
         do k = 1, 8
             negmul(k)=.false.
@@ -397,7 +396,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 !
         maj = 0
         if (idec .lt. ndec) then
-            call lceqve(sigf, sigd)
+            sigd(1:ndt) = sigf(1:ndt)
             do i = 1, nvi
                 vind(i) = vinf(i)
             enddo

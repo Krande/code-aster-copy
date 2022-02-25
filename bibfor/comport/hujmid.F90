@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcnrvn.h"
 #include "asterfort/lcsovn.h"
@@ -131,9 +130,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !     DES VARIABLES INTERNES RDEV, RISO OU EPSVP
     nmax = 3
 !
-    call lceqve(sigf, predi0)
-    call lceqve(sigd, sigd0)
-    call lceqve(deps, deps0)
+    predi0(1:ndt) = sigf(1:ndt)
+    sigd0(1:ndt) = sigd(1:ndt)
+    deps0(1:ndt) = deps(1:ndt)
     call lceqvn(nvi, vind, vind0)
     arede0 = aredec
     stopn0 = stopnc
@@ -526,8 +525,8 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             noconv = .true.
             goto 2000
         else if (nbmeca.eq.0) then
-            call lceqve(predi0, sigf)
-            call lceqve(deps0, deps)
+            sigf(1:ndt) = predi0(1:ndt)
+            deps(1:ndt) = deps0(1:ndt)
             aredec = arede0
             stopnc = stopn0
             loop = loop0
@@ -535,9 +534,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             probt = .false.
             goto 30
         else
-            call lceqve(predi0, sigf)
-            call lceqve(sigd0, sigd)
-            call lceqve(deps0, deps)
+            sigf(1:ndt) = predi0(1:ndt)
+            sigd(1:ndt) = sigd0(1:ndt)
+            deps(1:ndt) = deps0(1:ndt)
             call lceqvn(nvi, vind0, vind)
             aredec = arede0
             stopnc = stopn0
@@ -572,7 +571,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! --- SI IL N Y A QUE DES MECANISMES DE TRACTION ACTIFS
 ! --- ALORS ON DEMANDE DIRECTEMENT SON ACTIVATION SANS
 ! --- REPASSER PAR L'ETAT INITIAL STANDARD
-        call lceqve(deps0, deps)
+        deps(1:ndt) = deps0(1:ndt)
 !        CALL LCEQVE(PREDI0, SIGF)
         aredec = arede0
         stopnc = stopn0
@@ -663,8 +662,8 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! --- AUX 3 SEUILS PLASTIQUES DE TRACTION
 !
             noconv=.true.
-            call lceqve(sigd0, sigd)
-            call lceqve(sigd0, sigf)
+            sigd(1:ndt) = sigd0(1:ndt)
+            sigf(1:ndt) = sigd0(1:ndt)
             call lceqvn(nvi, vind0, vind)
             call lceqvn(nvi, vind0, vinf)
         endif
@@ -690,9 +689,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     if (probt) then
         if (debug) write(6,'(A)') 'HUJMID :: 9999 PROBT'
 !
-        call lceqve(predi0, sigf)
-        call lceqve(sigd0, sigd)
-        call lceqve(deps0, deps)
+        sigf(1:ndt) = predi0(1:ndt)
+        sigd(1:ndt) = sigd0(1:ndt)
+        deps(1:ndt) = deps0(1:ndt)
         call lceqvn(nvi, vind0, vind)
         aredec = arede0
         stopnc = stopn0
@@ -732,7 +731,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !
     if (tracti) then
         if (debug) write(6,'(A)') 'HUJMID :: 9999 TRACTI'
-        call lceqve(deps0, deps)
+        deps(1:ndt) = deps0(1:ndt)
         call lceqvn(nvi, vind0, vind)
         modif = .false.
         do i = 1, nbmect
@@ -782,8 +781,8 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
                 endif
             endif
         enddo
-        call lceqve(predi0, sigf)
-        call lceqve(sigd0, sigd)
+        sigf(1:ndt) = predi0(1:ndt)
+        sigd(1:ndt) = sigd0(1:ndt)
         call lceqvn(nvi, vind, vinf)
         aredec = arede0
         stopnc = stopn0
@@ -821,9 +820,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         resi = resi - 7
         if ((indi(resi).gt.4) .and. (indi(resi).lt.8)) then
 !
-            call lceqve(predi0, sigf)
-            call lceqve(sigd0, sigd)
-            call lceqve(deps0, deps)
+            sigf(1:ndt) = predi0(1:ndt)
+            sigd(1:ndt) = sigd0(1:ndt)
+            deps(1:ndt) = deps0(1:ndt)
             call lceqvn(nvi, vind0, vind)
             aredec = arede0
             stopnc = stopn0
@@ -861,9 +860,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !
     if (cycl) then
         if (debug) write(6,'(A)')'HUJMID :: 9999 CYCL'
-        call lceqve(predi0, sigf)
-        call lceqve(sigd0, sigd)
-        call lceqve(deps0, deps)
+        sigf(1:ndt) = predi0(1:ndt)
+        sigd(1:ndt) = sigd0(1:ndt)
+        deps(1:ndt) = deps0(1:ndt)
         call lceqvn(nvi, vind0, vind)
         aredec = arede0
         stopnc = stopn0
@@ -885,9 +884,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !
     if (nbmect .ne. nbmeca) then
         if (debug) write(6,'(A)') '9999 FTRAC'
-        call lceqve(predi0, sigf)
-        call lceqve(sigd0, sigd)
-        call lceqve(deps0, deps)
+        sigf(1:ndt) = predi0(1:ndt)
+        sigd(1:ndt) = sigd0(1:ndt)
+        deps(1:ndt) = deps0(1:ndt)
         call lceqvn(nvi, vind0, vind)
         aredec = arede0
         stopnc = stopn0
@@ -907,9 +906,9 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! --- CONTROLE DU PREDICTEUR ELASTIQUE: YE(LAMBDA)
 ! ---------------------------------------------------------------
 !
-    call lceqve(predi0, sigf)
-    call lceqve(sigd0, sigd)
-    call lceqve(deps0, deps)
+    sigf(1:ndt) = predi0(1:ndt)
+    sigd(1:ndt) = sigd0(1:ndt)
+    deps(1:ndt) = deps0(1:ndt)
     call lceqvn(nvi, vind0, vind)
     aredec = arede0
     stopnc = stopn0

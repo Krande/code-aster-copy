@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/lc0000.h"
-#include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
@@ -271,8 +270,8 @@ character(len=*) :: fami
             if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
                 call r8inir(ndsde, 0.d0, dsde, 1)
             endif
-            call lceqve(epsdt, eps)
-            call lceqve(depst, deps)
+            eps(1:ndt) = epsdt(1:ndt)
+            deps(1:ndt) = depst(1:ndt)
             call lcprsv(1.d0/npal, deps, deps)
             call lceqvn(ndt, sigd, sd)
 !

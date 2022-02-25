@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ implicit none
 #include "asterfort/utlcal.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
-#include "asterfort/lceqve.h"
 !
 type(Behaviour_Integ), intent(in) :: BEHinteg
 character(len=*), intent(in) :: fami
@@ -61,10 +60,12 @@ real(kind=8), intent(out) :: dsidep(6, 6)
 integer, intent(out) :: codret
 real(kind=8)     :: npal, crit
 character(len=8) :: nomail
-integer          :: iadzi, iazk24
+integer          :: iadzi, iazk24, ndt, ndi
 aster_logical    :: debug, redec, cnmhuj
 ! ----------------------------------------------------------------
     common /meshuj/ debug
+    common /tdim/ ndt, ndi
+
 ! ----------------------------------------------------------------
 !
 ! --------------------------------------------------------------------------------------------------
@@ -141,7 +142,7 @@ aster_logical    :: debug, redec, cnmhuj
        if (codret.eq.1) then
        
           if (vip(34).gt.crit) then
-             call lceqve(sigm, sigp)
+             sigp(1:ndt) = sigm(1:ndt)
              codret = 2
           else
              codret = 0
@@ -208,7 +209,7 @@ aster_logical    :: debug, redec, cnmhuj
 ! stockage du numero d'increment si on n'est pas au dernier pas
 !
        if (vip(34).gt.crit) then
-          call lceqve(sigm, sigp)
+          sigp = sigm
           codret = 2
 !          codret = 1
        endif

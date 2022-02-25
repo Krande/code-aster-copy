@@ -63,7 +63,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/chbfss.h"
 #include "asterfort/chbfsx.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcinma.h"
@@ -367,7 +366,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprsv(zz, dfds, dkdx1)
 !
 ! - DKDX2(T+DT)
-    call lceqve(dkdx1, dkdx2)
+    dkdx2(1:ndt) = dkdx1(1:ndt)
 !
 ! - DKDP(T+DT)
     dkdp = 1.d0
@@ -473,7 +472,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         hook(3,2)*ddfdsx(2,4) + hook(3,4)*ddfdsx(4,4))
 !
 ! - DQDX2 (T+DT)
-        call lceqve(dqdx1, dqdx2)
+        dqdx2(1:ndt) = dqdx1(1:ndt)
 !
 ! - DQDP (T+DT)
         dqdp = - hook(3,1)*dfds(1) - hook(3,2)*dfds(2) - hook(3,3)* dfds(3) - hook(3,4)*dfds(4)
@@ -722,7 +721,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             call lcprmv(ddfdsx, vtmp1, dtdx1)
 !
 ! - DTDX2(T+DT)
-            call lceqve(dtdx1, dtdx2)
+            dtdx2(1:ndt) = dtdx1(1:ndt)
 !
 ! - DTDP(T+DT)
 !
