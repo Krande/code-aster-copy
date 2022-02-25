@@ -54,7 +54,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !       ----------------------------------------------------------------
 #include "asterfort/cvmjac.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprsc.h"
@@ -479,7 +478,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
 ! - VTMP1 = DQDS + DQDX1 * C + DQDX2 * D - DQDP * VTMP2
 !
-    call lcinve(0.d0, vtmp1)
+    vtmp1(:) = 0.d0
     if (mod(1:6) .eq. 'C_PLAN') then
         call lcprsv(dqdp, vtmp2, vtmp)
         vtmp1(1:ndt) = dqds(1:ndt) - vtmp(1:ndt)

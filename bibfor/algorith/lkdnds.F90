@@ -34,7 +34,6 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 !     OUT DNDISG :  DERIVEE DE N PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -67,7 +66,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
     sii = sqrt(sii)
 !
 ! --- CONSTRUCTION DE KRONECKER
-    call lcinve(zero, kron)
+    kron(:) = zero
     do 10 i = 1, ndi
         kron(i) = un
 10  end do
@@ -79,7 +78,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 20  end do
 !
 ! --- CONSTRUCTION DE DI1/DSIGMA
-    call lcinve(zero, di1dsi)
+    di1dsi(:) = zero
     do 30 i = 1, ndi
         di1dsi(i) = un
 30  end do

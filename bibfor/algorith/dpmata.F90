@@ -20,7 +20,6 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
                   pplus, se, seq, plas, dsde)
     implicit      none
 #include "asterc/r8prem.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
@@ -72,10 +71,10 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
             pmat2(:,:) = 0.0d0
             pmat3(:,:) = 0.0d0
             pmat4(:,:) = 0.0d0
-            call lcinve(0.0d0, vunite)
-            call lcinve(0.0d0, vect1)
-            call lcinve(0.0d0, vect2)
-            call lcinve(0.0d0, vect3)
+            vunite(:) = 0.0d0
+            vect1(:) = 0.0d0
+            vect2(:) = 0.0d0
+            vect3(:) = 0.0d0
 ! =====================================================================
 ! --- CALCUL DU VECTEUR UNITE -----------------------------------------
 ! =====================================================================

@@ -45,7 +45,6 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !       ----------------------------------------------------------------
 #include "asterfort/chbfs.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
@@ -248,11 +247,11 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
         if (zz .lt. 0.d0) then
             tf = 0.d0
-            call lcinve(0.d0, xif)
+            xif(:) = 0.d0
         else
 !
             if (xx .eq. 0.d0) then
-                call lcinve(0.d0, epxi)
+                epxi(:) = 0.d0
             else
                 call lcprsv(1.d0/xx, vtmp, epxi)
             endif
@@ -263,7 +262,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
             if (zz .le. 0.d0) then
                 tf = 0.d0
-                call lcinve(0.d0, xif)
+                xif(:) = 0.d0
             else
 !
 ! - TF (T+DT)

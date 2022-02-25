@@ -23,7 +23,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/dpvpdv.h"
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -96,21 +95,21 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- INITIALISATIONS DES VECTEURS ------------------------------------
 ! =====================================================================
-    call lcinve(0.0d0, vect1)
-    call lcinve(0.0d0, vect2)
-    call lcinve(0.0d0, vect3)
-    call lcinve(0.0d0, vect4)
-    call lcinve(0.0d0, dqdsig)
-    call lcinve(0.0d0, dfdsig)
-    call lcinve(0.0d0, dpdsig)
-    call lcinve(0.0d0, dgdsig)
-    call lcinve(0.0d0, dpdeps)
-    call lcinve(0.0d0, di1ede)
-    call lcinve(0.0d0, di1de)
-    call lcinve(0.0d0, adidsi)
-    call lcinve(0.0d0, bdidsi)
-    call lcinve(0.0d0, cdidsi)
-    call lcinve(0.0d0, s)
+    vect1(:) = 0.0d0
+    vect2(:) = 0.0d0
+    vect3(:) = 0.0d0
+    vect4(:) = 0.0d0
+    dqdsig(:) = 0.0d0
+    dfdsig(:) = 0.0d0
+    dpdsig(:) = 0.0d0
+    dgdsig(:) = 0.0d0
+    dpdeps(:) = 0.0d0
+    di1ede(:) = 0.0d0
+    di1de(:) = 0.0d0
+    adidsi(:) = 0.0d0
+    bdidsi(:) = 0.0d0
+    cdidsi(:) = 0.0d0
+    s(:) = 0.0d0
 ! =====================================================================
 ! --- INITIALISATIONS DES MATRICES ------------------------------------
 ! =====================================================================

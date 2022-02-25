@@ -39,7 +39,6 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     
     implicit   none
 
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -78,7 +77,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     sii=sqrt(sii)
     
     !!! Construction de kronecker
-    call lcinve(0.d0,kron)
+    kron(:) = 0.d0
     do i=1,ndi
         kron(i)=1.d0
     end do
@@ -91,7 +90,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     end do
     
     !!! Construction de d(i1)/d(sigma)
-    call lcinve(0.d0,di1dsi)
+    di1dsi(:) = 0.d0
     
     do i=1,ndi
         di1dsi(i)=1.d0

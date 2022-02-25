@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 
@@ -76,7 +75,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     !!! Construction de variables tmp
     !!!
     
-    call lcinve(0.d0,vident)
+    vident(:) = 0.d0
     
     do i=1,ndi
         vident(i)=1.d0

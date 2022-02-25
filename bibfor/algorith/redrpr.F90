@@ -24,7 +24,6 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
 #include "asterfort/dpmate.h"
 #include "asterfort/dppatg.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "blas/ddot.h"
     integer :: imate, icode
     real(kind=8) :: vip(*), sigp(*), dsde(6, 6)
@@ -47,7 +46,7 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
     parameter  ( deux  = 2.0d0 )
     parameter  ( trois = 3.0d0 )
 ! =====================================================================
-    call lcinve(0.0d0, se)
+    se(:) = 0.0d0
     dsde(:,:) = 0.0d0
     hookf(:,:) = 0.0d0
 ! =====================================================================

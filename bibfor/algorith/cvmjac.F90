@@ -64,7 +64,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/chbfsx.h"
 #include "asterfort/cvmcvx.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmm.h"
@@ -217,16 +216,16 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 ! - DGDP(T+DT)
     if (seuil .lt. 0.d0) then
-        call lcinve(0.d0, dgdp)
+        dgdp(:) = 0.d0
     else
         call lcprmv(hook, dfds, dgdp)
     endif
 !
 ! - DGDR(T+DT)
-    call lcinve(0.d0, dgdr)
+    dgdr(:) = 0.d0
 !
 ! - DGDQ(T+DT)
-    call lcinve(0.d0, dgdq)
+    dgdq(:) = 0.d0
 !
 !
 ! - DLDS(T+DT)
@@ -291,10 +290,10 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcsove(dldp, vtmp, dldp)
 !
 ! - DLDR(T+DT)
-    call lcinve(0.d0, dldr)
+    dldr(:) = 0.d0
 !
 ! - DLDQ(T+DT)
-    call lcinve(0.d0, dldq)
+    dldq(:) = 0.d0
 !
 !
 ! - DJDS(T+DT)
@@ -347,10 +346,10 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcsove(djdp, vtmp, djdp)
 !
 ! - DJDR(T+DT)
-    call lcinve(0.d0, djdr)
+    djdr(:) = 0.d0
 !
 ! - DJDQ(T+DT)
-    call lcinve(0.d0, djdq)
+    djdq(:) = 0.d0
 !
 !
 ! - DKDS(T+DT)
@@ -378,13 +377,13 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 !
 ! - DRDS(T+DT)
-    call lcinve(0.d0, drds)
+    drds(:) = 0.d0
 !
 ! - DRDX1(T+DT)
-    call lcinve(0.d0, drdx1)
+    drdx1(:) = 0.d0
 !
 ! - DRDX2(T+DT)
-    call lcinve(0.d0, drdx2)
+    drdx2(:) = 0.d0
 !
 ! - DRDP(T+DT)
     grq = q0 + ( qm - q0 ) * ( 1.d0 - exp(-2.d0*mu*q) )
@@ -399,13 +398,13 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 !
 ! - DTDS(T+DT)
-    call lcinve(0.d0, dtds)
+    dtds(:) = 0.d0
 !
 ! - DTDX1(T+DT)
-    call lcinve(0.d0, dtdx1)
+    dtdx1(:) = 0.d0
 !
 ! - DTDX2(T+DT)
-    call lcinve(0.d0, dtdx2)
+    dtdx2(:) = 0.d0
 !
 ! - DTDP(T+DT)
     dtdp = 0.d0
@@ -424,10 +423,10 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         call lcprmv(hook, dede3, dgde3)
 !
 ! - DLDE3(T+DT)
-        call lcinve(0.d0, dlde3)
+        dlde3(:) = 0.d0
 !
 ! - DJDE3(T+DT)
-        call lcinve(0.d0, djde3)
+        djde3(:) = 0.d0
 !
 ! - DKDE3(T+DT)
         dkde3 = 0.d0
@@ -639,13 +638,13 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         dxxi(1:ndt) = dy(3*ndt+4:3*ndt+4-1+ndt)
 !
 ! - DGDQ(T+DT)
-        call lcinve(0.d0, dgdq)
+        dgdq(:) = 0.d0
 !
 ! - DLDQ(T+DT)
-        call lcinve(0.d0, dldq)
+        dldq(:) = 0.d0
 !
 ! - DJDQ(T+DT)
-        call lcinve(0.d0, djdq)
+        djdq(:) = 0.d0
 !
 ! - DKDQ(T+DT)
         dkdq = 0.d0
@@ -668,10 +667,10 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         djdxxi(:,:) = 0.d0
 !
 ! - DKDXXI(T+DT)
-        call lcinve(0.d0, dkdxxi)
+        dkdxxi(:) = 0.d0
 !
 ! - DRDXXI(T+DT)
-        call lcinve(0.d0, drdxxi)
+        drdxxi(:) = 0.d0
 !
 !
 !
@@ -771,19 +770,19 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             dgdxxi(:,:) = 0.d0
 !
 ! - DTDS(T+DT)
-            call lcinve(0.d0, dtds)
+            dtds(:) = 0.d0
 !
 ! - DTDX1(T+DT)
-            call lcinve(0.d0, dtdx1)
+            dtdx1(:) = 0.d0
 !
 ! - DTDX2(T+DT)
-            call lcinve(0.d0, dtdx2)
+            dtdx2(:) = 0.d0
 !
 ! - DTDP(T+DT)
             dtdp = 0.d0
 !
 ! - DTDXXI(T+DT)
-            call lcinve(0.d0, dtdxxi)
+            dtdxxi(:) = 0.d0
 !
 ! - DXIDS(T+DT)
             dxids(:,:) = 0.d0
@@ -795,7 +794,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             dxidx2(:,:) = 0.d0
 !
 ! - DXIDP(T+DT)
-            call lcinve(0.d0, dxidp)
+            dxidp(:) = 0.d0
 !
 ! - DXIDXI(T+DT)
             dxidxi(:,:) = 0.d0
@@ -809,19 +808,19 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         dtdq = 1.d0
 !
 ! - DXIDR(T+DT)
-        call lcinve(0.d0, dxidr)
+        dxidr(:) = 0.d0
 !
 ! - DXIDQ(T+DT)
-        call lcinve(0.d0, dxidq)
+        dxidq(:) = 0.d0
 !
 !
         if (mod(1:6) .eq. 'C_PLAN') then
 !
 ! - DQDXXI(T+DT)
-            call lcinve(0.d0, dqdxxi)
+            dqdxxi(:) = 0.d0
 !
 ! - DXIDE3(T+DT)
-            call lcinve(0.d0, dxide3)
+            dxide3(:) = 0.d0
 !
 ! - DQDQ(T+DT)
             dqdq = 0.d0

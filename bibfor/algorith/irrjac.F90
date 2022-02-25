@@ -24,7 +24,6 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 #include "asterfort/irrfss.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -119,7 +118,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     call lcdevi(sigf, dev)
     seqf = lcnrts(dev)
     if (seqf .eq. 0.0d0) then
-        call lcinve(0.0d0, dfds)
+        dfds(:) = 0.0d0
     else
         call lcprsv(1.5d0/seqf, dev, dfds)
     endif
@@ -131,12 +130,12 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 ! - DRSDP
     drsdp(1:ndt) = dfds(1:ndt)
 ! - DRSDE
-    call lcinve(0.0d0, drsde)
+    drsde(:) = 0.0d0
 ! - DRSDI
     drsdi(1:ndt) = dfds(1:ndt)
 ! - DRSDG
 !       CALL LCEQVN(NDT,ID,DRSDG)
-    call lcinve(0.0d0, drsdg)
+    drsdg(:) = 0.0d0
 !
 ! - LOI DE COMPORTEMENT
     if (pf .lt. pk) then
@@ -151,7 +150,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
         drpds(1:ndt) = dfds(1:ndt)
         call lcprsv(1.0d0/hookf(1, 1), drpds, drpds)
     else
-        call lcinve(0.0d0, drpds)
+        drpds(:) = 0.0d0
     endif
 ! - DRPDP
     if (((seqf.ge.sr).and.(dp.ge.0.0d0)) .or. (dp.gt.r8prem())) then
@@ -184,7 +183,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     dredg=0.0d0
 !
 ! - DRIDS
-    call lcinve(0.0d0, drids)
+    drids(:) = 0.0d0
 ! - DRIDP
     dridp=0.0d0
 ! - DRIDE
@@ -203,7 +202,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 !
 !
 ! - DRGDS
-    call lcinve(0.0d0, drgds)
+    drgds(:) = 0.0d0
 ! - DRGDP
     drgdp=0.0d0
 ! - DRGDE

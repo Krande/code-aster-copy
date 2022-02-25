@@ -21,7 +21,6 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
                   dsde)
     implicit none
 #include "asterfort/betaps.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
@@ -74,13 +73,13 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
             pmat2(:,:) = 0.0d0
             pmat3(:,:) = 0.0d0
             pmat4(:,:) = 0.0d0
-            call lcinve(0.0d0, vunite)
-            call lcinve(0.0d0, vect1)
-            call lcinve(0.0d0, vect2)
-            call lcinve(0.0d0, vect3)
-            call lcinve(0.0d0, vect4)
-            call lcinve(0.0d0, vect5)
-            call lcinve(0.0d0, ddpde)
+            vunite(:) = 0.0d0
+            vect1(:) = 0.0d0
+            vect2(:) = 0.0d0
+            vect3(:) = 0.0d0
+            vect4(:) = 0.0d0
+            vect5(:) = 0.0d0
+            ddpde(:) = 0.0d0
 ! =====================================================================
 ! --- CALCUL DU VECTEUR UNITE -----------------------------------------
 ! =====================================================================

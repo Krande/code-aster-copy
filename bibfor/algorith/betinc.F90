@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
     integer :: nmat, nseuil, i
@@ -108,7 +107,7 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
         call lcprsv(coef, dev, sigf)
     else
         coef = 0.d0
-        call lcinve(coef, sigf)
+        sigf(:) = coef
     endif
 !
 ! --- MISE A JOUR DES CONTRAINTES

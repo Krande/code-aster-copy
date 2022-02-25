@@ -48,7 +48,6 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 #include "asterfort/chbfs.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
@@ -262,11 +261,11 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
             if (zz .lt. 0.d0) then
                 dq = 0.d0
-                call lcinve(0.d0, dxxi)
+                dxxi(:) = 0.d0
             else
 !
                 if (xx .eq. 0.d0) then
-                    call lcinve(0.d0, epxi)
+                    epxi(:) = 0.d0
                 else
                     call lcprsv(1.d0/xx, vtmp, epxi)
                 endif
@@ -277,7 +276,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
                 if (zz .le. 0.d0) then
                     dq = 0.d0
-                    call lcinve(0.d0, dxxi)
+                    dxxi(:) = 0.d0
                 else
 !
 ! - DXXI

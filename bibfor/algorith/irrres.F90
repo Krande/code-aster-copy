@@ -23,7 +23,6 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 !
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -99,7 +98,7 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
     call lcdevi(sigf, dev)
     seqf = lcnrts(dev)
     if (seqf .eq. 0.0d0) then
-        call lcinve(0.0d0, dfds)
+        dfds(:) = 0.0d0
     else
         call lcprsv(1.5d0/seqf, dev, dfds)
     endif

@@ -41,7 +41,6 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !     ------------------------------------------------------------------
 !
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nmod
@@ -214,7 +213,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !- DERIVEE DE LA LOI D ECROUISSAGE
 !+++++++++++++++++++++++++++++++++
 !
-    call lcinve(zero, dlqds)
+    dlqds(:) = zero
     dlqdq = un + dlambi * kop * n / pa * (pa/yf(ndt+1))**(un-n)
     dlqdl = kop * (yf(ndt+1)/pa)**n
 !------------------------------------------------------------------

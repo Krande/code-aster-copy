@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine lcumef(rela_plas, dep, depm, an, bn,&
 !
 implicit none
 !
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/mgauss.h"
@@ -136,7 +135,7 @@ implicit none
     else
 ! --- MODELE BETON_UMLV SEUL - ECRITURE EN INCREMENTALE
 ! --- CONSTRUCTION VECTEUR DEFORMATION (RETRAIT + THERMIQUE)
-        call lcinve(0.d0, depsr)
+        depsr(:) = 0.d0
         do i = 1, nstrs
             depsr(i) = kron(i)*(epsrp-epsrm)
         end do

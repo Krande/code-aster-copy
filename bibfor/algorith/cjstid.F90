@@ -36,7 +36,6 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/matini.h"
 #include "asterfort/trace.h"
@@ -255,7 +254,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DU TERME HOOK.GD : HGD ------------------------------------
 ! ======================================================================
-    call lcinve(zero, hgd)
+    hgd(:) = zero
     do i = 1, ndt
        do j = 1, ndt
           hgd(i) = hgd(i) + hook(i,j)*gd(j)
@@ -264,7 +263,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DU TERME HOOK.KRON : HK -----------------------------------
 ! ======================================================================
-    call lcinve(zero, hk)
+    hk(:) = zero
     do i = 1, ndt
        do j = 1, ndt
           hk(i) = hk(i) + hook(i,j)*kron(j)
@@ -273,7 +272,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DU TERME DFDDS.HOOK : DFH ---------------------------------
 ! ======================================================================
-    call lcinve(zero, dfh)
+    dfh(:) = zero
     do i = 1, ndt
        do j = 1, ndt
           dfh(i) = dfh(i) + dfdds(j)*hook(j,i)
@@ -295,14 +294,14 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DU TERME (KE*(HDEV+DFHGD)*KRON-KE*TRGD*DFH)/COEF5 : T1 ----
 ! ======================================================================
-    call lcinve(zero, t1)
+    t1(:) = zero
     do i = 1, ndt
        t1(i) = ke/coef5*((hdev+dfhgd)*kron(i) - trgd*dfh(i))
     end do
 ! ======================================================================
 ! --- CALCUL DU TERME ((KE+KP)*DFH-1/3*KE*DFHK*KRON)/COEF5 : T2 --------
 ! ======================================================================
-    call lcinve(zero, t2)
+    t2(:) = zero
     do i = 1, ndt
        t2(i) = ((ke+kp)*dfh(i) - ke/trois*dfhk*kron(i))/coef5
     end do

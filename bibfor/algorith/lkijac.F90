@@ -43,7 +43,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -212,7 +211,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
                     ds2hds, ucrip, dfdsp)
 ! --- B-2-B-4) CALCUL DE G_EP
         bprimp = lkbpri (valp,vint,nmat,materf,paraep,i1,devsig)
-        call lcinve(zero, vecnp)
+        vecnp(:) = zero
         call lkcaln(devsig, bprimp, vecnp, retcom)
         call lkcalg(dfdsp, vecnp, gp, devgii)
 ! --- CALCUL DEFORMATION ELASTIQUE
@@ -242,11 +241,11 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         end do
         hnldgp(:,:) = zero
         dgpds(:,:) = zero
-        call lcinve(zero, dfdsp)
-        call lcinve(zero, gp)
-        call lcinve(zero, vecnp)
-        call lcinve(zero, dfsdxp)
-        call lcinve(zero, dndxip)
+        dfdsp(:) = zero
+        gp(:) = zero
+        vecnp(:) = zero
+        dfsdxp(:) = zero
+        dndxip(:) = zero
         devgii = zero
     endif
 ! ##################################################################
@@ -273,7 +272,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- PRODUIT TENSORIEL DSIGE X VECTEUR(IDENTITE) (=1 1 1 0 0 0)
     patm = materf(1,2)
     nelas = materf(2,2)
-    call lcinve(zero, vident)
+    vident(:) = zero
     do i = 1, ndi
         vident(i) = nelas/trois/patm*(i1/(trois*patm))**(nelas-un)
     end do
@@ -425,7 +424,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- III.1 CALCUL DE DR3DY1 -> Y1 = SIGMA
 ! ------------------------------------------------------------------
 ! --- CONSTRUCTION DE KRONECKER
-    call lcinve(zero, kron)
+    kron(:) = zero
     do i = 1, ndi
         kron(i) = un
     end do
@@ -440,8 +439,8 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- CONSTRUCTION DE D(DEVGII)/DSIGMA
     call lcprmm(dsdsig, dgvds, dgtvds)
     call lcprmm(dsdsig, dgpds, dgtpds)
-    call lcinve(zero, dgivds)
-    call lcinve(zero, dgipds)
+    dgivds(:) = zero
+    dgipds(:) = zero
     if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then
         do i = 1, ndt
             do j = 1, ndt

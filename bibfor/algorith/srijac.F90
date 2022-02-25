@@ -48,7 +48,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -281,7 +280,7 @@ subroutine srijac(nmat,materf,timed,timef,&
         !!! 2-3-2) Calcul de gp
         bprimp=srbpri(valp,vint,nvi,nmat,materf,paraep,i1,devsig,tpp)
         
-        call lcinve(0.d0,vecnp)
+        vecnp(:) = 0.d0
         call srcaln(devsig,bprimp,vecnp,retcom)
         call srcalg(dfdsp,vecnp,gp,devgii)
         
@@ -317,11 +316,11 @@ subroutine srijac(nmat,materf,timed,timef,&
         
         hnldgp(:,:) = 0.d0
         dgpds(:,:) = 0.d0
-        call lcinve(0.d0,dfdsp)
-        call lcinve(0.d0,gp)
-        call lcinve(0.d0,vecnp)
-        call lcinve(0.d0,dfsdxp)
-        call lcinve(0.d0,dndxip)
+        dfdsp(:) = 0.d0
+        gp(:) = 0.d0
+        vecnp(:) = 0.d0
+        dfsdxp(:) = 0.d0
+        dndxip(:) = 0.d0
         
         devgii=0.d0
         
@@ -357,7 +356,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     patm=materf(1,2)
     nelas=materf(2,2)
     
-    call lcinve(0.d0, vident)
+    vident(:) = 0.d0
     
     do i=1, ndi
         vident(i)=nelas/3.d0/patm*(i1/(3.d0*patm))**(nelas-1.d0)
@@ -538,7 +537,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     
     !!! Calcul de d(r3)/d(y1) - y1 == sigma
     
-    call lcinve(0.d0,kron)
+    kron(:) = 0.d0
     
     do i=1,ndi
         kron(i)=1.d0
@@ -558,8 +557,8 @@ subroutine srijac(nmat,materf,timed,timef,&
     !!! construction de d(devgii)/d(sig)  
     call lcprmm(dsdsig,dgvds,dgtvds)
     call lcprmm(dsdsig,dgpds,dgtpds)
-    call lcinve(0.d0,dgivds)
-    call lcinve(0.d0,dgipds)
+    dgivds(:) = 0.d0
+    dgipds(:) = 0.d0
     
     if ((seuilp.ge.0.d0).or.(vinf(7).gt.0.d0)) then
         do i=1,ndt

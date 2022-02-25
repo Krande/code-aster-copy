@@ -37,7 +37,6 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/matini.h"
 #include "asterfort/trace.h"
@@ -242,7 +241,7 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DU TERME HOOK.GD : HGD ------------------------------------
 ! ======================================================================
-    call lcinve(zero, hgd)
+    hgd(:) = zero
     do i = 1, ndt
        do j = 1, ndt
           hgd(i) = hgd(i) + hook(i,j)*gd(j)
@@ -252,7 +251,7 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DU TERME DFDDS.HOOK : DFH ---------------------------------
 ! ======================================================================
-    call lcinve(zero, dfh)
+    dfh(:) = zero
     do i = 1, ndt
        do j = 1, ndt
           dfh(i) = dfh(i) + dfdds(j)*hook(j,i)

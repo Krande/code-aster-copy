@@ -40,7 +40,6 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
 
     implicit   none
 
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
@@ -92,7 +91,7 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     !!! Constuction du vecteur identite
     !!!
     
-    call lcinve(0.d0,vident)
+    vident(:) = 0.d0
     
     do i=1,ndi
         vident(i)=1.d0

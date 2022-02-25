@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds,&
     implicit   none
 
 #include "asterfort/cos3t.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 #include "asterf_types.h"
@@ -151,7 +150,7 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds,&
     !!! Identite
     !!!
 
-    call lcinve(0.d0,vident)
+    vident(:) = 0.d0
     
     do i=1,ndi
         vident(i)=1.d0
@@ -261,7 +260,7 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds,&
         
     else
         
-        call lcinve(0.d0,dfdsdx)
+        dfdsdx(:) = 0.d0
         
     endif
     

@@ -35,7 +35,6 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
 !     OUT D2FDS2 :  DERIVEE 2NDE F PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-#include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
@@ -73,7 +72,7 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
     endif
 !
 ! --- CONSTRUCTION VECTEUR IDENTITE
-    call lcinve(zero, vident)
+    vident(:) = zero
     do 10 i = 1, ndi
         vident(i) = un
 10  end do

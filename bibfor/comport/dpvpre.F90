@@ -30,7 +30,6 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 #include "asterfort/dpvpsi.h"
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
@@ -73,8 +72,8 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 ! =====================================================================
     hookf(:,:) = 0.0d0
     dkooh(:,:) = 0.0d0
-    call lcinve(0.0d0, sig)
-    call lcinve(0.0d0, sige)
+    sig(:) = 0.0d0
+    sige(:) = 0.0d0
 !
     iret = 0
     dt = instap - instam
