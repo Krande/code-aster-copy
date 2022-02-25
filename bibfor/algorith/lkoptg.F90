@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lctrma.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
 #include "asterfort/lkcaln.h"
@@ -175,7 +174,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR AA -----------------------------------
 ! =================================================================
-    call lctrma(aa, aat)
+    aat(1:ndt,1:ndt) = transpose(aa(1:ndt,1:ndt))
     call lcprmv(aat, dfdsp, nume)
 !
 ! =================================================================
@@ -210,7 +209,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
                 seuilv, dvds)
 !
     call lcprmm(dvds, de, cc)
-    call lctrma(cc, cct)
+    cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
     call lcprmv(cct, ddgamv, dd)
 ! =================================================================
 ! --- CALCUL DE DLAM ----------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
-#include "asterfort/lctrma.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi
     integer :: nbmat
@@ -259,7 +258,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- TRANSPOSEE ------------------------------------------------------
 ! =====================================================================
-        call lctrma(matr1a, matr1b)
+        matr1b(1:ndt,1:ndt) = transpose(matr1a(1:ndt,1:ndt))
 ! =====================================================================
 ! --- SYMETRISATION  --------------------------------------------------
 ! =====================================================================
@@ -296,7 +295,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 !
         call lcsoma(inter1, part3, dsdeps)
 !
-        call lctrma(dsdeps, dsdept)
+        dsdept(1:ndt,1:ndt) = transpose(dsdeps(1:ndt,1:ndt))
         do 980 ii = 1, ndt
             do 990 jj = 1, ndt
                 dsdeps(ii,jj) = un/deux*(dsdeps(ii,jj)+dsdept(ii,jj))
@@ -324,7 +323,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- TRANSPOSEE DE I * dI/dEPS ---------------------------------------
 ! =====================================================================
-        call lctrma(int2a, int2b)
+        int2b(1:ndt,1:ndt) = transpose(int2a(1:ndt,1:ndt))
 ! =====================================================================
 ! --- SYMETRISATION  --------------------------------------------------
 ! =====================================================================

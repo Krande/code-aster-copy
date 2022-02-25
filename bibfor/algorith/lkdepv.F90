@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
     implicit    none
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lctrma.h"
 #include "asterfort/r8inir.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2), depsv(6), ddepsv(6)
@@ -89,7 +88,7 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
         devia(i,i) = devia(i,i)+ un
 50  end do
 !
-    call lctrma(devia, deviat)
+    deviat(1:ndt,1:ndt) = transpose(devia(1:ndt,1:ndt))
 ! =================================================================
 ! --- CALCUL DE DERIVEE DE DGAMV/DEPS ---------------------------
 ! =================================================================

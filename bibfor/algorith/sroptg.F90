@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,6 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lctrma.h"
 #include "asterfort/srbpri.h"
 #include "asterfort/srcalg.h"
 #include "asterfort/srcaln.h"
@@ -192,7 +191,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!! Produit de dfp/dsig par aa
     !!!
     
-    call lctrma(aa, aat)
+    aat(1:ndt,1:ndt) = transpose(aa(1:ndt,1:ndt))
     call lcprmv(aat, dfdsp, nume)
     
     !!!
@@ -229,7 +228,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     call r8inir(6, 0.d0, dd, 1)
     call srdvds(dt, nbmat, mater, gv, dfdsve, seuilv, dvds)
     call lcprmm(dvds, de, cc)
-    call lctrma(cc, cct)
+    cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
     call lcprmv(cct, ddgamv, dd)
     
     !!!

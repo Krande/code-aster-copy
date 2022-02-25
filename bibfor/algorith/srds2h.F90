@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
 #include "asterfort/cos3t.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lctrma.h"
 #include "asterfort/srhtet.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -126,7 +125,7 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     !!!
     
     call r8inir(6,0.d0,ds2hds,1)
-    call lctrma(b,bt)
+    bt(1:ndt,1:ndt) = transpose(b(1:ndt,1:ndt))
     call lcprmv(bt,a,ds2hds)
     
 1000  continue

@@ -67,7 +67,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 #include "asterfort/lcptmv.h"
 #include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
-#include "asterfort/lctrma.h"
 #include "asterfort/mgauss.h"
 #include "blas/daxpy.h"
     integer :: ndt, ndi, nmat, nr, nvi, iret
@@ -514,7 +513,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
 ! - MATRICE DE COMPORTEMENT TANGENT:  SYMETRISATION DE DSDE
 !
-    call lctrma(dsde, mtmp)
+    mtmp(1:ndt,1:ndt) = transpose(dsde(1:ndt,1:ndt))
     call lcsoma(dsde, mtmp, dsde)
     call lcprsm(0.5d0, dsde, dsde)
 !
