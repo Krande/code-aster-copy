@@ -64,7 +64,6 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
 !
 #include "asterc/r8miem.h"
 #include "asterfort/lcresi.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/utmess.h"
     integer :: nmat, nbcomm(nmat, 3), nr, impr, vali(2), nfs, nsg
     integer :: imat, i, j, itmax, iret, kpg, ksp, nvi, verjac, indi(7)
@@ -130,7 +129,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
         else
             dyp(i)=dyp(i)+eps2
         endif
-        call lcsovn(nr, yd, dyp, yfp)
+        yfp(1:nr) = yd(1:nr) + dyp(1:nr)
         call lcresi(fami, kpg, ksp, rela_comp, mod,&
                     imat, nmat, materd, materf,&
                     nbcomm, cpmono, pgl, nfs, nsg,&
@@ -147,7 +146,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
         else
             dym(i)=dym(i)-eps2
         endif
-        call lcsovn(nr, yd, dym, yfm)
+        yfm(1:nr) = yd(1:nr) + dym(1:nr)
         call lcresi(fami, kpg, ksp, rela_comp, mod,&
                     imat, nmat, materd, materf,&
                     nbcomm, cpmono, pgl, nfs, nsg,&

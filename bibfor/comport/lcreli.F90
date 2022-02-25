@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 #include "asterfort/assert.h"
 #include "asterfort/lcpsvn.h"
 #include "asterfort/lcresi.h"
-#include "asterfort/lcsovn.h"
 #include "blas/ddot.h"
     real(kind=8) :: ddy(*)
 !
@@ -102,8 +101,8 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
     rho0 = 1
 !     CALCUL DE DY "PLUS" : DYP
     call lcpsvn(nr, rho0, ddy, rhoddy)
-    call lcsovn(nr, rhoddy, dy, dyp)
-    call lcsovn(nr, yd, dyp, yfp)
+    dyp = rhoddy + dy(1:nr)
+    yfp = yd(1:nr) + dyp
 !     CALCUL DE R "PLUS" : RP
     call lcresi(fami, kpg, ksp, rela_comp, mod,&
                 imat, nmat, materd, materf,&
@@ -126,8 +125,8 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !
     rho05 = 0.5d0
     call lcpsvn(nr, rho05, ddy, rhoddy)
-    call lcsovn(nr, rhoddy, dy, dyp)
-    call lcsovn(nr, yd, dyp, yfp)
+    dyp = rhoddy + dy(1:nr)
+    yfp = yd(1:nr) + dyp
     call lcresi(fami, kpg, ksp, rela_comp, mod,&
                 imat, nmat, materd, materf, &
                 nbcomm, cpmono, pgl, nfs, nsg,&
@@ -154,8 +153,8 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
     if (rho1 .gt. rhomax*rho0) rho1 = rhomax*rho0
 !
     call lcpsvn(nr, rho1, ddy, rhoddy)
-    call lcsovn(nr, rhoddy, dy, dyp)
-    call lcsovn(nr, yd, dyp, yfp)
+    dyp = rhoddy + dy(1:nr)
+    yfp = yd(1:nr) + dyp
     call lcresi(fami, kpg, ksp, rela_comp, mod,&
                 imat, nmat, materd, materf, &
                 nbcomm, cpmono, pgl, nfs, nsg,&
@@ -192,8 +191,8 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
         if (rho2 .gt. rhomax*rho1) rho2 = rhomax*rho1
 !
         call lcpsvn(nr, rho2, ddy, rhoddy)
-        call lcsovn(nr, rhoddy, dy, dyp)
-        call lcsovn(nr, yd, dyp, yfp)
+        dyp = rhoddy + dy(1:nr)
+        yfp = yd(1:nr) + dyp
         call lcresi(fami, kpg, ksp, rela_comp, mod,&
                     imat, nmat, materd, materf, &
                     nbcomm, cpmono, pgl, nfs, nsg,&

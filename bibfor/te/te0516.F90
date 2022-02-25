@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ character(len=16) :: option, nomte
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jsd1ff.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
@@ -126,10 +125,10 @@ character(len=16) :: option, nomte
     ASSERT( npg.ge.npge )
     co(1:npg)=zr(ipoids:ipoids+npg-1)
 !
-    hoel(1:nc) = 0.0d0
-    fl(1:2*nc) = 0.0d0
-    rg0(1:2*nc,1:2*nc) = 0.0d0
-    rigge0(1:2*nc,1:2*nc) = 0.0d0
+    hoel(:) = 0.0d0
+    fl(:) = 0.0d0
+    rg0(:,:) = 0.0d0
+    rigge0(:,:) = 0.0d0
     mflex(:) = 0.d0
     codret=0
     codrep=0
@@ -565,7 +564,7 @@ character(len=16) :: option, nomte
             rigge0(13,11) = rigge0(13,11) + mflex(3)*0.5d0
             endif
 !       On remet tout dans rg0
-        call lcsovn(2*nc*2*nc, rg0, rigge0, rg0)
+        rg0 = rg0 + rigge0
         endif
         call mavec(rg0, 2*nc, klv, dimklv)
     endif

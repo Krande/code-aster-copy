@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ implicit none
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jspgno.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/nmvmpo.h"
@@ -204,7 +203,7 @@ character(len=16), intent(in) :: option, nomte
             izr2= vale_cara(11)
             rgeom(:)=0.0d0
             call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, rgeom)
-            call lcsovn(105, klv, rgeom, klv)
+            klv = klv + rgeom
         endif
     endif
 !

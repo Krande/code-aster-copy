@@ -56,7 +56,6 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 #include "asterfort/hujprj.h"
 #include "asterfort/hujpxd.h"
 #include "asterfort/lcnrvn.h"
-#include "asterfort/lcsovn.h"
     integer :: nvi, nr, nmat
     real(kind=8) :: mater(nmat, 2), vind(nvi), vinf(nvi), vins(nvi)
     real(kind=8) :: yd(nr), dy(nr), r(nr), toler, ye(nr)
@@ -101,7 +100,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 !
 ! --- MISE A L'ECHELLE DES CONTRAINTES ET VARIABLES CONTENUES DANS YF
 ! --- SIGMA * E0, R * E0/PREF
-    call lcsovn(nr, yd, dy, yf)
+    yf(1:nr) = yd(1:nr) + dy(1:nr)
 !
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
     ydt(1:nr) = yd(1:nr)

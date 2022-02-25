@@ -57,7 +57,6 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 #include "asterfort/infniv.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
@@ -214,7 +213,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! --- ELASTIQUE EN TANT QUE DE BESOIN --------------------------------
 ! ====================================================================
     if (.not. loop) call lcprmv(hooknl, deps, dsig)
-    call lcsovn(ndt, yd, dsig, ye)
+    ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
 !      LOOP = .FALSE.
 ! ====================================================================
 ! --- CALCUL DE L'INCRMEENT DE CONTRAINTES ELASTIQUE SI LOOP ACTIVE
@@ -227,7 +226,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     else
         dsigt(1:ndt) = dsig(1:ndt)
     endif
-    call lcsovn(ndt, yd, dsigt, sigt)
+    sigt(1:ndt) = yd(1:ndt) + dsigt(1:ndt)
 !
 ! --- FAUT-IL CONSIDERER LES MECANISMES DE TRACTION?
     nbmect = nbmeca
@@ -275,7 +274,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
      &    'LA PREDICTION -> FACTOR =',factor
             write(6,*)'YE =',(yd(i)+dsig(i),i=1,ndt)
         endif
-        call lcsovn(ndt, yd, dsig, ye)
+        ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
     endif
  51 continue
 !
@@ -720,7 +719,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 ! --- CALCUL INCREMENT DE CONTRAINTES  DSIG = HOOKNL-.DEPSE ----------
 ! ====================================================================
     if (.not. loop) call lcprmv(hooknl, depse, dsig)
-    call lcsovn(ndt, yd, dsig, ye)
+    ye(1:ndt) = yd(1:ndt) + dsig(1:ndt)
 !
     maxi = un
     cohes = -rtrac+ptrac

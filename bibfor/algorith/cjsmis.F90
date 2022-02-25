@@ -49,7 +49,6 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 #include "asterfort/cjsncv.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/lcnrvn.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
     integer :: ndt, ndi, nr, nmod, niter, nvi, iret
     integer :: nitimp
@@ -124,7 +123,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> INCREMENTATION DE YF = YD + DY
 !
-    call lcsovn(nr, yd, dy, yf)
+    yf(1:nr) = yd(1:nr) + dy(1:nr)
 !
 !
 ! -> CALCUL DU SECOND MEMBRE A T+DT :  -R(DY)
@@ -150,7 +149,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> REACTUALISATION DE DY = DY + DDY
 !
-    call lcsovn(nr, ddy, dy, dy)
+    dy(1:nr) = ddy(1:nr) + dy(1:nr)
 !
 !
 ! -> VERIFICATION DE LA CONVERGENCE : ERREUR = !!DDY!!/!!DY!! < TOLER
@@ -199,7 +198,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> INCREMENTATION DE YF = YD + DY
 !
-    call lcsovn(nr, yd, dy, yf)
+    yf(1:nr) = yd(1:nr) + dy(1:nr)
 !
 !
 ! -> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES

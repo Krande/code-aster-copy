@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
 #include "asterfort/hujprj.h"
 #include "asterfort/hujtid.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi, imat, iret, iadzi, iazk24, i, kpg, ksp
@@ -79,7 +78,7 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
                     sigd, vind, dsde, iret)
         if (iret .eq. 0) then
             call lcprmv(dsde, deps, dsig)
-            call lcsovn(ndt, sigd, dsig, sigf)
+            sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
             i1 =d13*trace(ndi,sigf)
         else
             iret =0
@@ -134,7 +133,7 @@ subroutine hujpre(fami, kpg, ksp, etat, mod,&
         do i = 1, ndt
             dsig(i) = maxi * dsig(i)
         enddo
-        call lcsovn(ndt, sigd, dsig, sigf)
+        sigf(1:ndt) = sigd(1:ndt) + dsig(1:ndt)
         if (debug) then
             write (6,'(A,A,E12.5)')&
      &    'HUJPRE :: APPLICATION DE FACTOR POUR MODIFIER ',&

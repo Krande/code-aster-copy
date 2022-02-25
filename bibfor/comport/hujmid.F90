@@ -52,7 +52,6 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 #include "asterfort/infniv.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/lcnrvn.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utlcal.h"
 !
@@ -270,7 +269,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! ---> INCREMENTATION DE YF = YD + DY
 ! ------------------------------------
 !
-    call lcsovn(nr, yd, dy, yf)
+    yf(1:nr) = yd(1:nr) + dy(1:nr)
     ye(1:nmod) = yf(1:nmod)
 !
     if (iret .eq. 1) goto 9999

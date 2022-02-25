@@ -30,7 +30,6 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/lglcov.h"
 #include "asterfort/lgldom.h"
 #include "asterfort/lglini.h"
@@ -148,7 +147,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- INCREMENTATION DES VARIABLES -------------------------------------
 ! ======================================================================
-        call lcsovn(nr-1, yd, dy, yf)
+        yf(1:nr-1) = yd(1:nr-1) + dy(1:nr-1)
 ! ======================================================================
 ! --- VERIFICATION DE LA COHERENCE DE GAMP -----------------------------
 ! ======================================================================

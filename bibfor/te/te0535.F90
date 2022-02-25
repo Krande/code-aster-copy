@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ character(len=16) :: option, nomte
 #include "asterfort/jeexin.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
@@ -443,7 +442,7 @@ character(len=16) :: option, nomte
         xiy = cars1(5)
         xiz = cars1(4)
         call ptkg00(sigma, a, a, xiz, xiz, xiy, xiy, xl, ey, ez, rgeom)
-        call lcsovn(nk, klv, rgeom, klv)
+        klv = klv + rgeom
     endif
 !
 !   On sort la matrice tangente

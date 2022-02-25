@@ -110,7 +110,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/hujtid.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
@@ -620,7 +619,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 endif
                 call lcprsv(det, dsig, dsig)
 
-                call lcsovn(6, sigd0, dsig, sigf)
+                sigf = sigd0 + dsig
 !
 ! y-a-t-il traction?
                 conv = ASTER_TRUE

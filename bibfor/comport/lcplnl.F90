@@ -98,7 +98,6 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 #include "asterfort/lcplnf.h"
 #include "asterfort/lcreli.h"
 #include "asterfort/lcresi.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utlcal.h"
@@ -213,7 +212,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     endif
 !
 ! --- ENREGISTREMENT DE LA SOLUTION D'ESSAI
-    call lcsovn(nr, yd, dy, ye)
+    ye(1:nr) = yd(1:nr) + dy(1:nr)
 !
     iter = 0
 !
@@ -227,7 +226,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !     DE LA RECHERCHE LINEAIRE
     if (.not.lreli .or. iter .eq. 1) then
 !        INCREMENTATION DE  YF = YD + DY
-        call lcsovn(nr, yd, dy, yf)
+        yf(1:nr) = yd(1:nr) + dy(1:nr)
 !
 !        CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
         call lcresi(fami, kpg, ksp, rela_comp, mod,&
@@ -289,7 +288,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !     ACTUALISATION DE LA SOLUTION
     if (.not.lreli) then
 !        REACTUALISATION DE DY = DY + DDY
-        call lcsovn(nr, ddy, dy, dy)
+        dy(1:nr) = ddy(1:nr) + dy(1:nr)
     else if (lreli) then
 !        RECHERCHE LINEAIRE : RENVOIE DY, YF ET R RE-ACTUALISES
         call lcreli(fami, kpg, ksp, rela_comp, mod,&
@@ -324,7 +323,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     endif
 !
 !     CONVERGENCE > INCREMENTATION DE  YF = YD + DY
-    call lcsovn(ndt+nvi, yd, dy, yf)
+    yf(1:ndt+nvi) = yd(1:ndt+nvi) + dy(1:ndt+nvi)
 !
 !     MISE A JOUR DE SIGF , VINF
     sigf(1:ndt) = yf(1:ndt)

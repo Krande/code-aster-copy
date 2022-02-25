@@ -45,7 +45,6 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 #include "asterfort/cjsnor.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/lcnrvn.h"
-#include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
     integer :: ndt, ndi, nvi, nr, nmod, niter, iret
     integer :: nitimp
@@ -141,7 +140,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 ! -> INCREMENTATION DE YF = YD + DY
 !
-    call lcsovn(nr, yd, dy, yf)
+    yf(1:nr) = yd(1:nr) + dy(1:nr)
 !
 !
 !---------------------------------------
