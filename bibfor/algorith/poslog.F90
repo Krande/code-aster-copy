@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/deflg2.h"
 #include "asterfort/deflg3.h"
 #include "asterfort/lcdetf.h"
-#include "asterfort/lctr2m.h"
 #include "asterfort/pk2sig.h"
 #include "asterfort/pmat.h"
 #include "asterfort/symt46.h"
@@ -167,7 +166,7 @@ integer, intent(out) :: codret
 !
         call deflg3(gn, feta, xi, me, tp2, tl)
         call symt46(tl, tls)
-        call lctr2m(6, pes, trav)
+        trav = transpose(pes)
         call pmat(6, trav, dtde, trav2)
         call pmat(6, trav2, pes, dsidep)
         call daxpy(36, 1.d0, tls, 1, dsidep, 1)

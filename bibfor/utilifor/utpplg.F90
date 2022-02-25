@@ -20,7 +20,6 @@ subroutine utpplg(nn, nc, p, sl, sg)
     implicit none
 #include "asterfort/lcps2m.h"
 #include "asterfort/lcso2m.h"
-#include "asterfort/lctr2m.h"
 #include "asterfort/mapvec.h"
 #include "asterfort/mavec.h"
 #include "asterfort/upletr.h"
@@ -28,8 +27,10 @@ subroutine utpplg(nn, nc, p, sl, sg)
 #include "asterfort/utpalg.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/vecmap.h"
-    real(kind=8) :: p(3, 3), sl(*), sg(*)
-    integer :: nn, nc, n, n1, nddl
+    integer, intent(in) :: nn, nc
+    real(kind=8), intent(in) :: p(3, 3), sl(*)
+    real(kind=8), intent(out) :: sg(*)
+    integer :: n, n1, nddl
     real(kind=8) :: matsy1(12, 12), matsy2(12, 12)
     real(kind=8) :: matas2(12, 12), matsym(12, 12)
     real(kind=8) :: matasy(12, 12)
@@ -54,7 +55,7 @@ subroutine utpplg(nn, nc, p, sl, sg)
     n1 = (nddl+1)*nddl/2
 !
     call vecmap(sl, n, matril, nddl)
-    call lctr2m(nddl, matril, matsy1)
+    matsy1(1:nddl,1:nddl) = transpose(matril(1:nddl,1:nddl))
     call lcso2m(nddl, matril, matsy1, matsy2)
     matas2(1:nddl,1:nddl) = matril(1:nddl,1:nddl) - matsy1(1:nddl,1:nddl)
     call lcps2m(nddl, 0.5d0, matsy2, matsym)

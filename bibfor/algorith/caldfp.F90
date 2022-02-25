@@ -33,7 +33,6 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdetf.h"
-#include "asterfort/lctr2m.h"
 #include "asterfort/matinv.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
@@ -84,7 +83,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
         endif
 !
         call matinv('S', 3, a, am, det2)
-        call lctr2m(3, am, amt)
+        amt = transpose(am)
 !
         ddetdg = ddot(9,amt,1,msns,1)
 !
@@ -156,7 +155,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 !
         call matinv('S', 3, b, bm, det2)
 !
-        call lctr2m(3, bm, bmt)
+        bmt = transpose(bm)
 !
         ddetdg = ddot(9,bmt,1,msns,1)
 !

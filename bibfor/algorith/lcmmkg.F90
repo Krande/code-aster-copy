@@ -22,7 +22,6 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
 !
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lctr2m.h"
 #include "asterfort/matinv.h"
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
@@ -131,7 +130,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
     else if (materf(nmat).eq.1) then
        call lcopli('ORTHOTRO', mod, materf(1), hooke)
     endif
-    call lctr2m(3, fep, fet)
+    fet = transpose(fep)
     call pmat(3, fet, fep, fetfe)
     call daxpy(9, -1.d0, id, 1, fetfe,1)
     call dscal(9, 0.5d0, fetfe, 1)

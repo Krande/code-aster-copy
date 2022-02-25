@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
 #include "asterc/r8prem.h"
 #include "asterfort/diago2.h"
 #include "asterfort/diagp3.h"
-#include "asterfort/lctr2m.h"
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
@@ -62,7 +61,7 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
     iret  = 0
 !
 !     LE CALCUL DES VALEURS PROPRES N'A PAS ENCORE ETE FAIT: On calcule C
-    call lctr2m(3, f, ft)
+    ft = transpose(f)
     call pmat(3, ft, f, C)
 ! --- VALEURS PRINCIPALES = VECTEURS PROPRES
 !  VECP : DIM1=I=COMPOSANTE DIM2=J=NUM VECTEUR ASSOCIE A LAMBP(J)

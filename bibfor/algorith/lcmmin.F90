@@ -56,7 +56,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsove.h"
-#include "asterfort/lctr2m.h"
 #include "asterfort/lctrma.h"
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
@@ -126,7 +125,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
             call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
             call dcopy(9, deps, 1, df, 1)
             call pmat(3, df, fe, fe1)
-            call lctr2m(3, fe1, fe1t)
+            fe1t = transpose(fe1)
             call pmat(3, fe1t, fe1, fetfe)
             call tnsvec(3, 3, fetfe, dy, 1.d0)
         else
