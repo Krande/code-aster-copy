@@ -20,7 +20,6 @@ subroutine ut2plg(nn, nc, p, sl, sg)
 !
     implicit none
 #include "asterfort/lcps2m.h"
-#include "asterfort/lcso2m.h"
 #include "asterfort/mapvec.h"
 #include "asterfort/mavec.h"
 #include "asterfort/upletr.h"
@@ -57,7 +56,7 @@ subroutine ut2plg(nn, nc, p, sl, sg)
 !
     call vecmap(sl, n, matril, nddl)
     matsy1(1:nddl,1:nddl) = transpose(matril(1:nddl,1:nddl))
-    call lcso2m(nddl, matril, matsy1, matsy2)
+    matsy2(1:nddl,1:nddl) = matril(1:nddl,1:nddl) + matsy1(1:nddl,1:nddl)
     matas2(1:nddl,1:nddl) = matril(1:nddl,1:nddl) - matsy1(1:nddl,1:nddl)
     call lcps2m(nddl, 0.5d0, matsy2, matsym)
     call mavec(matsym, nddl, vecsym, n1)
@@ -67,7 +66,7 @@ subroutine ut2plg(nn, nc, p, sl, sg)
     call uplstr(nddl, parsmg, parsym)
     call ut2alg(nn, nc, p, vecasy, parasy)
     call upletr(nddl, parayg, parasy)
-    call lcso2m(nddl, parsmg, parayg, matrig)
+    matrig(1:nddl,1:nddl) = parsmg(1:nddl,1:nddl) + parayg(1:nddl,1:nddl)
     call mapvec(matrig, nddl, sg, n)
 !
 !
