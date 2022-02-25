@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -291,24 +291,24 @@ implicit none
         ! logical de sortie de boucle initialisé
         NoConv=.TRUE.
         do ii=1,5
-            ! Initialisation de la force qui va être corrigée au tir élastique
-            Fite(ii)=tirela(ii)
-            ! Initialisation de la correction à 0
-            dFcor(ii)=0.0
-            ! Initialisation de l'écrouissage en CP qui va être modifié à l'écrousissage initial
-            QCPite(ii)=vloc(12+ii)
-            ! initilisation de l'incrément d'écrouissage en CP à 0'
-            dQCP(ii)=0.0
-            if (ii .LE. 2) then
-                ! Initialisation de l'écrouissage en glissement qui va être modifié
-                !   à l'écrousissage initial
-                Qslite(ii)=vloc(10+ii)
-                ! initilisation de l'incrément d'écrouissage en glissement à 0'
-                dQsl(ii)=0.0
-            endif
-            ! stockage des rigidité tangeante élastique (avec décollement) dans un vecteur
-            !   à 5 composantes pour des calculs simplifiés
-            KtangPetit(ii)=raidTang(ii)
+           ! Initialisation de la force qui va être corrigée au tir élastique
+           Fite(ii)=tirela(ii)
+           ! Initialisation de la correction à 0
+           dFcor(ii)=0.0
+           ! Initialisation de l'écrouissage en CP qui va être modifié à l'écrousissage initial
+           QCPite(ii)=vloc(12+ii)
+           ! initilisation de l'incrément d'écrouissage en CP à 0'
+           dQCP(ii)=0.0
+           ! stockage des rigidité tangeante élastique (avec décollement) dans un vecteur
+           !   à 5 composantes pour des calculs simplifiés
+           KtangPetit(ii)=raidTang(ii)
+        enddo
+        do ii=1,2
+           ! Initialisation de l'écrouissage en glissement qui va être modifié
+           !   à l'écrousissage initial
+           Qslite(ii)=vloc(10+ii)
+           ! initilisation de l'incrément d'écrouissage en glissement à 0'
+           dQsl(ii)=0.0
         enddo
         ! limitation de la boucle à nombre d'itérations
         do while ((Noconv) .and.(Ite .LE. nbdecp))
@@ -695,19 +695,25 @@ implicit none
             ! calcul de la matrice avec tous les éléments de calcul de la matrice à inverser
             ! (dfdF)*K*(dfDF)-dfdQ*I*dfDF
             do ii=1,16
-                do jj=1,16
-                    MatAinvTot(ii,jj)= sum(dfdF(ii,:)*KtangPetit(:)*dfDF(jj,:))
-                    if ((ii .LE. 4).and. (jj .LE. 4)) then
-                        ! on regarde si il faut rajouter le terme d'écrousissage sliding
-                        MatAinvTot(ii,jj)=MatAinvTot(ii,jj) - dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)- &
-                                dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
-                    endif
-                    if ((ii .GE. 5).and. (jj .GE. 5)) then
-                        ! on regarde si il faut rajouter le terme d'écrousissage CP
-                        MatAinvTot(ii,jj)=MatAinvTot(ii,jj)-sum( dfdQCP(ii-4,:)*HHCP(:)*dfdF(jj,:))
-                    endif
-                enddo
+               do jj=1,16
+                  MatAinvTot(ii,jj)= sum(dfdF(ii,:)*KtangPetit(:)*dfDF(jj,:))
+               enddo
             enddo
+
+            do ii=1,4
+               do jj=1,4
+                  ! on regarde si il faut rajouter le terme d'écrousissage sliding
+                  MatAinvTot(ii,jj)=MatAinvTot(ii,jj) - dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)- &
+                       dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
+               enddo
+            enddo
+            do ii=5,16
+               do jj=5,16
+                  ! on regarde si il faut rajouter le terme d'écrousissage CP
+                  MatAinvTot(ii,jj)=MatAinvTot(ii,jj)-sum( dfdQCP(ii-4,:)*HHCP(:)*dfdF(jj,:))
+               enddo
+            enddo
+
             do ii=1,4
                 ! calcul du nombre de critères dépassés avec signe opposé (H Mx et My)
                 !   pour obtention des ddimension du système à inverser
