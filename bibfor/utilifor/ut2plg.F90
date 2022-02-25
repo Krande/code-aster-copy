@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine ut2plg(nn, nc, p, sl, sg)
 !
     implicit none
-#include "asterfort/lcdi2m.h"
 #include "asterfort/lcps2m.h"
 #include "asterfort/lcso2m.h"
 #include "asterfort/lctr2m.h"
@@ -58,7 +57,7 @@ subroutine ut2plg(nn, nc, p, sl, sg)
     call vecmap(sl, n, matril, nddl)
     call lctr2m(nddl, matril, matsy1)
     call lcso2m(nddl, matril, matsy1, matsy2)
-    call lcdi2m(nddl, matril, matsy1, matas2)
+    matas2(1:nddl,1:nddl) = matril(1:nddl,1:nddl) - matsy1(1:nddl,1:nddl)
     call lcps2m(nddl, 0.5d0, matsy2, matsym)
     call mavec(matsym, nddl, vecsym, n1)
     call lcps2m(nddl, 0.5d0, matas2, matasy)
