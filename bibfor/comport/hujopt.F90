@@ -42,7 +42,6 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 #include "asterfort/hujori.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/promat.h"
@@ -164,7 +163,7 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 ! ----------------------------------------------
 ! --- CONSTRUCTION DE L'OPERATEUR CONSISTANT ---
 ! ----------------------------------------------
-    call lcinma(zero, y0)
+    y0(:,:) = zero
     do i = 1, 9
         do j = 1, ndt
             y1(j,i) = zero
@@ -199,7 +198,7 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 ! ====================================================================
 ! --- OPERATEURS ELASTICITE LINEAIRES---------------------------------
 ! ====================================================================
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 !
     if ((mod(1:2) .eq. '3D') .or. (mod(1:6) .eq. 'D_PLAN')) then
 !
@@ -308,7 +307,7 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
     if (iret .gt. 1) then
         dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
     else
-        call lcinma(zero, dsde)
+        dsde(:,:) = zero
         call lcprmm(dsdeb, hooknl, dsde)
     endif
 !

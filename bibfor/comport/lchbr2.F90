@@ -39,7 +39,6 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 #include "asterfort/lcdedi.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchbvp.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -147,8 +146,8 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
     endif
     iret = 0
     iteri = 0
-    call lcinma(0.0d0, hookf)
-    call lcinma(0.0d0, dsidep)
+    hookf(:,:) = 0.0d0
+    dsidep(:,:) = 0.0d0
 ! =====================================================================
 ! --- CALCUL DES PARAMETRES D ECROUISSAGE -----------------------------
 ! =====================================================================

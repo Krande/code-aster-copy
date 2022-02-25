@@ -36,7 +36,6 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     implicit none
 
 #include "asterc/r8prem.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprsm.h"
@@ -68,7 +67,7 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     !!! Initialisation de matrices a zero
     !!!
     
-    call lcinma(0.d0,jss)
+    jss(:,:) = 0.d0
     call r8inir(18,0.d0,jsz,1)
     call r8inir(18,0.d0,jzs,1)
     call r8inir(9,0.d0,jzz,1)
@@ -169,7 +168,7 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     dijaco(1:ndt,1:ndt) = jss(1:ndt,1:ndt) - j6x6(1:ndt,1:ndt)
     
     !!! Inversion du terme dijaco
-    call lcinma(0.d0,invdij)
+    invdij(:,:) = 0.d0
     
     do i=1,ndt
         invdij(i,i)=1.d0

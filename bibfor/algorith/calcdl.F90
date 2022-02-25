@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
                   parame, derive, sig3, vecp, eta,&
                   dg, se, detadg, dgdl, ddlde)
     implicit none
-#include "asterfort/lcinma.h"
     integer :: nbmat
     real(kind=8) :: ddlde(6), vecp(3, 3), materf(nbmat, 2), parame(4), derive(5)
     real(kind=8) :: vp(3), i1e, sigeqe, eta, se(6), dg, detadg, sig3, dgdl
@@ -54,7 +53,7 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
-    call lcinma(0.0d0, dsdde)
+    dsdde(:,:) = 0.0d0
     mu = materf(4,1)
     k = materf(5,1)
 ! ======================================================================

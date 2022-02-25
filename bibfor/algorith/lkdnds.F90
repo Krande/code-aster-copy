@@ -34,7 +34,6 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 !     OUT DNDISG :  DERIVEE DE N PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -74,7 +73,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 10  end do
 !
 ! --- CONSTRUCTION DE MATRICE IDENTITE
-    call lcinma(zero, mident)
+    mident(:,:) = zero
     do 20 i = 1, ndt
         mident(i,i) = un
 20  end do

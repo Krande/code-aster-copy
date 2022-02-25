@@ -48,7 +48,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
@@ -150,7 +149,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     !!! Variables locales tmp
     !!!
     
-    call lcinma(0.d0,mident)
+    mident(:,:) = 0.d0
     
     do i=1, ndt
         mident(i,i)=1.d0
@@ -316,8 +315,8 @@ subroutine srijac(nmat,materf,timed,timef,&
             depse(i)=depst(i)-depsv(i)
         end do
         
-        call lcinma(0.d0,hnldgp)
-        call lcinma(0.d0,dgpds)
+        hnldgp(:,:) = 0.d0
+        dgpds(:,:) = 0.d0
         call lcinve(0.d0,dfdsp)
         call lcinve(0.d0,gp)
         call lcinve(0.d0,vecnp)
@@ -339,7 +338,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     mue=materf(4,1)
     ke=materf(5,1)
     
-    call lcinma(0.d0, hook)
+    hook(:,:) = 0.d0
     
     do i=1, ndi
         do j=1, ndi

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
 !     OUT D2HDS2 :  DERIVEE 2NDE H PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
 #include "asterfort/cjst.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkd2de.h"
 #include "asterfort/lkhlod.h"
@@ -60,7 +59,7 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t,&
     gamcjs = materf(5,2)
 !
 ! --- CONSTRUCTION TENSEUR IDENTITE
-    call lcinma(zero, mident)
+    mident(:,:) = zero
     do 10 i = 1, ndt
         mident(i,i) = un
 10  end do

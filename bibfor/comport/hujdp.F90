@@ -32,7 +32,6 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 #include "asterfort/hujddd.h"
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, ndec, iret, indi(7), nbmeca, ni
@@ -141,7 +140,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 ! ====================================================================
 ! -------------------- 2.1 CONSTRUCTION DE C -------------------------
 ! ====================================================================
-    call lcinma(zero, hooknl)
+    hooknl(:,:) = zero
     i1e = d13*(sigf(1)+sigf(2)+sigf(3))
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then

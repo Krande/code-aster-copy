@@ -48,7 +48,6 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 #include "asterfort/hujmei.h"
 #include "asterfort/hujpxd.h"
 #include "asterfort/hujpxs.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, elas, jj, iret
@@ -135,7 +134,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 ! ====================================================================
 ! --------------------- I) CONSTRUCTION DE C -------------------------
 ! ====================================================================
-    call lcinma(zero, hooknl)
+    hooknl(:,:) = zero
     i1e = (sige(1)+sige(2)+sige(3))/3.d0
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then

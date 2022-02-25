@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine hujddd(carac, k, mater, ind, yf,&
 #include "asterc/r8maem.h"
 #include "asterfort/hujksi.h"
 #include "asterfort/infniv.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, k, mod, kk, nbmect
@@ -275,15 +274,15 @@ subroutine hujddd(carac, k, mater, ind, yf,&
             call utmess('F', 'COMPOR1_2')
         endif
 !
-        call lcinma(zero, mat)
+        mat(:,:) = zero
         if (consol) goto 600
 !
 !af 15/05/07 Debut
-        call lcinma(zero, dsdds)
-        call lcinma(zero, sxs)
-        call lcinma(zero, sxp)
-        call lcinma(zero, pxp)
-        call lcinma(zero, pxh)
+        dsdds(:,:) = zero
+        sxs(:,:) = zero
+        sxp(:,:) = zero
+        pxp(:,:) = zero
+        pxh(:,:) = zero
 !
         if (k .gt. 4) then
             kk = k-4

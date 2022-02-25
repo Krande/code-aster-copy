@@ -30,7 +30,6 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprsm.h"
@@ -54,7 +53,7 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 ! === =================================================================
 ! --- INITIALISATION MATRICES A ZERO
 ! === =================================================================
-    call lcinma(0.d0, jss)
+    jss(:,:) = 0.d0
     call r8inir(18, 0.d0, jsz, 1)
     call r8inir(18, 0.d0, jzs, 1)
     call r8inir(9, 0.d0, jzz, 1)
@@ -148,7 +147,7 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
     dijaco(1:ndt,1:ndt) = jss(1:ndt,1:ndt) - j6x6(1:ndt,1:ndt)
 !
 ! --- INVERSION DU TERME (DIJACO)^-1 = INVDIJ
-    call lcinma(0.d0, invdij)
+    invdij(:,:) = 0.d0
     do 12 i = 1, ndt
         invdij(i,i) = 1.d0
 12  continue

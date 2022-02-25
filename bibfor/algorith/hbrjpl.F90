@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
 #include "asterfort/hbmata.h"
 #include "asterfort/hbvaec.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/trace.h"
 #include "blas/ddot.h"
     integer :: nbmat
@@ -70,7 +69,7 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
     pphi1 = materf(9,2)
     pphi2 = materf(15,2)
     pphi0 = materf(16,2)
-    call lcinma(0.0d0, dsidep)
+    dsidep(:,:) = 0.0d0
     pi = r8pi()/180.0d0
 ! =====================================================================
 ! --- CALCUL DES PARAMETRES D ECROUISSAGE -----------------------------

@@ -28,7 +28,6 @@ subroutine lcopli(typ, mod, mater, hook)
 !       OUT HOOK   :  OPERATEUR RIGIDITE ELASTIQUE LINEAIRE
 !       ----------------------------------------------------------------
 !
-#include "asterfort/lcinma.h"
   integer :: ndt, ndi, i, j
   real(kind=8) :: un, d12, zero, deux
   parameter       ( d12  = .5d0   )
@@ -44,7 +43,7 @@ subroutine lcopli(typ, mod, mater, hook)
   common /tdim/   ndt  , ndi
 !       ----------------------------------------------------------------
 !
-    call lcinma(zero, hook)
+  hook(:,:) = zero
 !
   if (typ .eq. 'ISOTROPE') then
      e = mater(1)

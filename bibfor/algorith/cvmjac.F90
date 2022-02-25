@@ -64,7 +64,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/chbfsx.h"
 #include "asterfort/cvmcvx.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -660,13 +659,13 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 !
 ! - DGDXXI(T+DT)
-        call lcinma(0.d0, dgdxxi)
+        dgdxxi(:,:) = 0.d0
 !
 ! - DLDXXI(T+DT)
-        call lcinma(0.d0, dldxxi)
+        dldxxi(:,:) = 0.d0
 !
 ! - DJDXXI(T+DT)
-        call lcinma(0.d0, djdxxi)
+        djdxxi(:,:) = 0.d0
 !
 ! - DKDXXI(T+DT)
         call lcinve(0.d0, dkdxxi)
@@ -769,7 +768,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             call lcsoma(mtmp1, mtmp, dxidxi)
 !
         else
-            call lcinma(0.d0, dgdxxi)
+            dgdxxi(:,:) = 0.d0
 !
 ! - DTDS(T+DT)
             call lcinve(0.d0, dtds)
@@ -787,19 +786,19 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             call lcinve(0.d0, dtdxxi)
 !
 ! - DXIDS(T+DT)
-            call lcinma(0.d0, dxids)
+            dxids(:,:) = 0.d0
 !
 ! - DXIDX1(T+DT)
-            call lcinma(0.d0, dxidx1)
+            dxidx1(:,:) = 0.d0
 !
 ! - DXIDX2(T+DT)
-            call lcinma(0.d0, dxidx2)
+            dxidx2(:,:) = 0.d0
 !
 ! - DXIDP(T+DT)
             call lcinve(0.d0, dxidp)
 !
 ! - DXIDXI(T+DT)
-            call lcinma(0.d0, dxidxi)
+            dxidxi(:,:) = 0.d0
 !
         endif
 !

@@ -46,7 +46,6 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/hujpxd.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
@@ -132,7 +131,7 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
 ! ====================================================================
 ! --- OPERATEURS ELASTICITE LINEAIRES---------------------------------
 ! ====================================================================
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN') then
 !

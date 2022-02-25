@@ -42,7 +42,6 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 #include "asterfort/cos3t.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcsove.h"
@@ -119,7 +118,7 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- OPERATEUR LINEAIRE NON LINEAIRE ----------------------------------
 ! ======================================================================
-    call lcinma(zero, hooknl)
+    hooknl(:,:) = zero
     e = mater(1,1) * ((i1d+qinit)/trois/pa)**n
     nu = mater(2,1)
     al = e * (un-nu) / (un+nu) / (un-deux*nu)

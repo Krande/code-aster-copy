@@ -78,7 +78,6 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 #include "asterfort/mctgel.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/vecini.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
 !
 ! Declaration of constant parameters

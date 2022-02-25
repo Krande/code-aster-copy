@@ -39,7 +39,6 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     
     implicit   none
 
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -85,7 +84,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     end do
     
     !!! Construction de la matrice identite
-    call lcinma(0.d0,mident)
+    mident(:,:) = 0.d0
     
     do i=1,ndt
         mident(i,i)=1.d0

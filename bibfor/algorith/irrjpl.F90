@@ -24,7 +24,6 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 #include "asterc/r8prem.h"
 #include "asterfort/irrfss.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcprsm.h"
@@ -149,7 +148,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
         drids = 0.0d0
     endif
     if (sequiv .eq. 0.0d0) then
-        call lcinma(0.0d0, ddfdds)
+        ddfdds(:,:) = 0.0d0
     else
         call lcprsv(1.5d0/sequiv, dev, dfds)
         call lcprte(dfds, dfds, ddfdds)

@@ -19,7 +19,6 @@
 subroutine irrfss(sig, ddfdds)
     implicit none
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
@@ -58,7 +57,7 @@ subroutine irrfss(sig, ddfdds)
     call lcdevi(sig, dev)
     s = lcnrts ( dev )
     if (s .eq. 0.d0) then
-        call lcinma(0.d0, ddfdds)
+        ddfdds(:,:) = 0.d0
     else
         call lcprsv(1.5d0 / s, dev, dfds)
         call lcprte(dfds, dfds, dfds2)

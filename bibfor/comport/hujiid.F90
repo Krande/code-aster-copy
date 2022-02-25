@@ -55,7 +55,6 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/tecael.h"
@@ -146,7 +145,7 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
         goto 998
     endif
 !
-    call lcinma(zero, hooknl)
+    hooknl(:,:) = zero
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
 !

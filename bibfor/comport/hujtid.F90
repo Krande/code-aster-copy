@@ -34,7 +34,6 @@ subroutine hujtid(fami, kpg, ksp, mod, imat,&
 #include "asterfort/hujpic.h"
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/trace.h"
@@ -208,7 +207,7 @@ subroutine hujtid(fami, kpg, ksp, mod, imat,&
 ! =====================================================================
 ! --- OPERATEUR DE RIGIDITE CALCULE A ITERATION ----------------------
 ! =====================================================================
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
 !
@@ -462,7 +461,7 @@ subroutine hujtid(fami, kpg, ksp, mod, imat,&
 ! =====================================================================
 ! --- IV. CALCUL DE TE = IDEN6 - E*D (6X6) ----------------------------
 ! =====================================================================
-    call lcinma(zero, te)
+    te(:,:) = zero
     do i = 1, ndt
         te(i,i) = un
     enddo

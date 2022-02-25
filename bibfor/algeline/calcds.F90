@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
     implicit   none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lglpma.h"
 #include "asterfort/lglpmv.h"
 #include "blas/ddot.h"
@@ -52,10 +51,10 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
 ! ======================================================================
 ! --- CALCUL DU NUMERATEUR ---------------------------------------------
 ! ======================================================================
-    call lcinma(0.d0, dsde)
-    call lcinma(0.d0, mat)
-    call lcinma(0.d0, tmp)
-    call lcinma(0.d0, num)
+    dsde(:,:) = 0.d0
+    mat(:,:) = 0.d0
+    tmp(:,:) = 0.d0
+    num(:,:) = 0.d0
     do 10 i = 1, ndt
         do 20 j = 1, ndt
             mat(i,j) = devg(i)*dfds(j)
@@ -73,7 +72,7 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg,&
 ! --- CALCUL DE DSIG/DEPS (NON SYMETRIQUE) -----------------------------
 ! --- STOCKAGE DANS MATRICE TEMPORAIRE AVANT SYMETRISATION -------------
 ! ======================================================================
-    call lcinma(0.d0, tmp)
+    tmp(:,:) = 0.d0
     do 30 i = 1, ndt
         do 40 j = 1, ndt
             dsde(i,j) = hook(i,j) + num(i,j)/denom

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 !     OUT  IRET   :  CODE RETOUR
 !     ----------------------------------------------------------------
 #include "asterfort/assert.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -60,7 +59,7 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
 !     ----------------------------------------------------------------
 !
     iret=0
-    call lcinma(0.d0, dsde)
+    dsde(:,:) = 0.d0
 !
     if (materf(nmat,1) .eq. 0) then
         call lcopli('ISOTROPE', mod, materf(1, 1), dsde)

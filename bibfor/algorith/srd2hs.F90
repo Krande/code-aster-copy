@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
 
 #include "asterc/r8pi.h"
 #include "asterfort/cjst.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcsove.h"
@@ -117,7 +116,7 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
     call lcprsm(5.d0*dets/sii**2.d0,sxs,fact6)
     call srd2de(devsig,d2dets)
     call lcprsm(sii**2.d0/3.d0,d2dets,fact7)
-    call lcinma(0.d0,mident)
+    mident(:,:) = 0.d0
     
     do i=1,ndt
         mident(i,i)=1.d0

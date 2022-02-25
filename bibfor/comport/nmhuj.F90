@@ -110,7 +110,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/hujtid.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
@@ -516,7 +515,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !       ----------------------------------------------------------------
     if (opt .eq. 'RIGI_MECA_TANG') then
 !
-        call lcinma(zero, dsde)
+        dsde(:,:) = zero
 !
 ! REMARQUE: CALCUL DE DSDE A T AVEC MATERF CAR PARAMETRES HUJEUX
 ! --------  INDEPENDANTS DE LA TEMPERATURE
@@ -537,7 +536,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
     else if (opt .eq. 'FULL_MECA') then
 !
-        call lcinma(zero, dsde)
+        dsde(:,:) = zero
 !
 ! ---> CALCUL MATRICE DE RIGIDITE ELASTIQUE
         if (etatf .eq. 'ELASTIC') then
@@ -553,12 +552,12 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
     else if (opt .eq. 'FULL_MECA_ELAS') then
 !
-        call lcinma(zero, dsde)
+        dsde(:,:) = zero
         call hujtel(mod, materf, sigf, dsde)
 !
     else if (opt .eq. 'RIGI_MECA_ELAS') then
 !
-        call lcinma(zero, dsde)
+        dsde(:,:) = zero
         call hujtel(mod, materf, sigd, dsde)
         call hujori('GLOBA', 2, reorie, angmas, bid16, dsde)
 !
@@ -597,11 +596,11 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         .or. opt(1:14) .eq. 'RIGI_MECA_ELAS') then
         if (iret .eq. 1) then
             if (.not.tract) then
-                call lcinma(zero, dsde)
+                dsde(:,:) = zero
                 call hujtid(fami, kpg, ksp, mod, imat,&
                             sigd, vind, dsde, iret1)
                 if (iret1 .eq. 1) then
-                   call lcinma(zero, dsde)
+                   dsde(:,:) = zero
                    call hujtel(mod, materf, sigd, dsde)
                 endif
 ! debut ---new dvp 23/01/2019---
@@ -634,7 +633,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                     sigf(i)  = -deux*rtrac+ptrac
                     sigf(i+3)= zero
                    enddo
-                   call lcinma(zero, dsde)
+                   dsde(:,:) = zero
                    call hujtel(mod, materf, sigd, dsde)
                 endif
 !
@@ -651,7 +650,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 endif
             else
 !
-                call lcinma(zero, dsde)
+                dsde(:,:) = zero
                 call hujtel(mod, materf, sigd, dsde)
                 do i = 1, 3
                     sigf(i) = -deux*rtrac+ptrac

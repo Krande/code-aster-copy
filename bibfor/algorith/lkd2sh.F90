@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 !     OUT D2SHDS :  DERIVEE 2NDE SII*H PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -65,13 +64,13 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
     sii = sqrt(sii)
 !
 ! --- INITIALISATION MATRICE D_IK X D_JL
-    call lcinma(zero, dikdjl)
+    dikdjl(:,:) = zero
     do 10 i = 1, ndt
         dikdjl(i,i) = un
 10  end do
 !
 ! --- INITIALISATION MATRICE D_IJ X D_KL
-    call lcinma(zero, dijdkl)
+    dijdkl(:,:) = zero
     do 20 i = 1, ndi
         do 30 j = 1, ndi
             dijdkl(i,j) = un/trois

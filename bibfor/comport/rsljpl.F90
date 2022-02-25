@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterfort/lchydr.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcnrte.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsm.h"
@@ -106,7 +105,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
         ndeps = lcnrte(deps)
         nsig = lcnrts(sig )
         if ((ndeps*nsig) .eq. zero) then
-            call lcinma(zero, dsde)
+            dsde(:,:) = zero
         else
             a1 = -deux*mater(7,2)*e/(ndeps*nsig*trois)
             call lcprte(sig, deps, dsde)

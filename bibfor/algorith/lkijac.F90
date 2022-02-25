@@ -43,7 +43,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
@@ -119,7 +118,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- VARIABLES LOCALES TEMPORAIRES
 ! ------------------------------------------------------------------
-    call lcinma(zero, mident)
+    mident(:,:) = zero
     do i = 1, ndt
         mident(i,i) = un
     end do
@@ -241,8 +240,8 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         do i = 1, ndt
             depse(i) = depst(i)-depsv(i)
         end do
-        call lcinma(zero, hnldgp)
-        call lcinma(zero, dgpds)
+        hnldgp(:,:) = zero
+        dgpds(:,:) = zero
         call lcinve(zero, dfdsp)
         call lcinve(zero, gp)
         call lcinve(zero, vecnp)
@@ -259,7 +258,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- CONSTRUCTION TENSEUR ELASTIQUE LINEAIRE
     mue = materf(4,1)
     ke = materf(5,1)
-    call lcinma(zero, hook)
+    hook(:,:) = zero
     do i = 1, ndi
         do j = 1, ndi
             hook(i,j) = ke - deux*mue/trois

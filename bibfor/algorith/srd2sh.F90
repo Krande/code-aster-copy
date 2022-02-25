@@ -37,7 +37,6 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     
     implicit   none
 
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -74,7 +73,7 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     !!! initialisation matrice d_ik x d_jl
     !!!
     
-    call lcinma(0.d0,dikdjl)
+    dikdjl(:,:) = 0.d0
     
     do i=1,ndt
         dikdjl(i,i)=1.d0
@@ -84,7 +83,7 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     !!! initialisation matrice d_ij x d_kl
     !!!
     
-    call lcinma(0.d0,dijdkl)
+    dijdkl(:,:) = 0.d0
     
     do i=1,ndi
         do j=1,ndi

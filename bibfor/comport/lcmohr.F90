@@ -81,7 +81,6 @@ subroutine lcmohr(ndim,&
 #include "asterfort/mctgel.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/vecini.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/get_varc.h"
 !

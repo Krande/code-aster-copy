@@ -52,7 +52,6 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
@@ -168,8 +167,8 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- OPERATEURS LINEAIRES ---------------------------------------------
 ! ======================================================================
-  call lcinma(zero, hook)
-  call lcinma(zero, kooh)
+  hook(:,:) = zero
+  kooh(:,:) = zero
   e = mater(1,1)
   nu = mater(2,1)
   al = e * (un-nu) / (un+nu) / (un-deux*nu)
@@ -651,7 +650,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
   coef16 = n/trois/pa * (trois*pa/(i1f+qinit))**(un-n)
   call lcprmv(hook, depse, dsigl)
 !
-  call lcinma(zero, dleds)
+  dleds(:,:) = zero
 !
   do  i = 1, ndt
      do  j = 1, ndt

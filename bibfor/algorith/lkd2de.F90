@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine lkd2de(devsig, d2dets)
 !
 !     OUT D2DETS : DERIVEE 2NDE DET(S) PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-#include "asterfort/lcinma.h"
     real(kind=8) :: devsig(6), d2dets(6, 6)
 !
     integer :: ndi, ndt
@@ -35,7 +34,7 @@ subroutine lkd2de(devsig, d2dets)
 !     ------------------------------------------------------------------
     common /tdim/   ndt,ndi
 !     ------------------------------------------------------------------
-    call lcinma(zero, d2dets)
+    d2dets(:,:) = zero
 !
     r2 = sqrt(deux)
 !

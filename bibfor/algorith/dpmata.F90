@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
                   pplus, se, seq, plas, dsde)
     implicit      none
 #include "asterc/r8prem.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprsm.h"
@@ -55,7 +54,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
     troisk = young / (un-deux*nu)
     deuxmu = young / (un+nu)
     pult = mater(4,2)
-    call lcinma(0.0d0, dsde)
+    dsde(:,:) = 0.0d0
 ! =====================================================================
 ! --- CAS ELASTIQUE ---------------------------------------------------
 ! =====================================================================
@@ -67,12 +66,12 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! =====================================================================
 ! --- INITIALISATIONS DE MATRICES ET VECTEURS UTILES ------------------
 ! =====================================================================
-            call lcinma(0.0d0, dsede)
-            call lcinma(0.0d0, bidon)
-            call lcinma(0.0d0, pmat1)
-            call lcinma(0.0d0, pmat2)
-            call lcinma(0.0d0, pmat3)
-            call lcinma(0.0d0, pmat4)
+            dsede(:,:) = 0.0d0
+            bidon(:,:) = 0.0d0
+            pmat1(:,:) = 0.0d0
+            pmat2(:,:) = 0.0d0
+            pmat3(:,:) = 0.0d0
+            pmat4(:,:) = 0.0d0
             call lcinve(0.0d0, vunite)
             call lcinve(0.0d0, vect1)
             call lcinve(0.0d0, vect2)

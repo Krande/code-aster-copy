@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
 #include "asterfort/dpmate.h"
 #include "asterfort/dppatg.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "blas/ddot.h"
     integer :: imate, icode
@@ -49,8 +48,8 @@ subroutine redrpr(mod, imate, sigp, vip, dsde,&
     parameter  ( trois = 3.0d0 )
 ! =====================================================================
     call lcinve(0.0d0, se)
-    call lcinma(0.0d0, dsde)
-    call lcinma(0.0d0, hookf)
+    dsde(:,:) = 0.0d0
+    hookf(:,:) = 0.0d0
 ! =====================================================================
 ! --- RECUPERATION DES DONNEES MATERIAUX ------------------------------
 ! =====================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine hujela(mod, mater, deps, sigd, sigf, iret)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/hujci1.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
@@ -163,7 +162,7 @@ subroutine hujela(mod, mater, deps, sigd, sigf, iret)
 !
 !
 !---> CALCUL DU COEF  (-----------)**N ET MODULE_YOUNG A T+DT
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 !
     coef = ((i1-piso)/pref)**n
 !

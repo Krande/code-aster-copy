@@ -30,7 +30,6 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 #include "asterfort/dpvpsi.h"
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -72,8 +71,8 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 ! =====================================================================
 ! --- INITIALISATION --------------------------------------------------
 ! =====================================================================
-    call lcinma(0.0d0, hookf)
-    call lcinma(0.0d0, dkooh)
+    hookf(:,:) = 0.0d0
+    dkooh(:,:) = 0.0d0
     call lcinve(0.0d0, sig)
     call lcinve(0.0d0, sige)
 !

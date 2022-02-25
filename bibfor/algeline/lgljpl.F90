@@ -34,7 +34,6 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/solren.h"
 #include "asterfort/trace.h"
@@ -79,8 +78,8 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg,&
     derive = '&&LGLJPL.DERIVE'
     call wkvect(parecr, 'V V R', 5, jpara)
     call wkvect(derive, 'V V R', 4, jderiv)
-    call lcinma(0.0d0, hook)
-    call lcinma(0.0d0, dsde)
+    hook(:,:) = 0.0d0
+    dsde(:,:) = 0.0d0
 ! ======================================================================
 ! --- RECUPERATION DE PARAMETRES MATERIAU ------------------------------
 ! ======================================================================

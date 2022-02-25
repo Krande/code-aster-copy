@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
                   detadg, dgdl, nbmat, materf, dsidep)
     implicit      none
 #include "asterfort/calcdl.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsoma.h"
@@ -59,15 +58,15 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
-    call lcinma(0.0d0, dsidep)
-    call lcinma(0.0d0, bidon)
-    call lcinma(0.0d0, dsede)
-    call lcinma(0.0d0, pmat1)
-    call lcinma(0.0d0, pmat2)
-    call lcinma(0.0d0, pmat3)
-    call lcinma(0.0d0, pmat4)
-    call lcinma(0.0d0, pmat5)
-    call lcinma(0.0d0, pmat6)
+    dsidep(:,:) = 0.0d0
+    bidon(:,:) = 0.0d0
+    dsede(:,:) = 0.0d0
+    pmat1(:,:) = 0.0d0
+    pmat2(:,:) = 0.0d0
+    pmat3(:,:) = 0.0d0
+    pmat4(:,:) = 0.0d0
+    pmat5(:,:) = 0.0d0
+    pmat6(:,:) = 0.0d0
     mu = materf(4,1)
     k = materf(5,1)
 ! =====================================================================

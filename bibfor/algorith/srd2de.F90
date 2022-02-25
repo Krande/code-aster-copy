@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine srd2de(devsig, d2dets)
 
     implicit   none
 
-#include "asterfort/lcinma.h"
 
     !!!
     !!! Variables globales
@@ -51,7 +50,7 @@ subroutine srd2de(devsig, d2dets)
     !!! Calcul de d2dets
     !!!
     
-    call lcinma(0.d0, d2dets)
+    d2dets(:,:) = 0.d0
     
     r2 = sqrt(2.d0)
     

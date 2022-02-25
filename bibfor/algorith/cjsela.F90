@@ -32,7 +32,6 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !       ---------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/cjsci1.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
@@ -94,7 +93,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !
 !--->   OPERATEUR DE RIGIDITE
 !
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 !
 ! - 3D/DP/AX
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then

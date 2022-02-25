@@ -36,7 +36,6 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/matini.h"
@@ -117,7 +116,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
     al = e * (un-nu) / (un+nu) / (un-deux*nu)
     la = nu * e / (un+nu) / (un-deux*nu)
     mu = e * d12 / (un+nu)
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 ! ======================================================================
 ! --- 3D/DP/AX ---------------------------------------------------------
 ! ======================================================================

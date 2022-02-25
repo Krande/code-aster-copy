@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,6 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 #include "asterfort/hujpxd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/tecael.h"
@@ -254,7 +253,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 ! =====================================================================
 ! --- OPERATEURS LINEAIRES --------------------------------------------
 ! =====================================================================
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 !
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
 !
@@ -360,7 +359,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 ! ------------ FIN I.1.
 ! ---> I.2. CALCUL DE CD2FDS = HOOK * DEPSDS
 !                     (6X6)    (6X6)  (6X6)
-    call lcinma(zero, depsds)
+    depsds(:,:) = zero
 !
     do k = 1, nbmect
         kk = indi(k)
@@ -381,7 +380,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
     call lcprmm(hooknl, depsds, cd2fds)
 !
 ! ------------ FIN I.2.
-    call lcinma(zero, dleds)
+    dleds(:,:) = zero
     do i = 1, ndt
         dleds(i,i) = un
     enddo

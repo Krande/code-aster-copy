@@ -41,7 +41,6 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !     ------------------------------------------------------------------
 !
 #include "asterfort/lcicma.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
@@ -101,7 +100,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !- OPERATEUR LINEAIRE
 !++++++++++++++++++++
 !
-    call lcinma(zero, hook)
+    hook(:,:) = zero
 !
     e = mater(1,1)
     nu = mater(2,1)
@@ -180,7 +179,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf,&
 !
     coef2 = n/trois/pa * (trois*pa/(i1f +qinit))**(un-n)
     call lcprmv(hook, depse, dsigl)
-    call lcinma(zero, dleds)
+    dleds(:,:) = zero
 !
     do  i = 1, ndt
    !

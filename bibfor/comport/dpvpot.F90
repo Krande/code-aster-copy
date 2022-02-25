@@ -23,7 +23,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/dpvpdv.h"
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
@@ -115,26 +114,26 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- INITIALISATIONS DES MATRICES ------------------------------------
 ! =====================================================================
-    call lcinma(0.0d0, matr1)
-    call lcinma(0.0d0, matr1a)
-    call lcinma(0.0d0, matr1b)
-    call lcinma(0.0d0, matr2)
-    call lcinma(0.0d0, matr3)
-    call lcinma(0.0d0, part1)
-    call lcinma(0.0d0, part2)
-    call lcinma(0.0d0, part3)
-    call lcinma(0.0d0, part4)
-    call lcinma(0.0d0, inter1)
-    call lcinma(0.0d0, inter2)
-    call lcinma(0.0d0, int2a)
-    call lcinma(0.0d0, int2b)
-    call lcinma(0.0d0, inter3)
-    call lcinma(0.0d0, dsdsig)
-    call lcinma(0.0d0, dsdeps)
-    call lcinma(0.0d0, dsdept)
-    call lcinma(0.0d0, dqdeps)
-    call lcinma(0.0d0, dsidep)
-    call lcinma(0.0d0, dsede)
+    matr1(:,:) = 0.0d0
+    matr1a(:,:) = 0.0d0
+    matr1b(:,:) = 0.0d0
+    matr2(:,:) = 0.0d0
+    matr3(:,:) = 0.0d0
+    part1(:,:) = 0.0d0
+    part2(:,:) = 0.0d0
+    part3(:,:) = 0.0d0
+    part4(:,:) = 0.0d0
+    inter1(:,:) = 0.0d0
+    inter2(:,:) = 0.0d0
+    int2a(:,:) = 0.0d0
+    int2b(:,:) = 0.0d0
+    inter3(:,:) = 0.0d0
+    dsdsig(:,:) = 0.0d0
+    dsdeps(:,:) = 0.0d0
+    dsdept(:,:) = 0.0d0
+    dqdeps(:,:) = 0.0d0
+    dsidep(:,:) = 0.0d0
+    dsede(:,:) = 0.0d0
 !
     call lcopli('ISOTROPE', mod, mater(1, 1), dsede)
 ! =====================================================================
