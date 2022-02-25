@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine mgauss(cara, a, b, dim, nordre,&
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
-#include "asterfort/lceqmn.h"
 #include "asterfort/mgausw.h"
 #include "asterfort/utmess.h"
 #include "blas/dgesv.h"
@@ -132,7 +131,7 @@ subroutine mgauss(cara, a, b, dim, nordre,&
         ldx = dim
 !
 !       SAUVEGARDE DE LA MATRICE 'A' DANS UNE MATRICE DE TRAVAIL: 'AA'
-        call lceqmn(dim, a, aa)
+        aa = a
 !
 ! --- RESOLUTION
         call dgesvx(fact, trans2, n, nrhs, aa,&

@@ -92,7 +92,6 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 #include "asterfort/lcafyd.h"
 #include "asterfort/lccaga.h"
 #include "asterfort/lcconv.h"
-#include "asterfort/lceqmn.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinit.h"
 #include "asterfort/lcjacb.h"
@@ -279,7 +278,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     endif
 !
 !     RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
-    call lceqmn(nr, drdy, drdy1)
+    drdy1 = drdy
     call lceqvn(nr, r, ddy)
     call mgauss(cargau, drdy1, ddy, nr, nr1,&
                 1, rbid, iret)

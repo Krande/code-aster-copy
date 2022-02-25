@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdvmi.h"
-#include "asterfort/lceqmn.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcmate.h"
 #include "asterfort/lcopli.h"
@@ -401,7 +400,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
     if (option .eq. 'FULL_MECA') then
 !
         if (etatf(1) .eq. 'ELASTIC') then
-            call lceqmn(nb, hook, dsidep)
+            dsidep = hook
         else
             if (typma .eq. 'COHERENT') then
                 call nmveot(drbdb, drbdp, drpdb, drpdp, drbde,&
@@ -416,7 +415,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !-- RIGIDITE TANGENTE (RIGI_MECA_TANG) -> MATRICE ELASTIQUE
     else if (option.eq.'RIGI_MECA_TANG') then
         if (typma .eq. 'COHERENT') then
-            call lceqmn(nb, hook, dsidep)
+            dsidep = hook
         else
             ASSERT(.false.)
         endif
