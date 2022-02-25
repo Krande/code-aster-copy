@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,7 +88,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !     SI LA CARTE DE REELS N'EXISTE PAS
     call exisd('CARTE', cartgr, iret)
     if (iret .eq. 0) then
-        call alcart('G', cartgr, noma, 'CACOQU')
+        call alcart('G', cartgr, noma, 'CACOQU_R')
     endif
     tmpngr = cartgr//'.NCMP'
     tmpvgr = cartgr//'.VALV'
@@ -120,7 +120,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
 !
 !        CARTE POUR LES NOMS DES FONCTIONS
         if (lcartf) then
-            call alcart('V', cartcf, noma, 'CACOQUF')
+            call alcart('V', cartcf, noma, 'CACOQU_F')
         endif
     else
         lcartf = .true.
@@ -296,7 +296,7 @@ subroutine aceagb(nomu, noma, lmax, locamb, nbocc)
                 call angvx(axex, angx(1), angx(2))
                 zr(jdvc+1) = angx(1) * r8rddg()
                 zr(jdvc+2) = angx(2) * r8rddg()
-                
+
                 call nocart(cartgr, 3, 5, mode='NUM', nma=1,&
                             limanu=[numa])
                 if (lcartf) then

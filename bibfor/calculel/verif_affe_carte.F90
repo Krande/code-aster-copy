@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -224,10 +224,10 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
 
 !       E3) Valeurs fournies en loucede par le code d'AFFE_CARA_ELEM
         if (nomgd.eq.'CAMASS' .and. nocmp.eq.'C') cycle
-        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'KAPPA') cycle
-!        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') cycle
-        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') verif_coef_drz = ASTER_TRUE
-        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'EXCENT') verif_excent_cq3 = ASTER_TRUE
+        if (nomgd.eq.'CACOQU_R' .and. nocmp.eq.'KAPPA') cycle
+!        if (nomgd.eq.'CACOQU_R' .and. nocmp.eq.'CTOR') cycle
+        if (nomgd.eq.'CACOQU_R' .and. nocmp.eq.'CTOR') verif_coef_drz = ASTER_TRUE
+        if (nomgd.eq.'CACOQU_R' .and. nocmp.eq.'EXCENT') verif_excent_cq3 = ASTER_TRUE
         if (nomgd.eq.'CAORIE' .and. nocmp.eq.'ALPHA') cycle
 
 

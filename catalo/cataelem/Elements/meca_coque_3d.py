@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ CCACO3D  = LocatedComponents(phys=PHY.CACO3D, type='ELEM',
     components=('CRF',))
 
 
-CCACOQU  = LocatedComponents(phys=PHY.CACOQU, type='ELEM',
+CCACOQU  = LocatedComponents(phys=PHY.CACOQU_R, type='ELEM',
     components=('EP','ALPHA','BETA','KAPPA','CTOR',
           'EXCENT','INERTIE',))
 

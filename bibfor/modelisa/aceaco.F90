@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,7 +72,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     cartco = nomu//'.CARCOQUE'
     call exisd('CARTE', cartco, iret)
     if (iret .eq. 0) then
-        call alcart('G', cartco, noma, 'CACOQU')
+        call alcart('G', cartco, noma, 'CACOQU_R')
     endif
     tmpnco = cartco//'.NCMP'
     tmpvco = cartco//'.VALV'
@@ -88,7 +88,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     zk8(jdcc+4) = 'C_METR'
     zk8(jdcc+5) = 'CTOR'
     zk8(jdcc+6) = 'EXCENT'
-    zk8(jdcc+7) = 'INERTIE' 
+    zk8(jdcc+7) = 'INERTIE'
 !
 !     CARTE POUR LES FONCTIONS
     cartcf = nomu//'.CARCOQUF'
@@ -108,7 +108,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
 !
 !        CARTE POUR LES NOMS DES FONCTIONS
         if (lcartf) then
-            call alcart('V', cartcf, noma, 'CACOQUF')
+            call alcart('V', cartcf, noma, 'CACOQU_F')
         endif
     else
         lcartf = .true.

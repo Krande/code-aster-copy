@@ -27,6 +27,7 @@ def C_NOM_GRANDEUR():
     """Retourne la liste des noms des grandeurs pour le catalogue"""
     return (
         "ABSC_R",
+        "CACOQU_R",
         "CHLI_R",
         "CODE_I",
         "COEH_F",

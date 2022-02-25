@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -188,7 +188,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
         call utmess('F', 'ALGELINE_54')
     endif
 !     NOMBRE D'ENTIERS CODES DANS LA CARTE
-    call dismoi('NB_EC', 'CACOQU', 'GRANDEUR', repi=nbec)
+    call dismoi('NB_EC', 'CACOQU_R', 'GRANDEUR', repi=nbec)
     call jeveuo(cadesc, 'L', idesc)
     call jeveuo(cavale, 'L', ivale)
 !
@@ -212,7 +212,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
     endif
 !
 ! --- 3.3. RANG DE LA COMPOSANTE <EP> DANS LA GRANDEUR
-    kjexn = jexnom('&CATA.GD.NOMCMP','CACOQU')
+    kjexn = jexnom('&CATA.GD.NOMCMP','CACOQU_R')
     call jelira(kjexn, 'LONMAX', nbcmp)
     call jeveuo(kjexn, 'L', inomcp)
     nomcmp = 'EP'

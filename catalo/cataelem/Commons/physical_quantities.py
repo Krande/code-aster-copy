@@ -98,7 +98,7 @@ CACO3D   = PhysicalQuantity(type='R',
 """)
 
 
-CACOQU   = PhysicalQuantity(type='R',
+CACOQU_R   = PhysicalQuantity(type='R',
     components=(
        'EP',
        'SECT_L',
@@ -112,7 +112,7 @@ CACOQU   = PhysicalQuantity(type='R',
        'INERTIE',
        'TENS',
     ),
-    comment="""  CACOQU  Type:R  Caracteristiques des coques
+    comment="""  CACOQU_R : Caracteristiques des coques
        EP      : epaisseur de la coque
        SECT_L  : somme des sections d'armatures dans la direction L
        ALPHA   : 1er angle de l'axe de reference dans le plan transverse
@@ -134,14 +134,14 @@ CACOQU   = PhysicalQuantity(type='R',
 """)
 
 
-CACOQUF  = PhysicalQuantity(type='K8',
+CACOQU_F  = PhysicalQuantity(type='K8',
     components=(
        'EP',
        'SECT_L',
        'DIST_N',
        'EXCENT',
     ),
-    comment="""  CACOQUF  Type:K8  Caracteristiques des coques qui dependent d'une fonction
+    comment="""  CACOQU_F : Caracteristiques des coques qui dependent d'une fonction
        EP      : epaisseur de la coque
        SECT_L  : somme des sections d'armatures dans la direction L
        DIST_N  : excentrement de la nappe d'armatures vs la maille support
@@ -772,7 +772,7 @@ comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        GLIS    : translation relative suivante tangente (repere local)
        PRE1, PRE2 : DDL de pression
        TEMP : DDL de temperature
-       PHI : angle de fissuration / potentiel de deplacement fluid 
+       PHI : angle de fissuration / potentiel de deplacement fluid
        DH : diametre hydraulique
        Pour X-FEM: H1X, H1Y, H1Z
                    H2X, H2Y, H2Z
@@ -838,7 +838,7 @@ comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        HHO_W : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) dir3
        HHO   : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y plan face) scal
        PINCH   : pinch dof for solid-shell elements
-       PSI   : potentiel de vitesse de deplacement du fluid 
+       PSI   : potentiel de vitesse de deplacement du fluid
 """
 
 DEPL_R   = PhysicalQuantity(type='R',

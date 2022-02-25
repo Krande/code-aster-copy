@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -103,8 +103,8 @@ module cara_elem_parameter_module
 !         '.CARCABLE', 'CACABL   ', 'CABLE     ',
 !         '.CARGENBA', 'CAGNBA   ', 'BARRE     ',
 !         '.CARMASSI', 'CAMASS   ', 'MASSIF    ',
-!         '.CARCOQUE', 'CACOQU   ', 'COQUE     ',
-!         '.CARCOQUF', 'CACOQUF  ', 'COQUE    ',
+!         '.CARCOQUE', 'CACOQU_R ', 'COQUE     ',
+!         '.CARCOQUF', 'CACOQU_F ', 'COQUE    ',
 !         '.CARARCPO', 'CAARPO   ', 'POUTRE    ',
 !         '.CARGENPO', 'CAGNPO   ', 'POUTRE    ',
 !         '.CARGEOPO', 'CAGEPO   ', 'POUTRE    ',
