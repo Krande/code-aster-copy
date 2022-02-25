@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -586,32 +586,56 @@ implicit none
     allocate(MatAinverser(nbDDL,nbDDL),fsInverse(nbDDL,nbDDL),dfOrdo(nbDDL,5),Mtmp(5,nbDDL))
     nbDDLii=0
     do ii=1,16
-        if (criteres(ii)) then
-            nbDDLii=nbDDLii+1
-            dfOrdo(nbDDLii,:)=dfdF(ii,:)
-            nbDDLjj=0
-            do jj=1,16
-                if (criteres(jj)) then
-                    nbDDLjj=nbDDLjj+1
-                    !réalisation d'une matrice unité pour l'inversion'
-                    if (nbDDLii .EQ. nbDDLjj) then
-                        fsInverse(nbDDLii,nbDDLjj)=1.0
-                    else
-                        fsInverse(nbDDLii,nbDDLjj)=0.0
-                    endif
-                    MatAinverser(nbDDLii,nbDDLjj)=sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:))
-                    if ((ii.LE.4).and.(jj.LE.4)) then
-                        MatAinverser(nbDDLii,nbDDLjj) =MatAinverser(nbDDLii,nbDDLjj)- &
-                                dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)-dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
-                    endif
-                    if ((ii.GE.5).and.(jj.GE.5)) then
-                        MatAinverser(nbDDLii,nbDDLjj)=MatAinverser(nbDDLii,nbDDLjj)- &
-                                sum(dfdQCP(ii-4,:)*HHCP(:)*dfdF(jj,:))
-                    endif
+       if (criteres(ii)) then
+          nbDDLii=nbDDLii+1
+          dfOrdo(nbDDLii,:)=dfdF(ii,:)
+          nbDDLjj=0
+          do jj=1,16
+             if (criteres(jj)) then
+                nbDDLjj=nbDDLjj+1
+                !réalisation d'une matrice unité pour l'inversion'
+                if (nbDDLii .EQ. nbDDLjj) then
+                   fsInverse(nbDDLii,nbDDLjj)=1.0
+                else
+                   fsInverse(nbDDLii,nbDDLjj)=0.0
                 endif
-            enddo
-        endif
+                MatAinverser(nbDDLii,nbDDLjj)=sum(dfdF(ii,:)*raidTang(:5)*dfdF(jj,:))
+             endif
+          enddo
+       endif
     enddo
+
+    nbDDLii=0
+    do ii=1,4
+       if (criteres(ii)) then
+          nbDDLii=nbDDLii+1
+          nbDDLjj=0
+          do jj=1,4
+             if (criteres(jj)) then
+                nbDDLjj=nbDDLjj+1
+                MatAinverser(nbDDLii,nbDDLjj) =MatAinverser(nbDDLii,nbDDLjj)- &
+                     dfdQsl(ii,1)*Hslid(1)*dfdF(jj,1)-dfdQsl(ii,2)*Hslid(2)*dfdF(jj,2)
+             endif
+          enddo
+       endif
+    enddo
+
+    nbDDLii=0
+    do ii=5,16
+       if (criteres(ii)) then
+          nbDDLii=nbDDLii+1
+          nbDDLjj=0
+          do jj=5,16
+             if (criteres(jj)) then
+                nbDDLjj=nbDDLjj+1
+                MatAinverser(nbDDLii,nbDDLjj)=MatAinverser(nbDDLii,nbDDLjj)- &
+                     sum(dfdQCP(ii-4,:)*HHCP(:)*dfdF(jj,:))
+             endif
+          enddo
+       endif
+    enddo
+
+    !
     !
     ! on inverse la matrice entièrement
     call mgauss('NCVP', MatAinverser, fsInverse, nbDDL, nbDDL,nbDDL, det, iret)
