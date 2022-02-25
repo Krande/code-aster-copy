@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 #include "asterfort/dpvpsi.h"
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
@@ -173,18 +172,18 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 ! --- TERMES DE L OPERATEUR TANGENT -----------------------------------
 ! =====================================================================
     if (option(10:14) .eq. '_ELAS') then
-        call lceqma(hookf, dsidep)
+        dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
     endif
 !
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
-        call lceqma(hookf, dsidep)
+        dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
     endif
     if (option(1:9) .eq. 'FULL_MECA') then
         if (vip(2) .eq. 1.d0) then
             call dpvpot(mod, vim(1), vip(1), nbmat, materf,&
                         sige, dt, dp, plas, dsidep)
         else if (vip(2).eq.0.d0) then
-            call lceqma(hookf, dsidep)
+            dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
         endif
     endif
 ! =====================================================================

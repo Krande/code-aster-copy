@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 #include "asterc/r8prem.h"
 #include "asterfort/irrfss.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
@@ -166,7 +165,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     call lcsoma(drsds, ddfdds, mat)
 !
 !     Inversion de MAT : DSDE(6,6)
-    call lceqma(i4, dsde)
+    dsde(1:ndt,1:ndt) =i4(1:ndt,1:ndt)
     call mgauss('NFVP', mat, dsde, 6, ndt,&
                 ndt, det, iret)
 !

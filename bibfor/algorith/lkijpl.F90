@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmm.h"
@@ -155,7 +154,9 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 12  continue
     call mgauss('NCVP', dijaco, invdij, 6, ndt,&
                 ndt, det, iret)
-    if (iret .gt. 1) call lceqma(hook, dsde)
+    if (iret .gt. 1) then
+       dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
+    end if
 !
 ! --- CONSTRUCTION DSDE = INVDIJ*HOOKNL
     call lcprmm(invdij, hooknl, dsde)

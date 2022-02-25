@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,6 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsoma.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/srd2hs.h"
 
     !!!
@@ -121,10 +120,10 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     call lcsoma(mat1,mat2,mat3)
     
     !!! mat2 = coefh*mat3
-    call lceqma(mat3,mat2)
+    mat2(1:ndt,1:ndt) =mat3(1:ndt,1:ndt)
     
     !!! Construction de dh/dsigma = (dh/ds)*(ds/dsigma)
-    call lceqma(dsdsig,mat1)
+    mat1(1:ndt,1:ndt) =dsdsig(1:ndt,1:ndt)
     
     do i=1,ndt
         dhtds(i)=0.d0

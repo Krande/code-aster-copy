@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterfort/cvmjac.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcinve.h"
@@ -367,7 +366,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !       DE DKDSET, DKDX1E, ET DKDX2E
 !       ----------------------------------------------------------------
     if (ioptio .eq. 2) then
-        call lceqma(i6, mtmp)
+        mtmp(1:ndt,1:ndt) =i6(1:ndt,1:ndt)
         call mgauss('NFVP', dxidxi, mtmp, 6, ndt,&
                     ndt, det, iret)
         call lcptmv(mtmp, dtdxxi, vtmp2)
@@ -414,7 +413,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
     call lcprte(djdp, dkdx2e, mtmp)
     mtmp(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lceqma(i6, mtmp1)
+    mtmp1(1:ndt,1:ndt) =i6(1:ndt,1:ndt)
     call mgauss('NFVP', mtmp, mtmp1, 6, ndt,&
                 ndt, det, iret)
     call lcprte(dldp, dkdx2e, mtmp)
@@ -425,7 +424,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
     call lcprte(dldp, dkdx1e, mtmp)
     mtmp(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lceqma(i6, mtmp1)
+    mtmp1(1:ndt,1:ndt) =i6(1:ndt,1:ndt)
     call mgauss('NFVP', mtmp, mtmp1, 6, ndt,&
                 ndt, det, iret)
     call lcprte(djdp, dkdx1e, mtmp)
@@ -440,7 +439,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcprte(dldp, dkdx1e, mtmp)
     mtmp(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) - mtmp1(1:ndt,1:ndt)
-    call lceqma(i6, mtmp2)
+    mtmp2(1:ndt,1:ndt) =i6(1:ndt,1:ndt)
     call mgauss('NFVP', mtmp1, mtmp2, 6, ndt,&
                 ndt, det, iret)
 !
@@ -460,7 +459,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcprte(djdp, dkdx2e, mtmp)
     mtmp(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) - mtmp1(1:ndt,1:ndt)
-    call lceqma(i6, mtmp2)
+    mtmp2(1:ndt,1:ndt) =i6(1:ndt,1:ndt)
     call mgauss('NFVP', mtmp1, mtmp2, 6, ndt,&
                 ndt, det, iret)
 !
@@ -504,7 +503,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
 ! - DSDE = (MTMP1)-1 * H
 !
-    call lceqma(i6, mtmp1)
+    mtmp1(1:ndt,1:ndt) =i6(1:ndt,1:ndt)
     call mgauss('NFVP', mtmp, mtmp1, 6, ndt,&
                 ndt, det, iret)
     call lcopli('ISOTROPE', mod, mater(1, 1), hookf)

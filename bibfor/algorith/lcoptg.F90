@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
     implicit none
 !     ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/promat.h"
@@ -112,7 +111,7 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
     call mgauss(cargau, y3, y2, nvi, nvi,&
                 ndt, det, iret)
     if (iret .gt. 1) then
-        call lceqma(hook, dsde)
+        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
         goto 9999
     endif
 ! --- PRODUIT DU TERME (Y3)^-1 * Y2 = Y4
@@ -135,7 +134,7 @@ subroutine lcoptg(nmat, mater, nr, nvi, drdy,&
                 ndt, det, iret)
 !
     if (iret .gt. 1) then
-        call lceqma(hook, dsde)
+        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
     else
         call r8inir(36, 0.d0, dsde, 1)
         if (sigeps .eq. 1) then

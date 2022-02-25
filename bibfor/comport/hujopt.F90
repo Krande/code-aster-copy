@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 #include "asterfort/hujori.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/mgauss.h"
@@ -283,7 +282,7 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
     call mgauss(cargau, y3, y2, 9, nz,&
                 ndt, det, iret)
     if (iret .gt. 1) then
-        call lceqma(hook, dsde)
+        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
         goto 998
     endif
 !
@@ -307,7 +306,7 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
                 ndt, det, iret)
 !
     if (iret .gt. 1) then
-        call lceqma(hook, dsde)
+        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
     else
         call lcinma(zero, dsde)
         call lcprmm(dsdeb, hooknl, dsde)

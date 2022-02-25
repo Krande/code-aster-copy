@@ -36,7 +36,6 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     implicit none
 
 #include "asterc/r8prem.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmm.h"
@@ -179,7 +178,7 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     call mgauss('NCVP',dijaco,invdij,6,ndt,ndt,det,iret)
     
     if (iret.gt.1) then
-       call lceqma(hook,dsde)
+       dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
     end if
     !!! Construction de dsde = indiv*hooknl
     call lcprmm(invdij,hooknl,dsde)

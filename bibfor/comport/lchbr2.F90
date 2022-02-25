@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 #include "asterfort/hbvaec.h"
 #include "asterfort/lcdedi.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lchbvp.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
@@ -332,7 +331,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
             gam = gp
         endif
         if (vi .eq. 0) then
-            call lceqma(hookf, dsidep)
+            dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
             do ii = 1, ndi
                 dsdsip(ii) = 1.0d0
             end do

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
 #include "asterfort/dplitg.h"
 #include "asterfort/dpmata.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
@@ -134,7 +133,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm,&
 ! =====================================================================
     if (rigi) then
         if (option(10:14) .eq. '_ELAS') then
-            call lceqma(hookf, dsidep)
+            dsidep(1:ndt,1:ndt) =hookf(1:ndt,1:ndt)
         else
             call dpmata(mod, materf, alpha, dp, dpdeno,&
                         pplus, se, seq, plas, dsidep)

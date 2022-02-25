@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcsove.h"
@@ -487,7 +486,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
     if (option(11:14) .eq. 'ELAS') then
         call lkelas(ndi, ndt, nbmat, materd, depsth,&
                     sigml, de, kk, mu)
-        call lceqma(de, dside)
+        dside(1:ndt,1:ndt) =de(1:ndt,1:ndt)
     endif
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
         if (option(1:14) .eq. 'RIGI_MECA_TANG') then

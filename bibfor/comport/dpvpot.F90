@@ -23,7 +23,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/dpvpdv.h"
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
@@ -141,7 +140,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- CAS ELASTIQUE ---------------------------------------------------
     if ((plas.eq.0.0d0) .or. (dp.eq.0.d0) .or. (abs(dp).lt.tol)) then
-        call lceqma(dsede, dsidep)
+        dsidep(1:ndt,1:ndt) =dsede(1:ndt,1:ndt)
         goto 9999
     else
 ! =================================================================
@@ -226,7 +225,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
         if (fonc .gt. zero) then
             fonc = fonc
         else
-            call lceqma(dsede, dsidep)
+            dsidep(1:ndt,1:ndt) =dsede(1:ndt,1:ndt)
             goto 9999
         endif
 !
@@ -234,7 +233,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
         dfdp = const1 * foncp - un
 !
         if (dfdp .eq. zero) then
-            call lceqma(dsede, dsidep)
+            dsidep(1:ndt,1:ndt) =dsede(1:ndt,1:ndt)
             goto 9999
         else
             denom = -un / dfdp

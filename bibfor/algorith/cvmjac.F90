@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/chbfss.h"
 #include "asterfort/chbfsx.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lceqve.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
@@ -217,7 +216,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprsm(dp, dgdx1, dgdx1)
 !
 ! - DGDX2(T+DT)
-    call lceqma(dgdx1, dgdx2)
+    dgdx2(1:ndt,1:ndt) =dgdx1(1:ndt,1:ndt)
 !
 ! - DGDP(T+DT)
     if (seuil .lt. 0.d0) then
@@ -755,7 +754,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             call lcsoma(mtmp1, mtmp, dxidx1)
 !
 ! - DXIDX2(T+DT)
-            call lceqma(dxidx1, dxidx2)
+            dxidx2(1:ndt,1:ndt) =dxidx1(1:ndt,1:ndt)
 !
 ! - DXIDP(T+DT)
             call lcprsc(dfds, dfds, yy)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,6 @@ subroutine srcomp(mod, imate, instam, instap, &
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcsove.h"
@@ -442,7 +441,7 @@ subroutine srcomp(mod, imate, instam, instap, &
     if (option(11:14).eq.'ELAS') then
         
         call srelas(ndi,ndt,nbmat,materd,sigml,de,kk,mu)
-        call lceqma(de,dside)
+        dside(1:ndt,1:ndt) =de(1:ndt,1:ndt)
         
     endif
     
