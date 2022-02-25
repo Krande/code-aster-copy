@@ -48,7 +48,6 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 #include "asterfort/chbfs.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -96,9 +95,9 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
     if (typess .eq. -1) typess = 2
 !
 !
-    call lceqvn(ndt, yd(1), sig)
-    call lceqvn(ndt, yd(ndt+1), x1)
-    call lceqvn(ndt, yd(2*ndt+1), x2)
+    sig(1:ndt) = yd(1:ndt)
+    x1(1:ndt) = yd(ndt+1:ndt+ndt)
+    x2(1:ndt) = yd(2*ndt+1:2*ndt+ndt)
     p = yd(3*ndt+1)
     r = yd(3*ndt+2)
     q = yd(3*ndt+3)
@@ -143,7 +142,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
     else if (typess .eq. 1) then
         call vecini(4*ndt+4, 0.d0, dy)
         call lcprmv(hook, deps, dsig)
-        call lceqvn(ndt, dsig, dy(1))
+        dy(1:ndt) = dsig(1:ndt)
 !
 ! - SOLUTION INITIALE = EXPLICITE
 !
@@ -230,9 +229,9 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 !
 ! - DY
-        call lceqvn(ndt, dsig, dy(1))
-        call lceqvn(ndt, dx1, dy(ndt+1))
-        call lceqvn(ndt, dx2, dy(2*ndt+1))
+        dy(1:ndt) = dsig(1:ndt)
+        dy(ndt+1:ndt+ndt) = dx1(1:ndt)
+        dy(2*ndt+1:2*ndt+ndt) = dx2(1:ndt)
         dy(3*ndt+1) = dp
         dy(3*ndt+2) = dr
         dy(3*ndt+3) = 0.d0
@@ -244,7 +243,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 ! -         SOLUTION D'ESSAI POUR ( SIG  X1  X2  P  R  Q  XXI  (EPS3))
         if (ioptio .eq. 2) then
-            call lceqvn(ndt, yd(3*ndt+4), xxi)
+            xxi(1:ndt) = yd(3*ndt+4:3*ndt+4-1+ndt)
 !
 ! - EPSP
             call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
@@ -294,7 +293,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 ! - DY
             dy(3*ndt+3) = dq
-            call lceqvn(ndt, dxxi, dy(3*ndt+4))
+            dy(3*ndt+4:3*ndt+4-1+ndt) = dxxi(1:ndt)
         endif
 !
 ! - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES

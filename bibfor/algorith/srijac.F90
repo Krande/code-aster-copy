@@ -48,7 +48,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmm.h"
@@ -165,7 +164,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     !!! Vecteur variables internes tmp
     !!!
     
-    call lceqvn(nvi, vind, vint)
+    vint(1:nvi) = vind(1:nvi)
     
     if (yf(ndt+2).ge.vind(1)) then
         vint(1)=yf(ndt+2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,6 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
 #include "asterfort/caldfe.h"
 #include "asterfort/caldto.h"
 #include "asterfort/caltau.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcmmjb.h"
 #include "asterfort/lcmmjg.h"
@@ -90,7 +89,7 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
     call r8inir(nr*nr, 0.d0, drdy, 1)
     call r8inir(36, 0.d0, msdgdt, 1)
 !
-    call lceqvn(ndt, yf(1), sigf)
+    sigf(1:ndt) = yf(1:ndt)
 !
 !     Inverse de la matrice de Hooke
     if (materf(nmat) .eq. 0) then

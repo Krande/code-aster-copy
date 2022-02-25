@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 #include "asterfort/cjsjis.h"
 #include "asterfort/cjsncv.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcnrvn.h"
 #include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
@@ -104,7 +103,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> INITIALISATION DE YD PAR LA PREDICTION ELASTIQUE (SIGF, VIND, ZERO)
 !
-    call lceqvn(ndt, sigf, yd)
+    yd(1:ndt) = sigf(1:ndt)
     yd(ndt+1) = vind(1)
     yd(ndt+2) = 0.d0
 !
@@ -144,7 +143,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
 !
-    call lceqvn(nr, r, ddy)
+    ddy(1:nr) = r(1:nr)
     call mgauss('NFVP', drdy, ddy, nmod, nr,&
                 1, det, iret)
 !
@@ -205,7 +204,7 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd,&
 !
 ! -> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES
 !
-    call lceqvn(ndt, yf(1), sigf)
+    sigf(1:ndt) = yf(1:ndt)
     vinf(1) = yf(ndt+1)
 !
 end subroutine

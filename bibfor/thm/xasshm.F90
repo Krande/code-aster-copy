@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
 #include "asterc/r8prem.h"
@@ -450,9 +449,9 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
 ! --- SINON ON EST SUR UN SOMMET                   : CK = CS -----------
 ! ======================================================================
             if (kpi .le. npg) then
-                call lceqvn(dimenr, c, ck)
+                ck(1:dimenr) = c(1:dimenr)
             else
-                call lceqvn(dimenr, cs, ck)
+                ck(1:dimenr) = cs(1:dimenr)
             endif
 ! ======================================================================
 ! --- CALCUL DE MATUU (MATRI) ------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine hujtid(fami, kpg, ksp, mod, imat,&
 #include "asterfort/hujpic.h"
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmm.h"
 #include "asterfort/mgauss.h"
@@ -192,7 +191,7 @@ subroutine hujtid(fami, kpg, ksp, mod, imat,&
         endif
     enddo
 !
-    call lceqvn(ndt, sig, yd)
+    yd(1:ndt) = sig(1:ndt)
 !
     do k = 1, nbmeca
         call hujddd('DFDS  ', ind(k), mater, ind, yd,&

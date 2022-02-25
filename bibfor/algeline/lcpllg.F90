@@ -28,7 +28,6 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsovn.h"
@@ -90,7 +89,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
     delta = 0.0d0
     gamp = vind ( 1 )
     evp = vind ( 2 )
-    call lceqvn(ndt, sigf, sige)
+    sige(1:ndt) = sigf(1:ndt)
     call lcdevi(sige, se)
     siie=ddot(ndt,se,1,se,1)
     siie = sqrt (siie)
@@ -98,7 +97,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- INITIALISATION YD = (SIG, INVAR, GAMP, EVP, DELTA) ---------------
 ! ======================================================================
-    call lceqvn(ndt, se, yd)
+    yd(1:ndt) = se(1:ndt)
     yd(ndt+1)=invare
     yd(ndt+2)=gamp
     yd(ndt+3)=evp
@@ -188,7 +187,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater,&
 ! ======================================================================
 ! --- MISE A JOUR DES VARIABLES INTERNES -------------------------------
 ! ======================================================================
-            call lceqvn(ndt, yf(1), s(1))
+            s(1:ndt) = yf(1:ndt)
             i1  =yf(ndt+1)
             gamp=yf(ndt+2)
             evp =yf(ndt+3)

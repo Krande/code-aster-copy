@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
 ! ----------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/hujact.h"
-#include "asterfort/lceqvn.h"
     integer :: nvi, nr, iret, indi(7), nmat
     real(kind=8) :: toler, vind(nvi), mater(nmat, 2), sigf(6), sigd(6)
     real(kind=8) :: vins(nvi), vinf(nvi), yd(nr), yf(nr)
@@ -72,8 +71,8 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
 ! --- REDIMENSIONNEMENT DE YD ET YF POUR HUJACT
 ! ---------------------------------------------
-    call lceqvn(nr, yd, ydt)
-    call lceqvn(nr, yf, yft)
+    ydt(1:nr) = yd(1:nr)
+    yft(1:nr) = yf(1:nr)
 !
     do i = 1, ndt
         ydt(i) = yd(i)*e0
@@ -149,7 +148,7 @@ subroutine hujlnf(toler, nmat, mater, nvi, vind,&
 !
     if (chgmec) then
         iret = 2
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         vinf(35) = cumuli
         goto 999
     endif

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
 #include "asterc/r8prem.h"
 #include "asterfort/hujjid.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/lceqvn.h"
     integer :: indi(7), nr, nvi, iret, nmat
     character(len=8) :: mod
     real(kind=8) :: mater(nmat, 2), deps(6), yd(nr), yf(nr), vind(nvi)
@@ -81,9 +80,9 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
 !
 ! --- REDIMENSIONNEMENT DE YD ET YF POUR S'ADAPTER A HUJJID
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
-    call lceqvn(nr, yd, ydt)
-    call lceqvn(nr, yf, yft)
-    call lceqvn(nr, ye, yet)
+    ydt(1:nr) = yd(1:nr)
+    yft(1:nr) = yf(1:nr)
+    yet(1:nr) = ye(1:nr)
 !
     do i = 1, 6
         ydt(i) = yd(i)*e0
@@ -148,7 +147,7 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
     endif
 !
     if (probt) then
-        call lceqvn(nvi, vins, vind)
+        vind(1:nvi) = vins(1:nvi)
         do i = 1, 3
             if (prob(i) .eq. un) then
                 vind(i+4) = mater(18,2)
@@ -191,12 +190,12 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
             enddo
         endif
 !
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
 !
     endif
 !
     if (tracti) then
-        call lceqvn(nvi, vins, vind)
+        vind(1:nvi) = vins(1:nvi)
         modif = .false.
         do i = 1, nbmect
             if (yet(ndt+1+nbmeca+i) .eq. zero) then
@@ -242,7 +241,7 @@ subroutine hujjac(mod, nmat, mater, indi, deps,&
                 endif
             endif
         enddo
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 2
     endif
 !

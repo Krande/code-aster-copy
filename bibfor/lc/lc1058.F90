@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/mfront_get_mater_value.h"
 #include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/assert.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
@@ -225,7 +224,7 @@ integer, intent(out) :: codret
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call dcopy(nsig, sigm, 1, sigp, 1)
         call dscal(3, usrac2, sigp(4), 1)
-        call lceqvn(nstatv, vim, vip)
+        vip(1:nstatv) = vim(1:nstatv)
         call mfront_behaviour(pfcmfr, sigp, vip, ddsdde,&
                               stran, dstran, dtime,&
                               temp, dtemp,&

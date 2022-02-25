@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
 !       OUT R      :  SYSTEME NL A T+DT
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
@@ -92,7 +91,7 @@ subroutine lkresi(typmod, nmat, materf, timed, timef,&
     devgii = zero
 !
 ! --- VECTEUR VARIABLES INTERNES TEMPORAIRES
-    call lceqvn(nvi, vind, vint)
+    vint(1:nvi) = vind(1:nvi)
 !
     if (yf(ndt+2) .ge. vind(1)) then
         vint(1) = yf(ndt+2)

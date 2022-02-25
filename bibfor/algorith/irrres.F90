@@ -23,7 +23,6 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 !
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
@@ -55,8 +54,8 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 !
     data id3d /1.0d0, 1.0d0, 1.0d0, 0.0d0, 0.0d0, 0.0d0/
 !
-    call lceqvn(ndt, yf(1), sigf)
-    call lceqvn(ndt, yd(1), sigd)
+    sigf(1:ndt) = yf(1:ndt)
+    sigd(1:ndt) = yd(1:ndt)
     call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
     call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
     call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
@@ -177,7 +176,7 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
              )
     endif
 !
-    call lceqvn(ndt, rs, r(1))
+    r(1:ndt) = rs(1:ndt)
     r(ndt+1)=rp
     r(ndt+2)=re
     r(ndt+3)=rpi

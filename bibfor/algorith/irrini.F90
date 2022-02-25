@@ -23,7 +23,6 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
     implicit none
 !
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -64,7 +63,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
     data id3d /1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !
     if (typess .eq. -1) typess = 2
-    call lceqvn(ndt, yd(1), sig)
+    sig(1:ndt) = yd(1:ndt)
     p = yd(ndt+1)
     etai = yd(ndt+2)
 !
@@ -171,7 +170,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
         vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
         call lcprmv(hook, vtmp1, dsig)
 !        DY
-        call lceqvn(ndt, dsig, dy(1))
+        dy(1:ndt) = dsig(1:ndt)
         dy(ndt+1)=dp
         dy(ndt+2)=detai
         dy(ndt+3)=dpi

@@ -50,7 +50,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 !       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 !       ----------------------------------------------------------------
 !
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcmmsg.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -130,7 +129,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
         else
             hook(1:ndt,1:ndt) = transpose(hook(1:ndt,1:ndt))
             call lcprmv(hook, deps, dsig)
-            call lceqvn(ndt, dsig, dy(1))
+            dy(1:ndt) = dsig(1:ndt)
         endif
 !
 ! - SOLUTION INITIALE = EXPLICITE
@@ -180,12 +179,12 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 112          continue
 111      continue
 !      ATTRIBUTIION A DY LA VALEUR DE EVP CALCULEE
-        call lceqvn(6, evp, dy(ndt+1))
+        dy(ndt+1:ndt+6) = evp(1:6)
 !
         do 113 i = 1, 6
             sigdn(i) = sigd(i)*(timef-timed)/timef
 113      continue
-        call lceqvn(ndt, sigdn, dy(1))
+        dy(1:ndt) = sigdn(1:ndt)
 !
 !
         if (mod(1:6) .eq. 'C_PLAN') then

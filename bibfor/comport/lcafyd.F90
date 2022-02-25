@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/hujayd.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -78,7 +77,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !
 !     AFFECTATION DE YD = ( SIGD , VIND , (EPSD(3)) )
 !
-    call lceqvn(ndt, sigd, yd)
+    yd(1:ndt) = sigd(1:ndt)
 !
     if (rela_comp .eq. 'MONOCRISTAL') then
 ! ATTENTION !         NS=(NVI-8)/3
@@ -182,7 +181,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !     CAS GENERAL :
 !        TOUTES LES VARIABLES INTERNES SONT RECOPIES
 !        LA DERNIERE C'EST TOUJOURS L'INDICATEUR PLASTIQUE
-        call lceqvn(nvi-1, vind, yd(ndt+1))
+        yd(ndt+1:ndt+nvi-1) = vind(1:nvi-1)
     endif
 !
 end subroutine

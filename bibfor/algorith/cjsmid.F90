@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 #include "asterfort/cjsncv.h"
 #include "asterfort/cjsnor.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcnrvn.h"
 #include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
@@ -120,7 +119,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 ! -> INITIALISATION DE YD PAR LES CHAMPS (SIGD, VIND, ZERO)
 !
-    call lceqvn(ndt, sigd, yd)
+    yd(1:ndt) = sigd(1:ndt)
     yd(ndt+1) = vind(1)
     yd(ndt+2) = vind(2)
 !
@@ -172,7 +171,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
         do 32 i = ndi+1, ndt
             sigf(i) = 0.d0
  32     continue
-        call lceqvn(nvi-1, vind, vinf)
+        vinf(1:nvi-1) = vind(1:nvi-1)
         vinf(nvi) = 0.d0
         goto 9999
     endif
@@ -195,7 +194,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 ! -> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
 !
-    call lceqvn(nr, r, ddy)
+    ddy(1:nr) = r(1:nr)
     call mgauss('NFVP', drdy, ddy, nmod, nr,&
                 1, det, iret)
 !
@@ -308,7 +307,7 @@ subroutine cjsmid(mod, crit, mater, nvi, epsd,&
 !
 ! -> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES
 !
-    call lceqvn(ndt, yf(1), sigf)
+    sigf(1:ndt) = yf(1:ndt)
     vinf(1) = yf(ndt+1)
     vinf(2) = yf(ndt+2)
     do 250 i = 1, ndt

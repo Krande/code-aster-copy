@@ -32,7 +32,6 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !       OUT SEUIL  :  SEUIL  ELASTICITE
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsv.h"
     integer :: ndt, ndi, nmat
@@ -56,8 +55,8 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !        C2D      = MATERD(20,2)
     c1f = mater(15,2)
     c2f = mater(20,2)
-    call lceqvn(ndt, vin(1), x1)
-    call lceqvn(ndt, vin(ndt+1), x2)
+    x1(1:ndt) = vin(1:ndt)
+    x2(1:ndt) = vin(ndt+1:ndt+ndt)
 !
 ! --   CAS ANISOTHERME
 !

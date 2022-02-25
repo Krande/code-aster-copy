@@ -37,7 +37,6 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/fgequi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"

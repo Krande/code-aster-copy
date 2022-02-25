@@ -44,7 +44,6 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 #include "asterfort/hujpre.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, ndec, iret, kpg, ksp
     integer :: i, k, ifm, niv, nsubd, maj, niter
@@ -94,7 +93,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
     predi0(1:ndt) = sigf(1:ndt)
     sigd0(1:ndt) = sigd(1:ndt)
     deps0(1:ndt) = deps(1:ndt)
-    call lceqvn(nvi, vind, vind0)
+    vind0(1:nvi) = vind(1:nvi)
 !
 !  ARRET OU NON EN NON CONVERGENCE INTERNE
 !  ---------------------------------------
@@ -165,7 +164,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 !   RESTAURATION DE SIGD VIND DEPS ET PREDIC ELAS SIGF
 !   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
     sigd(1:ndt) = sigd0(1:ndt)
-    call lceqvn(nvi, vind0, vind)
+    vind(1:nvi) = vind0(1:nvi)
 !
     do i = 1, ndt
         deps(i) = deps0(i)/ndec
@@ -230,7 +229,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
         enddo
 !
 ! ---> SAUVEGARDE DES SURFACES DE CHARGE AVANT MODIFICATION
-        call lceqvn(nvi, vind, vins)
+        vins(1:nvi) = vind(1:nvi)
 ! ---> DEFINITION DU DOMAINE POTENTIEL DE MECANISMES ACTIFS
 !
         call hujpot(mod, mater, vind, deps, sigd,&
@@ -269,7 +268,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
 ! ---> SINON RESOLUTION VIA L'ALGORITHME DE NEWTON
         chgmec = .false.
 !
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         if (debug) write(6,*)'HUJRES - VINF =',(vinf(i),i=24,31)
 !
 100      continue
@@ -305,7 +304,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                 vind(7+4*i) = zero
                 vind(8+4*i) = zero
             enddo
-            call lceqvn(nvi, vind, vinf)
+            vinf(1:nvi) = vind(1:nvi)
             iret = 0
             if (debug) write(6,'(A)')'HUJRES :: CORRECTION SIGMA'
         endif
@@ -332,7 +331,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                     vind(7+4*i) = zero
                     vind(8+4*i) = zero
                 enddo
-                call lceqvn(nvi, vind, vinf)
+                vinf(1:nvi) = vind(1:nvi)
                 iret = 0
             endif
         endif
@@ -384,7 +383,7 @@ subroutine hujres(fami, kpg, ksp, mod, crit,&
                 maj = maj + 1
                 if (maj .lt. 5) then
                     loop = .true.
-                    call lceqvn(nvi, vind, vinf)
+                    vinf(1:nvi) = vind(1:nvi)
                     goto 100
                 else
                     if (debug) write(6,'(A)') 'HUJRES :: SOLUTION EXPLICITE'

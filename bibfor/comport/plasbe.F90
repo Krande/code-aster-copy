@@ -38,7 +38,6 @@ implicit none
 #include "asterfort/lcdedi.h"
 #include "asterfort/lcdehy.h"
 #include "asterfort/lcelin.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcplbe.h"
 #include "asterfort/rcvarc.h"
@@ -310,7 +309,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
         call lcelin(mod, nmat, materd, materf, deps,&
                     sigd, sige)
-        call lceqvn(nvi-1, vind, vinf)
+        vinf(1:nvi-1) = vind(1:nvi-1)
         vinf(nvi) = 0.d0
 !
         if (istemp) then
@@ -320,7 +319,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
             vinf(3) = tneg
         endif
 !
-        call lceqvn(ndt, sige, sigf)
+        sigf(1:ndt) = sige(1:ndt)
 !
 ! --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 !
@@ -361,7 +360,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     endif
                     nseuil = nseui2
                 endif
-                call lceqvn(ndt, sige, sigf)
+                sigf(1:ndt) = sige(1:ndt)
                 call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi,&
                             vind, sigf, vinf, nseuil,&
                             irtet)
@@ -386,7 +385,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     nseui3 = 6 - nseui1 - nseui2
                     nseuil = nseui3
                 endif
-                call lceqvn(ndt, sige, sigf)
+                sigf(1:ndt) = sige(1:ndt)
                 call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi,&
                             vind, sigf, vinf, nseuil,&
                             irtet)
@@ -409,7 +408,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                 endif
                 nseuil = 22
                 nseui4 = nseuil
-                call lceqvn(ndt, sige, sigf)
+                sigf(1:ndt) = sige(1:ndt)
                 call lcplbe(BEHinteg, toler, itmax, nmat, materf, nvi,&
                             vind, sigf, vinf, nseuil,&
                             irtet)

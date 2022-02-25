@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
 !     OUT VALRES :  COEFFICIENTS MATERIAU A T
 !         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 !     ----------------------------------------------------------------
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcmhsr.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -59,7 +58,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECOU_VISC1 A LE NUMERO 1
         valres(1)=1
@@ -75,7 +74,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECOU_VISC2 A LE NUMERO 2
         valres(1)=2
@@ -92,7 +91,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECOU_DD_CFC A LE NUMERO 5
         valres(1)=5
@@ -111,7 +110,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECOU_DD_CFC_IRRA A LE NUMERO 8
         valres(1)=8
@@ -130,7 +129,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECOU_ECP_CFC A LE NUMERO 6
         valres(1)=6
@@ -206,7 +205,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
                         2, nomres, vallue(nbval+1), icodre, 1)
             nbval=nbval+2
         endif
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
 !         PAR CONVENTION ECOU_DD_CC A LE NUMERO 7
         nbval=nbval+1
         valres(1)=7
@@ -229,7 +228,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION KOCKS_RAUCH A LE NUMERO 4
         valres(1)=4

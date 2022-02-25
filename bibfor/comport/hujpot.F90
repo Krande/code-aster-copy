@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 #include "asterfort/hujmei.h"
 #include "asterfort/hujpxd.h"
 #include "asterfort/hujpxs.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
@@ -94,7 +93,7 @@ subroutine hujpot(mod, mater, vind, depsh, sigd,&
 ! ====================================================================
 ! --- CONSTRUCTION DES SURFACES CYCLIQUES PRECEDENTES -----------
 ! ====================================================================
-    call lceqvn(50, vind, vinm)
+    vinm(1:50) = vind(1:50)
     do i = 1, 3
         if ((vind(5*i+31).ne.zero) .or. (vind(5*i+32).ne.zero)) then
             vinm(4*i+5) = vind(5*i+31)

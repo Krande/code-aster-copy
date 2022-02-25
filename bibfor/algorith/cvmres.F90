@@ -45,7 +45,6 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !       ----------------------------------------------------------------
 #include "asterfort/chbfs.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
@@ -89,16 +88,16 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call lceqvn(ndt, yd(1), sigd)
-    call lceqvn(ndt, yf(1), sigf)
-    call lceqvn(ndt, yf(ndt+1), x1)
-    call lceqvn(ndt, yf(2*ndt+1), x2)
+    sigd(1:ndt) = yd(1:ndt)
+    sigf(1:ndt) = yf(1:ndt)
+    x1(1:ndt) = yf(ndt+1:ndt+ndt)
+    x2(1:ndt) = yf(2*ndt+1:2*ndt+ndt)
     p = yf(3*ndt+1)
     r = yf(3*ndt+2)
     q = yf(3*ndt+3)
-    call lceqvn(ndt, dy(1), dsig)
-    call lceqvn(ndt, dy(ndt+1), dx1)
-    call lceqvn(ndt, dy(2*ndt+1), dx2)
+    dsig(1:ndt) = dy(1:ndt)
+    dx1(1:ndt) = dy(ndt+1:ndt+ndt)
+    dx2(1:ndt) = dy(2*ndt+1:2*ndt+ndt)
     dp = dy(3*ndt+1)
     dr = dy(3*ndt+2)
     dq = dy(3*ndt+3)
@@ -217,9 +216,9 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 ! - RES (T+DT) = ( GF LF JF KF RF 0 (FF) )
 !
-    call lceqvn(ndt, gf, res(1))
-    call lceqvn(ndt, lf, res(ndt+1))
-    call lceqvn(ndt, jf, res(2*ndt+1))
+    res(1:ndt) = gf(1:ndt)
+    res(ndt+1:ndt+ndt) = lf(1:ndt)
+    res(2*ndt+1:2*ndt+ndt) = jf(1:ndt)
     res(3*ndt+1) = kf
     res(3*ndt+2) = rf
     res(3*ndt+3) = 0.d0
@@ -228,8 +227,8 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 ! -     CALCUL DU RESIDU POUR ( SIG  X1  X2  P  R  Q XXI (EPS3))
     if (ioptio .eq. 2) then
-        call lceqvn(ndt, yf(3*ndt+4), xxi)
-        call lceqvn(ndt, dy(3*ndt+4), dxxi)
+        xxi(1:ndt) = yf(3*ndt+4:3*ndt+4-1+ndt)
+        dxxi(1:ndt) = dy(3*ndt+4:3*ndt+4-1+ndt)
 !
 ! - EPSP
 !
@@ -288,7 +287,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !        PRINT *," XIF ",XIF
 !
         res(3*ndt+3) = tf
-        call lceqvn(ndt, xif, res(3*ndt+4))
+        res(3*ndt+4:3*ndt+4-1+ndt) = xif(1:ndt)
 !
     endif
 !

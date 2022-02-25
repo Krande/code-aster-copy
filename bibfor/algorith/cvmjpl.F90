@@ -53,7 +53,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterfort/cvmjac.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopli.h"
@@ -128,11 +127,11 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
  1  continue
     if (ioptio .eq. 2) nopt = idnr
 !
-    call lceqvn(ndt, sigd, yd)
-    call lceqvn(ndt, sigf, yf)
-    call lceqvn(nvi-1, vind, yd(ndt+1))
-    call lceqvn(nvi-1, vinf, yf(ndt+1))
-    call lceqvn(nr, yf, dy)
+    yd(1:ndt) = sigd(1:ndt)
+    yf(1:ndt) = sigf(1:ndt)
+    yd(ndt+1:ndt+nvi-1) = vind(1:nvi-1)
+    yf(ndt+1:ndt+nvi-1) = vinf(1:nvi-1)
+    dy(1:nr) = yf(1:nr)
     call daxpy(nr, -1.d0, yd, 1, dy,&
                1)
 !

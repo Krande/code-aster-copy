@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lglind.h"
 #include "asterfort/lglinn.h"
 #include "asterfort/solrei.h"
@@ -84,7 +83,7 @@ subroutine lglini(yd, nbmat, mater, f0, sigd,&
 ! ======================================================================
     gamcjs = mater(12,2)
     pref = mater(15,2)
-    call lceqvn(ndt, yd(1), se(1))
+    se(1:ndt) = yd(1:ndt)
     ie=   yd(ndt+1)
     gamp= yd(ndt+2)
     delta=yd(ndt+4)

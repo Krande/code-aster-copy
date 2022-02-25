@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ subroutine srresi(nmat,materf,timed,timef,&
     implicit none
 
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/srbpri.h"
 #include "asterfort/srcalg.h"
@@ -122,7 +121,7 @@ subroutine srresi(nmat,materf,timed,timef,&
     !!! Variables itnernes tmp
     !!!
     
-    call lceqvn(nvi,vind,vint)
+    vint(1:nvi) = vind(1:nvi)
     
     if (yf(ndt+2).ge.vind(1)) then
         vint(1)=yf(ndt+2)

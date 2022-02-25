@@ -29,7 +29,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdvmi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcmate.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprsm.h"
@@ -244,7 +243,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
             sigm(5)=0.d0
             sigm(6)=0.d0
         endif
-        call lceqvn(nb, sigm, b)
+        b(1:nb) = sigm(1:nb)
         do i = 1, nb
             do k = 1, nb
                 a(i,k) = a(i,k)+ (un-dm)*hookm(i,k)
@@ -258,7 +257,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
             ep(6+i) = ep(6+i)+ epsm(i)- b(i)- epthm(i)
         end do
     else
-        call lceqvn(nb, vim(1), ep(7))
+        ep(7:7-1+nb) = vim(1:nb)
     endif
     do i = 1, nb
         ep(12+i) = epsm(i)+deps(i)
@@ -373,7 +372,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 !
 !-- 2.4 ACTUALISATION DES CONTRAINTES ET DES VARIABLES INTERNES
 !--------------------------------------------------------------
-        call lceqvn(nb, beta, sigp)
+        sigp(1:nb) = beta(1:nb)
         vip(nb+2) = vim(nb+2) + dt * p(1)
         call lcdvmi(beta, 0.d0, se2, dsedb, dsedb2,&
                     se)

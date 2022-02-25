@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 #include "asterfort/hujmed.h"
 #include "asterfort/hujmei.h"
 #include "asterfort/hujrmo.h"
-#include "asterfort/lceqvn.h"
     integer :: ndt, ndi, i, mono, indi(7), iret
     real(kind=8) :: tole1, sigd(6), sigf(6)
     real(kind=8) :: vind(*), vinf(*), vins(50), vint(50)
@@ -68,7 +67,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd,&
 ! --- CONSTRUCTION DES SURFACES CYCLIQUES PRECEDENTES -----------
 ! ====================================================================
 !
-    call lceqvn(50, vind, vinm)
+    vinm(1:50) = vind(1:50)
     do i = 1, 3
        if ((vind(5*i+31).ne.zero) .or. (vind(5*i+32).ne.zero)) then
            vinm(4*i+5) = vind(5*i+31)

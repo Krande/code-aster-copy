@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,6 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
     implicit none
 !
 #include "asterc/r8miem.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcresi.h"
 #include "asterfort/lcsovn.h"
 #include "asterfort/utmess.h"
@@ -89,8 +88,8 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
     character(len=*) :: fami
     data impr/0/
 ! ----------------------------------------------------------------------
-    call lceqvn(nr, dy, dyini)
-    call lceqvn(nr, r, rini)
+    dyini(1:nr) = dy(1:nr)
+    rini(1:nr) = r(1:nr)
     maxtgt=0.d0
     normd1=0.d0
     normd2=0.d0
@@ -125,7 +124,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
     endif
 !
     do i = 1, nr
-        call lceqvn(nr, dyini, dyp)
+        dyp(1:nr) = dyini(1:nr)
         if (i .le. 6) then
             dyp(i)=dyp(i)+eps1
         else
@@ -142,7 +141,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
         if (iret .gt. 0) then
             goto 999
         endif
-        call lceqvn(nr, dyini, dym)
+        dym(1:nr) = dyini(1:nr)
         if (i .le. 6) then
             dym(i)=dym(i)-eps1
         else
@@ -207,7 +206,7 @@ subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
 !
 !     UTILISATION DE DRDYB COMME MATRICE JACOBIENNE
     if (verjac .eq. 2) then
-        call lceqvn(nr*nr, drdyb, drdy)
+        drdy(:,:) = drdyb(:,:)
     endif
 !
 999 continue

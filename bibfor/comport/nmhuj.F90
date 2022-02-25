@@ -108,7 +108,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/hujres.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcsovn.h"
@@ -359,7 +358,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     enddo
 !
     if (opt(1:9) .ne. 'RIGI_MECA') then
-        call lceqvn(50, vind, variTmp)
+        variTmp(1:50) = vind(1:50)
     endif
 !
 ! ---> ETAT ELASTIQUE OU PLASTIQUE A T
@@ -405,7 +404,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
 ! INITIALISATION DES DEFORMATIONS RESTANTES
         depsq(1:ndt) = depsth(1:ndt)
-        call lceqvn(nvi, vind, vind0)
+        vind0(1:nvi) = vind(1:nvi)
 !
 ! INITIALISATION DU COMPTEUR D'ITERATIONS LOCALES
 !        vind(35) = zero
@@ -485,7 +484,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
         if (.not.conv) then
             sigd(1:ndt) = sigf(1:ndt)
-            call lceqvn(nvi, variTmp, vind)
+            vind(1:nvi) = variTmp(1:nvi)
             goto 100
         endif
 !
@@ -640,7 +639,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                    call hujtel(mod, materf, sigd, dsde)
                 endif
 !
-                call lceqvn(50, vind0, variTmp)
+                variTmp(1:50) = vind0(1:50)
 ! fin   ---new dvp 23/01/2019---
                 if (debug) then
                     write(6,'(A)') ' ----------- FIN NMHUJ -----------------'
@@ -659,13 +658,13 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                     sigf(i) = -deux*rtrac+ptrac
                     sigf(i+3) = zero
                 enddo
-                call lceqvn(50, vind0, variTmp)
+                variTmp(1:50) = vind0(1:50)
                 iret = 0
             endif
         endif
         sigd(1:ndt) = sigd0(1:ndt)
         deps(1:ndt) = deps0(1:ndt)
-        call lceqvn(50, vind0, vind)
+        vind(1:50) = vind0(1:50)
 ! debut ---new dvp 23/01/2019---
 ! sauvegarde d'une estimation de l'erreur cumulee
 ! L'erreur est mesuree sur F=(sigm, vari_interne)=0

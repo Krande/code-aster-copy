@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
 !          NR     :  DIMENSION DU SYSTEME NL A RESOUDRE
 !     ----------------------------------------------------------------
 #include "asterf_types.h"
-#include "asterfort/lceqvn.h"
     integer :: nvi, nr, nmat
     real(kind=8) :: vind(nvi), vinf(nvi), yd(nr), mater(nmat, 2)
     aster_logical :: bnews(3), mtrac
@@ -57,7 +56,7 @@ subroutine hujayd(nmat, mater, nvi, vind, vinf,&
 ! --- AFFECTATION DE VIND A VINF
 !    (COHERENCE AVEC SCHEMA D'INTEGRATION SPECIFIQUE)
 !
-    call lceqvn(nvi, vinf, vind)
+    vind(1:nvi) = vinf(1:nvi)
 !
 ! ---  YD(NDT+1) = EPS_V^P = VIND(23) A T
     yd(ndt+1) = vind(23)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
 !     OUT VALRES :  COEFFICIENTS MATERIAU A T
 !         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 !     ----------------------------------------------------------------
-#include "asterfort/lceqvn.h"
 #include "asterfort/rcvalb.h"
     integer :: kpg, ksp, nmat, nbval, imat
     real(kind=8) :: valres(nmat), vallue(nmat)
@@ -47,7 +46,7 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECRO_CINE1 A LE NUMERO 1
         valres(1)=1
@@ -62,7 +61,7 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necoul, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECRO_CINE2 A LE NUMERO 2
         valres(1)=2

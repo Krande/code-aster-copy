@@ -32,7 +32,6 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !       ---------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/cjsci1.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsove.h"
@@ -127,7 +126,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !
 !--->   VINF = VIND, ETAT A T+DT = ELASTIQUE = 0
 !
-    call lceqvn(nvi-1, vind, vinf)
+    vinf(1:nvi-1) = vind(1:nvi-1)
     vinf(nvi) = 0.d0
 !
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
 !     ----------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcmhsr.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -65,7 +64,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         call rcvalb(fami, kpg, ksp, poum, imat,&
                     nmater, necris, 0, ' ', [0.d0],&
                     3, nomres, vallue, icodre, 1)
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECRO_ISOT1 A LE NUMERO 1
         valres(1)=1
@@ -81,7 +80,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                     nmater, necris, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
 !
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECRO_ISOT2 A LE NUMERO 2
         valres(1)=2
@@ -115,7 +114,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         endif
         vallue(4)=mu
         nbval=4
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECRO_DD_CFC A LE NUMERO 3
         valres(1)=3
@@ -159,7 +158,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         endif
         nbval=nbval+1
         vallue(nbval)=mu
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECRO_DD_CFC A LE NUMERO 3
         valres(1)=8
@@ -172,7 +171,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
                     nmater, necris, 0, ' ', [0.d0],&
                     nbval, nomres, vallue, icodre, 1)
         nbval=1
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION ECRO_DD_CC A LE NUMERO 7
         valres(1)=7
@@ -200,7 +199,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
         endif
         vallue(1)=mu
         nbval=1
-        call lceqvn(nbval, vallue, valres(2))
+        valres(2:2-1+nbval) = vallue(1:nbval)
         nbval=nbval+1
 !         PAR CONVENTION MONO_DD_FAT A LE NUMERO 4
         valres(1)=4

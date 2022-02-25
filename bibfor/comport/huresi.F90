@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/hujpxd.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/trace.h"
@@ -78,8 +77,8 @@ subroutine huresi(mod, nmat, mater, indi, deps,&
 !     ----------------------------------------------------------------
 ! --- REDIMENSIONNEMENT DE YD ET YF POUR S'ADAPTER A HUJJID
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
-    call lceqvn(nr, yd, ydt)
-    call lceqvn(nr, yf, yft)
+    ydt(1:nr) = yd(1:nr)
+    yft(1:nr) = yf(1:nr)
 !
     do i = 1, 22
         matert(i,1) = mater(i,1)

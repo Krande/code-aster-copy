@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,6 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 #include "asterc/r8prem.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/hujpxd.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcnrvn.h"
 #include "asterfort/lcsovn.h"
     integer :: nvi, nr, nmat
@@ -105,9 +104,9 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     call lcsovn(nr, yd, dy, yf)
 !
 ! --- COPIE A PARTIR DU TRAITEMENT DE HUJMID
-    call lceqvn(nr, yd, ydt)
-    call lceqvn(nr, yf, yft)
-    call lceqvn(nr, ye, yet)
+    ydt(1:nr) = yd(1:nr)
+    yft(1:nr) = yf(1:nr)
+    yet(1:nr) = ye(1:nr)
 !
     do i = 1, ndt
         ydt(i) = yd(i)*e0
@@ -224,7 +223,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             iret = 3
             goto 1000
         else if (nbmeca.ne.0) then
-            call lceqvn(nvi, vind, vinf)
+            vinf(1:nvi) = vind(1:nvi)
         endif
         iret = 2
     endif
@@ -264,7 +263,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         do i = 1, nbmeca+nbmect+1
             dy(ndt+i) = zero
         end do
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 0
     endif
 !
@@ -293,8 +292,8 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             do i = 1, nr
                 dy(i) = zero
             end do
-            call lceqvn(nvi, vins, vind)
-            call lceqvn(nvi, vins, vinf)
+            vind(1:nvi) = vins(1:nvi)
+            vinf(1:nvi) = vins(1:nvi)
             iret = 0
         else
 !
@@ -326,7 +325,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 do i = 1, nbmeca+nbmect+1
                     dy(ndt+i) = zero
                 end do
-                call lceqvn(nvi, vind, vinf)
+                vinf(1:nvi) = vind(1:nvi)
                 iret = 0
             endif
         endif
@@ -383,7 +382,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     end do
 !
     if (probt) then
-        call lceqvn(nvi, vins, vind)
+        vind(1:nvi) = vins(1:nvi)
         do i = 1, 3
             if (prob(i) .eq. un) then
                 vind(i+4) = mater(18,2)
@@ -413,13 +412,13 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             end do
         endif
 !
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
     endif
 !
     if (tracti) then
-        call lceqvn(nvi, vins, vind)
+        vind(1:nvi) = vins(1:nvi)
         modif = .false.
         do i = 1, nbmect
             if (yet(ndt+1+nbmeca+i) .eq. zero) then
@@ -464,7 +463,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                 endif
             endif
         end do
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
     endif
@@ -495,7 +494,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         resi = resi - 7
         if ((indi(resi).gt.4) .and. (indi(resi).lt.8)) then
 !
-            call lceqvn(nvi, vins, vind)
+            vind(1:nvi) = vins(1:nvi)
             vind(23+indi(resi)) = zero
             if (jj .ne. 0) then
                 do i = 1, jj
@@ -513,7 +512,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             end do
 !
             iret = 2
-            call lceqvn(nvi, vind, vinf)
+            vinf(1:nvi) = vind(1:nvi)
             goto 1000
         else
             iret = 3
@@ -525,14 +524,14 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! ---------------------------------------------------------------
 !
     if (cycl) then
-        call lceqvn(nvi, vins, vind)
+        vind(1:nvi) = vins(1:nvi)
         do i = 1, nbmeca
             if ((indi(i).gt.4) .and. (indi(i).lt.8) .and. (vind(indi( i)).eq.mater(18,2))) then
                 vind(23+indi(i)) = zero
             endif
         end do
         iret = 2
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         goto 1000
     endif
 !
@@ -541,14 +540,14 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! ---------------------------------------------------------------
 !
     if (nbmect .ne. nbmeca) then
-        call lceqvn(nvi, vins, vind)
+        vind(1:nvi) = vins(1:nvi)
         iret = 2
         do i = nbmeca+1, nbmect
             if (yet(ndt+1+nbmeca+i) .eq. zero) then
                 bnews(indi(i)-8) = .true.
             endif
         end do
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         goto 1000
     endif
 !
@@ -556,7 +555,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
 ! --- CONTROLE DU PREDICTEUR ELASTIQUE: YE(LAMBDA)
 ! ---------------------------------------------------------------
 !
-    call lceqvn(nvi, vins, vind)
+    vind(1:nvi) = vins(1:nvi)
     euler = .true.
     lamin = 1.d2
     imin = 0
@@ -589,7 +588,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
             end do
         endif
 !
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
     else if (imin.gt.0) then
@@ -598,7 +597,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
         else
             vind(23+indi(imin)) = zero
         endif
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
     endif
@@ -626,7 +625,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     end do
 !
     if (ltry) then
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 2
         goto 1000
     else

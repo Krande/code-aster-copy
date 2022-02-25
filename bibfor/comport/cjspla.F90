@@ -51,7 +51,6 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 #include "asterfort/cjsmis.h"
 #include "asterfort/cjssmd.h"
 #include "asterfort/cjssmi.h"
-#include "asterfort/lceqvn.h"
     integer :: ndt, ndi, nvi, niter, ndec, iret
     integer :: nvimax
     parameter(nvimax=16)
@@ -85,7 +84,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
     predi0(1:ndt) = sigf(1:ndt)
     sigd0(1:ndt) = sigd(1:ndt)
     deps0(1:ndt) = deps(1:ndt)
-    call lceqvn(nvi, vind, vind0)
+    vind0(1:nvi) = vind(1:nvi)
 !
 !
 !  ARRET OU NON EN NON CONVERGENCE INTERNE
@@ -144,7 +143,7 @@ subroutine cjspla(mod, crit, mater, seuili, seuild,&
 !   EN TENANT COMPTE DU DECOUPAGE EVENTUEL
 !
     sigd(1:ndt) = sigd0(1:ndt)
-    call lceqvn(nvi, vind0, vind)
+    vind(1:nvi) = vind0(1:nvi)
 !
     do 10 i = 1, ndt
         deps(i) = deps0(i)/ndec

@@ -51,7 +51,6 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcnrvn.h"
 #include "asterfort/lcsovn.h"
 #include "asterfort/mgauss.h"
@@ -133,7 +132,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     predi0(1:ndt) = sigf(1:ndt)
     sigd0(1:ndt) = sigd(1:ndt)
     deps0(1:ndt) = deps(1:ndt)
-    call lceqvn(nvi, vind, vind0)
+    vind0(1:nvi) = vind(1:nvi)
     arede0 = aredec
     stopn0 = stopnc
     loop0 = loop
@@ -189,7 +188,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! --------------------------------------------------
 ! ---> INITIALISATION DE YD = (SIGD, VIND, ZERO)
 ! --------------------------------------------------
-    call lceqvn(ndt, sigd, yd)
+    yd(1:ndt) = sigd(1:ndt)
 !
     yd(ndt+1) = vind(23)
 !
@@ -272,7 +271,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! ------------------------------------
 !
     call lcsovn(nr, yd, dy, yf)
-    call lceqvn(nmod, yf, ye)
+    ye(1:nmod) = yf(1:nmod)
 !
     if (iret .eq. 1) goto 9999
 !
@@ -357,7 +356,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     endif
 !
 ! ---> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
-    call lceqvn(nr, r, ddy)
+    ddy(1:nr) = r(1:nr)
     call mgauss('NCVP', drdy, ddy, nmod, nr,&
                 1, det, iret)
 !
@@ -537,13 +536,13 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             sigf(1:ndt) = predi0(1:ndt)
             sigd(1:ndt) = sigd0(1:ndt)
             deps(1:ndt) = deps0(1:ndt)
-            call lceqvn(nvi, vind0, vind)
+            vind(1:nvi) = vind0(1:nvi)
             aredec = arede0
             stopnc = stopn0
             loop = loop0
             iret = 0
             probt = .false.
-            call lceqvn(nvi, vind, vinf)
+            vinf(1:nvi) = vind(1:nvi)
             goto 30
         endif
     endif
@@ -552,7 +551,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 ! ---> MISE A JOUR DES CONTRAINTES ET VARIABLES INTERNES
 ! -------------------------------------------------------
 !
-    call lceqvn(ndt, yf, sigf)
+    sigf(1:ndt) = yf(1:ndt)
     do i = 1, 3
         call hujprj(i, sigf, dev, pf, qf)
 ! ------------------------------------------------------
@@ -664,8 +663,8 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             noconv=.true.
             sigd(1:ndt) = sigd0(1:ndt)
             sigf(1:ndt) = sigd0(1:ndt)
-            call lceqvn(nvi, vind0, vind)
-            call lceqvn(nvi, vind0, vinf)
+            vind(1:nvi) = vind0(1:nvi)
+            vinf(1:nvi) = vind0(1:nvi)
         endif
         if (debug) write(6,*) 'NOCONV =',noconv
         if (debug) write(6,*) 'MECTRA =',mectra
@@ -692,7 +691,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         sigf(1:ndt) = predi0(1:ndt)
         sigd(1:ndt) = sigd0(1:ndt)
         deps(1:ndt) = deps0(1:ndt)
-        call lceqvn(nvi, vind0, vind)
+        vind(1:nvi) = vind0(1:nvi)
         aredec = arede0
         stopnc = stopn0
         loop = loop0
@@ -725,14 +724,14 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             enddo
         endif
 !
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         goto 30
     endif
 !
     if (tracti) then
         if (debug) write(6,'(A)') 'HUJMID :: 9999 TRACTI'
         deps(1:ndt) = deps0(1:ndt)
-        call lceqvn(nvi, vind0, vind)
+        vind(1:nvi) = vind0(1:nvi)
         modif = .false.
         do i = 1, nbmect
             if (ye(ndt+1+nbmeca+i) .eq. zero) then
@@ -783,7 +782,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         enddo
         sigf(1:ndt) = predi0(1:ndt)
         sigd(1:ndt) = sigd0(1:ndt)
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         aredec = arede0
         stopnc = stopn0
         loop = loop0
@@ -823,7 +822,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             sigf(1:ndt) = predi0(1:ndt)
             sigd(1:ndt) = sigd0(1:ndt)
             deps(1:ndt) = deps0(1:ndt)
-            call lceqvn(nvi, vind0, vind)
+            vind(1:nvi) = vind0(1:nvi)
             aredec = arede0
             stopnc = stopn0
             loop = loop0
@@ -845,7 +844,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
 !
             iret = 0
             probt = .false.
-            call lceqvn(nvi, vind, vinf)
+            vinf(1:nvi) = vind(1:nvi)
             goto 30
         else
             noconv = .true.
@@ -863,7 +862,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         sigf(1:ndt) = predi0(1:ndt)
         sigd(1:ndt) = sigd0(1:ndt)
         deps(1:ndt) = deps0(1:ndt)
-        call lceqvn(nvi, vind0, vind)
+        vind(1:nvi) = vind0(1:nvi)
         aredec = arede0
         stopnc = stopn0
         loop = loop0
@@ -874,7 +873,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         enddo
         iret = 0
         probt = .false.
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         goto 30
     endif
 !
@@ -887,7 +886,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         sigf(1:ndt) = predi0(1:ndt)
         sigd(1:ndt) = sigd0(1:ndt)
         deps(1:ndt) = deps0(1:ndt)
-        call lceqvn(nvi, vind0, vind)
+        vind(1:nvi) = vind0(1:nvi)
         aredec = arede0
         stopnc = stopn0
         loop = loop0
@@ -898,7 +897,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             endif
         enddo
         probt = .false.
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         goto 30
     endif
 !
@@ -909,7 +908,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     sigf(1:ndt) = predi0(1:ndt)
     sigd(1:ndt) = sigd0(1:ndt)
     deps(1:ndt) = deps0(1:ndt)
-    call lceqvn(nvi, vind0, vind)
+    vind(1:nvi) = vind0(1:nvi)
     aredec = arede0
     stopnc = stopn0
     loop   = loop0
@@ -946,7 +945,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
             enddo
         endif
 !
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 0
         goto 30
     else if (imin.gt.0) then
@@ -955,7 +954,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
         else
             vind(23+indi(imin)) = zero
         endif
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 0
         goto 30
     endif
@@ -996,7 +995,7 @@ subroutine hujmid(mod, crit, mater, nvi, deps,&
     end do
 !
     if (ltry) then
-        call lceqvn(nvi, vind, vinf)
+        vinf(1:nvi) = vind(1:nvi)
         iret = 0
         goto 30
     else

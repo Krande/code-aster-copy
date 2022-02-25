@@ -31,7 +31,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/lc0000.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcsoma.h"
@@ -273,7 +272,7 @@ character(len=*) :: fami
             eps(1:ndt) = epsdt(1:ndt)
             deps(1:ndt) = depst(1:ndt)
             call lcprsv(1.d0/npal, deps, deps)
-            call lceqvn(ndt, sigd, sd)
+            sd(1:ndt) = sigd(1:ndt)
 !
 ! --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
         else if (k .gt. 1) then
@@ -282,8 +281,8 @@ character(len=*) :: fami
             tf = tf + deltat
             ca_tf1_=tf
             call lcsove(eps, deps, eps)
-            call lceqvn(ndt, sigf, sd)
-            call lceqvn(nvi, vinf, vind)
+            sd(1:ndt) = sigf(1:ndt)
+            vind(1:nvi) = vinf(1:nvi)
         endif
 !
 !

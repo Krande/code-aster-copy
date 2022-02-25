@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/trace.h"
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
@@ -107,9 +106,9 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
 ! ======================================================================
         sigii=ddot(ndt,sigd,1,sigd,1)
         if (sigii .lt. epssig) then
-            call lceqvn(ndt, sige, sig)
+            sig(1:ndt) = sige(1:ndt)
         else
-            call lceqvn(ndt, sigd, sig)
+            sig(1:ndt) = sigd(1:ndt)
         endif
         call lcdevi(sig, sd)
         invar = trace (ndi,sig)

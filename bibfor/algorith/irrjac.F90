@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 #include "asterc/r8prem.h"
 #include "asterfort/irrfss.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcnrts.h"
@@ -99,7 +98,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     dpi = dy(ndt+3)
 !
 !     RECUPERATION DES VARIABLES INTERNES A t+
-    call lceqvn(ndt, yf(1), sigf)
+    sigf(1:ndt) = yf(1:ndt)
     pf = yf(ndt+1)
     etaif = yf(ndt+2)
 !
@@ -130,11 +129,11 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     call lcprsm((dp+dpi), ddfdds, drsds)
     call lcsoma(fkooh, drsds, drsds)
 ! - DRSDP
-    call lceqvn(ndt, dfds, drsdp)
+    drsdp(1:ndt) = dfds(1:ndt)
 ! - DRSDE
     call lcinve(0.0d0, drsde)
 ! - DRSDI
-    call lceqvn(ndt, dfds, drsdi)
+    drsdi(1:ndt) = dfds(1:ndt)
 ! - DRSDG
 !       CALL LCEQVN(NDT,ID,DRSDG)
     call lcinve(0.0d0, drsdg)
@@ -149,7 +148,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     endif
 ! - DRPDS
     if (((seqf.ge.sr).and.(dp.ge.0.0d0)) .or. (dp.gt.r8prem())) then
-        call lceqvn(ndt, dfds, drpds)
+        drpds(1:ndt) = dfds(1:ndt)
         call lcprsv(1.0d0/hookf(1, 1), drpds, drpds)
     else
         call lcinve(0.0d0, drpds)
@@ -217,7 +216,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 ! - CONTRAINTES PLANES
     if (mod(1:6) .eq. 'C_PLAN') then
 ! - DRSDE3
-        call lceqvn(ndt, dede3, drsde3)
+        drsde3(1:ndt) = dede3(1:ndt)
 ! - DRPDE3
         drpde3=0.0d0
 ! - DREDE3

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,6 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcsovn.h"
@@ -226,13 +225,13 @@ subroutine hujiid(mod, mater, indi, deps, i1e,&
     if (loop) then
         call lcprmv(hooknl, deps, dsigt)
     else
-        call lceqvn(ndt, dsig, dsigt)
+        dsigt(1:ndt) = dsig(1:ndt)
     endif
     call lcsovn(ndt, yd, dsigt, sigt)
 !
 ! --- FAUT-IL CONSIDERER LES MECANISMES DE TRACTION?
     nbmect = nbmeca
-    call lceqvn(ndt, ye, sige)
+    sige(1:ndt) = ye(1:ndt)
 !
 !
     if (debug) write(6,*)'BNEWS =',(bnews(i),i=1,3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ implicit none
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/invjax.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
@@ -144,7 +143,7 @@ integer :: iret
 !
 ! --- NOUVELLE VALEUR DE XE
 !
-    call lceqvn(ndim, xenew, xe)
+    xe(1:ndim) = xenew(1:ndim)
 !
 ! --- TEST DE FIN DE BOUCLE
 !

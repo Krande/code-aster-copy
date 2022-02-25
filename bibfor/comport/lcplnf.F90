@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,6 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 #include "asterfort/hujlnf.h"
 #include "asterfort/irrlnf.h"
 #include "asterfort/lcdpec.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
@@ -86,7 +85,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 ! --- -------------------------------------------------------------
 !
 !     MISE A JOUR DE SIGF , VINF
-    call lceqvn(ndt, yf(1), sigf)
+    sigf(1:ndt) = yf(1:ndt)
 !
     if (rela_comp .eq. 'MONOCRISTAL') then
 ! ---    DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
@@ -135,7 +134,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                     sigd, sigf, indi, codret)
     else
 !        CAS GENERAL :
-        call lceqvn(nvi-1, yf(ndt+1), vinf)
+        vinf(1:nvi-1) = yf(ndt+1:ndt+nvi-1)
         vinf(nvi) = iter
     endif
 !

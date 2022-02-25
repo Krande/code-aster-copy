@@ -92,7 +92,6 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 #include "asterfort/lcafyd.h"
 #include "asterfort/lccaga.h"
 #include "asterfort/lcconv.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinit.h"
 #include "asterfort/lcjacb.h"
 #include "asterfort/lcjacp.h"
@@ -168,7 +167,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 ! --- SAUVEGARDE DE VIND INITIAL - VIND0 (POUR HUJEUX)
 !     + VARIABLES POUR GESTION TRACTION AVEC HUJEUX
-    call lceqvn(nvi, vind, vind0)
+    vind0(1:nvi) = vind(1:nvi)
     nr1 = nr
     iret = 0
 !
@@ -179,7 +178,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
                 sigd, nr1, yd, bnews, mtrac)
 !
 ! --- SAUVEGARDE DE VIND INITIAL - VIND1 (POUR HUJEUX)
-    call lceqvn(nvi, vind, vind1)
+    vind1(1:nvi) = vind(1:nvi)
 !
 !     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS
     call lccaga(rela_comp, cargau)
@@ -246,7 +245,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     endif
 !     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
     if (iter .eq. 1) then
-       call lceqvn(nr, r, rini)
+       rini = r
     end if
 !
 !
@@ -279,7 +278,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
 !     RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
     drdy1 = drdy
-    call lceqvn(nr, r, ddy)
+    ddy(1:nr) = r(1:nr)
     call mgauss(cargau, drdy1, ddy, nr, nr1,&
                 1, rbid, iret)
 !
@@ -328,7 +327,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
     call lcsovn(ndt+nvi, yd, dy, yf)
 !
 !     MISE A JOUR DE SIGF , VINF
-    call lceqvn(ndt, yf(1), sigf)
+    sigf(1:ndt) = yf(1:ndt)
 !
 !     POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
     call lcplnf(BEHinteg,&

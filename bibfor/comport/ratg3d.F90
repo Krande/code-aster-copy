@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ subroutine ratg3d(stress, strain, rprops, dsidep, ii, jj, mm, &
 !
 #include "asterf_types.h"
 #include "asterfort/jacobi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/mcordo.h"
 #include "asterfort/ratanp.h"
 #include "asterfort/mctgep.h"
@@ -108,7 +107,7 @@ subroutine ratg3d(stress, strain, rprops, dsidep, ii, jj, mm, &
     tr(5)=stress(6)/sqr
     tr(6)=stress(3)
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
-    call lceqvn(nmax, t1, tu)
+    tu(1:nmax) = t1(1:nmax)
 !
     call jacobi(mmax, mxiter, tol, small, tr,&
                 tu, eigprj, pstrs, vaux, itjac1,&
@@ -125,7 +124,7 @@ subroutine ratg3d(stress, strain, rprops, dsidep, ii, jj, mm, &
     tr(5)=strain(6)
     tr(6)=strain(3)
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
-    call lceqvn(nmax, t1, tu)
+    tu(1:nmax) = t1(1:nmax)
 !
     call jacobi(mmax, mxiter, tol, small, tr, &
                 tu, eigxpr, pstra, vaux, itjac1, &

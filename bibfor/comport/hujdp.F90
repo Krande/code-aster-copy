@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
 #include "asterfort/hujddd.h"
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/utmess.h"
@@ -240,7 +239,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
     enddo
 !
     yf(7) = epsvp
-    call lceqvn(ndt, sigd, yf)
+    yf(1:ndt) = sigd(1:ndt)
 !
     nbmeca = 0
     do i = 1, 8
@@ -308,13 +307,13 @@ subroutine hujdp(mod, deps, sigd, sigf, mater,&
         if (vin(27+i) .eq. un) then
 ! --- INITIALISATION DES VARIABLES NECESSAIRES A PROD/Q(K)
 ! --- AVEC PROD = PRODUIT SCALAIRE (SIGDC*TH)
-            call lceqvn(ndt, sigf, yf)
+            yf(1:ndt) = sigf(1:ndt)
             yf(8) = vin(4+i)
             call hujprc(1, i, sigf, vin, mater,&
                         yf, pf, qf, sigdc)
             prodf = sigdc(1)*vin(4*i+7)+sigdc(3)*vin(4*i+8)/deux
             prodf = qf+prodf
-            call lceqvn(ndt, sigd, yf)
+            yf(1:ndt) = sigd(1:ndt)
             call hujprc(1, i, sigd, vin, mater,&
                         yf, pd, qd, sigdc)
             prodd = sigdc(1)*vin(4*i+7)+sigdc(3)*vin(4*i+8)/deux

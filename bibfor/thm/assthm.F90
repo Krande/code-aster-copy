@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ implicit none
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
 #include "asterfort/equthp.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
 #include "asterfort/utmess.h"
@@ -318,11 +317,11 @@ integer, intent(out) :: codret
 ! --- SINON ON EST SUR UN SOMMET                   : CK = CS -----------
 ! ======================================================================
         if (kpi .le. npg) then
-            call lceqvn(dimdef, c, ck)
-            call lceqvn(2, a, ak)
+            ck(1:dimdef) = c(1:dimdef)
+            ak(1:2) = a(1:2)
         else
-            call lceqvn(dimdef, cs, ck)
-            call lceqvn(2, as, ak)
+            ck(1:dimdef) = cs(1:dimdef)
+            ak(1:2) = as(1:2)
         endif
 ! ======================================================================
 ! --- CALCUL DE MATUU (MATRI) ------------------------------------------

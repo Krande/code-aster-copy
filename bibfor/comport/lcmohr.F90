@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,7 +75,6 @@ subroutine lcmohr(ndim,&
 #include "asterf_types.h"
 #include "asterfort/bptobg.h"
 #include "asterfort/jacobi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/mcpstr.h"
 #include "asterfort/mctg2d.h"
 #include "asterfort/mctg3d.h"
@@ -169,8 +168,8 @@ subroutine lcmohr(ndim,&
 !
 ! Remove SQRT(2) from extradiagonal terms of input strain and stress
 ! ------------------------------------------------------------------
-    call lceqvn(nmax, dstrai0, dstrai)
-    call lceqvn(nmax, stresm0, stresm)
+    dstrai(1:nmax) = dstrai0(1:nmax)
+    stresm(1:nmax) = stresm0(1:nmax)
 !
     dstrai(4)=dstrai(4)/sqr
     stresm(4)=stresm(4)/sqr

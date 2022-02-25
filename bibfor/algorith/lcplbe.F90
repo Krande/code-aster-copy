@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/betini.h"
 #include "asterfort/codent.h"
 #include "asterfort/codree.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/utmess.h"
 !
 !       INTEGRATION ELASTO-PLASTIQUE DE LOIS DE COMPORTEMENT BETON SUR
@@ -107,7 +106,7 @@ implicit none
 !
 ! --  CONTRAINTE ISSUE DE LA PREDICTION ELASTIQUE (DEJA CALCULEE)
 !
-    call lceqvn(ndt, sigf, sige)
+    sige(1:ndt) = sigf(1:ndt)
 !
 ! --  CALCUL DES COEFFICIENTS CONSTANTS DU SYSTEME NON LINEAIRE
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine lcelpl(loi, nmat, materf,&
 ! ----------------------------------------------------------------
 !     ------------------------------------------------------------
 #include "asterfort/irrlnf.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/srilnf.h"
     common /tdim/   ndt  , ndi
 !     ------------------------------------------------------------
@@ -55,12 +54,12 @@ subroutine lcelpl(loi, nmat, materf,&
     if (loi(1:7) .eq. 'IRRAD3M') then
         call irrlnf(nmat, materf, vind, 0.0d0, vinf)
     else if (loi(1:4).eq.'LETK') then
-        call lceqvn(nvi-3, vind, vinf)
+        vinf(1:nvi-3) = vind(1:nvi-3)
         vinf(5) = 0.d0
         vinf(6) = 0.d0
         vinf(7) = 0.d0
     else if (loi(1:3).eq.'LKR') then
-        call lceqvn(4, vind, vinf)
+        vinf(1:4) = vind(1:4)
         vinf(5)=0.d0
         vinf(6)=0.d0
         vinf(7)=0.d0
@@ -76,7 +75,7 @@ subroutine lcelpl(loi, nmat, materf,&
 !
 ! --- CAS GENERAL :
 !        VINF  = VIND ,  ETAT A T+DT = VINF(NVI) = 0 = ELASTIQUE
-        call lceqvn(nvi-1, vind, vinf)
+        vinf(1:nvi-1) = vind(1:nvi-1)
         vinf(nvi) = 0.0d0
     endif
 !

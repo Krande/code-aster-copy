@@ -63,7 +63,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/chbfss.h"
 #include "asterfort/chbfsx.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
@@ -151,15 +150,15 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
      &                    zero  , zero  , zero  , zero , un   , zero ,&
      &                    zero  , zero  , zero  , zero , zero , un /
 !
-    call lceqvn(ndt, yf(1), sig)
-    call lceqvn(ndt, yf(ndt+1), x1)
-    call lceqvn(ndt, yf(2*ndt+1), x2)
+    sig(1:ndt) = yf(1:ndt)
+    x1(1:ndt) = yf(ndt+1:ndt+ndt)
+    x2(1:ndt) = yf(2*ndt+1:2*ndt+ndt)
     p = yf(3*ndt+1)
     r = yf(3*ndt+2)
     q = yf(3*ndt+3)
-    call lceqvn(ndt, dy(1), dsig)
-    call lceqvn(ndt, dy(ndt+1), dx1)
-    call lceqvn(ndt, dy(2*ndt+1), dx2)
+    dsig(1:ndt) = dy(1:ndt)
+    dx1(1:ndt) = dy(ndt+1:ndt+ndt)
+    dx2(1:ndt) = dy(2*ndt+1:2*ndt+ndt)
     dp = dy(3*ndt+1)
 !
     k0 = materf(1,2)
@@ -637,8 +636,8 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
     if (ioptio .eq. 2) then
 !
-        call lceqvn(ndt, yf(3*ndt+4), xxi)
-        call lceqvn(ndt, dy(3*ndt+4), dxxi)
+        xxi(1:ndt) = yf(3*ndt+4:3*ndt+4-1+ndt)
+        dxxi(1:ndt) = dy(3*ndt+4:3*ndt+4-1+ndt)
 !
 ! - DGDQ(T+DT)
         call lcinve(0.d0, dgdq)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
     implicit      none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/lceqvn.h"
     real(kind=8) :: mu, k, f0, devg(6), devgii, traceg
     real(kind=8) :: dfdl, delta, dy(10)
 ! --- BUT : CALCUL DE DY -----------------------------------------------
@@ -65,7 +64,7 @@ subroutine calcdy(mu, k, f0, devg, devgii,&
 ! ======================================================================
 ! --- STOCKAGE ---------------------------------------------------------
 ! ======================================================================
-    call lceqvn(ndt, dsn(1), dy(1))
+    dy(1:ndt) = dsn(1:ndt)
     dy(ndt+1)=dinv
     dy(ndt+2)=dgamp
     dy(ndt+3)=devp

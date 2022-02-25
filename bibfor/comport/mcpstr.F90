@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
 !
 #include "asterf_types.h"
 #include "asterfort/jacobi.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/vecini.h"
 #include "asterfort/matini.h"
 !
@@ -111,7 +110,7 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
     endif
 !
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
-    call lceqvn(nmax, t1, tu)
+    tu(1:nmax) = t1(1:nmax)
 !
     call matini(mmax, mmax, r0, eigprj)
 !

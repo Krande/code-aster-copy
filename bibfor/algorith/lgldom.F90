@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine lgldom(nbmat, mater, yf, fiter)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/ucritp.h"
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
@@ -67,7 +66,7 @@ subroutine lgldom(nbmat, mater, yf, fiter)
     sigc = mater( 9,2)
     gamcjs = mater(12,2)
     pref = mater(15,2)
-    call lceqvn(ndt, yf(1), sn(1))
+    sn(1:ndt) = yf(1:ndt)
     i1n  =yf(ndt+1)
     gampn=yf(ndt+2)
 ! =================================================================

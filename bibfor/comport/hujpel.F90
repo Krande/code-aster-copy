@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,6 @@ subroutine hujpel(fami, kpg, ksp, etatd, mod,&
 #include "asterc/r8vide.h"
 #include "asterfort/hujori.h"
 #include "asterfort/hujpre.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/utmess.h"
     integer :: nvi, imat, iret, nmat, kpg, ksp
     real(kind=8) :: materf(nmat, 2), sigd(6), sigf(6), angmas(3)
@@ -92,6 +91,6 @@ subroutine hujpel(fami, kpg, ksp, etatd, mod,&
     call hujpre(fami, kpg, ksp, etatd, mod,&
                 imat, matert, deps, sigd,&
                 sigf, vind, iret)
-    call lceqvn(nvi, vind, vinf)
+    vinf(1:nvi) = vind(1:nvi)
 !
 end subroutine

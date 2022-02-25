@@ -44,7 +44,6 @@ implicit none
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/nmcrga.h"
 #include "asterfort/nmcrli.h"
 #include "asterfort/nmcrsu.h"
@@ -415,8 +414,8 @@ type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     if (iforta .eq. 0) then
 ! CONSTRUCTION DES VECTEURS DE DEFORMATION ET CONTRAINTES
 ! RETIRE LE TERME EN RAC2 SUR COMPOSANTES DE CISAILLEMENT
-        call lceqvn(6, epsm, epsini)
-        call lceqvn(6, sigm, sigini)
+        epsini(1:6) = epsm(1:6)
+        sigini(1:6) = sigm(1:6)
         call dscal(3, 1.d0/rac2, epsini(4), 1)
         call dscal(3, 1.d0/rac2, sigini(4), 1)
 ! RECOPIE DANS LA TABLE DES VECTEURS SIGINI ET EPSINI

@@ -57,7 +57,6 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
 !     ----------------------------------------------------------------
 #include "asterfort/calcfe.h"
 #include "asterfort/caltau.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcmmlc.h"
 #include "asterfort/lcmmsg.h"
@@ -104,7 +103,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
     endif
 !
     call r8inir(9, 0.d0, gamsns, 1)
-    call lceqvn(ndt, yf(1), sigf)
+    sigf(1:ndt) = yf(1:ndt)
     call r8inir(6, 0.d0, devi, 1)
 !
 !     POUR DD_CC
@@ -183,7 +182,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
         call lcprmv(fkooh, sigf, h1sigf)
         r(1:ndt) = epsgl(1:ndt) - h1sigf(1:ndt)
     else
-        call lceqvn(ndt, yd(1), sigd)
+        sigd(1:ndt) = yd(1:ndt)
         call lcprmv(dkooh, sigd, epsed)
         depse(1:ndt) = deps(1:ndt) - devi(1:ndt)
         call lcsove(epsed, depse, epsef)

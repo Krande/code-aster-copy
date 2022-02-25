@@ -34,7 +34,6 @@ implicit none
 #include "asterc/umatwp.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/matrot.h"
 #include "asterfort/rcvarc.h"
@@ -233,7 +232,7 @@ integer, intent(out) :: codret
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call dcopy(nsig, sigm, 1, stress, 1)
         call dscal(3, usrac2, stress(4), 1)
-        call lceqvn(nstatv, vim, statev)
+        statev(1:nstatv) = vim(1:nstatv)
         call umatwp(pfumat, stress, statev, ddsdde,&
                     sse, spd, scd, rpl, ddsddt,&
                     drplde, drpldt, stran, dstran, time,&
