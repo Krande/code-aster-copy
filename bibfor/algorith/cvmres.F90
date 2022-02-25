@@ -45,7 +45,6 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !       ----------------------------------------------------------------
 #include "asterfort/chbfs.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
@@ -152,10 +151,10 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
     call lcprsv(dp, dfds, depsp)
     call lcprmv(dkooh, sigd, epsed)
-    call lcdive(deps, depsp, depse)
+    depse(1:ndt) = deps(1:ndt) - depsp(1:ndt)
     call lcsove(epsed, depse, epsef)
     call lcprmv(hookf, epsef, gf)
-    call lcdive(gf, sigf, gf)
+    gf(1:ndt) = gf(1:ndt) - sigf(1:ndt)
 !
 ! - LF (T+DT)
 !
@@ -166,8 +165,8 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
     yy = gx1 * dt * ( sqrt(yy*3.d0/2.d0) )**(m1-1.d0) + g10 * ccin * d1 * dp
     call lcprsv(xx, dfds, lf)
     call lcprsv(yy, x1, vtmp)
-    call lcdive(lf, vtmp, lf)
-    call lcdive(lf, dx1, lf)
+    lf(1:ndt) = lf(1:ndt) - vtmp(1:ndt)
+    lf(1:ndt) = lf(1:ndt) - dx1(1:ndt)
 !
     if (c1d .ne. 0.d0) then
         difc1 = (c1-c1d)/c1
@@ -184,8 +183,8 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
     yy = gx2 * dt * ( sqrt(yy*3.d0/2.d0) )**(m2-1.d0) + g20 * ccin * d2 * dp
     call lcprsv(xx, dfds, jf)
     call lcprsv(yy, x2, vtmp)
-    call lcdive(jf, vtmp, jf)
-    call lcdive(jf, dx2, jf)
+    jf(1:ndt) = jf(1:ndt) - vtmp(1:ndt)
+    jf(1:ndt) = jf(1:ndt) - dx2(1:ndt)
 !
 ! - CAS ANISOTHERME
 !
@@ -237,11 +236,11 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
         call lcopil('ISOTROPE', mod, materf(1, 1), fkooh)
         call lcprmv(fkooh, sigf, vtmp1)
         call lcsove(epsd, deps, epsp)
-        call lcdive(epsp, vtmp1, epsp)
+        epsp(1:ndt) = epsp(1:ndt) - vtmp1(1:ndt)
 !
 ! N-ETOILE
 !
-        call lcdive(epsp, xxi, vtmp)
+        vtmp(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
         call lcprsc(vtmp, vtmp, xx)
         xx = sqrt( xx * 3.d0/2.d0 )
 !
@@ -278,7 +277,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !                CALL LCPRSC ( DFDS    , EPXI  , ZZ   )
                 xx =zz * (1.d0 - eta ) *dp * 3.d0/2.d0
                 call lcprsv(xx, epxi, vtmp)
-                call lcdive(vtmp, dxxi, xif)
+                xif(1:ndt) = vtmp(1:ndt) - dxxi(1:ndt)
 !
             endif
         endif

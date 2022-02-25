@@ -31,7 +31,6 @@ subroutine chbfsx(sig, x1, x2, i4, ddfdsx)
 !       ----------------------------------------------------------------
 #include "asterfort/chbfs.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
@@ -44,8 +43,8 @@ subroutine chbfsx(sig, x1, x2, i4, ddfdsx)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call lcdevi(sig, dev)
-    call lcdive(dev, x1, dev)
-    call lcdive(dev, x2, dev)
+    dev(1:n) = dev(1:n) - x1(1:n)
+    dev(1:n) = dev(1:n) - x2(1:n)
     s = lcnrts ( dev )
     call chbfs(sig, x1, x2, dfds)
     call lcprte(dfds, dfds, dfds2)

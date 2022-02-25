@@ -37,7 +37,6 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/fgequi.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
@@ -184,8 +183,8 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
             depsp(itens)=td*dp*sigf(itens)/grj2v
 12      continue
     endif
-    call lcdive(deps, depsp, depsel)
-    call lcdive(depsel, dy, res(1))
+    depsel(1:ndt) = deps(1:ndt) - depsp(1:ndt)
+    res(1:ndt) = depsel(1:ndt) - dy(1:ndt)
     res(ndt+1) = devcum-dp
     res(ndt+2) = decrou(1)-dh1
     res(ndt+3) = decrou(2)-dh2

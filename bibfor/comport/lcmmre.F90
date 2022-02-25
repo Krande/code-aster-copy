@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,6 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
 !     ----------------------------------------------------------------
 #include "asterfort/calcfe.h"
 #include "asterfort/caltau.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcmmlc.h"
@@ -182,15 +181,15 @@ subroutine lcmmre(typmod, nmat, materd, materf, &
         endif
         call lcgrla(fe, epsgl)
         call lcprmv(fkooh, sigf, h1sigf)
-        call lcdive(epsgl, h1sigf, r(1))
+        r(1:ndt) = epsgl(1:ndt) - h1sigf(1:ndt)
     else
         call lceqvn(ndt, yd(1), sigd)
         call lcprmv(dkooh, sigd, epsed)
-        call lcdive(deps, devi, depse)
+        depse(1:ndt) = deps(1:ndt) - devi(1:ndt)
         call lcsove(epsed, depse, epsef)
 ! LA PREMIERE EQUATION EST  (HF-1)SIGF -(HD-1)SIGD -(DEPS-DEPSP)=0
         call lcprmv(fkooh, sigf, h1sigf)
-        call lcdive(epsef, h1sigf, r(1))
+        r(1:ndt) = epsef(1:ndt) - h1sigf(1:ndt)
     endif
 !
 999  continue

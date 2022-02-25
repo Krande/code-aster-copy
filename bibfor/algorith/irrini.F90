@@ -23,7 +23,6 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
     implicit none
 !
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
@@ -138,9 +137,9 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
         else
             call lcprsv(1.5d0/s, dev, dfds)
             call lcprsv(dpi, dfds, vtmp1)
-            call lcdive(deps, vtmp1, vtmp1)
+            vtmp1(1:ndt) = deps(1:ndt) - vtmp1(1:ndt)
             call lcprsv(dg, id3d, vtmp2)
-            call lcdive(vtmp1, vtmp2, vtmp1)
+            vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
             call lcprmv(hook, vtmp1, vtmp1)
             call lcprsc(dfds, vtmp1, yy)
 !
@@ -167,9 +166,9 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !
 !        DSIG
         call lcprsv((dpi+dp), dfds, vtmp1)
-        call lcdive(deps, vtmp1, vtmp1)
+        vtmp1(1:ndt) = deps(1:ndt) - vtmp1(1:ndt)
         call lcprsv(dg, id3d, vtmp2)
-        call lcdive(vtmp1, vtmp2, vtmp1)
+        vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
         call lcprmv(hook, vtmp1, dsig)
 !        DY
         call lceqvn(ndt, dsig, dy(1))

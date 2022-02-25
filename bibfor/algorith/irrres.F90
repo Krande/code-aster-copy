@@ -23,7 +23,6 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 !
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcnrts.h"
@@ -111,10 +110,10 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
     call lcprsv(dg, id3d, depsg)
 !
 !   RESIDU EN SIGMA, HOMOGENE A DES DEFORMATIONS
-    call lcdive(epsef, epsed, rs)
+    rs(1:ndt) = epsef(1:ndt) - epsed(1:ndt)
     call lcsove(rs, depsa, rs)
     call lcsove(rs, depsg, rs)
-    call lcdive(rs, deps, rs)
+    rs(1:ndt) = rs(1:ndt) - deps(1:ndt)
     call lcprsv(-1.d0, rs, rs)
 !
 !  RESIDU EN DEFORMATION PLASTIQUE

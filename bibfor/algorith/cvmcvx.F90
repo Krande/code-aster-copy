@@ -32,7 +32,6 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !       OUT SEUIL  :  SEUIL  ELASTICITE
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsv.h"
@@ -73,7 +72,6 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !
     r = vin(2*ndt+2)
     call lcdevi(sig, dev)
-    call lcdive(dev, x1, dev)
-    call lcdive(dev, x2, dev)
+    dev(1:ndt) = dev(1:ndt) - x1(1:ndt) - x2(1:ndt)
     seuil = lcnrts( dev ) - ar * r - k
 end subroutine

@@ -26,7 +26,6 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqma.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -457,7 +456,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
             call lcsove(depsv, depsp, irrev)
 !
-            call lcdive(depsth, irrev, vecd)
+            vecd(1:ndt) = depsth(1:ndt) - irrev(1:ndt)
 !
             call lcprmv(de, vecd, dsig)
 !

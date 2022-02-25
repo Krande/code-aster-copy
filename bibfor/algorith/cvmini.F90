@@ -48,7 +48,6 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 !
 #include "asterfort/chbfs.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcopil.h"
@@ -184,7 +183,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
         endif
         call lcprsv(yy, x1, vtmp)
         call lcprsv(xx, dfds, dx1)
-        call lcdive(dx1, vtmp, dx1)
+        dx1(1:ndt) = dx1(1:ndt) - vtmp(1:ndt)
 !
 ! - CAS ANISOTHERME
 !
@@ -206,7 +205,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
         endif
         call lcprsv(yy, x2, vtmp)
         call lcprsv(xx, dfds, dx2)
-        call lcdive(dx2, vtmp, dx2)
+        dx2(1:ndt) = dx2(1:ndt) - vtmp(1:ndt)
 !
 ! - CAS ANISOTHERME
 !
@@ -252,10 +251,10 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
             call lcsove(sig, dsig, vtmp)
             call lcprmv(fkooh, vtmp, vtmp1)
             call lcsove(epsd, deps, epsp)
-            call lcdive(epsp, vtmp1, epsp)
+            epsp(1:ndt) = epsp(1:ndt) - vtmp1(1:ndt)
 !
 ! N-ETOILE
-            call lcdive(epsp, xxi, vtmp)
+            vtmp(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
             call lcprsc(vtmp, vtmp, xx)
             xx = sqrt( xx * 3.d0/2.d0 )
 !

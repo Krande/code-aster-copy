@@ -53,7 +53,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterfort/cvmjac.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lceqma.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
@@ -380,19 +379,19 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
             const1 = 1.d0 / const1
 !
             call lcptmv(dxids, vtmp2, vtmp)
-            call lcdive(dtds, vtmp, vtmp1)
+            vtmp1(1:ndt) = dtds(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkds, vtmp)
             call lcsove(vtmp1, vtmp, vtmp1)
             call lcprsv(const2, vtmp1, dkdset)
 !
             call lcptmv(dxidx1, vtmp2, vtmp)
-            call lcdive(dtdx1, vtmp, vtmp1)
+            vtmp1(1:ndt) = dtdx1(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkdx1, vtmp)
             call lcsove(vtmp1, vtmp, vtmp1)
             call lcprsv(const2, vtmp1, dkdx1e)
 !
             call lcptmv(dxidx2, vtmp2, vtmp)
-            call lcdive(dtdx2, vtmp, vtmp1)
+            vtmp1(1:ndt) = dtdx2(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkdx2, vtmp)
             call lcsove(vtmp1, vtmp, vtmp1)
             call lcprsv(const2, vtmp1, dkdx2e)
@@ -485,7 +484,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcinve(0.d0, vtmp1)
     if (mod(1:6) .eq. 'C_PLAN') then
         call lcprsv(dqdp, vtmp2, vtmp)
-        call lcdive(dqds, vtmp, vtmp1)
+        vtmp1(1:ndt) = dqds(1:ndt) - vtmp(1:ndt)
         call lcptmv(matc, dqdx1, vtmp)
         call lcsove(vtmp1, vtmp, vtmp1)
         call lcptmv(matd, dqdx2, vtmp2)

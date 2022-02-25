@@ -30,7 +30,6 @@ subroutine chbfs(sig, x1, x2, dfds)
 !                       ET    D    = SIG - 1/3 TR(SIG) I
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdive.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsv.h"
     integer :: n, nd
@@ -40,8 +39,8 @@ subroutine chbfs(sig, x1, x2, dfds)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call lcdevi(sig, dev)
-    call lcdive(dev, x1, dev)
-    call lcdive(dev, x2, dev)
+    dev(1:n) = dev(1:n) - x1(1:n)
+    dev(1:n) = dev(1:n) - x2(1:n)
     s = lcnrts ( dev )
     call lcprsv(1.5d0 / s, dev, dfds)
 end subroutine
