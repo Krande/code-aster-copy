@@ -59,7 +59,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcptmv.h"
 #include "asterfort/mgauss.h"
 #include "blas/daxpy.h"
     integer :: ndt, ndi, nmat, nr, nvi, iret
@@ -364,7 +363,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
         mtmp(1:ndt,1:ndt) =i6(1:ndt,1:ndt)
         call mgauss('NFVP', dxidxi, mtmp, 6, ndt,&
                     ndt, det, iret)
-        call lcptmv(mtmp, dtdxxi, vtmp2)
+        vtmp2(1:ndt) = matmul(transpose(mtmp(1:ndt,1:ndt)), dtdxxi(1:ndt))
         call lcprsc(vtmp2, dxidp, xx)
         const1 = dkdr / drdr * drdq
 !
@@ -372,19 +371,19 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
             const2 = const1 / ( (dtdp - xx )* const1 + dtdq * ( dkdp - dkdr / drdr * drdp ) )
             const1 = 1.d0 / const1
 !
-            call lcptmv(dxids, vtmp2, vtmp)
+            vtmp(1:ndt) = matmul(transpose(dxids(1:ndt,1:ndt)), vtmp2(1:ndt))
             vtmp1(1:ndt) = dtds(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkds, vtmp)
             vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             call lcprsv(const2, vtmp1, dkdset)
 !
-            call lcptmv(dxidx1, vtmp2, vtmp)
+            vtmp(1:ndt) = matmul(transpose(dxidx1(1:ndt,1:ndt)), vtmp2(1:ndt))
             vtmp1(1:ndt) = dtdx1(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkdx1, vtmp)
             vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             call lcprsv(const2, vtmp1, dkdx1e)
 !
-            call lcptmv(dxidx2, vtmp2, vtmp)
+            vtmp(1:ndt) = matmul(transpose(dxidx2(1:ndt,1:ndt)), vtmp2(1:ndt))
             vtmp1(1:ndt) = dtdx2(1:ndt) - vtmp(1:ndt)
             call lcprsv(const1*dtdq, dkdx2, vtmp)
             vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
@@ -468,8 +467,8 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
 ! - VTMP2 = DKDS + DKDX1 * C + DKDX2 * D
 !
-    call lcptmv(matd, dkdx2e, vtmp2)
-    call lcptmv(matc, dkdx1e, vtmp1)
+    vtmp2(1:ndt) = matmul(transpose(matd(1:ndt,1:ndt)), dkdx2e(1:ndt))
+    vtmp1(1:ndt) = matmul(transpose(matc(1:ndt,1:ndt)), dkdx1e(1:ndt))
     vtmp2(1:ndt) = vtmp1(1:ndt) + vtmp2(1:ndt)
     vtmp2(1:ndt) = dkds(1:ndt) + vtmp2(1:ndt)
 !
@@ -479,9 +478,9 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     if (mod(1:6) .eq. 'C_PLAN') then
         call lcprsv(dqdp, vtmp2, vtmp)
         vtmp1(1:ndt) = dqds(1:ndt) - vtmp(1:ndt)
-        call lcptmv(matc, dqdx1, vtmp)
+        vtmp(1:ndt) = matmul(transpose(matc(1:ndt,1:ndt)), dqdx1(1:ndt))
         vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
-        call lcptmv(matd, dqdx2, vtmp2)
+        vtmp2(1:ndt) = matmul(transpose(matd(1:ndt,1:ndt)), dqdx2(1:ndt))
         vtmp1(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
     endif
 !
