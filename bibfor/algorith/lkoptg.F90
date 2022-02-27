@@ -22,7 +22,6 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
                   depsv, dside, retcom)
 !
     implicit   none
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
@@ -208,7 +207,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
     call lkdvds(dt, nbmat, mater, gv, dfdsve,&
                 seuilv, dvds)
 !
-    call lcprmm(dvds, de, cc)
+    cc(1:ndt,1:ndt) = matmul(dvds(1:ndt,1:ndt), de(1:ndt,1:ndt))
     cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
     call lcprmv(cct, ddgamv, dd)
 ! =================================================================

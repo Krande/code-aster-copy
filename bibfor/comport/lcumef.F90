@@ -22,7 +22,6 @@ subroutine lcumef(rela_plas, dep, depm, an, bn,&
 !
 implicit none
 !
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
@@ -60,6 +59,8 @@ implicit none
     integer :: iret
     real(kind=8) :: det
     real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
 !
 ! INITIALISATION DES VARIABLES
 !
@@ -159,9 +160,10 @@ implicit none
             end do
         end do
 !
-        call mgauss('NFVP', depm, temp2, 6, nstrs,&
-                    nstrs, det, iret)
-        call lcprmm(temp2, dep, temp)
+        call mgauss('NFVP', depm, temp2, 6, nstrs, nstrs, det, iret)
+!
+        temp(1:ndt,1:ndt) = matmul(temp2(1:ndt,1:ndt), dep(1:ndt,1:ndt))
+!
         call lcprmv(temp, sigi, rtemp)
 !
         do i = 1, nstrs

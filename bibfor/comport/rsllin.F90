@@ -35,7 +35,6 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
 !       ----------------------------------------------------------------
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsv.h"
     integer :: nmat
@@ -75,7 +74,7 @@ subroutine rsllin(mod, nmat, materd, materf, matcst,&
 ! --INTEGRATION ELASTIQUE :              SIGF = RHO*HOOKF EPSEF
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
-        call lcprmm(dkooh, hookf, ident)
+        ident(1:ndt,1:ndt) = matmul(dkooh(1:ndt,1:ndt), hookf(1:ndt,1:ndt))
         call lcprmv(ident, sigd, sigf)
         call lcprsv(theta, deps, thde)
         call lcprmv(hookf, thde, dsig)

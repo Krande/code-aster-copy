@@ -37,7 +37,6 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/prmama.h"
@@ -180,6 +179,6 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
        dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
     end if
     !!! Construction de dsde = indiv*hooknl
-    call lcprmm(invdij,hooknl,dsde)
+    dsde(1:ndt,1:ndt) = matmul(invdij(1:ndt,1:ndt), hooknl(1:ndt,1:ndt))
 
 end subroutine

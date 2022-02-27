@@ -62,7 +62,6 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
 #include "asterfort/hujpxd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
@@ -377,7 +376,7 @@ subroutine hujjid(mod, mater, indi, deps, prox,&
     enddo
 610 continue
 !
-    call lcprmm(hooknl, depsds, cd2fds)
+    cd2fds(1:ndt,1:ndt) = matmul(hooknl(1:ndt,1:ndt), depsds(1:ndt,1:ndt))
 !
 ! ------------ FIN I.2.
     dleds(:,:) = zero

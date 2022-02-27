@@ -34,7 +34,6 @@ subroutine hujtid(fami, kpg, ksp, mod, imat,&
 #include "asterfort/hujpic.h"
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
@@ -488,7 +487,7 @@ subroutine hujtid(fami, kpg, ksp, mod, imat,&
             dsde(i,j) = zero
         enddo
     enddo
-    call lcprmm(hook, te, dsde)
+    dsde(1:ndt,1:ndt) = matmul(hook(1:ndt,1:ndt), te(1:ndt,1:ndt))
 !
     goto 1000
 !

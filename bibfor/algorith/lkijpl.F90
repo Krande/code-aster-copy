@@ -31,7 +31,6 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 !       ----------------------------------------------------------------
 #include "asterc/r8prem.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/prmama.h"
@@ -158,6 +157,6 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
     end if
 !
 ! --- CONSTRUCTION DSDE = INVDIJ*HOOKNL
-    call lcprmm(invdij, hooknl, dsde)
+    dsde(1:ndt,1:ndt) = matmul(invdij(1:ndt,1:ndt), hooknl(1:ndt,1:ndt))
 !
 end subroutine

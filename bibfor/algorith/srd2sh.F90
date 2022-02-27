@@ -37,7 +37,6 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     
     implicit   none
 
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
@@ -109,7 +108,7 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     call srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
     
     !!! Calcul de d2h/ds2
-    call lcprmm(d2hds2,dsdsig,d2hdsi)
+    d2hdsi(1:ndt,1:ndt) = matmul(d2hds2(1:ndt,1:ndt), dsdsig(1:ndt,1:ndt))
     
     !!! Construction de sii*d2h/dsigma = mat2
     call lcprsm(sii,d2hdsi,mat2)
@@ -148,6 +147,6 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     end do
     
     !!! d2sh/ds = ds/dsig * mat4
-    call lcprmm(dsdsig, mat4, d2shds)
+    d2shds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), mat4(1:ndt,1:ndt))
 
 end subroutine

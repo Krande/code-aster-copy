@@ -55,7 +55,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 #include "asterfort/cvmjac.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
@@ -414,7 +413,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
                 ndt, det, iret)
     call lcprte(dldp, dkdx2e, mtmp)
     mtmp(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(mtmp, mtmp1, mate)
+    mate(1:ndt,1:ndt) = matmul(mtmp(1:ndt,1:ndt), mtmp1(1:ndt,1:ndt))
 !
 ! - F = ( DJDX1 - DJDP * DKDX1 ) * ( DLDX1 - DLDP * DKDX1 )-1
 !
@@ -425,13 +424,13 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
                 ndt, det, iret)
     call lcprte(djdp, dkdx1e, mtmp)
     mtmp(1:ndt,1:ndt) = djdx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(mtmp, mtmp1, matf)
+    matf(1:ndt,1:ndt) = matmul(mtmp(1:ndt,1:ndt), mtmp1(1:ndt,1:ndt))
 !
 ! - MATRICE C  TELLE QUE    DX1 = C * DSIG
 !
     call lcprte(djdp, dkdx1e, mtmp)
     mtmp(1:ndt,1:ndt) = djdx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(mate, mtmp, mtmp1)
+    mtmp1(1:ndt,1:ndt) = matmul(mate(1:ndt,1:ndt), mtmp(1:ndt,1:ndt))
     call lcprte(dldp, dkdx1e, mtmp)
     mtmp(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) - mtmp1(1:ndt,1:ndt)
@@ -441,17 +440,17 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
     call lcprte(djdp, dkdset, mtmp)
     mtmp(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(mate, mtmp, mtmp1)
+    mtmp1(1:ndt,1:ndt) = matmul(mate(1:ndt,1:ndt), mtmp(1:ndt,1:ndt))
     call lcprte(dldp, dkdset, mtmp)
     mtmp(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(mtmp2, mtmp, matc)
+    matc(1:ndt,1:ndt) = matmul(mtmp2(1:ndt,1:ndt), mtmp(1:ndt,1:ndt))
 !
 ! - MATRICE D  TELLE QUE    DX2 = D * DSIG
 !
     call lcprte(dldp, dkdx2e, mtmp)
     mtmp(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(matf, mtmp, mtmp1)
+    mtmp1(1:ndt,1:ndt) = matmul(matf(1:ndt,1:ndt), mtmp(1:ndt,1:ndt))
     call lcprte(djdp, dkdx2e, mtmp)
     mtmp(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) - mtmp1(1:ndt,1:ndt)
@@ -461,11 +460,11 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
     call lcprte(dldp, dkdset, mtmp)
     mtmp(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(matf, mtmp, mtmp1)
+    mtmp1(1:ndt,1:ndt) = matmul(matf(1:ndt,1:ndt), mtmp(1:ndt,1:ndt))
     call lcprte(djdp, dkdset, mtmp)
     mtmp(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(mtmp2, mtmp, matd)
+    matd(1:ndt,1:ndt) = matmul(mtmp2(1:ndt,1:ndt), mtmp(1:ndt,1:ndt))
 !
 ! - VTMP2 = DKDS + DKDX1 * C + DKDX2 * D
 !
@@ -492,9 +491,9 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcprte(dgdp, vtmp2, mtmp2)
     mtmp(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp2(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = dgds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
-    call lcprmm(dgdx1, matc, mtmp1)
+    mtmp1(1:ndt,1:ndt) = matmul(dgdx1(1:ndt,1:ndt), matc(1:ndt,1:ndt))
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
-    call lcprmm(dgdx2, matd, mtmp1)
+    mtmp1(1:ndt,1:ndt) = matmul(dgdx2(1:ndt,1:ndt), matd(1:ndt,1:ndt))
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
 !
 ! - DSDE = (MTMP1)-1 * H
@@ -503,7 +502,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call mgauss('NFVP', mtmp, mtmp1, 6, ndt,&
                 ndt, det, iret)
     call lcopli('ISOTROPE', mod, mater(1, 1), hookf)
-    call lcprmm(mtmp1, hookf, dsde)
+    dsde(1:ndt,1:ndt) = matmul(mtmp1(1:ndt,1:ndt), hookf(1:ndt,1:ndt))
 !
 ! - MATRICE DE COMPORTEMENT TANGENT:  SYMETRISATION DE DSDE
 !

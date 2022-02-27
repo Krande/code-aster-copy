@@ -42,7 +42,6 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
 #include "asterfort/hujori.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
@@ -308,7 +307,7 @@ subroutine hujopt(fami, kpg, ksp, mod, angmas,&
         dsde(1:ndt,1:ndt) =hook(1:ndt,1:ndt)
     else
         dsde(:,:) = zero
-        call lcprmm(dsdeb, hooknl, dsde)
+        dsde(1:ndt,1:ndt) = matmul(dsdeb(1:ndt,1:ndt), hooknl(1:ndt,1:ndt))
     endif
 !
 998 continue

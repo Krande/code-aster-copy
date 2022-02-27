@@ -43,7 +43,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -224,7 +223,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
                     iret)
 ! --- PRODUIT MATRICIEL HOOK_NL*D_LAMBDA*DGP/DSIGMA
         call lcprsm(dlambd, dgpds, dldgds)
-        call lcprmm(dsdenl, dldgds, hnldgp)
+        hnldgp(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dldgds(1:ndt,1:ndt))
 ! --- CALCUL DE D(DFPDSIG)/DXI
         plas = .true.
         call lkfsxi(nmat, materf, i1, devsig, ds2hds,&
@@ -295,7 +294,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     nv = materf(22,2)
     phiv = av * (seuilv/patm)**nv
     call lcprsm(phiv, dgvds, dsgvds)
-    call lcprmm(dsdenl, dsgvds, hnldgv)
+    hnldgv(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dsgvds(1:ndt,1:ndt))
 ! --- PRODUIT MATRICIEL HOOK_NL*DPHIV/DSIG*GV
     dphiv = av*nv/patm*(seuilv/patm)**(nv-un)
     call lcprsv(dphiv, dfvdsi, dphvds)
@@ -436,8 +435,8 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     call lcdevi(gv, devgv)
     call lcdevi(gp, devgp)
 ! --- CONSTRUCTION DE D(DEVGII)/DSIGMA
-    call lcprmm(dsdsig, dgvds, dgtvds)
-    call lcprmm(dsdsig, dgpds, dgtpds)
+    dgtvds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgvds(1:ndt,1:ndt))
+    dgtpds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgpds(1:ndt,1:ndt))
     dgivds(:) = zero
     dgipds(:) = zero
     if ((seuilp.ge.zero) .or. (vinf(7).gt.zero)) then

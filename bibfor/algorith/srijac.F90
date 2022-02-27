@@ -48,7 +48,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -295,7 +294,7 @@ subroutine srijac(nmat,materf,timed,timef,&
         
         !!! 2-3-6) Produit matriciel hook*dlambda*d(gp)/d(sig)
         call lcprsm(dlambd,dgpds,dldgds)
-        call lcprmm(dsdenl,dldgds,hnldgp)
+        hnldgp(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dldgds(1:ndt,1:ndt))
         
         !!! 2-3-7) Calcul de d2(fp)/d(sig)d(xi)
         plas=.true.
@@ -395,7 +394,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     phiv=av*(seuilv/patm)**nv
     
     call lcprsm(phiv,dgvds,dsgvds)
-    call lcprmm(dsdenl,dsgvds,hnldgv)
+    hnldgv(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dsgvds(1:ndt,1:ndt))
     
     !!! produit matriciel hook*d(phiv)/d(sig)*gv
     dphiv=av*nv/patm*(seuilv/patm)**(nv-1.d0)
@@ -554,8 +553,8 @@ subroutine srijac(nmat,materf,timed,timef,&
     call lcdevi(gp,devgp)
     
     !!! construction de d(devgii)/d(sig)  
-    call lcprmm(dsdsig,dgvds,dgtvds)
-    call lcprmm(dsdsig,dgpds,dgtpds)
+    dgtvds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgvds(1:ndt,1:ndt))
+    dgtpds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), dgpds(1:ndt,1:ndt))
     dgivds(:) = 0.d0
     dgipds(:) = 0.d0
     

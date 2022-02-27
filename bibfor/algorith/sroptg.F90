@@ -53,7 +53,6 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
 
     implicit   none
 
-#include "asterfort/lcprmm.h"                                                                  
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
@@ -227,7 +226,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     call r8inir(6*6, 0.d0, cc, 1)
     call r8inir(6, 0.d0, dd, 1)
     call srdvds(dt, nbmat, mater, gv, dfdsve, seuilv, dvds)
-    call lcprmm(dvds, de, cc)
+    cc(1:ndt,1:ndt) = matmul(dvds(1:ndt,1:ndt), de(1:ndt,1:ndt))
     cct(1:ndt,1:ndt) = transpose(cc(1:ndt,1:ndt))
     call lcprmv(cct, ddgamv, dd)
     

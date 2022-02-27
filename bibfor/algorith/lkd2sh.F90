@@ -31,7 +31,6 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 !     OUT D2SHDS :  DERIVEE 2NDE SII*H PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
@@ -94,7 +93,7 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
                 dhds, d2hds2)
 !
 ! --- CALCUL DE D2HDSIGMA
-    call lcprmm(d2hds2, dsdsig, d2hdsi)
+    d2hdsi(1:ndt,1:ndt) = matmul(d2hds2(1:ndt,1:ndt), dsdsig(1:ndt,1:ndt))
 !
 ! --- CONSTRUCTION DE SII*D2HDSDSIGMA = MAT2
     call lcprsm(sii, d2hdsi, mat2)
@@ -132,6 +131,6 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 80  end do
 !
 ! --- D2SHDS = DSDSIG.MAT4
-    call lcprmm(dsdsig, mat4, d2shds)
+    d2shds(1:ndt,1:ndt) = matmul(dsdsig(1:ndt,1:ndt), mat4(1:ndt,1:ndt))
 !
 end subroutine

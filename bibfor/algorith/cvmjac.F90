@@ -66,7 +66,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcicma.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprmm.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -201,12 +200,12 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !       ----------------------------------------------------------------
 !
 ! - DGDS(T+DT)
-    call lcprmm(hook, ddfdds, dgds)
+    dgds(1:ndt,1:ndt) = matmul(hook(1:ndt,1:ndt), ddfdds(1:ndt,1:ndt))
     call lcprsm(dp, dgds, dgds)
     dgds(1:ndt,1:ndt) = i6(1:ndt,1:ndt) + dgds(1:ndt,1:ndt)
 !
 ! - DGDX1(T+DT)
-    call lcprmm(hook, ddfdsx, dgdx1)
+    dgdx1(1:ndt,1:ndt) = matmul(hook(1:ndt,1:ndt), ddfdsx(1:ndt,1:ndt))
     call lcprsm(dp, dgdx1, dgdx1)
 !
 ! - DGDX2(T+DT)
