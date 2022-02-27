@@ -25,7 +25,6 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), dp, beta, se(6), seq, dsde(6, 6)
@@ -137,9 +136,9 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 ! =====================================================================
 ! --- CALCUL DE L OPERATEUR TANGENT -----------------------------------
 ! =====================================================================
-                call lcsoma(pmat1, pmat2, bidon)
-                call lcsoma(bidon, pmat3, pmat1)
-                call lcsoma(pmat1, pmat4, dsde)
+                bidon(1:ndt,1:ndt) = pmat1(1:ndt,1:ndt) + pmat2(1:ndt,1:ndt)
+                pmat1(1:ndt,1:ndt) = bidon(1:ndt,1:ndt) + pmat3(1:ndt,1:ndt)
+                dsde(1:ndt,1:ndt) = pmat1(1:ndt,1:ndt) + pmat4(1:ndt,1:ndt)
             else if (plas.eq.2.0d0) then
                 call utmess('F', 'ALGORITH3_43')
 ! =====================================================================

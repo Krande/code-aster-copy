@@ -29,7 +29,6 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/rcvarc.h"
     character(len=*) :: fami
     character(len=8) :: mod
@@ -126,7 +125,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 ! - DRSDS
     call irrfss(sigf, ddfdds)
     call lcprsm((dp+dpi), ddfdds, drsds)
-    call lcsoma(fkooh, drsds, drsds)
+    drsds(1:ndt,1:ndt) = fkooh(1:ndt,1:ndt) + drsds(1:ndt,1:ndt)
 ! - DRSDP
     drsdp(1:ndt) = dfds(1:ndt)
 ! - DRSDE

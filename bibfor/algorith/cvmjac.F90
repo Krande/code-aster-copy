@@ -72,7 +72,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
     integer :: ndt, ndi, nmat, nmod
     integer :: ioptio, idnr, nopt
@@ -205,7 +204,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 ! - DGDS(T+DT)
     call lcprmm(hook, ddfdds, dgds)
     call lcprsm(dp, dgds, dgds)
-    call lcsoma(i6, dgds, dgds)
+    dgds(1:ndt,1:ndt) = i6(1:ndt,1:ndt) + dgds(1:ndt,1:ndt)
 !
 ! - DGDX1(T+DT)
     call lcprmm(hook, ddfdsx, dgdx1)
@@ -244,7 +243,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprte(vtmp, dfds, mtmp)
     call lcprsc(x1, dfds, x1df)
     call lcprsm(x1df, ddfdds, mtmp1)
-    call lcsoma(mtmp, mtmp1, mtmp)
+    mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprsm(yy, mtmp, dlds)
     call lcprsm(xx, ddfdds, mtmp)
     dlds(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
@@ -253,15 +252,15 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprmv(ddfdsx, x1, vtmp)
     call lcprte(vtmp, dfds, mtmp1)
     call lcprsm(x1df, ddfdsx, mtmp)
-    call lcsoma(mtmp, mtmp1, mtmp1)
+    mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprte(dfds, dfds, mtmp)
-    call lcsoma(mtmp, mtmp1, mtmp)
+    mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprsm(yy, mtmp, dldx1)
     call lcprte(x1, x1, mtmp)
     call lcprsm(ww, mtmp, mtmp)
-    call lcsoma(dldx1, mtmp, dldx1)
+    dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
     call lcprsm(zz, i6, mtmp)
-    call lcsoma(dldx1, mtmp, dldx1)
+    dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
     call lcprsm(xx, ddfdsx, mtmp)
     dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
@@ -312,7 +311,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprte(vtmp, dfds, mtmp)
     call lcprsc(x2, dfds, x2df)
     call lcprsm(x2df, ddfdds, mtmp1)
-    call lcsoma(mtmp, mtmp1, mtmp)
+    mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprsm(yy, mtmp, djds)
     call lcprsm(xx, ddfdds, mtmp)
     djds(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
@@ -321,15 +320,15 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprmv(ddfdsx, x2, vtmp)
     call lcprte(vtmp, dfds, mtmp1)
     call lcprsm(x2df, ddfdsx, mtmp)
-    call lcsoma(mtmp, mtmp1, mtmp1)
+    mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprte(dfds, dfds, mtmp)
-    call lcsoma(mtmp, mtmp1, mtmp)
+    mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprsm(yy, mtmp, djdx2)
     call lcprte(x2, x2, mtmp)
     call lcprsm(ww, mtmp, mtmp)
-    call lcsoma(djdx2, mtmp, djdx2)
+    djdx2(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
     call lcprsm(zz, i6, mtmp)
-    call lcsoma(djdx2, mtmp, djdx2)
+    djdx2(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
     call lcprsm(xx, ddfdsx, mtmp)
     djdx2(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
@@ -741,13 +740,13 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             call lcprmv(ddfdds, vtmp, vtmp1)
             call lcprte(vtmp1, epxi, mtmp)
             call lcprsm(-xx*dp*nnet, ddfdds, mtmp1)
-            call lcsoma(mtmp1, mtmp, dxids)
+            dxids(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
 !
 ! - DXIDX1(T+DT)
             call lcprmv(ddfdsx, vtmp, vtmp1)
             call lcprte(vtmp1, epxi, mtmp)
             call lcprsm(-xx*dp*nnet, ddfdsx, mtmp1)
-            call lcsoma(mtmp1, mtmp, dxidx1)
+            dxidx1(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
 !
 ! - DXIDX2(T+DT)
             dxidx2(1:ndt,1:ndt) =dxidx1(1:ndt,1:ndt)
@@ -764,7 +763,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             call lcprsv(xx, dfds, vtmp1)
             vtmp(1:ndt) = vtmp1(1:ndt) - vtmp(1:ndt)
             call lcprte(vtmp, epxi, mtmp1)
-            call lcsoma(mtmp1, mtmp, dxidxi)
+            dxidxi(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
 !
         else
             dgdxxi(:,:) = 0.d0

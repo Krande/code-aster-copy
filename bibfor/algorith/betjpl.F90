@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ implicit none
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
@@ -72,9 +71,10 @@ implicit none
     real(kind=8) :: cc, ccc, tt, ttt, ct, tc, discr
     integer :: iadzi, iazk24
     character(len=8) :: nomail
+!       ----------------------------------------------------------------
     integer :: ndt, ndi
-    common /tdim/ ndt, ndi
-
+!     ------------------------------------------------------------------
+    common /tdim/ ndt,ndi
 !       ----------------------------------------------------------------
     data  pi0       /un     , un    , un    , zero , zero , zero/
 !       ----------------------------------------------------------------
@@ -167,14 +167,14 @@ implicit none
         call lcprte(hdfcds, vtmp, dsde)
         call lcprsv((discr*ccc), hdftds, vtmp)
         call lcprte(hdftds, vtmp, matr1)
-        call lcsoma(matr1, dsde, dsde)
+        dsde(1:ndt,1:ndt) = matr1(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
         call lcprsv(discr*ct, hdftds, vtmp)
         call lcprte(hdfcds, vtmp, matr1)
         dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) - matr1(1:ndt,1:ndt)
         call lcprsv(discr*tc, hdfcds, vtmp)
         call lcprte(hdftds, vtmp, matr1)
         dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) - matr1(1:ndt,1:ndt)
-        call lcsoma(hook, dsde, dsde)
+        dsde(1:ndt,1:ndt) = hook(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
     endif
 !
     if (nseuil .eq. 2 .or. nseuil .eq. 22) then
@@ -184,7 +184,7 @@ implicit none
         discr = -un / ttt
         call lcprsv(discr, hdftds, vtmp)
         call lcprte(hdftds, vtmp, dsde)
-        call lcsoma(hook, dsde, dsde)
+        dsde(1:ndt,1:ndt) = hook(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
     endif
 !
     if (nseuil .eq. 1 .or. nseuil .eq. 11) then
@@ -194,7 +194,7 @@ implicit none
         discr = -un / ccc
         call lcprsv(discr, hdfcds, vtmp)
         call lcprte(hdfcds, vtmp, dsde)
-        call lcsoma(hook, dsde, dsde)
+        dsde(1:ndt,1:ndt) = hook(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
     endif
 !
 end subroutine

@@ -37,7 +37,6 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lcsomh.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/rsliso.h"
@@ -59,6 +58,9 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 !
     character(len=16) :: loi
     character(len=*) :: fami
+!
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
 !
     parameter       ( zero  = 0.d0   )
     parameter       ( un    = 1.d0   )
@@ -190,8 +192,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
             call lcprsv(a5/trois, i2, v2)
             call lcsove(v1, v2, v1)
             call lcprte(rigdv, v1, m3)
-            call lcsoma(m1, m2, dsde)
-            call lcsoma(m3, dsde, dsde)
+            dsde(1:ndt,1:ndt) = m1(1:ndt,1:ndt) + m2(1:ndt,1:ndt) + m3(1:ndt,1:ndt)
 !
 ! A CE STADE DSDE EST LE TENSEUR TANGENT COHERENT
 ! ENTRE D(SIG/RHO) ET DEPS
@@ -201,7 +202,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
             call lcsove(v1, v2, v1)
             call lcprte(rig, v1, m1)
             call lcprsm(y4/troisk, m1, m1)
-            call lcsoma(dsde, m1, dsde)
+            dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) + m1(1:ndt,1:ndt)
             call lcprsm(rho, dsde, dsde)
 ! -- CAS DP=0
         else
@@ -209,9 +210,9 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
             call lcprsm(un/trois, m1, m1)
             call lcprsm(rho*troisk, m1, m2)
             call lcprsm(-un, m1, m1)
-            call lcsoma(i4, m1, m1)
+            m1(1:ndt,1:ndt) = i4(1:ndt,1:ndt) + m1(1:ndt,1:ndt)
             call lcprsm(rho*deuxmu, m1, m1)
-            call lcsoma(m1, m2, dsde)
+            dsde(1:ndt,1:ndt) = m1(1:ndt,1:ndt) + m2(1:ndt,1:ndt)
         endif
     endif
 ! ------------------------------------------------------------------

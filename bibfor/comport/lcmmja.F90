@@ -58,7 +58,6 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
 #include "asterfort/lcmmjg.h"
 #include "asterfort/lcmmsg.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/r8inir.h"
     integer :: nmat, nr, nbfsys, ndt, ndi, nsfa, nsfv, nbsys, is, ir
     integer :: nbcomm(nmat, 3), ifa, i, j, k, l, iret, ifl, itmax, nuvr, nuvs
@@ -237,7 +236,7 @@ subroutine lcmmja(typmod, nmat, materf, timed,&
                     fe, dfpdbs, msdgdt, drdy)
     endif
 !
-    call lcsoma(msdgdt, fkooh, msdgdt)
+    msdgdt(1:ndt,1:ndt) = msdgdt(1:ndt,1:ndt) + fkooh(1:ndt,1:ndt)
     call lcicma(msdgdt, 6, 6, ndt, ndt,&
                 1, 1, drdy, nr, nr,&
                 1, 1)

@@ -35,7 +35,6 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lkd2hs.h"
     integer :: iret, nmat
     real(kind=8) :: materf(nmat, 2), varh(3), d2shds(6, 6), dhds(6)
@@ -101,7 +100,7 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
     call lcprsm(sii, d2hdsi, mat2)
 !
 ! --- ADDITION DE MAT2 + MAT1 = MAT3
-    call lcsoma(mat1, mat2, mat3)
+    mat3(1:ndt,1:ndt) = mat1(1:ndt,1:ndt) + mat2(1:ndt,1:ndt)
 !
 ! --- CALCUL DE COEFH*MAT3 = MAT2
     call lcprsm(coefh, mat3, mat2)

@@ -23,7 +23,6 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 #include "asterfort/calcdl.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
     integer :: nbmat
     real(kind=8) :: se(6), dg, etap, i1e, dsidep(6, 6), materf(nbmat, 2)
     real(kind=8) :: vp(3), vecp(3, 3), sigeqe, parame(4), derive(5), sig3
@@ -108,7 +107,7 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 ! =====================================================================
     param1 = un - trois*mu*dg/(sigeqe*(etap+un))
     call lcprsm(param1, dsede, pmat2)
-    call lcsoma(pmat2, pmat1, pmat6)
+    pmat6(1:ndt,1:ndt) = pmat2(1:ndt,1:ndt) + pmat1(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE SE*DSIGEQDE -------------------------------------------
 ! ====================================================================

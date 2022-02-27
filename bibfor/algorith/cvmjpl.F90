@@ -61,7 +61,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcptmv.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/mgauss.h"
 #include "blas/daxpy.h"
@@ -492,12 +491,12 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
     call lcprte(dgde3, vtmp1, mtmp1)
     call lcprte(dgdp, vtmp2, mtmp2)
-    call lcsoma(mtmp1, mtmp2, mtmp)
+    mtmp(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp2(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = dgds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(dgdx1, matc, mtmp1)
-    call lcsoma(mtmp, mtmp1, mtmp)
+    mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprmm(dgdx2, matd, mtmp1)
-    call lcsoma(mtmp, mtmp1, mtmp)
+    mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
 !
 ! - DSDE = (MTMP1)-1 * H
 !
@@ -510,7 +509,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 ! - MATRICE DE COMPORTEMENT TANGENT:  SYMETRISATION DE DSDE
 !
     mtmp(1:ndt,1:ndt) = transpose(dsde(1:ndt,1:ndt))
-    call lcsoma(dsde, mtmp, dsde)
+    dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
     call lcprsm(0.5d0, dsde, dsde)
 !
 !

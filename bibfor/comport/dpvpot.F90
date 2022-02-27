@@ -29,7 +29,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi
@@ -288,9 +287,9 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- SOMMATION DES PARTIES DE ds/dEPS --------------------------------
 ! =====================================================================
-        call lcsoma(part1, part2, inter1)
+        inter1(1:ndt,1:ndt) = part1(1:ndt,1:ndt) + part2(1:ndt,1:ndt)
 !
-        call lcsoma(inter1, part3, dsdeps)
+        dsdeps(1:ndt,1:ndt) = inter1(1:ndt,1:ndt) + part3(1:ndt,1:ndt)
 !
         dsdept(1:ndt,1:ndt) = transpose(dsdeps(1:ndt,1:ndt))
         do 980 ii = 1, ndt
@@ -330,7 +329,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 99          continue
 98      continue
         call lcprsm(unstr, inter2, inter2)
-        call lcsoma(dsdeps, inter2, dsidep)
+        dsidep(1:ndt,1:ndt) = dsdeps(1:ndt,1:ndt) + inter2(1:ndt,1:ndt)
     endif
 ! =====================================================================
 9999  continue

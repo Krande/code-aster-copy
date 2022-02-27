@@ -41,7 +41,6 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/srd2hs.h"
 
     !!!
@@ -116,7 +115,7 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     call lcprsm(sii,d2hdsi,mat2)
     
     !!! mat2 + mat1 = mat3
-    call lcsoma(mat1,mat2,mat3)
+    mat3(1:ndt,1:ndt) = mat1(1:ndt,1:ndt) + mat2(1:ndt,1:ndt)
     
     !!! mat2 = coefh*mat3
     mat2(1:ndt,1:ndt) =mat3(1:ndt,1:ndt)

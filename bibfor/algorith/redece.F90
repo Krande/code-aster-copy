@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/lc0000.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -302,7 +301,7 @@ character(len=*) :: fami
 !
         if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
             call lcprsm(1.d0/npal, dsdelo, dsdelo)
-            call lcsoma(dsde, dsdelo, dsde)
+            dsde = dsde + dsdelo
         endif
 !
     end do

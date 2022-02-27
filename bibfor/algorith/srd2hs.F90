@@ -43,7 +43,6 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
 #include "asterfort/lcsove.h"
 #include "asterfort/lcprsm.h"
 #include "asterfort/srd2de.h"
-#include "asterfort/lcsoma.h"
 
     !!!
     !!! Variables globales
@@ -123,9 +122,9 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
     end do
     
     call lcprsm(-1.d0*dets,mident,fact8)
-    call lcsoma(fact5,fact6,fact56)
-    call lcsoma(fact7,fact8,fact78)
-    call lcsoma(fact56,fact78,fact5678)
+    fact56(1:ndt,1:ndt) = fact5(1:ndt,1:ndt) + fact6(1:ndt,1:ndt)
+    fact78(1:ndt,1:ndt) = fact7(1:ndt,1:ndt) + fact8(1:ndt,1:ndt)
+    fact5678(1:ndt,1:ndt) = fact56(1:ndt,1:ndt) + fact78(1:ndt,1:ndt)
     call lcprsm(3.d0*r54/sii**5.d0,fact5678,d2cds2)
     
     !!!
@@ -134,6 +133,6 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
     
     call lcprsm(d2rdc2,pdcds,fact9)
     call lcprsm(drdcos,d2cds2,fact10)
-    call lcsoma(fact9,fact10,d2hds2)
+    d2hds2(1:ndt,1:ndt) = fact9(1:ndt,1:ndt) + fact10(1:ndt,1:ndt)
 
 end subroutine

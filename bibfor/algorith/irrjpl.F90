@@ -29,7 +29,6 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 #include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcsoma.h"
 #include "asterfort/mgauss.h"
     character(len=8) :: model
     integer :: nmat
@@ -111,7 +110,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 !     Calcul de DRSDS : (6,6)
     call irrfss(sigf, ddfdds)
     call lcprsm((dp+dpi), ddfdds, drsds)
-    call lcsoma(fkooh, drsds, drsds)
+    drsds(1:ndt,1:ndt) = fkooh(1:ndt,1:ndt) + drsds(1:ndt,1:ndt)
 !
 !     Calcul de DRPDP : scalaire
 !     loi de comportement : Calcul du seuil
@@ -161,7 +160,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     endif
 !
 !     Assemblage de DRSDS et DDFDDS : (6,6)
-    call lcsoma(drsds, ddfdds, mat)
+    mat(1:ndt,1:ndt) = drsds(1:ndt,1:ndt) + ddfdds(1:ndt,1:ndt)
 !
 !     Inversion de MAT : DSDE(6,6)
     dsde(1:ndt,1:ndt) =i4(1:ndt,1:ndt)
