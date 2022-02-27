@@ -41,7 +41,6 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 !     --------------------------------------------------------------
 #include "asterc/r8prem.h"
 #include "asterfort/fgequi.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsm.h"
@@ -193,7 +192,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
         call lcprsv(1.5d0 / seq, dev, n)
         call lcprte(n, n, nxn)
         call lcprsm(1.5d0, id, dfedee)
-        call lcdima(dfedee, nxn, dfedee)
+        dfedee(1:ndt,1:ndt) = dfedee(1:ndt,1:ndt) - nxn(1:ndt,1:ndt)
         do i = 1, 6
            do j = 1, 6
               drdy(i,j)=drdy(i,j)+deuxmu*theta*dp/seq*dm1*dfedee(i,j)

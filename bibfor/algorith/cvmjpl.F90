@@ -53,7 +53,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterfort/cvmjac.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lcdive.h"
 #include "asterfort/lceqma.h"
 #include "asterfort/lceqvn.h"
@@ -416,63 +415,63 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 ! - E = ( DLDX2 - DLDP * DKDX2 ) * ( DJDX2 - DJDP * DKDX2 )-1
 !
     call lcprte(djdp, dkdx2e, mtmp)
-    call lcdima(djdx2, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lceqma(i6, mtmp1)
     call mgauss('NFVP', mtmp, mtmp1, 6, ndt,&
                 ndt, det, iret)
     call lcprte(dldp, dkdx2e, mtmp)
-    call lcdima(dldx2, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(mtmp, mtmp1, mate)
 !
 ! - F = ( DJDX1 - DJDP * DKDX1 ) * ( DLDX1 - DLDP * DKDX1 )-1
 !
     call lcprte(dldp, dkdx1e, mtmp)
-    call lcdima(dldx1, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lceqma(i6, mtmp1)
     call mgauss('NFVP', mtmp, mtmp1, 6, ndt,&
                 ndt, det, iret)
     call lcprte(djdp, dkdx1e, mtmp)
-    call lcdima(djdx1, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = djdx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(mtmp, mtmp1, matf)
 !
 ! - MATRICE C  TELLE QUE    DX1 = C * DSIG
 !
     call lcprte(djdp, dkdx1e, mtmp)
-    call lcdima(djdx1, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = djdx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(mate, mtmp, mtmp1)
     call lcprte(dldp, dkdx1e, mtmp)
-    call lcdima(dldx1, mtmp, mtmp)
-    call lcdima(mtmp, mtmp1, mtmp1)
+    mtmp(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
+    mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) - mtmp1(1:ndt,1:ndt)
     call lceqma(i6, mtmp2)
     call mgauss('NFVP', mtmp1, mtmp2, 6, ndt,&
                 ndt, det, iret)
 !
     call lcprte(djdp, dkdset, mtmp)
-    call lcdima(djds, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(mate, mtmp, mtmp1)
     call lcprte(dldp, dkdset, mtmp)
-    call lcdima(dlds, mtmp, mtmp)
-    call lcdima(mtmp1, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
+    mtmp(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(mtmp2, mtmp, matc)
 !
 ! - MATRICE D  TELLE QUE    DX2 = D * DSIG
 !
     call lcprte(dldp, dkdx2e, mtmp)
-    call lcdima(dldx2, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(matf, mtmp, mtmp1)
     call lcprte(djdp, dkdx2e, mtmp)
-    call lcdima(djdx2, mtmp, mtmp)
-    call lcdima(mtmp, mtmp1, mtmp1)
+    mtmp(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
+    mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) - mtmp1(1:ndt,1:ndt)
     call lceqma(i6, mtmp2)
     call mgauss('NFVP', mtmp1, mtmp2, 6, ndt,&
                 ndt, det, iret)
 !
     call lcprte(dldp, dkdset, mtmp)
-    call lcdima(dlds, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(matf, mtmp, mtmp1)
     call lcprte(djdp, dkdset, mtmp)
-    call lcdima(djds, mtmp, mtmp)
-    call lcdima(mtmp1, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
+    mtmp(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(mtmp2, mtmp, matd)
 !
 ! - VTMP2 = DKDS + DKDX1 * C + DKDX2 * D
@@ -499,7 +498,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
     call lcprte(dgde3, vtmp1, mtmp1)
     call lcprte(dgdp, vtmp2, mtmp2)
     call lcsoma(mtmp1, mtmp2, mtmp)
-    call lcdima(dgds, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = dgds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     call lcprmm(dgdx1, matc, mtmp1)
     call lcsoma(mtmp, mtmp1, mtmp)
     call lcprmm(dgdx2, matd, mtmp1)

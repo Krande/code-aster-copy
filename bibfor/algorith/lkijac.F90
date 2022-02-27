@@ -43,7 +43,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
@@ -436,7 +435,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     unstro = un / trois
     call lcprte(kron, kron, kron2)
     call lcprsm(unstro, kron2, kron3)
-    call lcdima(mident, kron3, dsdsig)
+    dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron3(1:ndt,1:ndt)
 ! --- CONSTRUCTION DE DEVG
     call lcdevi(gv, devgv)
     call lcdevi(gp, devgp)

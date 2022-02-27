@@ -40,7 +40,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/betfpp.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
@@ -73,6 +72,9 @@ implicit none
     real(kind=8) :: cc, ccc, tt, ttt, ct, tc, discr
     integer :: iadzi, iazk24
     character(len=8) :: nomail
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
+
 !       ----------------------------------------------------------------
     data  pi0       /un     , un    , un    , zero , zero , zero/
 !       ----------------------------------------------------------------
@@ -168,10 +170,10 @@ implicit none
         call lcsoma(matr1, dsde, dsde)
         call lcprsv(discr*ct, hdftds, vtmp)
         call lcprte(hdfcds, vtmp, matr1)
-        call lcdima(dsde, matr1, dsde)
+        dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) - matr1(1:ndt,1:ndt)
         call lcprsv(discr*tc, hdfcds, vtmp)
         call lcprte(hdftds, vtmp, matr1)
-        call lcdima(dsde, matr1, dsde)
+        dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) - matr1(1:ndt,1:ndt)
         call lcsoma(hook, dsde, dsde)
     endif
 !

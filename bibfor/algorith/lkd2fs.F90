@@ -35,7 +35,6 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
 !     OUT D2FDS2 :  DERIVEE 2NDE F PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-#include "asterfort/lcdima.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -91,6 +90,6 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
     call lcprsm(coef2, d2shds, mat3)
 !
 ! --- CONSTRUCTION DIFFERENCE MAT3-MAT2 = D2FDS2
-    call lcdima(mat3, mat2, d2fds2)
+    d2fds2(1:ndt,1:ndt) = mat3(1:ndt,1:ndt) - mat2(1:ndt,1:ndt)
 !
 end subroutine

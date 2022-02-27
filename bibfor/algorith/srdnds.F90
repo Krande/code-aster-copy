@@ -39,7 +39,6 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     
     implicit   none
 
-#include "asterfort/lcdima.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
@@ -103,7 +102,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     unstro=1.d0/3.d0
     call lcprte(kron,kron,kron2)
     call lcprsm(unstro,kron2,kron2)
-    call lcdima(mident,kron2,dsdsig)
+    dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron2(1:ndt,1:ndt)
     
     !!! Construction de d(sii)/d(s)
     unssii=1.d0/sii

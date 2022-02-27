@@ -30,7 +30,6 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 !       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 !       ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
@@ -147,7 +146,7 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
     if (ier .gt. 0) write(6,*)'ECHEC AVEC PRMAMA 2'
 !
 ! --- DIFFERENCE DE MATRICE (JSS - J6X6) = DIJACO
-    call lcdima(jss, j6x6, dijaco)
+    dijaco(1:ndt,1:ndt) = jss(1:ndt,1:ndt) - j6x6(1:ndt,1:ndt)
 !
 ! --- INVERSION DU TERME (DIJACO)^-1 = INVDIJ
     call lcinma(0.d0, invdij)

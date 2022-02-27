@@ -34,7 +34,6 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 !     OUT DNDISG :  DERIVEE DE N PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-#include "asterfort/lcdima.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprmv.h"
@@ -90,7 +89,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
     unstro = un / trois
     call lcprte(kron, kron, kron2)
     call lcprsm(unstro, kron2, kron2)
-    call lcdima(mident, kron2, dsdsig)
+    dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron2(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION DE DSII/D(DEVSIG)
     unssii = un/sii

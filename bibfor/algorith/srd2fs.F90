@@ -40,7 +40,6 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
 
     implicit   none
 
-#include "asterfort/lcdima.h"
 #include "asterfort/lcinve.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsm.h"
@@ -124,6 +123,6 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     !!! Construction mat3 - mat2 = d2fds2
     !!!
     
-    call lcdima(mat3, mat2, d2fds2)
+    d2fds2(1:ndt,1:ndt) = mat3(1:ndt,1:ndt) - mat2(1:ndt,1:ndt)
 
 end subroutine

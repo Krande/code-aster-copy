@@ -31,7 +31,6 @@ subroutine chbfsx(sig, x1, x2, i4, ddfdsx)
 !       ----------------------------------------------------------------
 #include "asterfort/chbfs.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lcdive.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsm.h"
@@ -51,6 +50,6 @@ subroutine chbfsx(sig, x1, x2, i4, ddfdsx)
     call chbfs(sig, x1, x2, dfds)
     call lcprte(dfds, dfds, dfds2)
     call lcprsm(1.5d0, i4, ddfdsx)
-    call lcdima(ddfdsx, dfds2, ddfdsx)
+    ddfdsx(1:n,1:n) = ddfdsx(1:n,1:n) - dfds2(1:n,1:n)
     call lcprsm(-1.d0 / s, ddfdsx, ddfdsx)
 end subroutine

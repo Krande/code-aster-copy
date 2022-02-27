@@ -48,7 +48,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcinve.h"
@@ -552,7 +551,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     
     call lcprte(kron,kron,kron2)
     call lcprsm(unstro,kron2,kron3)
-    call lcdima(mident,kron3,dsdsig)
+    dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron3(1:ndt,1:ndt)
     
     !!! construction de dev(g)
     call lcdevi(gv,devgv)

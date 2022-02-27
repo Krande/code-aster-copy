@@ -19,7 +19,6 @@
 subroutine irrfss(sig, ddfdds)
     implicit none
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcprsm.h"
@@ -45,6 +44,8 @@ subroutine irrfss(sig, ddfdds)
     parameter       ( zero =  0.d0              )
     parameter       ( un   =  1.d0              )
     real(kind=8) :: dev(6), dfds(6), dfds2(6, 6)
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
     data id         / d23   , d13   , d13   , zero , zero , zero ,&
      &                  d13   , d23   , d13   , zero , zero , zero ,&
      &                  d13   , d13   , d23   , zero , zero , zero ,&
@@ -62,7 +63,7 @@ subroutine irrfss(sig, ddfdds)
         call lcprsv(1.5d0 / s, dev, dfds)
         call lcprte(dfds, dfds, dfds2)
         call lcprsm(1.5d0, id, ddfdds)
-        call lcdima(ddfdds, dfds2, ddfdds)
+        ddfdds(1:ndt,1:ndt) = ddfdds(1:ndt,1:ndt) - dfds2(1:ndt,1:ndt)
         call lcprsm(1.d0/ s, ddfdds, ddfdds)
     endif
 !

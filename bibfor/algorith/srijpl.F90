@@ -36,7 +36,6 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     implicit none
 
 #include "asterc/r8prem.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lceqma.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/lcopli.h"
@@ -168,7 +167,7 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     if (ier.gt.0) write(6,*)'ECHEC AVEC PRMAMA 2'
     
     !!! Difference de matrice (jss - j6x6) = dijaco
-    call lcdima(jss,j6x6,dijaco)
+    dijaco(1:ndt,1:ndt) = jss(1:ndt,1:ndt) - j6x6(1:ndt,1:ndt)
     
     !!! Inversion du terme dijaco
     call lcinma(0.d0,invdij)

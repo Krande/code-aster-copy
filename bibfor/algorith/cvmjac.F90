@@ -63,7 +63,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/chbfss.h"
 #include "asterfort/chbfsx.h"
 #include "asterfort/cvmcvx.h"
-#include "asterfort/lcdima.h"
 #include "asterfort/lcdive.h"
 #include "asterfort/lceqma.h"
 #include "asterfort/lceqve.h"
@@ -254,7 +253,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcsoma(mtmp, mtmp1, mtmp)
     call lcprsm(yy, mtmp, dlds)
     call lcprsm(xx, ddfdds, mtmp)
-    call lcdima(dlds, mtmp, dlds)
+    dlds(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DLDX1(T+DT)
     call lcprmv(ddfdsx, x1, vtmp)
@@ -270,22 +269,22 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprsm(zz, i6, mtmp)
     call lcsoma(dldx1, mtmp, dldx1)
     call lcprsm(xx, ddfdsx, mtmp)
-    call lcdima(dldx1, mtmp, dldx1)
+    dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DLDX2(T+DT)
     call lcprsm(yy, mtmp1, dldx2)
-    call lcdima(dldx2, mtmp, dldx2)
+    dldx2(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! -- CAS ANISOTHERME
     if (c1 .ne. 0.d0) then
         difc1 = (c1-c1d)/c1
         call lcprsm(difc1, i6, mtmp)
-        call lcdima(dldx1, mtmp, dldx1)
+        dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     endif
     if (c2 .ne. 0.d0) then
         difc2 = (c2-c2d)/c2
         call lcprsm(difc2, i6, mtmp)
-        call lcdima(dldx2, mtmp, dldx2)
+        dldx2(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     endif
 !
 ! - DLDP(T+DT)
@@ -322,7 +321,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcsoma(mtmp, mtmp1, mtmp)
     call lcprsm(yy, mtmp, djds)
     call lcprsm(xx, ddfdds, mtmp)
-    call lcdima(djds, mtmp, djds)
+    djds(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DJDX2(T+DT)
     call lcprmv(ddfdsx, x2, vtmp)
@@ -338,11 +337,11 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprsm(zz, i6, mtmp)
     call lcsoma(djdx2, mtmp, djdx2)
     call lcprsm(xx, ddfdsx, mtmp)
-    call lcdima(djdx2, mtmp, djdx2)
+    djdx2(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DJDX1(T+DT)
     call lcprsm(yy, mtmp1, djdx1)
-    call lcdima(djdx1, mtmp, djdx1)
+    djdx1(1:ndt,1:ndt) = djdx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DJDP(T+DT)
     yy = g20 * ( ccin + dcin * dp ) * d2
