@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -298,7 +298,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 
 # Champ .CARCOQUE (carte) :
 #---------------------------
-CACOQU=CREA_CHAMP(TYPE_CHAM='CART_CACOQU', OPERATION='EXTR', CARA_ELEM=CARA,
+CACOQU=CREA_CHAMP(TYPE_CHAM='CART_CACOQU_R', OPERATION='EXTR', CARA_ELEM=CARA,
                NOM_CHAM='.CARCOQUE', INFO=2,)
 TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='EP',  VALE_REFE=8.0E-2,
           VALE_CALC=8.0E-2, GROUP_MA='M14', CHAM_GD=CACOQU,))
