@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -93,18 +93,18 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! ======================================================================
     i1 = trace(ndi,sig)
     if ((i1+qinit) .eq. 0.0d0) then
-        i1 = -qinit+1.d-12 * pa
-        pref = abs(pa)
+       i1 = -qinit+1.d-12 * pa
+       pref = abs(pa)
     else
-        pref = abs(i1+qinit)
+       pref = abs(i1+qinit)
     endif
 ! ======================================================================
 ! --- RECUPERATION DES VARIABLES INTERNES ------------------------------
 ! ======================================================================
     r = vin(2)
-    do 10 i = 1, ndt
-        x(i) = vin(i+2)
-10  continue
+    do i = 1, ndt
+       x(i) = vin(i+2)
+    end do
 ! ======================================================================
 ! --- OPERATEUR DE RIGIDITE CALCULE A ITERARTION -----------------------
 ! ======================================================================
@@ -118,21 +118,23 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! --- 3D/DP/AX ---------------------------------------------------------
 ! ======================================================================
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-        do 20 i = 1, ndi
-            do 20 j = 1, ndi
-                if (i .eq. j) hook(i,j) = al
-                if (i .ne. j) hook(i,j) = la
-20          continue
-        do 30 i = ndi+1, ndt
-            do 30 j = ndi+1, ndt
-                if (i .eq. j) hook(i,j) = deux* mu
-30          continue
-! ======================================================================
-! --- CP/1D ------------------------------------------------------------
-! ======================================================================
+       do i = 1, ndi
+          do j = 1, ndi
+             if (i .eq. j) hook(i,j) = al
+             if (i .ne. j) hook(i,j) = la
+          end do
+       end do
+       do i = ndi+1, ndt
+          do j = ndi+1, ndt
+             if (i .eq. j) hook(i,j) = deux* mu
+          end do
+       end do
+   ! ======================================================================
+   ! --- CP/1D ------------------------------------------------------------
+   ! ======================================================================
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then
-        call utmess('F', 'ALGORITH2_15')
-! ======================================================================
+       call utmess('F', 'ALGORITH2_15')
+   ! ======================================================================
     endif
 ! ======================================================================
 ! --- LOIS D'ECOUISSAGE DES VARIABLES INTERNES R ET X ------------------
@@ -159,7 +161,7 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! --- CALCUL DE Q ------------------------------------------------------
 ! ======================================================================
     call calcq(q, gamma, pref, epssig, qq,&
-               codret)
+         codret)
 ! ======================================================================
 ! --- CALCUL DE PC (CONTRAINTE MOYENNE CRITIQUE) -----------------------
 ! ======================================================================
@@ -173,85 +175,91 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! --- CALCUL DE LA FONCTION PHI ----------------------------------------
 ! ======================================================================
     if (xii .le. epssig) then
-        phi = un
+       phi = un
     else if (siirel.le.epssig) then
-        cosa = un
-        cosdif = un
-        rr = rc + mucjs*max(zero,log(trois*pc/(i1+qinit)))
-        phio = cosa/( rr - hts/htq*rm*cosdif)
-        phi = phio * hts * qqii
+       cosa = un
+       cosdif = un
+       rr = rc + mucjs*max(zero,log(trois*pc/(i1+qinit)))
+       phio = cosa/( rr - hts/htq*rm*cosdif)
+       phi = phio * hts * qqii
     else
-        cosa = ( qii*qii - sii*sii - i1*xii*i1*xii ) / (deux*sii*i1* xii)
-        tangs = sqrt(un-cos3ts*cos3ts) / cos3ts
-        tangq = sqrt(un-cos3tq*cos3tq) / cos3tq
-        tetas = atan2(tangs,1.d0) / trois
-        tetaq = atan2(tangq,1.d0) / trois
-        cosdif = cos(tetas-tetaq)
-        rr = rc + mucjs*max(zero,log(trois*pc/(i1+qinit)))
-        phio = cosa/( rr - hts/htq*rm*cosdif)
-        phi = phio * hts * qqii
+       cosa = ( qii*qii - sii*sii - i1*xii*i1*xii ) / (deux*sii*i1* xii)
+       tangs = sqrt(un-cos3ts*cos3ts) / cos3ts
+       tangq = sqrt(un-cos3tq*cos3tq) / cos3tq
+       tetas = atan2(tangs,1.d0) / trois
+       tetaq = atan2(tangq,1.d0) / trois
+       cosdif = cos(tetas-tetaq)
+       rr = rc + mucjs*max(zero,log(trois*pc/(i1+qinit)))
+       phio = cosa/( rr - hts/htq*rm*cosdif)
+       phi = phio * hts * qqii
     endif
 ! ======================================================================
 ! --- CALCUL DE GX -----------------------------------------------------
 ! ======================================================================
-    do 60 i = 1, ndt
-        gx(i) = (i1+qinit)/b*( qq(i) + phi*x(i) ) * ((i1+qinit)/trois/ pa)**mun5
-60  continue
+    do i = 1, ndt
+       gx(i) = (i1+qinit)/b*( qq(i) + phi*x(i) ) * ((i1+qinit)/trois/ pa)**mun5
+    end do
 ! ======================================================================
 ! --- LOI D'ECOULEMENT DU MECANISME DEVIATOIRE -------------------------
 ! ======================================================================
     call lcprsc(qq, x, truc)
     truc = truc - r
-    do 70 i = 1, ndi
-        dfdds(i) = qq(i) - truc
-70  continue
-    do 80 i = ndi+1, ndt
-        dfdds(i) = qq(i)
-80  continue
+    do  i = 1, ndi
+       dfdds(i) = qq(i) - truc
+    end do
+    do  i = ndi+1, ndt
+       dfdds(i) = qq(i)
+    end do
     siic = -rc * (i1+qinit) / hts
     signe = vin(nvi-1)
     betapr = beta * (sii/siic - un) * signe
     coef4 = un / sqrt( betapr*betapr + trois )
     coef3 = coef4 * betapr / sii
-    do 90 i = 1, ndt
-        norm(i) = coef3 * s(i) + coef4 * kron(i)
-90  continue
+    do  i = 1, ndt
+       norm(i) = coef3 * s(i) + coef4 * kron(i)
+    end do
     call lcprsc(dfdds, norm, truc)
-    do 100 i = 1, ndt
-        gd(i) = dfdds(i) - truc * norm(i)
-100  continue
+    do  i = 1, ndt
+       gd(i) = dfdds(i) - truc * norm(i)
+    end do
 ! ======================================================================
 ! --- MODULE PLASTIQUE DEVIATOIRE : HDEV -------------------------------
 ! ======================================================================
     qgx = zero
-    do 110 i = 1, ndt
-        qgx = qgx + qq(i) * gx(i)
-110  continue
+    do  i = 1, ndt
+       qgx = qgx + qq(i) * gx(i)
+    end do
     hdev = (i1+qinit) * (- gr + qgx)
 ! ======================================================================
 ! --- CALCUL DU TERME DFDDS.HOOK.GD : DFHGD ----------------------------
 ! ======================================================================
     dfhgd = zero
-    do 120 i = 1, ndt
-        do 120 j = 1, ndt
-            dfhgd = dfhgd + dfdds(i)*hook(i,j)*gd(j)
-120      continue
+    do i = 1, ndt
+       do j = 1, ndt
+          dfhgd = dfhgd + dfdds(i)*hook(i,j)*gd(j)
+       end do
+    end do
+
 ! ======================================================================
 ! --- CALCUL DU TERME HOOK.GD : HGD ------------------------------------
 ! ======================================================================
     call lcinve(zero, hgd)
-    do 130 i = 1, ndt
-        do 130 j = 1, ndt
-            hgd(i) = hgd(i) + hook(i,j)*gd(j)
-130      continue
+    do i = 1, ndt
+       do j = 1, ndt
+          hgd(i) = hgd(i) + hook(i,j)*gd(j)
+       end do
+
+    end do
 ! ======================================================================
 ! --- CALCUL DU TERME DFDDS.HOOK : DFH ---------------------------------
 ! ======================================================================
     call lcinve(zero, dfh)
-    do 140 i = 1, ndt
-        do 140 j = 1, ndt
-            dfh(i) = dfh(i) + dfdds(j)*hook(j,i)
-140      continue
+    do i = 1, ndt
+       do j = 1, ndt
+          dfh(i) = dfh(i) + dfdds(j)*hook(j,i)
+       end do
+
+    end do
 ! ======================================================================
 ! --- CALCUL DE DSDE(I,J,K,L) =
 !
@@ -262,11 +270,12 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 ! --- C'EST A DIRE :  DSDE = HOOK - HGD.DFH / ( HDEV + DFHGD ) ---------
 ! ======================================================================
     call matini(6, 6, 0.d0, dsde)
-    do 160 i = 1, ndt
-        do 160 j = 1, ndt
-            dsde(i,j) = hook(i,j) - hgd(i)*dfh(j) / (hdev+dfhgd)
-160      continue
+    do i = 1, ndt
+       do j = 1, ndt
+          dsde(i,j) = hook(i,j) - hgd(i)*dfh(j) / (hdev+dfhgd)
+       end do
+    end do
 ! ======================================================================
     call jedema()
 ! ======================================================================
-end subroutine
+end subroutine 

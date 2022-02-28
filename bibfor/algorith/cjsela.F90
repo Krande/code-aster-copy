@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,13 +71,13 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !       ( EGALES A PA/100.0 SOIT -1 KPA )
 !
     if (tract) then
-        do 10 i = 1, ndi
-            sigf(i) = -qinit/3.d0+pa/100.0d0
- 10     continue
-        do 20 i = ndi+1, ndt
-            sigf(i) = zero
- 20     continue
-        goto 9999
+       do i = 1, ndi
+          sigf(i) = -qinit/3.d0+pa/100.0d0
+       end do
+       do i = ndi+1, ndt
+          sigf(i) = zero
+       end do
+       goto 9999
     endif
 !
 !
@@ -99,15 +99,17 @@ subroutine cjsela(mod, crit, materf, deps, sigd,&
 !
 ! - 3D/DP/AX
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-        do 40 i = 1, ndi
-            do 40 j = 1, ndi
-                if (i .eq. j) hook(i,j) = al
-                if (i .ne. j) hook(i,j) = la
- 40         continue
-        do 45 i = ndi+1, ndt
-            do 45 j = ndi+1, ndt
-                if (i .eq. j) hook(i,j) = deux* mu
- 45         continue
+       do i = 1, ndi
+          do j = 1, ndi
+             if (i .eq. j) hook(i,j) = al
+             if (i .ne. j) hook(i,j) = la
+          end do
+       end do
+       do i = ndi+1, ndt
+          do j = ndi+1, ndt
+             if (i .eq. j) hook(i,j) = deux* mu
+          end do
+       end do
 !
 ! - CP/1D
     else if (mod(1:6) .eq. 'C_PLAN' .or. mod(1:2) .eq. '1D') then

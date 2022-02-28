@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
     real(kind=8) :: pgl(3, 3), ms(6), ng(3), q(3, 3), lg(3), fetfe(3, 3)
     character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
-    character(len=16) :: nomfam
+    character(len=24) :: nomfam
     real(kind=8) :: timed, timef, vind(*), sigd(6), sigdn(6)
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef

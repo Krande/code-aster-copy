@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -246,7 +246,9 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 !
     endif
 !     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
-    if (iter .eq. 1) call lceqvn(nr, r, rini)
+    if (iter .eq. 1) then
+       call lceqvn(nr, r, rini)
+    end if
 !
 !
     if (verjac .ne. 2) then

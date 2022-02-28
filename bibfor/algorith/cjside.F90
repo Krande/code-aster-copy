@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -129,15 +129,17 @@ subroutine cjside(mod, mater, epsd, deps, yd,&
 ! --- 3D/DP/AX ---------------------------------------------------------
 ! ======================================================================
     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:4) .eq. 'AXIS') then
-        do 20 i = 1, ndi
-            do 20 j = 1, ndi
-                if (i .eq. j) hooknl(i,j) = al
-                if (i .ne. j) hooknl(i,j) = la
-20          continue
-        do 25 i = ndi+1, ndt
-            do 25 j = ndi+1, ndt
-                if (i .eq. j) hooknl(i,j) = deux* mu
-25          continue
+        do i = 1, ndi
+           do j = 1, ndi
+              if (i .eq. j) hooknl(i,j) = al
+              if (i .ne. j) hooknl(i,j) = la
+           end do
+        end do
+        do i = ndi+1, ndt
+           do j = ndi+1, ndt
+              if (i .eq. j) hooknl(i,j) = deux* mu
+           end do
+        end do
 ! ======================================================================
 ! --- CP/1D ------------------------------------------------------------
 ! ======================================================================

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine lcopil(typ, mod, mater, kooh)
-    implicit none
+  implicit none
 !     OPERATEUR DE SOUPLESSE POUR UN COMPORTEMENT ELASTIQUE LINEAIRE
 !     IN  TYP    :  TYPE OPERATEUR
 !                   'ISOTROPE'
@@ -29,55 +29,59 @@ subroutine lcopil(typ, mod, mater, kooh)
 !     ----------------------------------------------------------------
 !
 #include "asterfort/lcinma.h"
-    integer :: ndt, ndi, i, j
-    real(kind=8) :: un, zero
-    parameter       ( un   = 1.d0   )
-    parameter       ( zero = 0.d0   )
+  integer :: ndt, ndi, i, j
+  real(kind=8) :: un, zero
+  parameter       ( un   = 1.d0   )
+  parameter       ( zero = 0.d0   )
 !
-    real(kind=8) :: kooh(6, 6)
-    real(kind=8) :: mater(*), e, nu, unpnue, unsure, mnuse
+  real(kind=8) :: kooh(6, 6)
+  real(kind=8) :: mater(*), e, nu, unpnue, unsure, mnuse
 !
-    character(len=8) :: mod, typ
+  character(len=8) :: mod, typ
 !     ----------------------------------------------------------------
-    common /tdim/   ndt  , ndi
+  common /tdim/   ndt  , ndi
 !     ----------------------------------------------------------------
 !
-    call lcinma(zero, kooh)
+  call lcinma(zero, kooh)
 !
-    if (typ .eq. 'ISOTROPE') then
-        e = mater(1)
-        nu = mater(2)
-        unpnue = ( un + nu ) / e
-        unsure = un / e
-        mnuse = - nu / e
+  if (typ .eq. 'ISOTROPE') then
+     e = mater(1)
+     nu = mater(2)
+     unpnue = ( un + nu ) / e
+     unsure = un / e
+     mnuse = - nu / e
 !
 ! - 3D/DP/AX/CP
 !
-        if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:6) .eq. 'C_PLAN' .or.&
-            mod(1:4) .eq. 'AXIS') then
-            do 40 i = 1, ndi
-                do 40 j = 1, ndi
-                    if (i .eq. j) kooh(i,j) = unsure
-                    if (i .ne. j) kooh(i,j) = mnuse
-40              continue
-            do 45 i = ndi+1, ndt
-                do 45 j = ndi+1, ndt
-                    if (i .eq. j) kooh(i,j) = unpnue
-45              continue
+     if (mod(1:2) .eq. '3D' .or. mod(1:6) .eq. 'D_PLAN' .or. mod(1:6) .eq. 'C_PLAN' .or.&
+          mod(1:4) .eq. 'AXIS') then
+        do i = 1, ndi
+           do j = 1, ndi
+              if (i .eq. j) kooh(i,j) = unsure
+              if (i .ne. j) kooh(i,j) = mnuse
+           end do
+        end do
+        do i = ndi+1, ndt
+           do j = ndi+1, ndt
+              if (i .eq. j) kooh(i,j) = unpnue
+           end do
+        end do
+
 !
 ! - 1D
 !
-        else if (mod(1:2) .eq. '1D') then
-            kooh(1,1) = unsure
-        endif
+     else if (mod(1:2) .eq. '1D') then
+        kooh(1,1) = unsure
+     endif
 !
-    else if (typ .eq. 'ORTHOTRO') then
+  else if (typ .eq. 'ORTHOTRO') then
 !
-        do 55 i = 1, 6
-            do 56 j = 1, 6
-                kooh(i,j)=mater(36+6*(j-1)+i)
-56          continue
-55      continue
+     do i = 1, 6
+        do j = 1, 6
+           kooh(i,j)=mater(36+6*(j-1)+i)
+        end do
+     end do
+
 !
-    endif
+  endif
 end subroutine
