@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,16 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`FieldOnCellsReal` --- Fields defined per element
-****************************************************************
+:py:class:`FieldOnCellsReal` --- Fields defined per element (real)
+:py:class:`FieldOnCellsLong` --- Fields defined per element (long)
+:py:class:`FieldOnCellsChar8` --- Fields defined per element (char8)
+:py:class:`FieldOnCellsComplex` --- Fields defined per element (complex)
 """
 
 import numpy
 
 import aster
-from libaster import FieldOnCellsReal
-
+from libaster import FieldOnCellsReal, FieldOnCellsLong, FieldOnCellsChar8, FieldOnCellsComplex
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
 
@@ -83,22 +84,18 @@ class ExtendedFieldOnCellsReal:
         """
 
         ncham = self.getName()
-        ncham = ncham + (19 - len(ncham)) * ' '
-        nchams = aster.get_nom_concept_unique('_')
-        ncmp = comp + (8 - len(comp)) * ' '
+        ncham = ncham + (19 - len(ncham)) * " "
+        nchams = aster.get_nom_concept_unique("_")
+        ncmp = comp + (8 - len(comp)) * " "
 
         aster.prepcompcham(ncham, nchams, ncmp, "EL      ", topo, lgma)
 
-        valeurs = numpy.array(
-            aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.V'))
+        valeurs = numpy.array(aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".V"))
 
-        if (topo > 0):
-            maille = (
-                aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.M'))
-            point = (
-                aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.P'))
-            sous_point = (
-                aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.SP'))
+        if topo > 0:
+            maille = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".M")
+            point = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".P")
+            sous_point = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".SP")
         else:
             maille = None
             point = None
@@ -107,6 +104,24 @@ class ExtendedFieldOnCellsReal:
         aster.prepcompcham("__DETR__", nchams, ncmp, "EL      ", topo, lgma)
 
         return post_comp_cham_el(valeurs, maille, point, sous_point)
+
+
+@injector(FieldOnCellsLong)
+class ExtendedFieldOnCellsLong:
+    cata_sdj = "SD.sd_champ.sd_cham_elem_class"
+    internalStateBuilder = FieldOnCellsStateBuilder
+
+
+@injector(FieldOnCellsChar8)
+class ExtendedFieldOnCellsChar8:
+    cata_sdj = "SD.sd_champ.sd_cham_elem_class"
+    internalStateBuilder = FieldOnCellsStateBuilder
+
+
+@injector(FieldOnCellsComplex)
+class ExtendedFieldOnCellsComplex:
+    cata_sdj = "SD.sd_champ.sd_cham_elem_class"
+    internalStateBuilder = FieldOnCellsStateBuilder
 
 
 class post_comp_cham_el:

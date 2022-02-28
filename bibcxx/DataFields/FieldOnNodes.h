@@ -3,7 +3,7 @@
 
 /**
  * @file FieldOnNodes.h
- * @brief Fichier entete de la classe FieldOnNodes
+ * @brief Header of class for FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
@@ -23,8 +23,6 @@
  *   You should have received a copy of the GNU General Public License
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/* person_in_charge: nicolas.sellenet at edf.fr */
 
 #include "aster_fort_superv.h"
 #include "astercxx.h"
@@ -66,12 +64,16 @@ struct AllowedFieldType< ASTERCOMPLEX > {
     static const unsigned short numTypeJeveux = Complex;
 };
 
+template <>
+struct AllowedFieldType< JeveuxChar8 > {
+    static const unsigned short numTypeJeveux = Char8;
+};
+
 class FieldBuilder;
 
 /**
  * @class FieldOnNodes
- * @brief Cette classe template permet de definir un champ aux noeuds Aster
- * @author Nicolas Sellenet
+ * @brief Template class for FieldOnnodes
  */
 template < class ValueType >
 class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
@@ -91,15 +93,12 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
     BaseMeshPtr _mesh;
 
   public:
-    /**
-     * @typedef FieldOnNodesPtr
-     * @brief Smart pointer to a FieldOnNodes
-     */
+    /** @typedef FieldOnNodesPtr */
     typedef boost::shared_ptr< FieldOnNodes > FieldOnNodesPtr;
 
     /**
      * @brief Constructor
-     * @param name Jeveux name of the field on nodes
+     * @param name Jeveux name of the field
      */
     FieldOnNodes( const std::string name )
         : DataField( name, "CHAM_NO" ),
@@ -109,15 +108,10 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
           _dofDescription( nullptr ),
           _mesh( nullptr ){};
 
-    /**
-     * @brief Constructor
-
-     */
+    /** @brief Constructor with automatic name */
     FieldOnNodes() : FieldOnNodes( DataStructureNaming::getNewName() ){};
 
-    /**
-     * @brief Copy constructor
-     */
+    /** @brief Copy constructor */
     FieldOnNodes( const std::string &name, const FieldOnNodes &toCopy ) : FieldOnNodes( name ) {
         // JeveuxVector to be duplicated
         *( _descriptor ) = *( toCopy._descriptor );
@@ -129,10 +123,7 @@ class FieldOnNodes : public DataField, private AllowedFieldType< ValueType > {
         _mesh = toCopy._mesh;
     }
 
-    /**
-     * @brief Move constructor
-     * @param other field to move
-     */
+    /** @brief Move constructor */
     FieldOnNodes( FieldOnNodes &&other ) : DataField{ std::move( other ) } {
         // Pointers to be moved
         _descriptor = other._descriptor;
@@ -572,31 +563,20 @@ bool FieldOnNodes< ValueType >::printMedFile( const std::string fileName, bool l
     return true;
 };
 
-/** @typedef FieldOnNodesReal Class d'un champ aux noeuds de double */
-typedef FieldOnNodes< ASTERDOUBLE > FieldOnNodesReal;
+/** @typedef FieldOnNodesReal */
+using FieldOnNodesReal = FieldOnNodes< ASTERDOUBLE >;
+using FieldOnNodesRealPtr = boost::shared_ptr< FieldOnNodesReal >;
 
-/**
- * @typedef FieldOnNodesPtrReal
- * @brief Definition d'un champ aux noeuds de double
- */
-typedef boost::shared_ptr< FieldOnNodesReal > FieldOnNodesRealPtr;
+/** @typedef FieldOnNodesLong */
+using FieldOnNodesLong = FieldOnNodes< ASTERINTEGER >;
+using FieldOnNodesLongPtr = boost::shared_ptr< FieldOnNodesLong >;
 
-/** @typedef FieldOnNodesLong Class d'une carte de long */
-typedef FieldOnNodes< ASTERINTEGER > FieldOnNodesLong;
+/** @typedef FieldOnNodesComplex*/
+using FieldOnNodesComplex = FieldOnNodes< ASTERCOMPLEX >;
+using FieldOnNodesComplexPtr = boost::shared_ptr< FieldOnNodesComplex >;
 
-/**
- * @typedef FieldOnNodesLongPtr
- * @brief Definition d'un champ aux noeuds de long
- */
-typedef boost::shared_ptr< FieldOnNodesLong > FieldOnNodesLongPtr;
-
-/** @typedef FieldOnNodesComplex Class d'un champ aux noeuds de complexes */
-typedef FieldOnNodes< ASTERCOMPLEX > FieldOnNodesComplex;
-
-/**
- * @typedef FieldOnNodesComplexPtr
- * @brief Definition d'un champ aux noeuds de complexes
- */
-typedef boost::shared_ptr< FieldOnNodesComplex > FieldOnNodesComplexPtr;
+/** @typedef FieldOnNodesChar8 */
+using FieldOnNodesChar8 = FieldOnNodes< JeveuxChar8 >;
+using FieldOnNodesChar8Ptr = boost::shared_ptr< FieldOnNodesChar8 >;
 
 #endif /* FIELDONNODES_H_ */

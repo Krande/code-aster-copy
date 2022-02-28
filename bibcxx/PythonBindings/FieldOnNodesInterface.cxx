@@ -1,6 +1,6 @@
 /**
  * @file FieldOnNodesInterface.cxx
- * @brief Interface python de FieldOnNodes
+ * @brief Python interface for FieldOnNodes
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
@@ -21,10 +21,10 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
 #include <boost/python.hpp>
 
 namespace py = boost::python;
+
 #include "DataFields/MeshCoordinatesField.h"
 #include "PythonBindings/DataStructureInterface.h"
 #include "PythonBindings/FieldOnNodesInterface.h"
@@ -34,7 +34,9 @@ namespace py = boost::python;
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS( print_overloads, printMedFile, 1, 2 )
 
 void exportFieldOnNodesToPython() {
-
+    /**
+     * Object FieldOnNodesReal
+     */
     py::class_< FieldOnNodesReal, FieldOnNodesRealPtr, py::bases< DataField > >( "FieldOnNodesReal",
                                                                                  py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesReal > ) )
@@ -114,7 +116,9 @@ Returns:
     list[float]: List of values.
         )",
               ( py::arg( "self" ) ) );
-
+    /**
+     * Object FieldOnNodesComplex
+     */
     py::class_< FieldOnNodesComplex, FieldOnNodesComplexPtr, py::bases< DataField > >(
         "FieldOnNodesComplex", py::no_init )
         .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesComplex > ) )
@@ -153,4 +157,33 @@ Argument:
         )",
               ( py::arg( "self" ), py::arg( "value" ) ) )
         .def( "updateValuePointers", &FieldOnNodesComplex::updateValuePointers );
+
+    /**
+     * Object FieldOnNodesLong
+     */
+    py::class_< FieldOnNodesLong, FieldOnNodesLongPtr, py::bases< DataField > >( "FieldOnNodesLong",
+                                                                                 py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesLong > ) )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesLong, std::string > ) )
+        .def( "__init__",
+              py::make_constructor( &initFactoryPtr< FieldOnNodesLong, BaseDOFNumberingPtr > ) )
+        .def( "setDescription", &FieldOnNodesLong::setDescription )
+        .def( "getDescription", &FieldOnNodesLong::getDescription )
+        .def( "getMesh", &FieldOnNodesLong::getMesh )
+        .def( "setMesh", &FieldOnNodesLong::setMesh );
+
+    /**
+     * Object FieldOnNodesChar8
+     */
+    py::class_< FieldOnNodesChar8, FieldOnNodesChar8Ptr, py::bases< DataField > >(
+        "FieldOnNodesChar8", py::no_init )
+        .def( "__init__", py::make_constructor( &initFactoryPtr< FieldOnNodesChar8 > ) )
+        .def( "__init__",
+              py::make_constructor( &initFactoryPtr< FieldOnNodesChar8, std::string > ) )
+        .def( "__init__",
+              py::make_constructor( &initFactoryPtr< FieldOnNodesChar8, BaseDOFNumberingPtr > ) )
+        .def( "setDescription", &FieldOnNodesChar8::setDescription )
+        .def( "getDescription", &FieldOnNodesChar8::getDescription )
+        .def( "getMesh", &FieldOnNodesChar8::getMesh )
+        .def( "setMesh", &FieldOnNodesChar8::setMesh );
 };

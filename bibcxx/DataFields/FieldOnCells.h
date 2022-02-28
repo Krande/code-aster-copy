@@ -3,7 +3,7 @@
 
 /**
  * @file FieldOnCells.h
- * @brief Fichier entete de la classe FieldOnCells
+ * @brief Header of class for FieldOnCells
  * @author Nicolas Sellenet
  * @section LICENCE
  *   Copyright (C) 1991 - 2022  EDF R&D                www.code-aster.org
@@ -24,8 +24,6 @@
  *   along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "aster_fort_ds.h"
 #include "aster_fort_superv.h"
 #include "astercxx.h"
@@ -43,8 +41,7 @@
 
 /**
  * @class FieldOnCells
- * @brief Cette classe template permet de definir un champ aux éléments Aster
- * @author Nicolas Sellenet
+ * @brief Template class for FieldOnCells
  */
 template < class ValueType >
 class FieldOnCells : public DataField {
@@ -64,15 +61,12 @@ class FieldOnCells : public DataField {
     FiniteElementDescriptorPtr _dofDescription;
 
   public:
-    /**
-     * @typedef FieldOnCellsPtr
-     * @brief Pointeur intelligent vers un FieldOnCells
-     */
+    /** @typedef FieldOnCellsPtr */
     typedef boost::shared_ptr< FieldOnCells > FieldOnCellsPtr;
 
     /**
-     * @brief Constructeur
-     * @param name Nom Jeveux du champ aux éléments
+     * @brief Constructor
+     * @param name Jeveux name of the field
      */
     FieldOnCells( const std::string name )
         : DataField( name, "CHAM_ELEM" ),
@@ -81,15 +75,15 @@ class FieldOnCells : public DataField {
           _valuesList( JeveuxVector< ValueType >( getName() + ".CELV" ) ),
           _model( nullptr ){};
 
-    /**
-     * @brief Constructeur
-     */
+    /** @brief Constructor with automatic name */
     FieldOnCells() : FieldOnCells( ResultNaming::getNewResultName() ){};
 
     /**
-     * @brief Constructeur à partir d'une carte compor et d'un modèle
-     * @param model Modèle
-     * @param behaviour Carte Compor
+     * @brief Constructor with model and behaviour
+     * @param model model
+     * @param behaviour Description of behaviour (for size of dynamic components as VARI_ELGA)
+     * @param carael Description of elementary characteristics (for size of dynamic components as
+     * VARI_ELGA)
      * @param typcham Type de champ à calculer
      */
     FieldOnCells( const ModelPtr &model, const BehaviourPropertyPtr behaviour,
@@ -134,27 +128,9 @@ class FieldOnCells : public DataField {
         AS_ASSERT( iret == 0 );
 
         updateValuePointers();
-    };
+    }
 
-    /**
-     * @brief Move constructor
-     * @param tocopy FieldOnCells object
-     */
-    FieldOnCells( FieldOnCells &&toCopy ) : FieldOnCells() {
-
-        _descriptor = toCopy._descriptor;
-        _reference = toCopy._reference;
-        _valuesList = toCopy._valuesList;
-        _title = toCopy._title;
-        _dofDescription = toCopy._dofDescription;
-        _model = toCopy._model;
-
-        updateValuePointers();
-    };
-
-    /**
-     * @brief Copy constructor
-     */
+    /** @brief Copy constructor */
     FieldOnCells( const std::string &name, const FieldOnCells &toCopy ) : FieldOnCells( name ) {
         // JeveuxVector to be duplicated
         *( _descriptor ) = *( toCopy._descriptor );
@@ -164,7 +140,17 @@ class FieldOnCells : public DataField {
         // Pointers to be copied
         _dofDescription = toCopy._dofDescription;
         _model = toCopy._model;
+        updateValuePointers();
+    }
 
+    /** @brief Move constructor */
+    FieldOnCells( FieldOnCells &&toCopy ) : FieldOnCells() {
+        _descriptor = toCopy._descriptor;
+        _reference = toCopy._reference;
+        _valuesList = toCopy._valuesList;
+        _title = toCopy._title;
+        _dofDescription = toCopy._dofDescription;
+        _model = toCopy._model;
         updateValuePointers();
     }
 
@@ -641,31 +627,20 @@ bool FieldOnCells< ValueType >::printMedFile( const std::string fileName, bool l
     return true;
 };
 
-/** @typedef FieldOnCellsReal Class d'une carte de double */
-typedef FieldOnCells< ASTERDOUBLE > FieldOnCellsReal;
+/** @typedef FieldOnCellsReal */
+using FieldOnCellsReal = FieldOnCells< ASTERDOUBLE >;
+using FieldOnCellsRealPtr = boost::shared_ptr< FieldOnCellsReal >;
 
-/**
- * @typedef FieldOnCellsPtrReal
- * @brief Definition d'un champ aux éléments de double
- */
-typedef boost::shared_ptr< FieldOnCellsReal > FieldOnCellsRealPtr;
+/** @typedef FieldOnCellsLong */
+using FieldOnCellsLong = FieldOnCells< ASTERINTEGER >;
+using FieldOnCellsLongPtr = boost::shared_ptr< FieldOnCellsLong >;
 
-/** @typedef FieldOnCellsLong Class d'une carte de long */
-typedef FieldOnCells< ASTERINTEGER > FieldOnCellsLong;
+/** @typedef FieldOnCellsComplex */
+using FieldOnCellsComplex = FieldOnCells< ASTERCOMPLEX >;
+using FieldOnCellsComplexPtr = boost::shared_ptr< FieldOnCellsComplex >;
 
-/**
- * @typedef FieldOnCellsPtrLong
- * @brief Definition d'un champ aux éléments de long
- */
-typedef boost::shared_ptr< FieldOnCellsLong > FieldOnCellsLongPtr;
-
-/** @typedef FieldOnCellsLong Class d'une carte de complex */
-typedef FieldOnCells< ASTERCOMPLEX > FieldOnCellsComplex;
-
-/**
- * @typedef FieldOnCellsPtrComplex
- * @brief Definition d'un champ aux éléments de complexes
- */
-typedef boost::shared_ptr< FieldOnCellsComplex > FieldOnCellsComplexPtr;
+/** @typedef FieldOnCellsChar8 */
+using FieldOnCellsChar8 = FieldOnCells< JeveuxChar8 >;
+using FieldOnCellsChar8Ptr = boost::shared_ptr< FieldOnCellsChar8 >;
 
 #endif /* FIELDONCELLS_H_ */

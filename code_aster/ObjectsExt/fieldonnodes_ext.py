@@ -19,15 +19,22 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 """
-:py:class:`FieldOnNodesReal` --- Fields defined on nodes of elements
-**********************************************************************
+:py:class:`FieldOnNodesReal` --- Fields defined on nodes of elements (real)
+:py:class:`FieldOnNodesLong` --- Fields defined on nodes of elements (long)
+:py:class:`FieldOnNodesChar8` --- Fields defined on nodes of elements (char8)
+:py:class:`FieldOnNodesComplex` --- Fields defined on nodes of elements (complex)
 """
 
 import numpy, functools
 
 import aster
-from libaster import FieldOnNodesReal, FieldOnNodesComplex, DOFNumbering
-
+from libaster import (
+    FieldOnNodesReal,
+    FieldOnNodesLong,
+    FieldOnNodesChar8,
+    FieldOnNodesComplex,
+    DOFNumbering,
+)
 from ..Objects.Serialization import InternalStateBuilder
 from ..Utilities import injector
 
@@ -68,8 +75,8 @@ class ExtendedFieldOnNodesReal:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
 
-    def EXTR_COMP(self, comp=' ', lgno=[], topo=0):
-        """ retourne les valeurs de la composante comp du champ sur la liste
+    def EXTR_COMP(self, comp=" ", lgno=[], topo=0):
+        """retourne les valeurs de la composante comp du champ sur la liste
         de groupes de noeuds lgno avec eventuellement l'info de la
         topologie si topo>0. Si lgno est une liste vide, c'est equivalent
         a un TOUT='OUI' dans les commandes aster
@@ -86,46 +93,46 @@ class ExtendedFieldOnNodesReal:
         """
 
         ncham = self.getName()
-        ncham = ncham + (19 - len(ncham)) * ' '
-        nchams = aster.get_nom_concept_unique('_')
-        ncmp = comp + (8 - len(comp)) * ' '
+        ncham = ncham + (19 - len(ncham)) * " "
+        nchams = aster.get_nom_concept_unique("_")
+        ncmp = comp + (8 - len(comp)) * " "
 
         aster.prepcompcham(ncham, nchams, ncmp, "NO      ", topo, lgno)
 
-        valeurs = numpy.array(
-            aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.V'))
+        valeurs = numpy.array(aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".V"))
 
-        if (topo > 0):
-            noeud = (
-                aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.N'))
+        if topo > 0:
+            noeud = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".N")
         else:
             noeud = None
 
-        if comp[:1] == ' ':
-            comp = (aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.C'))
-            aster.prepcompcham(
-                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+        if comp[:1] == " ":
+            comp = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".C")
+            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud, comp)
         else:
-            aster.prepcompcham(
-                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud)
 
     @property
     @functools.lru_cache()
     def __NodeDOF2Row(self):
         """Build the indirection table between (nodeid, dof) and row"""
-        ldofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)]
+        ldofNumbering = [dep for dep in self.getDependencies() if isinstance(dep, DOFNumbering)]
         if not ldofNumbering:
             raise RuntimeError("Cannot retrieve dofNumbering")
-        dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)][-1]
+        dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep, DOFNumbering)][-1]
         # build the indirection table between (nodeid, dof) and row
         indir = {}
         for row in dofNumbering.getRowsAssociatedToLagrangeMultipliers():
             dof = dofNumbering.getComponentAssociatedToRow(row)
-            node = -1 * int(dofNumbering.getNodeAssociatedToRow(row))  # constrained nodes have id < 0
+            node = -1 * int(
+                dofNumbering.getNodeAssociatedToRow(row)
+            )  # constrained nodes have id < 0
             if node > 0 and dof != "":
-                indir.setdefault((node,dof), []).append(row)  # there may be 2 Lagrange multipliers per constraint
+                indir.setdefault((node, dof), []).append(
+                    row
+                )  # there may be 2 Lagrange multipliers per constraint
         return indir
 
     def setDirichletBC(self, **kwargs):
@@ -138,22 +145,24 @@ class ExtendedFieldOnNodesReal:
             NOEUD    (int or list(int)): indices of the nodes.
             DX, DY, ... (float): name and value of the degree of freedom
         """
-        ldofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)]
+        ldofNumbering = [dep for dep in self.getDependencies() if isinstance(dep, DOFNumbering)]
         if not ldofNumbering:
             raise RuntimeError("Cannot retrieve dofNumbering")
-        dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep,DOFNumbering)][-1]
+        dofNumbering = [dep for dep in self.getDependencies() if isinstance(dep, DOFNumbering)][-1]
         mesh = dofNumbering.getMesh()
         if mesh.isParallel():
             raise RuntimeError("No support for ParallelDOFNumbering")
         # build the group of nodes to be processed
-        if not ('GROUP_MA' in kwargs.keys() or
-                'GROUP_NO' in kwargs.keys() or
-                'NOEUD' in kwargs.keys()):
-            raise ValueError("a group of cells (GROUP_MA), a group of nodes (GROUP_NO)"
-                             " or a list of nodes (NOEUD) must be provided")
+        if not (
+            "GROUP_MA" in kwargs.keys() or "GROUP_NO" in kwargs.keys() or "NOEUD" in kwargs.keys()
+        ):
+            raise ValueError(
+                "a group of cells (GROUP_MA), a group of nodes (GROUP_NO)"
+                " or a list of nodes (NOEUD) must be provided"
+            )
         lNodes = []
-        if 'GROUP_MA' in kwargs.keys():
-            lGrpMa = kwargs['GROUP_MA']
+        if "GROUP_MA" in kwargs.keys():
+            lGrpMa = kwargs["GROUP_MA"]
             lGrpMa = [lGrpMa] if isinstance(lGrpMa, str) else lGrpMa
             connec = mesh.getConnectivity()
             for grMa in lGrpMa:
@@ -165,8 +174,8 @@ class ExtendedFieldOnNodesReal:
                     lNodes += nodes
                 else:
                     raise ValueError("no {} group of cells".format(grMa))
-        if 'GROUP_NO' in kwargs.keys():
-            lgrNo = kwargs['GROUP_NO']
+        if "GROUP_NO" in kwargs.keys():
+            lgrNo = kwargs["GROUP_NO"]
             lgrNo = [lgrNo] if isinstance(lgrNo, str) else lgrNo
             for grNo in lgrNo:
                 if mesh.hasGroupOfNodes(grNo):
@@ -174,25 +183,39 @@ class ExtendedFieldOnNodesReal:
                     lNodes += nodes
                 else:
                     raise ValueError("no {} group of nodes".format(grNo))
-        if 'NOEUD' in kwargs.keys():
-            lNo = kwargs['NOEUD']
+        if "NOEUD" in kwargs.keys():
+            lNo = kwargs["NOEUD"]
             lNo = [lNo] if isinstance(lNo, int) else lNo
             lNodes += lNo
         # keep unique node id
         lNodes = list(set(lNodes))
         # change the given values
-        assignedDOF=0
+        assignedDOF = 0
         self.updateValuePointers()  # update Jeveux pointers before assignment
         for node in lNodes:
             for (dof, val) in kwargs.items():
-                if dof in ['GROUP_MA','GROUP_NO','NOEUD']:  # only process DOF here
+                if dof in ["GROUP_MA", "GROUP_NO", "NOEUD"]:  # only process DOF here
                     continue
                 if (node, dof) in self.__NodeDOF2Row.keys():
                     assignedDOF += 1
                     for row in self.__NodeDOF2Row[(node, dof)]:
-                        self[row-1] = val   # row are 1-based
+                        self[row - 1] = val  # row are 1-based
         if assignedDOF == 0:
-            raise ValueError("No bounday condition has been set - no entity handle the given degree of freedom")
+            raise ValueError(
+                "No bounday condition has been set - no entity handle the given degree of freedom"
+            )
+
+
+@injector(FieldOnNodesLong)
+class ExtendedFieldOnNodesLong:
+    cata_sdj = "SD.sd_champ.sd_cham_no_class"
+    internalStateBuilder = FieldOnNodesStateBuilder
+
+
+@injector(FieldOnNodesChar8)
+class ExtendedFieldOnNodesChar8:
+    cata_sdj = "SD.sd_champ.sd_cham_no_class"
+    internalStateBuilder = FieldOnNodesStateBuilder
 
 
 @injector(FieldOnNodesComplex)
@@ -200,8 +223,8 @@ class ExtendedFieldOnNodesComplex:
     cata_sdj = "SD.sd_champ.sd_cham_no_class"
     internalStateBuilder = FieldOnNodesStateBuilder
 
-    def EXTR_COMP(self, comp=' ', lgno=[], topo=0):
-        """ retourne les valeurs de la composante comp du champ sur la liste
+    def EXTR_COMP(self, comp=" ", lgno=[], topo=0):
+        """retourne les valeurs de la composante comp du champ sur la liste
         de groupes de noeuds lgno avec eventuellement l'info de la
         topologie si topo>0. Si lgno est une liste vide, c'est equivalent
         a un TOUT='OUI' dans les commandes aster
@@ -218,29 +241,25 @@ class ExtendedFieldOnNodesComplex:
         """
 
         ncham = self.getName()
-        ncham = ncham + (19 - len(ncham)) * ' '
-        nchams = aster.get_nom_concept_unique('_')
-        ncmp = comp + (8 - len(comp)) * ' '
+        ncham = ncham + (19 - len(ncham)) * " "
+        nchams = aster.get_nom_concept_unique("_")
+        ncmp = comp + (8 - len(comp)) * " "
 
         aster.prepcompcham(ncham, nchams, ncmp, "NO      ", topo, lgno)
 
-        valeurs = numpy.array(
-            aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.V'))
+        valeurs = numpy.array(aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".V"))
 
-        if (topo > 0):
-            noeud = (
-                aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.N'))
+        if topo > 0:
+            noeud = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".N")
         else:
             noeud = None
 
-        if comp[:1] == ' ':
-            comp = (aster.getvectjev(nchams + (19 - len(nchams)) * ' ' + '.C'))
-            aster.prepcompcham(
-                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+        if comp[:1] == " ":
+            comp = aster.getvectjev(nchams + (19 - len(nchams)) * " " + ".C")
+            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud, comp)
         else:
-            aster.prepcompcham(
-                "__DETR__", nchams, ncmp, "NO      ", topo, lgno)
+            aster.prepcompcham("__DETR__", nchams, ncmp, "NO      ", topo, lgno)
             return post_comp_cham_no(valeurs, noeud)
 
 
