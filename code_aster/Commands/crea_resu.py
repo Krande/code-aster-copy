@@ -19,21 +19,30 @@
 
 # person_in_charge: nicolas.sellenet@edf.fr
 
-from ..Objects import (LoadResult, ThermalResult,
-                       FieldOnNodesComplex, FieldOnNodesReal,
-                       ElasticFourierResult, ThermalFourierResult,
-                       FullHarmonicResult,
-                       FullTransientResult,
-                       ExternalStateVariablesResult,
-                       ElasticResult,
-                       ModeResultComplex, ModeResult,
-                       MultipleElasticResult, NonLinearResult)
+from ..Objects import (
+    LoadResult,
+    ThermalResult,
+    FieldOnNodesComplex,
+    FieldOnNodesReal,
+    FieldOnNodesChar8,
+    ElasticFourierResult,
+    ThermalFourierResult,
+    FullHarmonicResult,
+    FullTransientResult,
+    ExternalStateVariablesResult,
+    ElasticResult,
+    ModeResultComplex,
+    ModeResult,
+    MultipleElasticResult,
+    NonLinearResult,
+)
 from ..Supervis import ExecuteCommand
 from ..Utilities import force_list
 
 
 class ResultCreator(ExecuteCommand):
     """Command that creates evolutive results."""
+
     command_name = "CREA_RESU"
 
     def create_result(self, keywords):
@@ -71,8 +80,7 @@ class ResultCreator(ExecuteCommand):
             elif typ == "DYNA_HARMO":
                 self._result = FullHarmonicResult()
             else:
-                raise NotImplementedError("Type of result {0!r} not yet "
-                                        "implemented".format(typ))
+                raise NotImplementedError("Type of result {0!r} not yet " "implemented".format(typ))
 
     def post_exec(self, keywords):
         """Execute the command.
@@ -87,7 +95,7 @@ class ResultCreator(ExecuteCommand):
                 break
             chamGd = occ.get("CHAM_GD")
             if chamGd is not None:
-                if isinstance(chamGd, (FieldOnNodesReal, FieldOnNodesComplex)):
+                if isinstance(chamGd, (FieldOnNodesReal, FieldOnNodesComplex, FieldOnNodesChar8)):
                     mesh = chamGd.getMesh()
                     if mesh is not None:
                         self._result.setMesh(mesh)
@@ -107,14 +115,12 @@ class ResultCreator(ExecuteCommand):
         if keywords.get("PROL_RTZ"):
             self._result.setMesh(keywords["PROL_RTZ"]["MAILLAGE_FINAL"])
 
-
         if not fkw:
             fkw = keywords.get("ASSE")
         if not fkw:
             fkw = keywords.get("PREP_VRC2")
         if not fkw:
             fkw = keywords.get("PREP_VRC1")
-
 
         if fkw:
             chamMater = fkw[0].get("CHAM_MATER")

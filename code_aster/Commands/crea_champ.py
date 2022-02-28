@@ -22,8 +22,11 @@ from ..Objects import (
     FieldOnCellsReal,
     FieldOnCellsLong,
     FieldOnCellsComplex,
+    FieldOnCellsChar8,
     FieldOnNodesReal,
+    FieldOnNodesLong,
     FieldOnNodesComplex,
+    FieldOnNodesChar8,
     FullResult,
     ModeResult,
     ConstantFieldOnCellsReal,
@@ -75,11 +78,16 @@ class FieldCreator(ExecuteCommand):
                 raise NotImplementedError("Must have Mesh, Model or ElementaryCharacteristics")
             self._result = ConstantFieldOnCellsReal(mesh)
         elif location == "NOEU":
-            if typ == "C":
-                self._result = FieldOnNodesComplex()
-            else:
-                # c'est très sale, à corriger, voir 31762
+            if typ == "R":
                 self._result = FieldOnNodesReal()
+            elif typ == "I":
+                self._result = FieldOnNodesLong()
+            elif typ == "C":
+                self._result = FieldOnNodesComplex()
+            elif typ == "F":
+                self._result = FieldOnNodesChar8()
+            else:
+                raise NotImplementedError("Output for CREA_CHAMP not defined")
             if mesh is not None:
                 self._result.setMesh(mesh)
             if numeDdl is not None:
@@ -92,8 +100,7 @@ class FieldCreator(ExecuteCommand):
             elif typ == "C":
                 self._result = FieldOnCellsComplex()
             elif typ == "F":
-                # c'est très sale, à corriger, voir 31762
-                self._result = FieldOnCellsReal()
+                self._result = FieldOnCellsChar8()
             else:
                 raise NotImplementedError("Output for CREA_CHAMP not defined")
 
