@@ -21,7 +21,6 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
     implicit      none
 #include "asterc/r8prem.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/utmess.h"
@@ -98,7 +97,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! =====================================================================
                 if(seq.gt.r8prem())then
                     param1 = un - trois * deuxmu * dp / deux / seq
-                    call lcprsm(param1, dsede, pmat1)
+                    pmat1(1:ndt,1:ndt) = param1 * dsede(1:ndt,1:ndt)
                 else
                     call utmess('F', 'ALGORITH3_38')
                 endif
@@ -107,13 +106,13 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! =====================================================================
                 param1 = troisk / trois
                 call lcprte(vunite, vunite, bidon)
-                call lcprsm(param1, bidon, pmat2)
+                pmat2(1:ndt,1:ndt) = param1 * bidon(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE PMAT3 -------------------------------------------------
 ! =====================================================================
                 param1 = neuf*deuxmu*deuxmu*dp/quatre/seq/seq/seq
                 call lcprte(se, se, bidon)
-                call lcprsm(param1, bidon, pmat3)
+                pmat3(1:ndt,1:ndt) = param1 * bidon(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE PMAT4 -------------------------------------------------
 ! =====================================================================
@@ -124,7 +123,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
                 vect3(1:ndt) = vect1(1:ndt) + vect2(1:ndt)
                 param1 = - un / dpdeno
                 call lcprte(vect3, vect3, bidon)
-                call lcprsm(param1, bidon, pmat4)
+                pmat4(1:ndt,1:ndt) = param1 * bidon(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE L OPERATEUR TANGENT -----------------------------------
 ! =====================================================================
@@ -137,7 +136,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! =====================================================================
                 param1 = troisk/trois - troisk*troisk*alpha*alpha/ dpdeno
                 call lcprte(vunite, vunite, bidon)
-                call lcprsm(param1, bidon, dsde)
+                dsde(1:ndt,1:ndt) = param1 * bidon(1:ndt,1:ndt)
             endif
         else
 ! =====================================================================

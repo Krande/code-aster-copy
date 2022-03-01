@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine irrfss(sig, ddfdds)
     implicit none
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
     real(kind=8) :: sig(6), ddfdds(6, 6)
@@ -61,9 +60,9 @@ subroutine irrfss(sig, ddfdds)
     else
         call lcprsv(1.5d0 / s, dev, dfds)
         call lcprte(dfds, dfds, dfds2)
-        call lcprsm(1.5d0, id, ddfdds)
+        ddfdds(1:ndt,1:ndt) = 1.5d0 * id(1:ndt,1:ndt)
         ddfdds(1:ndt,1:ndt) = ddfdds(1:ndt,1:ndt) - dfds2(1:ndt,1:ndt)
-        call lcprsm(1.d0/ s, ddfdds, ddfdds)
+        ddfdds(1:ndt,1:ndt) = (1.d0/s) * ddfdds(1:ndt,1:ndt)
     endif
 !
 end subroutine

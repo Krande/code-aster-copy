@@ -41,7 +41,6 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
 
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srdbds.h"
@@ -99,7 +98,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     !!! Construction de d(s)/d(sigma)
     unstro=1.d0/3.d0
     call lcprte(kron,kron,kron2)
-    call lcprsm(unstro,kron2,kron2)
+    kron2(1:ndt,1:ndt) = unstro * kron2(1:ndt,1:ndt)
     dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron2(1:ndt,1:ndt)
     
     !!! Construction de d(sii)/d(s)

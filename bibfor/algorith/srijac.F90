@@ -50,7 +50,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srbpri.h"
@@ -293,7 +292,7 @@ subroutine srijac(nmat,materf,timed,timef,&
                     bprimp,nvi,vint,dhds,tpp,dgpds)
         
         !!! 2-3-6) Produit matriciel hook*dlambda*d(gp)/d(sig)
-        call lcprsm(dlambd,dgpds,dldgds)
+        dldgds(1:ndt,1:ndt) = dlambd * dgpds(1:ndt,1:ndt)
         hnldgp(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dldgds(1:ndt,1:ndt))
         
         !!! 2-3-7) Calcul de d2(fp)/d(sig)d(xi)
@@ -393,7 +392,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     
     phiv=av*(seuilv/patm)**nv
     
-    call lcprsm(phiv,dgvds,dsgvds)
+    dsgvds(1:ndt,1:ndt) = phiv * dgvds(1:ndt,1:ndt)
     hnldgv(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dsgvds(1:ndt,1:ndt))
     
     !!! produit matriciel hook*d(phiv)/d(sig)*gv
@@ -545,7 +544,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     unstro=1.d0/3.d0
     
     call lcprte(kron,kron,kron2)
-    call lcprsm(unstro,kron2,kron3)
+    kron3(1:ndt,1:ndt) = unstro * kron2(1:ndt,1:ndt)
     dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron3(1:ndt,1:ndt)
     
     !!! construction de dev(g)

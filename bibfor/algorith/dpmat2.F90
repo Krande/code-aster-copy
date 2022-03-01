@@ -22,7 +22,6 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
     implicit none
 #include "asterfort/betaps.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/utmess.h"
@@ -102,19 +101,19 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 ! --- CALCUL DE PMAT1 -------------------------------------------------
 ! =====================================================================
                 param1 = un - trois * deuxmu * dp / deux / seq
-                call lcprsm(param1, dsede, pmat1)
+                pmat1(1:ndt,1:ndt) = param1 * dsede(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE PMAT2 -------------------------------------------------
 ! =====================================================================
                 param1 = troisk / trois
                 call lcprte(vunite, vunite, bidon)
-                call lcprsm(param1, bidon, pmat2)
+                pmat2(1:ndt,1:ndt) = param1 * bidon(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE PMAT3 -------------------------------------------------
 ! =====================================================================
                 param1 = neuf*deuxmu*deuxmu*dp/quatre/seq/seq/seq
                 call lcprte(se, se, bidon)
-                call lcprsm(param1, bidon, pmat3)
+                pmat3(1:ndt,1:ndt) = param1 * bidon(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE PMAT4 -------------------------------------------------
 ! =====================================================================
@@ -145,7 +144,7 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 ! =====================================================================
                 param1 = troisk/trois - troisk*troisk*alpha*alpha/ dpdeno
                 call lcprte(vunite, vunite, bidon)
-                call lcprsm(param1, bidon, dsde)
+                dsde(1:ndt,1:ndt) = param1 * bidon(1:ndt,1:ndt)
             endif
         else
 ! =====================================================================

@@ -31,8 +31,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/lc0000.h"
-#include "asterfort/lcprsm.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 !
@@ -185,6 +183,7 @@ character(len=*) :: fami
 !
     ipal   = nint(carcri(5))
     codret = 0
+    dsdelo = 0.d0
 !
 ! - No step cutting (elastic matrix or KIT_DDI behaviour)
 !
@@ -269,7 +268,7 @@ character(len=*) :: fami
             endif
             eps(1:ndt) = epsdt(1:ndt)
             deps(1:ndt) = depst(1:ndt)
-            call lcprsv(1.d0/npal, deps, deps)
+            deps(1:ndt) = (1.d0/npal) * deps(1:ndt)
             sd(1:ndt) = sigd(1:ndt)
 !
 ! --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
@@ -299,7 +298,7 @@ character(len=*) :: fami
         endif
 !
         if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            call lcprsm(1.d0/npal, dsdelo, dsdelo)
+            dsdelo = (1.d0/npal) * dsdelo
             dsde = dsde + dsdelo
         endif
 !

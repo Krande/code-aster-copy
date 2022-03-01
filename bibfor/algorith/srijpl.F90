@@ -37,7 +37,6 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/prmama.h"
 #include "asterfort/r8inir.h"
@@ -136,7 +135,7 @@ subroutine srijpl(nmat,mater,sigf,nr,drdy,dsde)
     !!!
     
     coefnl=coefnl/mu
-    call lcprsm(coefnl,hook,hooknl)
+    hooknl(1:ndt,1:ndt) = coefnl * hook(1:ndt,1:ndt)
     
     !!!
     !!! Construction du tenseur tangent

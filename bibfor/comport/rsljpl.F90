@@ -34,7 +34,6 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 #include "asterfort/lchydr.h"
 #include "asterfort/lcnrte.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsomh.h"
@@ -110,7 +109,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
         else
             a1 = -deux*mater(7,2)*e/(ndeps*nsig*trois)
             call lcprte(sig, deps, dsde)
-            call lcprsm(a1, dsde, dsde)
+            dsde(1:ndt,1:ndt) = a1 * dsde(1:ndt,1:ndt)
         endif
 !
 ! -- CAS DU MATERIAU NON CASSE-----------------------------------
@@ -182,7 +181,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
             y4 = acc*z8/z1 + z9*s1/(z7+z2*theta*dp)
             y5 = acc*a2*z8/z1 - z9*a6 / ( rigeq*(z7+z2*theta*dp) )
 !
-            call lcprsm(a3, i4, m1)
+            m1(1:ndt,1:ndt) = a3 * i4(1:ndt,1:ndt)
             call lcprsv((a1-a3)/trois, i2, v1)
             call lcprsv(a2, rigdv, v2)
             v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
@@ -200,17 +199,17 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
             call lcprsv(trois*y5/y4, rigdv, v2)
             v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
             call lcprte(rig, v1, m1)
-            call lcprsm(y4/troisk, m1, m1)
+            m1(1:ndt,1:ndt) = (y4/troisk) * m1(1:ndt,1:ndt)
             dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) + m1(1:ndt,1:ndt)
-            call lcprsm(rho, dsde, dsde)
+            dsde(1:ndt,1:ndt) = rho * dsde(1:ndt,1:ndt)
 ! -- CAS DP=0
         else
             call lcprte(i2, i2, m1)
-            call lcprsm(un/trois, m1, m1)
-            call lcprsm(rho*troisk, m1, m2)
-            call lcprsm(-un, m1, m1)
+            m1(1:ndt,1:ndt) = (un/trois) * m1(1:ndt,1:ndt)
+            m2(1:ndt,1:ndt) = (rho*troisk) * m1(1:ndt,1:ndt)
+            m1(1:ndt,1:ndt) = (-un) * m1(1:ndt,1:ndt)
             m1(1:ndt,1:ndt) = i4(1:ndt,1:ndt) + m1(1:ndt,1:ndt)
-            call lcprsm(rho*deuxmu, m1, m1)
+            m1(1:ndt,1:ndt) = (rho*deuxmu) * m1(1:ndt,1:ndt)
             dsde(1:ndt,1:ndt) = m1(1:ndt,1:ndt) + m2(1:ndt,1:ndt)
         endif
     endif

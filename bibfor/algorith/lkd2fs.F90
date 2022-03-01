@@ -36,7 +36,6 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
     integer :: iret, nmat
     real(kind=8) :: d2fds2(6, 6), para(3), vara(4), materf(nmat, 2)
@@ -83,10 +82,10 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
 20  end do
 ! --- CONSTRUCTION PRODUIT TENSORIEL COEF1*(VECT1 X VECT1)
     call lcprte(vect1, vect1, mat1)
-    call lcprsm(coef1, mat1, mat2)
+    mat2(1:ndt,1:ndt) = coef1 * mat1(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION PRODUIT COEF2*D2SHDS
-    call lcprsm(coef2, d2shds, mat3)
+    mat3(1:ndt,1:ndt) = coef2 * d2shds(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION DIFFERENCE MAT3-MAT2 = D2FDS2
     d2fds2(1:ndt,1:ndt) = mat3(1:ndt,1:ndt) - mat2(1:ndt,1:ndt)

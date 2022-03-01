@@ -26,7 +26,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/trace.h"
@@ -265,7 +264,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 !
         scal3 = -trois*mu/seq
 !
-        call lcprsm(scal3, matr1, part3)
+        part3(1:ndt,1:ndt) = scal3 * matr1(1:ndt,1:ndt)
 !
 ! =====================================================================
 ! --- CALCUL DE LA  PREMIERE PARTIE DU TERME DS/DEPS ------------------
@@ -273,7 +272,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! --- CALCUL DE dse / deps *(1-3GDP/SEQ) ----------------------------
 ! =====================================================================
         scal4 = deuxmu * (un - trois*mu * dp / seq)
-        call lcprsm(scal4, dsdsig, part1)
+        part1(1:ndt,1:ndt) = scal4 * dsdsig(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE LA  DEUXIEME PARTIE DU TERME DS/DEPS ------------------
 ! =====================================================================
@@ -282,7 +281,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
         scal5 = neuf * mu *mu* dp/seq/ seq/ seq
         call lcprte(s, s, matr3)
 !
-        call lcprsm(scal5, matr3, part2)
+        part2(1:ndt,1:ndt) = scal5 * matr3(1:ndt,1:ndt)
 ! =====================================================================
 ! --- SOMMATION DES PARTIES DE ds/dEPS --------------------------------
 ! =====================================================================
@@ -327,7 +326,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
                 inter2(ii,jj) = un/deux*(int2a(ii,jj)+int2b(ii,jj))
 99          continue
 98      continue
-        call lcprsm(unstr, inter2, inter2)
+        inter2(1:ndt,1:ndt) = unstr * inter2(1:ndt,1:ndt)
         dsidep(1:ndt,1:ndt) = dsdeps(1:ndt,1:ndt) + inter2(1:ndt,1:ndt)
     endif
 ! =====================================================================

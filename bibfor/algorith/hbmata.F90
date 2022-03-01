@@ -21,7 +21,6 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
                   detadg, dgdl, nbmat, materf, dsidep)
     implicit      none
 #include "asterfort/calcdl.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
     integer :: nbmat
     real(kind=8) :: se(6), dg, etap, i1e, dsidep(6, 6), materf(nbmat, 2)
@@ -101,19 +100,19 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 ! --- CALCUL DE K*DIEDE -----------------------------------------------
 ! =====================================================================
     call lcprte(vunite, vunite, bidon)
-    call lcprsm(k, bidon, pmat1)
+    pmat1(1:ndt,1:ndt) = k * bidon(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE PARA*DSEDE --------------------------------------------
 ! =====================================================================
     param1 = un - trois*mu*dg/(sigeqe*(etap+un))
-    call lcprsm(param1, dsede, pmat2)
+    pmat2(1:ndt,1:ndt) = param1 * dsede(1:ndt,1:ndt)
     pmat6(1:ndt,1:ndt) = pmat2(1:ndt,1:ndt) + pmat1(1:ndt,1:ndt)
 ! =====================================================================
 ! --- CALCUL DE SE*DSIGEQDE -------------------------------------------
 ! ====================================================================
     param1 = 9.0d0*mu*mu*dg/((etap+un)*sigeqe**3)
     call lcprte(seb, seb, bidon)
-    call lcprsm(param1, bidon, pmat3)
+    pmat3 = param1 * bidon
 ! ======================================================================
 ! --- CALCUL DE DDLAMBDA/DE ----------------------------------------
 !=======================================================================
@@ -123,11 +122,11 @@ subroutine hbmata(se, dg, etap, i1e, sigeqe,&
 ! ======================================================================
     param1 = trois*mu/sigeqe
     call lcprte(seb, ddlde, bidon)
-    call lcprsm(param1, bidon, pmat4)
+    pmat4 = param1 * bidon
 ! ======================================================================
     param1 = trois*k*(detadg*dgdl*dg/(etap+un)+etap)
     call lcprte(ddlde, vunite, bidon)
-    call lcprsm(param1, bidon, pmat5)
+    pmat5 = param1 * bidon
 ! ======================================================================
 ! --- CALCUL DE DSIG/DEPS ----------------------------------------------
 ! ======================================================================

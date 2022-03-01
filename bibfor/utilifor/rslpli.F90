@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,7 @@ subroutine rslpli(typ, mod, mater, hook, nmat,&
 !       ----------------------------------------------------------------
 !
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsm.h"
-    integer :: nmat
+    integer :: nmat, ndt, ndi
 !
     real(kind=8) :: un, rho, f, f0
     real(kind=8) :: hook(6, 6)
@@ -40,6 +39,8 @@ subroutine rslpli(typ, mod, mater, hook, nmat,&
     parameter       ( un   = 1.d0   )
 !
     character(len=8) :: mod, typ
+    common /tdim/ ndt, ndi
+
 !       ----------------------------------------------------------------
 !
 ! --    CALCUL DE RHO
@@ -49,5 +50,5 @@ subroutine rslpli(typ, mod, mater, hook, nmat,&
     rho = (un-f)/(un-f0)
 !
     call lcopli(typ, mod, mater(1, 1), hook)
-    call lcprsm(rho, hook, hook)
+    hook(1:ndt,1:ndt) = rho * hook(1:ndt,1:ndt)
 end subroutine

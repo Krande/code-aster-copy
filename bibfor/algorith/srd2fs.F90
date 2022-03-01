@@ -41,7 +41,6 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     implicit   none
 
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
 
     !!!
@@ -110,13 +109,13 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     !!!
     
     call lcprte(vect1,vect1,mat1)
-    call lcprsm(coef1,mat1,mat2)
+    mat2(1:ndt,1:ndt) = coef1 * mat1(1:ndt,1:ndt)
     
     !!!
     !!! Produit coef2 * d2shds
     !!!
 
-    call lcprsm(coef2,d2shds,mat3)
+    mat3(1:ndt,1:ndt) = coef2 * d2shds(1:ndt,1:ndt)
     
     !!!
     !!! Construction mat3 - mat2 = d2fds2

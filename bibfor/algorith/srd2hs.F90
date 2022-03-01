@@ -40,54 +40,63 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
 #include "asterfort/cjst.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/srd2de.h"
 
     !!!
     !!! Variables globales
     !!!
-    
+
     integer :: nmat
     real(kind=8) :: devsig(6),rcos3t,sii,d2hds2(6,6),materf(nmat,2)
-    
+
     !!!
     !!! Variables locales
     !!!
-    
+
     integer :: ndi,ndt,i
     real(kind=8) :: mident(6,6),gamma,beta,pdcds(6,6),drdcos,sxs(6,6)
     real(kind=8) :: dcosds(6)
     real(kind=8) :: ddetds(6),fact4,dcds1(6),dcds2(6)
-    real(kind=8) :: d2dets(6,6),r54,dets,fact3,fact10(6,6),fact9(6,6)
+    real(kind=8) :: d2dets(6,6),r54,dets,fact3
     real(kind=8) :: pi,denom,fact1,fact2,d2rdc2
-    real(kind=8) :: fact5(6,6),fact6(6,6),fact7(6,6),fact8(6,6),fact56(6,6)
-    real(kind=8) :: fact78(6,6),fact5678(6,6),d2cds2(6,6)
+    real(kind=8) :: fact5(6,6),fact6(6,6),fact7(6,6)
+    real(kind=8) :: d2cds2(6,6)
     common /tdim/ ndt,ndi
-    
+
+    ddetds(:) = 0.d0
+    dcds1(:) = 0.d0
+    dcds2(:) = 0.d0
+    pdcds(:,:) = 0.d0
+    fact5(:,:) = 0.d0
+    sxs(:,:) = 0.d0
+    d2dets(:,:) = 0.d0
+    mident(:,:) = 0.d0
+    d2hds2(:,:) = 0.d0
+
     !!!
     !!! Recup. des para. mater
     !!!
-    
+
     beta=materf(4,2)
     gamma=materf(5,2)
     pi=r8pi()
     r54=sqrt(54.d0)
-    
+
     !!!
     !!! Construction de d**2r/dcos(3t)**2
     !!!
-    
+
     denom=9.d0*(1.d0-(gamma*rcos3t)**2.d0)**(3.d0/2.d0)
     fact1=-gamma**2.d0*sqrt(1.d0-(gamma*rcos3t)**2.d0)*&
           cos(beta*pi/6.d0-1.d0/3.d0*acos(gamma*rcos3t))
     fact2=-3.d0*(gamma**3.d0)*rcos3t*&
           sin(beta*pi/6.d0-1.d0/3.d0*acos(gamma*rcos3t))
     d2rdc2=(fact1+fact2)/denom
-    
+
     !!!
     !!! Construction de d cos3t / ds x d cos3t / ds
     !!!
-    
+
     dets=sii**3.d0*rcos3t/r54
     fact3=r54/sii**3.d0
     fact4=-3.d0*r54*dets/sii**5.d0
@@ -96,42 +105,35 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
     call lcprsv(fact4,devsig,dcds2)
     dcosds(1:ndt) = dcds1(1:ndt) + dcds2(1:ndt)
     call lcprte(dcosds,dcosds,pdcds)
-    
+
     !!!
     !!! Construction de d(r)/d(cos3t)
     !!!
-    
+
     drdcos=-gamma*sin(beta*pi/6.d0-1.d0/3.d0*acos(gamma*rcos3t))/&
             3.d0/sqrt(1.d0-(gamma*rcos3t)**2.d0)
-    
+
     !!!
     !!! Construction de d**2 cos3t / ds**2
     !!!
-    
+
     call lcprte(devsig,ddetds,fact5)
-    call lcprsm(-1.d0*2.d0,fact5,fact5)
+    fact5(1:ndt,1:ndt) = (-1.d0*2.d0) * fact5(1:ndt,1:ndt)
     call lcprte(devsig,devsig,sxs)
-    call lcprsm(5.d0*dets/sii**2.d0,sxs,fact6)
+    fact6(1:ndt,1:ndt) = (5.d0*dets/sii**2.d0) * sxs(1:ndt,1:ndt)
     call srd2de(devsig,d2dets)
-    call lcprsm(sii**2.d0/3.d0,d2dets,fact7)
-    mident(:,:) = 0.d0
-    
+    fact7(1:ndt,1:ndt) = (sii**2.d0/3.d0) * d2dets(1:ndt,1:ndt)
+
     do i=1,ndt
         mident(i,i)=1.d0
     end do
-    
-    call lcprsm(-1.d0*dets,mident,fact8)
-    fact56(1:ndt,1:ndt) = fact5(1:ndt,1:ndt) + fact6(1:ndt,1:ndt)
-    fact78(1:ndt,1:ndt) = fact7(1:ndt,1:ndt) + fact8(1:ndt,1:ndt)
-    fact5678(1:ndt,1:ndt) = fact56(1:ndt,1:ndt) + fact78(1:ndt,1:ndt)
-    call lcprsm(3.d0*r54/sii**5.d0,fact5678,d2cds2)
-    
+
+    d2cds2 = (3.d0*r54/sii**5.d0) * (fact5 + fact6 + fact7 - dets*mident)
+
     !!!
     !!! Assemblage final
     !!!
-    
-    call lcprsm(d2rdc2,pdcds,fact9)
-    call lcprsm(drdcos,d2cds2,fact10)
-    d2hds2(1:ndt,1:ndt) = fact9(1:ndt,1:ndt) + fact10(1:ndt,1:ndt)
+
+    d2hds2 = (d2rdc2 * pdcds) + (drdcos * d2cds2)
 
 end subroutine

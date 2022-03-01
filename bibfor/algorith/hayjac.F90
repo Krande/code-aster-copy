@@ -43,7 +43,6 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 #include "asterfort/fgequi.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/r8inir.h"
@@ -191,7 +190,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 !        dFe/dEel
         call lcprsv(1.5d0 / seq, dev, n)
         call lcprte(n, n, nxn)
-        call lcprsm(1.5d0, id, dfedee)
+        dfedee(1:ndt,1:ndt) = 1.5d0 * id(1:ndt,1:ndt)
         dfedee(1:ndt,1:ndt) = dfedee(1:ndt,1:ndt) - nxn(1:ndt,1:ndt)
         do i = 1, 6
            do j = 1, 6

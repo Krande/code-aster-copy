@@ -68,7 +68,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
     integer :: ndt, ndi, nmat, nmod
@@ -200,13 +199,11 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !       ----------------------------------------------------------------
 !
 ! - DGDS(T+DT)
-    dgds(1:ndt,1:ndt) = matmul(hook(1:ndt,1:ndt), ddfdds(1:ndt,1:ndt))
-    call lcprsm(dp, dgds, dgds)
+    dgds(1:ndt,1:ndt) = dp * matmul(hook(1:ndt,1:ndt), ddfdds(1:ndt,1:ndt))
     dgds(1:ndt,1:ndt) = i6(1:ndt,1:ndt) + dgds(1:ndt,1:ndt)
 !
 ! - DGDX1(T+DT)
-    dgdx1(1:ndt,1:ndt) = matmul(hook(1:ndt,1:ndt), ddfdsx(1:ndt,1:ndt))
-    call lcprsm(dp, dgdx1, dgdx1)
+    dgdx1(1:ndt,1:ndt) = dp * matmul(hook(1:ndt,1:ndt), ddfdsx(1:ndt,1:ndt))
 !
 ! - DGDX2(T+DT)
     dgdx2(1:ndt,1:ndt) =dgdx1(1:ndt,1:ndt)
@@ -240,41 +237,41 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprmv(ddfdds, x1, vtmp)
     call lcprte(vtmp, dfds, mtmp)
     call lcprsc(x1, dfds, x1df)
-    call lcprsm(x1df, ddfdds, mtmp1)
+    mtmp1(1:ndt,1:ndt) = x1df * ddfdds(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
-    call lcprsm(yy, mtmp, dlds)
-    call lcprsm(xx, ddfdds, mtmp)
+    dlds(1:ndt,1:ndt) = yy * mtmp(1:ndt,1:ndt)
+    mtmp(1:ndt,1:ndt) = xx * ddfdds(1:ndt,1:ndt)
     dlds(1:ndt,1:ndt) = dlds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DLDX1(T+DT)
     call lcprmv(ddfdsx, x1, vtmp)
     call lcprte(vtmp, dfds, mtmp1)
-    call lcprsm(x1df, ddfdsx, mtmp)
+    mtmp(1:ndt,1:ndt) = x1df * ddfdsx(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprte(dfds, dfds, mtmp)
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
-    call lcprsm(yy, mtmp, dldx1)
+    dldx1(1:ndt,1:ndt) = yy * mtmp(1:ndt,1:ndt)
     call lcprte(x1, x1, mtmp)
-    call lcprsm(ww, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = ww * mtmp(1:ndt,1:ndt)
     dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
-    call lcprsm(zz, i6, mtmp)
+    mtmp(1:ndt,1:ndt) = zz * i6(1:ndt,1:ndt)
     dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
-    call lcprsm(xx, ddfdsx, mtmp)
+    mtmp(1:ndt,1:ndt) = xx * ddfdsx(1:ndt,1:ndt)
     dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DLDX2(T+DT)
-    call lcprsm(yy, mtmp1, dldx2)
+    dldx2(1:ndt,1:ndt) = yy * mtmp1(1:ndt,1:ndt)
     dldx2(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! -- CAS ANISOTHERME
     if (c1 .ne. 0.d0) then
         difc1 = (c1-c1d)/c1
-        call lcprsm(difc1, i6, mtmp)
+        mtmp(1:ndt,1:ndt) = difc1 * i6(1:ndt,1:ndt)
         dldx1(1:ndt,1:ndt) = dldx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     endif
     if (c2 .ne. 0.d0) then
         difc2 = (c2-c2d)/c2
-        call lcprsm(difc2, i6, mtmp)
+        mtmp(1:ndt,1:ndt) = difc2 * i6(1:ndt,1:ndt)
         dldx2(1:ndt,1:ndt) = dldx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
     endif
 !
@@ -308,30 +305,30 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     call lcprmv(ddfdds, x2, vtmp)
     call lcprte(vtmp, dfds, mtmp)
     call lcprsc(x2, dfds, x2df)
-    call lcprsm(x2df, ddfdds, mtmp1)
+    mtmp1(1:ndt,1:ndt) = x2df * ddfdds(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
-    call lcprsm(yy, mtmp, djds)
-    call lcprsm(xx, ddfdds, mtmp)
+    djds(1:ndt,1:ndt) = yy * mtmp(1:ndt,1:ndt)
+    mtmp(1:ndt,1:ndt) = xx * ddfdds(1:ndt,1:ndt)
     djds(1:ndt,1:ndt) = djds(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DJDX2(T+DT)
     call lcprmv(ddfdsx, x2, vtmp)
     call lcprte(vtmp, dfds, mtmp1)
-    call lcprsm(x2df, ddfdsx, mtmp)
+    mtmp(1:ndt,1:ndt) = x2df * ddfdsx(1:ndt,1:ndt)
     mtmp1(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     call lcprte(dfds, dfds, mtmp)
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
-    call lcprsm(yy, mtmp, djdx2)
+    djdx2(1:ndt,1:ndt) = yy * mtmp(1:ndt,1:ndt)
     call lcprte(x2, x2, mtmp)
-    call lcprsm(ww, mtmp, mtmp)
+    mtmp(1:ndt,1:ndt) = ww * mtmp(1:ndt,1:ndt)
     djdx2(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
-    call lcprsm(zz, i6, mtmp)
+    mtmp(1:ndt,1:ndt) = zz * i6(1:ndt,1:ndt)
     djdx2(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
-    call lcprsm(xx, ddfdsx, mtmp)
+    mtmp(1:ndt,1:ndt) = xx * ddfdsx(1:ndt,1:ndt)
     djdx2(1:ndt,1:ndt) = djdx2(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DJDX1(T+DT)
-    call lcprsm(yy, mtmp1, djdx1)
+    djdx1(1:ndt,1:ndt) = yy * mtmp1(1:ndt,1:ndt)
     djdx1(1:ndt,1:ndt) = djdx1(1:ndt,1:ndt) - mtmp(1:ndt,1:ndt)
 !
 ! - DJDP(T+DT)
@@ -737,13 +734,13 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             vtmp(1:ndt) = vtmp(1:ndt) + vtmp1(1:ndt)
             call lcprmv(ddfdds, vtmp, vtmp1)
             call lcprte(vtmp1, epxi, mtmp)
-            call lcprsm(-xx*dp*nnet, ddfdds, mtmp1)
+            mtmp1(1:ndt,1:ndt) = (-xx*dp*nnet) * ddfdds(1:ndt,1:ndt)
             dxids(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
 !
 ! - DXIDX1(T+DT)
             call lcprmv(ddfdsx, vtmp, vtmp1)
             call lcprte(vtmp1, epxi, mtmp)
-            call lcprsm(-xx*dp*nnet, ddfdsx, mtmp1)
+            mtmp1(1:ndt,1:ndt) = (-xx*dp*nnet) * ddfdsx(1:ndt,1:ndt)
             dxidx1(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
 !
 ! - DXIDX2(T+DT)
@@ -756,7 +753,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             dxidp(1:ndt) = vtmp1(1:ndt) - vtmp(1:ndt)
 !
 ! - DXIDXI(T+DT)
-            call lcprsm(1.d0+xx*nnet, i6, mtmp)
+            mtmp(1:ndt,1:ndt) = (1.d0+xx*nnet) * i6(1:ndt,1:ndt)
             call lcprsv(3.d0*xx*nnet, epxi, vtmp)
             call lcprsv(xx, dfds, vtmp1)
             vtmp(1:ndt) = vtmp1(1:ndt) - vtmp(1:ndt)

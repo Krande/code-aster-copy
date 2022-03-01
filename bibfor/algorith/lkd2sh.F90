@@ -32,7 +32,6 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkd2hs.h"
     integer :: iret, nmat
@@ -96,16 +95,16 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
     d2hdsi(1:ndt,1:ndt) = matmul(d2hds2(1:ndt,1:ndt), dsdsig(1:ndt,1:ndt))
 !
 ! --- CONSTRUCTION DE SII*D2HDSDSIGMA = MAT2
-    call lcprsm(sii, d2hdsi, mat2)
+    mat2(1:ndt,1:ndt) = sii * d2hdsi(1:ndt,1:ndt)
 !
 ! --- ADDITION DE MAT2 + MAT1 = MAT3
     mat3(1:ndt,1:ndt) = mat1(1:ndt,1:ndt) + mat2(1:ndt,1:ndt)
 !
 ! --- CALCUL DE COEFH*MAT3 = MAT2
-    call lcprsm(coefh, mat3, mat2)
+    mat2(1:ndt,1:ndt) = coefh * mat3(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION DE DHTDSIGMA = DHTDS*DSDSIG
-    call lcprsm(coefh, dsdsig, mat1)
+    mat1(1:ndt,1:ndt) = coefh * dsdsig(1:ndt,1:ndt)
     do 60 i = 1, ndt
         dhtds(i) = zero
         do 70 j = 1, ndt
@@ -117,11 +116,11 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
     call lcprte(devsig, dhtds, mat1)
 !
 ! --- CALCUL DE HTHETA/SII*DSDSIG = MAT3
-    call lcprsm(varh(3)/sii, dsdsig, mat3)
+    mat3(1:ndt,1:ndt) = (varh(3)/sii) * dsdsig(1:ndt,1:ndt)
 !
 ! --- MAT5 = HTHETA*DEVSIG*DSIIDS/SII**2
     call lcprte(devsig, dsiids, mat4)
-    call lcprsm(varh(3)/sii**2, mat4, mat5)
+    mat5(1:ndt,1:ndt) = (varh(3)/sii**2) * mat4(1:ndt,1:ndt)
 !
 ! --- MAT4 = MAT2+MAT1+MAT3-MAT5
     do 80 i = 1, ndt

@@ -56,7 +56,6 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 #include "asterfort/lcicma.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/mgauss.h"
@@ -507,7 +506,7 @@ subroutine cvmjpl(mod, nmat, mater, timed, timef,&
 !
     mtmp(1:ndt,1:ndt) = transpose(dsde(1:ndt,1:ndt))
     dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)
-    call lcprsm(0.5d0, dsde, dsde)
+    dsde(1:ndt,1:ndt) = 0.5d0 * dsde(1:ndt,1:ndt)
 !
 !
 end subroutine

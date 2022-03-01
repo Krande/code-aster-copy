@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine lkdgds(nmat, materf, para, vara, devsig,&
 !     ------------------------------------------------------------------
 #include "asterfort/cos3t.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkd2fs.h"
 #include "asterfort/lkd2sh.h"
@@ -109,7 +108,7 @@ subroutine lkdgds(nmat, materf, para, vara, devsig,&
 !
 ! --- CONSTRUCTION DE (DFDS:VECN)*DNDSIG
     call lcprsc(dfds, vecn, dfdsvn)
-    call lcprsm(dfdsvn, dndsig, dfpndn)
+    dfpndn(1:ndt,1:ndt) = dfdsvn * dndsig(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION DE DGDS
     do 50 i = 1, ndt

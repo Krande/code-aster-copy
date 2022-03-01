@@ -37,8 +37,6 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     
     implicit   none
 
-#include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srd2hs.h"
 
@@ -64,8 +62,7 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     !!! Construction de sii
     !!!
     
-    call lcprsc(devsig, devsig, sii)
-    sii=sqrt(sii)
+    sii=sqrt(dot_product(devsig(1:ndt), devsig(1:ndt)))
     
     !!!
     !!! initialisation matrice d_ik x d_jl
@@ -111,7 +108,7 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     d2hdsi(1:ndt,1:ndt) = matmul(d2hds2(1:ndt,1:ndt), dsdsig(1:ndt,1:ndt))
     
     !!! Construction de sii*d2h/dsigma = mat2
-    call lcprsm(sii,d2hdsi,mat2)
+    mat2(1:ndt,1:ndt) = sii * d2hdsi(1:ndt,1:ndt)
     
     !!! mat2 + mat1 = mat3
     mat3(1:ndt,1:ndt) = mat1(1:ndt,1:ndt) + mat2(1:ndt,1:ndt)
@@ -133,11 +130,11 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
     call lcprte(devsig,dhtds,mat1)
     
     !!! Calcul de mat3 ) h/sii*(ds/dsig)
-    call lcprsm(varh(2)/sii,dsdsig,mat3)
+    mat3(1:ndt,1:ndt) = (varh(2)/sii) * dsdsig(1:ndt,1:ndt)
     
     !!! Calcul de mat5 = h*s*(dsii/ds)/sii**2
     call lcprte(devsig,dsiids,mat4)
-    call lcprsm(varh(2)/sii**2.d0,mat4,mat5)
+    mat5(1:ndt,1:ndt) = (varh(2)/sii**2.d0) * mat4(1:ndt,1:ndt)
     
     !!! mat4 = mat2+mat1+mat3-mat5
     do i=1,ndt

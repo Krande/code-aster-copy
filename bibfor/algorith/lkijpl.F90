@@ -31,7 +31,6 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 !       ----------------------------------------------------------------
 #include "asterc/r8prem.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/prmama.h"
 #include "asterfort/r8inir.h"
@@ -116,7 +115,7 @@ subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
 ! === =================================================================
     coefnl = coefnl/mu
 !
-    call lcprsm(coefnl, hook, hooknl)
+    hooknl(1:ndt,1:ndt) = coefnl * hook(1:ndt,1:ndt)
 ! === =================================================================
 ! --- CONSTRUCTION TENSEUR CONSTITUTIF TANGENT DSDE
 ! === =================================================================

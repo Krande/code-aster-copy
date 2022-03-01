@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine chbfsx(sig, x1, x2, i4, ddfdsx)
 #include "asterfort/chbfs.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprte.h"
     integer :: n, nd
     real(kind=8) :: dfds(6), sig(6), x1(6), x2(6), dev(6), s
@@ -48,7 +47,7 @@ subroutine chbfsx(sig, x1, x2, i4, ddfdsx)
     s = lcnrts ( dev )
     call chbfs(sig, x1, x2, dfds)
     call lcprte(dfds, dfds, dfds2)
-    call lcprsm(1.5d0, i4, ddfdsx)
+    ddfdsx(1:n,1:n) = 1.5d0 * i4(1:n,1:n)
     ddfdsx(1:n,1:n) = ddfdsx(1:n,1:n) - dfds2(1:n,1:n)
-    call lcprsm(-1.d0 / s, ddfdsx, ddfdsx)
+    ddfdsx(1:n,1:n) = (-1.d0/s) * ddfdsx(1:n,1:n)
 end subroutine

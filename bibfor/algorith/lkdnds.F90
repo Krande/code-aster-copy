@@ -36,7 +36,6 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !     ------------------------------------------------------------------
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkdbds.h"
@@ -86,7 +85,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 ! --- CONSTRUCTION DE DS/DSIGMA
     unstro = un / trois
     call lcprte(kron, kron, kron2)
-    call lcprsm(unstro, kron2, kron2)
+    kron2(1:ndt,1:ndt) = unstro * kron2(1:ndt,1:ndt)
     dsdsig(1:ndt,1:ndt) = mident(1:ndt,1:ndt) - kron2(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION DE DSII/D(DEVSIG)

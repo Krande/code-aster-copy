@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/lcdvmi.h"
 #include "asterfort/lcmate.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/nmvecd.h"
 #include "asterfort/nmvend.h"
@@ -430,7 +429,7 @@ real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
             unmd=1.d0 - vim(nb+3)
         endif
 !             MATRICE SECANTE=MATRICE ELASTIQUE*(1-D)
-        call lcprsm(unmd, hook, dsidep)
+        dsidep(1:ndt,1:ndt) = unmd * hook(1:ndt,1:ndt)
     endif
 !
 !-- MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE

@@ -26,7 +26,6 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcprsm.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/mgauss.h"
@@ -109,7 +108,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 !
 !     Calcul de DRSDS : (6,6)
     call irrfss(sigf, ddfdds)
-    call lcprsm((dp+dpi), ddfdds, drsds)
+    drsds(1:ndt,1:ndt) = (dp+dpi) * ddfdds(1:ndt,1:ndt)
     drsds(1:ndt,1:ndt) = fkooh(1:ndt,1:ndt) + drsds(1:ndt,1:ndt)
 !
 !     Calcul de DRPDP : scalaire
@@ -154,9 +153,9 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     endif
 !
     if (ldrpdp) then
-        call lcprsm(1.0d0/drpdp + drids, ddfdds, ddfdds)
+        ddfdds = (1.0d0/drpdp+drids) * ddfdds
     else
-        call lcprsm(drids, ddfdds, ddfdds)
+        ddfdds = drids * ddfdds
     endif
 !
 !     Assemblage de DRSDS et DDFDDS : (6,6)

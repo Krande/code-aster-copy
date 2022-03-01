@@ -80,11 +80,7 @@ subroutine srcnvx(sigd,sigf,nvi,vind,nmat,mater,seuil,vinf)
     !!! Verification d'un etat initial plastiquement admissible
     !!!
     
-    somme=0.d0
-    
-    do i=1,nvi
-        somme=somme+vind(i)
-    end do
+    somme = sum(vind(1:nvi))
     
     if (abs(somme).lt.r8prem()) then
         i1=sigu(1)+sigu(2)+sigu(3)
