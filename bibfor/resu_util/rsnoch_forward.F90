@@ -51,7 +51,6 @@ subroutine rsnoch_forward(nomsd, nomsy, iordr)
     character(len=16) :: noms2
     character(len=19) :: nomd2, chnote
     character(len=24) :: valk(2)
-    character(len=8) :: repk
     integer :: normax, iretou, nordr, irang,  iret, ibid, jtach
     integer, pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------

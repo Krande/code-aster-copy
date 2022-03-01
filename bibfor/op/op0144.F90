@@ -81,6 +81,9 @@ subroutine op0144()
     character(len=8), pointer :: cmp_name(:) => null()
 !
 !-----------------------------------------------------------------------
+    data nomcmp /'DX      ','DY      ','DZ      ',  'DRX     ','DRY     ','DRZ     '/
+!
+!-----------------------------------------------------------------------
     integer :: i, iacmp, iamor, iav, icmp, idec, idesc
     integer :: iec, ifact, ifm, ifr, ifreq, ifsic
     integer :: ii, imasg, inec, ino, inumo, io, ipar
@@ -91,13 +94,7 @@ subroutine op0144()
     real(kind=8) :: amor, umin, vmax, vmin, vmoy, vpas
     integer, pointer :: prno(:) => null()
     ibid = 0
-!
-!-----------------------------------------------------------------------
-    data         nomcmp /'DX      ','DY      ','DZ      ',&
-     &                     'DRX     ','DRY     ','DRZ     '/
-!
-!-----------------------------------------------------------------------
-!
+
     call jemarq()
     c16b=(0.d0,0.d0)
     r8b=0.d0

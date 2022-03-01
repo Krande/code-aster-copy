@@ -45,7 +45,7 @@ subroutine redetr(matelz)
 !
 !
     integer :: iret1, iexi, iexiav
-    integer :: izero, ico, k, nb1, nbdet, nb1av, ibid
+    integer :: izero, ico, k, nb1, nbdet, nb1av
     aster_logical :: ldetr
     character(len=3) :: kret
     character(len=8) :: noma

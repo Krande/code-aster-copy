@@ -55,21 +55,20 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod,&
     integer :: k, l, icodre(3)
 !       
     real(kind=8) :: instam, instap, dt
-    real(kind=8) :: rac2, defam(6), defap(6), valres(3)
+    real(kind=8) :: rac2, valres(3)
     real(kind=8) :: em, num, e, nu, deuxGm, deuxG, bulkmodulusm, bulkmodulus
     real(kind=8) :: etadm, etad, etavm, etav
-    real(kind=8) :: alpha,tm,tp,tref,depsth(6),epsthe
+    real(kind=8) :: alpha, depsth(6), epsthe
     real(kind=8) :: depsmo, deps(6), depsdv(6), kron(6)
     real(kind=8) :: sigmmo, sigm(6), sigmdv(6), sigpmo, sigpdv(6), sigp(6), vip(*)
     real(kind=8) :: dsidep(6, 6)
 !   
     character(len=*) :: fami
-    character(len=6) :: epsa(6)
     character(len=8) :: typmod(*)
     character(len=16) :: nomres(4), option
 !-----------------------------------------------------------------------
     data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-!~    data epsa/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/
+!   data epsa/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/
 !------------------------------------------------------------------
 !
 !     -- 1 INITIALISATIONS :

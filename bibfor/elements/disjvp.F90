@@ -83,18 +83,15 @@ integer, intent(out)          :: iret
     integer :: iadzi, iazk24, icompo, igeom
     integer :: icarcr
     integer :: icontm, ii, neq
-    real(kind=8) :: raidex, raideurDeno
     character(len=24) :: messak(5)
 !
 !
     real(kind=8)     :: klc(for_discret%nno*for_discret%nc*2*for_discret%nno*for_discret%nc*2)
-    real(kind=8)     :: dvl(for_discret%nno*for_discret%nc), dpe(for_discret%nno*for_discret%nc)
-    real(kind=8)     :: dve(for_discret%nno*for_discret%nc)
+    real(kind=8)     :: dpe(for_discret%nno*for_discret%nc)
     real(kind=8)     :: klv(for_discret%nbt), fl(for_discret%nno*for_discret%nc)
     real(kind=8)     :: force(3), raide(6)
     real(kind=8)     :: r8bid
     character(len=8) :: k8bid
-    aster_logical    :: Prediction, Dynamique
 
 ! --------------------------------------------------------------------------------------------------
     integer, parameter  :: nbre1=8
@@ -104,7 +101,6 @@ integer, intent(out)          :: iret
     integer             :: nbpar
     real(kind=8)        :: valpar
     character(len=8)    :: nompar
-    integer             :: jadre1, jcodre1
     data nomre1 /'KE','KP','KDP','KDM','RDP','RDM','MYP','MYM'/
 !
 ! --------------------------------------------------------------------------------------------------

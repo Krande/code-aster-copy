@@ -54,7 +54,7 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
 #include "asterfort/get_varc.h"
     aster_logical :: cplan
     integer :: ndim, imate, iret, ndimsi
-    integer :: k, l, iret1, icodre(3)
+    integer :: k, l, icodre(3)
 !       
     real(kind=8) :: instam, instap, dt ,nl
     real(kind=8) :: valres(5)
@@ -66,7 +66,6 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     real(kind=8) :: sigmmo, sigm(6), sigmdv(6), sigpmo, sigpdv(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
 !   
-    character(len=6) :: epsa(6)
     character(len=8) :: typmod(*)
     character(len=16) :: nomres(5), option
 !-----------------------------------------------------------------------
