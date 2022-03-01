@@ -30,14 +30,12 @@ subroutine ut2plg(nn, nc, p, sl, sg)
     integer, intent(in) :: nn, nc
     real(kind=8), intent(in) :: p(3, 3), sl(*)
     real(kind=8), intent(out) :: sg(*)
+!    
     integer :: n, n1, nddl
-    real(kind=8) :: matsy1(12, 12), matsy2(12, 12)
-    real(kind=8) :: matas2(12, 12), matsym(12, 12)
-    real(kind=8) :: matasy(12, 12)
-    real(kind=8) :: parsym(78), parasy(78)
-    real(kind=8) :: parsmg(12, 12), parayg(12, 12)
-    real(kind=8) :: matril(12, 12), matrig(12, 12)
-    real(kind=8) :: vecsym(78), vecasy(78)
+    real(kind=8), dimension(nn*nc, nn*nc) :: matsy1, matsy2, matas2
+    real(kind=8), dimension(nn*nc, nn*nc) :: matsym, matasy
+    real(kind=8), dimension(nn*nc, nn*nc) :: parsmg, parayg, matril, matrig
+    real(kind=8), dimension(78) :: parsym, parasy, vecsym, vecasy
 !     ------------------------------------------------------------------
 !     PASSAGE D'UNE MATRICE TRIANGULAIRE ANTISYMETRIQUE DE NN*NC LIGNES
 !     DU REPERE LOCAL AU REPERE GLOBAL (3D)
@@ -55,9 +53,9 @@ subroutine ut2plg(nn, nc, p, sl, sg)
     n1 = (nddl+1)*nddl/2
 !
     call vecmap(sl, n, matril, nddl)
-    matsy1(1:nddl,1:nddl) = transpose(matril(1:nddl,1:nddl))
-    matsy2(1:nddl,1:nddl) = matril(1:nddl,1:nddl) + matsy1(1:nddl,1:nddl)
-    matas2(1:nddl,1:nddl) = matril(1:nddl,1:nddl) - matsy1(1:nddl,1:nddl)
+    matsy1 = transpose(matril)
+    matsy2 = matril + matsy1
+    matas2 = matril - matsy1
     call lcps2m(nddl, 0.5d0, matsy2, matsym)
     call mavec(matsym, nddl, vecsym, n1)
     call lcps2m(nddl, 0.5d0, matas2, matasy)
@@ -66,7 +64,7 @@ subroutine ut2plg(nn, nc, p, sl, sg)
     call uplstr(nddl, parsmg, parsym)
     call ut2alg(nn, nc, p, vecasy, parasy)
     call upletr(nddl, parayg, parasy)
-    matrig(1:nddl,1:nddl) = parsmg(1:nddl,1:nddl) + parayg(1:nddl,1:nddl)
+    matrig = parsmg + parayg
     call mapvec(matrig, nddl, sg, n)
 !
 !
