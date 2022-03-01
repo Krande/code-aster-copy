@@ -18,7 +18,6 @@
 
 subroutine utpplg(nn, nc, p, sl, sg)
     implicit none
-#include "asterfort/lcps2m.h"
 #include "asterfort/mapvec.h"
 #include "asterfort/mavec.h"
 #include "asterfort/upletr.h"
@@ -55,9 +54,9 @@ subroutine utpplg(nn, nc, p, sl, sg)
     matsy1 = transpose(matril)
     matsy2 = matril + matsy1
     matas2 = matril - matsy1
-    call lcps2m(nddl, 0.5d0, matsy2, matsym)
+    matsym = 0.5d0 * matsy2
     call mavec(matsym, nddl, vecsym, n1)
-    call lcps2m(nddl, 0.5d0, matas2, matasy)
+    matasy = 0.5d0 * matas2
     call mavec(matasy, nddl, vecasy, n1)
     call utpslg(nn, nc, p, vecsym, parsym)
     call uplstr(nddl, parsmg, parsym)
