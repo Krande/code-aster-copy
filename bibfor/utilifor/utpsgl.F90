@@ -19,7 +19,6 @@
 subroutine utpsgl(nn, nc, p, sg, sl)
     implicit none
 #include "asterfort/mavec.h"
-#include "asterfort/tmat.h"
 #include "asterfort/vecma.h"
     real(kind=8) :: p(3, 3), sg(*), sl(*)
 !     ------------------------------------------------------------------
@@ -115,7 +114,7 @@ subroutine utpsgl(nn, nc, p, sg, sl)
 200     continue
         mtr14( 7, 7) = 1.d0
         mtr14( 14, 14) = 1.d0
-        call tmat(14, mtr14, mr14)
+        mr14 = transpose(mtr14)
         call vecma(sl, 105, ml14, 14)
         mv14 = matmul(mtr14,ml14)
         mtr14 = matmul(mv14,mr14)
@@ -139,7 +138,7 @@ subroutine utpsgl(nn, nc, p, sg, sl)
         mtr16( 8, 8) = 1.d0
         mtr16( 15, 15) = 1.d0
         mtr16( 16, 16) = 1.d0
-        call tmat(16, mtr16, mr16)
+        mr16 = transpose(mtr16)
         call vecma(sl, 136, ml16, 16)
         mv16 = matmul(mtr16,ml16)
         mtr16 = matmul(mv16,mr16)

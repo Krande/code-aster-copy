@@ -19,7 +19,6 @@
 subroutine ut2mgl(nn, nc, p, sg, sl)
   implicit none
 #include "asterfort/mavec.h"
-#include "asterfort/tmat.h"
 #include "asterfort/vecma.h"
   real(kind=8) :: p(3, 3), sg(*), sl(*)
 !     ------------------------------------------------------------------
@@ -93,7 +92,7 @@ subroutine ut2mgl(nn, nc, p, sg, sl)
         mtr3(2,2) = p(2,2)
         mtr3(3,3) = un
 !
-        call tmat(3, mtr3, mr3)
+        mr3 = transpose(mtr3)
         call vecma(sg, 6, ml3, 3)
         mv3 = matmul(mtr3,ml3)
         mtr3 = matmul(mv3,mr3)
@@ -114,7 +113,7 @@ subroutine ut2mgl(nn, nc, p, sg, sl)
         mtr6(5,5) = p(2,2)
         mtr6(6,6) = un
 !
-        call tmat(6, mtr6, mr6)
+        mr6 = transpose(mtr6)
         call vecma(sg, 21, ml6, 6)
         mv6 = matmul(mtr6,ml6)
         mtr6 = matmul(mv6,mr6)
