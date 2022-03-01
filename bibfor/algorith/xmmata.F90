@@ -30,7 +30,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/matini.h"
 #include "asterfort/hmdeca.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"

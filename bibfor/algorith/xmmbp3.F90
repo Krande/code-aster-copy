@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
@@ -74,7 +73,7 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
 !
 ! ----------------------------------------------------------------------
 !
-    call matini(2, 3, 0.d0, tauknp)
+    tauknp(:,:) = 0.d0
     coefj=xcalc_saut(1,0,1)
 !
 !     II.3.1. CALCUL DE B ET DE BT

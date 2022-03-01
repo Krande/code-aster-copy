@@ -24,7 +24,6 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
 !
     implicit none
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_saut.h"
@@ -72,8 +71,8 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
 !
 ! ---------------------------------------------------------------------
 ! on va commencer par construire une matrice de passage
-    call matini(3, 3, 0.d0, p)
-    call matini(3, 3, 0.d0, ptr)
+    p(:,:) = 0.d0
+    ptr(:,:) = 0.d0
     mug(:) = 0.d0
     am(:) = 0.d0
     coefi=xcalc_saut(1,0,1)

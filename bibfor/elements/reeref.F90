@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ implicit none
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/invjax.h"
-#include "asterfort/matini.h"
 #include "asterfort/reereg.h"
 !
 integer, intent(in) :: ndim
@@ -88,7 +87,7 @@ real(kind=8), optional, intent(out) :: dfdi(nnop, ndim)
                     geom, invjac, iret)
 !
 ! ------- DERIVEES DES FONCTIONS DE FORMES CLASSIQUES EN XE : DFDI
-        call matini(nnop, ndim, 0.d0, dfdi)
+        dfdi(:,:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
                 do k = 1, ndim

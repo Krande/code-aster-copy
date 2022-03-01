@@ -30,7 +30,6 @@ implicit none
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/matini.h"
 #include "asterfort/matinv.h"
 #include "asterfort/provec.h"
     integer :: ndime, ndim, ipp, ip, n(3)
@@ -83,7 +82,7 @@ implicit none
     call elrfdf(elp, ksi, dff)
 !
     r(:) = 0.d0
-    call matini(ndime, ndime, 0.d0, jac)
+    jac(:,:) = 0.d0
 ! --- CALCUL DE R1,DERIVEES PREMIERES DE R1 EN KSI
 ! ---           R1 : LEVEL SET NORMALE
     do  j = 1, nno
@@ -155,7 +154,7 @@ implicit none
     endif
 !
     det=0.d0
-    call matini(ndime, ndime, 0.d0, inv)
+    inv(:,:) = 0.d0
 ! --- CALCUL L'INVERSE DE LA MATRICE JACOBIENNE
     call matinv('S', ndime, jac, inv, det)
 !

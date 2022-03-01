@@ -50,7 +50,6 @@ subroutine mctg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 !
 #include "asterf_types.h"
 #include "asterfort/jacobi.h"
-#include "asterfort/matini.h"
 #include "asterfort/mctanp.h"
 #include "asterfort/mctge2.h"
 #include "asterfort/mcpstr.h"
@@ -98,7 +97,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
     t1(4)=r1
     t1(6)=r1
 !
-    call matini(mmax, mmax, r0, eigprj)
+    eigprj(:,:) = r0
 ! Matrix  TR = (SIXX SIXY SIYY) for Jacobi
 ! Produce EIGPRJ: Base Projection Matrix from initial base
 !                 to principal directions base
@@ -134,7 +133,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 !
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
     tu(1:nmax) = t1(1:nmax)
-    call matini(mmax, mmax, r0, eigxpr)
+    eigxpr(:,:) = r0
 !
     call jacobi(mmax, mxiter, tol, small, tr,&
                 tu, eigxpr, pstra, vaux, itjac1,&

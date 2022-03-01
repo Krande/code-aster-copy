@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 #include "asterfort/assert.h"
 #include "asterfort/dhrc_calc_a_term.h"
 #include "asterfort/diago2.h"
-#include "asterfort/matini.h"
 #include "asterc/r8prem.h"
 #include "blas/dcopy.h"
 !
@@ -70,11 +69,11 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 
 ! -- POUR LES TERMES DE MF POSITION D EVALUATION DE LA DEFORMATION POUR DISTINGUER TRAC-COMP
 !
-    call matini(6, 6, 0.d0, a)
-    call matini(6, 6, 0.d0, ap1)
-    call matini(6, 6, 0.d0, ap2)
-    call matini(6, 6, 0.d0, as1)
-    call matini(6, 6, 0.d0, as2)
+    a(:,:) = 0.d0
+    ap1(:,:) = 0.d0
+    ap2(:,:) = 0.d0
+    as1(:,:) = 0.d0
+    as2(:,:) = 0.d0
 !
     call dcopy(8, eps, 1, epsl, 1)
 !

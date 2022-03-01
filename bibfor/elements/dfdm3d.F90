@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/matini.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
@@ -55,7 +54,7 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor,&
 !
     poids = zr(ipoids+ipg-1)
 !
-    call matini(3, 3, 0.d0, g)
+    g(:,:) = 0.d0
 !
     do 100 i = 1, nno
         k = 3*nno*(ipg-1)

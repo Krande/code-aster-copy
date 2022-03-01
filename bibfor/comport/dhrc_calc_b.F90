@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
 !
     implicit none
 !
-#include "asterfort/matini.h"
     real(kind=8), intent(in) :: vint(*)
     real(kind=8), intent(in) :: ab(6, 2, 2), gb(6, 2, 2)
 !
@@ -59,10 +58,10 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     integer :: i, k
 !
 !
-    call matini(6, 2, 0.0d0, bp1)
-    call matini(6, 2, 0.0d0, bp2)
-    call matini(6, 2, 0.0d0, bs1)
-    call matini(6, 2, 0.0d0, bs2)
+    bp1(:,:) = 0.0d0
+    bp2(:,:) = 0.0d0
+    bs1(:,:) = 0.0d0
+    bs2(:,:) = 0.0d0
 !
 ! Termes Bm
 !

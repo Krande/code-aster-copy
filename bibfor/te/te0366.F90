@@ -26,7 +26,6 @@ subroutine te0366(option, nomte)
 #include "asterfort/elelin.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/jevech.h"
-#include "asterfort/matini.h"
 #include "asterfort/ttprsm.h"
 #include "asterfort/tecael.h"
 #include "asterfort/tecach.h"
@@ -111,7 +110,7 @@ subroutine te0366(option, nomte)
 !
 ! --- INITIALISATIONS
 !
-    call matini(n, n, 0.d0, mmat)
+    mmat(:,:) = 0.d0
     geopi(:) = 0.d0
     dlagrf(:) = 0.d0
     ddeple(:) = 0.d0

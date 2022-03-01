@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
 !
     implicit none
 !
-#include "asterfort/matini.h"
     real(kind=8), intent(in) :: vint(*)
     real(kind=8), intent(in) :: c0(2, 2, 2)
     real(kind=8), intent(in) :: ac(2, 2, 2), gc(2, 2, 2)
@@ -59,10 +58,10 @@ subroutine dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
 !
     integer :: k, l
 !
-    call matini(2, 2, 0.0d0, cp1)
-    call matini(2, 2, 0.0d0, cp2)
-    call matini(2, 2, 0.0d0, cs1)
-    call matini(2, 2, 0.0d0, cs2)
+    cp1(:,:) = 0.0d0
+    cp2(:,:) = 0.0d0
+    cs1(:,:) = 0.0d0
+    cs2(:,:) = 0.0d0
 !
     do k = 1, 2
         do l = 1, 2

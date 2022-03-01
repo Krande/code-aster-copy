@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
                   ddt4, p, nno, ddlh, ddls,&
                   jac, ffp, singu, fk, mmat)
     implicit none
-#include "asterfort/matini.h"
 #include "asterfort/assert.h"
     real(kind=8) :: ddt1(3, 3), ddt2(3, 3), ddt3(3, 3), ddt4(3, 3), pp(3, 3)
     real(kind=8) :: p(3, 3), mmat(216, 216)
@@ -50,15 +49,15 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
 !   PAR PRECAUTION ON MET UN ASSERT
     ASSERT(ddlh.eq.ndim)
 !
-    call matini(3, 3, 0.d0, ddt11)
-    call matini(3, 3, 0.d0, ddt21)
-    call matini(3, 3, 0.d0, ddt31)
-    call matini(3, 3, 0.d0, ddt41)
+    ddt11(:,:) = 0.d0
+    ddt21(:,:) = 0.d0
+    ddt31(:,:) = 0.d0
+    ddt41(:,:) = 0.d0
 !
-    call matini(3, 3, 0.d0, ddt111)
-    call matini(3, 3, 0.d0, ddt211)
-    call matini(3, 3, 0.d0, ddt311)
-    call matini(3, 3, 0.d0, ddt411)
+    ddt111(:,:) = 0.d0
+    ddt211(:,:) = 0.d0
+    ddt311(:,:) = 0.d0
+    ddt411(:,:) = 0.d0
 !
     do 1 i = 1, ndim
         do 2 j = 1, ndim

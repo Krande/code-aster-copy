@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine te0503(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/matini.h"
 #include "asterfort/teattr.h"
 #include "asterfort/vff2dn.h"
     character(len=16) :: option, nomte
@@ -68,7 +67,7 @@ subroutine te0503(option, nomte)
 !
     call connec(nomte, nse, nnop2, c)
 !
-    call matini(9, 9, 0.d0, mrigt)
+    mrigt(:,:) = 0.d0
 !
 ! --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,6 @@ subroutine mctanp(dpstrs, rprops, ii, jj, mm, edge, right, apex)
     real(kind=8) :: apex
 !
 #include "asterf_types.h"
-#include "asterfort/matini.h"
 !
 ! Declaration of integer type variables
     integer :: ii, jj, mm
@@ -197,7 +196,7 @@ subroutine mctanp(dpstrs, rprops, ii, jj, mm, edge, right, apex)
 ! Tangent consistent with multi-vector return to apex
 !
 ! -------------------------------------------------------------------------
-        call matini(3, 3, r0, dpstrs)
+        dpstrs(:,:) = r0
     else
 ! -------------------------------------------------------------------------
 !

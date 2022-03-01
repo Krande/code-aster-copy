@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
-#include "asterfort/matini.h"
     integer, intent(in) :: indip(6)
     real(kind=8), intent(in) :: eps(8), vint(*)
     real(kind=8), intent(in) :: a(6, 6), ap1(6, 6), ap2(6, 6)

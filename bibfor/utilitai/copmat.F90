@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine copmat(mat_in, mat_out)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/matini.h"
 
     character(len=8), intent(in) :: mat_in
     real(kind=8), intent(out) :: mat_out(*)
@@ -65,7 +64,7 @@ subroutine copmat(mat_in, mat_out)
 
     call jeveuo(nonu//'.SMOS.SMDE', 'L', vi=smde)
     neq = smde(1)
-    call matini(neq, neq, 0.d0, mat_out)
+    mat_out(1:neq*neq) = 0.d0
 
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)

@@ -34,7 +34,6 @@ implicit none
 #include "asterfort/elrfvf.h"
 #include "asterfort/iselli.h"
 #include "asterfort/loncar.h"
-#include "asterfort/matini.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
@@ -202,9 +201,9 @@ implicit none
 !      RECUPERATION DES COORDONNEES REELLES ET DE REFERENCE DES NOEUDS SITUES SUR CE SEGMENT
 !      ET CALCUL DE LST AUX EXTREMITES DE CE SEGMENT
                         lst(:) = 0.d0
-                        call matini(3, 4, 0.d0, rainter)
-                        call matini(6, ndim, 0.d0, cooree)
-                        call matini(6, ndim, 0.d0, cooref)
+                        rainter(:,:) = 0.d0
+                        cooree(:,:) = 0.d0
+                        cooref(:,:) = 0.d0
                         minlst = 0.d0
                         maxlst = 0.d0
                         do k = 1, 2
@@ -617,9 +616,9 @@ implicit none
 !      ON DOIT DETERMINER LST AUX EXTREMITES DE CE TRIA
 !      RECUPERATION DES COORDONNEES REELLES ET DE REFERENCE DES NOEUDS SITUES SUR CE TRIA
                         lst(:) = 0.d0
-                        call matini(3, 4, 0.d0, rainter)
-                        call matini(6, ndim, 0.d0, cooree)
-                        call matini(6, ndim, 0.d0, cooref)
+                        rainter(:,:) = 0.d0
+                        cooree(:,:) = 0.d0
+                        cooref(:,:) = 0.d0
                         minlst = 0.d0
                         maxlst = 0.d0
                         do k = 1, 3

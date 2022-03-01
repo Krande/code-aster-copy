@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine arljac(nno   ,ndim  ,dff   ,coor  ,invjac)
 
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/matini.h"
 #include "asterfort/matinv.h"
 #include "asterfort/jedema.h"
 
@@ -50,7 +49,7 @@ subroutine arljac(nno   ,ndim  ,dff   ,coor  ,invjac)
 
 ! --- JACOBIENNE EN XE
 
-    call matini(3,3,0.d0,jacobi)
+    jacobi(:,:) = 0.d0
     do 100 i=1,ndim
         do 110 j=1,ndim
             do 120 k=1,nno

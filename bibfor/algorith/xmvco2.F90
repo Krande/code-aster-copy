@@ -28,7 +28,6 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_saut.h"
@@ -73,7 +72,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
     lmultc = nfiss.gt.1
     h(:) = 0.d0
     hfix(:) = 0.d0
-    call matini(3, 3, 0.d0, ptr)
+    ptr(:,:) = 0.d0
     if (.not.lmultc) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])
       hea_fa(2)=xcalc_code(1,he_inte=[+1])

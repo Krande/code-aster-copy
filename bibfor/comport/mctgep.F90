@@ -54,7 +54,6 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx, direig, edge, apex)
     real(kind=8) :: apex
 !
 #include "asterf_types.h"
-#include "asterfort/matini.h"
 !
 ! Declaration of integer type variables
     integer :: i, j, ia, ib, ic, mcomp, mdim
@@ -84,9 +83,9 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx, direig, edge, apex)
 !         write(6,'(A)')'!-----------------------------------------!'
 !         write(6,'(A)')'!'
 !     endif
-    call matini(mcomp, mcomp, r0, foid)
-    call matini(mcomp, mcomp, r0, dx2dx)
-    call matini(mcomp, mcomp, r0, dydx)
+    foid(:,:) = r0
+    dx2dx(:,:) = r0
+    dydx(:,:) = r0
     sopid(:) = r0
 !
 ! 4th-order symetric unit tensor

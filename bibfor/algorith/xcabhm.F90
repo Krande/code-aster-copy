@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
-#include "asterfort/matini.h"
 #include "asterfort/assert.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
@@ -112,7 +111,7 @@ implicit none
 ! ======================================================================
 ! --- INITIALISATION DE LA MATRICE B -----------------------------------
 ! ======================================================================
-    call matini(dimenr, dimuel, 0.d0, b)
+    b(:,:) = 0.d0
 ! ======================================================================
 ! --- CALCUL DU JACOBIEN DE LA TRANSFORMATION SSTET-> SSTET REF --------
 ! --- AVEC LES COORDONNEES DES SOUS-ELEMENTS ---------------------------

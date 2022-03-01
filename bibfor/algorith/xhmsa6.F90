@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/lcejex.h"
 #include "asterfort/lcecli.h"
-#include "asterfort/matini.h"
 #include "asterfort/thmEvalSatuInit.h"
 
 type(THM_DS), intent(inout) :: ds_thm
@@ -85,9 +84,9 @@ character(len=8) :: job
 !
     am(:) = 0.d0
     dam(:) = 0.d0
-    call matini(3, 3, 0.d0, p)
-    call matini(6, 6, 0.d0, dsidep)
-    call matini(6, 6, 0.d0, dsid2d)
+    p(:,:) = 0.d0
+    dsidep(:,:) = 0.d0
+    dsid2d(:,:) = 0.d0
     sigma(:) = 0.d0
     vim(:) = 0.d0
     vip(:) = 0.d0

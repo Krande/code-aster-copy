@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine dkqtxy(qsi, eta, hft2, depf, codi,&
                   lcot, vt)
     implicit  none
-#include "asterfort/matini.h"
     real(kind=8) :: qsi, eta, hft2(2, 6), depf(12), codi(*), lcot(*), vt(2)
 !     EFFORT TRANCHANT L'ELEMENT DE PLAQUE DKQ
 !     ------------------------------------------------------------------
@@ -119,7 +118,7 @@ subroutine dkqtxy(qsi, eta, hft2, depf, codi,&
 !
 !     ------ VT = HFT2.TKQ.DEPF ------------------------------------
 !
-    call matini(2, 12, 0.d0, bc)
+    bc(:,:) = 0.d0
 !
     do 130 i = 1, 2
         do 120 j = 1, 3*nno

@@ -42,7 +42,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
 #include "asterc/r8prem.h"
 #include "asterfort/rcvala.h"
@@ -226,7 +225,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
         do i = 1, dimuel*dimuel
             matuu(i)=0.d0
         end do
-        call matini(dimmat, dimmat, 0.d0, matri)
+        matri(:,:) = 0.d0
     endif
 !
 ! - Get parameters for behaviour

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/promat.h"
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_saut.h"
@@ -74,13 +73,13 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 !     INITIALISATIONS
 !
     lmultc = nfiss.gt.1
-    call matini(3, 3, 0.d0, unity)
-    call matini(3, 3, 0.d0, alocal)
-    call matini(3, 3, 0.d0, ptr)
-    call matini(3, 3, 0.d0, pdotal)
-    call matini(3, 3, 0.d0, au)
-    call matini(3, 3, 0.d0, dside2)
-    call matini(3, 3, 0.d0, temp)
+    unity(:,:) = 0.d0
+    alocal(:,:) = 0.d0
+    ptr(:,:) = 0.d0
+    pdotal(:,:) = 0.d0
+    au(:,:) = 0.d0
+    dside2(:,:) = 0.d0
+    temp(:,:) = 0.d0
 !
 !   MATRICE -ID+R DSIDEP
 !

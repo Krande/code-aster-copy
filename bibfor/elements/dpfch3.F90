@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
                   dfdx, dfdy, dfdz, jac)
     implicit none
 !      REAL*8 (A-H,O-Z)
-#include "asterfort/matini.h"
 #include "asterfort/utmess.h"
     integer :: nno, nnf
     real(kind=8) :: poids, dfrdeg(1), dfrdng(1), dfrdkg(1), coor(1)
@@ -55,7 +54,7 @@ subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
 !
 !     --- INITIALISATION DE LA MATRICE JACOBIENNE A ZERO
 !
-    call matini(3, 3, 0.d0, g)
+    g(:,:) = 0.d0
 !
 !
 !     --- CALCUL DE LA MATRICE JACOBIENNE (TRANSFORMATION GEOMETRIQUE)

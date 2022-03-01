@@ -28,7 +28,6 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/assert.h"
@@ -107,7 +106,7 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 !
 ! --- MATRICE IDENTITE
 !
-    call matini(3, 3, zero, kron)
+    kron(:,:) = zero
     do 10 p = 1, 3
         kron(p,p) = un
  10 continue

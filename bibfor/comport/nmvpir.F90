@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/iunifi.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/matini.h"
 #include "asterfort/nmasse.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -170,7 +169,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
         call utmess('F', 'ALGORITH8_87')
     endif
 !
-    call matini(6, 6, 0.d0, dsidep)
+    dsidep(:,:) = 0.d0
 !
     if (ndim .eq. 2) then
         ndimsi=4

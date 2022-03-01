@@ -24,7 +24,6 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
 !
 #include "asterfort/codent.h"
 #include "asterfort/jevech.h"
-#include "asterfort/matini.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utbtab.h"
     aster_logical :: lcalct
@@ -92,8 +91,8 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
     endif
 !     ----- CALCUL DE D1I ET D2I ---------------------------------------
 !
-    call matini(2, 2, 0.d0, dx1i)
-    call matini(2, 4, 0.d0, dx2i)
+    dx1i(:,:) = 0.d0
+    dx2i(:,:) = 0.d0
 !
     if (.not.lcalct) then
         goto 999

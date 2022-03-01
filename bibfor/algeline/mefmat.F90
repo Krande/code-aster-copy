@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/matini.h"
 #include "asterfort/mefin1.h"
 #include "asterfort/mefin2.h"
 #include "asterfort/mefin3.h"
@@ -158,9 +157,9 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod,&
 !
 ! --- INITIALISATIONS
 !
-    call matini(nbmod, nbmod, 0.d0, matm)
-    call matini(nbmod, nbmod, 0.d0, mata)
-    call matini(nbmod, nbmod, 0.d0, matr)
+    matm(:,:) = 0.d0
+    mata(:,:) = 0.d0
+    matr(:,:) = 0.d0
 !
 !---  SECTION SOLIDE D'UNE CELLULE ELEMENTAIRE DE GRILLE
 !

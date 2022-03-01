@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/matini.h"
 #include "asterfort/utbtab.h"
     integer :: algofr
     real(kind=8) :: p(3, 3), saut(3), lamb1(3), cstafr, cpenfr, pboul(3)
@@ -128,7 +127,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr,&
 !        ET LAMBDA + CSTA [[DX]]/DELTAT EST DANS LA BOULE UNITE
     if (adher .or. ((.not.adher).and.norme2.le.(1.d0+prec))) then
 !
-        call matini(3, 3, 0.d0, kn)
+        kn(:,:) = 0.d0
         do 30 i = 1, ndim
             kn(i,i)=1.d0
  30     continue

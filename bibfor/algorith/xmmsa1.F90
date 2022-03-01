@@ -28,7 +28,6 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/promat.h"
 #include "asterfort/xadher.h"
 #include "asterfort/xmafr1.h"
@@ -95,10 +94,10 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 ! --- INITIALISATION
     saut(:) = 0.d0
     lamb1(:) = 0.d0
-    call matini(3, 3, 0.d0, ptknp)
-    call matini(3, 3, 0.d0, p)
-    call matini(3, 3, 0.d0, knp)
-    call matini(3, 3, 0.d0, kn)
+    ptknp(:,:) = 0.d0
+    p(:,:) = 0.d0
+    knp(:,:) = 0.d0
+    kn(:,:) = 0.d0
 !
     coefj=xcalc_saut(1,0,1)
 !

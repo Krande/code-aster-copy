@@ -35,7 +35,6 @@ implicit none
 !
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/matini.h"
 #include "asterfort/xfract.h"
 #include "asterfort/xhlag4.h"
 #include "asterfort/xhlan5.h"
@@ -118,8 +117,8 @@ type(THM_DS), intent(inout) :: ds_thm
 !
     call thmGetParaBiot(zi(jmate), ds_thm)
 !
-    call matini(nnops, 3, 0.d0, dfdic)
-    call matini(16, 3, 0.d0, dffc)
+    dfdic(:,:) = 0.d0
+    dffc(:,:) = 0.d0
     ffp(:) = 0.d0
     ffpc(:) = 0.d0
     ffc(:) = 0.d0

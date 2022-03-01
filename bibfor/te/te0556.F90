@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ implicit none
 #include "asterfort/xhmddl.h"
 #include "asterfort/xminte.h"
 #include "asterfort/xmulhm.h"
-#include "asterfort/matini.h"
 #include "asterfort/thmGetElemModel.h"
 #include "asterfort/utmess.h"
 !
@@ -97,7 +96,7 @@ character(len=16) :: option, nomte
 !   INITIALISATION DU NOMBRE DE DDL PAR NEOUD, DU TYPE DE CONTACT ET
 !   DES ADRESSES POUR LES DIFFERENTS TERMES DE L'OPERATEUR TANGENT
 !   (CAS DE LA FRACTURE UNIQUEMENT) 
-    call matini(560,560,0.d0,matri)
+    matri(:,:) = 0.d0
     call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
 !
 !   INITIALISATION DE LA DIMENSION DE L'ELEMENT PRINCIPAL, DU NOMBRE DE 

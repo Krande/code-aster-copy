@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,11 @@ subroutine mctgel(dydx, rprops)
     real(kind=8) :: dydx(6, 6)
     real(kind=8) :: rprops(*)
 !
-#include "asterfort/matini.h"
 !
 ! Declaration of integer type variables
-    integer :: i, j, ndim, mdim
+    integer :: i, j, mdim
 !
-    parameter (   ndim=6    ,mdim=3     )
+    parameter ( mdim=3 )
 !
     real(kind=8) :: foid(mdim,mdim), young, poiss
     real(kind=8) :: gmodu, bulk, factor
@@ -55,8 +54,8 @@ subroutine mctgel(dydx, rprops)
 ! ELASTIC MATERIAL MODEL
 !
 !***********************************************************************
-    call matini(mdim, mdim, r0, foid)
-    call matini(ndim, ndim, r0, dydx)
+    foid(:,:) = r0
+    dydx(:,:) = r0
     foid(1,1)=r1
     foid(2,2)=r1
     foid(3,3)=r1

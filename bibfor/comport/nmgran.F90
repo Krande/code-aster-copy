@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 #include "asterf_types.h"
 #include "asterc/r8t0.h"
 #include "asterfort/granvi.h"
-#include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -112,7 +111,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     mod = typmod(1)
     call granvi(mod, ndimsi, ibid, ibid2)
     call granvi(mod, ndt, ndi)
-    call matini(6, 6, 0.d0, dsidep)
+    dsidep(:,:) = 0.d0
     if (.not.( compor(1)(1:13) .eq. 'BETON_GRANGER' )) then
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif

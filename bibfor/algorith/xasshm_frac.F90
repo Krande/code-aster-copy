@@ -52,7 +52,6 @@ implicit none
 #include "asterfort/xmofhm.h"
 #include "asterfort/xsautl.h"
 #include "asterfort/xvinhm.h"
-#include "asterfort/matini.h"
 #include "asterfort/thmGetParaBiot.h"
 #include "asterfort/thmGetBehaviourVari.h"
 #include "asterfort/thmGetBehaviour.h"
@@ -120,8 +119,8 @@ type(THM_DS), intent(inout) :: ds_thm
 
 !   INITIALISATION DE LA DIMENSION DE LA MATRICE DE TRAVAIL
 !
-    call matini(nnops, 3, 0.d0, dfdic)
-    call matini(16, 3, 0.d0, dffc)
+    dfdic(:,:) = 0.d0
+    dffc(:,:) = 0.d0
     ffp(:) = 0.d0
     ffpc(:) = 0.d0
     ffc(:) = 0.d0

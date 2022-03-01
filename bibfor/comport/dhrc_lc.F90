@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 #include "asterfort/dhrc_sig.h"
 #include "asterfort/dxefro.h"
 #include "asterfort/jevech.h"
-#include "asterfort/matini.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utbtab.h"
@@ -317,7 +316,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 ! --  CALCUL DE LA JACOBIENNE => JACOB(NBACT,NBACT)
 !
-            call matini(6, 6, 0.0d0, jacob)
+            jacob(:,:) = 0.0d0
 !
             call dhrc_jacob(epsg, vint, c, bp1, cp1, bp2, cp2, as1, bs1,&
                             cs1, as2, bs2, cs2, indi, neta1, neta2, cstseu, jacob)
@@ -328,7 +327,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 ! --  INVERSION DE LA JACOBIENNE => BOCAJ(NBACT,NBACT)
 !
-            call matini(6, 6, 0.0d0, bocaj)
+            bocaj(:,:) = 0.0d0
 !
             do k = 1, nbact
                 bocaj(k,k)=1.0d0
@@ -500,14 +499,14 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
 ! --  CALCUL DE LA JACOBIENNE => JACOB(NBACT,NBACT)
 !
-        call matini(6, 6, 0.0d0, jacob)
+        jacob(:,:) = 0.0d0
 !
         call dhrc_jacob(epsg, vip, c, bp1, cp1, bp2, cp2, as1, bs1,&
                         cs1, as2, bs2, cs2, indi, neta1, neta2, cstseu, jacob)
 !
 ! --  INVERSION DE LA JACOBIENNE => BOCAJ(NBACT,NBACT)
 !
-        call matini(6, 6, 0.0d0, bocaj)
+        bocaj(:,:) = 0.0d0
 !
         do k = 1, nbact
             bocaj(k,k)=1.0d0
@@ -519,7 +518,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
                           cstseu, epsg, vip, dsideg)
     endif
 !
-    call matini(6, 6, 0.0d0, ates)
+    ates(:,:) = 0.0d0
 !
     do k = 1, 6
         do i = 1, 6
@@ -562,9 +561,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     t1ve(3,2) = t1ve(1,3)*2.d0
     t1ve(3,3) = t1ve(1,1)-t1ve(1,2)
 !
-    call matini(3, 3, 0.0d0, dsidmg)
-    call matini(3, 3, 0.0d0, dsidcg)
-    call matini(3, 3, 0.0d0, dsidfg)
+    dsidmg(:,:) = 0.0d0
+    dsidcg(:,:) = 0.0d0
+    dsidfg(:,:) = 0.0d0
 !
     do k = 1, 3
         do l = 1, 3
@@ -581,7 +580,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     call utbtab('ZERO', 3, 3, dsidcg, t1ve, xab1, dsidec)
     call utbtab('ZERO', 3, 3, dsidfg, t1ve, xab1, dsidef)
 !
-    call matini(6, 6, 0.0d0, dsidep)
+    dsidep(:,:) = 0.0d0
 !
     do k = 1, 3
         do l = 1, 3

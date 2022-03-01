@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -16,12 +16,14 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 
-subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
-                 bsigma)
-    implicit none
-    integer :: i, j, loncol, lonlig
-    real(kind=8) :: jacgau, bmat(loncol, 1), sigma(1), bsigma(1)
-    real(kind=8) :: valbsi
+subroutine btsig(lonlig, loncol, jacgau, bmat, sigma, bsigma)
+  implicit none
+  integer, intent(in) :: loncol, lonlig 
+  real(kind=8), intent(in) :: jacgau, bmat(loncol, 81), sigma(1)
+  real(kind=8), intent(out) :: bsigma(1)
+!
+  integer :: i, j
+  real(kind=8) :: valbsi
 !-----------------------------------------------------------------------
 ! --- CALCUL DU PRODUIT (BT)*(SIGMA) ,
 ! --- AVEC LES NOTATIONS DE LA ROUTINE , CA DONNE :
@@ -37,13 +39,13 @@ subroutine btsig(lonlig, loncol, jacgau, bmat, sigma,&
 !     OUT BSIGMA  : VECTEUR (BT)*(SIGMA)*JACGAU
 !     ------------------------------------------------------------------
 !
-    do 10 i = 1, lonlig
-        valbsi = 0.0d0
-        do 20 j = 1, loncol
-            valbsi = valbsi + bmat(j,i)*sigma(j)
-20      continue
+  do i = 1, lonlig
+     valbsi = 0.0d0
+     do j = 1, loncol
+        valbsi = valbsi + bmat(j,i)*sigma(j)
+     end do
 !
-        bsigma(i) = bsigma(i) + valbsi*jacgau
-10  end do
+     bsigma(i) = bsigma(i) + valbsi*jacgau
+  end do
 !
 end subroutine

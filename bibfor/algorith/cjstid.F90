@@ -37,7 +37,6 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/matini.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, i, j, codret
@@ -316,7 +315,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- C'EST A DIRE :  DSDE = HOOK - HK*T1/TROIS - HGD*T2 ---------------
 ! ======================================================================
-    call matini(6, 6, 0.d0, dsde)
+    dsde(:,:) = 0.d0
     do i = 1, ndt
        do j = 1, ndt
           dsde(i,j) = hook(i,j) - hk(i)*t1(j)/trois - hgd(i)*t2(j)

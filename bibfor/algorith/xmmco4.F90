@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, ddls, pla(27)
@@ -64,11 +63,11 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
 !     INITIALISATION
 ! on reecrit tout
 ! matrices A et AT
-    call matini(3, 3, 0.d0, au)
-    call matini(3, 3, 0.d0, dside2)
-    call matini(3, 3, 0.d0, temp)
-    call matini(3, 3, 0.d0, ptr)
-    call matini(3, 3, 0.d0, p)
+    au(:,:) = 0.d0
+    dside2(:,:) = 0.d0
+    temp(:,:) = 0.d0
+    ptr(:,:) = 0.d0
+    p(:,:) = 0.d0
     coefj=xcalc_saut(1,0,1)
 ! idem, il va falloir introduire les matrices de passage
     do 17 i = 1, ndim

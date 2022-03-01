@@ -26,7 +26,6 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/hmdeca.h" 
-#include "asterfort/matini.h"
 #include "asterfort/transp.h"   
 #include "asterfort/prmave.h" 
 #include "asterfort/xcalc_saut.h"
@@ -54,7 +53,7 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
     lmultc = nfiss.gt.1
     h(:) = 0.d0
     hfix(:) = 0.d0
-    call matini(3, 3, 0.d0, ptr)
+    ptr(:,:) = 0.d0
 !
     do i = 1, ndim
        h(i) = - lamb(i) - r*am(i) + r*delta(i)

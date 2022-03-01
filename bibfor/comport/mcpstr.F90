@@ -42,7 +42,6 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
 !
 #include "asterf_types.h"
 #include "asterfort/jacobi.h"
-#include "asterfort/matini.h"
 !
 ! Declaration of constant parameters
     integer      :: mmax, nmax, ndt, ndi
@@ -111,7 +110,7 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
     tu(1:nmax) = t1(1:nmax)
 !
-    call matini(mmax, mmax, r0, eigprj)
+    eigprj(:,:) = r0
 !
     call jacobi(mmax, mxiter, tol, tol, tr,&
                 tu, eigprj, pstrs, vaux, itjac1,&

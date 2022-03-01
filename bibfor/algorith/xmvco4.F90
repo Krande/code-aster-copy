@@ -21,7 +21,6 @@ subroutine xmvco4(ino, ndim, nnol, sigma, lamb, pla,&
 !
 !
     implicit none
-#include "asterfort/matini.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
     integer :: ino
@@ -65,7 +64,7 @@ subroutine xmvco4(ino, ndim, nnol, sigma, lamb, pla,&
 ! et qu on a accès à WSAUT(3)
 !    valeur de w au point de Gauss
 ! remplissage L1l
-    call matini(3, 3, 0.d0, ptr)
+    ptr(:,:) = 0.d0
     sigglo(:) = 0.d0
 ! remplissage L2w
 ! on transpose la matrice

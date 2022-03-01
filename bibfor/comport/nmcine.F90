@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine nmcine(fami,   kpg,    ksp,    ndim,   imate, &
     implicit none
 ! aslint: disable=W0104
 #include "asterc/r8miem.h"
-#include "asterfort/matini.h"
 #include "asterfort/radial.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -194,7 +193,7 @@ subroutine nmcine(fami,   kpg,    ksp,    ndim,   imate, &
 !
 ! CALCUL DE LA RIGIDITE TANGENTE
     if (option(1:14) .eq. 'RIGI_MECA_TANG' .or. option(1:9) .eq. 'FULL_MECA') then
-        call matini(6, 6, 0.d0, dsidep)
+        dsidep(:,:) = 0.d0
         do k = 1, 6
             dsidep(k,k) = deuxmu
         enddo

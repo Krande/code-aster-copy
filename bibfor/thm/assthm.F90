@@ -48,7 +48,6 @@ implicit none
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
 #include "asterfort/equthp.h"
-#include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/thmGetBehaviour.h"

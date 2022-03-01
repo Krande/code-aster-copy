@@ -20,7 +20,6 @@ subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
 
     implicit none
 
-#include "asterfort/matini.h"
 #include "asterfort/prmave.h"
    
 ! person_in_charge: daniele.colombo at ifpen.fr
@@ -36,7 +35,7 @@ subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
     real(kind=8) :: p(3,3), nd(3), tau1(3), tau2(3)
     real(kind=8) :: saut(3), sautm(3), am(3), ad(3)
     
-    call matini(3, 3, 0.d0, p) 
+    p(:,:) = 0.d0
     am(:) = 0.d0
     ad(:) = 0.d0
 !

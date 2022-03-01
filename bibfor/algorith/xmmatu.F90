@@ -25,7 +25,6 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
  
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/matini.h"
 #include "asterfort/hmdeca.h"
 #include "asterfort/promat.h"
 #include "asterfort/transp.h"
@@ -53,15 +52,15 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
 ! 
 !   INITIALISATION
     lmultc = nfiss.gt.1
-    call matini(3, 3, 0.d0, unity)
-    call matini(3, 3, 0.d0, alocal)
-    call matini(3, 3, 0.d0, ptr)
-    call matini(3, 3, 0.d0, pdotal)
-    call matini(3, 3, 0.d0, kdotal)
-    call matini(3, 3, 0.d0, au)
-    call matini(3, 3, 0.d0, dside2)
-    call matini(3, 3, 0.d0, dside3)
-    call matini(3, 3, 0.d0, temp)
+    unity(:,:) = 0.d0
+    alocal(:,:) = 0.d0
+    ptr(:,:) = 0.d0
+    pdotal(:,:) = 0.d0
+    kdotal(:,:) = 0.d0
+    au(:,:) = 0.d0
+    dside2(:,:) = 0.d0
+    dside3(:,:) = 0.d0
+    temp(:,:) = 0.d0
     knd(:) = 0.d0
     knloc(:) = 0.d0
 !
@@ -99,7 +98,7 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
 !
 !   VECTEUR [DSIDEP].ND
 !
-    call matini(3, 3, 0.d0, temp)
+    temp(:,:) = 0.d0
     call promat(dside2, 3, ndim, ndim, p,&
                 3, ndim, ndim, temp)
 !
@@ -108,7 +107,7 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla,&
 !
 !   MATRICE TANGENTE EN BASE FIXE [P]T [DSIDEP] [P]
 !
-    call matini(3, 3, 0.d0, temp)
+    temp(:,:) = 0.d0
     call promat(ptr, 3, ndim, ndim, alocal,&
                 3, ndim, ndim, temp)
 !

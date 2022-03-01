@@ -29,7 +29,6 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/hmdeca.h"
-#include "asterfort/matini.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_code.h"
@@ -77,8 +76,8 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd,&
 !
 ! ---------------------------------------------------------------------
 ! on va commencer par construire une matrice de passage
-    call matini(3, 3, 0.d0, p)
-    call matini(3, 3, 0.d0, ptr)
+    p(:,:) = 0.d0
+    ptr(:,:) = 0.d0
     mug(:) = 0.d0
     am(:) = 0.d0
     lmultc = nfiss.gt.1

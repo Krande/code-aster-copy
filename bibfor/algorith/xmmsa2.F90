@@ -25,7 +25,6 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 #include "asterfort/assert.h"
 #include "asterfort/lcejex.h"
 #include "asterfort/lcejli.h"
-#include "asterfort/matini.h"
 #include "asterfort/xmafr1.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: saut(3), am(3), pp(3, 3), dsidep(6, 6)
@@ -76,10 +75,10 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
     am(:) = 0.d0
     dam(:) = 0.d0
-    call matini(3, 3, 0.d0, pp)
-    call matini(3, 3, 0.d0, p)
-    call matini(6, 6, 0.d0, dsidep)
-    call matini(6, 6, 0.d0, dsid2d)
+    pp(:,:) = 0.d0
+    p(:,:) = 0.d0
+    dsidep(:,:) = 0.d0
+    dsid2d(:,:) = 0.d0
     sigma(:) = 0.d0
     vim(:) = 0.d0
     vip(:) = 0.d0

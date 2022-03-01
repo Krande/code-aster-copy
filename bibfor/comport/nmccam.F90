@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
-#include "asterfort/matini.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
@@ -550,7 +549,7 @@ real(kind=8) :: sigm(6), pcrm(7), sigp(6), pcrp(7), dsidep(6, 6)
         endif
 !      INITIALISATION DE L'OPERATEUR TANGENT
 !     ---------------------------------------
-        call matini(6, 6, 0.d0, dsidep)
+        dsidep(:,:) = 0.d0
 !
 !     -- 7.1 CALCUL DE DSIDEP(6,6)-ELASTIQUE:
 !     ---------------------------------------

@@ -25,7 +25,6 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 #include "asterc/r8prem.h"
 #include "asterfort/lceiou.h"
 #include "asterfort/lceitc.h"
-#include "asterfort/matini.h"
 #include "asterfort/prmave.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: saut(3), am(3), dsidep(6, 6)
@@ -74,8 +73,8 @@ subroutine xmmsa5(ndim, ipgf, imate, saut, lamb,&
 ! --- INIIALISATIONS
 !
     am(:) = 0.d0
-    call matini(3, 3, 0.d0, p)
-    call matini(6, 6, 0.d0, dsidep)
+    p(:,:) = 0.d0
+    dsidep(:,:) = 0.d0
     delta(:) = 0.d0
     vim(:) = 0.d0
     vip(:) = 0.d0

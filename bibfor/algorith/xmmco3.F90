@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine xmmco3(ino, ndim, dsidep, pla, p,&
                   ffc, jac, nnol, raug, mmat)
     implicit none
 #include "jeveux.h"
-#include "asterfort/matini.h"
 #include "asterfort/promat.h"
 #include "asterfort/transp.h"
     integer :: ino, ndim, pla(27)
@@ -59,10 +58,10 @@ subroutine xmmco3(ino, ndim, dsidep, pla, p,&
 !     INITIALISATION
 ! on reecrit tout
 ! matrices A et AT
-    call matini(3, 3, 0.d0, au)
-    call matini(3, 3, 0.d0, dside2)
-    call matini(3, 3, 0.d0, temp)
-    call matini(3, 3, 0.d0, ptr)
+    au(:,:) = 0.d0
+    dside2(:,:) = 0.d0
+    temp(:,:) = 0.d0
+    ptr(:,:) = 0.d0
 ! ensuite, on prend exemple sur XMMCO2 pour l'opération
 ! changement de base
     do 10 i = 1, ndim

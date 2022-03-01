@@ -25,7 +25,6 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 #include "asterfort/assert.h"
 #include "blas/ddot.h"
 #include "asterfort/indent.h"
-#include "asterfort/matini.h"
 #include "asterfort/normev.h"
 #include "asterfort/prmave.h"
 #include "asterfort/provec.h"
@@ -75,7 +74,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !
 !     BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
 !     DIMENSIONNEMENT A 3 ET NON NDIM POUR POUVOIR UTILISER NORMEV.F
-    call matini(3, 3, 0.d0, pm)
+    pm(:,:) = 0.d0
     do 117 i = 1, ndim
         pm(1,i) = nd(i)
 117  continue
@@ -187,7 +186,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !     ---------------------------------------------
 !     3) CALCUL DU SAUT DE DEPLACEMENT
 !     ---------------------------------------------
-    call matini(ndim, ndim, 0.d0, grdep)
+    grdep(:,:) = 0.d0
 !
     do ino = 1, nnop
         am(:) = 0.d0

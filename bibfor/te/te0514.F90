@@ -31,7 +31,6 @@ subroutine te0514(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/loncar.h"
-#include "asterfort/matini.h"
 #include "asterfort/ndcent.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
@@ -188,7 +187,7 @@ subroutine te0514(option, nomte)
 !
 ! initilisation : cas sans noeuds centraux
     nnc=0
-    call matini(3, 7, 0.d0, nmil)
+    nmil(:,:) = 0.d0
     txlsn(:) = 0.d0
 !
 ! si l'element est incomplet, on calcule les informations concernant les les noeuds centraux

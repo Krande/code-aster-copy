@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/fluendo3d.h"
-#include "asterfort/matini.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 !
@@ -452,7 +451,7 @@ phig3d=0.d0
         un = 1.d0
         deux = 2.d0
 !
-        call matini(6, 6, zero, d)
+        d(:,:) = zero
 !
         e = xmat(1)
         nu = xmat(2)

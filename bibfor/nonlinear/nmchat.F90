@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
 ! ----ARGUMENTS
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterfort/matini.h"
 #include "blas/ddot.h"
     integer :: memo, visc, nbvar, idelta
     real(kind=8) :: mat(*), matel(*), sigmdv(6), dsidep(6, 6), plast, dp, pm
@@ -111,8 +110,8 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
 !
 ! --- NITIALISATION :
 !     -------------
-    call matini(6, 6, 0.d0, dside)
-    call matini(6, 6, 0.d0, dsidep)
+    dside(:,:) = 0.d0
+    dsidep(:,:) = 0.d0
 !
 ! --- PARTIE ELASTIQUE DE LA MATRICE TANGENTE :
 !     ---------------------------------------
@@ -258,7 +257,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc,&
 !
 ! ---   MATRICE DE PROJECTION DEVIATORIQUE :
 !       ----------------------------------
-        call matini(6, 6, 0.d0, pdev)
+        pdev(:,:) = 0.d0
 !
         pdev(1,1) = 2.d0/3.d0
         pdev(2,2) = 2.d0/3.d0

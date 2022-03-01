@@ -38,7 +38,6 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/matini.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, i, j, codret
@@ -267,7 +266,7 @@ subroutine cjstde(mod, mater, nvi, eps, sig,&
 !
 ! --- C'EST A DIRE :  DSDE = HOOK - HGD.DFH / ( HDEV + DFHGD ) ---------
 ! ======================================================================
-    call matini(6, 6, 0.d0, dsde)
+    dsde(:,:) = 0.d0
     do i = 1, ndt
        do j = 1, ndt
           dsde(i,j) = hook(i,j) - hgd(i)*dfh(j) / (hdev+dfhgd)

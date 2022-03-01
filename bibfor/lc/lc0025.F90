@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,6 @@ implicit none
 ! Declaration of integer type variables
 #include "asterf_types.h"
 #include "asterfort/lcrank.h"
-#include "asterfort/matini.h"
 #include "asterfort/mctgel.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
@@ -137,7 +136,7 @@ implicit none
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg,&
                 ksp, tref, iret)
 !
-    call matini(6, 6, r0, dsidep)
+    dsidep(:,:) = r0
 !
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
     

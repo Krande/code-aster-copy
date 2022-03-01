@@ -46,7 +46,6 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/matini.h"
 #include "asterfort/mecanb.h"
 #include "asterfort/mtcrou.h"
 #include "asterfort/predia.h"
@@ -289,8 +288,8 @@ subroutine sinoz2(modele, pfchno, sigel, signo)
 !
 !    INITIALISATION DE LA MATRICE A ET DU SECOND MEMBRE A ZERO
 !
-                call matini(9, 9, 0.d0, a)
-                call matini(9, 4, 0.d0, b)
+                a(:,:) = 0.d0
+                b(:,:) = 0.d0
 !
                 nbnobp = 0
                 ianew = ianob

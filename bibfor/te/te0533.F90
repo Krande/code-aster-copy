@@ -29,7 +29,6 @@ implicit none
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/matini.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/xdocon.h"
@@ -105,7 +104,7 @@ character(len=16) :: option, nomte
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
 !
 !     INITIALISATION DE LA MATRICE DE TRAVAIL
-    call matini(216, 216, 0.d0, mmat)
+    mmat(:,:) = 0.d0
 !
 ! --- ROUTINE SPECIFIQUE P2P1, A CONSERVER
 !

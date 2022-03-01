@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine turigi(nomte, nbrddl, k)
 #include "asterfort/kcoude.h"
 #include "asterfort/klg.h"
 #include "asterfort/klgcou.h"
-#include "asterfort/matini.h"
 #include "asterfort/mavec.h"
 #include "asterfort/moytem.h"
 #include "asterfort/poutre_modloc.h"
@@ -194,7 +193,7 @@ subroutine turigi(nomte, nbrddl, k)
 !
 !  INITIALISATION DE LA MATRICE K
 !
-    call matini(nbrddl, nbrddl, 0.d0, k)
+    k(:,:) = 0.d0
 !
 ! BOUCLE SUR LES POINTS DE GAUSS
 !

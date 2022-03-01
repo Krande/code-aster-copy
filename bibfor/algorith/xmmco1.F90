@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/matcox.h"
-#include "asterfort/matini.h"
     integer :: ndim, nno, nfh, ddls, singu
     real(kind=8) :: mmat(216, 216), dsidep(6, 6)
     real(kind=8) :: ffp(27), jac, nd(3)
@@ -60,10 +59,10 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
 ! ----------------------------------------------------------------------
 !
 !     INITIALISATION
-    call matini(3, 3, 0.d0, ddt1)
-    call matini(3, 3, 0.d0, ddt2)
-    call matini(3, 3, 0.d0, ddt3)
-    call matini(3, 3, 0.d0, ddt4)
+    ddt1(:,:) = 0.d0
+    ddt2(:,:) = 0.d0
+    ddt3(:,:) = 0.d0
+    ddt4(:,:) = 0.d0
 !
 !           II.2.3. CALCUL DES MATRICES DE COHESION
 !        ..............................

@@ -44,7 +44,6 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
 !
 !
 #include "asterf_types.h"
-#include "asterfort/matini.h"
 !
     real(kind=8) :: deigy(3, 3)
     real(kind=8) :: dydx(6, 6)
@@ -65,9 +64,9 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
      &    0.0d0 ,1.0d0 ,2.0d0 ,3.0d0 ,4.0d0 ,0.5d0 ,&
      &    1.4142135623730951d0/
 !
-    call matini(6, 6, r0, dydx)
-    call matini(mcomp, mcomp, r0, foid)
-    call matini(mcomp, ndim, r0, eigprj)
+    dydx(:,:) = r0
+    foid(:,:) = r0
+    eigprj(:,:) = r0
     sopid(:) = r0
     eigpr3(:) = r0
 !

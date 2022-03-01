@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     implicit none
 #include "asterfort/ggplem.h"
 #include "asterfort/iunifi.h"
-#include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
@@ -124,7 +123,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     dpc = vim(1)
     deltat = instap - instam
 !
-    call matini(6, 6, 0.d0, dsidep)
+    dsidep(:,:) = 0.d0
 !
     if (ndim .eq. 2) then
         ndimsi=4

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,17 +19,16 @@
 subroutine vp2tru(method, ty, alpha, beta, signes,&
                   a, nbvect, w, z, wk,&
                   mxiter, ier, nitqr)
-    implicit none
-#include "asterfort/matini.h"
+  implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/vphqrp.h"
-    character(len=1) :: ty
-    character(len=8) :: method
-    integer :: nbvect, mxiter, ier, nitqr
-    integer :: vali
-    real(kind=8) :: alpha(nbvect), beta(nbvect), signes(nbvect)
-    real(kind=8) :: a(nbvect, *), w(*), z(*), wk(*)
-    real(kind=8) :: valr(2)
+  character(len=1) :: ty
+  character(len=8) :: method
+  integer :: nbvect, mxiter, ier, nitqr
+  integer :: vali
+  real(kind=8) :: alpha(nbvect), beta(nbvect), signes(nbvect)
+  real(kind=8) :: a(nbvect, *), w(*), z(*), wk(*)
+  real(kind=8) :: valr(2)
 !     EXTENSION DE LA METHODE DE LANCZOS POUR TRIDIAGONALISER UN
 !     FAISCEAU DE MATRICE INDEFINI
 !     ------------------------------------------------------------------
@@ -51,50 +50,51 @@ subroutine vp2tru(method, ty, alpha, beta, signes,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ival1, j
-    real(kind=8) :: ww
+  integer :: i, ival1, j
+  real(kind=8) :: ww
 !-----------------------------------------------------------------------
-    if (method .eq. 'TRI_DIAG') then
-        call matini(nbvect, nbvect, 0.d0, a)
-        a(1,1) = signes(1) * alpha(1)
-        a(1,2) = signes(1) * beta(2)
-        do 20 i = 2, nbvect - 1
-            a(i,i-1) = signes(i) * beta(i)
-            a(i,i) = signes(i) * alpha(i)
-            a(i,i+1) = signes(i) * beta(i+1)
-20      continue
-        a(nbvect,nbvect-1) = signes(nbvect) * beta(nbvect)
-        a(nbvect,nbvect) = signes(nbvect) * alpha(nbvect)
-    endif
+  if (method .eq. 'TRI_DIAG') then
+     a(:, 1:nbvect) = 0.d0
+     a(1,1) = signes(1) * alpha(1)
+     a(1,2) = signes(1) * beta(2)
+     do i = 2, nbvect - 1
+        a(i,i-1) = signes(i) * beta(i)
+        a(i,i) = signes(i) * alpha(i)
+        a(i,i+1) = signes(i) * beta(i+1)
+     end do
+     a(nbvect,nbvect-1) = signes(nbvect) * beta(nbvect)
+     a(nbvect,nbvect) = signes(nbvect) * alpha(nbvect)
+  endif
 !
-    ival1 = 1
-    ier = 0
-    call vphqrp(a, nbvect, nbvect, ival1, w,&
-                z, nbvect, wk, mxiter, ier,&
-                nitqr)
-    if (ier .ne. 0) then
-        call utmess('F', 'ALGELINE3_57')
-    endif
+  ival1 = 1
+  ier = 0
+  call vphqrp(a, nbvect, nbvect, ival1, w,&
+       z, nbvect, wk, mxiter, ier,&
+       nitqr)
+  if (ier .ne. 0) then
+     call utmess('F', 'ALGELINE3_57')
+  endif
 !
-    if (ty .eq. 'G') then
-        do 30 i = 1, nbvect
-            alpha(i) = w(2*i-1)
-            if (abs(w(2*i)) .gt. 1.d-75) then
-                ww = w(2*i)/w(2*i-1)
-                vali = i
-                valr (1) = w(2*i-1)
-                valr (2) = ww
-                call utmess('I', 'ALGELINE4_65', si=vali, nr=2, valr=valr)
-            endif
-            beta(i) = 0.d0
-            do 30 j = 1, nbvect
-                a(i,j) = z(2*nbvect* (j-1)+2*i-1)
-30          continue
-    else
-        do 40 i = 1, nbvect
-            alpha(i) = w(2*i)
-            beta (i) = w(2*i-1)
-40      continue
-    endif
+  if (ty .eq. 'G') then
+     do i = 1, nbvect
+        alpha(i) = w(2*i-1)
+        if (abs(w(2*i)) .gt. 1.d-75) then
+           ww = w(2*i)/w(2*i-1)
+           vali = i
+           valr (1) = w(2*i-1)
+           valr (2) = ww
+           call utmess('I', 'ALGELINE4_65', si=vali, nr=2, valr=valr)
+        endif
+        beta(i) = 0.d0
+        do j = 1, nbvect
+           a(i,j) = z(2*nbvect* (j-1)+2*i-1)
+        end do
+     end do
+  else
+     do i = 1, nbvect
+        alpha(i) = w(2*i)
+        beta (i) = w(2*i-1)
+     end do
+  endif
 !
 end subroutine

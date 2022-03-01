@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine invjac(nno, ipg, ipoids, idfde, coor,&
                   invja, jac)
     implicit none
 #include "jeveux.h"
-#include "asterfort/matini.h"
 #include "asterfort/matinv.h"
     integer :: ipg, ipoids, idfde, nno
     real(kind=8) :: coor(1), jac
@@ -44,7 +43,7 @@ subroutine invjac(nno, ipg, ipoids, idfde, coor,&
 !
     poids = zr(ipoids+ipg-1)
 !
-    call matini(3, 3, 0.d0, g)
+    g(:,:) = 0.d0
 !
     do 100 i = 1, nno
         k = 3*nno*(ipg-1)

@@ -33,7 +33,6 @@ implicit none
 #include "asterc/r8prem.h" 
 #include "asterfort/lceitc.h"
 #include "asterfort/lceiou.h"
-#include "asterfort/matini.h" 
 !
 ! ======================================================================
 !
@@ -56,7 +55,7 @@ type(THM_DS), intent(inout) :: ds_thm
     vip(:) = 0.d0
     vim2(:) = 0.d0
     vip2(:) = 0.d0
-    call matini(6, 6, 0.d0, dsidep)
+    dsidep(:,:) = 0.d0
     delta(:) = 0.d0
 !
 ! - Get material parameters

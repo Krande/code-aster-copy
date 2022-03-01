@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
 !
     implicit none
 !
-#include "asterfort/matini.h"
     integer, intent(in) :: indi(6)
     real(kind=8), intent(in) :: vint(*), eps(8)
     real(kind=8), intent(in) :: as1(6, 6), as2(6, 6)
@@ -101,7 +100,7 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
 ! --  CALCUL DE LA JACOBIENNE TOTALE JACOBT
 ! ----------------------------------------------------------------------
 !
-    call matini(6, 6, 0.0d0, jacobt)
+    jacobt(:,:) = 0.0d0
 !
     do k = 1, 2
         do i = 1, 2

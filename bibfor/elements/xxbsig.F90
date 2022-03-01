@@ -32,7 +32,6 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/matini.h"
 #include "asterfort/reeref.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
@@ -182,7 +181,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
         else
 !           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R,
 !                      l'adresse idepl est un argument bidon...)
-            call matini(3, 3, 0.d0, f)
+            f(:,:) = 0.d0
             do i = 1, 3
                 f(i,i) = 1.d0
             end do

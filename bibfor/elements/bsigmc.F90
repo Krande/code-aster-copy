@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids,&
                   ivf, idfde, xyz, nharm, sigma,&
                   bsigma)
 !.======================================================================
-    implicit none
+  implicit none
 !
 !      BSIGMC  -- CALCUL DES FORCES INTERNES B*SIGMA AUX NOEUDS
 !                 DE L'ELEMENT DUES AU CHAMP DE CONTRAINTES SIGMA
@@ -46,42 +46,41 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids,&
 ! -----  ARGUMENTS
 #include "asterfort/bmatmc.h"
 #include "asterfort/btsig.h"
-    real(kind=8) :: xyz(1), sigma(1), bsigma(1), nharm
+  integer, intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
+  real(kind=8), intent(in) :: xyz(1), nharm, sigma(1)
+  real(kind=8), intent(out) :: bsigma(1)
+!
 ! -----  VARIABLES LOCALES
-    real(kind=8) :: b(486), jacgau
+  integer :: i, igau, nbinco
+  real(kind=8) :: b(nbsig, 81), jacgau
+
 !.========================= DEBUT DU CODE EXECUTABLE ==================
-!
 ! --- INITIALISATIONS :
-!     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, idfde, igau, ipoids, ivf, nbinco, nbsig
-    integer :: ndim, nno, npg
-    real(kind=8) :: zero
-!-----------------------------------------------------------------------
-    zero = 0.0d0
-    nbinco = ndim*nno
 !
-    do 10 i = 1, nbinco
-        bsigma(i) = zero
-10  end do
+  nbinco = ndim*nno
+!
+  do i = 1, nbinco
+     bsigma(i) = 0.d0
+  end do
 !
 ! --- CALCUL DE SOMME_ELEMENT(BT_SIGMA) :
 ! ---  BOUCLE SUR LES POINTS D'INTEGRATION
 !      -----------------------------------
-    do 20 igau = 1, npg
+  do igau = 1, npg
 !
 !  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 !  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 !  --      COURANT : (EPS_1) = (B)*(UN)
 !          ----------------------------
-        call bmatmc(igau, nbsig, xyz, ipoids, ivf,&
-                    idfde, nno, nharm, jacgau, b)
+     call bmatmc(igau, nbsig, xyz, ipoids, ivf,&
+          idfde, nno, nharm, jacgau, b)
 !
 !  --      CALCUL DU PRODUIT (BT)*(SIGMA)*JACOBIEN*POIDS
 !          ---------------------------------------------
-        call btsig(nbinco, nbsig, jacgau, b, sigma(1+nbsig*(igau-1)),&
-                   bsigma)
-20  end do
+     call btsig(nbinco, nbsig, jacgau, b, sigma(1+nbsig*(igau-1)),&
+          bsigma)
+  end do
 !
 !.============================ FIN DE LA ROUTINE ======================
 end subroutine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine xhmco4(ndim, nnop, nnops, pla, nd, tau1,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/hmdeca.h"
-#include "asterfort/matini.h"
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_saut.h"
@@ -65,11 +64,11 @@ subroutine xhmco4(ndim, nnop, nnops, pla, nd, tau1,&
 ! ----------------------------------------------------------------------
 !
 !     INITIALISATION
-    call matini(3, 3, 0.d0, au)
-    call matini(3, 3, 0.d0, dside2)
-    call matini(3, 3, 0.d0, temp)
-    call matini(3, 3, 0.d0, ptr)
-    call matini(3, 3, 0.d0, p)
+    au(:,:) = 0.d0
+    dside2(:,:) = 0.d0
+    temp(:,:) = 0.d0
+    ptr(:,:) = 0.d0
+    p(:,:) = 0.d0
     lmultc = nfiss.gt.1
     if (.not.lmultc) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])

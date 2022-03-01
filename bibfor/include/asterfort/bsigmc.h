@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,8 @@ interface
     subroutine bsigmc(nno, ndim, nbsig, npg, ipoids,&
                       ivf, idfde, xyz, nharm, sigma,&
                       bsigma)
-        integer :: nno
-        integer :: ndim
-        integer :: nbsig
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
-        real(kind=8) :: xyz(1)
-        real(kind=8) :: nharm
-        real(kind=8) :: sigma(1)
-        real(kind=8) :: bsigma(1)
+        integer, intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
+        real(kind=8), intent(in) :: xyz(1), nharm, sigma(1)
+        real(kind=8), intent(out) :: bsigma(1)
     end subroutine bsigmc
 end interface

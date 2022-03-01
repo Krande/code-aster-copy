@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
                   type, iordre)
     implicit none
 #include "asterf_types.h"
-#include "asterfort/matini.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpordo.h"
     integer :: nbvec, nperm, nitjac, type, iordre
@@ -87,7 +86,7 @@ subroutine jacobi(nbvec, nperm, tol, toldyn, ar,&
 !     --- INITIALISATION DES VECTEURS PROPRES (MATRICE IDENTITE) ---
 !
 !
-    call matini(nbvec, nbvec, 0.d0, vecpro)
+    vecpro(:,:) = 0.d0
 !
     do 20 i = 1, nbvec
         vecpro(i,i) = 1.0d0

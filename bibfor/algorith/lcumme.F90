@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine lcumme(youn, xnu, ifou, dep)
 !
     implicit none
 #include "asterfort/assert.h"
-#include "asterfort/matini.h"
     integer :: ifou
 ! MODIFI DU 6 JANVIER 2002 - YLP SUPPRESSION DES DECLARATIONS
 ! IMPLICITES DES TABLEAUX
@@ -47,7 +46,7 @@ subroutine lcumme(youn, xnu, ifou, dep)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    call matini(6, 6, 0.d0, dep)
+    dep(:,:) = 0.d0
 !
     if (ifou .eq. -2) then
 !

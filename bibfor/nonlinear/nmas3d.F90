@@ -39,7 +39,6 @@ implicit none
 #include "asterfort/elraga.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/invjac.h"
-#include "asterfort/matini.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
@@ -165,7 +164,7 @@ real(kind=8) :: matuu(*), vectu(3, nno), angmas(3)
 !
 ! - CALCUL DES COEFFICIENTS BI (MOYENNE DES DERIVEES DES FCTS DE FORME)
 !
-    call matini(3, nno, 0.d0, bi)
+    bi(:,:) = 0.d0
 !
     den = 0.d0
     do kpg = 1, nbpg2
@@ -363,8 +362,8 @@ real(kind=8) :: matuu(*), vectu(3, nno), angmas(3)
             qplus(i) = qmoins(i) + dq(i)
         end do
 !
-        call matini(3, nno, 0.d0, vectu)
-        call matini(6, nbpg2, 0.d0, sigas)
+        vectu(:,:) = 0.d0
+        sigas(:,:) = 0.d0
 !
         calbn = .true.
 !
