@@ -24,7 +24,6 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 #include "asterf_types.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/lcpsvn.h"
 #include "asterfort/mgauss.h"
     integer :: nb, np, nr
     aster_logical :: cplan
@@ -68,8 +67,8 @@ subroutine nmveso(rb, nb, rp, np, drbdb,&
 !
 !-- 1.2. INITIALISATION R = ( -RB , -RP )
 !
-    call lcpsvn(nb, mun, rb, r)
-    call lcpsvn(np, mun, rp, r(nb+1))
+    r(1:nb) = mun * rb
+    r(nb+1:nb+1+np) = mun * rp
 !
 !-- 2. RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 !

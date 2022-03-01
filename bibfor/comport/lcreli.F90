@@ -28,7 +28,6 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/lcpsvn.h"
 #include "asterfort/lcresi.h"
 #include "blas/ddot.h"
     real(kind=8) :: ddy(*)
@@ -100,7 +99,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !
     rho0 = 1
 !     CALCUL DE DY "PLUS" : DYP
-    call lcpsvn(nr, rho0, ddy, rhoddy)
+    rhoddy = rho0 * ddy(1:nr)
     dyp = rhoddy + dy(1:nr)
     yfp = yd(1:nr) + dyp
 !     CALCUL DE R "PLUS" : RP
@@ -124,7 +123,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
 !     ------------------------------------
 !
     rho05 = 0.5d0
-    call lcpsvn(nr, rho05, ddy, rhoddy)
+    rhoddy = rho05 * ddy(1:nr)
     dyp = rhoddy + dy(1:nr)
     yfp = yd(1:nr) + dyp
     call lcresi(fami, kpg, ksp, rela_comp, mod,&
@@ -152,7 +151,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
     if (rho1 .lt. rhomin*rho0) rho1 = rhomin*rho0
     if (rho1 .gt. rhomax*rho0) rho1 = rhomax*rho0
 !
-    call lcpsvn(nr, rho1, ddy, rhoddy)
+    rhoddy = rho1 * ddy(1:nr)
     dyp = rhoddy + dy(1:nr)
     yfp = yd(1:nr) + dyp
     call lcresi(fami, kpg, ksp, rela_comp, mod,&
@@ -190,7 +189,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
         if (rho2 .lt. rhomin*rho1) rho2 = rhomin*rho1
         if (rho2 .gt. rhomax*rho1) rho2 = rhomax*rho1
 !
-        call lcpsvn(nr, rho2, ddy, rhoddy)
+        rhoddy = rho2 * ddy(1:nr)
         dyp = rhoddy + dy(1:nr)
         yfp = yd(1:nr) + dyp
         call lcresi(fami, kpg, ksp, rela_comp, mod,&
