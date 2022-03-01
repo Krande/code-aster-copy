@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine te0514(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xdecou.h"
 #include "asterfort/xdecov.h"
 #include "asterfort/xdecqu.h"
@@ -105,9 +104,9 @@ subroutine te0514(option, nomte)
     allocate(ndoub3( nmmax*(2**nfimax)))
 !
     ASSERT(option.eq.'TOPOSE')
-    call vecini(51, 0.d0, pmilie)
-    call vecini(30, 0.d0, ainter)
-    call vecini(4, 0.d0, rainter)
+    pmilie(:) = 0.d0
+    ainter(:) = 0.d0
+    rainter(:) = 0.d0
 !
     call elref1(elp)
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nno, nnos=nnos)
@@ -190,7 +189,7 @@ subroutine te0514(option, nomte)
 ! initilisation : cas sans noeuds centraux
     nnc=0
     call matini(3, 7, 0.d0, nmil)
-    call vecini(28, 0.d0, txlsn)
+    txlsn(:) = 0.d0
 !
 ! si l'element est incomplet, on calcule les informations concernant les les noeuds centraux
     if ((elp.eq.'QU8') .or. (elp.eq.'H20') .or. (elp.eq.'P13') .or. (elp.eq.'P15')) then
@@ -244,7 +243,7 @@ subroutine te0514(option, nomte)
         do it = 1, nit
 !
 !         DECOUPAGE EN NSE SOUS-ELEMENTS
-            call vecini(18, 0.d0, pinter)
+            pinter(:) = 0.d0
             nmilie = 0
             ninter = 0
             npts = 0
@@ -325,9 +324,9 @@ subroutine te0514(option, nomte)
                           call xelrex(elp, nno, xref)
                           call reeref(elp, nno, zr(igeom), newpt, ndim,&
                                       ptref, ff)
-                          call vecini(3, 0.d0, u)
-                          call vecini(3, 0.d0, v)
-                          call vecini(3, 0.d0, normal)
+                          u(:) = 0.d0
+                          v(:) = 0.d0
+                          normal(:) = 0.d0
                           do j = 1, nbar
                              do k = 1, ndim
                                 u(k)=xref((ar(j,1)-1)*ndim+k)-xref((ar(j,2)-1)*ndim+k)
@@ -585,7 +584,7 @@ subroutine te0514(option, nomte)
     zi(jlonch-1+3)=nnn
     zi(jlonch-1+4)=0
 !   stockage des noeuds centraux servant a definir la connectivite sur sous-tetra courant
-        call vecini(3, 0.d0, xg)
+        xg(:) = 0.d0
 !   pour chaque noeud central
         do 401 j = 1, nnc
             deja=.false.

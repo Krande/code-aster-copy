@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/hmdeca.h" 
-#include "asterfort/vecini.h"
 #include "asterfort/matini.h"
 #include "asterfort/transp.h"   
 #include "asterfort/prmave.h" 
@@ -53,8 +52,8 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla,&
 ! 
 !   INITIALISATIONS
     lmultc = nfiss.gt.1
-    call vecini(3, 0.d0, h)
-    call vecini(3, 0.d0, hfix)
+    h(:) = 0.d0
+    hfix(:) = 0.d0
     call matini(3, 3, 0.d0, ptr)
 !
     do i = 1, ndim

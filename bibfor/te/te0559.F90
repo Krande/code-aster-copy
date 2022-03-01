@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,6 @@ subroutine te0559(option, nomte)
 #include "asterfort/reeref.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xhmini.h"
 #include "asterfort/xinter.h"
@@ -120,12 +119,12 @@ subroutine te0559(option, nomte)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
     do ifiss = 1, nfiss
-       call vecini(27, 0.d0, lsn)
+       lsn(:) = 0.d0
        do i = 1, nnop
           lsn(i) = zr(jlsn-1+(i-1)*nfiss+ifiss)
        end do
-       call vecini(3, 0.d0, inter)
-       call vecini(3, 0.d0, inref)
+       inter(:) = 0.d0
+       inref(:) = 0.d0
        if (ndim.eq.2) then
           call conare(typma, ar, nbar)
           do i = 1, nbar
@@ -263,7 +262,7 @@ subroutine te0559(option, nomte)
                    dxdk = 0.d0
                    dydk = 0.d0
                    dzdk = 0.d0
-                   call vecini(ndim, 0.d0, xg)
+                   xg(:) = 0.d0
                    do k = 1, nnof
                       dxdk = dxdk + pinter(ndim*(k-1)+1)*zr(idfdef-1+(ipgf-1)*nnof+k)
                       dydk = dydk + pinter(ndim*(k-1)+2)*zr(idfdef-1+(ipgf-1)*nnof+k)

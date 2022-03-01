@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xmprep.h"
 #include "asterfort/xmulco.h"
 #include "asterfort/xmvco3.h"
@@ -78,8 +77,8 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     do i = 1, 8
         lact(i) = 0
     end do
-    call vecini(27, 0.d0, ffp)
-    call vecini(400, 0.d0, vtmp)
+    ffp(:) = 0.d0
+    vtmp(:) = 0.d0
     rr = 0.d0
     ncomph = 0
     nbspg = 0

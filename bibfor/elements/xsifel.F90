@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
@@ -250,13 +249,13 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     do 10 kpg = 1, npgbis
 !
 !       INITIALISATIONS
-        call vecini(3*3, 0.d0, dtdm)
-        call vecini(3*3, 0.d0, du1dm)
-        call vecini(3*3, 0.d0, du2dm)
-        call vecini(3*3, 0.d0, du3dm)
-        call vecini(  6, 0.d0, sigin)
-        call vecini(  6, 0.d0, epsref)
-        call vecini(6*3, 0.d0, dsigin)
+        dtdm(:,:) = 0.d0
+        du1dm(:,:) = 0.d0
+        du2dm(:,:) = 0.d0
+        du3dm(:,:) = 0.d0
+        sigin(:) = 0.d0
+        epsref(:) = 0.d0
+        dsigin(:,:) = 0.d0
 
 !
 !       RECUPERATION DES DONNEES MATERIAUX
@@ -305,7 +304,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         endif
 !
 !       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
-        call vecini(ndim, 0.d0, xg)
+        xg(:) = 0.d0
         do 101 i = 1, ndim
             do 102 n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
@@ -373,7 +372,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)
 !       ---------------------------------------------
 !
-        call vecini(ndim, 0.d0, depla)
+        depla(:) = 0.d0
 !
 !       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
         do 200 in = 1, nnop
@@ -412,7 +411,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                     fk, dkdgl, ff, dfdi, f, eps, grad, heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
-        call vecini(9, 0.d0, dudm)
+        dudm(:,:) = 0.d0
         do 230 i = 1, ndim
             do 231 j = 1, ndim
                 dudm(i,j)=grad(i,j)
@@ -448,7 +447,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         ttrgu = tempg - tref
         ttrgv = 0.d0
 !
-        call vecini(3, 0.d0, tgudm)
+        tgudm(:) = 0.d0
 !
 !       cas de la varc TEMP, "continue" et donnee au noeud. Calcul
 !       de ses derivees partielles
@@ -504,9 +503,9 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                     du3dm, u1l, u2l, u3l)
 !
 !       CHAMPS SINGULIERS DANS LA BASE GLOBALE
-        call vecini(ndim, 0.d0, u1)
-        call vecini(ndim, 0.d0, u2)
-        call vecini(ndim, 0.d0, u3)
+        u1(:) = 0.d0
+        u2(:) = 0.d0
+        u3(:) = 0.d0
         do 510 i = 1, ndim
             do 511 j = 1, ndim
                 u1(i) = u1(i) + p(i,j) * u1l(j)
@@ -562,7 +561,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       7) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
 !       -----------------------------------------------------------
 !
-        call vecini(12, 0.d0, dfdm)
+        dfdm(:,:) = 0.d0
         do 600 ino = 1, nnop
             do 610 j = 1, ndim
                 do 620 k = 1, ndim
@@ -581,18 +580,18 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       8) CALCUL DE G, K1, K2, K3 AU POINT DE GAUSS
 !       --------------------------------------------
 !
-        call vecini(3, 0.d0, tzero)
-        call vecini(12, 0.d0, dzero)
+        tzero(:) = 0.d0
+        dzero(:,:) = 0.d0
 !
 !       POUR L'APPEL A GIL3D/GBIL2D, ON STOCKE LES CHAMPS
 !       EN DERNIERE COLONNE DES MATRICES DES DERIVEES DES CHAMPS
 !       ON ETEND LES MATRICES :
 !       EX : DUDM DE DIM (3,3) -> DUDME DE DIM (3,4)
-        call vecini(12, 0.d0, dudme)
-        call vecini(12, 0.d0, dtdme)
-        call vecini(12, 0.d0, du1dme)
-        call vecini(12, 0.d0, du2dme)
-        call vecini(12, 0.d0, du3dme)
+        dudme(:,:) = 0.d0
+        dtdme(:,:) = 0.d0
+        du1dme(:,:) = 0.d0
+        du2dme(:,:) = 0.d0
+        du3dme(:,:) = 0.d0
         do 700 i = 1, ndim
             do 701 j = 1, ndim
                 dudme(i,j) = dudm(i,j)

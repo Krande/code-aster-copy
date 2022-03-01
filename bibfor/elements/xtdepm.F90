@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
     integer :: ndim, jnnm(3), jnne(3), nfhe, nfhm
@@ -82,10 +81,10 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
     ddlmm=jddlm(2)
     nddle=ddles*nnes+ddlem*nnem
 !
-    call vecini(3, 0.d0, ddeplm)
-    call vecini(3, 0.d0, ddeple)
-    call vecini(6,0.d0,iescl)
-    call vecini(6,0.d0,imait)
+    ddeplm(:) = 0.d0
+    ddeple(:) = 0.d0
+    iescl(:) = 0.d0
+    imait(:) = 0.d0
 !
     iescl(1) = 1
     iescl(2) = -1

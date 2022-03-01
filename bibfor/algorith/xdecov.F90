@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
 #include "asterfort/lteatt.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xpente.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
@@ -443,7 +442,7 @@ subroutine xdecov(ndim, elp, nnop, nnose, it,&
             heav(ifiss*(ise-1)+i)=heavt(ncomp*(i-1)+it)
 310     continue
 ! ----- ON TRAITE LA FISSURE COURANTE
-        call vecini(nfisc+1, 0.d0, somlsn)
+        somlsn(:) = 0.d0
         do 320 in = 1, nnose
             inh=cnse(ise,in)
             if (inh .lt. 100) then

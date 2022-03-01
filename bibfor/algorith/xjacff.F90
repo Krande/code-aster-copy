@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "blas/ddot.h"
     integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, ndim, nnops
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nnop, 3)
@@ -81,14 +80,14 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     ASSERT(ndim.eq.3)
 !
 ! --- INITIALISATION
-    call vecini(3, 0.d0, nd)
-    call vecini(3, 0.d0, grln)
-    call vecini(3, 0.d0, grlt)
-    call vecini(ndim, 0.d0, tau1)
-    call vecini(ndim, 0.d0, tau2)
-    call vecini(3, 0.d0, xe)
-    call vecini(27, 0.d0, ffp)
-    call vecini(27, 0.d0, ffpc)
+    nd(:) = 0.d0
+    grln(:) = 0.d0
+    grlt(:) = 0.d0
+    tau1(:) = 0.d0
+    tau2(:) = 0.d0
+    xe(:) = 0.d0
+    ffp(:) = 0.d0
+    ffpc(:) = 0.d0
     do i = 1, nnop
         do j = 1, ndim
             dfdi(i,j) = 0.d0
@@ -110,7 +109,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
                 jac, nd)
 !
 ! --- COORDONNEES REELLES 3D DU POINT DE GAUSS IPG
-    call vecini(ndim, 0.d0, xg)
+    xg(:) = 0.d0
     do j = 1, nno
         do i = 1, ndim
           xg(i)=xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor3d(ndim*(j-1)+i)

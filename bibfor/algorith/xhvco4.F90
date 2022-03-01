@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine xhvco4(ino, ndim, sigma, lamb, pla,&
 #include "asterfort/matini.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
-#include "asterfort/vecini.h"
     integer :: ino
     integer :: ndim
     integer :: pla(27)
@@ -70,7 +69,7 @@ subroutine xhvco4(ino, ndim, sigma, lamb, pla,&
 !    valeur de w au point de Gauss
 ! remplissage L1l
     call matini(3, 3, 0.d0, ptr)
-    call vecini(3, 0.d0, sigglo)
+    sigglo(:) = 0.d0
 ! remplissage L2w
 ! on transpose la matrice
     call transp(p, 3, ndim, ndim, ptr,&

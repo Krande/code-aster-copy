@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine te0547(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xminte.h"
 #include "asterfort/xmmsa2.h"
 #include "asterfort/xmmsa4.h"
@@ -75,8 +74,9 @@ subroutine te0547(option, nomte)
     integer :: jaint, jcface, jlonch, jbasec, icopil, ictau
     integer :: idepl0, idepl1, ideplm, iddepl, jcohes, imate
     integer :: nfh, nfiss, contac, jta2(3)
-    character(len=8) :: elref, typma, fpg, elc, elrefc
+    character(len=8) :: elref, fpg, elc, elrefc
     character(len=16) :: enr
+    character(len=24) :: typma
     real(kind=8) :: rela, lup(3), lud(3)
 !
     real(kind=8) :: cohes, copilo(5), dtau, ffc(8), ffp(27)
@@ -209,11 +209,11 @@ subroutine te0547(option, nomte)
 !
 !           INITIALISATION
 !
-            call vecini(3, 0.d0, mup)
-            call vecini(3, 0.d0, mud)
-            call vecini(3, 0.d0, lup)
-            call vecini(3, 0.d0, lud)
-            call vecini(5, 0.d0, copilo)
+            mup(:) = 0.d0
+            mud(:) = 0.d0
+            lup(:) = 0.d0
+            lud(:) = 0.d0
+            copilo(:) = 0.d0
 !
 ! CODE ERREUR A UNDEF. UNE VALEUR INDIQUE UN PLANTAGE
 !
@@ -268,12 +268,12 @@ subroutine te0547(option, nomte)
 !
 !           INITIALISATION
 !
-                call vecini(2, 0.d0, sup2d)
-                call vecini(2, 0.d0, sud2d)
-                call vecini(3, 0.d0, mup)
-                call vecini(3, 0.d0, mud)
-                call vecini(9, 0.d0, vim)
-                call vecini(5, 0.d0, copilo)
+                sup2d(:) = 0.d0
+                sud2d(:) = 0.d0
+                mup(:) = 0.d0
+                mud(:) = 0.d0
+                vim(:) = 0.d0
+                copilo(:) = 0.d0
 !
 ! CODE ERREUR A UNDEF. UNE VALEUR INDIQUE UN PLANTAGE
 !

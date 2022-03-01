@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/detefa.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xajpmi.h"
 #include "asterfort/xmilar.h"
 #include "asterfort/xmilfa.h"
@@ -87,7 +86,7 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
     inm=0
     mfis=0
 !
-    call vecini(51, 0.d0, pmilie)
+    pmilie(1:51) = 0.d0
 !
     do 204 i = 1, 4
         ip1(i)=0
@@ -146,8 +145,8 @@ subroutine xalgo2(ndim, elrefp, it, nnose,&
             endif
 320     continue
         ASSERT((ia*ib*im) .gt. 0)
-        call vecini(ndim, 0.d0, milara)
-        call vecini(ndim, 0.d0, milarb)
+        milara(:) = 0.d0
+        milarb(:) = 0.d0
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
                     ia, ib, im, r, ksia, ksib,&
                     milara, milarb, pintt, pmitt)

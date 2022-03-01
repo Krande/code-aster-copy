@@ -58,7 +58,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "blas/dcopy.h"
     integer :: ndt, ndi, typess, nmat, nr, nvi, types0, nfs, nsg
 !
@@ -102,7 +101,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
     epstr(1:ndt) = epsed(1:ndt) + deps(1:ndt)
 !
     if (typess .eq. 0) then
-        call vecini(nr, 0.d0, dy)
+        dy(:) = 0.d0
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = 0.d0
         endif
@@ -138,7 +137,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 ! - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES
 !
     else if (typess .eq. 3) then
-        call vecini(nr, essai, dy)
+        dy(:) = essai
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = essai
             dy(3) = 0.d0

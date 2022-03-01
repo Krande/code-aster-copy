@@ -49,7 +49,6 @@ implicit none
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcabhm.h"
 #include "asterfort/xdefhm.h"
 #include "asterfort/xequhm.h"
@@ -313,7 +312,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
             kpi = ipi
 !
 !     COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            call vecini(ndim, 0.d0, xg)
+            xg(:) = 0.d0
             do j = 1, ndim
                 do in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(ipi-1)+in)* coorse(ndim*(in-1)+j)
@@ -321,7 +320,7 @@ aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm
             end do
 !
 !     XG -> XE (DANS LE REPERE DE l'ELREFPe ET VALEURS DES FF EN XE
-            call vecini(ndim, 0.d0, xe)
+            xe(:) = 0.d0
 !
 !     CALCUL DES FF ET DES DERIVEES DFDI POUR L'ELEMENT PARENTS
 !     QUDRATIQUE (MECANIQUE)

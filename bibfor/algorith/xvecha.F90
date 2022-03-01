@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ use THM_type
 implicit none
 !
 #include "jeveux.h"
-#include "asterfort/vecini.h"
 !
 ! ======================================================================
 
@@ -50,7 +49,7 @@ type(THM_DS), intent(inout) :: ds_thm
     real(kind=8) :: mu, gradpf(3), rho11m, gradpfm(3)
     real(kind=8) :: vect(560)
 !
-    call vecini(3, 0.d0, dffi)
+    dffi(:) = 0.d0
 !
     mu     = ds_thm%ds_material%liquid%visc
     ps = 0.d0

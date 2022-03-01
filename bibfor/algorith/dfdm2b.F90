@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xnormv.h"
     integer :: nno
     real(kind=8) :: dfrdk(*), coor(18)
@@ -52,8 +51,8 @@ subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
     integer :: iadzi, iazk24
     real(kind=8) :: da(3), db(3), jac
 !-----------------------------------------------------------------------
-    call vecini(3, 0.d0, da)
-    call vecini(3, 0.d0, db)
+    da(:) = 0.d0
+    db(:) = 0.d0
     do i = 1, nno
        do j = 1, 3
           da(j) = da(j) + coor(3*(i-1)+j) * dfrdk(2*i-1)

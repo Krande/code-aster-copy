@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xcfacf.h"
 #include "asterfort/xcfacj.h"
@@ -330,7 +329,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 200     continue
 !
 !       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
-        call vecini(3, 0.d0, nd)
+        nd(:) = 0.d0
         do 210 i = 1, nno
             do 211 j = 1, 3
                 nd(j)=nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/&
@@ -339,7 +338,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 210     continue
 !
 !       PROJECTION ET NUMEROTATION DES POINTS COMME DANS XORIFF
-        call vecini(3, 0.d0, bar)
+        bar(:) = 0.d0
         do 220 i = 1, ninter
             do 221 j = 1, 3
                 bar(j)=bar(j)+pinter((i-1)*3+j)/ninter
@@ -480,7 +479,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 800     continue
         if (ninter .eq. 2) then
 !         NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
-            call vecini(2, 0.d0, nd)
+            nd(:) = 0.d0
             do 810 i = 1, nno
                 do 811 j = 1, 2
                     nd(j)=nd(j)+zr(jgrlsn-1+2*(nfiss*(i-1)+ifiss-1)+j)&

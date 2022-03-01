@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine te0441(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/teattr.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xpesro.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
@@ -121,7 +120,7 @@ subroutine te0441(option, nomte)
                 ' ', phenom, 1, ' ', [0.d0],&
                 1, 'RHO', rho, icodre, 1)
 !     CALCUL DE L'EFFORT VOLUMIQUE AUX NOEUDS DE L'ELEMENT PARENT : FNO
-    call vecini(ndim*nnop, 0.d0, fno)
+    fno(:) = 0.d0
 !
     if (option .eq. 'CHAR_MECA_PESA_R') then
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalfev_wrap.h"
@@ -83,7 +82,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 !     1) CALCUL DES FORCES SUIVANT LES OPTIONS
 !     -----------------------------------------------
 !
-    call vecini(3*2, 0.d0, forrep)
+    forrep(:,:) = 0.d0
 !
     if ((option.eq.'CALC_K_G_XFEM') .or. (option.eq.'CALC_G_XFEM')) then
 !
@@ -111,7 +110,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
     else if ((option.eq.'CALC_K_G_XFEM_F') .or. (option.eq.'CALC_G_XFEM_F')) then
 !
 !         VALEUR DE LA PRESSION
-        call vecini(ndim+1, 0.d0, var)
+        var(:) = 0.d0
         do j = 1, ndim
            var(j) = xg(j)
         end do
@@ -138,7 +137,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 !     2) CALCUL DE THETA ET DE DIV(THETA)
 !     -----------------------------------
     divt= 0.d0
-    call vecini(9, 0.d0, dtdm)
+    dtdm(:,:) = 0.d0
 !
     do 390 i = 1, ndim
         theta(i)=0.d0
@@ -190,7 +189,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 !       ---------------------------------------------
 !       3) CALCUL DU DEPLACEMENT
 !       ---------------------------------------------
-        call vecini(ndim, 0.d0, depla)
+        depla(:) = 0.d0
         do 200 ino = 1, nnop
             call indent(ino, ddls, ddlm, nnops, indi)
             cpt=0
@@ -226,9 +225,9 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
             call xdeffk(ka, mu, rg, angl(ilev), ndim, fkpo(1:ndim,1:ndim))
 !
 !         CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
-            call vecini(ndim, 0.d0, u1)
-            call vecini(ndim, 0.d0, u2)
-            call vecini(ndim, 0.d0, u3)
+            u1(:) = 0.d0
+            u2(:) = 0.d0
+            u3(:) = 0.d0
             do 510 i = 1, ndim
                 do 511 j = 1, ndim
                     u1(i) = u1(i) + p(i,j) * fkpo(1,j)
@@ -241,7 +240,7 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
 !       -----------------------------------------
 !       5) CALCUL DE 'DFOR' =  D(PRES)/DI . THETA
 !       -----------------------------------------
-        call vecini(3, 0.d0, dfor)
+        dfor(:) = 0.d0
 !
 !       D(PRES)/DI n'etait pas correctement calcule dans cette routine.
 !       issue24174 supprime le calcul de cette quantite (DFOR reste nul) 

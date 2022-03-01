@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/fointe.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"
-#include "asterfort/vecini.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
@@ -97,7 +96,7 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     if (abs(force) .le. r8prem()) saredi = 0
 !
     AS_ALLOCATE(vr=fext0, size=nbmode)
-    call vecini(nbmode, 0.d0, fext0)
+    fext0(:) = 0.d0
 
 !fext0 : force en repere generalise (equivalent togene)
     do im = 1, nbmode

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "blas/ddot.h"
     integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, nptf, ndim, nnops
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(27, 3)
@@ -89,10 +88,10 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     ASSERT(nptf.le.nptfmx)
 !
 ! --- INITIALISATION
-    call vecini(3, 0.d0, nd)
-    call vecini(3, 0.d0, grln)
-    call vecini(3, 0.d0, grlt)
-    call vecini(3, 0.d0, tau1)
+    nd(:) = 0.d0
+    grln(:) = 0.d0
+    grlt(:) = 0.d0
+    tau1(:) = 0.d0
 !
 ! --- COORDONNÉES DES NOEUDS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
     nn=3*nptfmx
@@ -111,7 +110,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                 rbid2, jac, cosa, sina)
 !
 ! --- COORDONNEES REELLES 2D DU POINT DE GAUSS IPG
-    call vecini(3, 0.d0, xg)
+    xg(:) = 0.d0
     do j = 1, nno
         do i = 1, ndim
           xg(i)=xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor2d(ndim*(j-1)+i)

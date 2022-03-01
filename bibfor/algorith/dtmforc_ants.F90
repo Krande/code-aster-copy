@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/tophys_ms.h"
 #include "asterfort/togene.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 
@@ -209,8 +208,8 @@ subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     call distno(deploc, sign_dyz, obst_typ, 0.d0, xjeu/2.,&
                 xjeu/2., dnorm, cost, sint)
 !
-    call vecini(3, 0.d0, fgloba)
-    call vecini(3, 0.d0, flocal)
+    fgloba(:) = 0.d0
+    flocal(:) = 0.d0
 
 !   --- Calculation of the anti sismic device's force in the local reference
 

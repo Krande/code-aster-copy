@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 #    include "asterfort/jemarq.h"
 #    include "asterfort/reeref.h"
 #    include "asterfort/reerel.h"
-#    include "asterfort/vecini.h"
 #    include "asterfort/xajpmi.h"
 #    include "asterfort/xcenfi.h"
 #    include "asterfort/xmilar.h"
@@ -90,7 +89,7 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     inm=0
     mfisloc=0
 !
-    call vecini(51, 0.d0, pmilie)
+    pmilie(1:51) = 0.d0
 !
     do 204 i = 1, 4
         ip1(i)=0
@@ -152,8 +151,8 @@ subroutine xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
        end do
 320    continue 
        ASSERT((ia*ib) .gt. 0)
-       call vecini(ndim, 0.d0, milara)
-       call vecini(ndim, 0.d0, milarb)
+       milara(:) = 0.d0
+       milarb(:) = 0.d0
        call xmilar(ndim, ndime, elrefp, geom, pinref,&
                    ia, ib, im, r, ksia, ksib, milara, milarb, pintt, pmitt)
 !         STOCKAGE PMILIE

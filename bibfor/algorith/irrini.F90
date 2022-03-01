@@ -28,7 +28,6 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/vecini.h"
 #include "blas/ddot.h"
 !
     integer :: typess, nmat, kpg, ksp
@@ -86,7 +85,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
     typess=1
 !     SOLUTION NULLE ( TYPESS=0) OU ELASTIQUE ( TYPESS=1)
     if (typess .eq. 0 .or. typess .eq. 1) then
-        call vecini(ndt+4, 0.d0, dy)
+        dy(1:ndt+4) = 0.d0
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = 0.d0
             dy(ndt+5)=0.d0
@@ -183,7 +182,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 ! - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES
 !
     else if (typess .eq. 3) then
-        call vecini(ndt+4, essai, dy)
+        dy(1:ndt+4) = essai
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = essai
             dy(3) = 0.d0

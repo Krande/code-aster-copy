@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xpoffo.h"
     integer :: n, jlsn, jlst, ndim, ndime, ino, nfiss
     integer :: iad, igeom, ima, jconx1, jconx2, fisco(*)
@@ -64,7 +63,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
     integer :: i, j, ifiss, ifisc, nfisc, fisc(2*nfiss)
 !
     call jemarq()
-    call vecini(3, 0.d0, co)
+    co(:) = 0.d0
 !
 !     CAS D'UN NOEUD
     if (ino .lt. 1000) then
@@ -135,7 +134,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                fisc(2*(nfisc-1)+1) = ifisc
                goto 90
             endif
-            call vecini(nfisc+1, 0.d0, somlsn)
+            somlsn(:) = 0.d0
             do i = 1, n
                 do j = 1, nfisc
                     somlsn(j)=somlsn(j)+ff(i)*zr(jlsn-1+(i-1)*nfiss+fisco(2*j-1))

@@ -53,7 +53,6 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 #include "asterfort/lcprmv.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
-#include "asterfort/vecini.h"
     integer :: ndt, ndi, typess, nmat
     integer :: ioptio, idnr, nopt
 !
@@ -133,12 +132,12 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 ! - SOLUTION INITIALE = NUL
 !
     if (typess .eq. 0) then
-        call vecini(4*ndt+4, 0.d0, dy)
+        dy(1:4*ndt+4) = 0.d0
 !
 ! - SOLUTION INITIALE = ELASTIQUE
 !
     else if (typess .eq. 1) then
-        call vecini(4*ndt+4, 0.d0, dy)
+        dy(1:4*ndt+4) = 0.d0
         call lcprmv(hook, deps, dsig)
         dy(1:ndt) = dsig(1:ndt)
 !
@@ -297,7 +296,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf,&
 ! - SOLUTION INITIALE = VALEUR ESSAI POUR TOUTES LES COMPOSANTES
 !
     else if (typess .eq. 3) then
-        call vecini(4*ndt+4, essai, dy)
+        dy(1:4*ndt+4) = essai
         if (mod(1:6) .eq. 'C_PLAN') then
             deps(3) = essai
             dy(3) = 0.d0

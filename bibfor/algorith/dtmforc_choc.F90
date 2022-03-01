@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/tophys_ms.h"
 #include "asterfort/togene.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 
@@ -115,8 +114,8 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
     call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
     start  = vindx(nl_ind)
 !
-    call vecini(nbmode, 0.d0, fext_nl)
-    call vecini(nbmode, 0.d0, fext_tgt)
+    fext_nl(:) = 0.d0
+    fext_tgt(:) = 0.d0
 !
     adherance   = 0
     vnorm       = 0.d0
@@ -234,8 +233,8 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
                 dist2, dnorm, cost, sint)
 !
     if (dnorm .le. 0.d0) then
-        call vecini(3, 0.d0, fgloba)
-        call vecini(3, 0.d0, flocal)
+        fgloba(:) = 0.d0
+        flocal(:) = 0.d0
 
 !       --- Calculation of the normal force in the local reference
         call fnorm(dnorm, dvitlo, knorm, cnorm, cost,&

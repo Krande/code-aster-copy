@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/lteatt.h"
 #include "asterfort/matini.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
@@ -135,7 +134,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
     do kpg = 1, npg
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-        call vecini(ndim, 0.d0, xg)
+        xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*( n-1)+i)

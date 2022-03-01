@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xinter.h"
 #include "asterfort/xxmmvd.h"
@@ -133,7 +132,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
     ins=0
 !
 !     SOMME DES LSN SUR LES NOEUDS DU SE
-    call vecini(nfisc+1, 0.d0, somlsn)
+    somlsn(:) = 0.d0
     do k = 1, nnose
         na=cnset(nnose*(it-1)+k)
         if (na .lt. 1000) then
@@ -142,7 +141,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 305         continue
         else
 !         RECUP COOR GLOBALES
-            call vecini(3, 0.d0, a)
+            a(:) = 0.d0
             do 310 i = 1, ndim
                 a(i)=pintt(ndim*(na-1001)+i)
 310         continue
@@ -175,8 +174,8 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
         na=cnset(nnose*(it-1)+nta)
         nb=cnset(nnose*(it-1)+ntb)
 !
-        call vecini(3, 0.d0, a)
-        call vecini(3, 0.d0, b)
+        a(:) = 0.d0
+        b(:) = 0.d0
         do 110 i = 1, ndim
             if (na .lt. 1000) then
                 a(i)=zr(igeom-1+ndim*(na-1)+i)

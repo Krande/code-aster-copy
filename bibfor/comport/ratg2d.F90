@@ -52,7 +52,6 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 #include "asterfort/ratanp.h"
 #include "asterfort/mctge2.h"
 #include "asterfort/mcpstr.h"
-#include "asterfort/vecini.h"
 !
     real(kind=8) :: stress(6), strain(6)
     real(kind=8) :: rprops(6), dsidep(6, 6)
@@ -106,7 +105,7 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
     iorder=2
 !
 ! Initialize unit matrix = (1 0 0 1 0 1) for Jacobi
-    call vecini(nmax, r0, t1)
+    t1(:) = r0
     t1(1)=r1
     t1(4)=r1
     t1(6)=r1

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 #include "asterfort/hmdeca.h"
 #include "asterfort/indent.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "jeveux.h"
@@ -99,7 +98,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
     do ise = 1, nse
 !
 !     BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
-        call vecini(30, 0.d0, coorse)
+        coorse(:) = 0.d0
         do in = 1, nno
             ino=cnset(nno*(ise-1)+in)
             do j = 1, ndim
@@ -135,7 +134,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
         do 10 ipi = 1, npg
 !
 !     COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            call vecini(ndim, 0.d0, xg)
+            xg(:) = 0.d0
             do j = 1, ndim
                 do in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(ipi-1)+in)* coorse(ndim*&
@@ -144,7 +143,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
             end do
 !
 !     XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call vecini(ndim, 0.d0, xe)
+            xe(:) = 0.d0
 !
 !     CALCUL DES FF ET DES DERIVEES DFDI POUR L'ELEMENT PARENTS
 !     QUDRATIQUE (MECANIQUE)

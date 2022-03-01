@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,6 @@ implicit none
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xismec.h"
 #include "asterfort/xpoajc.h"
@@ -729,11 +728,11 @@ implicit none
            ncompi = zi(jcesd(15)-1+5+4*(ima-1)+3)
            call conare(typma, ar, nbar)
            do nli = 1, ninter(nfijon(1))
-              call vecini(3,0.d0,pinter)
+              pinter(:) = 0.d0
               do j = 1, ndim
                  pinter(j) = zr(jcesv(15)-1-1+iad16+ncompi*(nfijon(1)-1)+ndim*(nli-1)+j)
               end do
-              call vecini(20,0.d0,ff)
+              ff(:) = 0.d0
               call elrfvf(elrefp, pinter, ff, n)
               lsno = 0.d0
               do j = 1, n

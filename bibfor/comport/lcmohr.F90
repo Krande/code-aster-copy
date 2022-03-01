@@ -80,7 +80,6 @@ subroutine lcmohr(ndim,&
 #include "asterfort/mctg3d.h"
 #include "asterfort/mctgel.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/vecini.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/get_varc.h"
 !
@@ -239,7 +238,7 @@ subroutine lcmohr(ndim,&
 !
 ! Compute elastic trial state
 ! ---------------------------
-    call vecini(nmax, r0, strest)
+    strest(:) = r0
     eetv  =dstrai(1)+dstrai(2)+dstrai(3)
     pt    =bulk*eetv
     eetvd3=eetv*r1d3
@@ -259,7 +258,7 @@ subroutine lcmohr(ndim,&
 !
 !          (Sqrt(2)*EPXY Sqrt(2)*EPXZ Sqrt(2)*EPYZ)
 !
-    call vecini(nmax, r0, strait)
+    strait(:) = r0
     sttv  =strest(1)+strest(2)+strest(3)
     r1nu  =(r1+poiss)/young
     r1ny  =poiss/young
@@ -548,7 +547,7 @@ subroutine lcmohr(ndim,&
 ! 4.1. update internal variables and output stress components
 !
 ! ------------------------------------------------------
-        call vecini(nmax, r0, tr)
+        tr(:) = r0
         tr(ii)=s1
         tr(jj)=s3
         tr(mm)=s2

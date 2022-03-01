@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
 ! OUT REAC12: REACTION DE FROTTEMENT AU POINT DE GAUSS
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
-#include "asterfort/vecini.h"
     integer :: i, idepl, idepm
     integer :: j, lact(8), ndim, nli, nnol
     integer :: pla(27), pli, nvec
@@ -49,7 +48,7 @@ subroutine xxlagm(ffc, idepl, idepm, lact, ndim,&
 ! --- RÉACTION FROTT = SOMME DES FF(I).(LAMB1(I).TAU1+LAMB2(I).TAU2)
 ! --- (DEPDEL+DEPMOI)
     reac=0.d0
-    call vecini(3, 0.d0, reac12)
+    reac12(:) = 0.d0
     do 120 i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -181,7 +180,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 if (info .ge. 2) call utmess('I', 'SOUSTRUC_85', sk=noeu)
                 call utmess('I', 'VIDE_1')
 
-                call vecini(neq, 0.d0, fimpo)
+                fimpo(:) = 0.d0
                 call posddl('NUME_DDL', nume, noeu, 'DX', nunoe, iddlx)
                 call posddl('NUME_DDL', nume, noeu, 'DY', nunoe, iddly)
                 call posddl('NUME_DDL', nume, noeu, 'DZ', nunoe, iddlz)
@@ -231,7 +230,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
                 soup = nvect(1)*fimpo(iddlx)
                 soup = soup + nvect(2)*fimpo(iddly)
                 soup = soup + nvect(3)*fimpo(iddlz)
-                call vecini(neq, 0.d0, fimpo)
+                fimpo(:) = 0.d0
                 fimpo(iddlx) = nvect(1)
                 fimpo(iddly) = nvect(2)
                 fimpo(iddlz) = nvect(3)

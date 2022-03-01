@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine xalg42(ndim, elrefp, it, nnose,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/assert.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xajpmi.h"
 #include "asterfort/xmilar.h"
 #include "asterfort/xmifis.h"
@@ -85,7 +84,7 @@ subroutine xalg42(ndim, elrefp, it, nnose,&
     inm=0
     mfisloc=0
 !
-    call vecini(51, 0.d0, pmilie)
+    pmilie(1:51) = 0.d0
 !
     do 204 i = 1, 4
         ip1(i)=0
@@ -121,8 +120,8 @@ subroutine xalg42(ndim, elrefp, it, nnose,&
         ia=cnset(nnose*(it-1)+ar(a2,1))
         ib=cnset(nnose*(it-1)+ar(a2,2))
         im=cnset(nnose*(it-1)+ar(a2,3))
-        call vecini(ndim, 0.d0, milara)
-        call vecini(ndim, 0.d0, milarb)
+        milara(:) = 0.d0
+        milarb(:) = 0.d0
 !    ORDONANCEMENT DES NOEUDS MILIEUX SUR L ARETE : RECHERCHE DU NOEUD A SUR L ARETE A2
         call xmilar(ndim, ndime, elrefp, geom, pinref,&
                     ia, ib, im, r, ksia, ksib,&

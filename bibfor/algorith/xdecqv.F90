@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xpente.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
@@ -734,9 +733,9 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
             heav(ifiss*(ise-1)+i)=heavt(ncomp*(i-1)+it)
         end do
 ! ----- ON TRAITE LA FISSURE COURANTE
-        call vecini(nfisc+1, 0.d0, somlsn)
-        call vecini(nnose, 0.d0, lsno)
-        call vecini(3, 0.d0, bary)
+        somlsn(:) = 0.d0
+        lsno(:) = 0.d0
+        bary(:) = 0.d0
         abslsn=0.d0
         do in = 1, nnose
             inh=cnse(ise,in)
@@ -762,7 +761,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
                 end do
             else
 !           RECUP DE LA GEOMETRIE
-                call vecini(3, 0.d0, geom)
+                geom(:) = 0.d0
                 if (inh.gt.2000) then
                     do j = 1, ndim
                         geom(j) = pmitt(ndim*(inh-2001)+j)

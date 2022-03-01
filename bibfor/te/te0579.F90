@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,6 @@ subroutine te0579(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xlinhm.h"
@@ -101,8 +100,8 @@ subroutine te0579(option, nomte)
        elref='TR6'
     endif
 !
-    call vecini(3,0.d0, xg)
-    call vecini(3,0.d0, nbid)
+    xg(:) = 0.d0
+    nbid(:) = 0.d0
     poids = 0.d0
     rb2 = 0.d0
     rb3 = 0.d0
@@ -207,7 +206,7 @@ subroutine te0579(option, nomte)
 !     BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do 110 ise = 1, nse
 !
-        call vecini(18, 0.d0, coorse)
+        coorse(:) = 0.d0
 !       BOUCLE SUR LES NOEUDS DU SOUS-SEGMENT
         do 111 in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
@@ -244,7 +243,7 @@ subroutine te0579(option, nomte)
             endif
 !
 !         CALCUL DES FONCTIONS DE FORME AU POINT DE GAUSS DANS L'ELEMENT PARENT LINEAIRE
-            call vecini(3,0.d0,xg)
+            xg(:) = 0.d0
             do i = 1, ndim
                 do ino = 1, nno
                    xg(i) = xg(i) + coorse(ndim*(ino-1)+i)*zr(ivf-1+(kpg-1)*nno+ino)

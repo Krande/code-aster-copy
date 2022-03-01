@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine diag99(nomres)
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
-#include "asterfort/vecini.h"
 #include "asterfort/vpgskp.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
@@ -127,7 +126,7 @@ subroutine diag99(nomres)
 !
     do j = 1, nbstat
 !
-        call vecini(neq, 0.d0,trav1)
+        trav1(:) = 0.d0
 !
         do i = 1, nbmode
 !

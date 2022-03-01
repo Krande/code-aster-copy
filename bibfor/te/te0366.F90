@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine te0366(option, nomte)
 #include "asterfort/ttprsm.h"
 #include "asterfort/tecael.h"
 #include "asterfort/tecach.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xlacti.h"
 #include "asterfort/xmelet.h"
 #include "asterfort/xmmaa0.h"
@@ -113,10 +112,10 @@ subroutine te0366(option, nomte)
 ! --- INITIALISATIONS
 !
     call matini(n, n, 0.d0, mmat)
-    call vecini(18, 0.d0, geopi)
-    call vecini(2, 0.d0, dlagrf)
-    call vecini(3, 0.d0, ddeple)
-    call vecini(3, 0.d0, ddeplm)
+    geopi(:) = 0.d0
+    dlagrf(:) = 0.d0
+    ddeple(:) = 0.d0
+    ddeplm(:) = 0.d0
     fk_escl(:,:,:) = 0.d0
     dlagrc = 0.d0
     jeu = 0.d0

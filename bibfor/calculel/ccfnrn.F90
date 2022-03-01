@@ -61,7 +61,6 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/vecinc.h"
 #include "asterfort/vecgme.h"
 #include "asterfort/vechme.h"
@@ -775,7 +774,7 @@ implicit none
 ! SI PARALLELISME EN TEMPS: ACTIVATION TEST CANONIQUE POUR VERIFIER COM MPI
         if (ltest) then
           if (ktyp.eq.'R') then
-            call vecini(lonch,(iordr)*1.d0,noch)
+            noch(:) = (iordr)*1.d0
           else if (ktyp.eq.'C') then
             call vecinc(lonch,(iordr)*ci,nochc)
           else

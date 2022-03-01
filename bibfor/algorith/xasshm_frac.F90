@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,6 @@ implicit none
 #include "asterfort/xsautl.h"
 #include "asterfort/xvinhm.h"
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
 #include "asterfort/thmGetParaBiot.h"
 #include "asterfort/thmGetBehaviourVari.h"
 #include "asterfort/thmGetBehaviour.h"
@@ -123,11 +122,11 @@ type(THM_DS), intent(inout) :: ds_thm
 !
     call matini(nnops, 3, 0.d0, dfdic)
     call matini(16, 3, 0.d0, dffc)
-    call vecini(27, 0.d0, ffp)
-    call vecini(27, 0.d0, ffpc)
-    call vecini(16, 0.d0, ffc)
-    call vecini(27, 0.d0, ffp2)
-    call vecini(64, 0.d0, vihydr)
+    ffp(:) = 0.d0
+    ffpc(:) = 0.d0
+    ffc(:) = 0.d0
+    ffp2(:) = 0.d0
+    vihydr(:) = 0.d0
 !
 !         CALCUL DU PRODUIT DU JACOBIEN AVEC LE jac D'INTEGRATION, DES FONCTIONS
 !         DE FORME POUR L'ELEMENT PARENT QUADRATIQUE ET DE LA NORMALE A LA

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 #include "asterfort/assert.h"
 #include "asterfort/reeref.h"
 #include "asterfort/reerel.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xveri0.h"
 #include "asterfort/xnewto.h"
@@ -107,7 +106,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
        ptxx(j+2*ndime) = ptm(j)
     enddo
 !!!!!ATTENTION INITIALISATION DU NEWTON: INTERPOLATION LINEAIRE DE LSN
-    call vecini(ndime, 0.d0, ksi)
+    ksi(:) = 0.d0
 !   INITIALISATION DU NEWTON
     ASSERT(abs(lsna-lsnb) .gt. 1.d0/r8gaem())
     a = (lsna + lsnb - 2*lsnm)/2.d0
@@ -122,7 +121,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
        ASSERT(abs(ksi(1)).le.1)
        ksi(1) = (ksi(1)+1)/2.d0
     endif
-    call vecini(4*ndime, 0.d0, dekker)
+    dekker(:) = 0.d0
     exit(1:2) = 0
     call xnewto(elrefp, name, n,&
                 ndime, ptxx, ndim, geom, lsn,&

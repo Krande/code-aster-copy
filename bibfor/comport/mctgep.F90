@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,6 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx, direig, edge, apex)
 !
 #include "asterf_types.h"
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
 !
 ! Declaration of integer type variables
     integer :: i, j, ia, ib, ic, mcomp, mdim
@@ -88,7 +87,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx, direig, edge, apex)
     call matini(mcomp, mcomp, r0, foid)
     call matini(mcomp, mcomp, r0, dx2dx)
     call matini(mcomp, mcomp, r0, dydx)
-    call vecini(mcomp, r0, sopid)
+    sopid(:) = r0
 !
 ! 4th-order symetric unit tensor
     do i = 1, 3

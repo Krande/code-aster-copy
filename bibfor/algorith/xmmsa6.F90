@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
 #include "asterfort/lcejex.h"
 #include "asterfort/lcecli.h"
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: wsaut(3), lamb(3), am(3), dsidep(6, 6)
     real(kind=8) :: tau1(3), tau2(3), nd(3)
@@ -73,14 +72,14 @@ subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
 !
 ! ----------------------------------------------------------------------
 !
-    call vecini(3, 0.d0, am)
-    call vecini(3, 0.d0, dam)
+    am(:) = 0.d0
+    dam(:) = 0.d0
     call matini(3, 3, 0.d0, p)
     call matini(6, 6, 0.d0, dsidep)
     call matini(6, 6, 0.d0, dsid2d)
-    call vecini(6, 0.d0, sigma)
-    call vecini(9, 0.d0, vim)
-    call vecini(9, 0.d0, vip)
+    sigma(:) = 0.d0
+    vim(:) = 0.d0
+    vip(:) = 0.d0
 !
 ! CONSTRUCTION DE LA MATRICE DE PASSAGE
 !

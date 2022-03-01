@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
 !
 #include "asterf_types.h"
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
 !
     real(kind=8) :: deigy(3, 3)
     real(kind=8) :: dydx(6, 6)
@@ -69,8 +68,8 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, edge, outofp)
     call matini(6, 6, r0, dydx)
     call matini(mcomp, mcomp, r0, foid)
     call matini(mcomp, ndim, r0, eigprj)
-    call vecini(mcomp, r0, sopid)
-    call vecini(mcomp, r0, eigpr3)
+    sopid(:) = r0
+    eigpr3(:) = r0
 !
     do i = 1, ndim
         foid(i,i)=r1

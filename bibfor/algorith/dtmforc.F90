@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,6 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
 #include "asterfort/uttcpu.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/sdmpic.h"
 #include "asterfort/wkvect.h"
 !
@@ -162,7 +161,7 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
         call intget(sd_int, FORCE_EX, iocc=index, vr=fext0, buffer=buffint)
     end if
 
-    call vecini(nbmode, 0.d0, fext)
+    fext(:) = 0.d0
 
     call intget(sd_int, INDEX, iocc=index, iscal=itime  , buffer=buffint)
     call intget(sd_int, TIME , iocc=index, rscal=temps, buffer=buffint)
@@ -191,7 +190,6 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
 !        call nlget (sd_nl,  _F_TOT_WK , vr=fext_nl , buffer=buffnl)
 !        call nlget (sd_nl,  _F_TAN_WK , vr=fext_tgt, buffer=buffnl)
 !        call nlget(sd_nl, _FEXT_MPI, vr=fext_tmp,savejv=sd_fextnl_tmp)
-!        call vecini(nbmode, 0.d0, fext_tmp)
 !        write (6,*) "OBJET JEVEUX MPI" , sd_fextnl_tmp
 
         !
@@ -212,7 +210,7 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
             ! ----- MPI initialisation
             ! ----- Temporary non linear force
                 call nlget(sd_nl, _FEXT_MPI, savejv=sd_fextnl_tmp,vr=fext_tmp)
-                call vecini(nbmode, 0.d0, fext_tmp)
+                fext_tmp(:) = 0.d0
                 call jeexin(sd_fextnl_tmp(1:20)//'.MPI',iret_mpi)
 
                 if (iret_mpi .eq. 0) then

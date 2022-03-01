@@ -42,7 +42,6 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
 !
 #include "asterf_types.h"
 #include "asterfort/jacobi.h"
-#include "asterfort/vecini.h"
 #include "asterfort/matini.h"
 !
 ! Declaration of constant parameters
@@ -74,7 +73,7 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
     codret=0
 !
 ! Initialize unit matrix = (1 0 0 1 0 1) for Jacobi
-    call vecini(nmax, r0, t1)
+    t1(:) = r0
     t1(1) =r1
     t1(4) =r1
     t1(6) =r1

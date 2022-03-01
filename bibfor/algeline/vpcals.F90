@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -114,7 +114,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
         priram(7) = 0
         priram(8) = 2
     else
-        call vecint(8, 0, priram)
+        priram(:) = 0
     endif
     quapi2=r8depi()*r8depi()
     izero=0

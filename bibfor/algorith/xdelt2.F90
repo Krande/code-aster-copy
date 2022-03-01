@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/matini.h"
 #include "asterfort/matinv.h"
 #include "asterfort/provec.h"
-#include "asterfort/vecini.h"
     integer :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ksi(ndim), delta(ndime), ptint(*), tabco(*), tabls(*)
     character(len=8) :: elp
@@ -69,8 +68,8 @@ implicit none
 ! --- DANS LA MAILLE
 !
 !
-    call vecini(ndim, 0.d0, pint1)
-    call vecini(ndim, 0.d0, pint2)
+    pint1(:) = 0.d0
+    pint2(:) = 0.d0
 !
     do  i = 1, ndim
         pint1(i)=ptint(ndim*(ipp-1)+i)
@@ -83,7 +82,7 @@ implicit none
 !     CALCUL DES DERIVEES FONCTIONS DE FORME DE L'ELEMENT EN KSI
     call elrfdf(elp, ksi, dff)
 !
-    call vecini(ndime, 0.d0, r)
+    r(:) = 0.d0
     call matini(ndime, ndime, 0.d0, jac)
 ! --- CALCUL DE R1,DERIVEES PREMIERES DE R1 EN KSI
 ! ---           R1 : LEVEL SET NORMALE
@@ -94,9 +93,9 @@ implicit none
         end do
     end do
 !
-    call vecini(ndim, 0.d0, m)
-    call vecini(ndim, 0.d0, nor)
-    call vecini(ndim, 0.d0, p)
+    m(:) = 0.d0
+    nor(:) = 0.d0
+    p(:) = 0.d0
 !
 ! --- CALCUL DE R2 EN KSI
 ! ---           R2 : PLAN MEDIATEUR PASSANT PAR LES 2 PTS INTER
@@ -139,8 +138,8 @@ implicit none
         call elrfno(elp, nodeCoor = refcoo)
 !
 ! ---  CALCUL DES VECTEURS N(1)N(2) ET N(1)N(3)
-        call vecini(3, 0.d0, v1)
-        call vecini(3, 0.d0, v2)
+        v1(:) = 0.d0
+        v2(:) = 0.d0
         do i = 1, ndim
             v1(i)=refcoo(i, n(2)) - refcoo(i, n(1))
             v2(i)=refcoo(i, n(3)) - refcoo(i, n(1))
@@ -160,7 +159,7 @@ implicit none
 ! --- CALCUL L'INVERSE DE LA MATRICE JACOBIENNE
     call matinv('S', ndime, jac, inv, det)
 !
-    call vecini(ndime, 0.d0, delta)
+    delta(:) = 0.d0
 ! --- CALCUL DES QUANTITES A ANNULER
 !     CALCUL DE DELTAS
     do  i = 1, ndime

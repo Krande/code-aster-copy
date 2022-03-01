@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
 #include "jeveux.h"
 !
 #include "asterfort/indent.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
     integer :: ndim
@@ -75,8 +74,8 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
 !
 ! --- INITIALISATION
 !
-    call vecini(6,0.d0,iescl)
-    call vecini(6,0.d0,imait)
+    iescl(:) = 0.d0
+    imait(:) = 0.d0
 !
     iescl(1) = 1
     iescl(2) = -1
@@ -94,8 +93,8 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
     nddle = ddles*nnes+ddlem*nnem
 !
     jeu = 0.d0
-    call vecini(3, 0.d0, pose)
-    call vecini(3, 0.d0, posm)
+    pose(:) = 0.d0
+    posm(:) = 0.d0
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
     if (.not.lmulti) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])

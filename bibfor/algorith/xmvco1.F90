@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/vecini.h"
 #include "blas/ddot.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
@@ -77,7 +76,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
       hea_fa(1)=xcalc_code(1,he_inte=[-1])
       hea_fa(2)=xcalc_code(1,he_inte=[+1])
     endif
-    call vecini(3, 0.d0, tau)
+    tau(:) = 0.d0
     coefi=xcalc_saut(1,0,1)
     eps=r8prem()
     sqttan=0.d0
@@ -133,7 +132,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 452     continue
 450  end do
 !
-    call vecini(3, 0.d0, ttx)
+    ttx(:) = 0.d0
 !
     do 460 i = 1, nnol
         pli=pla(i)

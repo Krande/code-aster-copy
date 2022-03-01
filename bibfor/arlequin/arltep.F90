@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/assert.h"
-#include "asterfort/vecini.h"
 #include "asterfort/reereg.h"
 #include "asterfort/arlelr.h"
 #include "asterfort/elrfdf.h"
@@ -95,8 +94,8 @@ real(kind=8) ::  dfdxc(nnc),dfdyc(nnc),dfdzc(nnc)
 
     jdecal = (kpgs-1)*nns
     zero = 0.d0
-    call vecini(ndim, zero, coorr)
-    call vecini(ndim, zero, coorpc)
+    coorr(:) = zero
+    coorpc(:) = zero
 
     do ino = 1,nns
         do idim = 1,ndim

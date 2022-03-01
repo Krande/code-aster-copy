@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine fonno5(noma, indic, noe, na, nb,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/vecini.h"
     character(len=8) :: noma
     integer :: indic(4), noe(4, 4), na, nb, ndim, nbnoel, indr(2)
     real(kind=8) :: vnor(2, 3), vdir(2, 3)
@@ -142,7 +141,7 @@ subroutine fonno5(noma, indic, noe, na, nb,&
 158              continue
                 call normev(vect1, norm1)
 !           CALCUL DU VECTEUR NORMAL A L'ARETE
-                call vecini(3, 0.d0, vect3)
+                vect3(:) = 0.d0
                 vect3(3)=1.d0
                 call provec(vect3, vect1, vect2)
                 do 160 ico = 1, 3

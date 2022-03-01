@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
     integer :: ndim, ndime, nnop, igeom
@@ -72,8 +71,8 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
         ASSERT(ndim.eq.ndime+1)
 !
 !       CREATION D'UNE BASE LOCALE A LA MAILLE PARENT ABCD
-        call vecini(3, 0.d0, ab)
-        call vecini(3, 0.d0, ac)
+        ab(:) = 0.d0
+        ac(:) = 0.d0
         do 113 j = 1, ndim
             a(j)=zr(igeom-1+ndim*(1-1)+j)
             b(j)=zr(igeom-1+ndim*(2-1)+j)
@@ -91,7 +90,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
         else if (ndime.eq.1) then
 !         CREATION DU REPERE LOCAL 1D : AB/NAB
             call normev(ab, nab)
-            call vecini(3, 0.d0, nd)
+            nd(:) = 0.d0
             nd(1) = ab(2)
             nd(2) = -ab(1)
         endif

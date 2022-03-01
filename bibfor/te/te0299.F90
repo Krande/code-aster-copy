@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,6 @@ subroutine te0299(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/coor_cyl.h"
-#include "asterfort/vecini.h"
 #include "asterfort/provec.h"
 !
     integer :: icodre(3),matcod,ncmp, i1, ij
@@ -445,8 +444,8 @@ subroutine te0299(option, nomte)
 !
         if (axi) then
 !         CHAMPS SINGULIERS DANS LA BASE GLOBALE
-            call vecini(ndim, 0.d0, u1)
-            call vecini(ndim, 0.d0, u2)
+            u1(:) = 0.d0
+            u2(:) = 0.d0
             do i = 1, ndim
                 do j = 1, ndim
                     u1(i) = u1(i) + p(i,j) * u1l(j)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,6 @@ subroutine te0036(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/tefrep.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xkamat.h"
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xnormv.h"
@@ -225,7 +224,7 @@ character(len=16), intent(in) :: option, nomte
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
-        call vecini(18, 0.d0, coorse)
+        coorse(:) = 0.d0
 !       BOUCLE SUR LES NOEUDS DU SOUS-TRIA (DU SOUS-SEG)
         do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
@@ -273,7 +272,7 @@ character(len=16), intent(in) :: option, nomte
             endif
 !
 !         COORDONNÉES RÉELLES GLOBALES DU POINT DE GAUSS
-            call vecini(ndim+1, 0.d0, xg)
+            xg(:) = 0.d0
             do j = 1, nno
                 vf=zr(ivf-1+nno*(kpg-1)+j)
                 do k = 1, ndim
@@ -283,8 +282,8 @@ character(len=16), intent(in) :: option, nomte
 !
             if (ndime.eq.1) then
                 ASSERT(elref(1:2).eq.'SE')
-                call vecini(ndim, 0.d0, td)
-                call vecini(ndim, 0.d0, nd)
+                td(:) = 0.d0
+                nd(:) = 0.d0
 !         CALCUL DE LA NORMALE AU SEGMENT AU POINT DE GAUSS
                nd(1) = cosa
                nd(2) = sina
@@ -300,19 +299,8 @@ character(len=16), intent(in) :: option, nomte
                 td(1) = -sina
                 td(2) = cosa
             else if (ndime.eq.2) then
-!                call vecini(ndim, 0.d0, td1)
-!                call vecini(ndim, 0.d0, td2)
-!         CALCUL DES TANGENTES A LA FACE AU POINT DE GAUSS
-!                do j = 1, nno
-!                   do k = 1, ndim
-!                       td1(k)=td1(k)+coorse(ndim*(j-1)+k)* zr(idfde-1+2*nno*(kpg-1)+2*j-1)
-!                       td2(k)=td2(k)+coorse(ndim*(j-1)+k)* zr(idfde-1+2*nno*(kpg-1)+2*j)
-!                   end do
-!               end do
 !         CALCUL DE LA NORMALE A LA FACE AU POINT DE GAUSS
-!               call provec(td1,td2,nd)
                call xnormv(3, nd, norme)
-!               nd(1:3) = -nd(1:3)
                ASSERT(norme.gt.0.d0)
             endif
 !
@@ -331,7 +319,7 @@ character(len=16), intent(in) :: option, nomte
 !         CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
 !         -----------------------------------------------
 !
-            call vecini(3, 0.d0, forrep)
+            forrep(:) = 0.d0
             nompar(1)='X'
             nompar(2)='Y'
             if (ndim .eq. 3) nompar(3)='Z'
@@ -380,7 +368,7 @@ character(len=16), intent(in) :: option, nomte
             elseif (option.eq.'CHAR_MECA_FR2D3D'.or.&
      &            option.eq.'CHAR_MECA_FR1D2D') then
 !
-                call vecini(ndim, 0.d0, forrep)
+                forrep(:) = 0.d0
                 do ino = 1, nnop
                     do j = 1, ndim
                         forrep(j)=forrep(j)+zr(iforc-1+ndim*(ino-1)+j)&

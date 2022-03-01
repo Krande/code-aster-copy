@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine te0510(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcface.h"
 #include "asterfort/xcfaq2.h"
 #include "asterfort/xfacxh.h"
@@ -58,7 +57,8 @@ subroutine te0510(option, nomte)
 !......................................................................
 !
 !
-    character(len=8) :: elp, noma, face, typma
+    character(len=8) :: elp, face
+    character(len=24) :: noma, typma
     character(len=16) :: typdis
     integer :: igeom, jlsn, jlst, jgrlsn, jgrlst
     integer :: jcnset, jpint, jmilt, jnit, jaint, jdecou
@@ -350,8 +350,8 @@ subroutine te0510(option, nomte)
 !
 !       INITIALISATION TAU1 POUR CAS 2D
             tau1(3)=0.d0
-            call vecini(3, 0.d0, nd)
-            call vecini(3, 0.d0, grlt)
+            nd(:) = 0.d0
+            grlt(:) = 0.d0
 !
             do j = 1, ndim
                 do k = 1, nnop

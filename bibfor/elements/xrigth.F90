@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,6 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcalc_heav.h"
@@ -163,7 +162,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
         do 1200 kpg = 1, npg
 !
 !         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            call vecini(ndim, 0.d0, xg)
+            xg(:) = 0.d0
             do 1210 j = 1, ndim
                 do 1211 in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*(&
@@ -178,7 +177,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then
 !           BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-                call vecini(3*ndim, 0.d0, baslog)
+                baslog(:) = 0.d0
                 lsng = 0.d0
                 lstg = 0.d0
                 do 1220 inp = 1, nnop
@@ -200,7 +199,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !           CAR ON SE TROUVE SUR LE FOND DE FISSURE
                 ASSERT(iret.ne.0)
 !           ON NE GARDE QUE LES ENRICHISSEMENTS UTILES EN THERMIQUE
-                call vecini(ndim, 0.d0, dgdth)
+                dgdth(:) = 0.d0
                 feth = femec(1)
                 do 1230 j = 1, ndim
                     dgdth(j) = dgdmec(1,j)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/reerel.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcedge.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
@@ -168,7 +167,7 @@ implicit none
     end do
     call elrfdf(elrefp, xmi, dff, nno, ndim)
 !
-    call vecini(ndime,0.d0, gradls)
+    gradls(:) = 0.d0
     do i = 1, nno
        do j = 1, ndime
           gradls(j) = gradls(j)+dff(j,i)*lsn(i)
@@ -180,7 +179,7 @@ implicit none
     end do
 !
 !    ON RENSEIGNE LES NOEUDS DU SOUS TETRA POUR LA METHODE DE DEKKER
-    call vecini(4*ndime,0.d0, dekker)
+    dekker(:) = 0.d0
     call xelrex(elrefp, nno, x)
     do j = 1, ndime
        dekker(j) = x(ndime*(nn(1)-1)+j)
@@ -189,7 +188,7 @@ implicit none
        dekker(j+3*ndime) = x(ndime*(nn(4)-1)+j)
     end do
 !!!!!ATTENTION INITIALISATION DU NEWTON:
-    call vecini(ndime, 0.d0, ksi)
+    ksi(:) = 0.d0
     if (jonc) then
        call xnewto(elrefp, name, n,&
                    ndime, ptxx, ndim, geom, lsn,&

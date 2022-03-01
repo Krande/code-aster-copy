@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
     implicit none
 
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
 #include "asterfort/prmave.h"
    
 ! person_in_charge: daniele.colombo at ifpen.fr
@@ -38,8 +37,8 @@ subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
     real(kind=8) :: saut(3), sautm(3), am(3), ad(3)
     
     call matini(3, 3, 0.d0, p) 
-    call vecini(3, 0.d0, am)
-    call vecini(3, 0.d0, ad)
+    am(:) = 0.d0
+    ad(:) = 0.d0
 !
 ! --- ON CONSTRUIT P MATRICE DE PASSAGE BASE FIXE --> BASE COVARIANTE
 !

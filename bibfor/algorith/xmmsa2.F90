@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 #include "asterfort/lcejex.h"
 #include "asterfort/lcejli.h"
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xmafr1.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: saut(3), am(3), pp(3, 3), dsidep(6, 6)
@@ -75,17 +74,17 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
 ! ----------------------------------------------------------------------
 !
-    call vecini(3, 0.d0, am)
-    call vecini(3, 0.d0, dam)
+    am(:) = 0.d0
+    dam(:) = 0.d0
     call matini(3, 3, 0.d0, pp)
     call matini(3, 3, 0.d0, p)
     call matini(6, 6, 0.d0, dsidep)
     call matini(6, 6, 0.d0, dsid2d)
-    call vecini(6, 0.d0, sigma)
-    call vecini(9, 0.d0, vim)
-    call vecini(9, 0.d0, vip)
-    call vecini(3, 0.d0, dtang)
-    call vecini(3, 0.d0, dnor)
+    sigma(:) = 0.d0
+    vim(:) = 0.d0
+    vip(:) = 0.d0
+    dtang(:) = 0.d0
+    dnor(:) = 0.d0
 !
     call xmafr1(3, nd, p)
 !

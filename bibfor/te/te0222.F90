@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,6 @@ implicit none
 #include "asterfort/tecael.h"
 #include "asterfort/thetapdg.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "jeveux.h"
 !
 ! =====================================================================
@@ -897,8 +896,8 @@ implicit none
 !
             if (axi) then
 !---------------Champs singuliers dans la base locale
-                call vecini(ndim, 0.d0, u1)
-                call vecini(ndim, 0.d0, u2)
+                u1(:) = 0.d0
+                u2(:) = 0.d0
                 do i = 1, ndim
                     do j = 1, ndim
                         u1(i) = u1(i) + p(i,j) * u1l(j)

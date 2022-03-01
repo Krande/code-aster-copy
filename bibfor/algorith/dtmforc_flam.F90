@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/tophys_ms.h"
 #include "asterfort/togene.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 
@@ -229,8 +228,8 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     fn = 0.d0
 
     if (dnorm .le. 0.d0) then
-        call vecini(3, 0.d0, fgloba)
-        call vecini(3, 0.d0, flocal)
+        fgloba(:) = 0.d0
+        flocal(:) = 0.d0
 
 !       --- Calculation of the buckling (normal) force in the local reference
         call mdflam(dnorm, dvitlo, knorm, cnorm, cost, sint,&

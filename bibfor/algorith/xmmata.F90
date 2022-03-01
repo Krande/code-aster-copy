@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/vecini.h"
 #include "asterfort/matini.h"
 #include "asterfort/hmdeca.h"
 #include "asterfort/xcalc_saut.h"
@@ -57,8 +56,8 @@ type(THM_DS), intent(inout) :: ds_thm
     cliq   = ds_thm%ds_material%liquid%unsurk
     mu     = ds_thm%ds_material%liquid%visc
     lmultc = nfiss.gt.1
-    call vecini(3, 0.d0, dffi)
-    call vecini(3, 0.d0, dffj)
+    dffi(:) = 0.d0
+    dffj(:) = 0.d0
 !
     if (.not.lmultc) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])

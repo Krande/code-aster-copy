@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -79,7 +78,7 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
 !
     call infmaj()
     call infniv(ifm, niv)
-    call vecini(4, 0.d0, mem)
+    mem(:) = 0.d0
 !
 !     RECUPERATION DES CARACTERISTIQUES DU FOND SUR LA GRILLE
 !     NPTFG : NBRE DE POINTS DU FOND SUR LA GRILLE
@@ -160,7 +159,7 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
                 endif
                 goto 505
             else
-                call vecini(4, 0.d0, mem)
+                mem(:) = 0.d0
                 mem(1)=1.d0/r8prem()
                 goto 66
             endif
@@ -169,7 +168,7 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
         do k = 1, 4
             a1(k)=mem(k+1)
         end do
-        call vecini(4, 0.d0, mem)
+        mem(:) = 0.d0
         mem(1)=1.d0/r8prem()
  66     continue
         do j = 1, nptfg-1
@@ -216,7 +215,7 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
             b2(k)=mem(k+1)
         end do
  67     continue
-        call vecini(4, 0.d0, mem)
+        mem(:) = 0.d0
         mem(1)=1.d0/r8prem()
         vmemo(5*(i-1)+1)= i
         vmemo(5*(i-1)+2)= a1(4)

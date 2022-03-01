@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ implicit none
 #include "asterfort/reeref.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xassfa.h"
 #include "asterfort/xdecfa.h"
 #include "asterfort/xnewto.h"
@@ -173,7 +172,7 @@ implicit none
 !      EN QUADRATIQUE ON VERIFIE QUE LE NOEUD MILIEU DE L'ARETE VERIFIE LSN=0,
 !      SINON ON EXCLUE CETTE ARETE
                      if (.not.iselli(elp)) then
-                        call vecini(ndim, 0.d0, lsn)
+                        lsn(:) = 0.d0
                         if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 3000) then
                            do ii = 1, ndim
                               newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-3001)+ii)
@@ -202,7 +201,7 @@ implicit none
 !      ON DOIT DETERMINER LST AUX EXTREMITES DE CE SEG
 !      RECUPERATION DES COORDONNEES REELLES ET DE REFERENCE DES NOEUDS SITUES SUR CE SEGMENT
 !      ET CALCUL DE LST AUX EXTREMITES DE CE SEGMENT
-                        call vecini(6, 0.d0, lst)
+                        lst(:) = 0.d0
                         call matini(3, 4, 0.d0, rainter)
                         call matini(6, ndim, 0.d0, cooree)
                         call matini(6, ndim, 0.d0, cooref)
@@ -387,14 +386,14 @@ implicit none
                            itemax = 100
                            call xnewto(elp, 'XINTER', n, ndim, ptxx, ndim,&
                                        zr(igeom), ls, ibid, ibid, itemax, epsmax, ksi)
-                           call vecini(ndim, 0.d0, mref)
+                           mref(:) = 0.d0
                            do ii = 1, ndim
                               mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)*&
                                         (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
                                         ptxx(ii+ndim)
                            end do
                            call elrfvf(elp, mref, ff, nno)
-                           call vecini(ndim, 0.d0, m)
+                           m(:) = 0.d0
                            do ii = 1, ndim
                               do ino = 1, nno
                                  m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(ino)
@@ -462,7 +461,7 @@ implicit none
                                                2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim)
                                  end do
                                  call elrfvf(elp, mref, ff, nno)
-                                 call vecini(ndim, 0.d0, m)
+                                 m(:) = 0.d0
                                  do ii = 1, ndim
                                     do ino = 1, nno
                                        m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(ino)
@@ -528,7 +527,7 @@ implicit none
                                                ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim)
                                  end do
                                  call elrfvf(elp, mref, ff, nno)
-                                 call vecini(ndim, 0.d0, m)
+                                 m(:) = 0.d0
                                  do ii = 1, ndim
                                     do ino = 1, nno
                                        m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(ino)
@@ -585,7 +584,7 @@ implicit none
 !      EN QUADRATIQUE ON VERIFIE QUE LES NOEUDS MILIEU DU TRIA VERIFIENT LSN=0,
 !      SINON ON EXCLUE CE TRIA
                      if (.not.iselli(elp)) then
-                        call vecini(ndim, 0.d0, lsn)
+                        lsn(:) = 0.d0
                         do k = 1, 3
                            if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .gt. 3000) then
                               do ii = 1, ndim
@@ -617,7 +616,7 @@ implicit none
                      if (h .eq. 3) then
 !      ON DOIT DETERMINER LST AUX EXTREMITES DE CE TRIA
 !      RECUPERATION DES COORDONNEES REELLES ET DE REFERENCE DES NOEUDS SITUES SUR CE TRIA
-                        call vecini(6, 0.d0, lst)
+                        lst(:) = 0.d0
                         call matini(3, 4, 0.d0, rainter)
                         call matini(6, ndim, 0.d0, cooree)
                         call matini(6, ndim, 0.d0, cooref)

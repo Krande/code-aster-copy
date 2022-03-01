@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
 #include "asterfort/lcmmjs.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/vecini.h"
 #include "blas/dcopy.h"
     character(len=16) :: nomfam
     real(kind=8) :: mus(6), n(30, 3), m(30, 3), pgl2(3, 3), ng(3), nl(3), mg(3)
@@ -82,7 +81,7 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
 !
     sqrt2=sqrt(2.d0)
     sqrt3=sqrt(3.d0)
-    call vecini(6, 0.d0, mus)
+    mus(:) = 0.d0
     if (nomfam .eq. 'ZIRCONIUM') then
 !  prism1
         n(1,1)=1.0d0

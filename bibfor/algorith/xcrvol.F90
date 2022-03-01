@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 #include "asterfort/cesexi.h"
 #include "asterfort/iselli.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_code.h"
     integer :: nse, ndim, jcnse, nnose, jpint, igeom, inoloc, nfiss, iheav
     character(len=8) :: elrefp
@@ -86,7 +85,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !
 !       CALCUL DU BARYCENTRE
 !
-        call vecini(ndim, 0.d0, bary)
+        bary(:) = 0.d0
         do 170 j = 1, ndim
             do 180 i = 1, ndim+1
                 bary(j) = bary(j)+co(i,j)
@@ -104,7 +103,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 !       EN QUADRATIQUE : AUGMENTATION DU NOMBRE DE POINTS
         if (.not.iselli(elrefp)) then
             do 200 k = 1, ndim+1
-                call vecini(ndim, 0.d0, point)
+                point(:) = 0.d0
                 do 210 j = 1, ndim
                     point(j) = (bary(j)+co(k,j))/2
 210              continue

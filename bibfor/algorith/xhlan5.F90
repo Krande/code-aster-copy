@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine xhlan5(ino, idepl, idepm, idep0, lact,&
                   ndim, pla, lamb, nvec, champ, job, dpf)
     implicit none
-#include "asterfort/vecini.h"
 #include "asterfort/assert.h"
     integer :: ino
 #include "jeveux.h"
@@ -57,7 +56,7 @@ subroutine xhlan5(ino, idepl, idepm, idep0, lact,&
     else
         ASSERT(.false.)
     endif
-    call vecini(3, 0.d0, lamb)
+    lamb(:) = 0.d0
     pli=pla(ino)
     nli=lact(ino)
 !

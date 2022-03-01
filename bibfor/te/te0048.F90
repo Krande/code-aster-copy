@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine te0048(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
@@ -239,8 +238,8 @@ subroutine te0048(option, nomte)
 ! ----------------------------------------------------------------------
 !
 ! - tangentes et normale a la face
-       call vecini(ndim, 0.d0, td1)
-       call vecini(ndim, 0.d0, td2)
+       td1(:) = 0.d0
+       td2(:) = 0.d0
        do j = 1, ndim
            td1(j) = zr(igeom+ndim*(2-1)+j-1)- zr(igeom+ndim*(1-1)+j-1)
            td2(j) = zr(igeom+ndim*(3-1)+j-1)- zr(igeom+ndim*(1-1)+j-1)
@@ -267,7 +266,7 @@ subroutine te0048(option, nomte)
 !
 ! - coordonnees des noeuds de l'element parent dans le 
 ! - repere 2D local (oprim, (td1, td2))
-       call vecini(2*nno_par_max, 0.d0, geoloc)
+       geoloc(:) = 0.d0
        do inop = 1, nnop
            do j = 1, ndim
                geoloc(2*inop-1) = geoloc(2*inop-1)&
@@ -317,7 +316,7 @@ subroutine te0048(option, nomte)
        do ise = 1, nse
 !
 ! ----- coordonnees des noeuds du sous-element dans le repere reel
-           call vecini(3*nno_se_max, 0.d0, coorse)
+           coorse(:) = 0.d0
            do in = 1, nno
                ino=zi(jcnset-1+nno*(ise-1)+in)
                do j = 1, ndim
@@ -337,7 +336,7 @@ subroutine te0048(option, nomte)
            enddo
 !
 ! ----- coordonnees des noeuds du sous-element dans le repere 2D local
-           call vecini(2*nno_par_max, 0.d0, coorse_loc)
+           coorse_loc(:) = 0.d0
            do in = 1, nno
                do j = 1, ndim
                    coorse_loc(2*in-1) = coorse_loc(2*in-1)&
@@ -367,7 +366,7 @@ subroutine te0048(option, nomte)
                call dfdm2d(nno, kpg, ipoids, idfde, coorse_loc, poids)
 !
 ! --------- coordonnees du point de Gauss dans le repere global : xg
-               call vecini(ndim, 0.d0, xg)
+               xg(:) = 0.d0
                do in = 1, nno
                    vf = zr(ivf-1+nno*(kpg-1)+in)
                    do j = 1, ndim
@@ -377,7 +376,7 @@ subroutine te0048(option, nomte)
 !
 ! --------- coordonnees du point de Gauss dans le repere 
 ! --------- 2D local (oprim, (td1, td2)) : xg_loc
-               call vecini(2, 0.d0, xg_loc)
+               xg_loc(:) = 0.d0
                do j = 1, ndim
                    xg_loc(1) = xg_loc(1) + (xg(j) - oprim(j)) * td1(j)
                    xg_loc(2) = xg_loc(2) + (xg(j) - oprim(j)) * td2(j)
@@ -418,7 +417,7 @@ subroutine te0048(option, nomte)
                endif
 !
 ! --------- calcul de l'approximation du deplacement
-               call vecini(ndim, 0.d0, depla)
+               depla(:) = 0.d0
                do inop = 1, nnop
                    call indent(inop, ddls, ddlm, nnos, indeni)
                    cpt = 0

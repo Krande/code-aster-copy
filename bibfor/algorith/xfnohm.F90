@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/tecach.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcabhm.h"
 #include "asterfort/xfnoda.h"
 #include "asterfort/xlinhm.h"
@@ -184,7 +183,7 @@ implicit none
             end do
 !
 !     COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            call vecini(ndim, 0.d0, xg)
+            xg(:) = 0.d0
             do j = 1, ndim
                 do in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpi-1)+in)* coorse(ndim*&
@@ -193,7 +192,7 @@ implicit none
             end do
 !
 !     XG -> XE (DANS LE REPERE DE l'ELREFP) ET VALEURS DES FF EN XE
-            call vecini(ndim, 0.d0, xe)
+            xe(:) = 0.d0
 !
 !     CALCUL DES FF ET DES DERIVEES DFDI POUR L'ELEMENT PARENTS
 !     QUDRATIQUE (MECANIQUE)

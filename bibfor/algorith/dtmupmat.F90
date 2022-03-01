@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
 #include "asterfort/rrlds.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/trlds.h"
-#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -158,9 +157,9 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
             call wkvect(fadd_jv,'V V R', nbmode, vr=f_add)
             call wkvect(cadd_jv,'V V R', nbmode*nbmode, vr=c_add)
             if (nlcase.eq.0) then
-                call vecini(nbmode*nbmode, 0.d0, k_add)
-                call vecini(nbmode, 0.d0, f_add)
-                call vecini(nbmode*nbmode, 0.d0, c_add)
+                k_add(:) = 0.d0
+                f_add(:) = 0.d0
+                c_add(:) = 0.d0
             end if
         end if
 
@@ -392,13 +391,13 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
             call wkvect(kadd_jv, 'V V R', nbmode*nbmode, vr=k_add0)
             call wkvect(fadd_jv, 'V V R', nbmode, vr=f_add0)
             call wkvect(cadd_jv, 'V V R', nbmode*nbmode, vr=c_add0)
-            call vecini(nbmode*nbmode, 0.d0, k_add0)
-            call vecini(nbmode, 0.d0, f_add0)
-            call vecini(nbmode*nbmode, 0.d0, c_add0)
+            k_add0(:) = 0.d0
+            f_add0(:) = 0.d0
+            c_add0(:) = 0.d0
             call jelibe(cadd_jv)
         end if
 
-        call vecini(nbmode, 0.d0, depl0)
+        depl0(:) = 0.d0
         nbdof = 0
         do i = 1, nbmode
             df = f_add(i)-f_add0(i)
@@ -413,7 +412,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
 
 !       --- Special treatment if the origin is the critical point
         if (nbdof.eq.0) then
-            call vecini(nbmode, 0.d0, depl1)
+            depl1(:) = 0.d0
             goto 20
         end if
 
@@ -435,7 +434,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
         call rrlds(k_add_fact, nbdof, nbdof, depl0, 1)
 
 !       --- Reconstruct Xc in full coordinates and save to depl1
-        call vecini(nbmode, 0.d0, depl1)
+        depl1(:) = 0.d0
         do i = 1, nbdof
             if (abs(depl0(i)).gt.100.d0*epsi) then
                 depl1(dk_add_ind(i)) = depl0(i)

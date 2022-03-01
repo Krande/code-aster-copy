@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
     integer :: ndim, nno, nnos
@@ -73,7 +72,7 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
     ASSERT(nvec.gt.0.and.nvec.le.3)
     lmultc = nfiss.gt.1
-    call vecini(3, 0.d0, saut)
+    saut(:) = 0.d0
     coefi = xcalc_saut(1,0,1)
     if (.not.lmultc) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])

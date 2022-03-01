@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -171,7 +171,7 @@ subroutine op0189()
 ! --- allocation du tableau de travail "tab_tra"
 !
     AS_ALLOCATE(vi=tab_tra, size=nbma)
-    call vecint(nbma, 0, tab_tra)
+    tab_tra(:) = 0
 !
 ! -------------------------------------------------------------------
 !     boucle sur les grels de ligrmo (1ere passe)

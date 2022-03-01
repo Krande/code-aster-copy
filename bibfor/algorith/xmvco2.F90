@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 #include "asterfort/matini.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
     integer :: ndim, nno, nnol, jheavn, ncompn
@@ -72,8 +71,8 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 ! INITIALISATIONS
 !
     lmultc = nfiss.gt.1
-    call vecini(3, 0.d0, h)
-    call vecini(3, 0.d0, hfix)
+    h(:) = 0.d0
+    hfix(:) = 0.d0
     call matini(3, 3, 0.d0, ptr)
     if (.not.lmultc) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])

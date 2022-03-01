@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine te0037(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xhmini.h"
 #include "asterfort/xjacf2.h"
@@ -255,7 +254,7 @@ subroutine te0037(option, nomte)
            call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
                             npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
-        call vecini(27, 0.d0, ff)
+        ff(:) = 0.d0
 !
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
            do ipgf = 1, npgf
@@ -291,7 +290,7 @@ subroutine te0037(option, nomte)
 !         CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
 !         -----------------------------------------------
 !
-               call vecini(3*2, 0.d0, forrep)
+               forrep(:,:) = 0.d0
                nompar(1)='X'
                nompar(2)='Y'
                if (ndim .eq. 3) nompar(3)='Z'

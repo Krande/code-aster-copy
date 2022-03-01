@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/padist.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xalgo2.h"
 #include "asterfort/xalgo3.h"
@@ -117,9 +116,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
     typma=elrese(ndime)
 !
-    call vecini(30, 0.d0, tabco)
-    call vecini(18, 0.d0, pinref)
-    call vecini(81, 0.d0, xref)
+    tabco(:) = 0.d0
+    pinref(:) = 0.d0
+    xref(:) = 0.d0
 !   RECUPERATION DES COORDONNES DE REFERENCE DE L ELEMENENT COMPLET
     call xelrex(elrefp, ibid, xref)
 !
@@ -141,8 +140,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
  51     continue
  50 continue
 !
-    call vecini(10, 0.d0, tabls)
-    call vecini(nfisc+1, 0.d0, somlsn)
+    tabls(:) = 0.d0
+    somlsn(:) = 0.d0
     cut=.false.
 !
 !     TABLEAU DES LSN DES NOEUDS DE L'ELEMENT ENFANT
@@ -192,13 +191,13 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     lonref=0.d0
 !
 !     TABLEAU DES LSN DES NOEUDS DE L'ELEMENT PARENT COMPLET POUR LA FISSURE COURANTE
-    call vecini(27, 0.d0, lsnelp)
+    lsnelp(:) = 0.d0
     do j = 1, nnop
        lsnelp(j) = zr(jlsn-1+(j-1)*nfiss+ifiss)
     end do
 !
 !     TABLEAU DES COORDONNEES DES NOEUDS DE L'ELEMENT PARENT COMPLET
-    call vecini(81, 0.d0, geom)
+    geom(:) = 0.d0
     do i = 1, ndim
        do j = 1, nnop
           geom((j-1)*ndim+i) = zr(igeom-1+(j-1)*ndim+i)
@@ -251,9 +250,9 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
         lsnb=tabls(ntb)
         lsnm=tabls(ntm)
 !
-        call vecini(ndim, 0.d0, a)
-        call vecini(ndim, 0.d0, b)
-        call vecini(ndim, 0.d0, m)
+        a(:) = 0.d0
+        b(:) = 0.d0
+        m(:) = 0.d0
 !
 !       RECUPERATION COORDONNEES DES NOEUDS EXTREMITE DE L'ARETE
         do 101 i = 1, ndim

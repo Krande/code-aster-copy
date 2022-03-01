@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/vecini.h"
     integer :: jcesd(10), jcesv(10), jcesl(10)
     integer :: ndim, nummae, ifac, npte, ifiss
     real(kind=8) :: xp, yp
@@ -72,11 +71,11 @@ subroutine xmcoor(jcesd, jcesv, jcesl, ifiss, ndim,&
 !
 ! --- RECUPERATION DES NUM LOCAUX DES PTS D'INTER DE LA FACETTE
 !
-    call vecini(npte, 0.d0, coor)
+    coor(:) = 0.d0
     do 10 i = 1, npte
         numpi(i)=0
 10  end do
-    call vecini(3, 0.d0, coord)
+    coord(:) = 0.d0
 !
     do 20 i = 1, npte
         call cesexi('S', jcesd(4), jcesl(4), nummae, 1,&

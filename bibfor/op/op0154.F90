@@ -51,7 +51,6 @@ implicit none
 #include "asterfort/symema.h"
 #include "asterfort/tranma.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/vtgpld.h"
 !
 ! --------------------------------------------------------------------------------------------------
@@ -168,7 +167,7 @@ implicit none
         if (nbDime .eq. 2) then
             call getvr8('MODI_BASE', 'VECT_X', iocc=1, nbval=2, vect=pt, nbret=n1)
             pt(3) = 0.d0
-            call vecini(3, 0.d0, pt2)
+            pt2(:) = 0.d0
             bidim = ASTER_TRUE
         elseif (nbDime .eq. 3) then
             call getvr8('MODI_BASE', 'VECT_X', iocc=1, nbval=3, vect=pt, nbret=n1)
@@ -194,8 +193,8 @@ implicit none
             if (nbDime .eq. 2) then
                 call getvr8('ROTATION', 'POIN_1', iocc=iOcc, nbval=2, vect=pt, nbret=n1)
                 pt(3) = 0.d0
-                call vecini(3, 0.d0, pt2)
-                call vecini(3, 0.d0, dir)
+                pt2(:) = 0.d0
+                dir(:) = 0.d0
                 bidim = ASTER_TRUE
             elseif (nbDime .eq. 3) then
                 call getvr8('ROTATION', 'POIN_1', iocc=iOcc, nbval=3, vect=pt, nbret=n1)

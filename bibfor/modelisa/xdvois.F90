@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/vecini.h"
 !
     integer :: ino, numa, jlsnd, jlsnl, nbmano, voisin(3), jma, adrma
     integer :: ndim, jconx2, nno
@@ -99,7 +98,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
 !     INDICATEUR, LE NOEUD EST UN NOEUD MILIEU ET APPARTIENT A UNE ARETE CONFORME
     miconf = .false.
 !     INITIALISATION
-    call vecini(3, 0.d0, lsno)
+    lsno(:) = 0.d0
     voisin(1:3) = [0,0,0]
 !
     arete = 'SE2'

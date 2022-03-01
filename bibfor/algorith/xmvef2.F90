@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xadher.h"
 #include "asterfort/xmafr1.h"
 #include "asterfort/xcalc_saut.h"
@@ -95,7 +94,7 @@ real(kind=8) :: fk(27,3,3)
     call xmafr1(ndim, nd, p)
 !
 !     PBOUL SELON L'ÉTAT D'ADHERENCE DU PG (AVEC DEPDEL)
-    call vecini(3, 0.d0, saut)
+    saut(:) = 0.d0
     do ino = 1, nno
         call indent(ino, ddls, ddlm, nnos, in)
         do j = 1, ndim

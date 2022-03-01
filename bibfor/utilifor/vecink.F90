@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 
 subroutine vecink(n, s, x)
-    implicit none
+  implicit none
 !     INITIALISATION DU VECTEUR DE CHAR   X = S
 !     IN  S      :  CHAINE DE CARACTERES POUR INITIALISER
 !     IN  N      :  DIMENSION DE X
@@ -25,9 +25,9 @@ subroutine vecink(n, s, x)
 !     POUR TOUS LES TYPES DE DONNEES VOIR AUSSI VECINI, VECINT, VECINK
 !     ET VECINC.
 !     ----------------------------------------------------------------
-    integer :: n, i
-    character(len=*) :: x(n), s
-    do 1 i = 1, n
-        x(i)=s
- 1  end do
+  integer :: n, i
+  character(len=*) :: x(n), s
+  do i = 1, n
+     x(i)=s
+  end do
 end subroutine

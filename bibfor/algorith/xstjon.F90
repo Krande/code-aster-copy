@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnormv.h"
     character(len=8) :: elrefp
@@ -123,8 +122,8 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
     if (jonc) then
        call conare(typma, ar, nbar)
        do iar = 1, nbar
-          call vecini(3, 0.d0, u)
-          call vecini(3, 0.d0, v)
+          u(:) = 0.d0
+          v(:) = 0.d0
           do i = 1, ndim
              u(i) = xref((ar(iar,2)-1)*ndim+i)-xref((ar(iar,1)-1)*ndim+i)
              v(i) = c(i)-xref((ar(iar,1)-1)*ndim+i)
@@ -142,8 +141,8 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,
        if (ndim.eq.3) then
           call confac(typma, ft, nbft, f, nbf)
           do iar = 1, nbf
-             call vecini(3, 0.d0, u)
-             call vecini(3, 0.d0, v)
+             u(:) = 0.d0
+             v(:) = 0.d0
              do i = 1, ndim
                 u(i) = xref((f(iar,2)-1)*ndim+i)-xref((f(iar,1)-1)*ndim+i)
                 v(i) = xref((f(iar,3)-1)*ndim+i)-xref((f(iar,1)-1)*ndim+i)

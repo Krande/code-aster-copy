@@ -27,7 +27,6 @@ implicit none
 #include "asterfort/elrfvf.h"
 #include "asterfort/invjax.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "blas/ddot.h"
 !
 character(len=1) :: stop
@@ -86,7 +85,7 @@ integer :: iret
     zero = 0.d0
     iter = 0
     iret = 0
-    call vecini(ndim, zero, xe)
+    xe(:) = zero
 !
 100  continue
     iter=iter+1
@@ -103,7 +102,7 @@ integer :: iret
 !
 ! --- CALCUL DES COORDONNEES DU POINT: POINT
 !
-    call vecini(ndim, zero, point)
+    point(:) = zero
     do idim = 1, ndim
         do ino = 1, nno
             point(idim) = point(idim)+ff(ino)*coor(ndim*(ino-1)+idim)

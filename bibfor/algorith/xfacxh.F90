@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "asterfort/reeref.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xnormv.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
@@ -163,7 +162,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
        intersec = 0
        do ifisc = 1, nfisc2
 !      ON RECUPERE LA VALEUR DE LA LEVEL SET AUX NOEUDS DE L'ELEMENT
-          call vecini(20, 0.d0, lsninter)
+          lsninter(:) = 0.d0
           do i = 1, nno
              lsninter(i) = zr(jlsn-1+(i-1)*nfiss+fisc(2*(ifisc+nfisc)-1))
           end do
@@ -263,9 +262,9 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                      endif
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                      if (nfiss.gt.1) then
-                           call vecini(ndim+1, 0.d0, lsn)
+                           lsn(:) = 0.d0
                         do k = 1, 2
-                           call vecini(ndim, 0.d0, newpt)
+                           newpt(:) = 0.d0
                            if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
                               do ii = 1, ndim
                                   newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*&
@@ -293,7 +292,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                         if ((abs(lsn(1))+abs(lsn(2))).ge.(lonref*cridist)) goto 22
 !      TEST SUPPLEMENTAIRE POUR LES ELEMENTS TRES ALONGES A PROXIMITE DE LA FISSURE
                         if (zi(jcnset-1+nnose*(i-1)+6-ar(j,1)-ar(j,2)) .gt. 1000) then
-                           call vecini(ndim, 0.d0, newpt)
+                           newpt(:) = 0.d0
                            do ii = 1, ndim
                                newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*&
                                            (i-1)+6-ar(j,1)-ar(j,2))-1001)+ii)
@@ -308,8 +307,8 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !      EN QUADRATIQUE ON VERIFIE QUE LE NOEUD MILIEU DE L'ARETE VERIFIE LSN=0,
 !      SINON ON EXCLUE CETTE ARETE
                      elseif (.not.iselli(elp)) then
-                        call vecini(ndim+1, 0.d0, lsn)
-                        call vecini(ndim, 0.d0, newpt)
+                        lsn(:) = 0.d0
+                        newpt(:) = 0.d0
                         if (zi(jcnset-1+nnose*(i-1)+ar(j,3)) .gt. 3000) then
                            do ii = 1, ndim
                               newpt(ii)=zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+ar(j,3))-3001)+ii)
@@ -502,9 +501,9 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                      if (nfiss.gt.1) then
-                        call vecini(ndim+1, 0.d0, lsn)
+                        lsn(:) = 0.d0
                         do k = 1, 3
-                           call vecini(ndim, 0.d0, newpt)
+                           newpt(:) = 0.d0
                            if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
                               do ii = 1, ndim
                                   newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(j,k))-&
@@ -532,7 +531,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                         if ((abs(lsn(1))+abs(lsn(2))+abs(lsn(3))).ge.(lonref*cridist)) goto 23
 !      TEST SUPPLEMENTAIRE POUR LES ELEMENTS TRES ALONGES A PROXIMITE DE LA FISSURE
                         if (zi(jcnset-1+nnose*(i-1)+10-f(j,1)-f(j,2)-f(j,3)) .gt. 1000) then
-                           call vecini(ndim, 0.d0, newpt)
+                           newpt(:) = 0.d0
                            do ii = 1, ndim
                                newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*&
                                            (i-1)+10-f(j,1)-f(j,2)-f(j,3))-1001)+ii)
@@ -547,9 +546,9 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !      EN QUADRATIQUE ON VERIFIE QUE LES NOEUDS MILIEU DU TRIA VERIFIENT LSN=0,
 !      SINON ON EXCLUE CE TRIA
                      elseif (.not.iselli(elp)) then
-                        call vecini(ndim+1, 0.d0, lsn)
+                        lsn(:) = 0.d0
                         do k = 1, 3
-                           call vecini(ndim, 0.d0, newpt)
+                           newpt(:) = 0.d0
                            if (zi(jcnset-1+nnose*(i-1)+f(j,3+k)) .gt. 3000) then
                               do ii = 1, ndim
                                   newpt(ii) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+&

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,6 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcalc_heav.h"
@@ -167,7 +166,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
         do 1200 kpg = 1, npg
 !
 !         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            call vecini(ndim, 0.d0, xg)
+            xg(:) = 0.d0
             do 1210 j = 1, ndim
                 do 1211 in = 1, nno
                     xg(j)=xg(j)+zr(ivf-1+nno*(kpg-1)+in)*coorse(ndim*(&
@@ -182,7 +181,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 ! ------- SI ENRICHISSEMENT SINGULIER
             if (nfe .gt. 0) then
 !           BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-                call vecini(3*ndim, 0.d0, baslog)
+                baslog(:) = 0.d0
                 lsng = 0.d0
                 lstg = 0.d0
                 do 1220 inp = 1, nnop

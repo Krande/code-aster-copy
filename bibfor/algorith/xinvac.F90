@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
     integer :: ndim
     real(kind=8) :: s, ksi(ndim), tabar(*)
     character(len=8) :: elp
@@ -56,9 +55,9 @@ subroutine xinvac(elp, ndim, tabar, s, ksi)
     coef1=0.d0
     coef2=0.d0
     coef3=0.d0
-    call vecini(ndim, 0.d0, pt1)
-    call vecini(ndim, 0.d0, pt2)
-    call vecini(ndim, 0.d0, pt3)
+    pt1(:) = 0.d0
+    pt2(:) = 0.d0
+    pt3(:) = 0.d0
 !
     do i = 1, ndim
         pt1(i)=tabar(i)

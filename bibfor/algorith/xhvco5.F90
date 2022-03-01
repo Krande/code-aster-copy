@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd,&
 #include "asterfort/matini.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_saut.h"
     integer :: ndim, nnop, nnops, nddlm
@@ -80,8 +79,8 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd,&
 ! on va commencer par construire une matrice de passage
     call matini(3, 3, 0.d0, p)
     call matini(3, 3, 0.d0, ptr)
-    call vecini(3, 0.d0, mug)
-    call vecini(3, 0.d0, am)
+    mug(:) = 0.d0
+    am(:) = 0.d0
     lmultc = nfiss.gt.1
     if (.not.lmultc) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])

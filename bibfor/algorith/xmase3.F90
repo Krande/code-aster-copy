@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xkamat.h"
@@ -126,7 +125,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
     do kpg = 1, npg
 !
 !       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
-        call vecini(ndim, 0.d0, xg)
+        xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
                 xg(i)=xg(i)+zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+&

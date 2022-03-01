@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/matini.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xdocon.h"
 #include "asterfort/xmcont.h"
 #include "asterfort/xmfrot.h"
@@ -76,8 +75,8 @@ character(len=16) :: option, nomte
     integer :: jbaslo
     aster_logical :: matsym, lelim
     aster_logical :: axi
-    character(len=8) :: elref, elrefc, typma
-    character(len=8) :: elc, fpg
+    character(len=8) :: elref, elrefc, elc, fpg
+    character(len=24) :: typma
 !......................................................................
 !
     rela = 0.d0
@@ -87,8 +86,8 @@ character(len=16) :: option, nomte
     do i = 1, 8
         lact(i) = 0
     end do
-    call vecini(27, 0.d0, ffp)
-    call vecini(3, 0.d0, tau2)
+    ffp(:) = 0.d0
+    tau2(:) = 0.d0
     lelim = .false.
     nbspg=0
 ! INTIALISATION JMATE POUR DETECTER EVENTUELLES ERREURS JEVEUX

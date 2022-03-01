@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
 #include "asterfort/jeveuo.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/vecini.h"
     character(len=8) :: noma
     integer :: na, nb, ndim
     real(kind=8) :: vnor(2, 3), vdir(2, 3)

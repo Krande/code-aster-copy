@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine dxsith(nomte, mater, sigma)
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/verift.h"
     integer :: mater
     real(kind=8) :: sigma(*)
@@ -62,7 +61,7 @@ subroutine dxsith(nomte, mater, sigma)
                      jgano=jgano)
 !
     zero = 0.0d0
-    call vecini(7, zero, repere)
+    repere(:) = zero
 !
     dkg = .false.
 !

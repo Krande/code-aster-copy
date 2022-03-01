@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,7 +81,6 @@ subroutine te0565(nomopt, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/verift.h"
 #include "asterfort/ltequa.h"
 !-----------------------------------------------------------------------
@@ -268,7 +267,7 @@ subroutine te0565(nomopt, nomte)
         do kpg = 1, npg
 !
 !     --- COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            call vecini(ndim, 0.d0, xg)
+            xg(:) = 0.d0
             do i = 1, ndim
                 do n = 1, nno
                     xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n)*coorse(ndim*(n-1)+i)

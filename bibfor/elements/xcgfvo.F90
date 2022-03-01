@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine xcgfvo(option, ndim, nnop, fno)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/vecini.h"
     character(len=16) :: option
     integer :: ndim, nnop
     real(kind=8) :: fno(ndim*nnop)
@@ -80,7 +79,7 @@ subroutine xcgfvo(option, ndim, nnop, fno)
     call tecach('ONO', 'PROTATR', 'L', iret, iad=irota)
 !
 !     INITIALISATION DE FNO
-    call vecini(ndim*nnop, 0.d0, fno)
+    fno(:) = 0.d0
 !
 !     ------------------------------------------------------------------
 !                     TRAITEMENT DES FORCES VOLUMIQUES

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xcfacf.h"
 #include "asterfort/xintar.h"
@@ -314,7 +313,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 800     continue
         if (ninter .eq. 2) then
 !         NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
-            call vecini(2, 0.d0, nd)
+            nd(:) = 0.d0
             do 810 i = 1, nno
                 do 811 j = 1, 2
                     nd(j)=nd(j)+zr(jgrlsn-1+2*(i-1)+j)/nno

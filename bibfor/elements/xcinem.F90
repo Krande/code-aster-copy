@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/assert.h"
@@ -212,7 +211,7 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
             epstab(i,j) = 0.5d0*tmp
 431     continue
 430 continue
-    call vecini(6, zero, eps)
+    eps(:) = zero
     eps(1) = epstab(1,1)
     eps(2) = epstab(2,2)
     eps(4) = epstab(2,1)*rac2

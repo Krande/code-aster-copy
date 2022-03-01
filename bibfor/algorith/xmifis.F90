@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 #include "asterfort/assert.h"
 #include "asterfort/reeref.h"
 #include "asterfort/reerel.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
@@ -114,7 +113,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
           call reeref(elrefp, nno, geom, newpt, ndim,&
                       ptc, ff)
        endif
-       call vecini(4*ndime,0.d0, dekker)
+       dekker(:) = 0.d0
        do j = 1, ndime
           bc(j) = ptc(j)-ptb(j)
           ba(j) = pta(j)-ptb(j)
@@ -152,7 +151,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !     ON CHOSIST LA METHODE DE NEWTON-DEKKER LORSQUE L'ON EFFECTUE LA
 !     RECHERCHE SUR LA FACE D'UN ELEMENT, AFIN DE NE PAS SORTIR DE CETTE FACE
 !!!!!ATTENTION INITIALISATION DU NEWTON:
-    call vecini(ndime, 0.d0, ksi)
+    ksi(:) = 0.d0
     if ((present(u).and.present(v)) .or. jonc) then
        call xnewto(elrefp, name, n,&
                    ndime, ptxx, ndim, geom, lsn,&

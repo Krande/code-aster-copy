@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ implicit none
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcenfi.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
@@ -101,10 +100,10 @@ implicit none
     npts = 0
 !
 !   BOUCLE SUR LES SOMMETS DU TRIA
-    call vecini(ndim, 0.d0, newpt)
-    call vecini(20, 0.d0, tabls)
-    call vecini(ndim*nno, 0.d0, geom)
-    call vecini(ndim, 0.d0, ksi)
+    newpt(:) = 0.d0
+    tabls(:) = 0.d0
+    geom(:) = 0.d0
+    ksi(:) = 0.d0
     do j = 1, 9
        noeud(j) =0
     end do
@@ -249,16 +248,16 @@ implicit none
 !      ALGORITHME DE NEWTON POUR TROUVER LE FOND DE FISSURE
           call xnewto(elp, 'XINTER', n, ndim, ptxx, ndim,&
                       geom, tabls ,ibid, ibid, itemax, epsmax, ksi)
-          call vecini(ndim, 0.d0, xref)
+          xref(:) = 0.d0
           do ii = 1, ndim
              xref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)*&
                        (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
                        ptxx(ii+ndim)
           end do
-          call vecini(27, 0.d0, ff)
+          ff(:) = 0.d0
           call elrfvf(elp, xref, ff, nno)
 !      CALCUL DES COORDONNEES REELES DU FOND DE FISSURE
-          call vecini(ndim, 0.d0, x)
+          x(:) = 0.d0
           do ii = 1, ndim
              do j = 1, nno
                 x(ii) = x(ii) + zr(igeom-1+ndim*(j-1)+ii)*ff(j)
@@ -303,7 +302,7 @@ implicit none
                             ptxx(ii+ndim)
              end do
              call elrfvf(elp, miref, ff, nno)
-             call vecini(ndim, 0.d0, mifis)
+             mifis(:) = 0.d0
              do ii = 1, ndim
                 do j = 1, nno
                    mifis(ii) = mifis(ii) + zr(igeom-1+ndim*(j-1)+ii)*ff(j)
@@ -378,7 +377,7 @@ implicit none
              xref(j) = (pinref((noeud(3)-1)*ndim+j) +&
                         pinref((noeud(4)-1)*ndim+j))/2.d0
           end do
-          call vecini(ndim, 0.d0, x)
+          x(:) = 0.d0
           call elrfvf(elp, xref, ff, nno)
           do j = 1, ndim
              do ii = 1, nno
@@ -403,7 +402,7 @@ implicit none
              end do
           endif
 !   ON RECHERCHE SUR LA MEDIATRICE DU SEGMENT IP1IP2 PORTEE PAR GRADLST
-          call vecini(ndim, 0.d0, vectn)
+          vectn(:) = 0.d0
           call elrfdf(elp, xref, dff, nno, ndim)
           do ii = 1, ndim
              do j = 1, nno
@@ -422,7 +421,7 @@ implicit none
              xref(j)=xref(j)+ksi(1)*ptxx(j)
           end do
           call elrfvf(elp, xref, ff, nno)
-          call vecini(ndim, 0.d0, x)
+          x(:) = 0.d0
           do ii = 1, ndim
              do j = 1, nno
                 x(ii) = x(ii) + zr(igeom-1+ndim*(j-1)+ii) *ff(j)

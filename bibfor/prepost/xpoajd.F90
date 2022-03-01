@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,6 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 #include "asterfort/elelin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xlacti.h"
 #include "asterfort/xmoffc.h"
@@ -181,7 +180,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !
 !       FF2 : FONCTIONS DE FORME AUX NOEUDS SOMMETS POUR INTERPOLER LE
 !       CHAMP PRIMAL CORRESPONDANT À LA PRESSION POUR LE CAS HM-XFEM
-        call vecini(8, 0.d0, ff2)
+        ff2(:) = 0.d0
         call xpoffo(ndim, ndime, elref2, nnops, igeom,&
                     co, ff2)
     endif
@@ -194,7 +193,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     else
         ndimc = 1
     endif
-    call vecini(ndimc, 0.d0, chpri)
+    chpri(:) = 0.d0
     fk(:,:,:)=0.
     fe(:)=0.
 !
@@ -331,8 +330,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !      CALCUL DES LAGRANGES DE CONTACT HM-XFEM
 !      SEULEMENT POUR LES POINTS D'INTERSECTION
 !
-       call vecini(3, 0.d0, laghm)
-       call vecini(3*ndim, 0.d0, lagrc)
+       laghm(:) = 0.d0
+       lagrc(:) = 0.d0
        if (lpint .and. lcont) then
 !
 !      NOEUD(S) GLOBAUX PORTANT LE(S) LAMBDA(S)
@@ -411,7 +410,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !     CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
 !     SEULEMENT POUR LES POINTS D'INTERSECTION
 !
-       call vecini(3*ndim, 0.d0, lagrs)
+       lagrs(:) = 0.d0
        if (lpint .and. lcont .and.nfiss.eq.1) then
 !
 !       NOEUD(S) GLOBAUX PORTANT LE(S) LAMBDA(S)

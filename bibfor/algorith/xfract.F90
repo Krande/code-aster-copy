@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/hmdeca.h"   
-#include "asterfort/vecini.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
@@ -78,12 +77,12 @@ type(THM_DS), intent(inout) :: ds_thm
 !   CALCUL DES GRANDEURS (DEPMOINS + INCREMENT)
 !   ========================================================================
 !
-    call vecini(3, 0.d0, saut)
-    call vecini(3, 0.d0, lamb)
-    call vecini(3, 0.d0, gradpf)
-    call vecini(3, 0.d0, dffi)
-    call vecini(3, 0.d0, sautm)
-    call vecini(3, 0.d0, gradpfm)
+    saut(:) = 0.d0
+    lamb(:) = 0.d0
+    gradpf(:) = 0.d0
+    dffi(:) = 0.d0
+    sautm(:) = 0.d0
+    gradpfm(:) = 0.d0
 !
     q1m = 0.d0
     q2m = 0.d0 
@@ -241,7 +240,7 @@ type(THM_DS), intent(inout) :: ds_thm
              end do
           end do
 !
-          call vecini(3, 0.d0, lambm)
+          lambm(:) = 0.d0
           pfm = 0.d0
 !
           do 4 i = 1, nnops

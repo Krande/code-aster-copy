@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/matini.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xfract.h"
 #include "asterfort/xhlan5.h"
 #include "asterfort/xhmsa6.h"
@@ -101,13 +100,13 @@ type(THM_DS), intent(inout) :: ds_thm
 !
     call matini(nnops, 3, 0.d0, dfdic)
     call matini(16, 3, 0.d0, dffc)
-    call vecini(27, 0.d0, ffp)
-    call vecini(27, 0.d0, ffpc)
-    call vecini(16, 0.d0, ffc)
-    call vecini(27, 0.d0, ffp2)
-    call vecini(3, 0.d0,nd)
-    call vecini(3, 0.d0,tau1)
-    call vecini(3, 0.d0,tau2)
+    ffp(:) = 0.d0
+    ffpc(:) = 0.d0
+    ffc(:) = 0.d0
+    ffp2(:) = 0.d0
+    nd(:) = 0.d0
+    tau1(:) = 0.d0
+    tau2(:) = 0.d0
 !   BOUCLE SUR LES FACETTES DE CONTACT 
     do ifa = 1 ,nface
 !      BOUCLE SUR LES POINTS D'INTEGRATION DE LA FACETTE DE CONTACT COURANTE IFA

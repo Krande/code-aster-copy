@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ implicit none
 #include "asterfort/rcvarc.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
@@ -266,8 +265,8 @@ implicit none
     do kpg = 1, npgbis
 !
 !       INITIALISATIONS
-        call vecini(12, 0.d0, dtdm)
-        call vecini(12, 0.d0, dudm)
+        dtdm(:,:) = 0.d0
+        dudm(:,:) = 0.d0
         do 12 i = 1, 6
             sigin(i) = 0.d0
             epsref(i)= 0.d0
@@ -279,7 +278,7 @@ implicit none
 !
 !
 !       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
-        call vecini(ndim, 0.d0, xg)
+        xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
@@ -335,7 +334,7 @@ implicit none
 !       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)
 !       ---------------------------------------------
 !
-        call vecini(ndim, 0.d0, depla)
+        depla(:) = 0.d0
 !
 !       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
         do in = 1, nnop
@@ -435,7 +434,7 @@ implicit none
 !       4) CALCUL DU CHAMP DE TEMPERATURE ET DE SA DERIVEE
 !       --------------------------------------------------
 !
-        call vecini(3, 0.d0, tgudm)
+        tgudm(:) = 0.d0
 !
 !       cas de la varc TEMP, "continue" et donnee au noeud. Calcul
 !       de ses derivees partielles
@@ -563,7 +562,7 @@ implicit none
 !       7) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
 !       -----------------------------------------------------------
 !
-        call vecini(12, 0.d0, dfdm)
+        dfdm(:,:) = 0.d0
         do ino = 1, nnop
             do j = 1, ndim
                 do k = 1, ndim

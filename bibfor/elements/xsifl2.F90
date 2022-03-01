@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 #include "asterfort/prmave.h"
 #include "asterfort/provec.h"
 #include "asterfort/transp.h"
-#include "asterfort/vecini.h"
 #include "jeveux.h"
 !
 ! Calcul de facteurs d'intensité des contraintes équivalents
@@ -90,10 +89,10 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     endif
     call transp(pm, ndim, ndim, ndim, ptr,&
                 ndim)
-    call vecini(3, 0.d0, e1)
-    call vecini(3, 0.d0, e2)
-    call vecini(3, 0.d0, ptp)
-    call vecini(3, 0.d0, vec)
+    e1(:) = 0.d0
+    e2(:) = 0.d0
+    ptp(:) = 0.d0
+    vec(:) = 0.d0
     do ino = 1, nnop
         do 110 i = 1, ndim
             ptp(i) = ptp(i) + basloc(3*ndim*(ino-1)+i) * ff(ino)
@@ -108,7 +107,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !     -----------------------------------
 !     2) CALCUL DE THETA ET DE DIV(THETA)
 !     -----------------------------------
-    call vecini(3, 0.d0, theta)
+    theta(:) = 0.d0
 !
     do i = 1, ndim
         do 301 ino = 1, nnop
@@ -175,7 +174,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !
 ! AJOUT CALCUL DE LA CONTRAINTE COHÉSIVE
 !
-    call vecini(3, 0.d0, lambl)
+    lambl(:) = 0.d0
     do ino = 1, nnop
         call indent(ino, ddls, ddlm, nnos, ii)
         do 280 j = 1, ndim
@@ -191,7 +190,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     call matini(ndim, ndim, 0.d0, grdep)
 !
     do ino = 1, nnop
-        call vecini(ndim, 0.d0, am)
+        am(:) = 0.d0
         call indent(ino, ddls, ddlm, nnos, ii)
         do 291 j = 1, ndim
             do 292 l = 1, ndim

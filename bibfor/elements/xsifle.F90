@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 #include "asterfort/elrefe_info.h"
 #include "asterc/r8pi.h"
 #include "asterfort/tecach.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xsifl1.h"
@@ -167,7 +166,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !       ET DE DFDI : DERIVES DES FF PARENT
         call elelin(contac, elref, elrefc, nno, nnos)
         elrefc='NON'
-        call vecini(27, 0.d0, ff)
+        ff(:) = 0.d0
         if (ndim .eq. 3) then
             ASSERT(nno.eq.nnop)
             call xjacff(elref, elrefc, elc, ndim, fpg,&

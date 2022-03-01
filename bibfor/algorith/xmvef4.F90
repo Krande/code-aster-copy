@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/vecini.h"
 #include "blas/ddot.h"
     integer :: ndim, nnol
     integer ::  pla(27), lact(8)
@@ -78,7 +77,7 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 !
 ! ----------------------------------------------------------------------
 !
-    call vecini(3, 0.d0, tt)
+    tt(:) = 0.d0
     do 165 i = 1, nnol
         pli=pla(i)
         ffi=ffc(i)

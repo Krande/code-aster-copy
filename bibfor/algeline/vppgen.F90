@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mrmult.h"
-#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
     integer :: lmasse, lamor, lraide, neq, nbvect, iddl(*)
@@ -78,7 +77,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
             amorg(ivect) = ddot(neq,vect(1,ivect),1,zr(laux+1),1)
 200      continue
     else
-        call vecini(nbvect, rzero, amorg)
+        amorg(1:nbvect) = rzero
     endif
 !     ------------------------------------------------------------------
 !     ---------------- CALCUL DE LA RAIDEUR GENERALISEE ----------------

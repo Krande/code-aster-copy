@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine te0532(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xdocon.h"
 #include "asterfort/xmmsa2.h"
 #include "asterfort/xmmsa3.h"
@@ -73,8 +72,8 @@ subroutine te0532(option, nomte)
     integer :: jtab(7), iret, ncompd, ncompp, ncompa, ncompb, ncompc, ncompn
     integer :: nbspg, nspfis, nvit, ncompv, jta2(3)
     integer :: nptf
-    character(len=8) :: elref, typma, elrefc, job
-    character(len=8) :: elc, fpg, champ
+    character(len=8) :: elref, elrefc, job, elc, fpg, champ
+    character(len=24) :: typma
     real(kind=8) :: ffpc(27), rela, eps, rhon
     real(kind=8) :: reac, ffp(27), ffc(8), r3bid(3), jac
     real(kind=8) :: prec, nd(3), dn, saut(3), rr, rbid, r3bd(3)
@@ -95,9 +94,9 @@ subroutine te0532(option, nomte)
     incoca=0
     nbspg=0
     zxain = xxmmvd('ZXAIN')
-    call vecini(27, 0.d0, ffpc)
-    call vecini(27, 0.d0, ffp)
-    call vecini(8, 0.d0, ffc)
+    ffpc(:) = 0.d0
+    ffp(:) = 0.d0
+    ffc(:) = 0.d0
     do i = 1, 8
         lact(i)=0
     end do

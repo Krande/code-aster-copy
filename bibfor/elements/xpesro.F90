@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
 #include "asterfort/iselli.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
-#include "asterfort/vecini.h"
 #include "asterfort/xkamat.h"
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xcalc_code.h"
@@ -117,7 +116,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
     do kpg = 1, npgbis
 !
 !       COORDONNÉES DU PT DE GAUSS DANS LA CONFIG RÉELLE DU SE : XG
-        call vecini(ndim, 0.d0, xg)
+        xg(:) = 0.d0
         do i = 1, ndim
             do n = 1, nno
                 xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+n) * coorse(ndim* (n-1)+i)
@@ -166,7 +165,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
 !       CALCUL DE LA FORCE VOLUMIQUE AU PG COURANT
 !       ------------------------------------------
 !
-        call vecini(ndim, 0.d0, forvol)
+        forvol(:) = 0.d0
         do ino = 1, nnop
             do j = 1, ndim
                 forvol(j)=forvol(j)+fno(ndim*(ino-1)+j)*ff(ino)

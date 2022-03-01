@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ implicit none
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/normev.h"
-#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmafr1.h"
 #include "asterfort/xmmred.h"
@@ -324,7 +323,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
 !         IMPOSSIBLE A REMPLIR SI L'INTEGRATION N'EST PAS AUX NOEUDS
 !
 !         JEU
-            call vecini(ndim, 0.d0, saut)
+            saut(:) = 0.d0
             do j = 1, ndim
                 do k = 1, nsom
 !             DDL HEAVISIDE
@@ -341,7 +340,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
             jeu = ddot(ndim,n,1,saut,1)
 !
 !         RNX, RNY, RNZ SONT LES 3 COMPOSANTES DE RNXYZ
-            call vecini(3, 0.d0, rnxyz)
+            rnxyz(:) = 0.d0
             do j = 1, ndim
                 do k = 1, nsom
                     rnxyz(j) = rnxyz(j) + ff(k) * mult * vcont(3* ndim*(nosom(k)-1)+j)
@@ -363,7 +362,7 @@ type(NL_DS_Contact), intent(in) :: ds_contact
             rnz = rnxyz(3)
 !
 !         GLIX, GLIY, GLI
-            call vecini(3, 0.d0, glit)
+            glit(:) = 0.d0
             call xmafr1(ndim, n, p)
             do j = 1, ndim
                 do k = 1, ndim
@@ -373,8 +372,8 @@ type(NL_DS_Contact), intent(in) :: ds_contact
             call normev(glit, gli)
 !
 !         RTAX, RTAY, RTAZ, RTGX, RTGY, RTGZ
-            call vecini(3, 0.d0, rtxyz)
-            call vecini(3, 0.d0, lagfro)
+            rtxyz(:) = 0.d0
+            lagfro(:) = 0.d0
 !
             do j = 1, ndim
                 do k = 1, nsom

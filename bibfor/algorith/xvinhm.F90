@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ implicit none
 #include "asterfort/lceitc.h"
 #include "asterfort/lceiou.h"
 #include "asterfort/matini.h" 
-#include "asterfort/vecini.h"   
 !
 ! ======================================================================
 !
@@ -53,12 +52,12 @@ type(THM_DS), intent(inout) :: ds_thm
     character(len=8)  :: job
     character(len=16) :: option
 !
-    call vecini(2, 0.d0, vim)
-    call vecini(2, 0.d0, vip)
-    call vecini(9, 0.d0, vim2)
-    call vecini(9, 0.d0, vip2)
+    vim(:) = 0.d0
+    vip(:) = 0.d0
+    vim2(:) = 0.d0
+    vip2(:) = 0.d0
     call matini(6, 6, 0.d0, dsidep)
-    call vecini(6, 0.d0, delta)
+    delta(:) = 0.d0
 !
 ! - Get material parameters
 !
