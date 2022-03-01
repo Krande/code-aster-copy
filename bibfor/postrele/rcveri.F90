@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine rcveri(tablz)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/lcprsn.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/tbexip.h"
@@ -174,7 +173,7 @@ subroutine rcveri(tablz)
             mm(2)=zr(jcoy+i)-zr(jcoy+i-1)
             mm(3)=zr(jcoz+i)-zr(jcoz+i-1)
             call normev(mm, norme)
-            call lcprsn(3, mm, ab, ps)
+            ps = dot_product(mm, ab)
             if (ps .le. eps) then
                 call utmess('F', 'POSTRCCM_37', sk=table)
             endif

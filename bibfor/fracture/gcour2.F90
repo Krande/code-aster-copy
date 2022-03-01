@@ -81,7 +81,6 @@ subroutine gcour2(resu, noma, nomno, coorn,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/lcprsn.h"
 #include "asterfort/normev.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
