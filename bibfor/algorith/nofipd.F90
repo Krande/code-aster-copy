@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
-#include "asterfort/pmat.h"
 #include "asterfort/tanbul.h"
 #include "asterfort/uthk.h"
 #include "asterfort/utmess.h"
@@ -305,9 +304,9 @@ aster_logical, intent(in) :: lSigm, lVect, lMatr
         endif
 ! ----- Rigidity matrix
         if (lMatr) then
-            call pmat(6, idev/3.d0, dsidep, devd)
-            call pmat(6, dsidep, idev/3.d0, ddev)
-            call pmat(6, devd, idev/3.d0, dddev)
+            devd = matmul(idev/3.d0,dsidep)
+            ddev = matmul(dsidep,idev/3.d0)
+            dddev = matmul(devd,idev/3.d0)
 ! - TERME K:UX
             do na = 1, nnod
                 do ia = 1, ndim

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterfort/pmat.h"
 #include "asterfort/mmmmpb.h"
 #include "asterfort/pmavec.h"
 !
@@ -108,7 +107,7 @@ real(kind=8), intent(out) :: dlagft(3), pdlaft(3), pdjeut(3), prese(3)
 !
 ! - Matrix [E] = [Pt]x[Pt]
 !
-    call pmat(3, mprojt, mprojt, e)
+    e = matmul(mprojt,mprojt)
 !
 ! - Matrix [A] = [T]t*[Pt] with [T] = [{tau1} {tau2}]
 !

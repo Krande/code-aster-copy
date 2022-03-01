@@ -20,7 +20,6 @@ subroutine utpslg(nn, nc, p, sl, sg)
     implicit none
 !
 #include "asterfort/mavec.h"
-#include "asterfort/pmat.h"
 #include "asterfort/tmat.h"
 #include "asterfort/vecma.h"
 !
@@ -113,8 +112,8 @@ subroutine utpslg(nn, nc, p, sl, sg)
         mr14(14,14) = 1.0
         call tmat(14, mr14, mtr14)
         call vecma(sl, 105, ml14, 14)
-        call pmat(14, mtr14, ml14, mv14)
-        call pmat(14, mv14, mr14, mtr14)
+        mv14 = matmul(mtr14,ml14)
+        mtr14 = matmul(mv14,mr14)
         call mavec(mtr14, 14, sg, 105)
 !
     else if (mod(nc,3) .eq. 2) then
@@ -133,8 +132,8 @@ subroutine utpslg(nn, nc, p, sl, sg)
         mr16(16,16) = 1.0
         call tmat(16, mr16, mtr16)
         call vecma(sl, 136, ml16, 16)
-        call pmat(16, mtr16, ml16, mv16)
-        call pmat(16, mv16, mr16, mtr16)
+        mv16 = matmul(mtr16,ml16)
+        mtr16 = matmul(mv16,mr16)
         call mavec(mtr16, 16, sg, 136)
     endif
 !

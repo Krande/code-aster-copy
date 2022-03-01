@@ -27,7 +27,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/mmmmpb.h"
-#include "asterfort/pmat.h"
 #include "asterfort/pmavec.h"
 !
 integer, intent(in) :: ndim, nne

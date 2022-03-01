@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
 #include "asterfort/lcmmsg.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcrksg.h"
-#include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -208,7 +207,7 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
     end do
     if (gdef .eq. 1) then
         call dcopy(9, vini(nvi-3-18+1 ), 1, fp, 1)
-        call pmat(3, gamsns, fp, fp1)
+        fp1 = matmul(gamsns,fp)
         call dcopy(9, fp1, 1, dvin(nvi-3-18+1 ), 1)
     endif
 !

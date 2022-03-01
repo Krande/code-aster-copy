@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/pmat.h"
 #include "asterfort/lcdetf.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -75,7 +74,7 @@ real(kind=8), optional, intent(out) :: detf_
         if (l_pred) then
             call dcopy(neps, dfgrd0, 1, dfgrd1, 1)
         else
-            call pmat(3, deps, dfgrd0, dfgrd1)
+            dfgrd1 = matmul(reshape(deps, (/3, 3/)),dfgrd0)
         endif
         call dcopy(neps, dfgrd0, 1, stran, 1)
         call dcopy(neps, dfgrd1, 1, dstran, 1)

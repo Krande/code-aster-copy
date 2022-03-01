@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 #include "asterc/r8prem.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/matinv.h"
-#include "asterfort/pmat.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -55,7 +54,7 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
     call daxpy(9, 1.d0, id, 1, fpm,&
                1)
 !
-    call pmat(3, df, fem, dffe)
+    dffe = matmul(df,fem)
 !
     call dcopy(9, gamsns, 1, dfp, 1)
 !
@@ -149,11 +148,11 @@ subroutine calcfe(nr, ndt, nvi, vind, df,&
 !
     endif
 !
-    call pmat(3, dffe, dfpm, fe)
+    fe = matmul(dffe,dfpm)
 !
 ! post traitement
 !
-    call pmat(3, dfp, fpm, fp)
+    fp = matmul(dfp,fpm)
 !
 9999  continue
 !

@@ -49,7 +49,6 @@ subroutine te0038(option, nomte)
 #include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
-#include "asterfort/pmat.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/provec.h"

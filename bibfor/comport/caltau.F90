@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine caltau(ifa, is, sigf, fkooh,&
 !     OUT  MSNS  :  MS * NS
 !
 #include "asterfort/lcprmv.h"
-#include "asterfort/pmat.h"
 #include "asterfort/tnsvec.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
@@ -83,7 +82,7 @@ subroutine caltau(ifa, is, sigf, fkooh,&
         call tnsvec(6, 3, fetfe, fetfe6, 1.d0)
         call tnsvec(6, 3, s, sigf, 1.d0)
 !
-        call pmat(3, fetfe, s, fesig)
+        fesig = matmul(fetfe,s)
 !
         taus=0.d0
         do i = 1, 3

@@ -23,7 +23,6 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/matinv.h"
-#include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
 #include "blas/daxpy.h"
@@ -131,7 +130,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
        call lcopli('ORTHOTRO', mod, materf(1), hooke)
     endif
     fet = transpose(fep)
-    call pmat(3, fet, fep, fetfe)
+    fetfe = matmul(fet,fep)
     call daxpy(9, -1.d0, id, 1, fetfe,1)
     call dscal(9, 0.5d0, fetfe, 1)
 !
@@ -142,7 +141,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
 !
 ! CALCUL DE DTAU/DF EN UTILISANT LES SYMETRIES
     call r8inir(81, 0.d0, dtaudf, 1)
-    call pmat(3, s, fet, sfet)
+    sfet = matmul(s,fet)
     do i = 1, 3
        do j = 1, 3
           do k = 1, 3

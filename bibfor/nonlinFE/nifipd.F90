@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
-#include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
@@ -304,9 +303,9 @@ character(len=16) :: compor(*), option
 ! - MATRICE TANGENTE
         if (lMatr) then
 !
-            call pmat(6, idev/3.d0, dsidep, devd)
-            call pmat(6, dsidep, idev/3.d0, ddev)
-            call pmat(6, devd, idev/3.d0, dddev)
+            devd = matmul(idev/3.d0,dsidep)
+            ddev = matmul(dsidep,idev/3.d0)
+            dddev = matmul(devd,idev/3.d0)
 !
 ! - CALCUL DE D^DEV:ID ET ID:D^DEV ET ID:D:ID/9.D0
             iddid = 0.d0

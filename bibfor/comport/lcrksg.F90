@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/matinv.h"
-#include "asterfort/pmat.h"
 #include "blas/dcopy.h"
     character(len=8) :: mod
     character(len=16) :: rela_comp
@@ -64,8 +63,8 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
             call matinv('S', 3, fp, fpm, detp)
 !
 !           F=FE.FP  => FP = DF.F-.(FP)**-1
-            call pmat(3, df, fd, f)
-            call pmat(3, f, fpm, fe)
+            f = matmul(reshape(df, (/3, 3/)), reshape(fd, (/3, 3/)))
+            fe = matmul(f,fpm)
             call lcgrla(fe, epsgl)
             call lcprmv(hook, epsgl, sigi)
 !

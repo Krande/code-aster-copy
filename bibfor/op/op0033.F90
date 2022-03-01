@@ -46,7 +46,6 @@ implicit none
 #include "asterfort/nmcrcv.h"
 #include "asterfort/nmfinp.h"
 #include "asterfort/pmactn.h"
-#include "asterfort/pmat.h"
 #include "asterfort/pmconv.h"
 #include "asterfort/pmdorc.h"
 #include "asterfort/pmdrdy.h"
@@ -261,7 +260,7 @@ implicit none
         else if (defimp.eq.2) then
             ncmp=9
             call matinv('S', 3, epsm, fem, jm)
-            call pmat(3, valimp, fem, deps)
+            deps = reshape(matmul(reshape(valimp, (/3, 3/)), reshape(fem, (/3, 3/))), (/9/))
             call lcdetf(3, deps, jd)
             jp = jm*jd
         endif

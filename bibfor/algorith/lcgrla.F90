@@ -23,7 +23,6 @@ subroutine lcgrla(f, eps)
 !     DEFORMATION DE GREEN-LAGRANGE ASSOCIEE AU TENSEUR F
 !     ----------------------------------------------------------------
 !
-#include "asterfort/pmat.h"
 #include "asterfort/tnsvec.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
@@ -31,7 +30,7 @@ subroutine lcgrla(f, eps)
     data id6/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
     ft = transpose(f)
-    call pmat(3, ft, f, ftf)
+    ftf = matmul(ft,f)
     call tnsvec(3, 3, ftf, eps, 1.d0)
     call daxpy(6, -1.d0, id6, 1, eps,&
                1)

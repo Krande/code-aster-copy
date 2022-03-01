@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
 #include "asterfort/dmatmc.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
-#include "asterfort/pmat.h"
 #include "blas/dscal.h"
     integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
     integer :: mate
@@ -159,14 +158,17 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg,iw, vff2, vff3, ivf1, idff1,&
             call dscal(3, 2.d0, dsidep(4,6), 1)
         endif
 !
+        devd(:,:) = 0.d0
+        ddev(:,:) = 0.d0
+        dddev(:,:) = 0.d0
         if (ndim .eq. 3) then
-            call pmat(6, idev/3.d0, dsidep, devd)
-            call pmat(6, dsidep, idev/3.d0, ddev)
-            call pmat(6, devd, idev/3.d0, dddev)
+            devd(1:6,1:6) = matmul(idev/3.d0,dsidep(1:6,1:6))
+            ddev(1:6,1:6) = matmul(dsidep(1:6,1:6),idev/3.d0)
+            dddev(1:6,1:6) = matmul(devd(1:6,1:6),idev/3.d0)
         else
-            call pmat(4, idev2/3.d0, dsidep, devd)
-            call pmat(4, dsidep, idev2/3.d0, ddev)
-            call pmat(4, devd, idev2/3.d0, dddev)
+            devd(1:4,1:4) = matmul(idev2/3.d0,dsidep(1:4,1:4))
+            ddev(1:4,1:4) = matmul(dsidep(1:4,1:4),idev2/3.d0)
+            dddev(1:4,1:4) = matmul(devd(1:4,1:4),idev2/3.d0)
         endif
 !
 ! - CALCUL DE D^DEV:ID ET ID:D^DEV ET ID:D:ID/9.D0

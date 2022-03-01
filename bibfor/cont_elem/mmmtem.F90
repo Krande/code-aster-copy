@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/mmmmpb.h"
-#include "asterfort/pmat.h"
 #include "asterfort/pmavec.h"
 !
 character(len=4), intent(in) :: phase
@@ -93,7 +92,7 @@ real(kind=8), intent(out) :: matrem(27, 27)
 !
 ! - PRODUIT [E] = [Pt]x[Pt]
 !
-    call pmat(3, mprojt, mprojt, e)
+    e = matmul(mprojt,mprojt)
 !
 ! - MATRICE DE PROJECTION SUR LA BOULE UNITE
 !

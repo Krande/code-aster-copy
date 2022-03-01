@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine te0554(nomopt, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/normev.h"
-#include "asterfort/pmat.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
     character(len=16) :: nomopt, nomte
@@ -159,8 +158,8 @@ subroutine te0554(nomopt, nomte)
     mlg(2,3) = vt2(2)
     mlg(3,3) = vt2(3)
 !
-    call pmat(3, sigg, mlg, mtmp)
-    call pmat(3, mgl, mtmp, sigl)
+    mtmp = matmul(sigg,mlg)
+    sigl = matmul(mgl,mtmp)
 
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DES OPTIONS : SIRO_ELEM_SIT1 & SIRO_ELEM_SIT2

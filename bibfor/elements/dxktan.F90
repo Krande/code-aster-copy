@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 #include "asterfort/dxprd2.h"
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/pmat.h"
 #include "asterfort/pmavec.h"
 #include "blas/dcopy.h"
     integer :: ncrit, i, j, n, nd
@@ -82,8 +81,8 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
     else if (ncrit .eq. 1) then
         call dfplas(nbackn(4), mp1, dfpla1(4))
         call lcprte(dfpla1, dfpla1, mata)
-        call pmat(6, delas, mata, matb)
-        call pmat(6, matb, delas, matc)
+        matb = matmul(delas,mata)
+        matc = matmul(matb,delas)
         call pmavec('ZERO', 6, dc1, dfpla1, vect)
         call lcprsc(dfpla1, vect, scal)
 !
@@ -96,8 +95,8 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
     else if (ncrit .eq. 2) then
         call dfplas(nbackn(4), mp2, dfpla2(4))
         call lcprte(dfpla2, dfpla2, mata)
-        call pmat(6, delas, mata, matb)
-        call pmat(6, matb, delas, matc)
+        matb = matmul(delas,mata)
+        matc = matmul(matb,delas)
         call pmavec('ZERO', 6, dc2, dfpla2, vect)
         call lcprsc(dfpla2, vect, scal)
 !
@@ -134,8 +133,8 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 60          continue
 50      continue
 !
-        call pmat(6, delas, mat, mata)
-        call pmat(6, mata, delas, matb)
+        mata = matmul(delas,mat)
+        matb = matmul(mata,delas)
 !
         do 70 i = 1, 6
             do 80 j = 1, 6

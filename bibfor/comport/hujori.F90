@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
 !========================= DEBUT DES DECLARATIONS ====================
 #include "asterf_types.h"
 #include "asterfort/matrot.h"
-#include "asterfort/pmat.h"
     integer :: i, j, nmat
     real(kind=8) :: zero, deux, dsqr, isqr
     real(kind=8) :: angl(3), p(3, 3), passag(6, 6), passal(6, 6)
@@ -276,13 +275,13 @@ subroutine hujori(sens, nmat, reorie, angl, vec,&
 !
         if (sens .eq. 'LOCAL') then
 !
-            call pmat(6, mat, passag, work)
-            call pmat(6, passal, work, mat1)
+            work = matmul(mat,passag)
+            mat1 = matmul(passal,work)
 !
         else if (sens.eq.'GLOBA') then
 !
-            call pmat(6, mat, passal, work)
-            call pmat(6, passag, work, mat1)
+            work = matmul(mat,passal)
+            mat1 = matmul(passag,work)
 !
         endif
 !

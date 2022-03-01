@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
     integer :: ndim, nno
     real(kind=8) :: w, def(2*ndim, nno, ndim)
@@ -59,15 +58,17 @@ subroutine calkbb(nno, ndim, w, def, dsidep,&
 !
 ! - INITIALISATION
     call r8inir(ndim*ndim, 0.d0, kbb, 1)
+    devd(:,:) = 0.d0
+    dddev(:,:) = 0.d0
 !
     if (ndim .eq. 3) then
         pbulle = 4.d0
-        call pmat(6, idev/3.d0, dsidep, devd)
-        call pmat(6, devd, idev/3.d0, dddev)
+        devd(1:6,1:6) = matmul(idev/3.d0,dsidep(1:6,1:6))
+        dddev(1:6,1:6) = matmul(devd(1:6,1:6),idev/3.d0)
     else if (ndim .eq. 2) then
         pbulle = 3.d0
-        call pmat(4, idev2/3.d0, dsidep, devd)
-        call pmat(4, devd, idev2/3.d0, dddev)
+        devd(1:4,1:4) = matmul(idev2/3.d0,dsidep(1:4,1:4))
+        dddev(1:4,1:4) = matmul(devd(1:4,1:4),idev2/3.d0)
     else
         ASSERT(.false.)
     endif

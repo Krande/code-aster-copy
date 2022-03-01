@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 subroutine utpsgl(nn, nc, p, sg, sl)
     implicit none
 #include "asterfort/mavec.h"
-#include "asterfort/pmat.h"
 #include "asterfort/tmat.h"
 #include "asterfort/vecma.h"
     real(kind=8) :: p(3, 3), sg(*), sl(*)
@@ -118,8 +117,8 @@ subroutine utpsgl(nn, nc, p, sg, sl)
         mtr14( 14, 14) = 1.d0
         call tmat(14, mtr14, mr14)
         call vecma(sl, 105, ml14, 14)
-        call pmat(14, mtr14, ml14, mv14)
-        call pmat(14, mv14, mr14, mtr14)
+        mv14 = matmul(mtr14,ml14)
+        mtr14 = matmul(mv14,mr14)
         call mavec(mtr14, 14, sg, 105)
 !
     else if (mod(nc,3) .eq. 2) then
@@ -142,8 +141,8 @@ subroutine utpsgl(nn, nc, p, sg, sl)
         mtr16( 16, 16) = 1.d0
         call tmat(16, mtr16, mr16)
         call vecma(sl, 136, ml16, 16)
-        call pmat(16, mtr16, ml16, mv16)
-        call pmat(16, mv16, mr16, mtr16)
+        mv16 = matmul(mtr16,ml16)
+        mtr16 = matmul(mv16,mr16)
         call mavec(mtr16, 16, sg, 136)
     endif
 !

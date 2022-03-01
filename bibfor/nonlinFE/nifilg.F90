@@ -40,7 +40,6 @@ implicit none
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmmalu.h"
-#include "asterfort/pmat.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
 #include "asterfort/utmess.h"
@@ -345,9 +344,9 @@ aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
 !
 ! - CALCUL DE L'OPERATEUR TANGENT SYMÉTRISÉ D
             call dsde2d(3, ftr, dsidep, d)
-            call pmat(6, idev/3.d0, d, devd)
-            call pmat(6, d, idev/3.d0, ddev)
-            call pmat(6, devd, idev/3.d0, dddev)
+            devd = matmul(idev/3.d0,d)
+            ddev = matmul(d,idev/3.d0)
+            dddev = matmul(devd,idev/3.d0)
 !
 ! - CALCUL DU TENSEUR DE CONTRAINTE : TRACE ET PARTIE DEVIATORIQUE
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ private
 #include "asterfort/deflg3.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/pmat.h"
 #include "asterfort/symt46.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -714,8 +713,8 @@ subroutine postLog(lMatrPred, lMatr, lSigm ,&
         call symt46(tl, tlSyme)
 
 ! ----- Compute dsidep
-        call pmat(6, pSymeT, dtde, trav2)
-        call pmat(6, trav2, pSyme, dsidep)
+        trav2 = matmul(pSymeT,dtde)
+        dsidep = matmul(trav2,pSyme)
         call daxpy(36, 1.d0, tlSyme, 1, dsidep,1)
 
         dsidep(4:6,4:6) = dsidep(4:6,4:6)/2.0d0

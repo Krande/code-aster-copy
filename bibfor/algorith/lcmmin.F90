@@ -54,7 +54,6 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
 #include "asterfort/utmess.h"
@@ -120,9 +119,9 @@ subroutine lcmmin(typess, essai, mod, nmat, materf,&
         if (gdef .eq. 1) then
             call dcopy(9, vind(nvi-3-18+10), 1, fe, 1)
             call dcopy(9, deps, 1, df, 1)
-            call pmat(3, df, fe, fe1)
+            fe1 = matmul(df,fe)
             fe1t = transpose(fe1)
-            call pmat(3, fe1t, fe1, fetfe)
+            fetfe = matmul(fe1t,fe1)
             call tnsvec(3, 3, fetfe, dy, 1.d0)
         else
             hook(1:ndt,1:ndt) = transpose(hook(1:ndt,1:ndt))

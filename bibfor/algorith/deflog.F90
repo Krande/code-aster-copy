@@ -23,8 +23,6 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
 #include "asterc/r8prem.h"
 #include "asterfort/diago2.h"
 #include "asterfort/diagp3.h"
-#include "asterfort/pmat.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/tnsvec.h"
 !
     integer, intent(in) :: ndim
@@ -49,7 +47,7 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
 !     OUT   IRET  0=OK, 1=vp(Ft.F) trop petites (compression infinie)
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: tr(6), epsl33(3, 3), tr2(3), ft(3, 3), gn2(2, 2)
+    real(kind=8) :: tr(6), epsl33(3, 3), tr2(3), gn2(2, 2)
     real(kind=8) :: C(3, 3)
     integer :: i, j, k
     integer, parameter :: nbvec = 3
@@ -61,8 +59,8 @@ subroutine deflog(ndim, f, epsl, gn, lamb, logl, iret)
     iret  = 0
 !
 !     LE CALCUL DES VALEURS PROPRES N'A PAS ENCORE ETE FAIT: On calcule C
-    ft = transpose(f)
-    call pmat(3, ft, f, C)
+    C = matmul(transpose(f), f)
+
 ! --- VALEURS PRINCIPALES = VECTEURS PROPRES
 !  VECP : DIM1=I=COMPOSANTE DIM2=J=NUM VECTEUR ASSOCIE A LAMBP(J)
     call tnsvec(3, 3, C, tr, 1.d0)

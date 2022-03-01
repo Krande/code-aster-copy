@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
 #include "asterfort/lcnrte.h"
 #include "asterfort/matinv.h"
 #include "asterfort/pk2sig.h"
-#include "asterfort/pmat.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
@@ -171,8 +170,8 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
 !           ICI CONTRAIREMENT A LCMMON, NVI EST LE NOMBRE TOTAL DE V.I
             call dcopy(9, vinf(nvi-3-18+1 ), 1, fp, 1)
             call matinv('S', 3, fp, fpm, detp)
-            call pmat(3, detot, epsd, f)
-            call pmat(3, f, fpm, fe)
+            f = matmul(reshape(detot(1:9), (/3, 3/)), reshape(epsd(1:9), (/3, 3/)))
+            fe = matmul(f,fpm)
 !           CALCUL DES CONTRAINTES DE KIRCHOFF
             call dcopy(6, sig, 1, pk2, 1)
             call dscal(3, sqrt(2.d0), pk2(4), 1)

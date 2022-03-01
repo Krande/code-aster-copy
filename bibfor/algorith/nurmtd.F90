@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/calkce.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/ortrep.h"
-#include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tanbul.h"
     aster_logical :: mini
@@ -205,15 +204,18 @@ implicit none
         else
             call r8inir(nno2*nno2, 0.d0, kce, 1)
         endif
+        devd(:,:) = 0.0d0
+        ddev(:,:) = 0.0d0
+        dddev(:,:) = 0.0d0
 !
         if (ndim .eq. 3) then
-            call pmat(6, idev/3.d0, dsidep, devd)
-            call pmat(6, dsidep, idev/3.d0, ddev)
-            call pmat(6, devd, idev/3.d0, dddev)
+            devd(1:6,1:6) = matmul(idev/3.d0,dsidep(1:6,1:6))
+            ddev(1:6,1:6) = matmul(dsidep(1:6,1:6),idev/3.d0)
+            dddev(1:6,1:6) = matmul(devd(1:6,1:6),idev/3.d0)
         else
-            call pmat(4, idev2/3.d0, dsidep, devd)
-            call pmat(4, dsidep, idev2/3.d0, ddev)
-            call pmat(4, devd, idev2/3.d0, dddev)
+            devd(1:4,1:4) = matmul(idev2/3.d0,dsidep(1:4,1:4))
+            ddev(1:4,1:4) = matmul(dsidep(1:4,1:4),idev2/3.d0)
+            dddev(1:4,1:4) = matmul(devd(1:4,1:4),idev2/3.d0)
         endif
 !
 ! - CALCUL DE LA MATRICE DE RIGIDITE

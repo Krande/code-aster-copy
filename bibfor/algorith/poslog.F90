@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/deflg3.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/pk2sig.h"
-#include "asterfort/pmat.h"
 #include "asterfort/symt46.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -93,7 +92,7 @@ integer, intent(out) :: codret
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, j, kl
-    real(kind=8) :: trav(6, 6), trav2(6, 6), sig(6)
+    real(kind=8) :: sig(6)
     real(kind=8) :: pes(6, 6), tp2(6), fr(3, 3), detf
     real(kind=8) :: tl(3, 3, 3, 3), tls(6, 6), epse(4), d1(4, 4)
     real(kind=8) :: feta(4), xi(3, 3), me(3, 3, 3, 3)
@@ -166,9 +165,9 @@ integer, intent(out) :: codret
 !
         call deflg3(gn, feta, xi, me, tp2, tl)
         call symt46(tl, tls)
-        trav = transpose(pes)
-        call pmat(6, trav, dtde, trav2)
-        call pmat(6, trav2, pes, dsidep)
+
+        dsidep = matmul(matmul(transpose(pes), dtde), pes)
+
         call daxpy(36, 1.d0, tls, 1, dsidep, 1)
 !
     endif
