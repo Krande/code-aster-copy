@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 character(len=*), intent(in) :: actionZ, fieldZ

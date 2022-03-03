@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,6 @@ subroutine inttrbdf2(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dtmacce.h"
-#include "asterfort/dtmforc.h"
-#include "asterfort/getvr8.h"
 #include "asterfort/intbuff.h"
 #include "asterfort/intget.h"
 #include "asterfort/inttrbdf2_oper.h"
@@ -37,8 +35,6 @@ subroutine inttrbdf2(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/pmavec.h"
 #include "asterfort/pscvec.h"
 #include "asterfort/rrlds.h"
-#include "asterfort/trlds.h"
-#include "asterfort/wkvect.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 !

@@ -23,12 +23,10 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !

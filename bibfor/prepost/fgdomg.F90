@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,8 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 #include "asterfort/fgdowh.h"
 #include "asterfort/fgtaep.h"
 #include "asterfort/fgtaes.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/rcpare.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=*) :: method

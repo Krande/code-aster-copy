@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
 character(len=8), intent(in) :: mesh
 type(NL_DS_Contact), intent(in) :: ds_contact

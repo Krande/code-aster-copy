@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
 #include "asterfort/nmvcex.h"
-#include "asterfort/vtaxpy.h"
 #include "asterfort/utmess.h"
 !
 character(len=10), intent(in) :: phase

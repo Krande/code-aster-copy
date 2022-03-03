@@ -34,19 +34,13 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/lxcadr.h"
-#include "asterfort/lxcaps.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
 character(len=8), intent(in) :: load, mesh, model
 character(len=4), intent(in) :: valeType

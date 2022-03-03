@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,14 +28,12 @@ implicit none
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detmat.h"
 #include "asterfort/didern.h"
 #include "asterfort/diinst.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/nonlinDSColumnWriteValue.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -45,7 +43,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/medith.h"
 #include "asterfort/nmnkft.h"
-#include "asterfort/nmlere.h"
 #include "asterfort/ntdata.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntobsv.h"
@@ -57,14 +54,12 @@ implicit none
 #include "asterfort/nxpred.h"
 #include "asterfort/nxrech.h"
 #include "asterfort/romAlgoNLClean.h"
-#include "asterfort/rsinch.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/vtzero.h"
 #include "asterfort/setTimeListProgressBar.h"
 #include "asterfort/nxnpas.h"
 #include "asterfort/nmimr0.h"

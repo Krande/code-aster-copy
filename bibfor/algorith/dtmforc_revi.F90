@@ -37,7 +37,6 @@ subroutine dtmforc_revi(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/dtmget.h"
 #include "asterfort/fointe.h"
 #include "asterfort/nlget.h"
-#include "asterfort/nlsav.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,6 @@ implicit none
 #include "asterfort/mdarch.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/mtcmbl.h"
-#include "asterfort/mtdefs.h"
-#include "asterfort/mtdscr.h"
 #include "asterfort/omega2.h"
 #include "asterfort/preres.h"
 #include "asterfort/refdaj.h"
@@ -79,7 +77,6 @@ implicit none
 #include "blas/zcopy.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/dl_MatrixPrepare.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

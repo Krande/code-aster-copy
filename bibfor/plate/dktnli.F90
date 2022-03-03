@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,15 +33,11 @@ implicit none
 #include "asterfort/dktbf.h"
 #include "asterfort/dxqbm.h"
 #include "asterfort/dxqloc.h"
-#include "asterfort/dxdmul.h"
 #include "asterfort/dxtbm.h"
 #include "asterfort/dxtloc.h"
 #include "asterfort/dsxhft.h"
 #include "asterfort/dkttxy.h"
 #include "asterfort/dkqtxy.h"
-#include "asterfort/dkqlxy.h"
-#include "asterfort/dktlxy.h"
-#include "asterfort/dsxhlt.h"
 #include "asterfort/dxmate.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/gquad4.h"
@@ -50,11 +46,9 @@ implicit none
 #include "asterfort/jquad4.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/pmrvec.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
-#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !

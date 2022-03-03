@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,10 +47,8 @@ implicit none
 #include "asterfort/capaca.h"
 #include "asterfort/dhdt.h"
 #include "asterfort/dhwdp1.h"
-#include "asterfort/dilata.h"
 #include "asterfort/dileau.h"
 #include "asterfort/dilgaz.h"
-#include "asterfort/dmdepv.h"
 #include "asterfort/dmvpd2.h"
 #include "asterfort/dmvpp1.h"
 #include "asterfort/dmwdt2.h"
@@ -61,10 +59,7 @@ implicit none
 #include "asterfort/entgaz.h"
 #include "asterfort/inithm.h"
 #include "asterfort/masvol.h"
-#include "asterfort/sigmap.h"
-#include "asterfort/unsmfi.h"
 #include "asterfort/viemma.h"
-#include "asterfort/viporo.h"
 #include "asterfort/vipvp1.h"
 #include "asterfort/virhol.h"
 #include "asterfort/visatu.h"

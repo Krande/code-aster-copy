@@ -201,7 +201,7 @@ character(len=16) :: option, nomte
 !
 !           CAS CHAMP ELNO
             if(contac.eq.2) ncompv = jta2(2)/jta2(3)
-            Call jevech('PCOHESO', 'E', jcoheo)
+            call jevech('PCOHESO', 'E', jcoheo)
         endif
 !
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES

@@ -28,10 +28,7 @@ implicit none
 #include "asterfort/mateMFrontCheck.h"
 #include "asterfort/mateMFrontAddElasticity.h"
 #include "asterfort/codent.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
 character(len=8), intent(in) :: mate
 character(len=32), pointer :: v_mate_read(:)

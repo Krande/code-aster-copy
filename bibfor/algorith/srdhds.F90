@@ -43,7 +43,6 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
 #include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterc/r8pi.h"
-#include "asterfort/utmess.h"
 
     !!!
     !!! Variables globales

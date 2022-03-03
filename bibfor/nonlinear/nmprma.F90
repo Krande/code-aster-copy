@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,16 +47,12 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmcmat.h"
-#include "asterfort/nmdebg.h"
 #include "asterfort/nmelcm.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmmatr.h"
 #include "asterfort/nmrenu.h"
 #include "asterfort/nmrigi.h"
 #include "asterfort/nmxmat.h"
-#include "asterfort/romAlgoNLCorrEFMatrixModify.h"
-#include "asterfort/nonlinIntForceAsse.h"
-#include "asterfort/sdmpic.h"
 #include "asterfort/utmess.h"
 !
 type(NL_DS_AlgoPara), intent(in) :: ds_algopara

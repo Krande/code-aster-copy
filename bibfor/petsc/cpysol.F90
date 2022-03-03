@@ -27,7 +27,6 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet, nbval)
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterf_debug.h"
-#include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codlet.h"

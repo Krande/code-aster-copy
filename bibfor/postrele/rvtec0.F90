@@ -24,7 +24,6 @@ subroutine rvtec0(t, co, sp, absc, x,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
-#include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -40,7 +39,6 @@ subroutine rvtec0(t, co, sp, absc, x,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !

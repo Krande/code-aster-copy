@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ implicit none
 #include "asterc/r8vide.h"
 #include "asterfort/cfcgeo.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nmimci.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"

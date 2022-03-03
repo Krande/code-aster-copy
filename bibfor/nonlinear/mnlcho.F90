@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
@@ -58,8 +57,6 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mrmult.h"
-#include "asterfort/mtcmbl.h"
-#include "asterfort/mtdefs.h"
 #include "asterfort/posddl.h"
 #include "asterfort/preres.h"
 #include "asterfort/resoud.h"

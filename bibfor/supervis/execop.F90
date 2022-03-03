@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ use superv_module, only: superv_before, superv_after
 #include "asterfort/ex0000.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jevema.h"
-#include "asterfort/op9999.h"
 #include "asterfort/opsexe.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/utmess.h"

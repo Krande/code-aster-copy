@@ -37,7 +37,6 @@ subroutine te0559(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/confac.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"

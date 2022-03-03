@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/dtmarch.h"
 #include "asterfort/dtmbuff.h"
 #include "asterfort/dtmconc.h"
@@ -37,7 +36,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterfort/dtmget.h"
 #include "asterfort/dtmintg.h"
 #include "asterfort/dtmupmat.h"
-#include "asterfort/getvid.h"
 #include "asterfort/intbackup.h"
 #include "asterfort/infniv.h"
 #include "asterfort/intbuff.h"
@@ -45,7 +43,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterfort/intsav.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mdidisvisc.h"
 #include "asterfort/mdidisisot.h"
 #include "asterfort/mdsize.h"

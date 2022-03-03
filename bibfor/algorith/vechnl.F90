@@ -21,18 +21,13 @@ subroutine vechnl(model    , lload_name, lload_info, time,&
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/gcnco2.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/reajre.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/inical.h"
 #include "asterfort/load_list_info.h"
 #include "asterfort/memare.h"

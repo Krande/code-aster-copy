@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcadma.h"
-#include "asterfort/zacier.h"
-#include "asterfort/zedgar.h"
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/nzcomp_prep.h"
 #include "asterfort/nzcomp.h"

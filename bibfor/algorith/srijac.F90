@@ -71,7 +71,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 #include "asterfort/srvacv.h"
 #include "asterfort/srvarp.h"
 #include "asterfort/srvarv.h"
-#include "asterfort/r8inir.h"
 #include "asterf_types.h"
 
     !!!

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cflecq.h"
@@ -31,7 +30,6 @@ implicit none
 #include "asterfort/cfleno.h"
 #include "asterfort/cfmema.h"
 #include "asterfort/cfmeno.h"
-#include "asterfort/jedetr.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !

@@ -54,8 +54,6 @@ subroutine op0197()
 #include "asterfort/peweib.h"
 #include "asterfort/rccome.h"
 #include "asterfort/rcmfmc.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsorac.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"

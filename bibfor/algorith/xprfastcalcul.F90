@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,23 +25,14 @@ subroutine xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
-#include "asterfort/celces.h"
-#include "asterfort/cescns.h"
-#include "asterfort/cnscno.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeundf.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/xdecoupe.h"
 #include "asterfort/xsolveurtria.h"
 #include "asterfort/xvaleurmin.h"

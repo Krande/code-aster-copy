@@ -24,7 +24,6 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
-#include "asterfort/dbgcal.h"
 #include "asterfort/exisd.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
@@ -36,8 +35,6 @@ implicit none
 #include "asterfort/mecact.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/utmess.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !

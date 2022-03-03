@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/lcejex.h"
 #include "asterfort/lcecli.h"
-#include "asterfort/thmEvalSatuInit.h"
 
 type(THM_DS), intent(inout) :: ds_thm
 integer :: ndim, ipgf, imate

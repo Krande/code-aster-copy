@@ -40,7 +40,6 @@ private
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/imprsd.h"

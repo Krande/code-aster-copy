@@ -25,7 +25,6 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
-#include "asterfort/copisd.h"
 #include "asterfort/reajre.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"

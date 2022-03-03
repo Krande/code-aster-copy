@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 character(len=*), intent(in) :: resultName

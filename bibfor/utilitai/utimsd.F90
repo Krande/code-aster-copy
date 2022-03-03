@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,14 +27,12 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 #include "asterfort/assert.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jelstc.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utimob.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttr24.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=*) :: sch1, base

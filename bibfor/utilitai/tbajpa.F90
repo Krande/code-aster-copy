@@ -29,7 +29,6 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
-#include "asterfort/trabck.h"
     integer :: nbpar
     character(len=*) :: nomta, nompar(*), typpar(*)
 !      AJOUTER DES PARAMETRES A UNE TABLE.

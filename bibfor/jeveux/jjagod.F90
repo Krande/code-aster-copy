@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,8 @@ subroutine jjagod(iclas, nblnew)
 #include "jeveux_private.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjecrs.h"
-#include "asterfort/jjldyn.h"
 #include "asterfort/jjlidy.h"
-#include "asterfort/jxecro.h"
 #include "asterfort/jxlibd.h"
-#include "asterfort/utmess.h"
     integer, intent(in) :: iclas, nblnew
 ! ----------------------------------------------------------------------
 !     PERMET D'AGRANDIR LES OBJETS SYSTEME ASSOCIES AUX ENREGISTREMENTS

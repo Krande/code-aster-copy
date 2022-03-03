@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine op0113()
 #include "asterfort/cormgi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
 #include "asterfort/ismali.h"
@@ -53,7 +52,6 @@ subroutine op0113()
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"

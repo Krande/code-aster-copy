@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
-#include "asterfort/utmess.h"
 !
 character(len=8), intent(in) :: load, mesh, model
 character(len=4), intent(in) :: valeType

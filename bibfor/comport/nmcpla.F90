@@ -32,17 +32,11 @@ implicit none
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/granvi.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcprmv.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/nmgran.h"
-#include "asterfort/nmisot.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/redece.h"
-#include "asterfort/rslnvi.h"
-#include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
 !
 type(Behaviour_Integ), intent(in) :: BEHinteg

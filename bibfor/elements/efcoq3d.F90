@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, lzr,&
 !     ------------------------------------------------------------------
    implicit none
 
-#include "asterfort/cosiro.h"
 #include "asterfort/vdefgn.h"
 #include "asterfort/vdefro.h"
 #include "asterfort/vdrepe.h"

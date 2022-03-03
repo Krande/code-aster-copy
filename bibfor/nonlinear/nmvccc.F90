@@ -25,7 +25,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
-#include "asterfort/infdbg.h"
 #include "asterfort/reajre.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

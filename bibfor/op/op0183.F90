@@ -61,7 +61,6 @@ implicit none
 #include "asterfort/vefnme.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/comp_info.h"
     integer :: ibid
     integer :: i, iad

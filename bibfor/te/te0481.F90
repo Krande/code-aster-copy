@@ -28,9 +28,7 @@ subroutine te0481(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/reeref.h"
 #include "asterfort/teattr.h"
-#include "asterfort/xteini.h"
 #include "asterfort/ltequa.h"
     character(len=16) :: option, nomte
 !

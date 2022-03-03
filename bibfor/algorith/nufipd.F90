@@ -41,7 +41,6 @@ implicit none
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/tanbul.h"
-#include "asterfort/utmess.h"
 #include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !

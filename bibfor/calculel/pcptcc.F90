@@ -41,7 +41,6 @@ implicit none
 #include "asterfort/jeimpo.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"

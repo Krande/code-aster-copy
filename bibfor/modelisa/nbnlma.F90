@@ -35,7 +35,6 @@ implicit none
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 character(len=8), intent(in) :: noma

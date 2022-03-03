@@ -31,8 +31,6 @@ subroutine cpncq4(main,numa,coor,ind,nomnoe, conneo)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
 #include "asterfort/reerel.h"
 !
     integer, intent(in) :: ind

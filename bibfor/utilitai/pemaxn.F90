@@ -39,7 +39,6 @@ subroutine pemaxn(resu, nomcha, lieu, nomlie, modele,&
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbcmp, nuord, nbmail, numemail(*)

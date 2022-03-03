@@ -34,7 +34,6 @@ implicit none
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
-#include "asterfort/utmess.h"
 #include "asterfort/load_neut_excl.h"
 !
 !

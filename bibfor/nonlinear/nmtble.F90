@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_erase.h"
-#include "asterfort/mm_cycl_init.h"
 #include "asterfort/nmaffi.h"
 #include "asterfort/nmctcc.h"
 #include "asterfort/nmctcf.h"
@@ -39,8 +38,6 @@ implicit none
 #include "asterfort/nmevcv.h"
 #include "asterfort/nmimci.h"
 #include "asterfort/nmleeb.h"
-#include "asterfort/nmrinc.h"
-#include "asterfort/nmtime.h"
 #include "asterfort/nmcrel.h"
 !
 integer, intent(inout) :: loop_exte

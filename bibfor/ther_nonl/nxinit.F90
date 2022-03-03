@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/ntcrob.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/ntcrch.h"
 #include "asterfort/ntcrcv.h"
 #include "asterfort/ntetcr.h"
@@ -44,7 +42,6 @@ implicit none
 #include "asterfort/nxnoli.h"
 #include "asterfort/ntnume.h"
 #include "asterfort/tiinit.h"
-#include "asterfort/utmess.h"
 #include "asterfort/ntload_chck.h"
 #include "asterfort/romAlgoNLInit.h"
 #include "asterfort/nonlinDSPrintInit.h"

@@ -28,7 +28,6 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 #include "asterfort/rccoma.h"
 
 !

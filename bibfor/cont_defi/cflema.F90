@@ -23,7 +23,6 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/cfnbsf.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"

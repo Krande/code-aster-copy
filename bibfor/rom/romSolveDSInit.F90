@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,6 @@ use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/infniv.h"
-#include "asterfort/utmess.h"
 !
 character(len=3), intent(in) :: type_syst
 type(ROM_DS_Solve), intent(out) :: ds_solve

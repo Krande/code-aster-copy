@@ -59,7 +59,6 @@ subroutine srresi(nmat,materf,timed,timef,&
 #include "asterfort/srelas.h"
 #include "asterfort/srvacp.h"
 #include "asterfort/srvarp.h"
-#include "asterfort/r8inir.h"
 
     !!!
     !!! Variables globales

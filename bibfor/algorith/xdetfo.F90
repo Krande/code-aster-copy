@@ -43,7 +43,6 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 #include "asterc/r8prem.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
-#include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmafis.h"

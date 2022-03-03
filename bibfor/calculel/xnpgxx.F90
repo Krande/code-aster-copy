@@ -41,7 +41,6 @@ subroutine xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 #include "asterfort/nbelem.h"
 #include "asterfort/nucalc.h"
 #include "asterfort/typele.h"
-#include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: model
     character(len=19) :: ligrel, chsnpg

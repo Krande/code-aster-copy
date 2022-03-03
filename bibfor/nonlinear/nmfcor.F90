@@ -51,7 +51,6 @@ implicit none
 #include "asterfort/nmfocc.h"
 #include "asterfort/nmltev.h"
 #include "asterfort/nmrigi.h"
-#include "asterfort/nmtime.h"
 #include "asterfort/utmess.h"
 !
 integer :: list_func_acti(*)

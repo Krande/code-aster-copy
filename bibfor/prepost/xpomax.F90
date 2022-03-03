@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
-#include "asterfort/codent.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/conare.h"
 #include "asterfort/detrsd.h"

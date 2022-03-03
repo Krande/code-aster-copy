@@ -39,7 +39,6 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
-#include "asterfort/utmess.h"
 !
 integer :: repi, ierd
 character(len=*) :: questi, repkz, nomobz

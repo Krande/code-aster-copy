@@ -26,7 +26,6 @@ subroutine te0499(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/pronor.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/trigom.h"
 #include "asterfort/vff2dn.h"

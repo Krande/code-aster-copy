@@ -24,7 +24,6 @@ implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_affe_neum.h"
 #include "asterfort/getvc8.h"
@@ -32,14 +31,10 @@ implicit none
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeimpo.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
 #include "asterfort/tecart.h"
-#include "asterfort/vetyma.h"
 !
 
 character(len=8), intent(in) :: load, mesh, model

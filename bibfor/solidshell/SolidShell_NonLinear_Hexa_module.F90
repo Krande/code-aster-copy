@@ -49,7 +49,6 @@ private
 #include "asterfort/nmcomp.h"
 #include "asterfort/symt46.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 ! ==================================================================================================

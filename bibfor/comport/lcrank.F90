@@ -71,13 +71,11 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
 !
 #include "asterf_types.h"
 #include "asterfort/bptobg.h"
-#include "asterfort/jacobi.h"
 #include "asterfort/mcpstr.h"
 #include "asterfort/ratg2d.h"
 #include "asterfort/ratg3d.h"
 #include "asterfort/mctgel.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/mgauss.h"
 !
 ! Declaration of constant parameters
     integer      :: mmax, nmax

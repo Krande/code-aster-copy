@@ -38,8 +38,6 @@ implicit none
 #include "asterfort/irchme.h"
 #include "asterfort/irmpar.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdnoch.h"

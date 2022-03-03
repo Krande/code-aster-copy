@@ -26,8 +26,6 @@ implicit none
 #include "asterfort/codent.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/load_list_info.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"

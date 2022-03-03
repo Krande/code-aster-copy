@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,13 +45,11 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"

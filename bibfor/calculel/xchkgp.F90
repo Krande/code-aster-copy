@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine xchkgp(model)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
@@ -40,7 +39,6 @@ subroutine xchkgp(model)
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
     character(len=8) :: model
 ! ------------------------------------------------------------------

@@ -23,8 +23,6 @@ subroutine mmfield_prep(field_in    , field_out    ,&
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/vtgpld.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnsred.h"

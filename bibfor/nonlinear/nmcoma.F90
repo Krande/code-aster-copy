@@ -53,10 +53,8 @@ implicit none
 #include "asterfort/nmmatr.h"
 #include "asterfort/nmrenu.h"
 #include "asterfort/nmxmat.h"
-#include "asterfort/romAlgoNLCorrEFMatrixModify.h"
 #include "asterfort/nonlinIntForceAsse.h"
 #include "asterfort/asmari.h"
-#include "asterfort/nmrigi.h"
 #include "asterfort/utmess.h"
 !
 type(NL_DS_AlgoPara), intent(in) :: ds_algopara

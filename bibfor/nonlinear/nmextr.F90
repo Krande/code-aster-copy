@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
@@ -38,7 +37,6 @@ implicit none
 #include "asterfort/nmextr_read_2.h"
 #include "asterfort/nmextr_crsd.h"
 #include "asterfort/nmextr_ligr.h"
-#include "asterfort/nmextc.h"
 #include "asterfort/nmextd.h"
 #include "asterfort/nmextf.h"
 #include "asterfort/nmextk.h"
@@ -48,7 +46,6 @@ implicit none
 #include "asterfort/nmextt.h"
 #include "asterfort/nmextr_comp.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
 character(len=*), intent(in) :: meshz
 character(len=*), intent(in) :: modelz

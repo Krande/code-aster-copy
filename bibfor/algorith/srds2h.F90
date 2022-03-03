@@ -41,7 +41,6 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
 #include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/utmess.h"
 
     !!!
     !!! Variables globales

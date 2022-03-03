@@ -28,13 +28,10 @@ implicit none
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
 #include "asterfort/tecart.h"
-#include "asterfort/vetyma.h"
 !
 character(len=8), intent(in) :: load, mesh, model
 integer, intent(in) :: geomDime

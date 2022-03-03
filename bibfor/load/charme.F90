@@ -66,7 +66,6 @@ implicit none
 #include "asterfort/cormgi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"

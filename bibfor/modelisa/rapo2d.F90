@@ -48,7 +48,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/reajre.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !

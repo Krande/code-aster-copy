@@ -62,7 +62,6 @@ subroutine amumpm_hpc( kxmps, kmonit, impr, ifmump, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/crnustd.h"
 #include "asterfort/filtering.h"

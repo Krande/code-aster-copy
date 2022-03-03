@@ -29,7 +29,6 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, ligrel, nbgr,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nbelem.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
 !

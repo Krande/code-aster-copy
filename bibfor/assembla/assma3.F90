@@ -35,11 +35,8 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/ascopr.h"
 #include "asterfort/asret2.h"
-#include "asterfort/asretm.h"
 #include "asterfort/assert.h"
 #include "asterfort/corddl.h"
-#include "asterfort/utmess.h"
-#include "asterfort/voiuti.h"
 !
 aster_logical :: lmasym, lmesym
 character(len=2) :: tt

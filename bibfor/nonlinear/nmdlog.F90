@@ -38,8 +38,6 @@ implicit none
 #include "asterfort/nmgrtg.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/xneuvi.h"
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 ! aslint: disable=W1306

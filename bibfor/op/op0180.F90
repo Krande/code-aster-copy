@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,6 @@ subroutine op0180()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
-#include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/caelca.h"
 #include "asterfort/cncinv.h"
@@ -57,7 +56,6 @@ subroutine op0180()
 #include "asterfort/jexnom.h"
 #include "asterfort/ltcrsd.h"
 #include "asterfort/ltnotb.h"
-#include "asterfort/nocart.h"
 #include "asterfort/projca.h"
 #include "asterfort/reliem.h"
 #include "asterfort/sigmca.h"

@@ -42,7 +42,6 @@ subroutine lcelpl(loi, nmat, materf,&
 ! ----------------------------------------------------------------
 !     ------------------------------------------------------------
 #include "asterfort/irrlnf.h"
-#include "asterfort/srilnf.h"
     common /tdim/   ndt  , ndi
 !     ------------------------------------------------------------
     character(len=16) :: loi

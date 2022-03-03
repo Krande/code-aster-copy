@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,6 @@ implicit none
 #include "asterfort/nmfcon.h"
 #include "asterfort/nmfcor.h"
 #include "asterfort/nmible.h"
-#include "asterfort/nmimci.h"
 #include "asterfort/nmimcr.h"
 #include "asterfort/nmimr0.h"
 #include "asterfort/nmleeb.h"
@@ -63,7 +62,6 @@ implicit none
 #include "asterfort/nmpred.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmrini.h"
-#include "asterfort/nmstat.h"
 #include "asterfort/nmsuiv.h"
 #include "asterfort/nmtble.h"
 #include "asterfort/nmtime.h"

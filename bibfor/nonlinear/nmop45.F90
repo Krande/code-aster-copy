@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,16 +33,13 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/onerrf.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vpcals.h"
 #include "asterfort/vpecri.h"
 #include "asterfort/vpini1.h"
 #include "asterfort/vpini2.h"
 #include "asterfort/vpleci.h"
-#include "asterfort/vppara.h"
 #include "asterfort/vppost.h"
-#include "asterfort/vpsor1.h"
 #include "asterfort/vpvers.h"
 #include "asterfort/wkvect.h"
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,31 +28,16 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
-#include "asterfort/cfnumm.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mcomce.h"
-#include "asterfort/mmbouc.h"
-#include "asterfort/mm_cycl_prop.h"
-#include "asterfort/mm_cycl_stat.h"
-#include "asterfort/mmeval_prep.h"
-#include "asterfort/mmstac.h"
-#include "asterfort/mmeven.h"
-#include "asterfort/mmextm.h"
-#include "asterfort/mmglis.h"
-#include "asterfort/mmimp4.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
 #include "asterfort/mminfm.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/mmfield_prep.h"
-#include "asterfort/mreacg.h"
 !
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !

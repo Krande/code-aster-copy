@@ -46,7 +46,6 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/locglo.h"
 #include "asterfort/nlget.h"
-#include "asterfort/nlsav.h"
 #include "asterfort/tophys.h"
 #include "asterfort/tophys_ms.h"
 #include "asterfort/togene.h"

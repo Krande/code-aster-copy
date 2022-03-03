@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,11 +40,9 @@ implicit none
 #include "asterfort/inithm.h"
 #include "asterfort/sigmap.h"
 #include "asterfort/dilata.h"
-#include "asterfort/utmess.h"
 #include "asterfort/unsmfi.h"
 #include "asterfort/viporo.h"
 #include "asterfort/virhol.h"
-#include "asterfort/tebiot.h"
 !
 type(THM_DS), intent(in) :: ds_thm
 integer :: ndim, dimcon, nbvari

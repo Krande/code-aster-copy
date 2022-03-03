@@ -22,7 +22,6 @@ implicit none
 !
 #include "asterfort/exixfe.h"
 #include "asterfort/exipat.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 !
 character(len=8), intent(in) :: mesh, model

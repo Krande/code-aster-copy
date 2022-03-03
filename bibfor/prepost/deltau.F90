@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,16 +32,12 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 #include "asterfort/detrsd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jedisp.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rcpare.h"
 #include "asterfort/rnomat.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecnuv.h"
-#include "asterfort/wkvect.h"
     integer :: jrwork, jnbpg, nbpgt, nbordr, nmaini, numpaq, nbmap
     integer :: tspaq, ordini
     character(len=16) :: nomcri, nommet, nomfor, forvie, forcri, grdvie

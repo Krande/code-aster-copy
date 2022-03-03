@@ -23,7 +23,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/cfnbsf.h"
-#include "asterfort/cfnumm.h"
 #include "asterfort/cfzone.h"
 #include "asterfort/codent.h"
 #include "asterfort/jeveuo.h"

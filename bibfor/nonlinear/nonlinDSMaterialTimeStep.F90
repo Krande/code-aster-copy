@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/diinst.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/utmess.h"
-#include "asterfort/nmvcre.h"
 #include "asterfort/nmvcfo.h"
 #include "asterfort/assvec.h"
 #include "asterfort/nmchex.h"

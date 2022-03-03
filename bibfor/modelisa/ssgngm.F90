@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,8 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 #include "asterfort/getvem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gmgnre.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -38,7 +35,6 @@ subroutine ssgngm(noma, iocc, nbgnaj)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/existGrpMa.h"
-#include "asterfort/existGrpNo.h"
 #include "asterfort/addGrpNo.h"
 #include "asterfort/cleanListOfGrpMa.h"
 #include "asterfort/checkListOfGrpMa.h"

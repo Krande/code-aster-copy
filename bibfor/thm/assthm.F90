@@ -49,7 +49,6 @@ implicit none
 #include "asterfort/equthm.h"
 #include "asterfort/equthp.h"
 #include "asterfort/pmathm.h"
-#include "asterfort/utmess.h"
 #include "asterfort/thmGetBehaviour.h"
 #include "asterfort/thmGetBehaviourVari.h"
 #include "asterfort/Behaviour_type.h"

@@ -30,7 +30,6 @@ subroutine cmtref(chmat, nomail)
 #include "asterfort/dismoi.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -41,8 +40,6 @@ subroutine cmtref(chmat, nomail)
 #include "asterfort/nocart.h"
 #include "asterfort/tecart.h"
 #include "asterfort/utimsd.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !

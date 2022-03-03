@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,9 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "asterfort/xbasgl.h"
 #include "asterfort/xcoocy.h"
-#include "asterfort/provec.h"
-#include "asterfort/xnormv.h"
 #include "asterc/r8prem.h"
-#include "asterfort/matinv.h"
 !
     integer :: ndim, nnop
     real(kind=8) :: basloc(*), ff(*), geom(*)

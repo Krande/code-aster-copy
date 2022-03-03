@@ -26,7 +26,6 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/indent.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,7 @@ implicit none
 #include "asterfort/thmTherElas.h"
 #include "asterfort/assert.h"
 #include "asterfort/dilata.h"
-#include "asterfort/tebiot.h"
 #include "asterfort/unsmfi.h"
-#include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"
 !
 type(THM_DS), intent(in) :: ds_thm

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,8 @@ implicit none
 #include "asterfort/GetDevice.h"
 #include "asterfort/nonlinDSPrintTableLine.h"
 #include "asterfort/nmrini.h"
-#include "asterfort/nmrvai.h"
 #include "asterfort/nmrtim.h"
 #include "asterfort/nmtimr.h"
-#include "asterfort/utmess.h"
 #include "asterfort/nmstat_mess.h"
 #include "asterfort/nmstat_table.h"
 #include "asterfort/nmstat_vale.h"

@@ -39,7 +39,6 @@ private
 #include "asterfort/codlet.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/isParallelMesh.h"
-#include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"

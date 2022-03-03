@@ -32,7 +32,6 @@ subroutine vectme(modelz, carelz, mate, mateco, compor, complz,&
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"
-#include "asterfort/nmvcd2.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/reajre.h"
 #include "asterfort/vrcref.h"

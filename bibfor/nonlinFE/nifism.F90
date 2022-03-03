@@ -42,7 +42,6 @@ implicit none
 #include "asterfort/nmmalu.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"

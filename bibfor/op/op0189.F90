@@ -37,7 +37,6 @@ subroutine op0189()
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -53,7 +52,6 @@ subroutine op0189()
 #include "asterfort/typele.h"
 #include "asterfort/trvocz.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecint.h"
 #include "asterfort/voiuti.h"
 !
 !-----------------------------------------------------------------------

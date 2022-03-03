@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine comdtm()
 #include "asterfort/dtmprep.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetc.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/dtmclean.h"

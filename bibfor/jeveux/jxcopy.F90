@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,12 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 #include "asterc/readdr.h"
 #include "asterc/rmfile.h"
 #include "asterc/writdr.h"
-#include "asterfort/codent.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/jeinif.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlidy.h"
 #include "asterfort/jxferm.h"
 #include "asterfort/jxouvr.h"
-#include "asterfort/lxmins.h"
 #include "asterfort/utmess.h"
     character(len=*) :: clsinz, nominz, clsouz, nmoutz
     character(len=1) :: clasin, clasou

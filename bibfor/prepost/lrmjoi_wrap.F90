@@ -29,16 +29,13 @@ subroutine lrmjoi_wrap(nomu, nofimd)
 !
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
-#include "asterfort/codent.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lrmjoi.h"
 #include "asterfort/mdexpm.h"
 #include "asterfort/sdmail.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
     character(len=8) :: nomu
     character(len=*) :: nofimd

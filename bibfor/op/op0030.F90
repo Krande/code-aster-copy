@@ -39,7 +39,6 @@ implicit none
 #include "asterfort/defContactCreateObjects.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/infdbg.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/initel.h"
 #include "asterfort/isParallelMesh.h"

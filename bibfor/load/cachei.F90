@@ -24,7 +24,6 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"

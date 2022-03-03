@@ -24,10 +24,8 @@ subroutine copich(base, ch1z, ch2z)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/codent.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/gcncon.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
@@ -37,7 +35,6 @@ subroutine copich(base, ch1z, ch2z)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
     character(len=1) :: base
     character(len=*) :: ch1z, ch2z
 ! ----------------------------------------------------------------------

@@ -38,8 +38,6 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmelnl.h"
-#include "asterfort/normev.h"
-#include "asterfort/provec.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"

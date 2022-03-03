@@ -24,7 +24,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/char_affe_neum.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/char_crea_cart.h"

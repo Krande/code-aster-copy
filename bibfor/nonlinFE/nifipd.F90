@@ -38,7 +38,6 @@ implicit none
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
 aster_logical :: lMatr, lVect

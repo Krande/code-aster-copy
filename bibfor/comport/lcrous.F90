@@ -54,7 +54,6 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 #include "asterfort/lcsomh.h"
 #include "asterfort/rsliso.h"
 #include "asterfort/rslphi.h"
-#include "asterfort/utmess.h"
     integer :: kpg, ksp, imat, nmat, irtet, itmax, ncompt, nvi
     integer :: nint, testcv, convp
 !

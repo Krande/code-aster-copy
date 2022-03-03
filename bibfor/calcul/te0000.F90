@@ -29,8 +29,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/codent.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/te0001.h"
 #include "asterfort/te0002.h"
 #include "asterfort/te0003.h"

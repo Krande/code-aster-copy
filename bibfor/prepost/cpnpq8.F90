@@ -28,8 +28,6 @@ subroutine cpnpq8(main,numa,coor,ind,nomnoe)
 #include "asterfort/jeexin.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"

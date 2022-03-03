@@ -34,7 +34,6 @@ subroutine ratu3d(iprno, lonlis, klisno, noepou, noma,&
 #include "asterfort/mesomm.h"
 #include "asterfort/raorfi.h"
 #include "asterfort/reajre.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: lonlis, iprno(*)

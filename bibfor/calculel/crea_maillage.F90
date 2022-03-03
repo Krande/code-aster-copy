@@ -24,12 +24,10 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 #include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
@@ -40,13 +38,8 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/juveca.h"
-#include "asterfort/reliem.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/codent.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma, noma2
     character(len=1) :: base

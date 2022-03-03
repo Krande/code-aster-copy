@@ -24,13 +24,10 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !

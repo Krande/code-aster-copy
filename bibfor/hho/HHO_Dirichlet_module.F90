@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,6 @@ private
 #include "asterfort/cesexi.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/fointe.h"
-#include "asterfort/getvc8.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/HHO_size_module.h"

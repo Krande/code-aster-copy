@@ -39,7 +39,6 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rectfc.h"
 #include "asterfort/rectfr.h"
-#include "asterfort/vecint.h"
 #include "asterfort/vpbosc.h"
 #include "asterfort/vpbost.h"
 #include "asterfort/vpecri.h"

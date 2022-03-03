@@ -50,7 +50,6 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 #include "asterfort/jacobi.h"
 #include "asterfort/ratanp.h"
 #include "asterfort/mctge2.h"
-#include "asterfort/mcpstr.h"
 !
     real(kind=8) :: stress(6), strain(6)
     real(kind=8) :: rprops(6), dsidep(6, 6)

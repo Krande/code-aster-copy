@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,7 @@ implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/carces.h"
 #include "asterfort/celces.h"
-#include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesfus.h"
 #include "asterfort/copmod.h"
@@ -43,7 +41,6 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdgeph.h"
-#include "asterfort/mecact.h"
 #include "asterfort/compStress.h"
 #include "asterfort/mecara.h"
 #include "asterfort/mechti.h"
@@ -62,7 +59,6 @@ implicit none
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/rs_getlast.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"

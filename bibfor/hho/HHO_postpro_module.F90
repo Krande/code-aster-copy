@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ private
 #include "asterfort/chpchd.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inical.h"
@@ -43,11 +42,9 @@ private
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/megeom.h"
-#include "asterfort/rs_get_liststore.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
-#include "asterfort/writeVector.h"
 #include "asterfort/readVector.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"

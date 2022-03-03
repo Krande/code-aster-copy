@@ -46,8 +46,6 @@ implicit none
 #include "asterfort/xxmmvd.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/exi_fiss.h"
-#include "asterfort/cnocns.h"
-#include "asterfort/cnsces.h"
 !
 !
     character(len=8), intent(in) :: model

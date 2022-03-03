@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,6 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 #include "asterfort/assert.h"
 #include "asterfort/assmam.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/gcncon.h"
 #include "asterfort/jedbg2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -35,10 +33,7 @@ subroutine asmatr(nbmat, tlimat, licoef, nu, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/masyns.h"
 #include "asterfort/typmat.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 
     character(len=*) :: base, mataz, tlimat(*), licoef, nu
     integer :: nbmat, itysca

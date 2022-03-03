@@ -39,7 +39,6 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
 #include "asterfort/rslipa.h"
 #include "asterfort/rsutro.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !

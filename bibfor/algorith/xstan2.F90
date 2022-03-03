@@ -44,7 +44,6 @@ subroutine xstan2(noma, modele, crit2, lfiss)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/panbno.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcrvol.h"
 #include "asterfort/isnomi.h"

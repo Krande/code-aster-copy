@@ -20,12 +20,9 @@ subroutine fonno52(noma, na, nb, ndim, vnor,vdir)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/gdire3.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/normev.h"
-#include "asterfort/provec.h"
     character(len=8) :: noma
     integer :: na, nb, ndim
     real(kind=8) :: vnor(2, 3), vdir(2, 3)

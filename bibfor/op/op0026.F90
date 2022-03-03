@@ -28,7 +28,6 @@ implicit none
 #include "asterfort/catabl.h"
 #include "asterfort/catabl_ther.h"
 #include "asterfort/infmaj.h"
-#include "asterfort/utmess.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/diinst.h"
 #include "asterfort/nmchai.h"

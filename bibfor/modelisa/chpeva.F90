@@ -40,10 +40,8 @@ subroutine chpeva(chou)
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: n1, ib,  npara,  k, nncp, ibid

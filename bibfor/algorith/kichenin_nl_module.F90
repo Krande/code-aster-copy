@@ -43,7 +43,6 @@ module kichenin_nl_module
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 

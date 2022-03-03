@@ -26,7 +26,6 @@ subroutine asecon(nomsy, neq, mome, resu)
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"

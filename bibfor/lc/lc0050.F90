@@ -36,7 +36,6 @@ implicit none
 #include "asterfort/jevech.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/matrot.h"
-#include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/mat_proto.h"
 #include "blas/daxpy.h"

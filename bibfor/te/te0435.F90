@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,10 @@ implicit none
 #include "asterfort/jevecd.h"
 #include "asterfort/mbxnlr.h"
 #include "asterfort/mbgnlr.h"
-#include "asterfort/mbcine.h"
-#include "asterfort/mbrigi.h"
 #include "asterfort/nmprmb_matr.h"
-#include "asterfort/r8inir.h"
 #include "asterc/r8prem.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/verift.h"
 #include "blas/dcopy.h"
 #include "asterfort/Behaviour_type.h"
 !

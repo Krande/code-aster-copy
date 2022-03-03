@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,6 @@ subroutine promor(nuz, base)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/infbav.h"
-#include "asterfort/infmue.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -39,10 +37,8 @@ subroutine promor(nuz, base)
 #include "asterfort/moinip.h"
 #include "asterfort/moinsr.h"
 #include "asterfort/nbec.h"
-#include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
-#include "asterfort/voiuti.h"
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: nuz

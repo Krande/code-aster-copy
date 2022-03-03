@@ -35,7 +35,6 @@ subroutine te0579(option, nomte)
 !
 !
 #include "asterf_types.h"
-#include "asterfort/abscvf.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2b.h"
@@ -46,7 +45,6 @@ subroutine te0579(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
-#include "asterfort/normev.h"
 #include "asterfort/reeref.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"

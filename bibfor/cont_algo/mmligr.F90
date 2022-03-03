@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,10 @@ implicit none
 #include "asterfort/jecroc.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/mmelem_data_c.h"
-#include "asterfort/mmelem_data_l.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mmlige.h"
 #include "asterfort/wkvect.h"

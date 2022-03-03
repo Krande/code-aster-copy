@@ -21,7 +21,6 @@ subroutine ulaffe(unit, fichie, name, acces, autor)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/codent.h"
-#include "asterfort/ulposi.h"
 #include "asterfort/utmess.h"
     integer :: unit
     character(len=*) :: fichie, name, acces, autor

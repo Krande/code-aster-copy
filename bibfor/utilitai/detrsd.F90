@@ -39,7 +39,6 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/codent.h"
-#include "asterfort/utmess.h"
 #include "asterfort/asmpi_info.h"
 !
 !

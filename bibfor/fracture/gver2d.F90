@@ -54,18 +54,13 @@ subroutine gver2d(nocc, noeud, rinf, rsup)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
     character(len=8) :: config, noeud, fond, kfon
     character(len=24) :: chfond, taillr

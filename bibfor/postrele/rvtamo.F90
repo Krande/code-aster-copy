@@ -23,7 +23,6 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp,&
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"

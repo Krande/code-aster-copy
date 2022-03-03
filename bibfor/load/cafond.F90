@@ -25,7 +25,6 @@ implicit none
 #include "LoadTypes_type.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/alcart.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/char_crea_cart.h"

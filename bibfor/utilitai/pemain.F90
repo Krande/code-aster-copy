@@ -45,7 +45,6 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh,&
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/umalma.h"
-#include "asterfort/uttrii.h"
 #include "asterfort/vtgpld.h"
 #include "asterfort/wkvect.h"
 !

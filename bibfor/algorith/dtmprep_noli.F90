@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ subroutine dtmprep_noli(sd_dtm_)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
-#include "asterfort/copisd.h"
 #include "asterfort/dtmcase_coder.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/dtminivec.h"
@@ -58,20 +57,16 @@ subroutine dtmprep_noli(sd_dtm_)
 #include "asterfort/dtmprep_noli_lub.h"
 #include "asterfort/dtmprep_noli_yacs.h"
 #include "asterfort/dtmsav.h"
-#include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"
 #include "asterfort/nlvint.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
 !   -0.1- Input/output arguments
     character(len=*)          , intent(in) :: sd_dtm_

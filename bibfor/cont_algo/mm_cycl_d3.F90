@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,6 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/normev.h"
-#include "asterfort/mm_cycl_erase.h"
-#include "asterfort/mm_cycl_init.h"
 #include "blas/ddot.h"
 !
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr

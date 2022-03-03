@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,6 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/rcadlv.h"
 #include "asterfort/assert.h"

@@ -27,7 +27,6 @@ implicit none
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/exixfe.h"
@@ -45,7 +44,6 @@ implicit none
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/me2mme_evol.h"
 !
 character(len=8) :: model, cara_elem, kbid, lcmp(5)

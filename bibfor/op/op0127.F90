@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,6 @@ subroutine op0127()
 #include "asterfort/numgcy.h"
 #include "asterfort/numgen.h"
 #include "asterfort/nummod.h"
-#include "asterfort/smosli.h"
 #include "asterfort/strmag.h"
     character(len=8) :: nomres, modgen, modmec, option
     character(len=16) :: nomcon, nomope

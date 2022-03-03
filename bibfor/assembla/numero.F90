@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,6 @@ implicit none
 #include "asterfort/crnulg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gettco.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/numer2.h"
 #include "asterfort/numcch.h"
 #include "asterfort/numoch.h"

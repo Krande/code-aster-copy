@@ -44,7 +44,6 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
 #include "asterc/r8prem.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lcprsc.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/srdhds.h"
 #include "asterfort/srhtet.h"
 

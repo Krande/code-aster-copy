@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ implicit none
 #include "asterfort/nbgrel.h"
 #include "asterfort/typele.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"

@@ -36,8 +36,6 @@ subroutine xasdpl(model, celmod, prol0, chou)
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
@@ -51,7 +49,6 @@ subroutine xasdpl(model, celmod, prol0, chou)
 #include "asterfort/exithm.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"

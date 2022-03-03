@@ -20,7 +20,6 @@ subroutine rc32s0(option, lieu, seis)
     implicit   none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/rctres.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/codent.h"
 #include "asterfort/jeexin.h"

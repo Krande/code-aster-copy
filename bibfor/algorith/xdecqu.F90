@@ -33,7 +33,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/reeref.h"
-#include "asterfort/utmess.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xalgo2.h"
 #include "asterfort/xalgo3.h"

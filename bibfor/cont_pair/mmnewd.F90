@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 #include "asterfort/assert.h"
 #include "asterfort/mmnonf.h"
 #include "asterfort/mmdonf.h"
-#include "asterfort/mmreli.h"
 #include "asterfort/mmtang.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ implicit none
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
-#include "asterfort/xbasgl.h"
 #include "asterfort/xdeffk_wrap.h"
 #include "asterfort/xderfk_wrap.h"
 #include "asterfort/coor_cyl.h"

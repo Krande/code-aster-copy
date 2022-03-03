@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine trmail(ific, nocc)
 #include "asterfort/tresu_tole.h"
 #include "asterfort/tresu_read_refe.h"
 #include "asterfort/tresu_mail.h"
-#include "asterfort/utmess.h"
     integer, intent(in) :: ific
     integer, intent(in) :: nocc
 !     COMMANDE:  TEST_RESU

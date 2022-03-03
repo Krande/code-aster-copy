@@ -24,15 +24,11 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
 #include "asterfort/char_affe_neum.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
-#include "asterfort/vetyma.h"
 !
 character(len=8), intent(in) :: load, mesh, model
 integer, intent(in) :: geomDime

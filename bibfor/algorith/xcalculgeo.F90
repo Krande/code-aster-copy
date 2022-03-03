@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,6 @@ subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
 !
 #include "jeveux.h"
 #include "asterfort/calcul.h"
-#include "asterfort/celces.h"
-#include "asterfort/cescns.h"
-#include "asterfort/cnscno.h"
 
     integer             :: jbl, jvp, jbeta, jlistp
     integer             :: node, ndim

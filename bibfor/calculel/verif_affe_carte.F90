@@ -23,7 +23,6 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -37,13 +36,11 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
 #include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
-#include "asterfort/imprsd.h"
 #include "asterfort/list_grma.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/etenca.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jxveri.h"
 #include "asterc/r8prem.h"
 !
     character(len=19), intent(in) :: ligrmo

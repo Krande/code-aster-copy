@@ -45,7 +45,6 @@ subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
 !   ====================================================================

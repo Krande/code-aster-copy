@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/nmhuj.h"
 #include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
 !
 type(Behaviour_Integ), intent(in) :: BEHinteg

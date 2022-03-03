@@ -26,7 +26,6 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/exisd.h"
-#include "asterfort/gcnco2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"

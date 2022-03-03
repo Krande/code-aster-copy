@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,12 +28,8 @@ implicit none
 #include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/apcoor.h"
 #include "asterfort/aptype.h"
-#include "asterfort/gapint.h"
-#include "asterfort/jelira.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/infdbg.h"
@@ -46,8 +42,6 @@ implicit none
 #include "asterfort/mmbouc.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mmfield_prep.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/lac_gapi.h"
 !
 character(len=8), intent(in) :: mesh

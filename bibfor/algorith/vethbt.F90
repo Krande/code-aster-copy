@@ -27,7 +27,6 @@ implicit none
 #include "asterfort/gcnco2.h"
 #include "asterfort/inical.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/detrsd.h"

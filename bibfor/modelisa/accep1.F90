@@ -35,7 +35,6 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/exlima.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

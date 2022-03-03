@@ -27,14 +27,11 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/matrot.h"
 #include "asterfort/rcangm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utpvgl.h"
-#include "asterfort/utpvlg.h"
 #include "asterfort/utmess.h"
 !
     character(len=16) :: option, nomte

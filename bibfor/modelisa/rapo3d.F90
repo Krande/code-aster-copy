@@ -55,7 +55,6 @@ subroutine rapo3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/veripl.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !

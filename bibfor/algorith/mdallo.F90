@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeveut.h"
 #include "asterfort/nlget.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/refdaj.h"

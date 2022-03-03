@@ -39,7 +39,6 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
 #include "asterfort/lxliis.h"
 #include "asterfort/nutygm.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !

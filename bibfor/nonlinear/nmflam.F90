@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,14 +39,12 @@ implicit none
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/freqom.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmflal.h"
 #include "asterfort/nmflin.h"
@@ -54,7 +52,6 @@ implicit none
 #include "asterfort/nmop45.h"
 #include "asterfort/omega2.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpcres.h"
 #include "asterfort/vpleci.h"

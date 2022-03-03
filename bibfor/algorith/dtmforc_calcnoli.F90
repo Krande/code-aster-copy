@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,6 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterc/r8prem.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
-#include "asterfort/distno.h"
-#include "asterfort/dtmget.h"
-#include "asterfort/fnorm.h"
-#include "asterfort/fointe.h"
-#include "asterfort/ftang.h"
 #include "asterfort/dtmforc_choc.h"
 #include "asterfort/dtmforc_ants.h"
 #include "asterfort/dtmforc_flam.h"
@@ -51,21 +46,7 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/dtmforc_rede.h"
 #include "asterfort/dtmforc_revi.h"
 #include "asterfort/dtmforc_rotf.h"
-#include "asterfort/dtmforc_yacs.h"
-#include "asterfort/dtmforc_lub.h"
-#include "asterfort/ftang_rail.h"
-#include "asterfort/gloloc.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/locglo.h"
 #include "asterfort/nlget.h"
-#include "asterfort/nlsav.h"
-#include "asterfort/tophys.h"
-#include "asterfort/tophys_ms.h"
-#include "asterfort/togene.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 
 !
 !   -0.1- Input/output arguments

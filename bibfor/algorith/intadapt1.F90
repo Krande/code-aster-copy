@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine intadapt1(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intsav.h"
 #include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
 !   -0.1- Input/output arguments
     character(len=*) , intent(in) :: sd_dtm_

@@ -74,14 +74,9 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: trav1, trav2, trav3, chfond, chamno, coorn

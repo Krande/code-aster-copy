@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,7 @@ implicit none
 !
 private
 #include "asterf_types.h"
-#include "asterfort/fointe.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/jevech.h"
-#include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
 #include "jeveux.h"

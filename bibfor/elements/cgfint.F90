@@ -35,7 +35,6 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cgcine.h"
 #include "asterfort/codere.h"
-#include "asterfort/comp1d.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmiclg.h"
 #include "asterfort/r8inir.h"

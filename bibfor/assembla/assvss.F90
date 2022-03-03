@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
-#include "asterfort/gcncon.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -44,7 +43,6 @@ subroutine assvss(base, vec, vecel, nu, vecpro,&
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/ssvalv.h"
-#include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !

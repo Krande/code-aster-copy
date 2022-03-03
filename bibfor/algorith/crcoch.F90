@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,28 +30,20 @@ subroutine crcoch()
 #include "asterc/r8vide.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/exisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fondpl.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jedupo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/juveca.h"
-#include "asterfort/mrmult.h"
-#include "asterfort/mtdscr.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"

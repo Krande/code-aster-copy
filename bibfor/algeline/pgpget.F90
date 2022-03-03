@@ -54,7 +54,6 @@ subroutine pgpget(sd_pgp, param, iobs, lonvec, savejv,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
 !

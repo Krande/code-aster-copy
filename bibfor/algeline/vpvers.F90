@@ -32,8 +32,6 @@ subroutine vpvers(eigsol, modes, checksd)
 #include "asterfort/assert.h"
 #include "asterfort/exisd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jelibe.h"
-#include "asterfort/jelira.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/utmess.h"

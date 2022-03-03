@@ -41,8 +41,6 @@ implicit none
 #include "asterfort/nonlinSubStruCompute.h"
 #include "asterfort/nonlinNForceCompute.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmvcpr.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"

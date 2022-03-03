@@ -50,7 +50,6 @@ implicit none
 #include "asterfort/utflmd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/rsSelectStoringIndex.h"
 #include "asterfort/rsGetOneBehaviourFromResult.h"
 #include "asterfort/convertFieldNodeToNeutElem.h"

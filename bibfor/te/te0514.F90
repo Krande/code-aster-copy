@@ -22,7 +22,6 @@ subroutine te0514(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/dismoi.h"

@@ -45,7 +45,6 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
 !   ====================================================================

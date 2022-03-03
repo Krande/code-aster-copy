@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     ----------
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismgd.h"
 #include "asterfort/dismme.h"
 #include "asterfort/dismnu.h"
 #include "asterfort/gettco.h"

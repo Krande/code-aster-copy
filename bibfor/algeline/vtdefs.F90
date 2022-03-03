@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,14 +40,9 @@ subroutine vtdefs(chpout, chpin, base, typc)
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/gcncon.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/vtdef1.h"
-#include "asterfort/wkvect.h"
 !
     character(len=*) :: chpout, chpin, base, typc
 !

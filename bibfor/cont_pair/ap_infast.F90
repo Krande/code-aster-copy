@@ -34,13 +34,10 @@ implicit none
 #include "asterfort/apcoor.h"
 #include "asterfort/aptype.h"
 #include "asterfort/prjint.h"
-#include "asterfort/gt_linoma.h"
 #include "asterfort/gtctma.h"
 #include "asterfort/gtclno.h"
 #include "asterfort/gtlmex.h"
 #include "asterfort/codent.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
 character(len=8), intent(in) :: mesh
 character(len=19), intent(in) :: newgeo

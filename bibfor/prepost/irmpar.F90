@@ -29,9 +29,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 !

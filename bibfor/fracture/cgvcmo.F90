@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine cgvcmo(modele, nomfis, typfis, ndim)
 #include "asterfort/exixfe.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 
     character(len=8), intent(in) :: modele, nomfis, typfis

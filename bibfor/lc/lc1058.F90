@@ -32,7 +32,6 @@ implicit none
 #include "asterfort/mfront_get_mater_value.h"
 #include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/assert.h"
-#include "asterfort/lcicma.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"

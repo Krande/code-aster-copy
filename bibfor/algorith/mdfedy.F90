@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,6 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
 #include "asterfort/envdep.h"
 #include "asterfort/recfor.h"
 #include "asterfort/nlget.h"
-#include "asterfort/nlsav.h"
     integer :: numpas, nbmode, nbpal
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*)
     real(kind=8) :: dplmod(nbpal, nbmode, *), dt, dtsto, tcf

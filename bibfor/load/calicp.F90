@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
 #include "asterfort/getnode.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"

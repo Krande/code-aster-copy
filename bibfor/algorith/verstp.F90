@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,19 +24,12 @@ subroutine verstp(model     , lload_name,  lload_info, cara_elem, mate     ,&
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/calcul.h"
-#include "asterfort/corich.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/inical.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/load_list_info.h"
 #include "asterfort/load_neut_comp.h"
 #include "asterfort/load_neut_prep.h"
-#include "asterfort/mecara.h"
-#include "asterfort/megeom.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/resi_ther.h"

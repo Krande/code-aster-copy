@@ -51,8 +51,6 @@ subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
     implicit none
 #include "asterf_types.h"
 #include "asterfort/rcvala.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/verift.h"
 #include "asterfort/get_varc.h"
     aster_logical :: cplan
     integer :: ndim, imate, iret, ndimsi

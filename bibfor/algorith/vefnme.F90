@@ -38,7 +38,6 @@ implicit none
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/reajre.h"
-#include "asterfort/exisd.h"
 #include "asterfort/xajcin.h"
 #include "asterfort/maveElemCreate.h"
 !

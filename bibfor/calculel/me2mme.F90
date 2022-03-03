@@ -43,10 +43,8 @@ implicit none
 #include "asterfort/memare.h"
 #include "asterfort/nmvcd2.h"
 #include "asterfort/reajre.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/me2mme_evol.h"
 !
     character(len=8) :: model, cara_elem, kbid, lcmp(5)

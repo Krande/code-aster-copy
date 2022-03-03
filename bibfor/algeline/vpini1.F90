@@ -42,8 +42,6 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo,&
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelibe.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdefs.h"

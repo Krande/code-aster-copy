@@ -52,14 +52,12 @@ implicit none
 #include "asterfort/pcptcc.h"
 #include "asterfort/reliem.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/rsexch.h"
 #include "asterfort/rsexc1.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/srmedo.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecint.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbordr, codret, tbid(1)

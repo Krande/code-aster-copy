@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,13 +30,11 @@ use elg_data_module
 #include "asterfort/elg_calc_solu.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/resou1.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
 ! But : faire "resoud" si ELIM_LAGR='OUI'
 !-----------------------------------------------------------------------

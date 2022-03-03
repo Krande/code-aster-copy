@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine mbgnlr(lVect , lMatr ,&
 !
 implicit none
 !
-#include "asterfort/r8inir.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "jeveux.h"
@@ -37,7 +36,6 @@ implicit none
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 #include "asterfort/subacv.h"
-#include "asterfort/utmess.h"
 !
 aster_logical, intent(in) :: lVect, lMatr
 character(len=4) :: fami

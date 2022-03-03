@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,6 @@ subroutine dtminit(sd_dtm_, sd_int_)
 #include "asterfort/dtmacce.h"
 #include "asterfort/dtmarch.h"
 #include "asterfort/dtmbuff.h"
-#include "asterfort/dtmforc.h"
 #include "asterfort/dtmforeq.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/dtminivec.h"
@@ -39,19 +38,12 @@ subroutine dtminit(sd_dtm_, sd_int_)
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mdinit.h"
 #include "asterfort/nlget.h"
-#include "asterfort/nlsav.h"
 #include "asterfort/nlinivec.h"
 #include "asterfort/preres.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 
 !
 !   -0.1- Input/output arguments

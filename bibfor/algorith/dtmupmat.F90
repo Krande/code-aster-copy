@@ -31,7 +31,6 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
 #include "blas/dcopy.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/coefmo.h"
 #include "asterfort/dtmbuff.h"
 #include "asterfort/dtmcase_coder.h"
 #include "asterfort/dtmforc.h"

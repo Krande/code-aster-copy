@@ -28,7 +28,6 @@ subroutine xjonct(noma, modelx)
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"

@@ -36,7 +36,6 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 #include "asterfort/jeveut.h"
 #include "asterfort/nlbuff.h"
 #include "asterfort/nlget.h"
-#include "asterfort/nlsav.h"
 #include "asterfort/jgetptc.h"
 
 !   ====================================================================

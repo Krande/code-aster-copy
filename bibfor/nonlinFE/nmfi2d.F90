@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/gedisc.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmfisa.h"
-#include "asterfort/utmess.h"
 !
 integer :: mate, npg, lgpg, codret
 real(kind=8) :: geom(2, 4), deplm(8), ddepl(8), tm, tp

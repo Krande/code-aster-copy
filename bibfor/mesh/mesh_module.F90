@@ -36,8 +36,6 @@ private
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -47,9 +45,7 @@ private
 #include "asterfort/lxlgut.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-#include "asterfort/teattr.h"
 #include "asterfort/utmasu.h"
-#include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 ! ==================================================================================================

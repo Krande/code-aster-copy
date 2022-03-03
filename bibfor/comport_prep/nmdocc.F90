@@ -25,7 +25,6 @@ use Behaviour_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_info.h"
 #include "asterfort/comp_meca_info.h"
@@ -36,7 +35,6 @@ implicit none
 #include "asterfort/comp_meca_read.h"
 #include "asterfort/comp_meca_save.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
 !

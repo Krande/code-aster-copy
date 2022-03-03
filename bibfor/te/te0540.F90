@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,6 @@ character(len=16) :: option, nomte
 #include "asterfort/pmfinfo.h"
 #include "asterfort/pmfite.h"
 #include "asterfort/pmfitebkbbts.h"
-#include "asterfort/pmfitg.h"
 #include "asterfort/pmfits.h"
 #include "asterfort/pmfitsbts.h"
 #include "asterfort/pmfmats.h"
@@ -68,7 +67,6 @@ character(len=16) :: option, nomte
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"

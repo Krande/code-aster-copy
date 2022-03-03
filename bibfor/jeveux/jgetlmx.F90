@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,9 @@ subroutine jgetlmx(nomlu, ival)
     implicit none
 #include "asterf_types.h"
 #include "jeveux_private.h"
-#include "asterfort/codent.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjcroc.h"
 #include "asterfort/jjlide.h"
-#include "asterfort/jjlirs.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu

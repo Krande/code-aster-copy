@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,9 @@ subroutine porea3(nno, nc, deplm, deplp, geom,&
 #include "asterc/r8rddg.h"
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"
-#include "asterfort/gareac.h"
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
-#include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
-#include "asterfort/utmess.h"
 #include "blas/ddot.h"
 
 integer :: nno, nc

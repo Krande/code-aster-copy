@@ -34,7 +34,6 @@ use THM_type
 implicit none
 !
 #include "jeveux.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/xfract.h"
 #include "asterfort/xhlag4.h"
 #include "asterfort/xhlan5.h"

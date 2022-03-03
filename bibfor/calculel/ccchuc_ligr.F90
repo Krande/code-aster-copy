@@ -24,7 +24,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jeveuo.h"

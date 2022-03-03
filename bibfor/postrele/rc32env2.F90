@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine rc32env2(iocc1,iocc2, ke, lieu, fen)
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/rctres.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/lcqeqv.h"
 #include "asterfort/rcjaco.h"

@@ -37,7 +37,6 @@ implicit none
 #include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
 #include "asterfort/load_neum_comp.h"
-#include "asterfort/load_neum_prep.h"
 !
 ! person_in_charge: jacques.pellet at edf.fr
 !

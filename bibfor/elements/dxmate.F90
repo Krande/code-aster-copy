@@ -32,7 +32,6 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 #include "asterfort/moytem.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
-#include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcadlv.h"
 #include "asterfort/rcvalt.h"

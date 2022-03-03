@@ -23,7 +23,6 @@ subroutine manopx(model, ligrel, option, param, chsgeo, exixfm,&
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
-#include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indk32.h"

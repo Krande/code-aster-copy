@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,21 +24,16 @@ subroutine duplisp(celssp, celasp, carel, base)
 #include "asterfort/assert.h"
 #include "asterfort/alchml.h"
 #include "asterfort/cesvar.h"
-#include "asterfort/cesexi.h"
-#include "asterfort/cmpcha.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
               character(len=*), intent(in) :: celssp
               character(len=*), intent(in) :: celasp

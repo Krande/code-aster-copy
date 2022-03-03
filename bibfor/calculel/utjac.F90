@@ -43,8 +43,6 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
     integer :: ipg, idfde, niv, ifm, nno
     real(kind=8) :: jacob, geom(*)
     aster_logical :: l2d

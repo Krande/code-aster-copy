@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,17 +40,13 @@ implicit none
 #include "asterfort/cldual_maj.h"
 #include "asterfort/cont_init.h"
 #include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/initia.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/ndnpas.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmimin.h"
 #include "asterfort/nmnkft.h"
-#include "asterfort/nmvcle.h"
 #include "asterfort/nonlinDSMaterialTimeStep.h"
 #include "asterfort/nonlinInitDisp.h"
 #include "asterfort/utmess.h"

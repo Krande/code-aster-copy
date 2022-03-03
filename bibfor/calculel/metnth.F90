@@ -33,7 +33,6 @@ subroutine metnth(modele, lchar, cara, mate, mateco, time,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/memare.h"

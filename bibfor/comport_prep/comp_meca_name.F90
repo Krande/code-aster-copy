@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ implicit none
 #include "asterc/lcvari.h"
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/comp_mfront_vname.h"
 #include "asterfort/comp_meca_code.h"
 !

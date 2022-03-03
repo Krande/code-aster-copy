@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/utmess.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8pi.h"
@@ -40,16 +39,13 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/lisccr.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntetcr.h"
 #include "asterfort/ntnoli.h"
-#include "asterfort/prstoc.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/resoud.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/rsorac.h"
 #include "asterfort/tabcor.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"

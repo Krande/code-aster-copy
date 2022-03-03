@@ -80,7 +80,6 @@ implicit none
 #include "asterfort/lxlgut.h"
 #include "asterfort/rdtmai.h"
 #include "asterfort/getelem.h"
-#include "asterfort/reliem.h"
 #include "asterfort/getnode.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"

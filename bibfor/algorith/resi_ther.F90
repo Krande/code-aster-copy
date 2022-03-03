@@ -25,7 +25,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
-#include "asterfort/gcnco2.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/reajre.h"

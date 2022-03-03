@@ -36,7 +36,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/elrfvf.h"
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
-#include "asterfort/provec.h"
 #include "asterfort/tecael.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xcfacf.h"

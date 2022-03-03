@@ -35,7 +35,6 @@ implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/xfract.h"
 #include "asterfort/xhlan5.h"
 #include "asterfort/xhmsa6.h"

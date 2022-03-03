@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine ssdmu1(dref, crit, prec, geo1, geo2,&
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 !
 character(len=*) :: crit
 real(kind=8) :: prec, geo1(3), geo2(3), dref

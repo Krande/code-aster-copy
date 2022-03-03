@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,8 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent,&
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
-#include "asterfort/infbav.h"
-#include "asterfort/infmue.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inschn.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mltalc.h"
     integer :: nbnd, nbsn, lgind, nbnd1
     integer :: supnd(nbsn+1), invsup(nbnd), parent(nbsn)

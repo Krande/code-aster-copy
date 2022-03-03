@@ -41,7 +41,6 @@ implicit none
 #include "asterfort/mavec.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/poutre_modloc.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"

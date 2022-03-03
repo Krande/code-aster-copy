@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,9 +41,7 @@ implicit none
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
 #include "asterfort/scalai.h"
-#include "asterfort/teattr.h"
 #include "asterfort/typele.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 
     integer :: opt

@@ -30,14 +30,11 @@ subroutine dtmallo(sd_dtm_)
 #include "asterfort/dtmsav.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mdallo.h"
 #include "asterfort/mdlibe.h"
 #include "asterfort/nlget.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 
 !
 !   -0.1- Input/output arguments

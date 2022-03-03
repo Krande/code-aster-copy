@@ -33,7 +33,6 @@ implicit none
 #include "asterfort/load_list_info.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 !

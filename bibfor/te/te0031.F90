@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/cosiro.h"
 #include "asterfort/dkqmas.h"
 #include "asterfort/dkqrig.h"
@@ -47,8 +46,6 @@ implicit none
 #include "asterfort/pmavec.h"
 #include "asterfort/q4gmas.h"
 #include "asterfort/q4grig.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/t3grig.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"

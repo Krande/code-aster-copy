@@ -51,7 +51,6 @@ subroutine xmulhm(contac, ddls, ddlc, ddlm, jaint, ifiss,&
 ! --- LISTE DES LAMBDAS ACTIFS
 !
 #include "asterfort/conare.h"
-#include "asterfort/reeref.h"
 #include "asterfort/xplmat.h"
 #include "asterfort/xxmmvd.h"
     integer :: contac, ddlc, ddlm, jaint, ifiss, jheano, vstnc(*)

@@ -23,7 +23,6 @@ implicit none
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/alcart.h"
 #include "asterfort/char_crea_cart.h"
 #include "asterfort/assert.h"
 #include "asterfort/exixfe.h"

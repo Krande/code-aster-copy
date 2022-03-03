@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,8 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter, tabai)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/xelfis_lists.h"
 #include "asterfort/xxmmvd.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
     character(len=8) :: noma, nomo, fiss
     character(len=19) :: faclon, ainter, tabai
 !

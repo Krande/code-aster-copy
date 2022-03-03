@@ -30,7 +30,6 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecael.h"
