@@ -443,6 +443,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.FieldOnCellsChar8` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.FieldOnCellsChar8
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.FieldOnCellsComplex` object
 ================================================================================
 
@@ -470,6 +479,15 @@
 
 
 ================================================================================
+:py:class:`~code_aster.Objects.FieldOnNodesChar8` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.FieldOnNodesChar8
+   :show-inheritance:
+   :members:
+
+
+================================================================================
 :py:class:`~code_aster.Objects.FieldOnNodesComplex` object
 ================================================================================
 
@@ -483,6 +501,15 @@
 ================================================================================
 
 .. autoclass:: code_aster.Objects.FieldOnNodesDescription
+   :show-inheritance:
+   :members:
+
+
+================================================================================
+:py:class:`~code_aster.Objects.FieldOnNodesLong` object
+================================================================================
+
+.. autoclass:: code_aster.Objects.FieldOnNodesLong
    :show-inheritance:
    :members:
 
