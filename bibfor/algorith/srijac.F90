@@ -48,7 +48,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srbpri.h"
 #include "asterfort/srcalg.h"
@@ -395,7 +394,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     !!! produit matriciel hook*d(phiv)/d(sig)*gv
     dphiv=av*nv/patm*(seuilv/patm)**(nv-1.d0)
 
-    call lcprsv(dphiv,dfvdsi,dphvds)
+    dphvds(1:ndt) = dphiv * dfvdsi(1:ndt)
     hnlgv(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gv(1:ndt))
     call lcprte(hnlgv,dphvds,hnldfg)
 
@@ -433,7 +432,7 @@ subroutine srijac(nmat,materf,timed,timef,&
 
     !!! assemblage final
     dr1dy3(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dgpdxi(1:ndt))
-    call lcprsv(dlambd,dr1dy3,dr1dy4)
+    dr1dy4(1:ndt) = dlambd * dr1dy3(1:ndt)
 
     do i=1,ndt
         drdy(i,ndt+2)=dr1dy4(i)/mu
@@ -469,8 +468,8 @@ subroutine srijac(nmat,materf,timed,timef,&
         !!! assemblage d(r1)/d(y4)
         dphidx=dphiv*dfdxiv
 
-        call lcprsv(dphidx,gv,dphdxg)
-        call lcprsv(phiv,dgvdxi,phdgdx)
+        dphdxg(1:ndt) = dphidx * gv(1:ndt)
+        phdgdx(1:ndt) = phiv * dgvdxi(1:ndt)
         vetemp(1:ndt) = dphdxg(1:ndt) + phdgdx(1:ndt)
         dr1dy4(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), vetemp(1:ndt))
 

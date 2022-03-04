@@ -34,7 +34,6 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 !     OUT DNDISG :  DERIVEE DE N PAR RAPPORT A SIGMA (NDT X NDT)
 !     ------------------------------------------------------------------
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkdbds.h"
     integer :: nmat, nvi, val
@@ -88,7 +87,7 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp,&
 !
 ! --- CONSTRUCTION DE DSII/D(DEVSIG)
     unssii = un/sii
-    call lcprsv(unssii, devsig, dsiids)
+    dsiids(1:ndt, 1) = unssii * devsig(1:ndt)
 !
 ! --- CALCUL DE D(BPRIME)/D(DEVSIG) ET D(BPRIME)/D(I1)
     call lkdbds(nmat, materf, i1, devsig, nvi,&

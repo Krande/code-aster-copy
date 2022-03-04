@@ -108,7 +108,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/hujres.h"
 #include "asterfort/hujtel.h"
 #include "asterfort/hujtid.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
@@ -615,7 +614,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 else
                    det=0.
                 endif
-                call lcprsv(det, dsig, dsig)
+                dsig(1:ndt) = det * dsig(1:ndt)
 
                 sigf = sigd0 + dsig
 !

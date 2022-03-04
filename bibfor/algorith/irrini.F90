@@ -24,7 +24,6 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 !
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/rcvarc.h"
 #include "blas/ddot.h"
 !
@@ -131,10 +130,10 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
             dfds(i) = 0.d0
 10          continue
         else
-            call lcprsv(1.5d0/s, dev, dfds)
-            call lcprsv(dpi, dfds, vtmp1)
+            dfds(1:ndt) = (1.5d0/s) * dev(1:ndt)
+            vtmp1(1:ndt) = dpi * dfds(1:ndt)
             vtmp1(1:ndt) = deps(1:ndt) - vtmp1(1:ndt)
-            call lcprsv(dg, id3d, vtmp2)
+            vtmp2(1:ndt) = dg * id3d(1:ndt)
             vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
             vtmp1(1:ndt) = matmul(hook(1:ndt,1:ndt), vtmp1(1:ndt))
             yy = dot_product(dfds(1:ndt), vtmp1(1:ndt))
@@ -161,9 +160,9 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
         endif
 !
 !        DSIG
-        call lcprsv((dpi+dp), dfds, vtmp1)
+        vtmp1(1:ndt) = ((dpi+dp)) * dfds(1:ndt)
         vtmp1(1:ndt) = deps(1:ndt) - vtmp1(1:ndt)
-        call lcprsv(dg, id3d, vtmp2)
+        vtmp2(1:ndt) = dg * id3d(1:ndt)
         vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
         dsig(1:ndt) = matmul(hook(1:ndt,1:ndt), vtmp1(1:ndt))
 !        DY

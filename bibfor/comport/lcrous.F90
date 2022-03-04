@@ -50,7 +50,6 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 #include "asterfort/lchydr.h"
 #include "asterfort/lcnrte.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcsomh.h"
 #include "asterfort/rsliso.h"
 #include "asterfort/rslphi.h"
@@ -139,7 +138,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
         if (dsig .ge. nsigd) then
             sigf(:) = zero
         else
-            call lcprsv(un-dsig/nsigd, sigd, sigf)
+            sigf(1:ndt) = (un-dsig/nsigd) * sigd(1:ndt)
         endif
         vinf(1) = pi
         vinf(2) = un
@@ -163,7 +162,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 !
 ! -- RIG : CONTRAINTE REDUITE
     unrhod = (un-f0)/(un-fitot)
-    call lcprsv(unrhod, sigd, rigd)
+    rigd(1:ndt) = unrhod * sigd(1:ndt)
 !
 ! -- RIGDMO : CONTRAINTE MOYENNE      REDUITE PRECEDENT
 ! -- RIGDDV : CONTRAINTE DEVIATORIQUE REDUITE PRECEDENT
@@ -172,11 +171,11 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     call lcsomh(rigd, -rigdmo, rigdd2)
 ! -- CALCUL DE RIELEQ
 !CCCCCCCCCCCCCCCCCCCCCCCCCCC
-    call lcprsv((demuth+(un-theta)*deumum)/deumum, rigddv, rigddv)
-    call lcprsv(deuxmu/deumum, rigdd2, rigdd2)
+    rigddv(1:ndt) = ((demuth+(un-theta)*deumum)/deumum) * rigddv(1:ndt)
+    rigdd2(1:ndt) = (deuxmu/deumum) * rigdd2(1:ndt)
     rigdmo = rigdmo *(theta*troisk+(un-theta)*troikm)/troikm
 !CCCCCCCCCCCCCCCCCCCCCCCCCCC
-    call lcprsv(demuth, depsdv, rigel)
+    rigel(1:ndt) = demuth * depsdv(1:ndt)
     rigel(1:ndt) = rigddv(1:ndt) + rigel(1:ndt)
     rieleq = lcnrts(rigel)
 !
@@ -372,7 +371,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
 ! -- CONVERGENCE---------------
  20 continue
 ! -- CALCUL DE RIELEQ AVEC THETA =1----
-    call lcprsv(deuxmu, depsdv, rigel)
+    rigel(1:ndt) = deuxmu * depsdv(1:ndt)
     rigel(1:ndt) = rigddv(1:ndt) + rigel(1:ndt)
     rieleq = lcnrts(rigel)
     dp=p-pi
@@ -383,9 +382,9 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax,&
     vinf(2) = f
     vinf(nvi) = un
     rhof = (un-ftot)/(un-f0)
-    call lcprsv(rigeq/rieleq, rigel, rigfdv)
+    rigfdv(1:ndt) = (rigeq/rieleq) * rigel(1:ndt)
     call lcsomh(rigfdv, rigm, rigf)
-    call lcprsv(rhof, rigf, sigf)
+    sigf(1:ndt) = rhof * rigf(1:ndt)
 !
 !    CALL DE LA DISSIPATION PLASTIQUE  (CF. NOTE HT-26/04/027)
 !----------------------------------

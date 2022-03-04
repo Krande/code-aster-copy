@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,6 @@ subroutine rslcvx(fami, kpg, ksp, imat, nmat,&
 !       ----------------------------------------------------------------
 #include "asterfort/lchydr.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcsomh.h"
 #include "asterfort/rsliso.h"
     integer :: nmat, imat, kpg, ksp
@@ -49,6 +48,9 @@ subroutine rslcvx(fami, kpg, ksp, imat, nmat,&
     real(kind=8) :: sig(6), rig(6), rigdv(6), rigm, vin(3)
     real(kind=8) :: unrho, d, s1, p, f, f0, rp, drdp
     real(kind=8) :: un, argmax
+!
+    integer :: ndt, ndi
+    common /tdim/ ndt, ndi
 !
     parameter       ( un     = 1.d0   )
 !       ----------------------------------------------------------------
@@ -66,7 +68,7 @@ subroutine rslcvx(fami, kpg, ksp, imat, nmat,&
 ! --    MATERIAU SAIN
     else
         unrho = (un-f0)/(un-f)
-        call lcprsv(unrho, sig, rig)
+        rig(1:ndt) = unrho * sig(1:ndt)
         call lchydr(rig, rigm)
         call lcsomh(rig, -rigm, rigdv)
         call rsliso(fami, kpg, ksp, '+', imat,&

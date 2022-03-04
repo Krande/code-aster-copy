@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,6 @@ subroutine chbfs(sig, x1, x2, dfds)
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsv.h"
     integer :: n, nd
     real(kind=8) :: dfds(6), sig(6), x1(6), x2(6), dev(6), s
     common /tdim/   n , nd
@@ -39,8 +38,7 @@ subroutine chbfs(sig, x1, x2, dfds)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call lcdevi(sig, dev)
-    dev(1:n) = dev(1:n) - x1(1:n)
-    dev(1:n) = dev(1:n) - x2(1:n)
-    s = lcnrts ( dev )
-    call lcprsv(1.5d0 / s, dev, dfds)
+    dev(1:n) = dev(1:n) - x1(1:n) - x2(1:n)
+    s = lcnrts(dev)
+    dfds(1:n) = (1.5d0/s) * dev(1:n)
 end subroutine

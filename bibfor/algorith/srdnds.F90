@@ -39,7 +39,6 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
 
     implicit   none
 
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srdbds.h"
 
@@ -101,7 +100,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
 
     !!! Construction de d(sii)/d(s)
     unssii=1.d0/sii
-    call lcprsv(unssii,devsig,dsiids)
+    dsiids(1:ndt,1) = unssii * devsig(1:ndt)
 
     !!! Calcul de d(beta')/d(s) et d(beta')/d(i1)
     call srdbds(nmat,materf,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)

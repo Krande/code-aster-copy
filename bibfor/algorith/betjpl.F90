@@ -41,7 +41,6 @@ implicit none
 #include "asterfort/betfpp.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
@@ -120,8 +119,8 @@ implicit none
 !
         coef1 = un / (rac2 * b * sigeq)
         coef2 = a / (trois * b)
-        call lcprsv(coef1, dev, trav1)
-        call lcprsv(coef2, pi0, trav2)
+        trav1(1:ndt) = coef1 * dev(1:ndt)
+        trav2(1:ndt) = coef2 * pi0(1:ndt)
         dfcds(1:ndt) = trav1(1:ndt) + trav2(1:ndt)
     endif
 !
@@ -131,8 +130,8 @@ implicit none
 !
         coef1 = un / (rac2 * d * sigeq)
         coef2 = c / (trois * d)
-        call lcprsv(coef1, dev, trav1)
-        call lcprsv(coef2, pi0, trav2)
+        trav1(1:ndt) = coef1 * dev(1:ndt)
+        trav2(1:ndt) = coef2 * pi0(1:ndt)
         dftds(1:ndt) = trav1(1:ndt) + trav2(1:ndt)
     endif
 !
@@ -141,11 +140,11 @@ implicit none
 !
     if (nseuil .eq. 11 .or. nseuil .eq. 33) then
         coef2 = a / (trois * b)
-        call lcprsv(coef2, pi0, dfcds)
+        dfcds(1:ndt) = coef2 * pi0(1:ndt)
     endif
     if (nseuil .eq. 22 .or. nseuil .eq. 33) then
         coef2 = c / (trois * d)
-        call lcprsv(coef2, pi0, dftds)
+        dftds(1:ndt) = coef2 * pi0(1:ndt)
     endif
 !
 ! --- MATRICE DE COMPORTEMENT TANGENT
@@ -160,15 +159,15 @@ implicit none
         ccc = cc + dfcdlc
         ttt = tt + dftdlt
         discr = -un / (ccc*ttt - ct*tc)
-        call lcprsv((discr*ttt), hdfcds, vtmp)
+        vtmp(1:ndt) = ((discr*ttt)) * hdfcds(1:ndt)
         call lcprte(hdfcds, vtmp, dsde)
-        call lcprsv((discr*ccc), hdftds, vtmp)
+        vtmp(1:ndt) = ((discr*ccc)) * hdftds(1:ndt)
         call lcprte(hdftds, vtmp, matr1)
         dsde(1:ndt,1:ndt) = matr1(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
-        call lcprsv(discr*ct, hdftds, vtmp)
+        vtmp(1:ndt) = (discr*ct) * hdftds(1:ndt)
         call lcprte(hdfcds, vtmp, matr1)
         dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) - matr1(1:ndt,1:ndt)
-        call lcprsv(discr*tc, hdfcds, vtmp)
+        vtmp(1:ndt) = (discr*tc) * hdfcds(1:ndt)
         call lcprte(hdftds, vtmp, matr1)
         dsde(1:ndt,1:ndt) = dsde(1:ndt,1:ndt) - matr1(1:ndt,1:ndt)
         dsde(1:ndt,1:ndt) = hook(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
@@ -179,7 +178,7 @@ implicit none
         tt = dot_product(dftds(1:ndt), hdftds(1:ndt))
         ttt = tt + dftdlt
         discr = -un / ttt
-        call lcprsv(discr, hdftds, vtmp)
+        vtmp(1:ndt) = discr * hdftds(1:ndt)
         call lcprte(hdftds, vtmp, dsde)
         dsde(1:ndt,1:ndt) = hook(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
     endif
@@ -189,7 +188,7 @@ implicit none
         cc = dot_product(dfcds(1:ndt), hdfcds(1:ndt))
         ccc = cc + dfcdlc
         discr = -un / ccc
-        call lcprsv(discr, hdfcds, vtmp)
+        vtmp(1:ndt) = discr * hdfcds(1:ndt)
         call lcprte(hdfcds, vtmp, dsde)
         dsde(1:ndt,1:ndt) = hook(1:ndt,1:ndt) + dsde(1:ndt,1:ndt)
     endif

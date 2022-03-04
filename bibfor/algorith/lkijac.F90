@@ -43,7 +43,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
@@ -294,7 +293,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     hnldgv(1:ndt,1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dsgvds(1:ndt,1:ndt))
 ! --- PRODUIT MATRICIEL HOOK_NL*DPHIV/DSIG*GV
     dphiv = av*nv/patm*(seuilv/patm)**(nv-un)
-    call lcprsv(dphiv, dfvdsi, dphvds)
+    dphvds(1:ndt) = dphiv * dfvdsi(1:ndt)
     hnlgv(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), gv(1:ndt))
     call lcprte(hnlgv, dphvds, hnldfg)
 ! --- ASSEMBLAGE FINAL
@@ -329,7 +328,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
     end do
 ! --- ASSEMBLAGE FINAL --- DR1DY3 = DSDENL*DLAMBD*DGPDXI
     dr1dy3(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), dgpdxi(1:ndt))
-    call lcprsv(dlambd, dr1dy3, dr1dy4)
+    dr1dy4(1:ndt) = dlambd * dr1dy3(1:ndt)
     do i = 1, ndt
         drdy(i,ndt+2) = dr1dy4(i)/mu
     end do
@@ -358,8 +357,8 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
                     paravi, varavi, dpadxv, dfdxiv)
 ! --- ASSEMBLAGE DE DR1DY4
         dphidx = dphiv*dfdxiv
-        call lcprsv(dphidx, gv, dphdxg)
-        call lcprsv(phiv, dgvdxi, phdgdx)
+        dphdxg(1:ndt) = dphidx * gv(1:ndt)
+        phdgdx(1:ndt) = phiv * dgvdxi(1:ndt)
         vetemp(1:ndt) = dphdxg(1:ndt) + phdgdx(1:ndt)
         dr1dy4(1:ndt) = matmul(dsdenl(1:ndt,1:ndt), vetemp(1:ndt))
         do i = 1, ndt

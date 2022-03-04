@@ -26,7 +26,6 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/mgauss.h"
     character(len=8) :: model
@@ -148,7 +147,7 @@ subroutine irrjpl(model, nmat, mater, sigf, vind,&
     if (sequiv .eq. 0.0d0) then
         ddfdds(:,:) = 0.0d0
     else
-        call lcprsv(1.5d0/sequiv, dev, dfds)
+        dfds(1:ndt) = (1.5d0/sequiv) * dev(1:ndt)
         call lcprte(dfds, dfds, ddfdds)
     endif
 !

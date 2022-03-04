@@ -24,7 +24,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/dpvpva.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi
@@ -185,16 +184,16 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
         scal1 = trois/deux/seq
 !
         dqdsig(1:ndt) = matmul(dsdsig(1:ndt,1:ndt), s(1:ndt))
-        call lcprsv(scal1, dqdsig, dqdsig)
+        dqdsig(1:ndt) = scal1 * dqdsig(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE ALPHA * DI1/ DSIG -------------------------------------
 ! =====================================================================
-        call lcprsv(alpham, kron, adidsi)
+        adidsi(1:ndt) = alpham * kron(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE ALPHA_CONS * DI1/ DSIG * DP ---------------------------
 ! =====================================================================
         scal12 = dalpdp * dp
-        call lcprsv(scal12, kron, bdidsi)
+        bdidsi(1:ndt) = scal12 * kron(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE Df/ DSIG ----------------------------------------------
 ! =====================================================================
@@ -234,11 +233,11 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- CALCUL DE Df/ DSIG ----------------------------------------------
 ! =====================================================================
-        call lcprsv(const1, dfdsig, dfdsig)
+        dfdsig(1:ndt) = const1 * dfdsig(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE d deltap/dSIG -----------------------------------------
 ! =====================================================================
-        call lcprsv(denom, dfdsig, dpdsig)
+        dpdsig(1:ndt) = denom * dfdsig(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE d deltap/dEPS -----------------------------------------
 ! =====================================================================
@@ -298,12 +297,12 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! =====================================================================
 ! --- CALCUL DE dI1E/dEPS ---------------------------------------------
 ! =====================================================================
-        call lcprsv(troisk, kron, di1ede)
+        di1ede(1:ndt) = troisk * kron(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE 9KBETAdp/dEPS -----------------------------------------
 ! =====================================================================
         scal6 = -neuf*k*beta
-        call lcprsv(scal6, dpdeps, vect2)
+        vect2(1:ndt) = scal6 * dpdeps(1:ndt)
 ! =====================================================================
 ! --- CALCUL DE dI1/dEPS ----------------------------------------------
 ! =====================================================================

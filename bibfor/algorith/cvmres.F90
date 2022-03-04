@@ -47,7 +47,6 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 #include "asterfort/cvmcvx.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
     integer :: ndt, ndi, nmat
     integer :: ioptio, idnr, nopt
 !
@@ -144,7 +143,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 ! - GF  (T+DT)
 !
-    call lcprsv(dp, dfds, depsp)
+    depsp(1:ndt) = dp * dfds(1:ndt)
     epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
     depse(1:ndt) = deps(1:ndt) - depsp(1:ndt)
     epsef(1:ndt) = epsed(1:ndt) + depse(1:ndt)
@@ -158,14 +157,14 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
     zz = zz * (1.d0-d1) * g10 * ccin * dp * 2.d0/3.d0
     xx = c1 * dp * 2.d0/3.d0 - zz
     yy = gx1 * dt * ( sqrt(yy*3.d0/2.d0) )**(m1-1.d0) + g10 * ccin * d1 * dp
-    call lcprsv(xx, dfds, lf)
-    call lcprsv(yy, x1, vtmp)
+    lf(1:ndt) = xx * dfds(1:ndt)
+    vtmp(1:ndt) = yy * x1(1:ndt)
     lf(1:ndt) = lf(1:ndt) - vtmp(1:ndt)
     lf(1:ndt) = lf(1:ndt) - dx1(1:ndt)
 !
     if (c1d .ne. 0.d0) then
         difc1 = (c1-c1d)/c1
-        call lcprsv(difc1, x1, vtmp)
+        vtmp(1:ndt) = difc1 * x1(1:ndt)
         lf(1:ndt) = lf(1:ndt) + vtmp(1:ndt)
     endif
 !
@@ -176,8 +175,8 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
     zz = zz * (1.d0-d2) * g20 * ccin * dp * 2.d0/3.d0
     xx = c2 * dp * 2.d0/3.d0 - zz
     yy = gx2 * dt * ( sqrt(yy*3.d0/2.d0) )**(m2-1.d0) + g20 * ccin * d2 * dp
-    call lcprsv(xx, dfds, jf)
-    call lcprsv(yy, x2, vtmp)
+    jf(1:ndt) = xx * dfds(1:ndt)
+    vtmp(1:ndt) = yy * x2(1:ndt)
     jf(1:ndt) = jf(1:ndt) - vtmp(1:ndt)
     jf(1:ndt) = jf(1:ndt) - dx2(1:ndt)
 !
@@ -185,7 +184,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
     if (c2 .ne. 0.d0) then
         difc2 = (c2-c2d)/c2
-        call lcprsv(difc2, x2, vtmp)
+        vtmp(1:ndt) = difc2 * x2(1:ndt)
         jf(1:ndt) = jf(1:ndt) + vtmp(1:ndt)
     endif
 !
@@ -250,7 +249,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
             if (xx .eq. 0.d0) then
                 epxi(:) = 0.d0
             else
-                call lcprsv(1.d0/xx, vtmp, epxi)
+                epxi(1:ndt) = (1.d0/xx) * vtmp(1:ndt)
             endif
 !
 ! N *  N-ETOILE
@@ -271,7 +270,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 !                CALL LCPRSC ( DFDS    , EPXI  , ZZ   )
                 xx =zz * (1.d0 - eta ) *dp * 3.d0/2.d0
-                call lcprsv(xx, epxi, vtmp)
+                vtmp(1:ndt) = xx * epxi(1:ndt)
                 xif(1:ndt) = vtmp(1:ndt) - dxxi(1:ndt)
 !
             endif

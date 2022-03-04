@@ -26,7 +26,6 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
     character(len=8) :: mod
     character(len=*) :: fami
     integer :: nmat, kpg, ksp
@@ -98,19 +97,19 @@ subroutine irrres(fami, kpg, ksp, mod, nmat,&
     if (seqf .eq. 0.0d0) then
         dfds(:) = 0.0d0
     else
-        call lcprsv(1.5d0/seqf, dev, dfds)
+        dfds(1:ndt) = (1.5d0/seqf) * dev(1:ndt)
     endif
     epsef(1:ndt) = matmul(fkooh(1:ndt,1:ndt), sigf(1:ndt))
     epsed(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
-    call lcprsv((dp+dpi), dfds, depsa)
-    call lcprsv(dg, id3d, depsg)
+    depsa(1:ndt) = ((dp+dpi)) * dfds(1:ndt)
+    depsg(1:ndt) = dg * id3d(1:ndt)
 !
 !   RESIDU EN SIGMA, HOMOGENE A DES DEFORMATIONS
     rs(1:ndt) = epsef(1:ndt) - epsed(1:ndt)
     rs(1:ndt) = rs(1:ndt) + depsa(1:ndt)
     rs(1:ndt) = rs(1:ndt) + depsg(1:ndt)
     rs(1:ndt) = rs(1:ndt) - deps(1:ndt)
-    call lcprsv(-1.d0, rs, rs)
+    rs(1:ndt) = (-1.d0) * rs(1:ndt)
 !
 !  RESIDU EN DEFORMATION PLASTIQUE
     if (p .lt. pk) then

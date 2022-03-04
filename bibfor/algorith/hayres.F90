@@ -38,7 +38,6 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
 #include "asterc/r8prem.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "blas/dscal.h"
     character(len=8) :: mod
     integer :: iret, itens, ndi, nmat, ndt, ndim
@@ -104,7 +103,7 @@ subroutine hayres(mod, nmat, materd, materf, timed,&
     dtot=(1.d0-dmg)
     call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
     sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
-    call lcprsv(dtot, sigf, sigf)
+    sigf(1:ndt) = dtot * sigf(1:ndt)
 !
 !------------CALCUL DES INVARIANTS DE CONTRAINTE  -------
 !     attention FGEQUI ne prend pas en compte les SQRT(2)

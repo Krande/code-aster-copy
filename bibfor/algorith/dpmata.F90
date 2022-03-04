@@ -21,7 +21,6 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
     implicit      none
 #include "asterc/r8prem.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), dp, dpdeno, se(6), seq, dsde(6, 6)
@@ -117,9 +116,9 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno,&
 ! --- CALCUL DE PMAT4 -------------------------------------------------
 ! =====================================================================
                 param1 = trois * deuxmu / deux / seq
-                call lcprsv(param1, se, vect1)
+                vect1(1:ndt) = param1 * se(1:ndt)
                 param1 = troisk * alpha
-                call lcprsv(param1, vunite, vect2)
+                vect2(1:ndt) = param1 * vunite(1:ndt)
                 vect3(1:ndt) = vect1(1:ndt) + vect2(1:ndt)
                 param1 = - un / dpdeno
                 call lcprte(vect3, vect3, bidon)

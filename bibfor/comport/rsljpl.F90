@@ -34,7 +34,6 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 #include "asterfort/lchydr.h"
 #include "asterfort/lcnrte.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsomh.h"
 #include "asterfort/rsliso.h"
@@ -120,7 +119,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 !
         unf= un-f
         rho = (unf-ann*p)/(un-f0)
-        call lcprsv(un/rho, sig, rig)
+        rig(1:ndt) = (un/rho) * sig(1:ndt)
         call lchydr(rig, rigmo)
         call lcsomh(rig, -rigmo, rigdv)
         rigeq = lcnrts(rigdv)
@@ -182,12 +181,12 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
             y5 = acc*a2*z8/z1 - z9*a6 / ( rigeq*(z7+z2*theta*dp) )
 !
             m1(1:ndt,1:ndt) = a3 * i4(1:ndt,1:ndt)
-            call lcprsv((a1-a3)/trois, i2, v1)
-            call lcprsv(a2, rigdv, v2)
+            v1(1:ndt) = ((a1-a3)/trois) * i2(1:ndt)
+            v2(1:ndt) = a2 * rigdv(1:ndt)
             v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
             call lcprte(i2, v1, m2)
-            call lcprsv(a4, rigdv, v1)
-            call lcprsv(a5/trois, i2, v2)
+            v1(1:ndt) = a4 * rigdv(1:ndt)
+            v2(1:ndt) = (a5/trois) * i2(1:ndt)
             v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
             call lcprte(rigdv, v1, m3)
             dsde(1:ndt,1:ndt) = m1(1:ndt,1:ndt) + m2(1:ndt,1:ndt) + m3(1:ndt,1:ndt)
@@ -195,8 +194,8 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat,&
 ! A CE STADE DSDE EST LE TENSEUR TANGENT COHERENT
 ! ENTRE D(SIG/RHO) ET DEPS
 !
-            call lcprsv(a1-troisk, i2, v1)
-            call lcprsv(trois*y5/y4, rigdv, v2)
+            v1(1:ndt) = (a1-troisk) * i2(1:ndt)
+            v2(1:ndt) = (trois*y5/y4) * rigdv(1:ndt)
             v1(1:ndt) = v1(1:ndt) + v2(1:ndt)
             call lcprte(rig, v1, m1)
             m1(1:ndt,1:ndt) = (y4/troisk) * m1(1:ndt,1:ndt)

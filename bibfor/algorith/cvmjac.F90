@@ -66,7 +66,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcicma.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
     integer :: ndt, ndi, nmat, nmod
     integer :: ioptio, idnr, nopt
@@ -277,8 +276,8 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     yy = g10 * ( ccin + dcin * dp ) * d1
     zz = g10 * ( ccin + dcin * dp ) * (1.d0 - d1) * 2.d0/3.d0
     xx = x1df * zz - c1 * 2.d0/3.d0
-    call lcprsv(xx, dfds, vtmp)
-    call lcprsv(yy, x1, dldp)
+    vtmp(1:ndt) = xx * dfds(1:ndt)
+    dldp(1:ndt) = yy * x1(1:ndt)
     dldp(1:ndt) = dldp(1:ndt) + vtmp(1:ndt)
 !
 ! - DLDR(T+DT)
@@ -333,8 +332,8 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     yy = g20 * ( ccin + dcin * dp ) * d2
     zz = g20 * ( ccin + dcin * dp ) * (1.d0 - d2) * 2.d0/3.d0
     xx = x2df * zz - c2 * 2.d0/3.d0
-    call lcprsv(xx, dfds, vtmp)
-    call lcprsv(yy, x2, djdp)
+    vtmp(1:ndt) = xx * dfds(1:ndt)
+    djdp(1:ndt) = yy * x2(1:ndt)
     djdp(1:ndt) = djdp(1:ndt) + vtmp(1:ndt)
 !
 ! - DJDR(T+DT)
@@ -349,10 +348,10 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     if (xx .lt. 0.d0) xx = 0.d0
     zz = dt * (&
          (xx**(n-1.d0)) * (n + alp*(n+1)*xx**(n+1)) ) * exp( alp*(xx**(n+1)) ) / ( k0 + ak * r)
-    call lcprsv(-zz, dfds, dkds)
+    dkds(1:ndt) = (-zz) * dfds(1:ndt)
 !
 ! - DKDX1(T+DT)
-    call lcprsv(zz, dfds, dkdx1)
+    dkdx1(1:ndt) = zz * dfds(1:ndt)
 !
 ! - DKDX2(T+DT)
     dkdx2(1:ndt) = dkdx1(1:ndt)
@@ -684,7 +683,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         if (jepxi .eq. 0.d0) then
             nnet = 0.d0
         else
-            call lcprsv(1.d0/jepxi, epxi, epxino)
+            epxino(1:ndt) = (1.d0/jepxi) * epxi(1:ndt)
             nnet = dot_product(dfds(1:ndt), epxino(1:ndt))
         endif
 !
@@ -695,12 +694,12 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             zz = -eta / jepxi
             xx = zz * dp
             vtmp(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
-            call lcprsv(dp, dfds, vtmp1)
+            vtmp1(1:ndt) = dp * dfds(1:ndt)
             vtmp(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
             yy = -dp * nnet * (3.d0/2.d0) / jepxi
-            call lcprsv(yy, epxi, vtmp1)
+            vtmp1(1:ndt) = yy * epxi(1:ndt)
             vtmp(1:ndt) = vtmp1(1:ndt) + vtmp(1:ndt)
-            call lcprsv(xx, vtmp, vtmp1)
+            vtmp1(1:ndt) = xx * vtmp(1:ndt)
 !
 ! - DTDS(T+DT)
 !
@@ -714,21 +713,21 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 ! - DTDP(T+DT)
 !
-            call lcprsv(zz, vtmp, vtmp)
+            vtmp(1:ndt) = zz * vtmp(1:ndt)
             dtdp = dot_product(dfds(1:ndt), vtmp(1:ndt))
 !
 ! - DTDXXI(T+DT)
             yy = -nnet * (3.d0/2.d0) / jepxi
-            call lcprsv(yy, epxi, vtmp)
+            vtmp(1:ndt) = yy * epxi(1:ndt)
             vtmp(1:ndt) = vtmp(1:ndt) + dfds(1:ndt)
-            call lcprsv(-xx, vtmp, dtdxxi)
+            dtdxxi(1:ndt) = (-xx) * vtmp(1:ndt)
 !
 !
 ! - DXIDS(T+DT)
             zz = 3.d0/2.d0 * ( 1.d0 - eta ) * ( 1.d0 - dp * nnet / jepxi * 3.d0 )
             xx = 3.d0/2.d0 * ( 1.d0 - eta ) * dp / jepxi
-            call lcprsv(-zz*dp, epxi, vtmp)
-            call lcprsv(-xx*dp, dfds, vtmp1)
+            vtmp(1:ndt) = (-zz*dp) * epxi(1:ndt)
+            vtmp1(1:ndt) = (-xx*dp) * dfds(1:ndt)
             vtmp(1:ndt) = vtmp(1:ndt) + vtmp1(1:ndt)
             vtmp1(1:ndt) = matmul(ddfdds(1:ndt,1:ndt), vtmp(1:ndt))
             call lcprte(vtmp1, epxi, mtmp)
@@ -746,14 +745,14 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 ! - DXIDP(T+DT)
             yy = dot_product(dfds(1:ndt), dfds(1:ndt))
-            call lcprsv(zz*nnet+xx*yy, epxi, vtmp)
-            call lcprsv(-xx*nnet, dfds, vtmp1)
+            vtmp(1:ndt) = (zz*nnet+xx*yy) * epxi(1:ndt)
+            vtmp1(1:ndt) = (-xx*nnet) * dfds(1:ndt)
             dxidp(1:ndt) = vtmp1(1:ndt) - vtmp(1:ndt)
 !
 ! - DXIDXI(T+DT)
             mtmp(1:ndt,1:ndt) = (1.d0+xx*nnet) * i6(1:ndt,1:ndt)
-            call lcprsv(3.d0*xx*nnet, epxi, vtmp)
-            call lcprsv(xx, dfds, vtmp1)
+            vtmp(1:ndt) = (3.d0*xx*nnet) * epxi(1:ndt)
+            vtmp1(1:ndt) = xx * dfds(1:ndt)
             vtmp(1:ndt) = vtmp1(1:ndt) - vtmp(1:ndt)
             call lcprte(vtmp, epxi, mtmp1)
             dxidxi(1:ndt,1:ndt) = mtmp1(1:ndt,1:ndt) + mtmp(1:ndt,1:ndt)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
                   detadg, dgdl, dsdsip)
     implicit      none
 #include "asterfort/cadldp.h"
-#include "asterfort/lcprsv.h"
     integer :: nbmat
     real(kind=8) :: se(6), dg, etap, dsdsip(6)
     real(kind=8) :: vp(3), sigeqe, parame(4), derive(5), sig3
@@ -74,7 +73,7 @@ subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
                 dgdl, dldsip)
 ! ======================================================================
     param1 = -trois*mu*dldsip/sigeqe
-    call lcprsv(param1, seb, dsdsip)
+    dsdsip(1:ndt) = param1 * seb(1:ndt)
 ! ======================================================================
     param1 = 1.0d0-trois*k*dldsip*(detadg*dgdl*dg/(etap+1.0d0)+etap)
     do 90 ii = 1, ndi

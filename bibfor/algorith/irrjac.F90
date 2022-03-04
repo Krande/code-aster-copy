@@ -27,7 +27,6 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/rcvarc.h"
     character(len=*) :: fami
     character(len=8) :: mod
@@ -118,7 +117,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     if (seqf .eq. 0.0d0) then
         dfds(:) = 0.0d0
     else
-        call lcprsv(1.5d0/seqf, dev, dfds)
+        dfds(1:ndt) = (1.5d0/seqf) * dev(1:ndt)
     endif
 !
 ! - DRSDS
@@ -146,7 +145,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
 ! - DRPDS
     if (((seqf.ge.sr).and.(dp.ge.0.0d0)) .or. (dp.gt.r8prem())) then
         drpds(1:ndt) = dfds(1:ndt)
-        call lcprsv(1.0d0/hookf(1, 1), drpds, drpds)
+        drpds(1:ndt) = (1.0d0/hookf(1, 1)) * drpds(1:ndt)
     else
         drpds(:) = 0.0d0
     endif
@@ -170,7 +169,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat,&
     drpdg=0.0d0
 !
 ! - DREDS
-    call lcprsv((-dphi*zetaf*0.50d0/hookf(1, 1)), dfds, dreds)
+    dreds(1:ndt) = (-dphi*zetaf*0.50d0/hookf(1, 1)) * dfds(1:ndt)
 ! - DREDP
     dredp=0.0d0
 ! - DREDE

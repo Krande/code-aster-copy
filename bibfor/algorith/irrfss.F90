@@ -20,7 +20,6 @@ subroutine irrfss(sig, ddfdds)
     implicit none
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
     real(kind=8) :: sig(6), ddfdds(6, 6)
 !       3D / DP / CP
@@ -58,7 +57,7 @@ subroutine irrfss(sig, ddfdds)
     if (s .eq. 0.d0) then
         ddfdds(:,:) = 0.d0
     else
-        call lcprsv(1.5d0 / s, dev, dfds)
+        dfds(1:ndt) = (1.5d0/s) * dev(1:ndt)
         call lcprte(dfds, dfds, dfds2)
         ddfdds(1:ndt,1:ndt) = 1.5d0 * id(1:ndt,1:ndt)
         ddfdds(1:ndt,1:ndt) = ddfdds(1:ndt,1:ndt) - dfds2(1:ndt,1:ndt)

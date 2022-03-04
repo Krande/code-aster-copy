@@ -66,7 +66,6 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
 #include "asterfort/irrlnf.h"
 #include "asterfort/lcdpec.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lkilnf.h"
 #include "asterfort/srilnf.h"
     integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), iter, itmax, nr, codret
@@ -122,7 +121,7 @@ type(Behaviour_Integ), intent(in) :: BEHinteg
         dtot=(1.d0-vinf(11))
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
         sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), yf(1:ndt))
-        call lcprsv(dtot, sigf, sigf)
+        sigf(1:ndt) = dtot * sigf(1:ndt)
         do i = 1, ndt
             vinf(i) = yf(i)
         end do

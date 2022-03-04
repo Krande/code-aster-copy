@@ -22,7 +22,6 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
     implicit none
 #include "asterfort/betaps.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: mater(5, 2), dp, beta, se(6), seq, dsde(6, 6)
@@ -118,17 +117,17 @@ subroutine dpmat2(mod, mater, alpha, beta, dp,&
 ! --- CALCUL DE PMAT4 -------------------------------------------------
 ! =====================================================================
                 param1 = trois * deuxmu / deux / seq
-                call lcprsv(param1, se, vect1)
+                vect1(1:ndt) = param1 * se(1:ndt)
                 param1 = troisk * alpha
-                call lcprsv(param1, vunite, vect2)
+                vect2(1:ndt) = param1 * vunite(1:ndt)
                 vect3(1:ndt) = vect1(1:ndt) + vect2(1:ndt)
                 param1 = - un/dpdeno
-                call lcprsv(param1, vect3, ddpde)
+                ddpde(1:ndt) = param1 * vect3(1:ndt)
 !
                 pmoins = pplus - dp
                 betam = betaps (beta, pmoins, pult)
                 param1 = troisk * betam - deux*troisk*beta*dp/pult
-                call lcprsv(param1, vunite, vect4)
+                vect4(1:ndt) = param1 * vunite(1:ndt)
                 vect5(1:ndt) = vect1(1:ndt) + vect4(1:ndt)
                 call lcprte(ddpde, vect5, pmat4)
 ! =====================================================================

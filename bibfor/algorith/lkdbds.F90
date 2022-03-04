@@ -37,7 +37,6 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 !     ------------------------------------------------------------------
 #include "asterc/r8pi.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lkdhds.h"
 #include "asterfort/lkhtet.h"
     integer :: nmat, nvi, iret, val
@@ -204,7 +203,7 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 ! =================================================================
 ! --- CALCUL DE D(BP)/D(DEVSIG) -----------------------------------
 ! =================================================================
-    call lcprsv(dbdsin, dsinds, dbetds)
+    dbetds(1:ndt) = dbdsin * dsinds(1:ndt)
 ! =================================================================
 ! --- CALCUL DE D(BP)/DI1 -----------------------------------------
 ! =================================================================

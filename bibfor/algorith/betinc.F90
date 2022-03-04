@@ -38,7 +38,6 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-#include "asterfort/lcprsv.h"
     integer :: nmat, nseuil, i
     real(kind=8) :: materf(nmat, 2), dpc, dpt
     real(kind=8) :: un, d23, rac2, deux, trois
@@ -103,7 +102,7 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
 !
     if (nseuil .lt. 4) then
         coef = un - rac2 * mu * (dpc /(b * sigeq) + dpt /(d * sigeq))
-        call lcprsv(coef, dev, sigf)
+        sigf(1:ndt) = coef * dev(1:ndt)
     else
         coef = 0.d0
         sigf(:) = coef

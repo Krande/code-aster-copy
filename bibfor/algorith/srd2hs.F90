@@ -39,7 +39,6 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
 #include "asterc/r8pi.h"
 #include "asterfort/cjst.h"
 #include "asterfort/lcprte.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/srd2de.h"
 
     !!!
@@ -101,8 +100,8 @@ subroutine srd2hs(nmat,materf,devsig,sii,rcos3t,d2hds2)
     fact3=r54/sii**3.d0
     fact4=-3.d0*r54*dets/sii**5.d0
     call cjst(devsig,ddetds)
-    call lcprsv(fact3,ddetds,dcds1)
-    call lcprsv(fact4,devsig,dcds2)
+    dcds1(1:ndt) = fact3 * ddetds(1:ndt)
+    dcds2(1:ndt) = fact4 * devsig(1:ndt)
     dcosds(1:ndt) = dcds1(1:ndt) + dcds2(1:ndt)
     call lcprte(dcosds,dcosds,pdcds)
 

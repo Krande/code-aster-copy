@@ -40,7 +40,6 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
 #include "asterc/r8miem.h"
 #include "asterfort/cjst.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsv.h"
 #include "asterc/r8pi.h"
 
     !!!
@@ -104,14 +103,14 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
     !!! Calcul de d(cos(3theta))/d(s)
     !!!
 
-    call lcprsv(1.d0/sii**3.d0,t,fact1)
-    call lcprsv(-3.d0*dets/sii**5.d0,s,fact2)
+    fact1(1:ndt) = (1.d0/sii**3.d0) * t(1:ndt)
+    fact2(1:ndt) = (-3.d0*dets/sii**5.d0) * s(1:ndt)
     dcosds(1:ndt) = fact1(1:ndt) + fact2(1:ndt)
 
     !!!
     !!! Calcul final
     !!!
-    call lcprsv(drdcos,dcosds,dhds)
+    dhds(1:ndt) = drdcos * dcosds(1:ndt)
 
 1000  continue
 

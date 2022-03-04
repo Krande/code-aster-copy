@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 #include "asterc/r8miem.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/nmfedd.h"
 #include "asterfort/nmfend.h"
 #include "asterfort/r8inir.h"
@@ -136,7 +135,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
     do i = 1, 6
         epsef(i)=devsm(i)/(1.d0-dm)/2.d0/mum+devep(i)
     end do
-    call lcprsv(2.d0*mu, epsef, devse)
+    devse(1:ndt) = (2.d0*mu) * epsef(1:ndt)
 !
 ! -- TEMPERATURE
 !

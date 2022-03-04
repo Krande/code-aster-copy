@@ -50,7 +50,6 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 #include "asterfort/lcgrla.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/Behaviour_type.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
@@ -159,7 +158,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
 !        DEFORMATION ELASTIQUE INSTANT PRECEDENT
         yd(1:ndt) = matmul(dkooh(1:ndt,1:ndt), sigd(1:ndt))
         dtot=1.d0/(1.d0-vind(11))
-        call lcprsv(dtot, yd, yd)
+        yd(1:ndt) = dtot * yd(1:ndt)
 !
 !        CORRESPONDANCE ENTRE LES VARIABLES INTERNES ET LES EQUATIONS
 !        DU SYSTEME DIFFERENTIEL

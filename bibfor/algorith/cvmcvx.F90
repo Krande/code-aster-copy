@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,6 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-#include "asterfort/lcprsv.h"
     integer :: ndt, ndi, nmat
     real(kind=8) :: sig(6), x1(6), x2(6), dev(6), vin(*)
     real(kind=8) :: difc1, difc2
@@ -62,11 +61,11 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !
     if (c1d .ne. 0.d0) then
         difc1 = c1f/c1d
-        call lcprsv(difc1, x1, x1)
+        x1(1:ndt) = difc1 * x1(1:ndt)
     endif
     if (c2d .ne. 0.d0) then
         difc2 = c2f/c2d
-        call lcprsv(difc2, x2, x2)
+        x2(1:ndt) = difc2 * x2(1:ndt)
     endif
 !
     r = vin(2*ndt+2)

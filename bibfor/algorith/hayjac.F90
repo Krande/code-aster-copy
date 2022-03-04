@@ -42,7 +42,6 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 #include "asterc/r8prem.h"
 #include "asterfort/fgequi.h"
 #include "asterfort/lcopli.h"
-#include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/r8inir.h"
 #include "blas/dscal.h"
@@ -131,7 +130,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
     end do
     call lcopli('ISOTROPE', mod, coefel, hookf)
     sigf(1:ndt) = matmul(hookf(1:ndt,1:ndt), epsef(1:ndt))
-    call lcprsv(dm1, sigf, sigf)
+    sigf(1:ndt) = dm1 * sigf(1:ndt)
 !
     call dscal(3, 1.d0/sqrt(2.d0), sigf(4), 1)
     call fgequi(sigf, 'SIGM_DIR', ndim, equi)
@@ -187,7 +186,7 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed,&
 !
     if (seq .gt. 0.d0) then
 !        dFe/dEel
-        call lcprsv(1.5d0 / seq, dev, n)
+        n(1:ndt) = (1.5d0/seq) * dev(1:ndt)
         call lcprte(n, n, nxn)
         dfedee(1:ndt,1:ndt) = 1.5d0 * id(1:ndt,1:ndt)
         dfedee(1:ndt,1:ndt) = dfedee(1:ndt,1:ndt) - nxn(1:ndt,1:ndt)
