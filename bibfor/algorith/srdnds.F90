@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     implicit   none
 
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srdbds.h"
@@ -72,7 +71,7 @@ subroutine srdnds(nmat,materf,i1,devsig,bprimp,nvi,vint,val,para,tmp,dndsig)
     !!!
 
     !!! Construction de sii
-    call lcprsc(devsig,devsig,sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii=sqrt(sii)
 
     !!! Construction de kronecker

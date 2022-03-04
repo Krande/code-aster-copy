@@ -33,7 +33,6 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
     integer :: iret, nvi, nbmat
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
@@ -90,7 +89,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
     call lcopil('ISOTROPE', mod, materf(1, 1), dkooh)
 !
     call lcdevi(sigm, sm)
-    call lcprsc(sm, sm, siim)
+    siim = dot_product(sm(1:ndt), sm(1:ndt))
     seqm = sqrt (trois*siim/deux)
     i1m = trace(ndi,sigm)
 !
@@ -103,7 +102,7 @@ subroutine dpvpre(mod, nvi, option, crit, instam,&
     sige(1:ndt) = sigm(1:ndt) + inte(1:ndt)
 !
     call lcdevi(sige, se)
-    call lcprsc(se, se, siie)
+    siie = dot_product(se(1:ndt), se(1:ndt))
     seqe = sqrt (trois*siie/deux)
     i1e = trace(ndi,sige)
 ! =====================================================================

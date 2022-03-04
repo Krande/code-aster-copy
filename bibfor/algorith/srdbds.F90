@@ -43,7 +43,6 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srdhds.h"
 #include "asterfort/srhtet.h"
 
@@ -78,7 +77,7 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
 
     alpha = 0.d0
 
-    call lcprsc(devsig,devsig,sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii=sqrt(sii)
 
     !!!
@@ -159,7 +158,7 @@ subroutine srdbds(nmat,mater,i1,devsig,nvi,vint,para,val,tmp,dbetds,dbetdi)
     !!! Calcul de sii
     !!!
 
-    call lcprsc(devsig, devsig, sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii=sqrt(sii)
 
     !!!

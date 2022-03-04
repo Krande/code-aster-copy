@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine lkcriv(vintr, invar, s, vin, nbmat,&
 !
     implicit    none
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkhtet.h"
 #include "asterfort/lkvacv.h"
 #include "asterfort/lkvarv.h"
@@ -62,7 +61,7 @@ subroutine lkcriv(vintr, invar, s, vin, nbmat,&
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
-    call lcprsc(s, s, sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii = sqrt (sii)
 ! =================================================================
 ! --- APPEL A HOC ET  H(THETA) ------------------------------------

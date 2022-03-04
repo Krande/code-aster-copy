@@ -45,7 +45,6 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, i, j, codret
@@ -207,10 +206,10 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
         call calcq(q, gamma, pref, epssig, qq,&
                    codret)
     endif
-    call lcprsc(qq, qq, qqii)
+    qqii = dot_product(qq(1:ndt), qq(1:ndt))
     qqii = sqrt(qqii)
 !
-    call lcprsc(xd, xd, xii)
+    xii = dot_product(xd(1:ndt), xd(1:ndt))
     xii = sqrt(xii)
 !
     epsv = zero
@@ -253,7 +252,7 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- LOI D'ECOULEMENT DU MECANISME DEVIATOIRE : GD --------------------
 ! ======================================================================
-    call lcprsc(qq, xd, truc)
+    truc = dot_product(qq(1:ndt), xd(1:ndt))
     truc = truc - rd
 !
     do i = 1, ndt
@@ -262,7 +261,7 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
 ! ======================================================================
 ! --- HYPOTHESE : SIGNE(S,DEPS) = SIGNE(S,DEPSDP) ----------------------
 ! ======================================================================
-    call lcprsc(s, deps, truc)
+    truc = dot_product(s(1:ndt), deps(1:ndt))
     if (truc .ge. zero) then
         signe = un
     else
@@ -286,7 +285,7 @@ subroutine cjsiid(mod, mater, epsd, deps, yd,&
          end do
     endif
 !
-    call lcprsc(dfdds, norm, prod1)
+    prod1 = dot_product(dfdds(1:ndt), norm(1:ndt))
     do i = 1, ndt
        gd(i) = dfdds(i) - prod1 * norm(i)
     end do

@@ -42,7 +42,6 @@ implicit none
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/tecael.h"
@@ -100,7 +99,7 @@ implicit none
 ! --- CONTRAINTE EQUIVALENTE
 !
     call lcdevi(sig, dev)
-    call lcprsc(dev, dev, p)
+    p = dot_product(dev(1:ndt), dev(1:ndt))
     sigeq = sqrt (1.5d0 * p)
     if (sigeq .eq. zero) then
         call tecael(iadzi, iazk24)
@@ -155,10 +154,10 @@ implicit none
     if (nseuil .eq. 3 .or. nseuil .eq. 33) then
         call lcprmv(hook, dfcds, hdfcds)
         call lcprmv(hook, dftds, hdftds)
-        call lcprsc(dfcds, hdfcds, cc)
-        call lcprsc(dftds, hdfcds, tc)
-        call lcprsc(dfcds, hdftds, ct)
-        call lcprsc(dftds, hdftds, tt)
+        cc = dot_product(dfcds(1:ndt), hdfcds(1:ndt))
+        tc = dot_product(dftds(1:ndt), hdfcds(1:ndt))
+        ct = dot_product(dfcds(1:ndt), hdftds(1:ndt))
+        tt = dot_product(dftds(1:ndt), hdftds(1:ndt))
         ccc = cc + dfcdlc
         ttt = tt + dftdlt
         discr = -un / (ccc*ttt - ct*tc)
@@ -178,7 +177,7 @@ implicit none
 !
     if (nseuil .eq. 2 .or. nseuil .eq. 22) then
         call lcprmv(hook, dftds, hdftds)
-        call lcprsc(dftds, hdftds, tt)
+        tt = dot_product(dftds(1:ndt), hdftds(1:ndt))
         ttt = tt + dftdlt
         discr = -un / ttt
         call lcprsv(discr, hdftds, vtmp)
@@ -188,7 +187,7 @@ implicit none
 !
     if (nseuil .eq. 1 .or. nseuil .eq. 11) then
         call lcprmv(hook, dfcds, hdfcds)
-        call lcprsc(dfcds, hdfcds, cc)
+        cc = dot_product(dfcds(1:ndt), hdfcds(1:ndt))
         ccc = cc + dfcdlc
         discr = -un / ccc
         call lcprsv(discr, hdfcds, vtmp)

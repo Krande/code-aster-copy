@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,6 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 !     ------------------------------------------------------------------
 #include "asterc/r8pi.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lkdhds.h"
 #include "asterfort/lkhtet.h"
@@ -66,7 +65,7 @@ subroutine lkdbds(nmat, mater, i1, devsig, nvi,&
 ! =================================================================
 ! --- CALCUL DE SII -----------------------------------------------
 ! =================================================================
-    call lcprsc(devsig, devsig, sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii = sqrt (sii)
 ! =====================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ----------------------------

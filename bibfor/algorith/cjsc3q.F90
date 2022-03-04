@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
 #include "asterfort/cjsqij.h"
 #include "asterfort/lcdete.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
     integer :: ndt, ndi
 !
 !
@@ -86,7 +85,7 @@ subroutine cjsc3q(sig, x, pa, qinit, q,&
 !
     call lcdevi(sig, s)
     call cjsqij(s, i1, x, q)
-    call lcprsc(q, q, qii)
+    qii = dot_product(q(1:ndt), q(1:ndt))
     qii = sqrt(qii)
     qiirel = qii/pref
     call lcdete(q, detq)

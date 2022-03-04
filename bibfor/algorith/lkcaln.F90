@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine lkcaln(s, b, vecn, retcom)
 !
     implicit none
 #include "asterc/r8miem.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/utmess.h"
     integer :: retcom
     real(kind=8) :: b, s(6), vecn(6)
@@ -49,7 +48,7 @@ subroutine lkcaln(s, b, vecn, retcom)
 ! =================================================================
     retcom = 0
     ptit = r8miem()
-    call lcprsc(s, s, sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii = sqrt (sii)
     if (sii .lt. ptit) then
         call utmess('A', 'COMPOR1_31')

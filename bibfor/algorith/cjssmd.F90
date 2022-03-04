@@ -31,7 +31,6 @@ subroutine cjssmd(mater, sig, vin, seuild)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi
     real(kind=8) :: mater(14, 2), sig(6), vin(*), seuild, rcos3t, htq
@@ -71,7 +70,7 @@ subroutine cjssmd(mater, sig, vin, seuild)
 ! ======================================================================
     call lcdevi(sig, dev)
     call cjsqij(dev, i1, x, q)
-    call lcprsc(q, q, qii)
+    qii = dot_product(q(1:ndt), q(1:ndt))
     qii = sqrt(qii)
 ! ======================================================================
 ! --- CALCUL DE HTQ ----------------------------------------------------

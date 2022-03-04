@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,6 @@ subroutine srcomp(mod, imate, instam, instap, &
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srcrip.h"
 #include "asterfort/srcriv.h"
 #include "asterfort/srdgde.h"
@@ -197,7 +196,7 @@ subroutine srcomp(mod, imate, instam, instap, &
 
     i1ml=trace(ndi,sigml)
     call lcdevi(sigml,sml)
-    call lcprsc(sml,sml,siim)
+    siim = dot_product(sml(1:ndt), sml(1:ndt))
     siim=sqrt(siim)
 
     !!!
@@ -441,7 +440,7 @@ subroutine srcomp(mod, imate, instam, instap, &
 
         call srelas(ndi,ndt,nbmat,materd,sigml,de,kk,mu)
         dside(1:ndt,1:ndt) =de(1:ndt,1:ndt)
-        
+
     endif
 
     if (option(1:14).eq.'RIGI_MECA_TANG'.or.option(1:9).eq.'FULL_MECA') then

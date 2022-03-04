@@ -34,7 +34,6 @@ subroutine srcalg(dfdsig, vecn, g, devgii)
     implicit      none
 
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/r8inir.h"
 
     !!!
@@ -55,7 +54,7 @@ subroutine srcalg(dfdsig, vecn, g, devgii)
     !!! Calcul de g
     !!!
     call r8inir(6,0.d0,g,1)
-    call lcprsc(dfdsig,vecn,fact1)
+    fact1 = dot_product(dfdsig(1:ndt), vecn(1:ndt))
 
     do i=1,ndt
         g(i)=dfdsig(i)-fact1*vecn(i)
@@ -66,7 +65,7 @@ subroutine srcalg(dfdsig, vecn, g, devgii)
     !!!
 
     call lcdevi(g,devg)
-    call lcprsc(devg,devg,devgii)
+    devgii = dot_product(devg(1:ndt), devg(1:ndt))
 
     devgii=sqrt(devgii)
 

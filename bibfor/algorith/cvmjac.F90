@@ -67,7 +67,6 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
     integer :: ndt, ndi, nmat, nmod
@@ -223,7 +222,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 !
 ! - DLDS(T+DT)
-    call lcprsc(x1, x1, jx1)
+    jx1 = dot_product(x1(1:ndt), x1(1:ndt))
     jx1 = sqrt( jx1 * 3.d0/2.d0)
     xx = c1 * dp * 2.d0/3.d0
     yy = g10 * ccin * (1.d0 - d1) * dp * 2.d0/3.d0
@@ -236,7 +235,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     endif
     call lcprmv(ddfdds, x1, vtmp)
     call lcprte(vtmp, dfds, mtmp)
-    call lcprsc(x1, dfds, x1df)
+    x1df = dot_product(x1(1:ndt), dfds(1:ndt))
     mtmp1(1:ndt,1:ndt) = x1df * ddfdds(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     dlds(1:ndt,1:ndt) = yy * mtmp(1:ndt,1:ndt)
@@ -291,7 +290,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 !
 !
 ! - DJDS(T+DT)
-    call lcprsc(x2, x2, jx2)
+    jx2 = dot_product(x2(1:ndt), x2(1:ndt))
     jx2 = sqrt( jx2 * 3.d0/2.d0)
     xx = c2 * dp * 2.d0/3.d0
     yy = g20 * ccin * (1.d0 - d2) * dp * 2.d0/3.d0
@@ -304,7 +303,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
     endif
     call lcprmv(ddfdds, x2, vtmp)
     call lcprte(vtmp, dfds, mtmp)
-    call lcprsc(x2, dfds, x2df)
+    x2df = dot_product(x2(1:ndt), dfds(1:ndt))
     mtmp1(1:ndt,1:ndt) = x2df * ddfdds(1:ndt,1:ndt)
     mtmp(1:ndt,1:ndt) = mtmp(1:ndt,1:ndt) + mtmp1(1:ndt,1:ndt)
     djds(1:ndt,1:ndt) = yy * mtmp(1:ndt,1:ndt)
@@ -675,7 +674,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
         epsp(1:ndt) = epsp(1:ndt) - vtmp(1:ndt)
 ! ---- JEPXI
         epxi(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
-        call lcprsc(epxi, epxi, xx)
+        xx = dot_product(epxi(1:ndt), epxi(1:ndt))
         jepxi = sqrt( xx * 3.d0/2.d0 )
 !
 ! --- H(F)=SEUIL2
@@ -687,7 +686,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             nnet = 0.d0
         else
             call lcprsv(1.d0/jepxi, epxi, epxino)
-            call lcprsc(dfds, epxino, nnet)
+            nnet = dot_product(dfds(1:ndt), epxino(1:ndt))
         endif
 !
 ! -MEMORISATION
@@ -717,7 +716,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
 ! - DTDP(T+DT)
 !
             call lcprsv(zz, vtmp, vtmp)
-            call lcprsc(dfds, vtmp, dtdp)
+            dtdp = dot_product(dfds(1:ndt), vtmp(1:ndt))
 !
 ! - DTDXXI(T+DT)
             yy = -nnet * (3.d0/2.d0) / jepxi
@@ -747,7 +746,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef,&
             dxidx2(1:ndt,1:ndt) =dxidx1(1:ndt,1:ndt)
 !
 ! - DXIDP(T+DT)
-            call lcprsc(dfds, dfds, yy)
+            yy = dot_product(dfds(1:ndt), dfds(1:ndt))
             call lcprsv(zz*nnet+xx*yy, epxi, vtmp)
             call lcprsv(-xx*nnet, dfds, vtmp1)
             dxidp(1:ndt) = vtmp1(1:ndt) - vtmp(1:ndt)

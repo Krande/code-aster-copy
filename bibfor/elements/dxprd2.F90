@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,6 @@ subroutine dxprd2(dfpla1, dca, dfpla2, dfpla3, dcb,&
 !     CALCUL DE TANGENTE DANS LE CAS DE LA LOI DE COMPORTEMENT GLRC
 ! ----------------------------------------------------------------------
     implicit none
-#include "asterfort/lcprsc.h"
 #include "asterfort/pmavec.h"
     common /tdim/ n, nd
     real(kind=8) :: dfpla1(6), dfpla2(6), dfpla3(6), dfpla4(4)
@@ -32,9 +31,9 @@ subroutine dxprd2(dfpla1, dca, dfpla2, dfpla3, dcb,&
 !
     n = 6
     call pmavec('ZERO', 6, dca, dfpla2, vecta)
-    call lcprsc(dfpla1, vecta, scal1)
+    scal1 = dot_product(dfpla1(1:n), vecta(1:n))
     call pmavec('ZERO', 6, dcb, dfpla4, vectb)
-    call lcprsc(dfpla3, vectb, scal2)
+    scal2 = dot_product(dfpla3(1:n), vectb(1:n))
     scal = scal1*scal2
 !
 end subroutine

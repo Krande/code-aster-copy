@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ implicit none
 #include "asterfort/betfpp.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/utmess.h"
 !
 !       BETON_DOUBLE_DP: CONVEXE ELASTO PLASTIQUE POUR (MATER,SIG,P1,P2)
@@ -105,7 +104,7 @@ implicit none
 ! ---   CONTRAINTE EQUIVALENTE
 !
     call lcdevi(sig, dev)
-    call lcprsc(dev, dev, p)
+    p = dot_product(dev(1:ndt), dev(1:ndt))
     sigeq = sqrt (1.5d0 * p)
 !
 ! ---   CONTRAINTE HYDROSTATIQUE

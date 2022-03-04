@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,6 @@ subroutine betini(materf, nmat, sig, sigeq, sigh,&
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-#include "asterfort/lcprsc.h"
     integer :: nmat
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: coefa(2, 2), coefb(2), coefar(2, 2), coefbr(2)
@@ -81,7 +80,7 @@ subroutine betini(materf, nmat, sig, sigeq, sigh,&
 ! --- CONTRAINTE EQUIVALENTE
 !
     call lcdevi(sig, dev)
-    call lcprsc(dev, dev, p)
+    p = dot_product(dev(1:ndt), dev(1:ndt))
     sigeq = sqrt (1.5d0 * p)
 !
 ! --- CONTRAINTE HYDROSTATIQUE

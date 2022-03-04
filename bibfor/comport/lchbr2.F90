@@ -41,7 +41,6 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
 #include "asterfort/lchbvp.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_varc.h"
@@ -175,7 +174,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm,&
     end do
     call lcdevi(sige, se)
 !      CALL PSCAL(NDT,SE,SE,SEQ)
-    call lcprsc(se, se, seq)
+    seq = dot_product(se(1:ndt), se(1:ndt))
     sigeqe = sqrt(trois*seq/deux)
     i1e = trace(ndi,sige)
 ! ======================================================================

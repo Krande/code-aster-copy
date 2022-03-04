@@ -53,7 +53,6 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
   integer :: ndt, ndi, nmod, i, j, k, codret
@@ -235,10 +234,10 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 !
   call calcq(q, gamma, pref, epssig, qq,&
        codret)
-  call lcprsc(qq, qq, truc)
+  truc = dot_product(qq(1:ndt), qq(1:ndt))
   qqii = sqrt(truc)
 !
-  call lcprsc(xf, xf, truc)
+  truc = dot_product(xf(1:ndt), xf(1:ndt))
   xii = sqrt(truc)
 !
   epsv = zero
@@ -279,7 +278,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
 ! --- LOI D ECOULEMENT -------------------------------------------------
 ! ======================================================================
 !
-  call lcprsc(qq, xf, truc)
+  truc = dot_product(qq(1:ndt), xf(1:ndt))
   truc = truc - rf
 !
   do  i = 1, ndt
@@ -294,7 +293,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
      depsdp(i) = dlambd*gdd(i)
   end do
 !
-  call lcprsc(s, depsdp, truc)
+  truc = dot_product(s(1:ndt), depsdp(1:ndt))
   if (truc .ge. zero) then
      signe = un
   else
@@ -311,7 +310,7 @@ subroutine cjsjde(mod, mater, epsd, deps, yd,&
      norm(i) = coef5 * vectan(i)
   end do
 !
-  call lcprsc(dfdds, norm, prod0)
+  prod0 = dot_product(dfdds(1:ndt), norm(1:ndt))
   do  i = 1, ndt
      gd(i) = dfdds(i) - prod0 * norm(i)
   end do

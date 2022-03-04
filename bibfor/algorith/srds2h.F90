@@ -38,7 +38,6 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
 #include "asterc/r8miem.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 #include "asterfort/r8inir.h"
 
@@ -82,7 +81,7 @@ subroutine srds2h(nbmat, mater, s, dhds, ds2hds, retcom)
     retcom=0
     ptit=r8miem()
 
-    call lcprsc(s,s,sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
 
     sii=sqrt (sii)
 

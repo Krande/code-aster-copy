@@ -115,10 +115,10 @@ subroutine srd2sh(nmat,materf,varh,dhds,devsig,rcos3t,d2shds)
 
     !!! mat2 = coefh*mat3
     mat2(1:ndt,1:ndt) =mat3(1:ndt,1:ndt)
-    
+
     !!! Construction de dh/dsigma = (dh/ds)*(ds/dsigma)
     mat1(1:ndt,1:ndt) =dsdsig(1:ndt,1:ndt)
-    
+
     do i=1,ndt
         dhtds(i)=0.d0
         do j=1,ndt

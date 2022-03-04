@@ -27,7 +27,6 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkcrip.h"
 #include "asterfort/lkcriv.h"
 #include "asterfort/Behaviour_type.h"
@@ -169,7 +168,7 @@ subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
 !
     call lcdevi(sigml, sml)
 !
-    call lcprsc(sml, sml, siim)
+    siim = dot_product(sml(1:ndt), sml(1:ndt))
 !
     siim = sqrt(siim)
 !

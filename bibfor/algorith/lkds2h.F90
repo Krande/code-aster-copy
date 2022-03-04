@@ -23,7 +23,6 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
 #include "asterc/r8miem.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkhtet.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -74,7 +73,7 @@ subroutine lkds2h(nbmat, mater, invar, s, dhds,&
 ! =================================================================
     retcom = 0
     ptit = r8miem()
-    call lcprsc(s, s, sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii = sqrt (sii)
     if (sii .lt. ptit) then
         call utmess('A', 'COMPOR1_30')

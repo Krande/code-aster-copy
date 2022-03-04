@@ -40,7 +40,6 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
 !     --------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkhtet.h"
     integer :: nmat
     real(kind=8) :: i1, devsig(6), dshds(6), dfdsdx(6), materf(nmat, 2)
@@ -115,7 +114,7 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
  10 end do
 !
 ! --- NORME DU DEVIATEUR DES CONTRAINTES
-    call lcprsc(devsig, devsig, sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii = sqrt(sii)
 !
 ! --------------------------------------

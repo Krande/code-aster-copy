@@ -35,7 +35,6 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
 !     --------------------------------------------------------------
 #include "asterc/r8pi.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkhtet.h"
     integer :: nmat, val
     real(kind=8) :: i1, devsig(6), dndxi(6), bprime, mater(nmat, 2)
@@ -76,7 +75,7 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime,&
 ! =================================================================
 ! --- CALCUL DE SII -----------------------------------------------
 ! =================================================================
-    call lcprsc(devsig, devsig, sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii = sqrt (sii)
 ! =====================================================================
 ! --- RECUPERATION DE PARAMETRES DU MODELE ----------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ function lkbpri(val, vin, nbmat, mater, para,&
     implicit  none
 #include "asterc/r8pi.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkhtet.h"
     integer :: val, nbmat
     real(kind=8) :: vin(7), mater(nbmat, 2), para(3), invar, s(6), lkbpri
@@ -87,7 +86,7 @@ function lkbpri(val, vin, nbmat, mater, para,&
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! =================================================================
-    call lcprsc(s, s, sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii = sqrt (sii)
 ! =================================================================
 ! --- CALCUL DE h(THETA), H0E ET H0C -----------------------------

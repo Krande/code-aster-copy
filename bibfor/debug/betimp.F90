@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,6 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/tecael.h"
 !       BETON_DOUBLE_DP: CONVEXE ELASTO PLASTIQUE POUR (MATER,SIG,P1,P2)
 !            AVEC UN SEUIL EN COMPRESSION ET UN SEUIL EN TRACTION
@@ -122,7 +121,7 @@ implicit none
 ! ---   TRAITEMENT DE LA CONTRAINTE ELASTIQUE
 !
     call lcdevi(sige, dev)
-    call lcprsc(dev, dev, p)
+    p = dot_product(dev(1:ndt), dev(1:ndt))
     sigeq = sqrt (1.5d0 * p)
 !
     call lchydr(sige, sigh)
@@ -170,7 +169,7 @@ implicit none
 ! ---   TRAITEMENT DE LA CONTRAINTE (NON ELASTIQUE) A L'INSTANT MOINS
 !
     call lcdevi(sigd, dev)
-    call lcprsc(dev, dev, p)
+    p = dot_product(dev(1:ndt), dev(1:ndt))
     sigeq = sqrt (1.5d0 * p)
 !
     call lchydr(sigd, sigh)
@@ -183,7 +182,7 @@ implicit none
 ! ---   TRAITEMENT DE LA CONTRAINTE ELASTO PLASTIQUE
 !
     call lcdevi(sig, dev)
-    call lcprsc(dev, dev, p)
+    p = dot_product(dev(1:ndt), dev(1:ndt))
     sigeq = sqrt (1.5d0 * p)
 !
     call lchydr(sig, sigh)

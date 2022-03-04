@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,6 @@ subroutine cjsqco(gamma, sig, x, pref, epssig,&
 #include "asterfort/hlode.h"
 #include "asterfort/lcdete.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
     integer :: ndt, ndi
     real(kind=8) :: gamma, pref, epssig
     real(kind=8) :: sig(6), x(6), s(6), q(6)
@@ -63,14 +62,14 @@ subroutine cjsqco(gamma, sig, x, pref, epssig,&
 ! ======================================================================
     call lcdevi(sig, s)
     call lcdete(s, dets)
-    call lcprsc(s, s, sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii = sqrt(sii)
     siirel = sii / pref
     cos3ts = cos3t(s, pref, epssig)
 !
     call cjsqij(s, i1, x, q)
     call lcdete(q, detq)
-    call lcprsc(q, q, qii)
+    qii = dot_product(q(1:ndt), q(1:ndt))
     qii = sqrt(qii)
     qiirel = qii / pref
     cos3tq = cos3t(q, pref, epssig)

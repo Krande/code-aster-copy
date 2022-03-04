@@ -25,7 +25,6 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/trace.h"
@@ -143,7 +142,7 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater,&
 ! ----  ET DE LA TRACE --------------------------------------------
 ! =================================================================
         call lcdevi(sig, s)
-        call lcprsc(s, s, sii)
+        sii = dot_product(s(1:ndt), s(1:ndt))
         seq = sqrt(trois*sii/deux)
         i1 = trace (ndi,sig)
 !

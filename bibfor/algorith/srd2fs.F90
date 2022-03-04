@@ -40,7 +40,6 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
 
     implicit   none
 
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
 
     !!!
@@ -67,7 +66,7 @@ subroutine srd2fs(nmat,materf,para,vara,varh,i1,devsig,ds2hds,d2shds,d2fds2)
     !!! Construction de sii
     !!!
 
-    call lcprsc(devsig,devsig,sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii=sqrt(sii)
 
     !!!

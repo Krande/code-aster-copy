@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,7 +70,6 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
 #include "asterfort/cjsqco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
     integer :: ndt, ndi, nvi, niter, ndec, i
     real(kind=8) :: epsd(6), deps(6), sigf(6), vinf(nvi), epscon
@@ -125,7 +124,7 @@ subroutine cjsinp(mater, epsd, deps, sigf, vinf,&
                 hts, dets, q, qii, qiirel,&
                 cos3tq, htq, detq)
 ! ======================================================================
-    call lcprsc(xf, xf, xii)
+    xii = dot_product(xf(1:ndt), xf(1:ndt))
     xii = sqrt(xii)
 !
     epsv = zero

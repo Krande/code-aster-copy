@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,6 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     implicit    none
 
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 #include "asterfort/srvacv.h"
 #include "asterfort/srvarv.h"
@@ -60,6 +59,8 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     real(kind=8) :: r0c, rtheta
     real(kind=8) :: rcos3t
     real(kind=8) :: paravi(3), varvi(4)
+    integer :: ndi,ndt
+    common /tdim/ ndt, ndi
 
     !!!
     !!! Parametres materiaux du modele
@@ -72,8 +73,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     !!! Calcul du deviateur des contraintes
     !!!
 
-    call lcprsc(s, s, sii)
-    sii=sqrt(sii)
+    sii=sqrt(dot_product(s(1:ndt), s(1:ndt)))
 
     !!!
     !!! Recuperation de h0c et h(theta) (r0c et r(theta))

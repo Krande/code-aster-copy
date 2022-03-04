@@ -54,7 +54,6 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     implicit   none
 
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srbpri.h"
 #include "asterfort/srcalg.h"
@@ -210,7 +209,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater,&
     !!! Produit de dfp/dsig par de:gp
     !!!
 
-    call lcprsc(dfdsp, degp, dfdegp)
+    dfdegp = dot_product(dfdsp(1:ndt), degp(1:ndt))
 
     !!!
     !!! Calcul de dgamv/deps

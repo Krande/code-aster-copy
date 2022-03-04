@@ -32,7 +32,6 @@ subroutine srcaln(s,b,vecn,retcom)
 
     implicit none
 #include "asterc/r8miem.h"
-#include "asterfort/lcprsc.h"
 
     !!!
     !!! Variables globales
@@ -58,7 +57,7 @@ subroutine srcaln(s,b,vecn,retcom)
     retcom=0
     ptit=r8miem()
 
-    call lcprsc(s, s, sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii=sqrt(sii)
 
     if (sii.lt.ptit) then

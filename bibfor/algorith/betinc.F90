@@ -38,7 +38,6 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lchydr.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
     integer :: nmat, nseuil, i
     real(kind=8) :: materf(nmat, 2), dpc, dpt
@@ -72,7 +71,7 @@ subroutine betinc(materf, nmat, sige, nseuil, dpc,&
 ! --- CONTRAINTE EQUIVALENTE
 !
     call lcdevi(sige, dev)
-    call lcprsc(dev, dev, p)
+    p = dot_product(dev(1:ndt), dev(1:ndt))
     sigeq = sqrt (1.5d0 * p)
 !
 ! --- CONTRAINTE HYDROSTATIQUE

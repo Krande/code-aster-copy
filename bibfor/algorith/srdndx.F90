@@ -42,7 +42,6 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 
     !!!
@@ -93,7 +92,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     mx=para(3)
 
     !!! Calcul de sii
-    call lcprsc(devsig,devsig,sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii=sqrt(sii)
 
     !!!
@@ -167,7 +166,7 @@ subroutine srdndx(nmat,mater,i1,devsig,bprime,val,para,xi,tmp,dpardx,dndxi)
     alres=1.d0+m3
 
     !!! Calcul de sii
-    call lcprsc(devsig, devsig, sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii=sqrt(sii)
 
     !!! Calculs de sigma_min et sigma_max

@@ -49,7 +49,6 @@ subroutine srijac(nmat,materf,timed,timef,&
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srbpri.h"
@@ -425,9 +424,9 @@ subroutine srijac(nmat,materf,timed,timef,&
     !!! Calcul de d(r1)/d(y3) - y3 == xip
 
     !!! assemblage d(gp)/d(xi)
-    call lcprsc(dfsdxp,vecnp,term1)
-    call lcprsc(dfdsp,dndxip,term2)
-    call lcprsc(dfdsp,vecnp,term3)
+    term1 = dot_product(dfsdxp(1:ndt), vecnp(1:ndt))
+    term2 = dot_product(dfdsp(1:ndt), dndxip(1:ndt))
+    term3 = dot_product(dfdsp(1:ndt), vecnp(1:ndt))
 
     do i=1,ndt
         dgpdxi(i)=dfsdxp(i)-term1*vecnp(i)-term2*vecnp(i)-term3*dndxip(i)
@@ -456,9 +455,9 @@ subroutine srijac(nmat,materf,timed,timef,&
                     valv,paravi,vint(3),tpp,dpadxv,dndxiv)
 
         !!! assemblage de d(gv)/d(xiv)
-        call lcprsc(dfsdxv,vecnv,term1)
-        call lcprsc(dfvdsi,dndxiv,term2)
-        call lcprsc(dfvdsi,vecnv,term3)
+        term1 = dot_product(dfsdxv(1:ndt), vecnv(1:ndt))
+        term2 = dot_product(dfvdsi(1:ndt), dndxiv(1:ndt))
+        term3 = dot_product(dfvdsi(1:ndt), vecnv(1:ndt))
 
         do i=1,ndt
             dgvdxi(i)=dfsdxv(i)-term1*vecnv(i)-term2*vecnv(i)-term3*dndxiv(i)
@@ -596,7 +595,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     !!! Calcul de d(r3)/d(y3) - y3 == xip
 
     call lcprmv(dsdsig,dgpdxi,dgtpdx)
-    call lcprsc(devgp, dgtpdx,dgipdx)
+    dgipdx = dot_product(devgp(1:ndt), dgtpdx(1:ndt))
 
     if (vinf(7).gt.0.d0) then
         drdy(ndt+2,ndt+2)=1.d0-dlambd*sqrt(2.d0/3.d0)*dgipdx/devgii
@@ -607,7 +606,7 @@ subroutine srijac(nmat,materf,timed,timef,&
     !!! Calcul de d(r3)/d(y4) - y4 == xivp
 
     call lcprmv(dsdsig,dgvdxi,dgtvdx)
-    call lcprsc(devgv,dgtvdx,dgivdx)
+    dgivdx = dot_product(devgv(1:ndt), dgtvdx(1:ndt))
 
     if (abs(dxiv-dgamv).lt.r8prem()) then
         drdy(ndt+2,ndt+3)=-(dphidx*devgiv+phiv*dgivdx/devgiv)*sqrt(2.d0/3.d0)*dt

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,6 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
     implicit   none
 
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srdepp.h"
 #include "asterfort/srdfdx.h"
 #include "asterfort/srdpdt.h"
@@ -103,13 +102,13 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
     !!! Produit (dfp/dsig):(de:gp)
     !!!
 
-    call lcprsc(dfdsp,degp,dfdegp)
+    dfdegp = dot_product(dfdsp(1:ndt), degp(1:ndt))
 
     !!!
     !!! Produit (dfp/dsig):(de:(deps-depsv))
     !!!
 
-    call lcprsc(dfdsp,sigint,dfdsig)
+    dfdsig = dot_product(dfdsp(1:ndt), sigint(1:ndt))
 
     !!!
     !!! Terme dependant de T
@@ -125,7 +124,7 @@ subroutine srdlam(varv,nbmat,mater,deps,depsv,dgamv,im,sm,vinm,nvi,de,&
     dtemp=mater(11,1)
 
     !!! Produit de df/dsig par kron
-    call lcprsc(dfdsp,kron,tdfdsp)
+    tdfdsp = dot_product(dfdsp(1:ndt), kron(1:ndt))
 
     !!! Assemblage des termes dependant de T
     tft=(dfdt+3.d0*kk*alpha*tdfdsp)*dtemp

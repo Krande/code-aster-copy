@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 !
     implicit   none
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkdepp.h"
 #include "asterfort/lkdfdx.h"
 #include "asterfort/r8inir.h"
@@ -94,9 +93,9 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv,&
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR DEGP----------------------------------
 ! =================================================================
-    call lcprsc(dfdsp, degp, dfdegp)
+    dfdegp = dot_product(dfdsp(1:ndt), degp(1:ndt))
 ! =================================================================
-    call lcprsc(dfdsp, sigint, dfdsig)
+    dfdsig = dot_product(dfdsp(1:ndt), sigint(1:ndt))
 !
 ! =================================================================
 ! --- CALCUL DE DLAM ---------------------------------------

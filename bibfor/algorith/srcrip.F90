@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,6 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     implicit    none
 
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 #include "asterfort/srvacp.h"
 #include "asterfort/srvarp.h"
@@ -60,6 +59,8 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     real(kind=8) :: sii,sigc,pref
     real(kind=8) :: rcos3t,r0c,rtheta
     real(kind=8) :: paraep(3),varpl(4)
+    integer :: ndi,ndt
+    common /tdim/ ndt, ndi
 
     !!!
     !!! Recuperation de sparametres materiau
@@ -72,8 +73,7 @@ subroutine srcrip(invar,s,vin,nvi,nbmat,mater,tmp,ucrip,seuil)
     !!! Calcul de la norme de s
     !!!
 
-    call lcprsc(s,s,sii)
-    sii=sqrt(sii)
+    sii=sqrt(dot_product(s(1:ndt), s(1:ndt)))
 
     !!!
     !!! Appel a h0c et h(theta)

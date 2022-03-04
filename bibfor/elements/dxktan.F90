@@ -36,7 +36,6 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
 #include "asterfort/dfplas.h"
 #include "asterfort/dxprd1.h"
 #include "asterfort/dxprd2.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/pmavec.h"
 #include "blas/dcopy.h"
@@ -84,7 +83,7 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
         matb = matmul(delas,mata)
         matc = matmul(matb,delas)
         call pmavec('ZERO', 6, dc1, dfpla1, vect)
-        call lcprsc(dfpla1, vect, scal)
+        scal = dot_product(dfpla1(1:n), vect(1:n))
 !
         do 10 i = 1, 6
             do 20 j = 1, 6
@@ -98,7 +97,7 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit,&
         matb = matmul(delas,mata)
         matc = matmul(matb,delas)
         call pmavec('ZERO', 6, dc2, dfpla2, vect)
-        call lcprsc(dfpla2, vect, scal)
+        scal = dot_product(dfpla2(1:n), vect(1:n))
 !
         do 30 i = 1, 6
             do 40 j = 1, 6

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,6 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
 !     OUT D2FDS2 :  DERIVEE 2NDE F PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
     integer :: iret, nmat
     real(kind=8) :: d2fds2(6, 6), para(3), vara(4), materf(nmat, 2)
@@ -55,7 +54,7 @@ subroutine lkd2fs(nmat, materf, para, vara, varh,&
     sigc = materf(3,2)
 !
 ! --- CONSTRUCTION DE SII
-    call lcprsc(devsig, devsig, sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii = sqrt(sii)
 !
 ! --- CONSTRUCTION COEF1 = A*SIGC*H0C*(A-1)(AD*SII*H+B*I1+D)^(A-2)

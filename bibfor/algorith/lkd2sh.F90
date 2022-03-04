@@ -31,7 +31,6 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
 !     OUT D2SHDS :  DERIVEE 2NDE SII*H PAR RAPPORT A SIGMA (NDT X NDT)
 !         IRET   :  CODE RETOUR
 !     ------------------------------------------------------------------
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkd2hs.h"
     integer :: iret, nmat
@@ -57,7 +56,7 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig,&
     coefh = (varh(2)-h0ext)/(varh(2)-varh(1))
 !
 ! --- CONSTRUCTION DE SII
-    call lcprsc(devsig, devsig, sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii = sqrt(sii)
 !
 ! --- INITIALISATION MATRICE D_IK X D_JL

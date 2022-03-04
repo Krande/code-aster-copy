@@ -45,7 +45,6 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds,&
     implicit   none
 
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 #include "asterf_types.h"
 
@@ -160,7 +159,7 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds,&
     !!! sii
     !!!
 
-    call lcprsc(devsig,devsig,sii)
+    sii = dot_product(devsig(1:ndt), devsig(1:ndt))
     sii=sqrt(sii)
 
     !!!

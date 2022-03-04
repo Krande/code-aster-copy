@@ -48,7 +48,6 @@ subroutine srdgds(nmat,materf,para,vara,devsig,&
     implicit   none
 
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/srd2fs.h"
 #include "asterfort/srd2sh.h"
@@ -133,7 +132,7 @@ subroutine srdgds(nmat,materf,para,vara,devsig,&
     !!! Construction de (d(f)/d(s):n)d(n)/d(sig)
     !!!
 
-    call lcprsc(dfds,vecn,dfdsvn)
+    dfdsvn = dot_product(dfds(1:ndt), vecn(1:ndt))
     dfpndn(1:ndt,1:ndt) = dfdsvn * dndsig(1:ndt,1:ndt)
 
     !!!

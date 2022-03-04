@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,6 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
     integer :: ndt, ndi, nmat
     integer :: ioptio, idnr, nopt
@@ -155,8 +154,8 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 ! - LF (T+DT)
 !
-    call lcprsc(x1, dfds, zz)
-    call lcprsc(x1, x1, yy)
+    zz = dot_product(x1(1:ndt), dfds(1:ndt))
+    yy = dot_product(x1(1:ndt), x1(1:ndt))
     zz = zz * (1.d0-d1) * g10 * ccin * dp * 2.d0/3.d0
     xx = c1 * dp * 2.d0/3.d0 - zz
     yy = gx1 * dt * ( sqrt(yy*3.d0/2.d0) )**(m1-1.d0) + g10 * ccin * d1 * dp
@@ -173,8 +172,8 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 ! - JF (T+DT)
 !
-    call lcprsc(x2, dfds, zz)
-    call lcprsc(x2, x2, yy)
+    zz = dot_product(x2(1:ndt), dfds(1:ndt))
+    yy = dot_product(x2(1:ndt), x2(1:ndt))
     zz = zz * (1.d0-d2) * g20 * ccin * dp * 2.d0/3.d0
     xx = c2 * dp * 2.d0/3.d0 - zz
     yy = gx2 * dt * ( sqrt(yy*3.d0/2.d0) )**(m2-1.d0) + g20 * ccin * d2 * dp
@@ -238,7 +237,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 ! N-ETOILE
 !
         vtmp(1:ndt) = epsp(1:ndt) - xxi(1:ndt)
-        call lcprsc(vtmp, vtmp, xx)
+        xx = dot_product(vtmp(1:ndt), vtmp(1:ndt))
         xx = sqrt( xx * 3.d0/2.d0 )
 !
 ! H(F)
@@ -257,7 +256,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 ! N *  N-ETOILE
 !
-            call lcprsc(dfds, epxi, zz)
+            zz = dot_product(dfds(1:ndt), epxi(1:ndt))
 !
             if (zz .le. 0.d0) then
                 tf = 0.d0
@@ -266,7 +265,7 @@ subroutine cvmres(mod, nmat, materd, materf, timed,&
 !
 ! - TF (T+DT)
 !
-                call lcprsc(dfds, epxi, xx)
+                xx = dot_product(dfds(1:ndt), epxi(1:ndt))
                 tf = dp * eta * xx - dq
 !
 ! - XIF (T+DT)

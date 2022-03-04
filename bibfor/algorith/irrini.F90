@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,6 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/rcvarc.h"
 #include "blas/ddot.h"
@@ -139,7 +138,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
             call lcprsv(dg, id3d, vtmp2)
             vtmp1(1:ndt) = vtmp1(1:ndt) - vtmp2(1:ndt)
             call lcprmv(hook, vtmp1, vtmp1)
-            call lcprsc(dfds, vtmp1, yy)
+            yy = dot_product(dfds(1:ndt), vtmp1(1:ndt))
 !
             if (p .lt. pk) then
                 zz = 0.0d0
@@ -149,7 +148,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai,&
                 zz = n*k*(p+p0)**(n-1.0d0)
             endif
             call lcprmv(hook, dfds, vtmp1)
-            call lcprsc(dfds, vtmp1, xx)
+            xx = dot_product(dfds(1:ndt), vtmp1(1:ndt))
 !
             xx=xx+zz
 !

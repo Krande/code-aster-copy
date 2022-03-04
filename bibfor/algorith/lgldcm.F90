@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
 #include "asterfort/ucritp.h"
 #include "asterfort/varecr.h"
@@ -95,7 +94,7 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 ! =================================================================
 ! --- CALCUL DE G(S) ----------------------------------------------
 ! =================================================================
-        call lcprsc(dev, dev, sii)
+        sii = dot_product(dev(1:ndt), dev(1:ndt))
         sii = sqrt (sii)
         rcos3t = cos3t (dev, pref, lgleps)
         rhlode = hlode (gamcjs, rcos3t)

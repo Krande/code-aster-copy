@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 #include "asterc/r8prem.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkbpri.h"
@@ -323,9 +322,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- ASSEMBLAGE DE DGPDXI =
 ! D(DFPDSIG)/DXI-D(DFPDSIG)/DXI.N*N-DFPDSIG.DNDXI*N-DFPDSIG.N*DNDXI
-    call lcprsc(dfsdxp, vecnp, term1)
-    call lcprsc(dfdsp, dndxip, term2)
-    call lcprsc(dfdsp, vecnp, term3)
+    term1 = dot_product(dfsdxp(1:ndt), vecnp(1:ndt))
+    term2 = dot_product(dfdsp(1:ndt), dndxip(1:ndt))
+    term3 = dot_product(dfdsp(1:ndt), vecnp(1:ndt))
     do i = 1, ndt
         dgpdxi(i) = dfsdxp(i)-term1*vecnp(i)-term2*vecnp(i) -term3* dndxip(i)
     end do
@@ -349,9 +348,9 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
         call lkdndx(nmat, materf, i1, devsig, bprimv,&
                     valv, paravi, vint(3), dpadxv, dndxiv)
 ! --- ASSEMBLAGE DE DGVDXIV =
-        call lcprsc(dfsdxv, vecnv, term1)
-        call lcprsc(dfvdsi, dndxiv, term2)
-        call lcprsc(dfvdsi, vecnv, term3)
+        term1 = dot_product(dfsdxv(1:ndt), vecnv(1:ndt))
+        term2 = dot_product(dfvdsi(1:ndt), dndxiv(1:ndt))
+        term3 = dot_product(dfvdsi(1:ndt), vecnv(1:ndt))
         do i = 1, ndt
             dgvdxi(i) = dfsdxv(i)-term1*vecnv(i)-term2*vecnv(i) -term3*dndxiv(i)
         end do
@@ -475,7 +474,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! --- III.3 CALCUL DE DR3DY3 -> Y3 = XIP
 ! ------------------------------------------------------------------
     call lcprmv(dsdsig, dgpdxi, dgtpdx)
-    call lcprsc(devgp, dgtpdx, dgipdx)
+    dgipdx = dot_product(devgp(1:ndt), dgtpdx(1:ndt))
     if (vinf(7) .gt. zero) then
         drdy(ndt+2,ndt+2)= un - dlambd*sqrt(deux/trois) *dgipdx/&
         devgii
@@ -487,7 +486,7 @@ subroutine lkijac(mod, nmat, materf, timed, timef,&
 ! ------------------------------------------------------------------
 ! --- TEST POUR SAVOIR SI ON EST EN BUTEE SUR XIVP
     call lcprmv(dsdsig, dgvdxi, dgtvdx)
-    call lcprsc(devgv, dgtvdx, dgivdx)
+    dgivdx = dot_product(devgv(1:ndt), dgtvdx(1:ndt))
     if (abs(dxiv-dgamv) .lt. r8prem()) then
         drdy(ndt+2,ndt+3)= -(dphidx*devgiv+phiv*dgivdx/devgiv)&
         *sqrt(deux/trois)*dt

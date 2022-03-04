@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,6 @@ subroutine srdfdx(nbmat,mater,ucrip,invar,s,paraep,varpl,derpar,dfdxip)
     implicit      none
 
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/srhtet.h"
 
     !!!
@@ -64,6 +63,8 @@ subroutine srdfdx(nbmat,mater,ucrip,invar,s,paraep,varpl,derpar,dfdxip)
 
     real(kind=8) :: pref,sigc,rcos3t,r0c,rtheta,sii
     real(kind=8) :: dfdad,dfdsd,dfdmd,fact1,fact3,fact4,fact5
+    integer :: ndi,ndt
+    common /tdim/ ndt, ndi
 
     !!!
     !!! Recuperation des parametres du modele
@@ -75,9 +76,7 @@ subroutine srdfdx(nbmat,mater,ucrip,invar,s,paraep,varpl,derpar,dfdxip)
     !!!
     !!! Calcul de sii et recuperation de h0c et h(theta)
     !!!
-
-    call lcprsc(s,s,sii)
-    sii=sqrt(sii)
+    sii=sqrt(dot_product(s(1:ndt), s(1:ndt)))
 
     rcos3t=cos3t(s,pref,1.d-8)
     call srhtet(nbmat,mater,rcos3t,r0c,rtheta)

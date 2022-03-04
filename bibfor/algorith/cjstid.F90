@@ -36,7 +36,6 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, i, j, codret
@@ -147,14 +146,14 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! --- ECROUISSAGE CINEMATIQUE ------------------------------------------
 ! ======================================================================
     call lcdevi(sig, s)
-    call lcprsc(s, s, truc)
+    truc = dot_product(s(1:ndt), s(1:ndt))
     sii = sqrt(truc)
     siirel = sii/pref
     cos3ts = cos3t(s, pref, epssig)
     hts = hlode(gamma,cos3ts)
 ! ======================================================================
     call cjsqij(s, i1, x, q)
-    call lcprsc(q, q, truc)
+    truc = dot_product(q(1:ndt), q(1:ndt))
     qii = sqrt(truc)
     cos3tq = cos3t(q, pref, epssig)
     htq = hlode(gamma,cos3tq)
@@ -166,9 +165,9 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- CALCUL DE PC (CONTRAINTE MOYENNE CRITIQUE) -----------------------
 ! ======================================================================
-    call lcprsc(qq, qq, truc)
+    truc = dot_product(qq(1:ndt), qq(1:ndt))
     qqii = sqrt(truc)
-    call lcprsc(x, x, truc)
+    truc = dot_product(x(1:ndt), x(1:ndt))
     xii = sqrt(truc)
     epsv = trace(ndi,eps)
     pc = pco*exp(-c*epsv)
@@ -203,7 +202,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
 ! ======================================================================
 ! --- LOI D'ECOULEMENT DU MECANISME DEVIATOIRE -------------------------
 ! ======================================================================
-    call lcprsc(qq, x, truc)
+    truc = dot_product(qq(1:ndt), x(1:ndt))
     truc = truc - r
 !
     do i = 1, ndi
@@ -224,7 +223,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig,&
        norm(i) = coef3 * s(i) + coef4 * kron(i)
     end do
 !
-    call lcprsc(dfdds, norm, truc)
+    truc = dot_product(dfdds(1:ndt), norm(1:ndt))
     do i = 1, ndt
        gd(i) = dfdds(i) - truc * norm(i)
     end do

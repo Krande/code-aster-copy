@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@ subroutine lkpost(imate, sigf, nvi, vip)
     implicit none
 #include "asterfort/cos3t.h"
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkcrit.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/get_varc.h"
@@ -39,6 +38,8 @@ subroutine lkpost(imate, sigf, nvi, vip)
     real(kind=8) :: crit0, crite, tempd , tempf , tref
     parameter(lgleps=1.0d-8)
     character(len=16) :: nomc(dimpar)
+    integer :: ndi,ndt
+    common /tdim/ ndt, ndi
 !
 ! - Get temperatures
 !
@@ -103,8 +104,7 @@ subroutine lkpost(imate, sigf, nvi, vip)
 ! =================================================================
     call lcdevi(sigf, devsig)
     i1 = -sigf(1)-sigf(2)-sigf(3)
-    call lcprsc(devsig, devsig, sii)
-    sii = sqrt(sii)
+    sii = sqrt(dot_product(devsig(1:ndt), devsig(1:ndt)))
     rcos3t = -cos3t(devsig, mater(11), lgleps)
 !
     crit0 = lkcrit(mater(4), mater(5), mater(6), mater(10), mater(9), mater(12), rcos3t, i1, sii)

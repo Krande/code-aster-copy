@@ -23,7 +23,6 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 !
     implicit   none
 #include "asterfort/lcprmv.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkbpri.h"
 #include "asterfort/lkcalg.h"
@@ -190,7 +189,7 @@ subroutine lkoptg(val, dum, dt, nbmat, mater,&
 ! =================================================================
 ! --- PRODUIT DE DF/DSIG PAR DEGP----------------------------------
 ! =================================================================
-    call lcprsc(dfdsp, degp, dfdegp)
+    dfdegp = dot_product(dfdsp(1:ndt), degp(1:ndt))
 !
 ! =================================================================
 ! --- CALCUL DE DGAMV/ DEPS----------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 !
     implicit      none
 #include "asterfort/lcdevi.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/r8inir.h"
     real(kind=8) :: dfdsig(6), vecn(6), g(6), devgii
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -41,7 +40,7 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 ! =================================================================
     call r8inir(6, 0.d0, g, 1)
 !
-    call lcprsc(dfdsig, vecn, fact1)
+    fact1 = dot_product(dfdsig(1:ndt), vecn(1:ndt))
 !
     do 10 i = 1, ndt
         g(i) = dfdsig(i) - fact1 * vecn(i)
@@ -50,7 +49,7 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 ! --- CALCUL DU DEVIATEUR DE G ET DE SA NORME ---------------------
 ! =================================================================
     call lcdevi(g, devg)
-    call lcprsc(devg, devg, devgii)
+    devgii = dot_product(devg(1:ndt), devg(1:ndt))
     devgii = sqrt(devgii)
 ! =================================================================
 end subroutine

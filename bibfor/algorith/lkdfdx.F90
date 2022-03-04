@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
                   paraep, varpl, derpar, dfdxip)
     implicit      none
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lkhtet.h"
     integer :: nbmat
     real(kind=8) :: mater(nbmat, 2)
@@ -73,7 +72,7 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s,&
 ! =================================================================
 ! --- CALCUL DU DEVIATEUR ET DU PREMIER INVARIANT DES CONTRAINTES -
 ! ================================================================
-    call lcprsc(s, s, sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii = sqrt (sii)
 ! =================================================================
 ! --- CALCUL DE h(THETA), H0E ET H0C, -----------------------------

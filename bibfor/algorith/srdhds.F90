@@ -40,7 +40,6 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
 #include "asterc/r8miem.h"
 #include "asterfort/cjst.h"
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprsv.h"
 #include "asterc/r8pi.h"
 
@@ -76,7 +75,7 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
 
     retcom=0
     ptit=r8miem()
-    call lcprsc(s,s,sii)
+    sii = dot_product(s(1:ndt), s(1:ndt))
     sii=sqrt(sii)
 
     !!! on verifie si sii n'est pas nul car division par sii dans la routine

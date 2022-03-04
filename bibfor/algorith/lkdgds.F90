@@ -43,7 +43,6 @@ subroutine lkdgds(nmat, materf, para, vara, devsig,&
 !         IRET   : CODE RETOUR
 !     ------------------------------------------------------------------
 #include "asterfort/cos3t.h"
-#include "asterfort/lcprsc.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/lkd2fs.h"
 #include "asterfort/lkd2sh.h"
@@ -107,7 +106,7 @@ subroutine lkdgds(nmat, materf, para, vara, devsig,&
     call lcprte(vecn, dfdsdn, dfdnpn)
 !
 ! --- CONSTRUCTION DE (DFDS:VECN)*DNDSIG
-    call lcprsc(dfds, vecn, dfdsvn)
+    dfdsvn = dot_product(dfds(1:ndt), vecn(1:ndt))
     dfpndn(1:ndt,1:ndt) = dfdsvn * dndsig(1:ndt,1:ndt)
 !
 ! --- CONSTRUCTION DE DGDS
