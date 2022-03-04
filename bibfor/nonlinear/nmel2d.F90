@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -163,6 +163,7 @@ integer, intent(inout) :: codret
             end do
         endif
 ! ----- Compute behaviour
+        sigma = 0.d0
         call nmcpel(BEHinteg,&
                     fami    , kpg   , 1    , poum      , ndim  ,&
                     typmod  , angmas, imate, compor    , carcri,&
